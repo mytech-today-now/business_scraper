@@ -1,0 +1,373 @@
+'use strict'
+
+import puppeteer, { Browser, Page } from 'puppeteer'
+import axios from 'axios'
+import { BusinessRecord, ScrapingConfig } from '@/types/business'
+import { geocoder } from './geocoder'
+import { searchEngine } from './searchEngine'
+import { logger } from '@/utils/logger'
+import { CONTACT_KEYWORDS } from '@/lib/industry-config'
+
+/**
+ * Interface for scraping statistics
+ */
+export interface ScrapingStats {
+  totalSites: number
+  successfulScrapes: number
+  failedScrapes: number
+  totalBusinesses: number
+  startTime: Date
+  endTime?: Date
+  duration?: number
+}
+
+/**
+ * Interface for search result
+ */
+export interface SearchResult {
+  url: string
+  title: string
+  snippet: string
+}
+
+/**
+ * Scraper service configuration
+ */
+export interface ScraperConfig {
+  timeout: number
+  maxRetries: number
+  retryDelay: number
+  userAgent: string
+  headless: boolean
+  maxConcurrent: number
+}
+
+/**
+ * Default scraper configuration
+ */
+const DEFAULT_SCRAPER_CONFIG: ScraperConfig = {
+  timeout: 30000,
+  maxRetries: 3,
+  retryDelay: 1000,
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+  headless: true,
+  maxConcurrent: 3,
+}
+
+/**
+ * Main scraper service class
+ * Handles web scraping operations using Puppeteer
+ */
+export class ScraperService {
+  private config: ScraperConfig
+  private browser: Browser | null = null
+  private stats: ScrapingStats | null = null
+
+  constructor(config: Partial<ScraperConfig> = {}) {
+    this.config = { ...DEFAULT_SCRAPER_CONFIG, ...config }
+  }
+
+  /**
+   * Initialize the browser instance
+   */
+  async initialize(): Promise<void> {
+    if (this.browser) return
+
+    try {
+      this.browser = await puppeteer.launch({
+        headless: this.config.headless,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu',
+        ],
+      })
+      logger.info('Scraper', 'Browser initialized successfully')
+    } catch (error) {
+      logger.error('Scraper', 'Failed to initialize browser', error)
+      throw error
+    }
+  }
+
+  /**
+   * Close the browser instance
+   */
+  async cleanup(): Promise<void> {
+    if (this.browser) {
+      await this.browser.close()
+      this.browser = null
+      logger.info('Scraper', 'Browser closed')
+    }
+  }
+
+  /**
+   * Search for websites based on industry and location
+   * @param query - Search query
+   * @param zipCode - ZIP code for location-based search
+   * @param maxResults - Maximum number of results to return
+   * @returns Promise resolving to array of URLs
+   */
+  async searchForWebsites(
+    query: string,
+    zipCode: string,
+    maxResults: number = 50
+  ): Promise<string[]> {
+    try {
+      logger.info('Scraper', `Searching for websites: ${query} near ${zipCode}`)
+
+      // Use the search engine service
+      const searchResults = await searchEngine.searchBusinesses(query, zipCode, maxResults)
+
+      const urls = searchResults
+        .map(result => result.url)
+        .filter(url => this.isValidBusinessUrl(url))
+        .slice(0, maxResults)
+
+      logger.info('Scraper', `Found ${urls.length} potential business websites`)
+      return urls
+    } catch (error) {
+      logger.error('Scraper', 'Failed to search for websites', error)
+      return []
+    }
+  }
+
+
+
+  /**
+   * Scrape a website for business information
+   * @param url - Website URL to scrape
+   * @param depth - Maximum depth to crawl
+   * @returns Promise resolving to array of business records
+   */
+  async scrapeWebsite(url: string, depth: number = 2): Promise<BusinessRecord[]> {
+    if (!this.browser) {
+      await this.initialize()
+    }
+
+    const page = await this.browser!.newPage()
+    
+    try {
+      await page.setUserAgent(this.config.userAgent)
+      await page.setViewport({ width: 1920, height: 1080 })
+      
+      logger.info('Scraper', `Scraping website: ${url}`)
+      
+      // Navigate to the main page
+      await page.goto(url, { 
+        waitUntil: 'networkidle2', 
+        timeout: this.config.timeout 
+      })
+
+      // Find contact pages
+      const contactUrls = await this.findContactPages(page, url, depth)
+      
+      // Scrape business data from all relevant pages
+      const businessData = await this.extractBusinessData(page, [url, ...contactUrls])
+      
+      return businessData
+    } catch (error) {
+      logger.error('Scraper', `Failed to scrape ${url}`, error)
+      return []
+    } finally {
+      await page.close()
+    }
+  }
+
+  /**
+   * Find contact pages on a website
+   * @param page - Puppeteer page instance
+   * @param baseUrl - Base URL of the website
+   * @param maxDepth - Maximum crawl depth
+   * @returns Promise resolving to array of contact page URLs
+   */
+  private async findContactPages(page: Page, baseUrl: string, maxDepth: number): Promise<string[]> {
+    const contactUrls: Set<string> = new Set()
+    const domain = new URL(baseUrl).hostname
+
+    try {
+      // Look for contact-related links
+      const links = await page.evaluate((keywords) => {
+        const allLinks = Array.from(document.querySelectorAll('a[href]'))
+        return allLinks
+          .map(link => ({
+            href: (link as HTMLAnchorElement).href,
+            text: link.textContent?.toLowerCase() || '',
+          }))
+          .filter(link => 
+            keywords.some(keyword => 
+              link.text.includes(keyword) || 
+              link.href.toLowerCase().includes(keyword)
+            )
+          )
+          .map(link => link.href)
+      }, CONTACT_KEYWORDS)
+
+      // Filter and normalize URLs
+      for (const link of links) {
+        try {
+          const url = new URL(link, baseUrl)
+          if (url.hostname === domain && !contactUrls.has(url.href)) {
+            contactUrls.add(url.href)
+          }
+        } catch {
+          // Invalid URL, skip
+        }
+      }
+
+      logger.info('Scraper', `Found ${contactUrls.size} contact pages for ${baseUrl}`)
+      return Array.from(contactUrls).slice(0, maxDepth)
+    } catch (error) {
+      logger.error('Scraper', `Failed to find contact pages for ${baseUrl}`, error)
+      return []
+    }
+  }
+
+  /**
+   * Extract business data from pages
+   * @param page - Puppeteer page instance
+   * @param urls - URLs to extract data from
+   * @returns Promise resolving to array of business records
+   */
+  private async extractBusinessData(page: Page, urls: string[]): Promise<BusinessRecord[]> {
+    const businesses: BusinessRecord[] = []
+
+    for (const url of urls) {
+      try {
+        await page.goto(url, { 
+          waitUntil: 'networkidle2', 
+          timeout: this.config.timeout 
+        })
+
+        const businessData = await page.evaluate(() => {
+          // Extract business name
+          const businessName = 
+            document.querySelector('h1')?.textContent?.trim() ||
+            document.querySelector('title')?.textContent?.trim() ||
+            document.querySelector('[class*="company"], [class*="business"]')?.textContent?.trim() ||
+            'Unknown Business'
+
+          // Extract emails
+          const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g
+          const pageText = document.body.textContent || ''
+          const emails = Array.from(new Set(pageText.match(emailRegex) || []))
+            .filter(email => !email.includes('example.com') && !email.includes('placeholder'))
+
+          // Extract phone numbers
+          const phoneRegex = /(\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/g
+          const phones = Array.from(new Set(pageText.match(phoneRegex) || []))
+
+          // Extract address (simplified)
+          const addressRegex = /\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)[,\s]+[A-Za-z\s]+[,\s]+[A-Z]{2}[,\s]+\d{5}(?:-\d{4})?/g
+          const addresses = pageText.match(addressRegex) || []
+
+          return {
+            businessName,
+            emails,
+            phones,
+            addresses,
+            url: window.location.href,
+          }
+        })
+
+        if (businessData.emails.length > 0 || businessData.phones.length > 0) {
+          // Create business record
+          const business: BusinessRecord = {
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            businessName: businessData.businessName,
+            email: businessData.emails,
+            phone: businessData.phones[0],
+            websiteUrl: url,
+            address: this.parseAddress(businessData.addresses[0] || ''),
+            industry: 'Unknown', // Will be set by the calling function
+            scrapedAt: new Date(),
+          }
+
+          // Geocode address if available
+          if (businessData.addresses[0]) {
+            const coordinates = await geocoder.geocodeAddress(businessData.addresses[0])
+            if (coordinates) {
+              business.coordinates = coordinates
+            }
+          }
+
+          businesses.push(business)
+          logger.info('Scraper', `Extracted business data from ${url}`)
+        }
+      } catch (error) {
+        logger.error('Scraper', `Failed to extract data from ${url}`, error)
+      }
+    }
+
+    return businesses
+  }
+
+  /**
+   * Parse address string into structured format
+   * @param addressString - Raw address string
+   * @returns Structured address object
+   */
+  private parseAddress(addressString: string): BusinessRecord['address'] {
+    // Simplified address parsing
+    const parts = addressString.split(',').map(part => part.trim())
+    
+    return {
+      street: parts[0] || '',
+      city: parts[1] || '',
+      state: parts[2]?.split(' ')[0] || '',
+      zipCode: parts[2]?.split(' ')[1] || '',
+    }
+  }
+
+  /**
+   * Check if URL is a valid business website
+   * @param url - URL to validate
+   * @returns Boolean indicating if URL is valid
+   */
+  private isValidBusinessUrl(url: string): boolean {
+    try {
+      const urlObj = new URL(url)
+      const hostname = urlObj.hostname.toLowerCase()
+      
+      // Exclude social media, directories, etc.
+      const excludedDomains = [
+        'facebook.com', 'twitter.com', 'linkedin.com', 'instagram.com',
+        'yelp.com', 'yellowpages.com', 'google.com', 'youtube.com',
+        'wikipedia.org', 'amazon.com', 'ebay.com'
+      ]
+      
+      return !excludedDomains.some(domain => hostname.includes(domain))
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * Get scraping statistics
+   * @returns Current scraping statistics
+   */
+  getStats(): ScrapingStats | null {
+    return this.stats
+  }
+
+  /**
+   * Reset scraping statistics
+   */
+  resetStats(): void {
+    this.stats = {
+      totalSites: 0,
+      successfulScrapes: 0,
+      failedScrapes: 0,
+      totalBusinesses: 0,
+      startTime: new Date(),
+    }
+  }
+}
+
+/**
+ * Default scraper instance
+ */
+export const scraperService = new ScraperService()
