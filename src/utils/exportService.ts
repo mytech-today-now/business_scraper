@@ -89,7 +89,7 @@ export class ExportService {
 
     // Add headers
     if (includeHeaders && formattedData.length > 0) {
-      const headers = Object.keys(formattedData[0])
+      const headers = Object.keys(formattedData[0]!)
       csvContent += headers.map(header => formatCsvCell(header)).join(delimiter) + '\n'
     }
 
@@ -265,7 +265,7 @@ export class ExportService {
     const formattedData = businesses.map(formatBusinessForExport)
     
     if (formattedData.length > 0) {
-      const headers = Object.keys(formattedData[0])
+      const headers = Object.keys(formattedData[0]!)
       const rows = formattedData.map(row => Object.values(row))
 
       // Add table using autoTable plugin

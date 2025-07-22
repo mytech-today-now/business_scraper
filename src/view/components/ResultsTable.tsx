@@ -60,7 +60,7 @@ interface FilterConfig {
  */
 export interface ResultsTableProps {
   businesses: BusinessRecord[]
-  onEdit?: (business: BusinessRecord) => void
+  onEdit?: (businessId: string, updates: Partial<BusinessRecord>) => void
   onDelete?: (businessId: string) => void
   onExport?: (format: string) => void
   isLoading?: boolean
@@ -152,9 +152,13 @@ export function ResultsTable({
         const bValue = b[sortConfig.key!]
         
         let comparison = 0
-        
-        if (aValue < bValue) comparison = -1
-        if (aValue > bValue) comparison = 1
+
+        // Handle undefined values
+        if (aValue == null && bValue == null) comparison = 0
+        else if (aValue == null) comparison = -1
+        else if (bValue == null) comparison = 1
+        else if (aValue < bValue) comparison = -1
+        else if (aValue > bValue) comparison = 1
         
         return sortConfig.direction === 'desc' ? -comparison : comparison
       })
@@ -217,7 +221,7 @@ export function ResultsTable({
     if (onEdit) {
       const business = businesses.find(b => b.id === businessId)
       if (business) {
-        onEdit({ ...business, [field]: value })
+        onEdit(businessId, { [field]: value })
       }
     }
     setEditingCell(null)

@@ -13,17 +13,18 @@ import toast from 'react-hot-toast'
 export interface ConfigState {
   // Scraping configuration
   config: ScrapingConfig
-  
+
   // Industry categories
   industries: IndustryCategory[]
   selectedIndustries: string[]
-  
+
   // UI state
   isDarkMode: boolean
   isLoading: boolean
-  
+
   // Application state
   isInitialized: boolean
+  isDemoMode: boolean
 }
 
 /**
@@ -39,6 +40,7 @@ export type ConfigAction =
   | { type: 'SELECT_ALL_INDUSTRIES' }
   | { type: 'DESELECT_ALL_INDUSTRIES' }
   | { type: 'SET_DARK_MODE'; payload: boolean }
+  | { type: 'SET_DEMO_MODE'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_INITIALIZED'; payload: boolean }
   | { type: 'RESET_CONFIG' }
@@ -59,6 +61,7 @@ const defaultState: ConfigState = {
   isDarkMode: false,
   isLoading: false,
   isInitialized: false,
+  isDemoMode: process.env.NODE_ENV === 'development', // Default to demo mode in development
 }
 
 /**
@@ -143,6 +146,12 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         isDarkMode: action.payload,
       }
 
+    case 'SET_DEMO_MODE':
+      return {
+        ...state,
+        isDemoMode: action.payload,
+      }
+
     case 'SET_LOADING':
       return {
         ...state,
@@ -188,7 +197,8 @@ export interface ConfigContextType {
   
   // Theme methods
   toggleDarkMode: () => void
-  
+  toggleDemoMode: () => void
+
   // Utility methods
   getSelectedIndustryNames: () => string[]
   isConfigValid: () => boolean
@@ -245,7 +255,14 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
           dispatch({ type: 'SET_DARK_MODE', payload: isDark })
           document.documentElement.classList.toggle('dark', isDark)
         }
-        
+
+        // Load demo mode preference
+        const savedDemoMode = localStorage.getItem('demoMode')
+        if (savedDemoMode) {
+          const isDemoMode = JSON.parse(savedDemoMode)
+          dispatch({ type: 'SET_DEMO_MODE', payload: isDemoMode })
+        }
+
         dispatch({ type: 'SET_INITIALIZED', payload: true })
         logger.info('ConfigProvider', 'Configuration initialized successfully')
       } catch (error) {
@@ -398,6 +415,17 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   }
 
   /**
+   * Toggle demo mode
+   */
+  const toggleDemoMode = () => {
+    const newDemoMode = !state.isDemoMode
+    dispatch({ type: 'SET_DEMO_MODE', payload: newDemoMode })
+    localStorage.setItem('demoMode', JSON.stringify(newDemoMode))
+    logger.info('ConfigProvider', 'Demo mode toggled', { demoMode: newDemoMode })
+    toast.success(`${newDemoMode ? 'Demo mode enabled' : 'Real scraping mode enabled'}`)
+  }
+
+  /**
    * Get selected industry names
    */
   const getSelectedIndustryNames = (): string[] => {
@@ -433,6 +461,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     selectAllIndustries,
     deselectAllIndustries,
     toggleDarkMode,
+    toggleDemoMode,
     getSelectedIndustryNames,
     isConfigValid,
   }

@@ -199,8 +199,9 @@ export function truncateText(text: string, maxLength: number): string {
  */
 export function sanitizeText(text: string): string {
   if (!text) return ''
-  
+
   return text
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags and content
     .replace(/<[^>]*>/g, '') // Remove HTML tags
     .replace(/&[^;]+;/g, '') // Remove HTML entities
     .trim()
@@ -274,11 +275,11 @@ export function formatSearchQuery(query: string, maxLength: number = 50): string
  */
 export function formatValidationErrors(errors: string[]): string {
   if (!errors || errors.length === 0) return ''
-  
+
   if (errors.length === 1) {
-    return errors[0]
+    return errors[0] || ''
   }
-  
+
   return `• ${errors.join('\n• ')}`
 }
 

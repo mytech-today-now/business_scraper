@@ -25,7 +25,7 @@ interface BusinessScraperDB extends DBSchema {
     key: string
     value: IndustryCategory
     indexes: {
-      'by-custom': boolean
+      'by-custom': string
     }
   }
   sessions: {
@@ -219,7 +219,7 @@ export class StorageService {
     await this.ensureInitialized()
     try {
       const config = await this.db!.get('configs', id)
-      return config || null
+      return config ? { ...config, id } : null
     } catch (error) {
       logger.error('Storage', 'Failed to get configuration', error)
       return null
@@ -233,7 +233,8 @@ export class StorageService {
   async getAllConfigs(): Promise<(ScrapingConfig & { id: string })[]> {
     await this.ensureInitialized()
     try {
-      return await this.db!.getAll('configs')
+      const configs = await this.db!.getAll('configs')
+      return configs.map((config, index) => ({ ...config, id: `config-${index}` }))
     } catch (error) {
       logger.error('Storage', 'Failed to get configurations', error)
       return []
@@ -278,7 +279,9 @@ export class StorageService {
   async getCustomIndustries(): Promise<IndustryCategory[]> {
     await this.ensureInitialized()
     try {
-      return await this.db!.getAllFromIndex('industries', 'by-custom', true)
+      // Get all industries and filter for custom ones
+      const allIndustries = await this.db!.getAll('industries')
+      return allIndustries.filter(industry => industry.isCustom === true)
     } catch (error) {
       logger.error('Storage', 'Failed to get custom industries', error)
       return []

@@ -1,12 +1,28 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { BusinessRecord } from '@/types/business'
-import { scraperService, ScrapingStats } from '@/model/scraperService'
+import { clientScraperService } from '@/model/clientScraperService'
+
+// Create a local alias for compatibility - some code expects 'scraperService' to be available
+const scraperService = clientScraperService
 import { storage } from '@/model/storage'
 import { logger } from '@/utils/logger'
 import { useConfig } from './ConfigContext'
 import toast from 'react-hot-toast'
+
+/**
+ * Scraping statistics interface
+ */
+export interface ScrapingStats {
+  totalSites: number
+  successfulScrapes: number
+  failedScrapes: number
+  totalBusinesses: number
+  startTime: Date
+  endTime?: Date
+  duration?: number
+}
 
 /**
  * Scraping state interface
@@ -30,6 +46,8 @@ export interface ScrapingState {
  */
 export function useScraperController() {
   const { state: configState, getSelectedIndustryNames, isConfigValid } = useConfig()
+
+
   
   // Scraping state
   const [scrapingState, setScrapingState] = useState<ScrapingState>({
@@ -44,6 +62,13 @@ export function useScraperController() {
   // Refs for managing scraping process
   const abortControllerRef = useRef<AbortController | null>(null)
   const sessionIdRef = useRef<string | null>(null)
+
+  /**
+   * Update scraper service demo mode when configuration changes
+   */
+  useEffect(() => {
+    scraperService.setDemoMode(configState.isDemoMode)
+  }, [configState.isDemoMode])
 
   /**
    * Update scraping progress
@@ -267,7 +292,7 @@ export function useScraperController() {
   const stopScraping = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
-      toast.info('Scraping stopped by user')
+      toast('Scraping stopped by user')
       logger.info('ScraperController', 'Scraping stopped by user')
     }
   }, [])
@@ -357,7 +382,7 @@ export function useScraperController() {
   return {
     // State
     scrapingState,
-    
+
     // Actions
     startScraping,
     stopScraping,
@@ -365,7 +390,7 @@ export function useScraperController() {
     removeBusiness,
     updateBusiness,
     loadPreviousResults,
-    
+
     // Computed values
     canStartScraping: !scrapingState.isScrapingActive && isConfigValid(),
     hasResults: scrapingState.results.length > 0,

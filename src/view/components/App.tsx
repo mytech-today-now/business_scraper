@@ -25,7 +25,7 @@ import { clsx } from 'clsx'
  * Configuration panel component
  */
 function ConfigurationPanel() {
-  const { state, updateConfig, toggleDarkMode, isConfigValid } = useConfig()
+  const { state, updateConfig, toggleDarkMode, toggleDemoMode, isConfigValid } = useConfig()
 
   return (
     <div className="space-y-6">
@@ -41,6 +41,33 @@ function ConfigurationPanel() {
           {state.isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </Button>
       </div>
+
+      {/* Application Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Application Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Demo Mode</label>
+              <p className="text-xs text-muted-foreground">
+                {state.isDemoMode
+                  ? 'Using demo data for testing and development'
+                  : 'Using real web scraping (requires API setup)'}
+              </p>
+            </div>
+            <Button
+              variant={state.isDemoMode ? "default" : "outline"}
+              size="sm"
+              onClick={toggleDemoMode}
+              className="min-w-[80px]"
+            >
+              {state.isDemoMode ? 'Demo' : 'Real'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Location Settings */}
       <Card>
@@ -131,10 +158,10 @@ function ConfigurationPanel() {
  * Scraping control panel component
  */
 function ScrapingPanel() {
-  const { 
-    scrapingState, 
-    startScraping, 
-    stopScraping, 
+  const {
+    scrapingState,
+    startScraping,
+    stopScraping,
     clearResults,
     loadPreviousResults,
     removeBusiness,
@@ -151,7 +178,6 @@ function ScrapingPanel() {
    */
   const handleExport = (format: string) => {
     // This would be implemented with actual export logic
-    console.log(`Exporting as ${format}`)
     setShowExportOptions(false)
   }
 
@@ -200,13 +226,15 @@ function ScrapingPanel() {
                 Stop Scraping
               </Button>
             ) : (
-              <Button
-                icon={Play}
-                onClick={startScraping}
-                disabled={!canStartScraping}
-              >
-                Start Scraping
-              </Button>
+              <>
+                <Button
+                  icon={Play}
+                  onClick={startScraping}
+                  disabled={!canStartScraping}
+                >
+                  Start Scraping
+                </Button>
+              </>
             )}
           </div>
 
