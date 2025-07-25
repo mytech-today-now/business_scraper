@@ -169,7 +169,8 @@ export class ClientSearchEngine {
     maxResults: number
   ): Promise<SearchResult[]> {
     if (!this.credentials?.azureSearchApiKey || !this.credentials?.azureSearchEndpoint) {
-      throw new Error('Azure AI Foundry credentials not configured')
+      logger.info('ClientSearchEngine', 'Azure AI Foundry credentials not configured, skipping Azure search')
+      return []
     }
 
     const searchQuery = `${query} ${location}`

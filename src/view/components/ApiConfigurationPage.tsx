@@ -301,13 +301,13 @@ export function ApiConfigurationPage({
         <div className="p-6 space-y-6">
           {/* Security Notice */}
           <Card className="border-blue-200 bg-blue-50">
-            <CardContent className="p-4">
+            <CardContent className="p-6 pt-6">
               <div className="flex items-start space-x-3">
-                <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                <Shield className="h-5 w-5 text-blue-600 mt-1" />
                 <div className="text-sm">
-                  <p className="font-medium text-blue-800">Secure Local Storage</p>
+                  <p className="font-medium text-blue-800 mb-2">Secure Local Storage</p>
                   <p className="text-blue-700">
-                    Your API credentials are encrypted using AES-256 encryption and stored locally in your browser. 
+                    Your API credentials are encrypted using AES-256 encryption and stored locally in your browser.
                     They never leave your device and are not transmitted to our servers.
                   </p>
                 </div>
@@ -318,7 +318,7 @@ export function ApiConfigurationPage({
           {/* Status */}
           {hasExistingCredentials && (
             <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-4">
+              <CardContent className="p-6 pt-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Lock className="h-4 w-4 text-green-600" />
@@ -339,9 +339,9 @@ export function ApiConfigurationPage({
           {/* Messages */}
           {validationErrors.length > 0 && (
             <Card className="border-red-200 bg-red-50">
-              <CardContent className="p-4">
+              <CardContent className="p-6 pt-6">
                 <div className="flex items-start space-x-2">
-                  <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+                  <AlertTriangle className="h-4 w-4 text-red-600 mt-1" />
                   <div>
                     {validationErrors.map((error, index) => (
                       <p key={index} className="text-sm text-red-700">{error}</p>
@@ -354,7 +354,7 @@ export function ApiConfigurationPage({
 
           {successMessage && (
             <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-4">
+              <CardContent className="p-6 pt-6">
                 <div className="flex items-center space-x-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <p className="text-sm text-green-700">{successMessage}</p>

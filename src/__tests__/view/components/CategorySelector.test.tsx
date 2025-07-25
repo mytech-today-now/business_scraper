@@ -243,9 +243,87 @@ describe('CategorySelector', () => {
 
   it('should show industry keywords', async () => {
     renderWithProvider(<CategorySelector />)
-    
+
     await waitFor(() => {
       // Check if keywords are displayed (truncated)
+      expect(screen.getByText(/restaurant, cafe, food service/)).toBeInTheDocument()
+    })
+  })
+
+  it('should allow inline editing of keywords', async () => {
+    const user = userEvent.setup()
+    renderWithProvider(<CategorySelector />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/restaurant, cafe, food service/)).toBeInTheDocument()
+    })
+
+    // Click on the keywords to start inline editing
+    const keywordsText = screen.getByText(/restaurant, cafe, food service/)
+    await user.click(keywordsText)
+
+    await waitFor(() => {
+      // Should show textarea for editing
+      expect(screen.getByPlaceholderText('Enter keywords, one per line...')).toBeInTheDocument()
+      // Should show save and cancel buttons
+      expect(screen.getByText('✅ Save')).toBeInTheDocument()
+      expect(screen.getByText('🚫 Cancel')).toBeInTheDocument()
+    })
+  })
+
+  it('should save inline edited keywords', async () => {
+    const user = userEvent.setup()
+    renderWithProvider(<CategorySelector />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/restaurant, cafe, food service/)).toBeInTheDocument()
+    })
+
+    // Start inline editing
+    const keywordsText = screen.getByText(/restaurant, cafe, food service/)
+    await user.click(keywordsText)
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Enter keywords, one per line...')).toBeInTheDocument()
+    })
+
+    // Edit the keywords
+    const textarea = screen.getByPlaceholderText('Enter keywords, one per line...')
+    await user.clear(textarea)
+    await user.type(textarea, 'restaurant\ncafe\nfood service\ndining')
+
+    // Save the changes
+    await user.click(screen.getByText('✅ Save'))
+
+    await waitFor(() => {
+      // Should exit edit mode and show updated keywords
+      expect(screen.queryByPlaceholderText('Enter keywords, one per line...')).not.toBeInTheDocument()
+    })
+  })
+
+  it('should cancel inline editing', async () => {
+    const user = userEvent.setup()
+    renderWithProvider(<CategorySelector />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/restaurant, cafe, food service/)).toBeInTheDocument()
+    })
+
+    // Start inline editing
+    const keywordsText = screen.getByText(/restaurant, cafe, food service/)
+    await user.click(keywordsText)
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Enter keywords, one per line...')).toBeInTheDocument()
+    })
+
+    // Cancel the editing
+    await user.click(screen.getByText('🚫 Cancel'))
+
+    await waitFor(() => {
+      // Should exit edit mode without saving
+      expect(screen.queryByPlaceholderText('Enter keywords, one per line...')).not.toBeInTheDocument()
+      // Original keywords should still be there
       expect(screen.getByText(/restaurant, cafe, food service/)).toBeInTheDocument()
     })
   })

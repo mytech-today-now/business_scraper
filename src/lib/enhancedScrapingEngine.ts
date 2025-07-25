@@ -13,6 +13,7 @@ export interface ScrapingJob {
   id: string
   url: string
   depth: number
+  maxPages: number
   priority: number
   retries: number
   maxRetries: number
@@ -100,13 +101,14 @@ export class EnhancedScrapingEngine {
   /**
    * Add a scraping job to the queue
    */
-  async addJob(url: string, depth: number = 2, priority: number = 1): Promise<string> {
+  async addJob(url: string, depth: number = 2, priority: number = 1, maxPages: number = 5): Promise<string> {
     const jobId = `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     
     const job: ScrapingJob = {
       id: jobId,
       url,
       depth,
+      maxPages,
       priority,
       retries: 0,
       maxRetries: this.config.maxRetries,
@@ -345,12 +347,18 @@ export class EnhancedScrapingEngine {
 
       pagesScraped = 1
 
-      // If depth > 1, find and scrape contact pages
-      if (job.depth > 1) {
+      // If depth > 1 and we haven't reached maxPages, find and scrape contact pages
+      if (job.depth > 1 && pagesScraped < job.maxPages) {
         const contactPages = await this.findContactPages(pageInstance.page, job.url)
-        
-        for (const contactUrl of contactPages.slice(0, job.depth - 1)) {
-          if (job.status === 'cancelled') break
+
+        // Limit contact pages by both depth and maxPages
+        const maxContactPages = Math.min(job.depth - 1, job.maxPages - pagesScraped)
+        const limitedContactPages = contactPages.slice(0, maxContactPages)
+
+        for (const contactUrl of limitedContactPages) {
+          if (job.status === 'cancelled' || pagesScraped >= job.maxPages) break
+
+          pagesScraped++ // Increment page count for each contact page
           
           try {
             await antiBotBypass.navigateHumanLike(pageInstance.page, contactUrl)
@@ -457,6 +465,8 @@ export class EnhancedScrapingEngine {
         if (this.completedJobs.length > 1000) {
           this.completedJobs.splice(0, 100)
         }
+
+        logger.info('EnhancedScrapingEngine', `Scraped ${pagesScraped} pages for ${job.url} (maxPages: ${job.maxPages})`)
       }
 
       // Record performance metrics

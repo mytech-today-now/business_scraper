@@ -142,9 +142,10 @@ export class ScraperService {
    * Scrape a website for business information
    * @param url - Website URL to scrape
    * @param depth - Maximum depth to crawl
+   * @param maxPages - Maximum number of pages to scrape per site
    * @returns Promise resolving to array of business records
    */
-  async scrapeWebsite(url: string, depth: number = 2): Promise<BusinessRecord[]> {
+  async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
     if (!this.browser) {
       await this.initialize()
     }
@@ -181,10 +182,14 @@ export class ScraperService {
       // Find contact pages
       const contactUrls = await this.findContactPages(page, url, depth)
 
-      // Scrape business data from all relevant pages
-      const businessData = await this.extractBusinessData(page, [url, ...contactUrls])
+      // Limit total pages to maxPages setting (main page + contact pages)
+      const allUrls = [url, ...contactUrls]
+      const limitedUrls = allUrls.slice(0, maxPages)
 
-      logger.info('Scraper', `Successfully scraped ${url}, found ${businessData.length} business records`)
+      // Scrape business data from limited set of pages
+      const businessData = await this.extractBusinessData(page, limitedUrls)
+
+      logger.info('Scraper', `Successfully scraped ${url}, processed ${limitedUrls.length}/${allUrls.length} pages (maxPages: ${maxPages}), found ${businessData.length} business records`)
       return businessData
     } catch (error) {
       logger.error('Scraper', `Failed to scrape ${url}`, error)
@@ -476,17 +481,18 @@ export class ScraperService {
    * Enhanced website scraping with all advanced features
    * @param url - Website URL to scrape
    * @param depth - Maximum depth to crawl
+   * @param maxPages - Maximum number of pages to scrape per site
    * @returns Promise resolving to array of business records
    */
-  async scrapeWebsiteEnhanced(url: string, depth: number = 2): Promise<BusinessRecord[]> {
+  async scrapeWebsiteEnhanced(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
     logger.info('ScraperService', `Starting enhanced scraping for: ${url}`)
 
     try {
       // Initialize enhanced engine
       await enhancedScrapingEngine.initialize()
 
-      // Add job with high priority
-      const jobId = await enhancedScrapingEngine.addJob(url, depth, 10)
+      // Add job with high priority and maxPages limit
+      const jobId = await enhancedScrapingEngine.addJob(url, depth, 10, maxPages)
 
       // Wait for job completion
       const completedJobs = await this.waitForEnhancedJobs([jobId], 120000) // 2 minute timeout
@@ -498,12 +504,12 @@ export class ScraperService {
       } else {
         logger.warn('ScraperService', `Enhanced scraping failed or timed out for ${url}`)
         // Fallback to regular scraping
-        return await this.scrapeWebsite(url, depth)
+        return await this.scrapeWebsite(url, depth, maxPages)
       }
     } catch (error) {
       logger.error('ScraperService', `Enhanced scraping failed for ${url}`, error)
       // Fallback to regular scraping
-      return await this.scrapeWebsite(url, depth)
+      return await this.scrapeWebsite(url, depth, maxPages)
     }
   }
 }

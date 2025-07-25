@@ -127,7 +127,7 @@ export class DemoScraperService {
   /**
    * Scrape demo business data
    */
-  async scrapeWebsite(url: string, depth: number = 2): Promise<BusinessRecord[]> {
+  async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
     // Simulate scraping delay
     await new Promise(resolve => setTimeout(resolve, 3000))
 
@@ -153,7 +153,7 @@ export class DemoScraperService {
         scrapedAt: new Date(),
       }
 
-      logger.info('DemoScraper', `Scraped demo business from: ${url}`)
+      logger.info('DemoScraper', `Scraped demo business from: ${url} (depth: ${depth}, maxPages: ${maxPages})`)
       return [business]
     }
 
@@ -169,7 +169,7 @@ export class DemoScraperService {
       scrapedAt: new Date(),
     }
 
-    logger.info('DemoScraper', `Generated random business data for: ${url}`)
+    logger.info('DemoScraper', `Generated random business data for: ${url} (depth: ${depth}, maxPages: ${maxPages})`)
     return [randomBusiness]
   }
 

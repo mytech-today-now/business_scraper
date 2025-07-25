@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ urls: urls || [] })
 
       case 'scrape':
-        const { url, depth } = params
+        const { url, depth, maxPages } = params
 
         logger.info('Scrape API', `Scrape request for URL: ${url}`)
 
@@ -89,13 +89,14 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
         }
 
-        // Validate depth
+        // Validate depth and maxPages
         const numDepth = Math.min(Math.max(parseInt(depth) || 1, 1), 5)
+        const numMaxPages = Math.min(Math.max(parseInt(maxPages) || 5, 1), 20)
 
-        logger.info('Scrape API', `Starting scrape for ${sanitizedUrl} with depth ${numDepth}`)
+        logger.info('Scrape API', `Starting scrape for ${sanitizedUrl} with depth ${numDepth}, maxPages ${numMaxPages}`)
 
         try {
-          const businesses = await scraperService.scrapeWebsite(sanitizedUrl, numDepth)
+          const businesses = await scraperService.scrapeWebsite(sanitizedUrl, numDepth, numMaxPages)
           logger.info('Scrape API', `Scrape completed for ${sanitizedUrl}, found ${businesses.length} businesses`)
           return NextResponse.json({ businesses })
         } catch (scrapeError) {

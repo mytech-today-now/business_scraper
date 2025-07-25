@@ -111,9 +111,9 @@ export class ClientScraperService {
   /**
    * Scrape a website for business information
    */
-  async scrapeWebsite(url: string, depth: number = 2): Promise<BusinessRecord[]> {
+  async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
     if (this.useDemoMode) {
-      return await demoScraperService.scrapeWebsite(url, depth)
+      return await demoScraperService.scrapeWebsite(url, depth, maxPages)
     }
 
     try {
@@ -124,6 +124,7 @@ export class ClientScraperService {
           action: 'scrape',
           url,
           depth,
+          maxPages,
         }),
       })
 

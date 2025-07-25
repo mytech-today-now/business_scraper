@@ -329,7 +329,7 @@ export function useScraperController() {
               return []
             }
 
-            const businesses = await scraperService.scrapeWebsite(url, config.searchDepth)
+            const businesses = await scraperService.scrapeWebsite(url, config.searchDepth, config.pagesPerSite)
 
             // Set industry for scraped businesses
             const businessesWithIndustry = businesses.map(business => ({

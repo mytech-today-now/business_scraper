@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         })
 
       case 'add-job':
-        const { url, depth = 2, priority = 1 } = params
+        const { url, depth = 2, priority = 1, maxPages = 5 } = params
 
         // Validate URL
         if (!url || typeof url !== 'string') {
@@ -44,22 +44,24 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
         }
 
-        // Validate depth and priority
+        // Validate depth, priority, and maxPages
         const numDepth = Math.min(Math.max(parseInt(depth) || 2, 1), 5)
         const numPriority = Math.min(Math.max(parseInt(priority) || 1, 1), 10)
+        const numMaxPages = Math.min(Math.max(parseInt(maxPages) || 5, 1), 20)
 
-        const jobId = await enhancedScrapingEngine.addJob(sanitizedUrl, numDepth, numPriority)
+        const jobId = await enhancedScrapingEngine.addJob(sanitizedUrl, numDepth, numPriority, numMaxPages)
         
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           jobId,
           url: sanitizedUrl,
           depth: numDepth,
-          priority: numPriority
+          priority: numPriority,
+          maxPages: numMaxPages
         })
 
       case 'add-multiple-jobs':
-        const { urls, depth: batchDepth = 2, priority: batchPriority = 1 } = params
+        const { urls, depth: batchDepth = 2, priority: batchPriority = 1, maxPages: batchMaxPages = 5 } = params
 
         // Validate URLs array
         if (!Array.isArray(urls) || urls.length === 0) {
@@ -79,9 +81,10 @@ export async function POST(request: NextRequest) {
             new URL(sanitizedUrl) // Validate URL
             
             const jobId = await enhancedScrapingEngine.addJob(
-              sanitizedUrl, 
+              sanitizedUrl,
               Math.min(Math.max(parseInt(batchDepth) || 2, 1), 5),
-              Math.min(Math.max(parseInt(batchPriority) || 1, 1), 10)
+              Math.min(Math.max(parseInt(batchPriority) || 1, 1), 10),
+              Math.min(Math.max(parseInt(batchMaxPages) || 5, 1), 20)
             )
             jobIds.push(jobId)
           } catch (error) {
@@ -181,7 +184,7 @@ export async function POST(request: NextRequest) {
         })
 
       case 'scrape-website-enhanced':
-        const { url: scrapeUrl, depth: scrapeDepth = 2 } = params
+        const { url: scrapeUrl, depth: scrapeDepth = 2, maxPages: scrapeMaxPages = 5 } = params
 
         // Validate URL
         if (!scrapeUrl || typeof scrapeUrl !== 'string') {
@@ -197,16 +200,18 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
         }
 
-        // Validate depth
+        // Validate depth and maxPages
         const numScrapeDepth = Math.min(Math.max(parseInt(scrapeDepth) || 2, 1), 5)
+        const numScrapeMaxPages = Math.min(Math.max(parseInt(scrapeMaxPages) || 5, 1), 20)
 
-        const businesses = await scraperService.scrapeWebsiteEnhanced(sanitizedScrapeUrl, numScrapeDepth)
+        const businesses = await scraperService.scrapeWebsiteEnhanced(sanitizedScrapeUrl, numScrapeDepth, numScrapeMaxPages)
         
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           businesses,
           url: sanitizedScrapeUrl,
           depth: numScrapeDepth,
+          maxPages: numScrapeMaxPages,
           count: businesses.length
         })
 
