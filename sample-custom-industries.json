@@ -1,0 +1,68 @@
+{
+  "name": "Business Scraper",
+  "url": "https://github.com/mytech-today-now/business_scraper",
+  "version": "1.0.0",
+  "exportDate": "2025-07-25T20:35:47.780Z",
+  "customIndustries": [
+    {
+      "name": "Pet Services",
+      "keywords": [
+        "pet",
+        "veterinary",
+        "grooming",
+        "animal care",
+        "pet supplies",
+        "dog walking",
+        "pet boarding"
+      ]
+    },
+    {
+      "name": "Solar Energy",
+      "keywords": [
+        "solar",
+        "renewable energy",
+        "solar panels",
+        "solar installation",
+        "green energy",
+        "photovoltaic",
+        "solar power"
+      ]
+    },
+    {
+      "name": "Fintech Startups",
+      "keywords": [
+        "fintech",
+        "financial technology",
+        "digital banking",
+        "payment processing",
+        "cryptocurrency",
+        "blockchain",
+        "mobile payments"
+      ]
+    },
+    {
+      "name": "E-commerce Platforms",
+      "keywords": [
+        "e-commerce",
+        "online store",
+        "digital marketplace",
+        "online retail",
+        "shopping platform",
+        "dropshipping",
+        "online business"
+      ]
+    },
+    {
+      "name": "SaaS Companies",
+      "keywords": [
+        "software as a service",
+        "cloud software",
+        "subscription software",
+        "web application",
+        "enterprise software",
+        "business software",
+        "cloud platform"
+      ]
+    }
+  ]
+}

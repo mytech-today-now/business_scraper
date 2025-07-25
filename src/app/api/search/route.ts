@@ -900,9 +900,11 @@ function expandIndustryCategories(query: string): string[] {
     return industryMappings[queryLower]
   }
 
-  // Check for partial matches (e.g., if query contains "businesses" suffix)
+  // Check for partial matches - but be more specific to avoid false matches
   for (const [category, keywords] of Object.entries(industryMappings)) {
-    if (queryLower.includes(category) || category.includes(queryLower)) {
+    // Only match if the query contains the category as a whole word or phrase
+    // This prevents "construction" from matching "professional" etc.
+    if (queryLower.includes(category)) {
       return keywords
     }
   }

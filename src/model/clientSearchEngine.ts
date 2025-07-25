@@ -2,6 +2,8 @@
 
 import { retrieveApiCredentials, ApiCredentials } from '@/utils/secureStorage'
 import { logger } from '@/utils/logger'
+import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
+import { storage } from '@/model/storage'
 
 export interface SearchResult {
   url: string
@@ -16,6 +18,7 @@ export interface SearchResult {
  */
 export class ClientSearchEngine {
   private credentials: ApiCredentials | null = null
+  private cachedIndustries: { name: string; keywords: string[] }[] = []
   private isInitialized = false
 
   /**
@@ -24,8 +27,9 @@ export class ClientSearchEngine {
   async initialize(): Promise<void> {
     try {
       this.credentials = await retrieveApiCredentials()
+      await this.loadIndustries()
       this.isInitialized = true
-      
+
       if (this.credentials) {
         logger.info('ClientSearchEngine', 'Initialized with stored credentials', {
           hasGoogleSearch: !!this.credentials.googleSearchApiKey,
@@ -39,6 +43,40 @@ export class ClientSearchEngine {
       logger.error('ClientSearchEngine', 'Failed to initialize with stored credentials', error)
       this.credentials = null
       this.isInitialized = true
+    }
+  }
+
+  /**
+   * Load industries from storage (both default and custom)
+   */
+  private async loadIndustries(): Promise<void> {
+    try {
+      // Start with default industries
+      this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
+        name: industry.name,
+        keywords: industry.keywords
+      }))
+
+      // Try to load custom industries from storage
+      try {
+        const customIndustries = await storage.getCustomIndustries()
+        for (const customIndustry of customIndustries) {
+          this.cachedIndustries.push({
+            name: customIndustry.name,
+            keywords: customIndustry.keywords
+          })
+        }
+        logger.info('ClientSearchEngine', `Loaded ${this.cachedIndustries.length} industries (${customIndustries.length} custom)`)
+      } catch (error) {
+        logger.warn('ClientSearchEngine', 'Failed to load custom industries, using defaults only', error)
+      }
+    } catch (error) {
+      logger.error('ClientSearchEngine', 'Failed to load industries', error)
+      // Fallback to default industries
+      this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
+        name: industry.name,
+        keywords: industry.keywords
+      }))
     }
   }
 
@@ -671,7 +709,18 @@ export class ClientSearchEngine {
   private expandIndustryCategories(query: string): string[] {
     const queryLower = query.toLowerCase().trim()
 
-    // Define industry category mappings
+    // Debug logging to understand what query is being processed
+    logger.info('ClientSearchEngine', `Expanding industry categories for query: "${query}" (lowercase: "${queryLower}")`)
+
+    // First, try to find a matching industry from stored configurations
+    // This handles both default and custom industries dynamically
+    const matchingIndustry = this.findMatchingIndustry(queryLower)
+    if (matchingIndustry) {
+      logger.info('ClientSearchEngine', `Found matching industry: "${matchingIndustry.name}" with keywords: ${matchingIndustry.keywords.join(', ')}`)
+      return matchingIndustry.keywords
+    }
+
+    // Fallback to hardcoded mappings for backward compatibility
     const industryMappings: Record<string, string[]> = {
       // Professional Services
       'professional services': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
@@ -739,17 +788,55 @@ export class ClientSearchEngine {
 
     // Check for exact matches first
     if (industryMappings[queryLower]) {
+      logger.info('ClientSearchEngine', `Found exact match for "${queryLower}"`)
       return industryMappings[queryLower]
     }
 
-    // Check for partial matches (e.g., if query contains "businesses" suffix)
+    // Check for partial matches - but be more specific to avoid false matches
     for (const [category, keywords] of Object.entries(industryMappings)) {
-      if (queryLower.includes(category) || category.includes(queryLower)) {
+      // Only match if the query contains the category as a whole word or phrase
+      // This prevents "construction" from matching "professional" etc.
+      if (queryLower.includes(category)) {
+        logger.info('ClientSearchEngine', `Found partial match: "${queryLower}" contains "${category}"`)
         return keywords
       }
     }
 
+    logger.info('ClientSearchEngine', `No industry expansion found for "${queryLower}"`)
+
     return [] // No expansion found
+  }
+
+  /**
+   * Find matching industry from cached configurations (both default and custom)
+   */
+  private findMatchingIndustry(queryLower: string): { name: string; keywords: string[] } | null {
+    try {
+      // Use cached industries (includes both default and custom)
+      const industries = this.cachedIndustries
+
+      // Check for exact name matches first
+      for (const industry of industries) {
+        if (industry.name.toLowerCase() === queryLower) {
+          return industry
+        }
+      }
+
+      // Check for partial name matches (but be careful with the logic)
+      for (const industry of industries) {
+        const industryNameLower = industry.name.toLowerCase()
+        // Only match if the query contains the industry name, not the other way around
+        // This prevents false matches like "construction" matching "professional"
+        if (queryLower.includes(industryNameLower)) {
+          return industry
+        }
+      }
+
+      return null
+    } catch (error) {
+      logger.warn('ClientSearchEngine', 'Failed to find matching industry', error)
+      return null
+    }
   }
 
   /**
