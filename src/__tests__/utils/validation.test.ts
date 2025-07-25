@@ -302,22 +302,76 @@ describe('ValidationService', () => {
       expect(result).toBe('Hello World')
     })
 
-    it('should remove special characters', () => {
+    it('should remove special characters and escape dangerous ones', () => {
       const input = 'Hello<>{}[]|\\World'
       const result = validationService.sanitizeInput(input)
-      expect(result).toBe('HelloWorld')
+      expect(result).toBe('Hello&lt;&gt;{}[]|\\World')
     })
 
-    it('should preserve allowed characters', () => {
+    it('should preserve allowed characters and escape dangerous ones', () => {
       const input = 'Hello World! user@example.com 123-456-7890'
       const result = validationService.sanitizeInput(input)
-      expect(result).toBe('Hello World user@example.com 123-456-7890')
+      expect(result).toBe('Hello World! user@example.com 123-456-7890')
+    })
+
+    it('should escape HTML entities', () => {
+      const input = 'Hello & "World" <script>'
+      const result = validationService.sanitizeInput(input)
+      expect(result).toBe('Hello &amp; &quot;World&quot; &lt;script&gt;')
     })
 
     it('should trim whitespace', () => {
       const input = '  Hello World  '
       const result = validationService.sanitizeInput(input)
       expect(result).toBe('Hello World')
+    })
+
+    it('should remove javascript: URLs', () => {
+      const input = 'javascript:alert("xss")'
+      const result = validationService.sanitizeInput(input)
+      expect(result).toBe('alert(&quot;xss&quot;)')
+    })
+
+    it('should remove event handlers', () => {
+      const input = 'onclick="alert(1)" onload="malicious()"'
+      const result = validationService.sanitizeInput(input)
+      expect(result).toBe(' ')
+    })
+  })
+
+  describe('validateInputSecurity', () => {
+    it('should pass for safe input', () => {
+      const input = 'Hello World 123'
+      const result = validationService.validateInputSecurity(input)
+      expect(result.isValid).toBe(true)
+      expect(result.errors).toHaveLength(0)
+    })
+
+    it('should detect SQL injection patterns', () => {
+      const input = "'; DROP TABLE users; --"
+      const result = validationService.validateInputSecurity(input)
+      expect(result.isValid).toBe(false)
+      expect(result.errors).toContain('Input contains potentially dangerous SQL patterns')
+    })
+
+    it('should detect XSS patterns', () => {
+      const input = '<script>alert("xss")</script>'
+      const result = validationService.validateInputSecurity(input)
+      expect(result.isValid).toBe(false)
+      expect(result.errors).toContain('Input contains potentially dangerous XSS patterns')
+    })
+
+    it('should detect path traversal patterns', () => {
+      const input = '../../../etc/passwd'
+      const result = validationService.validateInputSecurity(input)
+      expect(result.isValid).toBe(false)
+      expect(result.errors).toContain('Input contains path traversal patterns')
+    })
+
+    it('should warn about command injection patterns', () => {
+      const input = 'file.txt; cat /etc/passwd'
+      const result = validationService.validateInputSecurity(input)
+      expect(result.warnings).toContain('Input contains characters or commands that could be dangerous')
     })
   })
 

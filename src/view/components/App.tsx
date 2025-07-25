@@ -16,10 +16,15 @@ import { useConfig } from '@/controller/ConfigContext'
 import { useScraperController } from '@/controller/useScraperController'
 import { CategorySelector } from './CategorySelector'
 import { ResultsTable } from './ResultsTable'
+import { ProcessingWindow } from './ProcessingWindow'
+import { ApiConfigurationPage } from './ApiConfigurationPage'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { ExportService, ExportFormat } from '@/utils/exportService'
+import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
+import { clientScraperService } from '@/model/clientScraperService'
 
 /**
  * Configuration panel component
@@ -42,32 +47,7 @@ function ConfigurationPanel() {
         </Button>
       </div>
 
-      {/* Application Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Application Settings</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <label className="text-sm font-medium">Demo Mode</label>
-              <p className="text-xs text-muted-foreground">
-                {state.isDemoMode
-                  ? 'Using demo data for testing and development'
-                  : 'Using real web scraping (requires API setup)'}
-              </p>
-            </div>
-            <Button
-              variant={state.isDemoMode ? "default" : "outline"}
-              size="sm"
-              onClick={toggleDemoMode}
-              className="min-w-[80px]"
-            >
-              {state.isDemoMode ? 'Demo' : 'Real'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+
 
       {/* Location Settings */}
       <Card>
@@ -158,6 +138,7 @@ function ConfigurationPanel() {
  * Scraping control panel component
  */
 function ScrapingPanel() {
+  const { state: configState } = useConfig()
   const {
     scrapingState,
     startScraping,
@@ -168,17 +149,54 @@ function ScrapingPanel() {
     updateBusiness,
     canStartScraping,
     hasResults,
-    hasErrors
+    hasErrors,
+    clearProcessingSteps
   } = useScraperController()
 
   const [showExportOptions, setShowExportOptions] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const [showProcessingWindow, setShowProcessingWindow] = useState(true)
 
   /**
    * Handle export functionality
    */
-  const handleExport = (format: string) => {
-    // This would be implemented with actual export logic
+  const handleExport = async (format: string) => {
+    if (!scrapingState.results.length) {
+      logger.warn('Export', 'No data to export')
+      return
+    }
+
+    setIsExporting(true)
     setShowExportOptions(false)
+
+    try {
+      const exportService = new ExportService()
+      const { blob, filename } = await exportService.exportBusinesses(
+        scrapingState.results,
+        format as ExportFormat,
+        {
+          includeHeaders: true,
+          dateFormat: 'YYYY-MM-DD HH:mm:ss'
+        }
+      )
+
+      // Create download link
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      logger.info('Export', `Successfully exported ${scrapingState.results.length} businesses as ${format}`)
+    } catch (error) {
+      logger.error('Export', `Failed to export data as ${format}`, error)
+      // You could show a toast notification here
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
@@ -309,6 +327,19 @@ function ScrapingPanel() {
         </Card>
       )}
 
+      {/* Processing Window */}
+      <ProcessingWindow
+        isVisible={showProcessingWindow}
+        isActive={scrapingState.isScrapingActive}
+        currentStep={scrapingState.currentUrl}
+        steps={scrapingState.processingSteps}
+        isDemoMode={configState.isDemoMode}
+        onToggleVisibility={() => setShowProcessingWindow(!showProcessingWindow)}
+        onClear={clearProcessingSteps}
+        progress={scrapingState.progress}
+        currentUrl={scrapingState.currentUrl}
+      />
+
       {/* Results Table */}
       {hasResults && (
         <ResultsTable
@@ -317,6 +348,7 @@ function ScrapingPanel() {
           onDelete={removeBusiness}
           onExport={handleExport}
           isLoading={scrapingState.isScrapingActive}
+          isExporting={isExporting}
         />
       )}
     </div>
@@ -328,8 +360,9 @@ function ScrapingPanel() {
  * Orchestrates the entire application interface
  */
 export function App() {
-  const { state } = useConfig()
+  const { state, toggleDemoMode } = useConfig()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
+  const [showApiConfig, setShowApiConfig] = useState(false)
 
   // Show loading screen while initializing
   if (!state.isInitialized) {
@@ -350,7 +383,14 @@ export function App() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold">Business Scraper</h1>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/favicon.ico"
+                  alt="Business Scraper Logo"
+                  className="h-8 w-8 object-contain"
+                />
+                <h1 className="text-2xl font-bold">Business Scraper</h1>
+              </div>
               <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
                 <Button
                   variant={activeTab === 'config' ? 'default' : 'ghost'}
@@ -373,7 +413,12 @@ export function App() {
               <Button variant="ghost" size="icon">
                 <FileText className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowApiConfig(true)}
+                title="API Configuration"
+              >
                 <Settings className="h-4 w-4" />
               </Button>
             </div>
@@ -395,6 +440,23 @@ export function App() {
           </div>
         </div>
       </footer>
+
+      {/* API Configuration Modal */}
+      {showApiConfig && (
+        <ApiConfigurationPage
+          onClose={() => setShowApiConfig(false)}
+          onCredentialsUpdated={async (credentials) => {
+            // Refresh the scraper service with new credentials
+            await clientScraperService.refreshCredentials()
+            logger.info('App', 'API credentials updated and refreshed', {
+              hasGoogleSearch: !!credentials.googleSearchApiKey,
+              hasAzureSearch: !!credentials.azureSearchApiKey
+            })
+          }}
+          isDemoMode={state.isDemoMode}
+          onToggleDemoMode={toggleDemoMode}
+        />
+      )}
     </div>
   )
 }

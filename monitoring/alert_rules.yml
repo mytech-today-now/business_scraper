@@ -1,0 +1,317 @@
+# Prometheus Alerting Rules for Business Scraper
+# Comprehensive alerting for application health, performance, and business metrics
+
+groups:
+  # Application Health Alerts
+  - name: application_health
+    rules:
+      - alert: ApplicationDown
+        expr: up{job="business-scraper-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: business-scraper
+        annotations:
+          summary: "Business Scraper application is down"
+          description: "The Business Scraper application has been down for more than 1 minute."
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: business-scraper
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for the last 5 minutes."
+
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: business-scraper
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s for the last 5 minutes."
+
+      - alert: HealthCheckFailing
+        expr: probe_success{job="blackbox"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: business-scraper
+        annotations:
+          summary: "Health check failing for {{ $labels.instance }}"
+          description: "Health check has been failing for {{ $labels.instance }} for more than 2 minutes."
+
+  # System Resource Alerts
+  - name: system_resources
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}."
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}% on {{ $labels.instance }}."
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk usage is {{ $value }}% on {{ $labels.instance }} ({{ $labels.mountpoint }})."
+
+      - alert: DiskSpaceCritical
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 95
+        for: 1m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Critical disk space on {{ $labels.instance }}"
+          description: "Disk usage is {{ $value }}% on {{ $labels.instance }} ({{ $labels.mountpoint }})."
+
+  # Database Alerts
+  - name: database
+    rules:
+      - alert: PostgreSQLDown
+        expr: up{job="postgres-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL database has been down for more than 1 minute."
+
+      - alert: PostgreSQLTooManyConnections
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL has too many connections"
+          description: "PostgreSQL is using {{ $value | humanizePercentage }} of available connections."
+
+      - alert: PostgreSQLSlowQueries
+        expr: rate(pg_stat_database_tup_returned[5m]) / rate(pg_stat_database_tup_fetched[5m]) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL slow queries detected"
+          description: "PostgreSQL query efficiency is {{ $value | humanizePercentage }}."
+
+      - alert: PostgreSQLReplicationLag
+        expr: pg_replication_lag > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL replication lag"
+          description: "PostgreSQL replication lag is {{ $value }} seconds."
+
+  # Redis Alerts
+  - name: redis
+    rules:
+      - alert: RedisDown
+        expr: up{job="redis-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: cache
+        annotations:
+          summary: "Redis is down"
+          description: "Redis cache has been down for more than 1 minute."
+
+      - alert: RedisHighMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "Redis high memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}."
+
+      - alert: RedisConnectionsHigh
+        expr: redis_connected_clients > 100
+        for: 5m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "Redis high connection count"
+          description: "Redis has {{ $value }} connected clients."
+
+  # Scraping Business Logic Alerts
+  - name: scraping_business
+    rules:
+      - alert: ScrapingJobsStuck
+        expr: scraping_jobs_pending > 100
+        for: 10m
+        labels:
+          severity: warning
+          service: scraping
+        annotations:
+          summary: "Too many pending scraping jobs"
+          description: "There are {{ $value }} pending scraping jobs for more than 10 minutes."
+
+      - alert: HighScrapingFailureRate
+        expr: rate(scraping_jobs_failed_total[10m]) / rate(scraping_jobs_total[10m]) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          service: scraping
+        annotations:
+          summary: "High scraping failure rate"
+          description: "Scraping failure rate is {{ $value | humanizePercentage }} over the last 10 minutes."
+
+      - alert: ScrapingEngineDown
+        expr: scraping_engine_status == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: scraping
+        annotations:
+          summary: "Scraping engine is down"
+          description: "The scraping engine has been down for more than 2 minutes."
+
+      - alert: LowDataQuality
+        expr: avg(scraping_data_quality_score) < 0.7
+        for: 15m
+        labels:
+          severity: warning
+          service: scraping
+        annotations:
+          summary: "Low data quality detected"
+          description: "Average data quality score is {{ $value }} over the last 15 minutes."
+
+      - alert: BrowserPoolExhausted
+        expr: browser_pool_available_instances == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: scraping
+        annotations:
+          summary: "Browser pool exhausted"
+          description: "No available browser instances in the pool for more than 5 minutes."
+
+  # Security Alerts
+  - name: security
+    rules:
+      - alert: HighFailedLoginAttempts
+        expr: rate(auth_failed_attempts_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "High number of failed login attempts"
+          description: "{{ $value }} failed login attempts per second over the last 5 minutes."
+
+      - alert: SecurityViolationDetected
+        expr: rate(security_violations_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+          service: security
+        annotations:
+          summary: "Security violations detected"
+          description: "{{ $value }} security violations per second detected."
+
+      - alert: RateLimitExceeded
+        expr: rate(rate_limit_exceeded_total[5m]) > 50
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "Rate limit frequently exceeded"
+          description: "Rate limit exceeded {{ $value }} times per second over the last 5 minutes."
+
+  # Data Management Alerts
+  - name: data_management
+    rules:
+      - alert: HighDuplicateRate
+        expr: duplicate_detection_rate > 0.3
+        for: 10m
+        labels:
+          severity: warning
+          service: data
+        annotations:
+          summary: "High duplicate rate detected"
+          description: "Duplicate rate is {{ $value | humanizePercentage }} over the last 10 minutes."
+
+      - alert: DataRetentionPolicyFailed
+        expr: data_retention_policy_failures > 0
+        for: 1m
+        labels:
+          severity: warning
+          service: data
+        annotations:
+          summary: "Data retention policy failed"
+          description: "{{ $value }} data retention policy executions have failed."
+
+      - alert: DataValidationErrors
+        expr: rate(data_validation_errors_total[10m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: data
+        annotations:
+          summary: "High data validation error rate"
+          description: "{{ $value }} data validation errors per second over the last 10 minutes."
+
+  # Infrastructure Alerts
+  - name: infrastructure
+    rules:
+      - alert: ContainerRestartLoop
+        expr: rate(container_restarts_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Container restart loop detected"
+          description: "Container {{ $labels.container }} is restarting frequently."
+
+      - alert: LoadBalancerDown
+        expr: up{job="nginx-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Load balancer is down"
+          description: "Nginx load balancer has been down for more than 1 minute."
+
+      - alert: SSLCertificateExpiring
+        expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 7
+        for: 1h
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}."

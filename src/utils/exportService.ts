@@ -10,7 +10,7 @@ import { logger } from './logger'
 /**
  * Export format types
  */
-export type ExportFormat = 'csv' | 'xlsx' | 'xls' | 'ods' | 'pdf' | 'json'
+export type ExportFormat = 'csv' | 'xlsx' | 'xls' | 'ods' | 'pdf' | 'json' | 'xml' | 'vcf' | 'sql'
 
 /**
  * Export options interface
@@ -21,6 +21,61 @@ export interface ExportOptions {
   dateFormat?: string
   delimiter?: string
   encoding?: string
+  template?: ExportTemplate
+  filters?: ExportFilters
+  sorting?: ExportSorting
+  grouping?: ExportGrouping
+  customFields?: CustomField[]
+  compression?: boolean
+  password?: string
+}
+
+/**
+ * Export template for customizing output
+ */
+export interface ExportTemplate {
+  name: string
+  fields: string[]
+  customHeaders?: Record<string, string>
+  formatting?: Record<string, (value: any) => string>
+}
+
+/**
+ * Export filters
+ */
+export interface ExportFilters {
+  industries?: string[]
+  states?: string[]
+  hasEmail?: boolean
+  hasPhone?: boolean
+  hasWebsite?: boolean
+  confidenceMin?: number
+  dateRange?: { start: Date; end: Date }
+}
+
+/**
+ * Export sorting options
+ */
+export interface ExportSorting {
+  field: string
+  direction: 'asc' | 'desc'
+}
+
+/**
+ * Export grouping options
+ */
+export interface ExportGrouping {
+  field: string
+  includeSubtotals?: boolean
+}
+
+/**
+ * Custom field definition
+ */
+export interface CustomField {
+  name: string
+  value: (business: BusinessRecord) => any
+  type: 'string' | 'number' | 'date' | 'boolean'
 }
 
 /**
@@ -58,6 +113,12 @@ export class ExportService {
           return this.exportToPdf(businesses, filename, options)
         case 'json':
           return this.exportToJson(businesses, filename, options)
+        case 'xml':
+          return this.exportToXml(businesses, filename, options)
+        case 'vcf':
+          return this.exportToVcf(businesses, filename, options)
+        case 'sql':
+          return this.exportToSql(businesses, filename, options)
         default:
           throw new Error(`Unsupported export format: ${format}`)
       }
@@ -65,6 +126,115 @@ export class ExportService {
       logger.error('ExportService', `Export failed for format ${format}`, error)
       throw error
     }
+  }
+
+  /**
+   * Apply filters to business data
+   */
+  private applyFilters(businesses: BusinessRecord[], filters?: ExportFilters): BusinessRecord[] {
+    if (!filters) return businesses
+
+    return businesses.filter(business => {
+      // Industry filter
+      if (filters.industries && !filters.industries.includes(business.industry)) {
+        return false
+      }
+
+      // State filter
+      if (filters.states && !filters.states.includes(business.address?.state || '')) {
+        return false
+      }
+
+      // Email filter
+      if (filters.hasEmail !== undefined &&
+          (business.email?.length > 0) !== filters.hasEmail) {
+        return false
+      }
+
+      // Phone filter
+      if (filters.hasPhone !== undefined &&
+          Boolean(business.phone) !== filters.hasPhone) {
+        return false
+      }
+
+      // Website filter
+      if (filters.hasWebsite !== undefined &&
+          Boolean(business.websiteUrl) !== filters.hasWebsite) {
+        return false
+      }
+
+      // Confidence filter - not available in BusinessRecord
+      // if (filters.confidenceMin !== undefined &&
+      //     (business.confidence || 0) < filters.confidenceMin) {
+      //   return false
+      // }
+
+      // Date range filter
+      if (filters.dateRange) {
+        const scrapedDate = new Date(business.scrapedAt)
+        if (scrapedDate < filters.dateRange.start || scrapedDate > filters.dateRange.end) {
+          return false
+        }
+      }
+
+      return true
+    })
+  }
+
+  /**
+   * Apply sorting to business data
+   */
+  private applySorting(businesses: BusinessRecord[], sorting?: ExportSorting): BusinessRecord[] {
+    if (!sorting) return businesses
+
+    return [...businesses].sort((a, b) => {
+      const aValue = (a as any)[sorting.field]
+      const bValue = (b as any)[sorting.field]
+
+      let comparison = 0
+      if (aValue < bValue) comparison = -1
+      else if (aValue > bValue) comparison = 1
+
+      return sorting.direction === 'desc' ? -comparison : comparison
+    })
+  }
+
+  /**
+   * Add custom fields to business data
+   */
+  private addCustomFields(businesses: BusinessRecord[], customFields?: CustomField[]): any[] {
+    if (!customFields || customFields.length === 0) return businesses
+
+    return businesses.map(business => {
+      const enhanced: any = { ...business }
+
+      customFields.forEach(field => {
+        try {
+          enhanced[field.name] = field.value(business)
+        } catch (error) {
+          logger.warn('ExportService', `Failed to calculate custom field ${field.name}`, error)
+          enhanced[field.name] = null
+        }
+      })
+
+      return enhanced
+    })
+  }
+
+  /**
+   * Enhanced export with all preprocessing
+   */
+  private preprocessData(businesses: BusinessRecord[], options: ExportOptions): any[] {
+    // Apply filters
+    let processedData = this.applyFilters(businesses, options.filters)
+
+    // Apply sorting
+    processedData = this.applySorting(processedData, options.sorting)
+
+    // Add custom fields
+    processedData = this.addCustomFields(processedData, options.customFields)
+
+    return processedData
   }
 
   /**
@@ -391,6 +561,9 @@ export class ExportService {
       ods: 'OpenDocument Spreadsheet - Open standard format',
       pdf: 'Portable Document Format - Print-ready document',
       json: 'JavaScript Object Notation - Structured data format',
+      xml: 'Extensible Markup Language - Structured data format',
+      vcf: 'vCard Format - Contact information format',
+      sql: 'SQL Insert Statements - Database import format',
     }
     
     return descriptions[format] || 'Unknown format'
@@ -410,6 +583,9 @@ export class ExportService {
       ods: 280,    // bytes per record
       pdf: 150,    // bytes per record
       json: 400,   // bytes per record
+      xml: 350,    // bytes per record
+      vcf: 180,    // bytes per record
+      sql: 250,    // bytes per record
     }
 
     const baseSize = {
@@ -419,9 +595,192 @@ export class ExportService {
       ods: 2500,    // document overhead
       pdf: 5000,    // document structure
       json: 200,    // metadata
+      xml: 300,     // XML structure
+      vcf: 50,      // vCard header
+      sql: 150,     // SQL statements
     }
 
     return baseSize[format] + (businesses.length * avgRecordSize[format])
+  }
+
+  /**
+   * Export to XML format
+   */
+  private async exportToXml(
+    businesses: BusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const processedData = this.preprocessData(businesses, options)
+
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<businesses>\n'
+    xml += `  <metadata>\n`
+    xml += `    <exportDate>${new Date().toISOString()}</exportDate>\n`
+    xml += `    <totalRecords>${processedData.length}</totalRecords>\n`
+    xml += `  </metadata>\n`
+
+    processedData.forEach(business => {
+      xml += '  <business>\n'
+      xml += `    <id>${this.escapeXml(business.id)}</id>\n`
+      xml += `    <businessName>${this.escapeXml(business.businessName)}</businessName>\n`
+      xml += `    <industry>${this.escapeXml(business.industry)}</industry>\n`
+
+      if (business.email?.length) {
+        xml += '    <emails>\n'
+        business.email.forEach((email: string) => {
+          xml += `      <email>${this.escapeXml(email)}</email>\n`
+        })
+        xml += '    </emails>\n'
+      }
+
+      if (business.phone) {
+        xml += `    <phone>${this.escapeXml(business.phone)}</phone>\n`
+      }
+
+      if (business.websiteUrl) {
+        xml += `    <website>${this.escapeXml(business.websiteUrl)}</website>\n`
+      }
+
+      if (business.address) {
+        xml += '    <address>\n'
+        xml += `      <street>${this.escapeXml(business.address.street)}</street>\n`
+        xml += `      <city>${this.escapeXml(business.address.city)}</city>\n`
+        xml += `      <state>${this.escapeXml(business.address.state)}</state>\n`
+        xml += `      <zipCode>${this.escapeXml(business.address.zipCode)}</zipCode>\n`
+        xml += '    </address>\n'
+      }
+
+      xml += `    <scrapedAt>${business.scrapedAt}</scrapedAt>\n`
+      xml += '  </business>\n'
+    })
+
+    xml += '</businesses>'
+
+    const blob = new Blob([xml], { type: 'application/xml' })
+    return { blob, filename: `${filename}.xml` }
+  }
+
+  /**
+   * Export to VCF (vCard) format
+   */
+  private async exportToVcf(
+    businesses: BusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const processedData = this.preprocessData(businesses, options)
+
+    let vcf = ''
+
+    processedData.forEach(business => {
+      vcf += 'BEGIN:VCARD\n'
+      vcf += 'VERSION:3.0\n'
+      vcf += `FN:${business.businessName}\n`
+      vcf += `ORG:${business.businessName}\n`
+
+      if (business.email?.length) {
+        business.email.forEach((email: string, index: number) => {
+          vcf += `EMAIL${index === 0 ? '' : `;TYPE=WORK${index}`}:${email}\n`
+        })
+      }
+
+      if (business.phone) {
+        vcf += `TEL;TYPE=WORK:${business.phone}\n`
+      }
+
+      if (business.websiteUrl) {
+        vcf += `URL:${business.websiteUrl}\n`
+      }
+
+      if (business.address) {
+        const addr = business.address
+        vcf += `ADR;TYPE=WORK:;;${addr.street};${addr.city};${addr.state};${addr.zipCode};\n`
+      }
+
+      vcf += `NOTE:Industry: ${business.industry}\n`
+      vcf += `REV:${new Date().toISOString()}\n`
+      vcf += 'END:VCARD\n\n'
+    })
+
+    const blob = new Blob([vcf], { type: 'text/vcard' })
+    return { blob, filename: `${filename}.vcf` }
+  }
+
+  /**
+   * Export to SQL format
+   */
+  private async exportToSql(
+    businesses: BusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const processedData = this.preprocessData(businesses, options)
+
+    let sql = '-- Business Data Export\n'
+    sql += `-- Generated on ${new Date().toISOString()}\n\n`
+
+    // Create table
+    sql += 'CREATE TABLE IF NOT EXISTS businesses (\n'
+    sql += '  id VARCHAR(255) PRIMARY KEY,\n'
+    sql += '  business_name VARCHAR(255) NOT NULL,\n'
+    sql += '  industry VARCHAR(100),\n'
+    sql += '  email TEXT,\n'
+    sql += '  phone VARCHAR(50),\n'
+    sql += '  website VARCHAR(255),\n'
+    sql += '  street VARCHAR(255),\n'
+    sql += '  city VARCHAR(100),\n'
+    sql += '  state VARCHAR(50),\n'
+    sql += '  zip_code VARCHAR(20),\n'
+    sql += '  latitude DECIMAL(10, 8),\n'
+    sql += '  longitude DECIMAL(11, 8),\n'
+    sql += '  confidence DECIMAL(3, 2),\n'
+    sql += '  scraped_at TIMESTAMP\n'
+    sql += ');\n\n'
+
+    // Insert data
+    processedData.forEach(business => {
+      sql += 'INSERT INTO businesses VALUES (\n'
+      sql += `  '${this.escapeSql(business.id)}',\n`
+      sql += `  '${this.escapeSql(business.businessName)}',\n`
+      sql += `  '${this.escapeSql(business.industry)}',\n`
+      sql += `  '${this.escapeSql(business.email?.join(';') || '')}',\n`
+      sql += `  '${this.escapeSql(business.phone || '')}',\n`
+      sql += `  '${this.escapeSql(business.websiteUrl || '')}',\n`
+      sql += `  '${this.escapeSql(business.address?.street || '')}',\n`
+      sql += `  '${this.escapeSql(business.address?.city || '')}',\n`
+      sql += `  '${this.escapeSql(business.address?.state || '')}',\n`
+      sql += `  '${this.escapeSql(business.address?.zipCode || '')}',\n`
+      sql += `  ${business.coordinates?.lat || 'NULL'},\n`
+      sql += `  ${business.coordinates?.lng || 'NULL'},\n`
+      sql += `  ${business.confidence || 'NULL'},\n`
+      sql += `  '${business.scrapedAt}'\n`
+      sql += ');\n'
+    })
+
+    const blob = new Blob([sql], { type: 'application/sql' })
+    return { blob, filename: `${filename}.sql` }
+  }
+
+  /**
+   * Escape XML special characters
+   */
+  private escapeXml(str: string): string {
+    if (!str) return ''
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;')
+  }
+
+  /**
+   * Escape SQL special characters
+   */
+  private escapeSql(str: string): string {
+    if (!str) return ''
+    return str.replace(/'/g, "''")
   }
 }
 

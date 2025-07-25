@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Plus, Trash2, Check, X } from 'lucide-react'
+import { Plus, Trash2, Check, X, Edit3 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { IndustryModal } from './IndustryModal'
 import { clsx } from 'clsx'
+import { IndustryCategory } from '@/types/business'
 
 /**
  * CategorySelector component for managing industry categories
@@ -18,47 +20,34 @@ export function CategorySelector() {
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,
-    addCustomIndustry,
     removeIndustry,
   } = useConfig()
 
-  const [isAddingCustom, setIsAddingCustom] = useState(false)
-  const [customIndustryForm, setCustomIndustryForm] = useState({
-    name: '',
-    keywords: '',
-  })
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingIndustry, setEditingIndustry] = useState<IndustryCategory | undefined>(undefined)
 
   /**
-   * Handle custom industry form submission
+   * Handle opening modal for adding new industry
    */
-  const handleAddCustomIndustry = async () => {
-    if (!customIndustryForm.name.trim()) return
-
-    const keywords = customIndustryForm.keywords
-      .split(',')
-      .map(k => k.trim())
-      .filter(Boolean)
-
-    if (keywords.length === 0) {
-      keywords.push(customIndustryForm.name.toLowerCase())
-    }
-
-    await addCustomIndustry({
-      name: customIndustryForm.name.trim(),
-      keywords,
-    })
-
-    // Reset form
-    setCustomIndustryForm({ name: '', keywords: '' })
-    setIsAddingCustom(false)
+  const handleAddIndustry = () => {
+    setEditingIndustry(undefined)
+    setIsModalOpen(true)
   }
 
   /**
-   * Handle canceling custom industry addition
+   * Handle opening modal for editing existing industry
    */
-  const handleCancelCustomIndustry = () => {
-    setCustomIndustryForm({ name: '', keywords: '' })
-    setIsAddingCustom(false)
+  const handleEditIndustry = (industry: IndustryCategory) => {
+    setEditingIndustry(industry)
+    setIsModalOpen(true)
+  }
+
+  /**
+   * Handle closing modal
+   */
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingIndustry(undefined)
   }
 
   const allSelected = state.selectedIndustries.length === state.industries.length
@@ -81,8 +70,7 @@ export function CategorySelector() {
               variant="outline"
               size="sm"
               icon={Plus}
-              onClick={() => setIsAddingCustom(true)}
-              disabled={isAddingCustom}
+              onClick={handleAddIndustry}
             >
               Add Custom
             </Button>
@@ -96,47 +84,7 @@ export function CategorySelector() {
           {state.selectedIndustries.length} of {state.industries.length} categories selected
         </div>
 
-        {/* Custom Industry Form */}
-        {isAddingCustom && (
-          <div className="space-y-3 p-4 border rounded-lg bg-muted/50">
-            <h4 className="font-medium">Add Custom Industry</h4>
-            <Input
-              label="Industry Name"
-              placeholder="e.g., Pet Services"
-              value={customIndustryForm.name}
-              onChange={(e) =>
-                setCustomIndustryForm(prev => ({ ...prev, name: e.target.value }))
-              }
-            />
-            <Input
-              label="Keywords (comma-separated)"
-              placeholder="e.g., pet, veterinary, grooming, boarding"
-              helperText="Keywords help identify relevant businesses during scraping"
-              value={customIndustryForm.keywords}
-              onChange={(e) =>
-                setCustomIndustryForm(prev => ({ ...prev, keywords: e.target.value }))
-              }
-            />
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                icon={Check}
-                onClick={handleAddCustomIndustry}
-                disabled={!customIndustryForm.name.trim()}
-              >
-                Add Industry
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                icon={X}
-                onClick={handleCancelCustomIndustry}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        )}
+
 
         {/* Industry Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -147,7 +95,7 @@ export function CategorySelector() {
               <div
                 key={industry.id}
                 className={clsx(
-                  'relative p-3 border rounded-lg cursor-pointer transition-all',
+                  'relative p-3 border rounded-lg cursor-pointer transition-all group',
                   'hover:border-primary/50 hover:bg-accent/50',
                   isSelected && 'border-primary bg-primary/5',
                   !isSelected && 'border-border'
@@ -175,26 +123,49 @@ export function CategorySelector() {
                     {industry.keywords.slice(0, 3).join(', ')}
                     {industry.keywords.length > 3 && '...'}
                   </p>
-                  
-                  {/* Custom Industry Badge */}
-                  {industry.isCustom && (
-                    <div className="flex items-center justify-between">
+
+                  {/* Bottom section with badges and actions */}
+                  <div className="flex items-center justify-between">
+                    {/* Custom Industry Badge */}
+                    {industry.isCustom && (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground">
                         Custom
                       </span>
+                    )}
+
+                    {/* Action buttons */}
+                    <div className="flex items-center space-x-1 ml-auto">
+                      {/* Edit Icon - Always visible on hover */}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 text-destructive hover:text-destructive"
+                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900"
                         onClick={(e) => {
                           e.stopPropagation()
-                          removeIndustry(industry.id)
+                          handleEditIndustry(industry)
                         }}
+                        title="Edit industry keywords"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Edit3 className="h-3 w-3" />
                       </Button>
+
+                      {/* Delete button for custom industries */}
+                      {industry.isCustom && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            removeIndustry(industry.id)
+                          }}
+                          title="Delete custom industry"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             )
@@ -209,12 +180,19 @@ export function CategorySelector() {
               variant="outline"
               className="mt-2"
               icon={Plus}
-              onClick={() => setIsAddingCustom(true)}
+              onClick={handleAddIndustry}
             >
               Add Your First Industry
             </Button>
           </div>
         )}
+
+        {/* Industry Modal */}
+        <IndustryModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          industry={editingIndustry}
+        />
 
         {/* Validation Message */}
         {noneSelected && (

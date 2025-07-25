@@ -7,6 +7,7 @@ import { geocoder } from './geocoder'
 import { searchEngine } from './searchEngine'
 import { logger } from '@/utils/logger'
 import { CONTACT_KEYWORDS } from '@/lib/industry-config'
+import { enhancedScrapingEngine, ScrapingJob } from '@/lib/enhancedScrapingEngine'
 
 /**
  * Interface for scraping statistics
@@ -149,25 +150,41 @@ export class ScraperService {
     }
 
     const page = await this.browser!.newPage()
-    
+
     try {
       await page.setUserAgent(this.config.userAgent)
       await page.setViewport({ width: 1920, height: 1080 })
-      
+
       logger.info('Scraper', `Scraping website: ${url}`)
-      
-      // Navigate to the main page
-      await page.goto(url, { 
-        waitUntil: 'networkidle2', 
-        timeout: this.config.timeout 
-      })
+
+      // Check if URL is accessible
+      try {
+        // Navigate to the main page
+        await page.goto(url, {
+          waitUntil: 'networkidle2',
+          timeout: this.config.timeout
+        })
+      } catch (navigationError) {
+        logger.warn('Scraper', `Failed to navigate to ${url}`, navigationError)
+        // Try with a shorter timeout and different wait condition
+        try {
+          await page.goto(url, {
+            waitUntil: 'domcontentloaded',
+            timeout: 15000
+          })
+        } catch (retryError) {
+          logger.error('Scraper', `Navigation failed completely for ${url}`, retryError)
+          return []
+        }
+      }
 
       // Find contact pages
       const contactUrls = await this.findContactPages(page, url, depth)
-      
+
       // Scrape business data from all relevant pages
       const businessData = await this.extractBusinessData(page, [url, ...contactUrls])
-      
+
+      logger.info('Scraper', `Successfully scraped ${url}, found ${businessData.length} business records`)
       return businessData
     } catch (error) {
       logger.error('Scraper', `Failed to scrape ${url}`, error)
@@ -363,6 +380,130 @@ export class ScraperService {
       failedScrapes: 0,
       totalBusinesses: 0,
       startTime: new Date(),
+    }
+  }
+
+  /**
+   * Enhanced scraping using the new scraping engine
+   * @param urls - Array of URLs to scrape
+   * @param depth - Scraping depth
+   * @param priority - Job priority
+   * @returns Promise resolving to job IDs
+   */
+  async scrapeUrlsEnhanced(
+    urls: string[],
+    depth: number = 2,
+    priority: number = 1
+  ): Promise<string[]> {
+    logger.info('ScraperService', `Starting enhanced scraping for ${urls.length} URLs`)
+
+    // Initialize enhanced engine if not already done
+    await enhancedScrapingEngine.initialize()
+
+    const jobIds: string[] = []
+
+    for (const url of urls) {
+      try {
+        const jobId = await enhancedScrapingEngine.addJob(url, depth, priority)
+        jobIds.push(jobId)
+      } catch (error) {
+        logger.error('ScraperService', `Failed to add job for ${url}`, error)
+      }
+    }
+
+    logger.info('ScraperService', `Added ${jobIds.length} jobs to enhanced scraping queue`)
+    return jobIds
+  }
+
+  /**
+   * Get enhanced scraping job status
+   * @param jobId - Job ID
+   * @returns Job status or null if not found
+   */
+  getEnhancedJobStatus(jobId: string): ScrapingJob | null {
+    return enhancedScrapingEngine.getJobStatus(jobId)
+  }
+
+  /**
+   * Get enhanced scraping statistics
+   * @returns Enhanced scraping statistics
+   */
+  getEnhancedStats() {
+    return enhancedScrapingEngine.getStats()
+  }
+
+  /**
+   * Cancel an enhanced scraping job
+   * @param jobId - Job ID to cancel
+   * @returns True if job was cancelled
+   */
+  cancelEnhancedJob(jobId: string): boolean {
+    return enhancedScrapingEngine.cancelJob(jobId)
+  }
+
+  /**
+   * Wait for enhanced scraping jobs to complete
+   * @param jobIds - Array of job IDs to wait for
+   * @param timeout - Timeout in milliseconds
+   * @returns Promise resolving to completed jobs
+   */
+  async waitForEnhancedJobs(
+    jobIds: string[],
+    timeout: number = 300000
+  ): Promise<ScrapingJob[]> {
+    const startTime = Date.now()
+    const completedJobs: ScrapingJob[] = []
+
+    while (completedJobs.length < jobIds.length && Date.now() - startTime < timeout) {
+      for (const jobId of jobIds) {
+        if (completedJobs.find(job => job.id === jobId)) continue
+
+        const job = enhancedScrapingEngine.getJobStatus(jobId)
+        if (job && (job.status === 'completed' || job.status === 'failed')) {
+          completedJobs.push(job)
+        }
+      }
+
+      if (completedJobs.length < jobIds.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    }
+
+    return completedJobs
+  }
+
+  /**
+   * Enhanced website scraping with all advanced features
+   * @param url - Website URL to scrape
+   * @param depth - Maximum depth to crawl
+   * @returns Promise resolving to array of business records
+   */
+  async scrapeWebsiteEnhanced(url: string, depth: number = 2): Promise<BusinessRecord[]> {
+    logger.info('ScraperService', `Starting enhanced scraping for: ${url}`)
+
+    try {
+      // Initialize enhanced engine
+      await enhancedScrapingEngine.initialize()
+
+      // Add job with high priority
+      const jobId = await enhancedScrapingEngine.addJob(url, depth, 10)
+
+      // Wait for job completion
+      const completedJobs = await this.waitForEnhancedJobs([jobId], 120000) // 2 minute timeout
+
+      const firstJob = completedJobs[0]
+      if (completedJobs.length > 0 && firstJob?.result) {
+        logger.info('ScraperService', `Enhanced scraping completed for ${url}: ${firstJob.result.length} businesses`)
+        return firstJob.result
+      } else {
+        logger.warn('ScraperService', `Enhanced scraping failed or timed out for ${url}`)
+        // Fallback to regular scraping
+        return await this.scrapeWebsite(url, depth)
+      }
+    } catch (error) {
+      logger.error('ScraperService', `Enhanced scraping failed for ${url}`, error)
+      // Fallback to regular scraping
+      return await this.scrapeWebsite(url, depth)
     }
   }
 }

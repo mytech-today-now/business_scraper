@@ -150,6 +150,22 @@ export class StorageService {
   }
 
   /**
+   * Get business by ID
+   * @param id - Business ID to get
+   * @returns Promise resolving to business record or null
+   */
+  async getBusiness(id: string): Promise<BusinessRecord | null> {
+    await this.ensureInitialized()
+    try {
+      const business = await this.db!.get('businesses', id)
+      return business || null
+    } catch (error) {
+      logger.error('Storage', 'Failed to get business', error)
+      return null
+    }
+  }
+
+  /**
    * Get businesses by industry
    * @param industry - Industry to filter by
    * @returns Promise resolving to array of business records
@@ -238,6 +254,21 @@ export class StorageService {
     } catch (error) {
       logger.error('Storage', 'Failed to get configurations', error)
       return []
+    }
+  }
+
+  /**
+   * Delete configuration by ID
+   * @param id - Configuration ID to delete
+   */
+  async deleteConfig(id: string): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.delete('configs', id)
+      logger.info('Storage', `Deleted configuration: ${id}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to delete configuration', error)
+      throw error
     }
   }
 

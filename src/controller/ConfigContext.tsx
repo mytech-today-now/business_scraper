@@ -34,6 +34,7 @@ export type ConfigAction =
   | { type: 'SET_CONFIG'; payload: Partial<ScrapingConfig> }
   | { type: 'SET_INDUSTRIES'; payload: IndustryCategory[] }
   | { type: 'ADD_INDUSTRY'; payload: IndustryCategory }
+  | { type: 'UPDATE_INDUSTRY'; payload: IndustryCategory }
   | { type: 'REMOVE_INDUSTRY'; payload: string }
   | { type: 'SET_SELECTED_INDUSTRIES'; payload: string[] }
   | { type: 'TOGGLE_INDUSTRY'; payload: string }
@@ -61,7 +62,7 @@ const defaultState: ConfigState = {
   isDarkMode: false,
   isLoading: false,
   isInitialized: false,
-  isDemoMode: process.env.NODE_ENV === 'development', // Default to demo mode in development
+  isDemoMode: process.env.NODE_ENV === 'development', // Demo mode only in development, always false in production
 }
 
 /**
@@ -85,6 +86,14 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
       return {
         ...state,
         industries: [...state.industries, action.payload],
+      }
+
+    case 'UPDATE_INDUSTRY':
+      return {
+        ...state,
+        industries: state.industries.map(industry =>
+          industry.id === action.payload.id ? action.payload : industry
+        ),
       }
 
     case 'REMOVE_INDUSTRY':
@@ -190,6 +199,7 @@ export interface ConfigContextType {
   
   // Industry methods
   addCustomIndustry: (industry: Omit<IndustryCategory, 'id' | 'isCustom'>) => Promise<void>
+  updateIndustry: (industry: IndustryCategory, showToast?: boolean) => Promise<void>
   removeIndustry: (id: string) => Promise<void>
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
@@ -256,11 +266,17 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
           document.documentElement.classList.toggle('dark', isDark)
         }
 
-        // Load demo mode preference
-        const savedDemoMode = localStorage.getItem('demoMode')
-        if (savedDemoMode) {
-          const isDemoMode = JSON.parse(savedDemoMode)
-          dispatch({ type: 'SET_DEMO_MODE', payload: isDemoMode })
+        // Load demo mode preference (only in development)
+        if (process.env.NODE_ENV === 'development') {
+          const savedDemoMode = localStorage.getItem('demoMode')
+          if (savedDemoMode) {
+            const isDemoMode = JSON.parse(savedDemoMode)
+            dispatch({ type: 'SET_DEMO_MODE', payload: isDemoMode })
+          }
+        } else {
+          // Force disable demo mode in production
+          dispatch({ type: 'SET_DEMO_MODE', payload: false })
+          localStorage.removeItem('demoMode') // Clear any persisted demo mode
         }
 
         dispatch({ type: 'SET_INITIALIZED', payload: true })
@@ -348,7 +364,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         id: `custom-${Date.now()}`,
         isCustom: true,
       }
-      
+
       await storage.saveIndustry(industry)
       dispatch({ type: 'ADD_INDUSTRY', payload: industry })
       toast.success(`Added custom industry: ${industry.name}`)
@@ -356,6 +372,25 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     } catch (error) {
       logger.error('ConfigProvider', 'Failed to add custom industry', error)
       toast.error('Failed to add custom industry')
+    }
+  }
+
+  /**
+   * Update existing industry
+   */
+  const updateIndustry = async (industry: IndustryCategory, showToast: boolean = true) => {
+    try {
+      await storage.saveIndustry(industry)
+      dispatch({ type: 'UPDATE_INDUSTRY', payload: industry })
+      if (showToast) {
+        toast.success(`Updated industry: ${industry.name}`)
+      }
+      logger.info('ConfigProvider', 'Industry updated', industry)
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to update industry', error)
+      if (showToast) {
+        toast.error('Failed to update industry')
+      }
     }
   }
 
@@ -456,6 +491,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     saveConfig,
     loadConfig,
     addCustomIndustry,
+    updateIndustry,
     removeIndustry,
     toggleIndustry,
     selectAllIndustries,

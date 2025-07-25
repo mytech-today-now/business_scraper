@@ -3,6 +3,8 @@
 import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
 import { demoScraperService } from './demoScraperService'
+import { clientSearchEngine } from './clientSearchEngine'
+import { retrieveApiCredentials } from '@/utils/secureStorage'
 
 /**
  * Client-side scraper service that communicates with API routes
@@ -33,8 +35,18 @@ export class ClientScraperService {
    * Initialize the scraper service
    */
   async initialize(): Promise<void> {
+    // Initialize the client search engine with stored credentials
+    await clientSearchEngine.initialize()
+
+    // Check if we have stored API credentials (but don't override user's demo mode preference)
+    const credentials = await retrieveApiCredentials()
+    const hasApiCredentials = !!(credentials && credentials.googleSearchApiKey)
+
+    logger.info('ClientScraper', `Initializing scraper - Demo mode: ${this.useDemoMode}, Has API credentials: ${hasApiCredentials}`)
+
     if (this.useDemoMode) {
       await demoScraperService.initialize()
+      logger.info('ClientScraper', 'Demo mode enabled by user preference')
       return
     }
 
@@ -75,37 +87,24 @@ export class ClientScraperService {
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/scrape`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'search',
-          query,
-          zipCode,
-          maxResults,
-        }),
-      })
+      // Try using stored API credentials with client search engine (includes DuckDuckGo fallback)
+      const searchResults = await clientSearchEngine.searchBusinesses(query, zipCode, maxResults)
+      const urls = searchResults.map(result => result.url)
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      if (urls.length > 0) {
+        const source = clientSearchEngine.hasApiCredentials() ? 'API credentials' : 'DuckDuckGo search'
+        logger.info('ClientScraper', `Found ${urls.length} URLs using ${source} for query: ${query}`)
+        return urls
       }
 
-      const result = await response.json()
-      const urls = result.urls || []
-      logger.info('ClientScraper', `Found ${urls.length} URLs for query: ${query}`)
-
-      // If no URLs found, fall back to demo mode
-      if (urls.length === 0) {
-        logger.warn('ClientScraper', `No URLs found for query: ${query}, falling back to demo mode`)
-        this.useDemoMode = true
-        return await demoScraperService.searchForWebsites(query, zipCode, maxResults)
-      }
-
-      return urls
+      // When demo mode is OFF, don't fall back to server API that generates fake URLs
+      logger.warn('ClientScraper', `Client search returned no results for query: ${query}. No server fallback in real mode.`)
+      return []
     } catch (error) {
-      logger.warn('ClientScraper', `Failed to search for websites: ${query}, using demo mode`, error)
-      this.useDemoMode = true
-      return await demoScraperService.searchForWebsites(query, zipCode, maxResults)
+      logger.error('ClientScraper', `All search methods failed for query: ${query}`, error)
+      // Don't fall back to demo data when user wants real scraping
+      // Return empty array to indicate no real results found
+      return []
     }
   }
 
@@ -136,9 +135,10 @@ export class ClientScraperService {
       logger.info('ClientScraper', `Scraped ${result.businesses.length} businesses from: ${url}`)
       return result.businesses
     } catch (error) {
-      logger.warn('ClientScraper', `Failed to scrape website: ${url}, using demo mode`, error)
-      this.useDemoMode = true
-      return await demoScraperService.scrapeWebsite(url, depth)
+      logger.error('ClientScraper', `Failed to scrape website: ${url}`, error)
+      // Don't fall back to demo data when user wants real scraping
+      // Return empty array to indicate scraping failed
+      return []
     }
   }
 
@@ -212,6 +212,19 @@ export class ClientScraperService {
       totalBusinesses: 0,
       startTime: new Date(),
     }
+  }
+
+  /**
+   * Refresh API credentials from storage
+   */
+  async refreshCredentials(): Promise<void> {
+    await clientSearchEngine.refreshCredentials()
+
+    // Log credential status but don't override user's demo mode preference
+    const credentials = await retrieveApiCredentials()
+    const hasCredentials = !!(credentials && credentials.googleSearchApiKey)
+
+    logger.info('ClientScraper', `Credentials refreshed - Has API credentials: ${hasCredentials}, Demo mode: ${this.useDemoMode}`)
   }
 
   /**

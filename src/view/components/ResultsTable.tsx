@@ -30,7 +30,7 @@ import { clsx } from 'clsx'
  * Column definition interface
  */
 interface Column {
-  key: keyof BusinessRecord | 'actions'
+  key: keyof BusinessRecord | 'actions' | 'street' | 'city' | 'state' | 'zipCode' | 'source'
   label: string
   sortable: boolean
   visible: boolean
@@ -64,18 +64,24 @@ export interface ResultsTableProps {
   onDelete?: (businessId: string) => void
   onExport?: (format: string) => void
   isLoading?: boolean
+  isExporting?: boolean
 }
 
 /**
- * Default columns configuration
+ * Default columns configuration - Enhanced with better organization
  */
 const DEFAULT_COLUMNS: Column[] = [
   { key: 'businessName', label: 'Business Name', sortable: true, visible: true, width: '200px' },
-  { key: 'email', label: 'Email', sortable: false, visible: true, width: '200px' },
-  { key: 'phone', label: 'Phone', sortable: false, visible: true, width: '150px' },
-  { key: 'websiteUrl', label: 'Website', sortable: false, visible: true, width: '150px' },
-  { key: 'address', label: 'Address', sortable: false, visible: true, width: '250px' },
+  { key: 'contactPerson', label: 'Contact Person', sortable: false, visible: true, width: '150px' },
+  { key: 'email', label: 'Email', sortable: false, visible: true, width: '220px' },
+  { key: 'phone', label: 'Phone', sortable: false, visible: true, width: '130px' },
+  { key: 'websiteUrl', label: 'Website', sortable: false, visible: true, width: '180px' },
+  { key: 'street', label: 'Street Address', sortable: false, visible: true, width: '200px' },
+  { key: 'city', label: 'City', sortable: true, visible: true, width: '120px' },
+  { key: 'state', label: 'State', sortable: true, visible: true, width: '80px' },
+  { key: 'zipCode', label: 'ZIP Code', sortable: true, visible: true, width: '90px' },
   { key: 'industry', label: 'Industry', sortable: true, visible: true, width: '120px' },
+  { key: 'source', label: 'Source', sortable: true, visible: true, width: '100px' },
   { key: 'scrapedAt', label: 'Scraped', sortable: true, visible: true, width: '120px' },
   { key: 'actions', label: 'Actions', sortable: false, visible: true, width: '100px' },
 ]
@@ -84,12 +90,13 @@ const DEFAULT_COLUMNS: Column[] = [
  * ResultsTable component for displaying and managing scraped business data
  * Features: sorting, filtering, editing, exporting, column visibility
  */
-export function ResultsTable({ 
-  businesses, 
-  onEdit, 
-  onDelete, 
+export function ResultsTable({
+  businesses,
+  onEdit,
+  onDelete,
   onExport,
-  isLoading = false 
+  isLoading = false,
+  isExporting = false
 }: ResultsTableProps) {
   // State management
   const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS)
@@ -255,19 +262,28 @@ export function ResultsTable({
     switch (column.key) {
       case 'businessName':
         return (
-          <div className="font-medium">
+          <div className="font-medium text-sm">
             {formatBusinessName(business.businessName)}
           </div>
         )
-      
+
+      case 'contactPerson':
+        return business.contactPerson ? (
+          <div className="text-sm">
+            {business.contactPerson}
+          </div>
+        ) : (
+          <span className="text-muted-foreground text-xs">—</span>
+        )
+
       case 'email':
         return (
           <div className="space-y-1">
             {business.email.slice(0, 2).map((email, index) => (
               <div key={index} className="text-xs">
-                <a 
+                <a
                   href={`mailto:${email}`}
-                  className="text-primary hover:underline"
+                  className="text-primary hover:underline break-all"
                 >
                   {email}
                 </a>
@@ -280,51 +296,100 @@ export function ResultsTable({
             )}
           </div>
         )
-      
+
       case 'phone':
         return business.phone ? (
-          <a 
+          <a
             href={`tel:${business.phone}`}
-            className="text-primary hover:underline text-xs"
+            className="text-primary hover:underline text-sm whitespace-nowrap"
           >
             {formatPhoneNumber(business.phone)}
           </a>
         ) : (
           <span className="text-muted-foreground text-xs">—</span>
         )
-      
+
       case 'websiteUrl':
         return (
           <a
             href={business.websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hover:underline text-xs flex items-center gap-1"
+            className="text-primary hover:underline text-xs flex items-center gap-1 break-all"
           >
             {formatUrl(business.websiteUrl)}
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3 w-3 flex-shrink-0" />
           </a>
         )
-      
-      case 'address':
+
+      case 'street':
+        return (
+          <div className="text-sm">
+            {business.address?.street ? (
+              <>
+                {business.address.street}
+                {business.address.suite && (
+                  <div className="text-xs text-muted-foreground">
+                    {business.address.suite}
+                  </div>
+                )}
+              </>
+            ) : (
+              <span className="text-muted-foreground text-xs">—</span>
+            )}
+          </div>
+        )
+
+      case 'city':
+        return (
+          <div className="text-sm">
+            {business.address?.city || (
+              <span className="text-muted-foreground text-xs">—</span>
+            )}
+          </div>
+        )
+
+      case 'state':
+        return (
+          <div className="text-sm font-mono">
+            {business.address?.state || (
+              <span className="text-muted-foreground text-xs">—</span>
+            )}
+          </div>
+        )
+
+      case 'zipCode':
+        return (
+          <div className="text-sm font-mono">
+            {business.address?.zipCode || (
+              <span className="text-muted-foreground text-xs">—</span>
+            )}
+          </div>
+        )
+
+      case 'industry':
+        return (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground whitespace-nowrap">
+            {business.industry}
+          </span>
+        )
+
+      case 'source':
         return (
           <div className="text-xs">
-            {formatAddress(business.address) || (
+            {(business as any).source ? (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                {(business as any).source}
+              </span>
+            ) : (
               <span className="text-muted-foreground">—</span>
             )}
           </div>
         )
-      
-      case 'industry':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground">
-            {business.industry}
-          </span>
-        )
-      
+
       case 'scrapedAt':
         return (
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-muted-foreground whitespace-nowrap">
             {formatDate(business.scrapedAt)}
           </div>
         )
@@ -371,22 +436,30 @@ export function ResultsTable({
             {/* Export Button */}
             {onExport && (
               <div className="relative group">
-                <Button variant="outline" size="sm" icon={Download}>
-                  Export
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={Download}
+                  disabled={isExporting}
+                >
+                  {isExporting ? 'Exporting...' : 'Export'}
                 </Button>
-                <div className="absolute right-0 top-full mt-1 w-48 bg-popover border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                  <div className="p-1">
-                    {['CSV', 'XLSX', 'PDF'].map(format => (
-                      <button
-                        key={format}
-                        className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm"
-                        onClick={() => onExport(format.toLowerCase())}
-                      >
-                        Export as {format}
-                      </button>
-                    ))}
+                {!isExporting && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-popover border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                    <div className="p-1">
+                      {['CSV', 'XLSX', 'PDF'].map(format => (
+                        <button
+                          key={format}
+                          type="button"
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm"
+                          onClick={() => onExport(format.toLowerCase())}
+                        >
+                          Export as {format}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
             
@@ -426,6 +499,34 @@ export function ResultsTable({
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Business Summary Statistics */}
+        {businesses.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{businesses.length}</div>
+              <div className="text-xs text-muted-foreground">Total Businesses</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
+                {businesses.filter(b => b.email.length > 0).length}
+              </div>
+              <div className="text-xs text-muted-foreground">With Email</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">
+                {businesses.filter(b => b.phone).length}
+              </div>
+              <div className="text-xs text-muted-foreground">With Phone</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">
+                {new Set(businesses.map(b => b.industry)).size}
+              </div>
+              <div className="text-xs text-muted-foreground">Industries</div>
+            </div>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-64">
@@ -491,82 +592,92 @@ export function ResultsTable({
           </div>
         )}
 
-        {/* Table */}
-        <div className="border rounded-lg overflow-hidden">
+        {/* Enhanced Table with Better Organization */}
+        <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-900">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-muted/50">
+            <table className="w-full min-w-[1200px]">
+              <thead className="bg-muted/50 border-b">
                 <tr>
-                  <th className="w-12 p-3">
+                  <th className="w-12 p-3 text-left">
                     <input
                       type="checkbox"
                       checked={allSelected}
                       onChange={(e) => handleSelectAll(e.target.checked)}
                       className="rounded"
+                      title="Select all businesses"
                     />
                   </th>
                   {visibleColumns.map(column => (
                     <th
                       key={column.key}
-                      className="text-left p-3 font-medium text-sm"
+                      className="text-left p-3 font-medium text-sm border-r border-muted/30 last:border-r-0"
                       style={{ width: column.width }}
                     >
                       {column.sortable ? (
                         <button
-                          className="flex items-center gap-1 hover:text-primary"
+                          type="button"
+                          className="flex items-center gap-1 hover:text-primary transition-colors"
                           onClick={() => handleSort(column.key as keyof BusinessRecord)}
                         >
                           {column.label}
                           {sortConfig.key === column.key && (
-                            sortConfig.direction === 'asc' ? 
-                              <SortAsc className="h-3 w-3" /> : 
+                            sortConfig.direction === 'asc' ?
+                              <SortAsc className="h-3 w-3" /> :
                               <SortDesc className="h-3 w-3" />
                           )}
                         </button>
                       ) : (
-                        column.label
+                        <span className="text-muted-foreground">{column.label}</span>
                       )}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-muted/30">
                 {isLoading ? (
                   <tr>
                     <td colSpan={visibleColumns.length + 1} className="p-8 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                        Loading...
+                        <span className="text-muted-foreground">Loading business data...</span>
                       </div>
                     </td>
                   </tr>
                 ) : filteredAndSortedBusinesses.length === 0 ? (
                   <tr>
                     <td colSpan={visibleColumns.length + 1} className="p-8 text-center text-muted-foreground">
-                      {businesses.length === 0 ? 'No businesses found' : 'No businesses match your filters'}
+                      <div className="flex flex-col items-center gap-2">
+                        <Search className="h-8 w-8 text-muted-foreground/50" />
+                        <span>{businesses.length === 0 ? 'No businesses found' : 'No businesses match your filters'}</span>
+                        {businesses.length > 0 && (
+                          <span className="text-xs">Try adjusting your search filters</span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ) : (
-                  filteredAndSortedBusinesses.map(business => (
+                  filteredAndSortedBusinesses.map((business, index) => (
                     <tr
                       key={business.id}
                       className={clsx(
-                        'border-t hover:bg-accent/50 transition-colors',
-                        selectedRows.has(business.id) && 'bg-accent/30'
+                        'hover:bg-accent/50 transition-colors group',
+                        selectedRows.has(business.id) && 'bg-accent/30',
+                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/50'
                       )}
                     >
-                      <td className="p-3">
+                      <td className="p-3 border-r border-muted/20">
                         <input
                           type="checkbox"
                           checked={selectedRows.has(business.id)}
                           onChange={(e) => handleRowSelect(business.id, e.target.checked)}
                           className="rounded"
+                          title={`Select ${business.businessName}`}
                         />
                       </td>
                       {visibleColumns.map(column => (
                         <td
                           key={column.key}
-                          className="p-3 text-sm"
+                          className="p-3 text-sm border-r border-muted/20 last:border-r-0 align-top"
                           style={{ width: column.width }}
                         >
                           {renderCellContent(business, column)}

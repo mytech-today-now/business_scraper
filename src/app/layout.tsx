@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
@@ -10,7 +10,19 @@ export const metadata: Metadata = {
   description: 'A comprehensive business web scraping application for contact data collection',
   keywords: ['business scraping', 'contact data', 'web scraping', 'lead generation'],
   authors: [{ name: 'Business Scraper Team' }],
-  viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' }
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.png'
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' },

@@ -1,5 +1,8 @@
 'use strict'
 
+import fs from 'fs'
+import path from 'path'
+
 /**
  * Log levels enum
  */
@@ -20,16 +23,24 @@ export interface LogEntry {
   message: string
   data?: any
   error?: Error
+  pid?: number
+  hostname?: string
+  requestId?: string
 }
 
 /**
- * Logger configuration interface
+ * Enhanced logger configuration interface
  */
 export interface LoggerConfig {
   level: LogLevel
+  format: 'json' | 'text'
   enableConsole: boolean
   enableStorage: boolean
+  enableFile: boolean
+  filePath?: string
   maxStoredLogs: number
+  maxFileSize: number
+  maxFiles: number
   formatTimestamp: (date: Date) => string
 }
 
@@ -38,9 +49,13 @@ export interface LoggerConfig {
  */
 const DEFAULT_CONFIG: LoggerConfig = {
   level: LogLevel.INFO,
+  format: 'text',
   enableConsole: true,
   enableStorage: true,
+  enableFile: false,
   maxStoredLogs: 1000,
+  maxFileSize: 10 * 1024 * 1024, // 10MB
+  maxFiles: 5,
   formatTimestamp: (date: Date) => {
     return date.toLocaleTimeString('en-US', {
       hour12: true,
@@ -52,16 +67,58 @@ const DEFAULT_CONFIG: LoggerConfig = {
 }
 
 /**
- * Logger class for structured logging
- * Provides console and in-memory storage capabilities
+ * Enhanced logger class for structured logging
+ * Provides console, in-memory storage, and file logging capabilities
  */
 export class Logger {
   private config: LoggerConfig
   private logs: LogEntry[] = []
   private logId = 0
+  private fileWriteStream: fs.WriteStream | null = null
+  private currentFileSize = 0
+  private fileRotationInProgress = false
 
   constructor(config: Partial<LoggerConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config }
+
+    // Initialize file logging if enabled
+    if (this.config.enableFile && this.config.filePath) {
+      this.initializeFileLogging()
+    }
+  }
+
+  /**
+   * Initialize file logging
+   */
+  private initializeFileLogging(): void {
+    if (!this.config.filePath) return
+
+    try {
+      // Ensure log directory exists
+      const logDir = path.dirname(this.config.filePath)
+      if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir, { recursive: true })
+      }
+
+      // Check current file size
+      if (fs.existsSync(this.config.filePath)) {
+        const stats = fs.statSync(this.config.filePath)
+        this.currentFileSize = stats.size
+      }
+
+      // Create write stream
+      this.fileWriteStream = fs.createWriteStream(this.config.filePath, { flags: 'a' })
+
+      this.fileWriteStream.on('error', (error) => {
+        console.error('Logger: File write error:', error)
+        this.config.enableFile = false
+        this.fileWriteStream = null
+      })
+
+    } catch (error) {
+      console.error('Logger: Failed to initialize file logging:', error)
+      this.config.enableFile = false
+    }
   }
 
   /**
@@ -126,6 +183,8 @@ export class Logger {
       message,
       data,
       error,
+      pid: process.pid,
+      hostname: typeof window === 'undefined' ? require('os').hostname() : 'browser',
     }
 
     // Console logging
@@ -137,6 +196,11 @@ export class Logger {
     if (this.config.enableStorage) {
       this.logToStorage(logEntry)
     }
+
+    // File logging
+    if (this.config.enableFile && this.fileWriteStream) {
+      this.logToFile(logEntry)
+    }
   }
 
   /**
@@ -144,16 +208,28 @@ export class Logger {
    * @param entry - Log entry
    */
   private logToConsole(entry: LogEntry): void {
+    if (this.config.format === 'json') {
+      this.logToConsoleJson(entry)
+    } else {
+      this.logToConsoleText(entry)
+    }
+  }
+
+  /**
+   * Log to console in text format
+   * @param entry - Log entry
+   */
+  private logToConsoleText(entry: LogEntry): void {
     const timestamp = this.config.formatTimestamp(entry.timestamp)
     const levelName = LogLevel[entry.level]
     const prefix = `[${timestamp}] <${entry.component}> ${levelName}:`
-    
+
     const args: any[] = [prefix, entry.message]
-    
+
     if (entry.data !== undefined) {
       args.push(entry.data)
     }
-    
+
     if (entry.error) {
       args.push(entry.error)
     }
@@ -175,15 +251,174 @@ export class Logger {
   }
 
   /**
+   * Log to console in JSON format
+   * @param entry - Log entry
+   */
+  private logToConsoleJson(entry: LogEntry): void {
+    const jsonEntry = {
+      timestamp: entry.timestamp.toISOString(),
+      level: LogLevel[entry.level],
+      component: entry.component,
+      message: entry.message,
+      ...(entry.data && { data: entry.data }),
+      ...(entry.error && {
+        error: {
+          message: entry.error.message,
+          stack: entry.error.stack,
+          name: entry.error.name
+        }
+      }),
+      ...(entry.pid && { pid: entry.pid }),
+      ...(entry.hostname && { hostname: entry.hostname }),
+      ...(entry.requestId && { requestId: entry.requestId })
+    }
+
+    const jsonString = JSON.stringify(jsonEntry)
+
+    switch (entry.level) {
+      case LogLevel.DEBUG:
+        console.debug(jsonString)
+        break
+      case LogLevel.INFO:
+        console.info(jsonString)
+        break
+      case LogLevel.WARN:
+        console.warn(jsonString)
+        break
+      case LogLevel.ERROR:
+        console.error(jsonString)
+        break
+    }
+  }
+
+  /**
    * Store log entry in memory
    * @param entry - Log entry
    */
   private logToStorage(entry: LogEntry): void {
     this.logs.push(entry)
-    
+
     // Maintain maximum log count
     if (this.logs.length > this.config.maxStoredLogs) {
       this.logs = this.logs.slice(-this.config.maxStoredLogs)
+    }
+  }
+
+  /**
+   * Log to file
+   * @param entry - Log entry
+   */
+  private logToFile(entry: LogEntry): void {
+    if (!this.fileWriteStream || this.fileRotationInProgress) {
+      return
+    }
+
+    try {
+      let logLine: string
+
+      if (this.config.format === 'json') {
+        const jsonEntry = {
+          timestamp: entry.timestamp.toISOString(),
+          level: LogLevel[entry.level],
+          component: entry.component,
+          message: entry.message,
+          ...(entry.data && { data: entry.data }),
+          ...(entry.error && {
+            error: {
+              message: entry.error.message,
+              stack: entry.error.stack,
+              name: entry.error.name
+            }
+          }),
+          ...(entry.pid && { pid: entry.pid }),
+          ...(entry.hostname && { hostname: entry.hostname }),
+          ...(entry.requestId && { requestId: entry.requestId })
+        }
+        logLine = JSON.stringify(jsonEntry) + '\n'
+      } else {
+        const timestamp = entry.timestamp.toISOString()
+        const levelName = LogLevel[entry.level]
+        logLine = `[${timestamp}] <${entry.component}> ${levelName}: ${entry.message}`
+
+        if (entry.data) {
+          logLine += ` | Data: ${JSON.stringify(entry.data)}`
+        }
+
+        if (entry.error) {
+          logLine += ` | Error: ${entry.error.message}`
+          if (entry.error.stack) {
+            logLine += `\nStack: ${entry.error.stack}`
+          }
+        }
+
+        logLine += '\n'
+      }
+
+      // Write to file
+      this.fileWriteStream.write(logLine)
+      this.currentFileSize += Buffer.byteLength(logLine, 'utf8')
+
+      // Check if file rotation is needed
+      if (this.currentFileSize >= this.config.maxFileSize) {
+        this.rotateLogFile()
+      }
+
+    } catch (error) {
+      console.error('Logger: Failed to write to log file:', error)
+    }
+  }
+
+  /**
+   * Rotate log file when it gets too large
+   */
+  private async rotateLogFile(): Promise<void> {
+    if (this.fileRotationInProgress || !this.config.filePath) {
+      return
+    }
+
+    this.fileRotationInProgress = true
+
+    try {
+      // Close current stream
+      if (this.fileWriteStream) {
+        this.fileWriteStream.end()
+        this.fileWriteStream = null
+      }
+
+      // Rotate existing files
+      for (let i = this.config.maxFiles - 1; i > 0; i--) {
+        const oldFile = `${this.config.filePath}.${i}`
+        const newFile = `${this.config.filePath}.${i + 1}`
+
+        if (fs.existsSync(oldFile)) {
+          if (i === this.config.maxFiles - 1) {
+            // Delete the oldest file
+            fs.unlinkSync(oldFile)
+          } else {
+            fs.renameSync(oldFile, newFile)
+          }
+        }
+      }
+
+      // Move current file to .1
+      if (fs.existsSync(this.config.filePath)) {
+        fs.renameSync(this.config.filePath, `${this.config.filePath}.1`)
+      }
+
+      // Create new file stream
+      this.currentFileSize = 0
+      this.fileWriteStream = fs.createWriteStream(this.config.filePath, { flags: 'a' })
+
+      this.fileWriteStream.on('error', (error) => {
+        console.error('Logger: File write error after rotation:', error)
+        this.config.enableFile = false
+        this.fileWriteStream = null
+      })
+
+    } catch (error) {
+      console.error('Logger: Failed to rotate log file:', error)
+    } finally {
+      this.fileRotationInProgress = false
     }
   }
 
@@ -308,11 +543,118 @@ export class Logger {
       error: (message: string, error?: Error | any) => this.error(component, message, error),
     }
   }
+
+  /**
+   * Close the logger and clean up resources
+   */
+  async close(): Promise<void> {
+    if (this.fileWriteStream) {
+      return new Promise((resolve) => {
+        this.fileWriteStream!.end(() => {
+          this.fileWriteStream = null
+          resolve()
+        })
+      })
+    }
+  }
+
+  /**
+   * Load configuration from environment or config system
+   */
+  loadConfigFromEnvironment(): void {
+    try {
+      // Try to load from config system
+      const { getLoggingConfig } = require('@/lib/config')
+      const loggingConfig = getLoggingConfig()
+
+      this.updateConfig({
+        level: this.mapStringToLogLevel(loggingConfig.level),
+        format: loggingConfig.format,
+        enableConsole: loggingConfig.enableConsole,
+        enableFile: loggingConfig.enableFile,
+        filePath: loggingConfig.filePath,
+        maxFileSize: loggingConfig.maxFileSize,
+        maxFiles: loggingConfig.maxFiles
+      })
+
+      // Initialize file logging if it wasn't already initialized
+      if (loggingConfig.enableFile && loggingConfig.filePath && !this.fileWriteStream) {
+        this.initializeFileLogging()
+      }
+
+    } catch (error) {
+      // Fallback to environment variables
+      const envLogLevel = process.env.LOG_LEVEL?.toLowerCase()
+      if (envLogLevel) {
+        this.config.level = this.mapStringToLogLevel(envLogLevel)
+      }
+
+      const envLogFormat = process.env.LOG_FORMAT?.toLowerCase()
+      if (envLogFormat === 'json' || envLogFormat === 'text') {
+        this.config.format = envLogFormat
+      }
+
+      this.config.enableConsole = process.env.LOG_ENABLE_CONSOLE !== 'false'
+      this.config.enableFile = process.env.LOG_ENABLE_FILE === 'true'
+
+      if (this.config.enableFile) {
+        this.config.filePath = process.env.LOG_FILE_PATH || './logs/app.log'
+        this.initializeFileLogging()
+      }
+    }
+  }
+
+  /**
+   * Map string log level to LogLevel enum
+   */
+  private mapStringToLogLevel(level: string): LogLevel {
+    switch (level.toLowerCase()) {
+      case 'debug': return LogLevel.DEBUG
+      case 'info': return LogLevel.INFO
+      case 'warn': return LogLevel.WARN
+      case 'error': return LogLevel.ERROR
+      default: return LogLevel.INFO
+    }
+  }
 }
 
 /**
- * Default logger instance
+ * Default logger instance with enhanced configuration
  */
 export const logger = new Logger({
   level: process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.INFO,
 })
+
+// Load configuration when the module is imported
+if (typeof window === 'undefined') {
+  // Only load config on server side to avoid issues with client-side rendering
+  try {
+    logger.loadConfigFromEnvironment()
+  } catch (error) {
+    // Ignore errors during initial load, config might not be available yet
+  }
+}
+
+/**
+ * Create a scoped logger for a component
+ * @param component - Component name
+ * @returns Scoped logger
+ */
+export function createLogger(component: string) {
+  return logger.createScope(component)
+}
+
+/**
+ * Update logger configuration
+ * @param config - Partial configuration to update
+ */
+export function updateLoggerConfig(config: Partial<LoggerConfig>): void {
+  logger.updateConfig(config)
+}
+
+/**
+ * Close the default logger
+ */
+export async function closeLogger(): Promise<void> {
+  await logger.close()
+}

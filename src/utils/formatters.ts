@@ -315,7 +315,7 @@ export function formatBusinessForExport(business: BusinessRecord): Record<string
     'Address': formatAddress(business.address),
     'Contact Person': business.contactPerson || '',
     'Industry': formatIndustry(business.industry),
-    'Coordinates': business.coordinates 
+    'Coordinates': business.coordinates
       ? formatCoordinates(business.coordinates.lat, business.coordinates.lng)
       : '',
     'Scraped Date': formatDate(business.scrapedAt),

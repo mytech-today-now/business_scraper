@@ -439,6 +439,8 @@ interface IndustryCategory {
 ```env
 # Optional API keys for enhanced functionality
 GOOGLE_MAPS_API_KEY=your_key_here
+GOOGLE_SEARCH_API_KEY=your_key_here
+GOOGLE_SEARCH_ENGINE_ID=your_engine_id_here
 OPENCAGE_API_KEY=your_key_here
 BING_SEARCH_API_KEY=your_key_here
 

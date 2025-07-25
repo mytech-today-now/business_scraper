@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **🎯 Smart Industry Expansion System** (v1.1.0)
+  - Automatic expansion of industry categories into specific business types
+  - Professional Services → consulting, legal, accounting, financial, insurance
+  - Healthcare → medical, healthcare, clinic, hospital, dental
+  - 11 predefined industry categories with comprehensive keyword mappings
+  - Case-insensitive matching with partial phrase support
+  - Prioritizes quoted phrases over industry expansion
+  - Comprehensive test coverage with 10 test cases
+
+- **🏢 Advanced BBB Business Discovery** (v1.1.0)
+  - Real-time BBB website scraping using Puppeteer
+  - Anti-bot countermeasures with realistic browser fingerprinting
+  - Extracts actual business websites from BBB profiles
+  - Rate limiting with 1-second minimum delays between requests
+  - Exponential backoff retry logic (up to 3 attempts)
+  - Graceful fallback to directory search URLs
+  - Dedicated BBBScrapingService with comprehensive error handling
+
+- **📐 Precise ZIP Radius Validation** (v1.1.0)
+  - Geolocation-based distance calculation using Haversine formula
+  - ZIP code lookup service with API integration
+  - Fallback geolocation data for major US cities
+  - Accurate filtering of businesses within specified radius
+  - Support for ZIP+4 codes and address parsing
+  - ZipCodeService with caching and error recovery
+
+- **🔍 Enhanced Search Engine Architecture** (v1.1.0)
+  - Multi-strategy search with DuckDuckGo SERP scraping
+  - Individual criteria parsing for comma-separated terms
+  - Server-side proxy to avoid CORS issues
+  - Comprehensive search result validation
+  - Automatic failover between search providers
+  - Real business website discovery instead of generic results
+
+### Fixed
+- **Industry Search Logic**: Fixed critical issue where system searched for industry category names instead of individual business types
+- **BBB 500 Errors**: Resolved anti-scraping issues with proper Puppeteer implementation
+- **Export Functionality**: Fixed data export in preview table
+  - Implemented proper export handler in App component
+  - Added loading states and user feedback
+  - Fixed coordinate property mapping in formatters
+  - Added comprehensive test coverage for all export formats
+  - Export now works for CSV, XLSX, PDF, and JSON formats
+
+### Changed
+- **Search Query Processing**: Now expands "Professional Services businesses" into individual searches for consulting, legal, accounting, etc.
+- **BBB Integration**: Replaced simplified URL generation with actual website scraping
+- **Error Handling**: Enhanced with graceful degradation and detailed logging
+- **Performance**: Improved with better rate limiting and resource management
+
+### Technical Improvements
+- **New Services**: BBBScrapingService, ZipCodeService, enhanced search engine
+- **Test Coverage**: Added comprehensive test suites for industry expansion and BBB integration
+- **Code Quality**: Improved error handling, logging, and resource cleanup
+- **Architecture**: Better separation of concerns with dedicated service classes
+
 ### Planned Features
 - Advanced filtering options for scraped data
 - Bulk editing capabilities for business records
@@ -55,11 +112,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive error and warning displays
   - Intuitive configuration panels
 
-- **Export Capabilities**
+- **Export Capabilities** ✅ **FULLY IMPLEMENTED & TESTED**
   - Multiple export formats: CSV, XLSX, XLS, ODS, PDF, JSON
   - Customizable export options (headers, encoding, formatting)
   - Batch export with progress indication
   - File size estimation for large datasets
+  - One-click export from results table
+  - Automatic file download with proper naming
+  - Comprehensive test coverage (9 test cases)
 
 - **Performance & Reliability**
   - Retry logic with exponential backoff

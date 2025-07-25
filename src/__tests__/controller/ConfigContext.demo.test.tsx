@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { ConfigProvider, useConfig } from '@/controller/ConfigContext'
 
 // Mock the storage module
@@ -60,11 +60,13 @@ function TestComponent() {
 }
 
 function renderWithProvider(component: React.ReactElement) {
-  return render(
-    <ConfigProvider>
-      {component}
-    </ConfigProvider>
-  )
+  return act(() => {
+    return render(
+      <ConfigProvider>
+        {component}
+      </ConfigProvider>
+    )
+  })
 }
 
 describe('Demo Mode Configuration', () => {
@@ -74,7 +76,9 @@ describe('Demo Mode Configuration', () => {
   })
 
   it('should default to demo mode based on environment', async () => {
-    renderWithProvider(<TestComponent />)
+    await act(async () => {
+      renderWithProvider(<TestComponent />)
+    })
 
     await waitFor(() => {
       // In test environment, NODE_ENV might be 'test', so demo mode could be off by default
@@ -85,7 +89,9 @@ describe('Demo Mode Configuration', () => {
   })
 
   it('should toggle demo mode when button is clicked', async () => {
-    renderWithProvider(<TestComponent />)
+    await act(async () => {
+      renderWithProvider(<TestComponent />)
+    })
 
     // Wait for initial render and get the initial state
     let initialState: string
@@ -96,7 +102,9 @@ describe('Demo Mode Configuration', () => {
     })
 
     // Click toggle button
-    fireEvent.click(screen.getByTestId('toggle-demo-mode'))
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('toggle-demo-mode'))
+    })
 
     // Check that demo mode has toggled
     await waitFor(() => {

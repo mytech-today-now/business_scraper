@@ -212,11 +212,104 @@ export class ValidationService {
    * @returns Sanitized string
    */
   sanitizeInput(input: string): string {
-    return input
-      .trim()
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/[^\w\s@.-]/g, '') // Remove special characters except common ones
+    let result = input.trim()
+
+    // Remove complete script tags first
+    result = result.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+
+    // Remove javascript URLs
+    result = result.replace(/javascript:/gi, '')
+
+    // Remove event handlers (like onclick=, onload=, etc.)
+    result = result.replace(/on\w+\s*=\s*"[^"]*"/gi, '')
+    result = result.replace(/on\w+\s*=\s*'[^']*'/gi, '')
+    result = result.replace(/on\w+\s*=\s*[^\s"'>]+/gi, '')
+
+    // Remove other HTML tags (but not empty < > pairs)
+    result = result.replace(/<[a-zA-Z][^>]*>/g, '')
+    result = result.replace(/<\/[a-zA-Z][^>]*>/g, '')
+
+    // Escape dangerous characters that remain
+    result = result.replace(/[<>'"&]/g, (char) => {
+      const escapeMap: { [key: string]: string } = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '&': '&amp;',
+      }
+      return escapeMap[char] || char
+    })
+
+    return result
+  }
+
+  /**
+   * Validate input against security threats
+   * @param input - Input string to validate
+   * @returns Validation result with security checks
+   */
+  validateInputSecurity(input: string): ValidationResult {
+    const result: ValidationResult = {
+      isValid: true,
+      errors: [],
+      warnings: [],
+    }
+
+    // Check for SQL injection patterns
+    const sqlPatterns = [
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
+      /(--|\/\*|\*\/)/,
+      /(\b(OR|AND)\b.*=.*)/i,
+      /(\bUNION\b.*\bSELECT\b)/i,
+    ]
+
+    for (const pattern of sqlPatterns) {
+      if (pattern.test(input)) {
+        result.isValid = false
+        result.errors.push('Input contains potentially dangerous SQL patterns')
+        break
+      }
+    }
+
+    // Check for XSS patterns
+    const xssPatterns = [
+      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+      /javascript:/i,
+      /on\w+\s*=/i,
+      /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi,
+      /<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi,
+      /<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi,
+    ]
+
+    for (const pattern of xssPatterns) {
+      if (pattern.test(input)) {
+        result.isValid = false
+        result.errors.push('Input contains potentially dangerous XSS patterns')
+        break
+      }
+    }
+
+    // Check for path traversal
+    if (/\.\.\/|\.\.\\/.test(input)) {
+      result.isValid = false
+      result.errors.push('Input contains path traversal patterns')
+    }
+
+    // Check for command injection
+    const commandPatterns = [
+      /[;&|`$(){}[\]]/,
+      /\b(cat|ls|dir|type|echo|curl|wget|nc|netcat)\b/i,
+    ]
+
+    for (const pattern of commandPatterns) {
+      if (pattern.test(input)) {
+        result.warnings.push('Input contains characters or commands that could be dangerous')
+        break
+      }
+    }
+
+    return result
   }
 
   /**
