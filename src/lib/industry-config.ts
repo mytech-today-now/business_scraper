@@ -17,13 +17,19 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'legal services',
       'criminal defense attorney',
       'business attorney',
-      'intellectual property lawyer'
+      'intellectual property lawyer',
+      'real estate attorney',
+      'personal injury law firm',
+      'civil litigation lawyer',
+      'estate planning attorney'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.justia.*',
       '*.findlaw.*',
-      '*.avvo.*'
+      '*.avvo.*',
+      '*.nolo.*',
+      '*.superlawyers.*'
     ]
   },
   {
@@ -36,12 +42,17 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'tax advisory firms',
       'small business accountant',
       'tax preparation services',
-      'financial auditing firms'
+      'financial auditing firms',
+      'virtual accounting firm',
+      'outsourced CFO',
+      'business tax consultant'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.hrblock.*',
-      '*.intuit.*'
+      '*.intuit.*',
+      '*.turbotax.*',
+      '*.libertytax.*'
     ]
   },
   {
@@ -54,10 +65,15 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'residential architecture',
       'licensed architect',
       'building design services',
-      'interior architecture'
+      'interior architecture',
+      'landscape architecture firm',
+      'urban design studio'
     ],
     isCustom: false,
-    domainBlacklist: []
+    domainBlacklist: [
+      '*.archdaily.*',
+      '*.houzz.*'
+    ]
   },
   {
     id: 'medical-clinics',
@@ -69,12 +85,16 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'walk-in clinic',
       'internal medicine',
       'pediatric clinic',
-      'healthcare provider'
+      'healthcare provider',
+      'telehealth service',
+      'women\'s health clinic'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.zocdoc.*',
-      '*.healthgrades.*'
+      '*.healthgrades.*',
+      '*.webmd.*',
+      '*.doctolib.*'
     ]
   },
   {
@@ -87,12 +107,15 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'orthodontist near me',
       'dental implants',
       'emergency dental care',
-      'pediatric dentist'
+      'pediatric dentist',
+      'prosthodontist',
+      'teeth whitening services'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.1-800-dentist.*',
-      '*.zocdoc.*'
+      '*.zocdoc.*',
+      '*.healthgrades.*'
     ]
   },
   {
@@ -104,13 +127,17 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'realtors near me',
       'residential real estate office',
       'real estate investment firm',
-      'property sales agency'
+      'property sales agency',
+      'property management company',
+      'luxury real estate agent'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.zillow.*',
       '*.realtor.*',
-      '*.redfin.*'
+      '*.redfin.*',
+      '*.trulia.*',
+      '*.homes.*'
     ]
   },
   {
@@ -122,7 +149,8 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'commercial insurance providers',
       'homeowners insurance agency',
       'auto insurance agents',
-      'life insurance advisors'
+      'life insurance advisors',
+      'business insurance consultant'
     ],
     isCustom: false,
     domainBlacklist: [
@@ -132,7 +160,8 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       '*.farmers.*',
       '*.nationwide.*',
       '*.travelers.*',
-      '*.allstate.*'
+      '*.allstate.*',
+      '*.esurance.*'
     ]
   },
   {
@@ -145,12 +174,15 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'fiduciary financial advisor',
       'retirement planning consultant',
       'fee-only financial planner',
-      'private wealth management'
+      'private wealth management',
+      'financial consulting firm'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.fidelity.*',
-      '*.vanguard.*'
+      '*.vanguard.*',
+      '*.charlesschwab.*',
+      '*.merrilledge.*'
     ]
   },
   {
@@ -162,11 +194,13 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'charity organizations near me',
       'foundation services',
       'youth nonprofit programs',
-      'education-based nonprofits'
+      'education-based nonprofits',
+      'grant-funded organization'
     ],
     isCustom: false,
     domainBlacklist: [
-      '*.guidestar.*'
+      '*.guidestar.*',
+      '*.charitynavigator.*'
     ]
   },
   {
@@ -179,13 +213,16 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'temp agency',
       'IT staffing firm',
       'technical recruiter',
-      'headhunting service'
+      'headhunting service',
+      'staff augmentation company'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.indeed.*',
       '*.ziprecruiter.*',
-      '*.monster.*'
+      '*.monster.*',
+      '*.glassdoor.*',
+      '*.linkedin.*'
     ]
   },
   {
@@ -197,12 +234,14 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'wedding planner business',
       'party planner',
       'conference planning company',
-      'event production services'
+      'event production services',
+      'nonprofit event organizer'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.theknot.*',
-      '*.weddingwire.*'
+      '*.weddingwire.*',
+      '*.eventbrite.*'
     ]
   },
   {
@@ -213,12 +252,17 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'hospitality services',
       'resort operations firms',
       'lodging management',
-      'boutique hotel group'
+      'boutique hotel group',
+      'hospitality consulting firms',
+      'meeting and convention services'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.tripadvisor.*',
-      '*.booking.*'
+      '*.booking.*',
+      '*.expedia.*',
+      '*.hotels.*',
+      '*.airbnb.*'
     ]
   },
   {
@@ -229,7 +273,9 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'civil engineering services',
       'structural engineers near me',
       'electrical engineering consultants',
-      'environmental engineering firm'
+      'environmental engineering firm',
+      'geotechnical services',
+      'engineering project consultants'
     ],
     isCustom: false,
     domainBlacklist: []
@@ -242,11 +288,14 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'independent high school',
       'charter school near me',
       'college preparatory school',
-      'Montessori academy'
+      'Montessori academy',
+      'faith-based private schools',
+      'STEM private education'
     ],
     isCustom: false,
     domainBlacklist: [
-      '*.greatschools.*'
+      '*.greatschools.*',
+      '*.niche.*'
     ]
   },
   {
@@ -258,12 +307,15 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'advertising firms near me',
       'creative agency',
       'SEO marketing company',
-      'content marketing agency'
+      'content marketing agency',
+      'growth marketing consultants'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.fiverr.*',
-      '*.upwork.*'
+      '*.upwork.*',
+      '*.peopleperhour.*',
+      '*.freelancer.*'
     ]
   },
   {
@@ -278,13 +330,15 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'digital marketplace',
       'online retail',
       'shopping platform',
-      'online business'
+      'online business',
+      'niche product shop'
     ],
     isCustom: true,
     domainBlacklist: [
       '*.amazon.*',
       '*.etsy.*',
-      '*.ebay.*'
+      '*.ebay.*',
+      '*.shopify.*'
     ]
   },
   {
@@ -296,7 +350,8 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'OEM manufacturers',
       'custom machining',
       'contract manufacturing',
-      'automated production'
+      'automated production',
+      'industrial equipment manufacturers'
     ],
     isCustom: false,
     domainBlacklist: []
@@ -310,12 +365,14 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       '3PL services near me',
       'transportation logistics',
       'warehouse fulfillment service',
-      'distribution center services'
+      'distribution center services',
+      'freight forwarding firm'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.ups.*',
-      '*.fedex.*'
+      '*.fedex.*',
+      '*.dhl.*'
     ]
   },
   {
@@ -327,10 +384,15 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'contract automation platform',
       'compliance software',
       'case management software',
-      'law practice management tools'
+      'law practice management tools',
+      'legal workflow automation'
     ],
     isCustom: true,
-    domainBlacklist: []
+    domainBlacklist: [
+      '*.clio.*',
+      '*.mycase.*',
+      '*.practicepanther.*'
+    ]
   },
 ];
 
