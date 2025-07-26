@@ -51,6 +51,24 @@ export interface ProcessingWindowProps {
 }
 
 /**
+ * Get console log color based on level
+ */
+function getConsoleLogColor(level: string): string {
+  switch (level) {
+    case 'error':
+      return 'text-red-400'
+    case 'warn':
+      return 'text-yellow-400'
+    case 'info':
+      return 'text-blue-400'
+    case 'debug':
+      return 'text-purple-400'
+    default:
+      return 'text-gray-300'
+  }
+}
+
+/**
  * Processing Window Component
  * Shows real-time processing status and clearly indicates demo vs real scraping
  */
@@ -66,6 +84,13 @@ export function ProcessingWindow({
   currentUrl
 }: ProcessingWindowProps) {
   const [autoScroll, setAutoScroll] = useState(true)
+  const [consoleLogs, setConsoleLogs] = useState<Array<{
+    timestamp: Date
+    level: 'log' | 'info' | 'warn' | 'error' | 'debug'
+    message: string
+    args: any[]
+  }>>([])
+  const [showConsole, setShowConsole] = useState(false)
 
   // Auto-scroll to latest step when new steps are added
   useEffect(() => {
@@ -76,6 +101,62 @@ export function ProcessingWindow({
       }
     }
   }, [steps.length, autoScroll, isVisible])
+
+  // Console capture setup
+  useEffect(() => {
+    const originalConsole = {
+      log: console.log,
+      info: console.info,
+      warn: console.warn,
+      error: console.error,
+      debug: console.debug
+    }
+
+    const captureConsole = (level: 'log' | 'info' | 'warn' | 'error' | 'debug') => {
+      return (...args: any[]) => {
+        // Call original console method
+        originalConsole[level](...args)
+
+        // Capture for our display
+        const message = args.map(arg =>
+          typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+        ).join(' ')
+
+        setConsoleLogs(prev => [...prev.slice(-999), { // Keep last 1000 logs
+          timestamp: new Date(),
+          level,
+          message,
+          args
+        }])
+      }
+    }
+
+    // Override console methods
+    console.log = captureConsole('log')
+    console.info = captureConsole('info')
+    console.warn = captureConsole('warn')
+    console.error = captureConsole('error')
+    console.debug = captureConsole('debug')
+
+    // Cleanup on unmount
+    return () => {
+      console.log = originalConsole.log
+      console.info = originalConsole.info
+      console.warn = originalConsole.warn
+      console.error = originalConsole.error
+      console.debug = originalConsole.debug
+    }
+  }, [])
+
+  // Auto-scroll console output when new logs are added
+  useEffect(() => {
+    if (showConsole && autoScroll) {
+      const container = document.getElementById('console-output-container')
+      if (container) {
+        container.scrollTop = container.scrollHeight
+      }
+    }
+  }, [consoleLogs.length, showConsole, autoScroll])
 
   const getStepIcon = (step: ProcessingStep) => {
     switch (step.status) {
@@ -307,6 +388,58 @@ export function ProcessingWindow({
                 </div>
               </div>
             ))
+          )}
+        </div>
+
+        {/* Console Output Section */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-medium text-gray-700">Console Output</h3>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setConsoleLogs([])}
+                className="text-xs"
+              >
+                Clear Console
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowConsole(!showConsole)}
+                className="text-xs"
+              >
+                {showConsole ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+          </div>
+
+          {showConsole && (
+            <div className="border rounded-lg bg-gray-900 text-gray-100 font-mono text-xs">
+              <div
+                id="console-output-container"
+                className="h-48 min-h-48 max-h-96 overflow-auto p-3 space-y-1 resize-vertical"
+              >
+                {consoleLogs.length === 0 ? (
+                  <div className="text-gray-500 italic">No console output yet...</div>
+                ) : (
+                  consoleLogs.map((log, index) => (
+                    <div key={index} className="flex items-start space-x-2">
+                      <span className="text-gray-500 text-xs flex-shrink-0">
+                        {log.timestamp.toLocaleTimeString()}
+                      </span>
+                      <span className={`flex-shrink-0 ${getConsoleLogColor(log.level)}`}>
+                        [{log.level.toUpperCase()}]
+                      </span>
+                      <span className="flex-1 break-all whitespace-pre-wrap">
+                        {log.message}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           )}
         </div>
       </CardContent>

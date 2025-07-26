@@ -84,6 +84,10 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     @apply bg-foreground;
   }
+
+  .resize-vertical {
+    resize: vertical;
+  }
 }
 
 /* Custom animations */

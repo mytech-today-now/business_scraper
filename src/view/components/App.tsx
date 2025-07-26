@@ -403,8 +403,22 @@ export function App() {
                   variant={activeTab === 'scraping' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setActiveTab('scraping')}
+                  disabled={state.industriesInEditMode.length > 0}
+                  title={state.industriesInEditMode.length > 0
+                    ? `Please save or cancel edits for: ${state.industriesInEditMode
+                        .map(id => state.industries.find(industry => industry.id === id)?.name)
+                        .filter(Boolean)
+                        .join(', ')}`
+                    : undefined
+                  }
+                  className={state.industriesInEditMode.length > 0 ? 'opacity-50 cursor-not-allowed' : ''}
                 >
                   Scraping
+                  {state.industriesInEditMode.length > 0 && (
+                    <span className="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-yellow-500 rounded-full">
+                      !
+                    </span>
+                  )}
                 </Button>
               </div>
             </div>

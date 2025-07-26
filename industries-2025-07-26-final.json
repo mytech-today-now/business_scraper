@@ -1,0 +1,396 @@
+{
+  "name": "Business Scraper",
+  "url": "https://github.com/mytech-today-now/business_scraper",
+  "version": "1.0.1",
+  "exportDate": "2025-07-26T16:00:00.000Z",
+  "industries": [
+    {
+      "id": "legal-services",
+      "name": "Law Firms & Legal Services",
+      "keywords": [
+        "law firm near me",
+        "corporate law office",
+        "family law services",
+        "divorce lawyer",
+        "legal services",
+        "criminal defense attorney",
+        "business attorney",
+        "intellectual property lawyer",
+        "real estate attorney",
+        "personal injury law firm",
+        "civil litigation lawyer",
+        "estate planning attorney"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.justia.*",
+        "*.findlaw.*",
+        "*.avvo.*",
+        "*.nolo.*",
+        "*.superlawyers.*"
+      ]
+    },
+    {
+      "id": "accounting",
+      "name": "Accounting & Tax Services",
+      "keywords": [
+        "CPA firm",
+        "accounting services for businesses",
+        "bookkeeping service",
+        "tax advisory firms",
+        "small business accountant",
+        "tax preparation services",
+        "financial auditing firms",
+        "virtual accounting firm",
+        "outsourced CFO",
+        "business tax consultant"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.hrblock.*",
+        "*.intuit.*",
+        "*.turbotax.*",
+        "*.libertytax.*"
+      ]
+    },
+    {
+      "id": "architecture",
+      "name": "Architectural Services",
+      "keywords": [
+        "architectural design services",
+        "architecture firm",
+        "commercial architects",
+        "residential architecture",
+        "licensed architect",
+        "building design services",
+        "interior architecture",
+        "landscape architecture firm",
+        "urban design studio"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.archdaily.*",
+        "*.houzz.*"
+      ]
+    },
+    {
+      "id": "medical-clinics",
+      "name": "Medical Clinics",
+      "keywords": [
+        "primary care clinic",
+        "family medical practice",
+        "urgent care near me",
+        "walk-in clinic",
+        "internal medicine",
+        "pediatric clinic",
+        "healthcare provider",
+        "telehealth service",
+        "women's health clinic"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.zocdoc.*",
+        "*.healthgrades.*",
+        "*.webmd.*",
+        "*.doctolib.*"
+      ]
+    },
+    {
+      "id": "dental",
+      "name": "Dental Offices",
+      "keywords": [
+        "dental clinic",
+        "family dentist",
+        "cosmetic dentistry services",
+        "orthodontist near me",
+        "dental implants",
+        "emergency dental care",
+        "pediatric dentist",
+        "prosthodontist",
+        "teeth whitening services"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.1-800-dentist.*",
+        "*.zocdoc.*",
+        "*.healthgrades.*"
+      ]
+    },
+    {
+      "id": "real-estate",
+      "name": "Real Estate Agencies",
+      "keywords": [
+        "real estate brokerage",
+        "commercial real estate agency",
+        "realtors near me",
+        "residential real estate office",
+        "real estate investment firm",
+        "property sales agency",
+        "property management company",
+        "luxury real estate agent"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.zillow.*",
+        "*.realtor.*",
+        "*.redfin.*",
+        "*.trulia.*",
+        "*.homes.*"
+      ]
+    },
+    {
+      "id": "insurance",
+      "name": "Insurance Agencies",
+      "keywords": [
+        "insurance broker",
+        "independent insurance agency",
+        "commercial insurance providers",
+        "homeowners insurance agency",
+        "auto insurance agents",
+        "life insurance advisors",
+        "business insurance consultant"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.statefarm.*",
+        "*.progressive.*",
+        "*.geico.*",
+        "*.farmers.*",
+        "*.nationwide.*",
+        "*.travelers.*",
+        "*.allstate.*",
+        "*.esurance.*"
+      ]
+    },
+    {
+      "id": "financial-advisory",
+      "name": "Financial Advisory Services",
+      "keywords": [
+        "wealth management firm",
+        "financial planner near me",
+        "investment advisory services",
+        "fiduciary financial advisor",
+        "retirement planning consultant",
+        "fee-only financial planner",
+        "private wealth management",
+        "financial consulting firm"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.fidelity.*",
+        "*.vanguard.*",
+        "*.charlesschwab.*",
+        "*.merrilledge.*"
+      ]
+    },
+    {
+      "id": "nonprofit",
+      "name": "Nonprofit Organizations",
+      "keywords": [
+        "501c3 organizations",
+        "nonprofit services",
+        "charity organizations near me",
+        "foundation services",
+        "youth nonprofit programs",
+        "education-based nonprofits",
+        "grant-funded organization"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.guidestar.*",
+        "*.charitynavigator.*"
+      ]
+    },
+    {
+      "id": "staffing",
+      "name": "Staffing & Recruiting Firms",
+      "keywords": [
+        "recruiting services",
+        "staffing agency",
+        "executive search firm",
+        "temp agency",
+        "IT staffing firm",
+        "technical recruiter",
+        "headhunting service",
+        "staff augmentation company"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.indeed.*",
+        "*.ziprecruiter.*",
+        "*.monster.*",
+        "*.glassdoor.*",
+        "*.linkedin.*"
+      ]
+    },
+    {
+      "id": "event-services",
+      "name": "Event Planning & Management",
+      "keywords": [
+        "event planning services",
+        "corporate event organizer",
+        "wedding planner business",
+        "party planner",
+        "conference planning company",
+        "event production services",
+        "nonprofit event organizer"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.theknot.*",
+        "*.weddingwire.*",
+        "*.eventbrite.*"
+      ]
+    },
+    {
+      "id": "hospitality",
+      "name": "Hospitality & Hotel Management",
+      "keywords": [
+        "hotel management company",
+        "hospitality services",
+        "resort operations firms",
+        "lodging management",
+        "boutique hotel group",
+        "hospitality consulting firms",
+        "meeting and convention services"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.tripadvisor.*",
+        "*.booking.*",
+        "*.expedia.*",
+        "*.hotels.*",
+        "*.airbnb.*"
+      ]
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering Firms",
+      "keywords": [
+        "mechanical engineering firm",
+        "civil engineering services",
+        "structural engineers near me",
+        "electrical engineering consultants",
+        "environmental engineering firm",
+        "geotechnical services",
+        "engineering project consultants"
+      ],
+      "isCustom": false,
+      "domainBlacklist": []
+    },
+    {
+      "id": "education",
+      "name": "Private & Charter Schools",
+      "keywords": [
+        "private elementary school",
+        "independent high school",
+        "charter school near me",
+        "college preparatory school",
+        "Montessori academy",
+        "faith-based private schools",
+        "STEM private education"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.greatschools.*",
+        "*.niche.*"
+      ]
+    },
+    {
+      "id": "marketing-agency",
+      "name": "Marketing & Creative Agencies",
+      "keywords": [
+        "digital marketing agency",
+        "branding services",
+        "advertising firms near me",
+        "creative agency",
+        "SEO marketing company",
+        "content marketing agency",
+        "growth marketing consultants"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.fiverr.*",
+        "*.upwork.*",
+        "*.peopleperhour.*",
+        "*.freelancer.*"
+      ]
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-commerce Businesses",
+      "keywords": [
+        "online clothing store",
+        "DTC product brand",
+        "dropshipping store",
+        "e-commerce",
+        "online store",
+        "digital marketplace",
+        "online retail",
+        "shopping platform",
+        "online business",
+        "niche product shop"
+      ],
+      "isCustom": true,
+      "domainBlacklist": [
+        "*.amazon.*",
+        "*.etsy.*",
+        "*.ebay.*",
+        "*.shopify.*"
+      ]
+    },
+    {
+      "id": "manufacturing",
+      "name": "Manufacturing Companies",
+      "keywords": [
+        "precision manufacturing",
+        "industrial fabrication services",
+        "OEM manufacturers",
+        "custom machining",
+        "contract manufacturing",
+        "automated production",
+        "industrial equipment manufacturers"
+      ],
+      "isCustom": false,
+      "domainBlacklist": []
+    },
+    {
+      "id": "logistics",
+      "name": "Logistics & Supply Chain",
+      "keywords": [
+        "freight logistics provider",
+        "supply chain company",
+        "3PL services near me",
+        "transportation logistics",
+        "warehouse fulfillment service",
+        "distribution center services",
+        "freight forwarding firm"
+      ],
+      "isCustom": false,
+      "domainBlacklist": [
+        "*.ups.*",
+        "*.fedex.*",
+        "*.dhl.*"
+      ]
+    },
+    {
+      "id": "legal-saas",
+      "name": "Legal Tech SaaS",
+      "keywords": [
+        "legal software startup",
+        "legal SaaS company",
+        "contract automation platform",
+        "compliance software",
+        "case management software",
+        "law practice management tools",
+        "legal workflow automation"
+      ],
+      "isCustom": true,
+      "domainBlacklist": [
+        "*.clio.*",
+        "*.mycase.*",
+        "*.practicepanther.*"
+      ]
+    }
+  ]
+}

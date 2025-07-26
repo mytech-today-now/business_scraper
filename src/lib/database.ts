@@ -27,7 +27,7 @@ export function getDatabaseConfig(): DatabaseConfig {
     const { getDatabaseConfig: getCentralizedDbConfig } = require('./config')
     const dbConfig = getCentralizedDbConfig()
 
-    if (dbConfig.url) {
+    if (dbConfig.url && dbConfig.type === 'postgresql') {
       // Parse DATABASE_URL if provided
       try {
         const url = new URL(dbConfig.url)
@@ -48,8 +48,8 @@ export function getDatabaseConfig(): DatabaseConfig {
         logger.error('Database', 'Invalid DATABASE_URL format', error)
         throw new Error('Invalid DATABASE_URL format')
       }
-    } else if (dbConfig.host) {
-      // Use individual configuration values
+    } else if (dbConfig.type === 'postgresql' && dbConfig.host) {
+      // Use individual configuration values for PostgreSQL
       return {
         type: 'postgresql',
         host: dbConfig.host,
@@ -64,7 +64,7 @@ export function getDatabaseConfig(): DatabaseConfig {
         connectionTimeout: dbConfig.connectionTimeout,
       }
     } else {
-      // Default to IndexedDB for client-side storage
+      // Use IndexedDB (default or explicitly configured)
       return {
         type: 'indexeddb',
       }

@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useMemo, useCallback } from 'react'
-import { 
-  Download, 
-  Edit, 
-  Trash2, 
-  ExternalLink, 
+import {
+  Download,
+  Edit,
+  Trash2,
+  ExternalLink,
   Search,
   Filter,
   SortAsc,
@@ -17,14 +17,15 @@ import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
-import { 
-  formatBusinessName, 
-  formatAddress, 
-  formatPhoneNumber, 
+import {
+  formatBusinessName,
+  formatAddress,
+  formatPhoneNumber,
   formatDate,
-  formatUrl 
+  formatUrl
 } from '@/utils/formatters'
 import { clsx } from 'clsx'
+import toast from 'react-hot-toast'
 
 /**
  * Column definition interface
@@ -311,15 +312,25 @@ export function ResultsTable({
 
       case 'websiteUrl':
         return (
-          <a
-            href={business.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline text-xs flex items-center gap-1 break-all"
-          >
-            {formatUrl(business.websiteUrl)}
-            <ExternalLink className="h-3 w-3 flex-shrink-0" />
-          </a>
+          <div className="flex items-center gap-1">
+            <a
+              href={business.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline text-xs flex items-center gap-1 break-all"
+            >
+              {formatUrl(business.websiteUrl)}
+              <ExternalLink className="h-3 w-3 flex-shrink-0" />
+            </a>
+            <button
+              type="button"
+              onClick={() => handleAddToBlacklist(business.websiteUrl, business.industry)}
+              className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-1 transition-colors"
+              title={`Block ${extractDomain(business.websiteUrl)} from ${business.industry} searches`}
+            >
+              🚫
+            </button>
+          </div>
         )
 
       case 'street':
@@ -422,6 +433,70 @@ export function ResultsTable({
         return String(business[column.key as keyof BusinessRecord] || '')
     }
   }, [editingCell, handleCellEdit, onDelete])
+
+  /**
+   * Extract clean domain from URL
+   */
+  const extractDomain = useCallback((url: string): string => {
+    try {
+      // If it's already just a domain, return it
+      if (!url.includes('://')) {
+        url = 'https://' + url
+      }
+
+      const urlObj = new URL(url)
+      let domain = urlObj.hostname.toLowerCase()
+
+      // Remove www. prefix
+      if (domain.startsWith('www.')) {
+        domain = domain.substring(4)
+      }
+
+      return domain
+    } catch (error) {
+      // If URL parsing fails, try to extract domain manually
+      let domain = url.toLowerCase()
+      domain = domain.replace(/^https?:\/\//, '')
+      domain = domain.replace(/^www\./, '')
+      domain = domain.split('/')[0] || ''
+      domain = domain.split('?')[0] || ''
+      domain = domain.split('#')[0] || ''
+
+      return domain
+    }
+  }, [])
+
+  /**
+   * Handle adding domain to blacklist
+   */
+  const handleAddToBlacklist = useCallback(async (url: string, industry: string) => {
+    try {
+      const domain = extractDomain(url)
+
+      const response = await fetch('/api/config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'add-domain-to-blacklist',
+          domain,
+          industry
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        toast.success(`Domain ${domain} added to ${industry} blacklist`)
+      } else {
+        toast.error(result.message || 'Failed to add domain to blacklist')
+      }
+    } catch (error) {
+      console.error('Failed to add domain to blacklist:', error)
+      toast.error('Failed to add domain to blacklist')
+    }
+  }, [extractDomain])
 
   const visibleColumns = columns.filter(col => col.visible)
   const allSelected = selectedRows.size === filteredAndSortedBusinesses.length && filteredAndSortedBusinesses.length > 0

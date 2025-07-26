@@ -128,7 +128,7 @@ export function IndustryItemEditor({
           ref={keywordsRef}
           value={keywordsText}
           onChange={(e) => setKeywordsText(e.target.value)}
-          className="w-full h-24 px-3 py-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
+          className="w-full min-h-24 max-h-80 px-3 py-2 text-sm border border-input rounded-md resize-vertical overflow-auto focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
           placeholder="Enter search keywords, one per line..."
         />
       </div>
@@ -141,7 +141,7 @@ export function IndustryItemEditor({
         <textarea
           value={blacklistText}
           onChange={(e) => setBlacklistText(e.target.value)}
-          className="w-full h-20 px-3 py-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
+          className="w-full min-h-20 max-h-60 px-3 py-2 text-sm border border-input rounded-md resize-vertical overflow-auto focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
           placeholder="Enter domains to exclude, one per line:&#10;*.statefarm.*&#10;*insurance*"
         />
         <p className="text-xs text-muted-foreground">

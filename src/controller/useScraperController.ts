@@ -219,52 +219,55 @@ export function useScraperController() {
 
       toast.success('Scraping started!')
 
-      // Search for websites for each industry
-      const allUrls: string[] = []
-
-      for (let i = 0; i < industryNames.length; i++) {
+      // Process each industry completely before moving to the next
+      for (let industryIndex = 0; industryIndex < industryNames.length; industryIndex++) {
         if (abortControllerRef.current?.signal.aborted) break
 
-        const industry = industryNames[i]
+        const industry = industryNames[industryIndex]
 
         if (!industry) {
           continue
         }
 
-        updateProgress(i, industryNames.length, `Searching for ${industry} businesses...`)
+        logger.info('ScraperController', `Starting complete processing for industry: ${industry}`)
 
-        // Add search step
+        // Update overall progress
+        updateProgress(industryIndex, industryNames.length, `Processing ${industry} businesses...`)
+
+        // Step 1: Search for websites for this industry
         addProcessingStep({
           name: `Searching ${industry} Businesses`,
           status: 'running',
           details: `Query: "${industry}" in ${config.zipCode}`
         })
 
+        let industryUrls: string[] = []
+
         try {
-          // Pass the industry name directly - let the search engine handle expansion
+          // Search for websites for this specific industry
           const query: string = industry
-          const urls = await scraperService.searchForWebsites(
+          industryUrls = await scraperService.searchForWebsites(
             query,
             config.zipCode,
-            Math.ceil(50 / industryNames.length) // Distribute search results
+            50 // Get up to 50 results per industry
           )
 
-          allUrls.push(...urls)
-          logger.info('ScraperController', `Found ${urls.length} URLs for ${industry}`)
+          logger.info('ScraperController', `Found ${industryUrls.length} URLs for ${industry}`)
 
           // Update search step as completed
           const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industry}`))
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
             // Check if we're actually using demo mode (fallback)
-            const isUsingDemo = scraperService.isDemoMode() || urls.some(url => url.includes('demo') || url.includes('example'))
+            const isUsingDemo = scraperService.isDemoMode() || industryUrls.some(url => url.includes('demo') || url.includes('example'))
             updateProcessingStep(latestSearchStep.id, {
               status: 'completed',
-              details: `Found ${urls.length} websites${isUsingDemo ? ' (using demo data)' : ''}`,
-              businessesFound: urls.length,
+              details: `Found ${industryUrls.length} websites${isUsingDemo ? ' (using demo data)' : ''}`,
+              businessesFound: industryUrls.length,
               dataSource: isUsingDemo ? 'demo' : 'real'
             })
           }
+
         } catch (error) {
           const errorMsg = `Failed to search for ${industry} businesses: ${error}`
           addError(errorMsg)
@@ -278,124 +281,137 @@ export function useScraperController() {
               error: errorMsg
             })
           }
+          continue // Move to next industry
+        }
+
+        // Step 2: Scrape all websites for this industry completely
+        if (industryUrls.length > 0) {
+          // Remove duplicates for this industry
+          const uniqueIndustryUrls = Array.from(new Set(industryUrls))
+
+          addProcessingStep({
+            name: `Scraping ${industry} Websites`,
+            status: 'running',
+            details: `Processing ${uniqueIndustryUrls.length} websites with ${config.pagesPerSite} pages each`
+          })
+
+          const batchSize = 3 // Process in batches to avoid overwhelming
+          const totalBatches = Math.ceil(uniqueIndustryUrls.length / batchSize)
+          let scrapedCount = 0
+
+          for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+            if (abortControllerRef.current?.signal.aborted) break
+
+            const batchStart = batchIndex * batchSize
+            const batchEnd = Math.min(batchStart + batchSize, uniqueIndustryUrls.length)
+            const batchUrls = uniqueIndustryUrls.slice(batchStart, batchEnd)
+
+            // Process batch in parallel
+            const batchPromises = batchUrls.map(async (url, index) => {
+              if (abortControllerRef.current?.signal.aborted) return []
+
+              // Add scraping step for this specific URL
+              addProcessingStep({
+                name: `Scraping Website`,
+                status: 'running',
+                url: url,
+                details: `Extracting business data from ${url} (${config.pagesPerSite} pages)`
+              })
+
+              try {
+                updateProgress(
+                  industryIndex + (scrapedCount + index) / uniqueIndustryUrls.length,
+                  industryNames.length,
+                  `Scraping ${industry}: ${url} (${config.pagesPerSite} pages)...`
+                )
+
+                // Skip scraping directory/search pages
+                if (isDirectoryOrSearchPage(url)) {
+                  logger.warn('ScraperController', `Skipping directory/search page: ${url}`)
+                  return []
+                }
+
+                // Scrape this website with the configured number of pages
+                const businesses = await scraperService.scrapeWebsite(url, config.searchDepth, config.pagesPerSite)
+
+                // Set industry for scraped businesses
+                const businessesWithIndustry = businesses.map(business => ({
+                  ...business,
+                  industry: industry, // Use the current industry being processed
+                }))
+
+                // Update scraping step as completed
+                const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
+                const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
+                if (latestScrapingStep) {
+                  // Check if we're using demo mode
+                  const isUsingDemo = scraperService.isDemoMode() || url.includes('demo') || url.includes('example') || url.includes('bellavista') || url.includes('techflow')
+                  updateProcessingStep(latestScrapingStep.id, {
+                    status: 'completed',
+                    details: `Found ${businessesWithIndustry.length} businesses${isUsingDemo ? ' (demo data)' : ''}`,
+                    businessesFound: businessesWithIndustry.length,
+                    dataSource: isUsingDemo ? 'demo' : 'real'
+                  })
+                }
+
+                if (businessesWithIndustry.length > 0) {
+                  addResults(businessesWithIndustry)
+
+                  // Save to storage
+                  await storage.saveBusinesses(businessesWithIndustry)
+
+                  logger.info('ScraperController', `Scraped ${businessesWithIndustry.length} businesses from ${url} for ${industry}`)
+                }
+
+                return businessesWithIndustry
+              } catch (error) {
+                const errorMsg = `Failed to scrape ${url}: ${error}`
+                addError(errorMsg)
+
+                // Update scraping step as failed
+                const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
+                const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
+                if (latestScrapingStep) {
+                  updateProcessingStep(latestScrapingStep.id, {
+                    status: 'failed',
+                    error: errorMsg
+                  })
+                }
+
+                return []
+              }
+            })
+
+            // Wait for batch to complete
+            await Promise.all(batchPromises)
+            scrapedCount += batchUrls.length
+
+            // Small delay between batches
+            await new Promise(resolve => setTimeout(resolve, 1000))
+          }
+
+          // Update scraping step for this industry
+          const scrapingSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Scraping ${industry}`))
+          const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
+          if (latestScrapingStep) {
+            updateProcessingStep(latestScrapingStep.id, {
+              status: 'completed',
+              details: `Completed scraping ${uniqueIndustryUrls.length} websites for ${industry}`
+            })
+          }
+
+          logger.info('ScraperController', `Completed processing industry: ${industry}`)
         }
       }
 
-      if (allUrls.length === 0) {
-        throw new Error('No websites found to scrape')
-      }
-
-      // Remove duplicates
-      const uniqueUrls = Array.from(new Set(allUrls))
-      logger.info('ScraperController', `Found ${uniqueUrls.length} unique websites to scrape`)
-
-      // Scrape each website
-      const batchSize = 3 // Process in batches to avoid overwhelming
-      const totalBatches = Math.ceil(uniqueUrls.length / batchSize)
-      
-      for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
-        if (abortControllerRef.current?.signal.aborted) break
-        
-        const batchStart = batchIndex * batchSize
-        const batchEnd = Math.min(batchStart + batchSize, uniqueUrls.length)
-        const batchUrls = uniqueUrls.slice(batchStart, batchEnd)
-        
-        updateProgress(
-          batchStart,
-          uniqueUrls.length,
-          `Scraping batch ${batchIndex + 1}/${totalBatches}...`
-        )
-
-        // Process batch in parallel
-        const batchPromises = batchUrls.map(async (url, index) => {
-          // Add scraping step
-          addProcessingStep({
-            name: `Scraping Website`,
-            status: 'running',
-            url: url,
-            details: `Extracting business data from ${url}`
-          })
-
-          try {
-            updateProgress(
-              batchStart + index,
-              uniqueUrls.length,
-              `Scraping ${url}...`
-            )
-
-            // Skip scraping directory/search pages
-            if (isDirectoryOrSearchPage(url)) {
-              logger.warn('ScraperController', `Skipping directory/search page: ${url}`)
-              return []
-            }
-
-            const businesses = await scraperService.scrapeWebsite(url, config.searchDepth, config.pagesPerSite)
-
-            // Set industry for scraped businesses
-            const businessesWithIndustry = businesses.map(business => ({
-              ...business,
-              industry: industryNames.find(name =>
-                business.businessName.toLowerCase().includes(name.toLowerCase()) ||
-                business.websiteUrl.toLowerCase().includes(name.toLowerCase())
-              ) || 'General',
-            }))
-
-            // Update scraping step as completed
-            const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
-            const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
-            if (latestScrapingStep) {
-              // Check if we're using demo mode
-              const isUsingDemo = scraperService.isDemoMode() || url.includes('demo') || url.includes('example') || url.includes('bellavista') || url.includes('techflow')
-              updateProcessingStep(latestScrapingStep.id, {
-                status: 'completed',
-                details: `Found ${businessesWithIndustry.length} businesses${isUsingDemo ? ' (demo data)' : ''}`,
-                businessesFound: businessesWithIndustry.length,
-                dataSource: isUsingDemo ? 'demo' : 'real'
-              })
-            }
-
-            if (businessesWithIndustry.length > 0) {
-              addResults(businessesWithIndustry)
-              
-              // Save to storage
-              await storage.saveBusinesses(businessesWithIndustry)
-              
-              logger.info('ScraperController', `Scraped ${businessesWithIndustry.length} businesses from ${url}`)
-            }
-            
-            return businessesWithIndustry
-          } catch (error) {
-            const errorMsg = `Failed to scrape ${url}: ${error}`
-            addError(errorMsg)
-
-            // Update scraping step as failed
-            const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
-            const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
-            if (latestScrapingStep) {
-              updateProcessingStep(latestScrapingStep.id, {
-                status: 'failed',
-                error: errorMsg
-              })
-            }
-
-            return []
-          }
-        })
-
-        await Promise.all(batchPromises)
-        
-        // Small delay between batches
-        await new Promise(resolve => setTimeout(resolve, 1000))
-      }
-
       // Final progress update
-      updateProgress(uniqueUrls.length, uniqueUrls.length, 'Scraping completed!')
+      updateProgress(industryNames.length, industryNames.length, 'Scraping completed!')
 
       // Add completion step
       addProcessingStep({
         name: 'Scraping Complete',
         status: 'completed',
-        details: `Successfully processed ${uniqueUrls.length} websites and found ${scrapingState.results.length} businesses`,
+        details: `Successfully processed ${industryNames.length} industries and found ${scrapingState.results.length} businesses`,
         businessesFound: scrapingState.results.length
       })
 

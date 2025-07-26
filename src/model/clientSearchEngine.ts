@@ -281,12 +281,6 @@ export class ClientSearchEngine {
       const directoryResults = await this.searchBusinessDirectories(query, location, maxResults)
       allResults.push(...directoryResults)
 
-      // Strategy 4: Use DuckDuckGo instant answer API as fallback
-      if (allResults.length < maxResults) {
-        const instantResults = await this.searchDuckDuckGoInstantAnswer(`${query} ${location}`)
-        allResults.push(...instantResults)
-      }
-
       // Filter, validate, and deduplicate results (now async to handle Chamber of Commerce processing)
       const validResults = await this.filterValidBusinessResults(allResults)
       const uniqueResults = this.removeDuplicateResults(validResults)
@@ -418,7 +412,7 @@ export class ClientSearchEngine {
       for (const directoryQuery of directoryQueries) {
         if (allResults.length >= maxResults) break
 
-        const results = await this.searchDuckDuckGoInstantAnswer(directoryQuery)
+        const results = await this.scrapeDuckDuckGoPage(directoryQuery, 0)
         allResults.push(...results)
       }
 
@@ -430,50 +424,7 @@ export class ClientSearchEngine {
     }
   }
 
-  /**
-   * Search using DuckDuckGo instant answer API (fallback method)
-   */
-  private async searchDuckDuckGoInstantAnswer(searchQuery: string): Promise<SearchResult[]> {
-    try {
-      logger.info('ClientSearchEngine', `Calling DuckDuckGo instant answer API: ${searchQuery}`)
 
-      // Use our server as a proxy to avoid CORS issues
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'duckduckgo',
-          query: searchQuery,
-          maxResults: 10
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error(`DuckDuckGo proxy API error: ${response.status}`)
-      }
-
-      const data = await response.json()
-
-      if (!data.success) {
-        return []
-      }
-
-      // Convert server response to SearchResult format
-      const results = (data.results || []).map((result: any) => ({
-        url: result.url,
-        title: result.title,
-        snippet: result.snippet || '',
-        domain: result.domain || new URL(result.url).hostname
-      }))
-
-      logger.info('ClientSearchEngine', `DuckDuckGo instant answer returned ${results.length} results`)
-      return results
-
-    } catch (error) {
-      logger.warn('ClientSearchEngine', 'DuckDuckGo instant answer search failed', error)
-      return []
-    }
-  }
 
   /**
    * Filter results to only include valid business websites and process special directories

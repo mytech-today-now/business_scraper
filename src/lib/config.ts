@@ -8,6 +8,7 @@ import { logger } from '@/utils/logger'
 // Configuration interfaces
 export interface DatabaseConfig {
   url?: string
+  type: 'postgresql' | 'indexeddb'
   host: string
   port: number
   name: string
@@ -123,6 +124,7 @@ const configSchema: Record<string, ValidationRule> = {
 
   // Database
   'DATABASE_URL': { type: 'url', required: false },
+  'DB_TYPE': { type: 'string', choices: ['postgresql', 'indexeddb'], default: 'indexeddb' },
   'DB_HOST': { type: 'string', default: 'localhost' },
   'DB_PORT': { type: 'port', default: 5432 },
   'DB_NAME': { type: 'string', default: 'business_scraper_db' },
@@ -316,6 +318,7 @@ export function loadConfig(): AppConfig {
     },
     database: {
       url: config.DATABASE_URL,
+      type: config.DB_TYPE,
       host: config.DB_HOST,
       port: config.DB_PORT,
       name: config.DB_NAME,

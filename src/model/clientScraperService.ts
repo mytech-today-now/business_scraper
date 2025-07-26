@@ -87,12 +87,12 @@ export class ClientScraperService {
     }
 
     try {
-      // Try using stored API credentials with client search engine (includes DuckDuckGo fallback)
+      // Try using stored API credentials with client search engine (includes DuckDuckGo SERP scraping)
       const searchResults = await clientSearchEngine.searchBusinesses(query, zipCode, maxResults)
       const urls = searchResults.map(result => result.url)
 
       if (urls.length > 0) {
-        const source = clientSearchEngine.hasApiCredentials() ? 'API credentials' : 'DuckDuckGo search'
+        const source = clientSearchEngine.hasApiCredentials() ? 'API credentials' : 'DuckDuckGo SERP scraping'
         logger.info('ClientScraper', `Found ${urls.length} URLs using ${source} for query: ${query}`)
         return urls
       }

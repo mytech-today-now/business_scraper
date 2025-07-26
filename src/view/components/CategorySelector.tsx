@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Plus, Trash2, Check, X, Download, Upload, Edit2 } from 'lucide-react'
+import { Plus, Trash2, Check, X, Download, Upload } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
@@ -26,6 +26,9 @@ export function CategorySelector() {
     updateIndustry,
     addCustomIndustry,
     setAllIndustries,
+    startIndustryEdit,
+    endIndustryEdit,
+    clearAllEdits,
   } = useConfig()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -115,12 +118,17 @@ export function CategorySelector() {
     setInlineEditingId(null)
     setEditingKeywords('')
     setExpandedEditingId(industryId)
+    // Track edit state
+    startIndustryEdit(industryId)
   }
 
   /**
    * Handle canceling expanded edit mode
    */
   const handleCancelExpandedEdit = () => {
+    if (expandedEditingId) {
+      endIndustryEdit(expandedEditingId)
+    }
     setExpandedEditingId(null)
   }
 
@@ -129,6 +137,7 @@ export function CategorySelector() {
    */
   const handleUpdateFromExpandedEdit = async (industry: IndustryCategory) => {
     await updateIndustry(industry, true)
+    endIndustryEdit(industry.id)
     setExpandedEditingId(null)
   }
 
@@ -370,7 +379,7 @@ export function CategorySelector() {
             // Use expanded editor if in expanded editing mode
             if (isExpandedEditing) {
               return (
-                <div key={industry.id} className="md:col-span-2 lg:col-span-3">
+                <div key={industry.id}>
                   <IndustryItemEditor
                     industry={industry}
                     isSelected={isSelected}
@@ -398,20 +407,6 @@ export function CategorySelector() {
                 {/* Action buttons and Selection Indicator */}
                 {!isInlineEditing && (
                   <div className="absolute top-2 right-2 flex items-center space-x-1">
-                    {/* Edit button */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleStartExpandedEdit(industry.id)
-                      }}
-                      title="Edit keywords and domain blacklist"
-                    >
-                      <Edit2 className="h-3 w-3" />
-                    </Button>
-
                     {/* Delete button for custom industries */}
                     {industry.isCustom && (
                       <Button

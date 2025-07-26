@@ -113,23 +113,139 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   const ip = getClientIP(request)
-  
+
   try {
-    // This endpoint would require admin authentication in a real implementation
-    // For now, we'll just return a not implemented response
-    
-    logger.warn('Config API', `Configuration update attempt from IP: ${ip}`)
-    
-    return NextResponse.json(
-      { error: 'Configuration updates not implemented in this version' },
-      { status: 501 }
-    )
-    
+    const body = await request.json()
+    const { action, ...params } = body
+
+    logger.info('Config API', `Configuration update request: ${action} from IP: ${ip}`)
+
+    switch (action) {
+      case 'add-domain-to-blacklist':
+        return await handleAddDomainToBlacklist(params, ip)
+
+      default:
+        logger.warn('Config API', `Unknown action: ${action} from IP: ${ip}`)
+        return NextResponse.json(
+          { error: 'Configuration updates not implemented in this version' },
+          { status: 501 }
+        )
+    }
+
   } catch (error) {
     logger.error('Config API', `Error processing update request from IP: ${ip}`, error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     )
+  }
+}
+
+/**
+ * Handle adding a domain to an industry blacklist
+ */
+async function handleAddDomainToBlacklist(params: any, ip: string) {
+  const { domain, industry } = params
+
+  if (!domain || !industry) {
+    return NextResponse.json(
+      { error: 'Domain and industry are required' },
+      { status: 400 }
+    )
+  }
+
+  try {
+    // Import required modules
+    const { storage } = await import('@/model/storage')
+    const { DEFAULT_INDUSTRIES } = await import('@/lib/industry-config')
+
+    // Initialize storage
+    await storage.initialize()
+
+    // Find the industry
+    const allIndustries = await storage.getAllIndustries()
+    let targetIndustry = allIndustries.find(ind => ind.id === industry || ind.name === industry)
+
+    // If not found in storage, check default industries
+    if (!targetIndustry) {
+      targetIndustry = DEFAULT_INDUSTRIES.find(ind => ind.id === industry || ind.name === industry)
+    }
+
+    if (!targetIndustry) {
+      return NextResponse.json(
+        { error: 'Industry not found' },
+        { status: 404 }
+      )
+    }
+
+    // Extract clean domain (remove protocol, www, paths)
+    const cleanDomain = extractDomain(domain)
+
+    // Add domain to blacklist if not already present
+    const currentBlacklist = targetIndustry.domainBlacklist || []
+    if (!currentBlacklist.includes(cleanDomain)) {
+      const updatedIndustry = {
+        ...targetIndustry,
+        domainBlacklist: [...currentBlacklist, cleanDomain]
+      }
+
+      // Save updated industry
+      await storage.saveIndustry(updatedIndustry)
+
+      logger.info('Config API', `Added domain ${cleanDomain} to ${targetIndustry.name} blacklist from IP: ${ip}`)
+
+      return NextResponse.json({
+        success: true,
+        message: `Domain ${cleanDomain} added to ${targetIndustry.name} blacklist`,
+        domain: cleanDomain,
+        industry: targetIndustry.name
+      })
+    } else {
+      return NextResponse.json({
+        success: false,
+        message: `Domain ${cleanDomain} already in ${targetIndustry.name} blacklist`,
+        domain: cleanDomain,
+        industry: targetIndustry.name
+      })
+    }
+
+  } catch (error) {
+    logger.error('Config API', `Failed to add domain to blacklist from IP: ${ip}`, error)
+    return NextResponse.json(
+      { error: 'Failed to update blacklist' },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * Extract clean domain from URL
+ */
+function extractDomain(url: string): string {
+  try {
+    // If it's already just a domain, return it
+    if (!url.includes('://')) {
+      url = 'https://' + url
+    }
+
+    const urlObj = new URL(url)
+    let domain = urlObj.hostname.toLowerCase()
+
+    // Remove www. prefix
+    if (domain.startsWith('www.')) {
+      domain = domain.substring(4)
+    }
+
+    return domain
+  } catch (error) {
+    // If URL parsing fails, try to extract domain manually
+    let domain = url.toLowerCase()
+    domain = domain.replace(/^https?:\/\//, '')
+    domain = domain.replace(/^www\./, '')
+    domain = domain.split('/')[0] || ''
+    domain = domain.split('?')[0] || ''
+    domain = domain.split('#')[0] || ''
+
+    return domain
   }
 }

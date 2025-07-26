@@ -25,6 +25,9 @@ export interface ConfigState {
   // Application state
   isInitialized: boolean
   isDemoMode: boolean
+
+  // Edit state tracking
+  industriesInEditMode: string[]
 }
 
 /**
@@ -45,6 +48,9 @@ export type ConfigAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_INITIALIZED'; payload: boolean }
   | { type: 'RESET_CONFIG' }
+  | { type: 'START_INDUSTRY_EDIT'; payload: string }
+  | { type: 'END_INDUSTRY_EDIT'; payload: string }
+  | { type: 'CLEAR_ALL_EDITS' }
 
 /**
  * Default configuration state
@@ -63,6 +69,7 @@ const defaultState: ConfigState = {
   isLoading: false,
   isInitialized: false,
   isDemoMode: process.env.NODE_ENV === 'development', // Demo mode only in development, always false in production
+  industriesInEditMode: [],
 }
 
 /**
@@ -179,6 +186,24 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         isInitialized: state.isInitialized,
       }
 
+    case 'START_INDUSTRY_EDIT':
+      return {
+        ...state,
+        industriesInEditMode: [...state.industriesInEditMode, action.payload],
+      }
+
+    case 'END_INDUSTRY_EDIT':
+      return {
+        ...state,
+        industriesInEditMode: state.industriesInEditMode.filter(id => id !== action.payload),
+      }
+
+    case 'CLEAR_ALL_EDITS':
+      return {
+        ...state,
+        industriesInEditMode: [],
+      }
+
     default:
       return state
   }
@@ -205,6 +230,11 @@ export interface ConfigContextType {
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
+
+  // Edit state methods
+  startIndustryEdit: (id: string) => void
+  endIndustryEdit: (id: string) => void
+  clearAllEdits: () => void
   
   // Theme methods
   toggleDarkMode: () => void
@@ -512,6 +542,27 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     )
   }
 
+  /**
+   * Start editing an industry
+   */
+  const startIndustryEdit = (id: string) => {
+    dispatch({ type: 'START_INDUSTRY_EDIT', payload: id })
+  }
+
+  /**
+   * End editing an industry
+   */
+  const endIndustryEdit = (id: string) => {
+    dispatch({ type: 'END_INDUSTRY_EDIT', payload: id })
+  }
+
+  /**
+   * Clear all industry edits
+   */
+  const clearAllEdits = () => {
+    dispatch({ type: 'CLEAR_ALL_EDITS' })
+  }
+
   const contextValue: ConfigContextType = {
     state,
     dispatch,
@@ -526,6 +577,9 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,
+    startIndustryEdit,
+    endIndustryEdit,
+    clearAllEdits,
     toggleDarkMode,
     toggleDemoMode,
     getSelectedIndustryNames,
