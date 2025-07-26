@@ -1140,8 +1140,8 @@ export class ClientSearchEngine {
       return results
     }
 
-    const blacklistedDomains = new Set(
-      this.credentials.domainBlacklist.map(domain => domain.toLowerCase().trim())
+    const blacklistedPatterns = this.credentials.domainBlacklist.map(pattern =>
+      pattern.toLowerCase().trim()
     )
 
     const filteredResults = results.filter(result => {
@@ -1152,8 +1152,9 @@ export class ClientSearchEngine {
         // Remove www. prefix for comparison
         const cleanDomain = domain.startsWith('www.') ? domain.substring(4) : domain
 
-        // Check if domain is blacklisted
-        const isBlacklisted = blacklistedDomains.has(cleanDomain) || blacklistedDomains.has(domain)
+        // Check if domain matches any blacklist pattern (exact or wildcard)
+        const isBlacklisted = this.isDomainBlacklisted(domain, blacklistedPatterns) ||
+                             this.isDomainBlacklisted(cleanDomain, blacklistedPatterns)
 
         if (isBlacklisted) {
           logger.debug('ClientSearchEngine', `Filtered out blacklisted domain: ${domain}`)
@@ -1172,6 +1173,51 @@ export class ClientSearchEngine {
     }
 
     return filteredResults
+  }
+
+  /**
+   * Check if a domain matches any blacklist pattern (supports wildcards)
+   * @param domain - Domain to check
+   * @param blacklistedPatterns - Array of blacklist patterns
+   * @returns True if domain is blacklisted
+   */
+  private isDomainBlacklisted(domain: string, blacklistedPatterns: string[]): boolean {
+    return blacklistedPatterns.some(pattern => {
+      // Handle exact match (no wildcards)
+      if (!pattern.includes('*')) {
+        return domain === pattern
+      }
+
+      // Handle wildcard patterns
+      if (pattern.startsWith('*.') && pattern.substring(2).indexOf('*') === -1) {
+        // Pattern like "*.statefarm.com" (subdomain wildcard, no other wildcards)
+        const baseDomain = pattern.substring(2) // Remove "*."
+
+        // Exact match with base domain
+        if (domain === baseDomain) {
+          return true
+        }
+
+        // Subdomain match (domain ends with .baseDomain)
+        if (domain.endsWith('.' + baseDomain)) {
+          return true
+        }
+      } else if (pattern.endsWith('*') && pattern.substring(0, pattern.length - 1).indexOf('*') === -1) {
+        // Pattern like "statefarm.*" (TLD wildcard, no other wildcards)
+        const basePattern = pattern.substring(0, pattern.length - 1) // Remove "*"
+        return domain.startsWith(basePattern)
+      } else {
+        // Pattern contains * in the middle or multiple wildcards - convert to regex
+        const regexPattern = pattern
+          .replace(/\./g, '\\.')  // Escape dots
+          .replace(/\*/g, '.*')   // Convert * to .*
+
+        const regex = new RegExp('^' + regexPattern + '$', 'i')
+        return regex.test(domain)
+      }
+
+      return false
+    })
   }
 
   /**

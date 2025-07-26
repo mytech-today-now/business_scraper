@@ -124,7 +124,17 @@ export function ApiConfigurationPage({
 
   const exportBlacklist = () => {
     const blacklist = credentials.domainBlacklist || []
-    const dataStr = JSON.stringify(blacklist, null, 2)
+
+    // Create export data with standardized Business Scraper format (same as industry export)
+    const exportData = {
+      name: "Business Scraper",
+      url: "https://github.com/mytech-today-now/business_scraper",
+      version: "1.0.0",
+      exportDate: new Date().toISOString(),
+      domainBlacklist: blacklist
+    }
+
+    const dataStr = JSON.stringify(exportData, null, 2)
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
 
     const exportFileDefaultName = `domain-blacklist-${new Date().toISOString().split('T')[0]}.json`
@@ -143,23 +153,39 @@ export function ApiConfigurationPage({
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string
-        const domains = JSON.parse(content)
+        const parsedData = JSON.parse(content)
 
-        if (Array.isArray(domains)) {
-          const validDomains = domains
-            .filter(domain => typeof domain === 'string' && domain.trim().length > 0)
-            .map(domain => domain.trim().toLowerCase())
+        let domains: string[] = []
 
-          setBlacklistText(validDomains.join('\n'))
-          setCredentials(prev => ({
-            ...prev,
-            domainBlacklist: validDomains
-          }))
-
-          toast.success(`Imported ${validDomains.length} domains to blacklist`)
-        } else {
-          toast.error('Invalid blacklist format. Expected array of domain strings.')
+        // Handle new format with headers (same as industry export)
+        if (parsedData && typeof parsedData === 'object' && parsedData.domainBlacklist) {
+          if (Array.isArray(parsedData.domainBlacklist)) {
+            domains = parsedData.domainBlacklist
+          } else {
+            toast.error('Invalid blacklist format. Expected domainBlacklist to be an array.')
+            return
+          }
         }
+        // Handle legacy format (simple array)
+        else if (Array.isArray(parsedData)) {
+          domains = parsedData
+        }
+        else {
+          toast.error('Invalid blacklist format. Expected array of domains or Business Scraper export format.')
+          return
+        }
+
+        const validDomains = domains
+          .filter(domain => typeof domain === 'string' && domain.trim().length > 0)
+          .map(domain => domain.trim().toLowerCase())
+
+        setBlacklistText(validDomains.join('\n'))
+        setCredentials(prev => ({
+          ...prev,
+          domainBlacklist: validDomains
+        }))
+
+        toast.success(`Imported ${validDomains.length} domains to blacklist`)
       } catch (error) {
         toast.error('Failed to parse blacklist file. Please check the format.')
       }
@@ -464,15 +490,15 @@ export function ApiConfigurationPage({
 
                 <div className="mt-3 p-3 bg-blue-50 rounded-md">
                   <div className="flex items-start space-x-2">
-                    <Info className="h-4 w-4 text-blue-600 mt-0.5" />
-                    <div className="text-sm text-blue-800">
-                      <p className="font-medium">Azure AI Foundry Setup:</p>
+                    <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800 min-w-0 flex-1">
+                      <p className="font-medium mb-1">Azure AI Foundry Setup:</p>
                       <ul className="mt-1 space-y-1 text-xs">
-                        <li>• <strong>NEW:</strong> Replaces deprecated Bing Search API (ends Aug 2025)</li>
-                        <li>• Service: "Grounding with Bing Custom Search"</li>
-                        <li>• Portal: <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Azure Portal</a></li>
-                        <li>• Use either Key 1 or Key 2 from your resource</li>
-                        <li>• Endpoint format: https://[name].cognitiveservices.azure.com/</li>
+                        <li className="break-words">• <strong>NEW:</strong> Replaces deprecated Bing Search API (ends Aug 2025)</li>
+                        <li className="break-words">• Service: "Grounding with Bing Custom Search"</li>
+                        <li className="break-words">• Portal: <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Azure Portal</a></li>
+                        <li className="break-words">• Use either Key 1 or Key 2 from your resource</li>
+                        <li className="break-words">• Endpoint format: <span className="break-all">https://[name].cognitiveservices.azure.com/</span></li>
                       </ul>
                     </div>
                   </div>
@@ -489,12 +515,12 @@ export function ApiConfigurationPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-4">
+                <div className="text-center py-4 px-2">
                   <div className="text-green-600 mb-2">
                     <CheckCircle className="h-8 w-8 mx-auto" />
                   </div>
                   <p className="text-sm font-medium text-green-800">Always Available</p>
-                  <p className="text-xs text-green-600 mt-1">
+                  <p className="text-xs text-green-600 mt-1 break-words">
                     No API key required. Used as fallback when other services are unavailable.
                   </p>
                 </div>
@@ -653,11 +679,11 @@ export function ApiConfigurationPage({
                   className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 resize-y font-mono text-sm bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:border-gray-600"
                   value={blacklistText}
                   onChange={(e) => handleBlacklistChange(e.target.value)}
-                  placeholder="Enter domains to exclude from results, one per line:&#10;statefarm.com&#10;example.com&#10;# Comments start with #"
+                  placeholder="Enter domains to exclude from results, one per line:&#10;statefarm.com&#10;*.statefarm.com (blocks all subdomains)&#10;example.*&#10;# Comments start with #"
                   aria-label="Domain Blacklist"
                 />
                 <p className="text-xs text-gray-600">
-                  Enter domain names (without www) to exclude from search results. One domain per line. Comments start with #.
+                  Enter domain names (without www) to exclude from search results. One domain per line. Supports wildcards: *.domain.com blocks all subdomains. Comments start with #.
                 </p>
               </div>
 
@@ -703,9 +729,12 @@ export function ApiConfigurationPage({
                     <ul className="mt-1 space-y-1 text-xs">
                       <li>• Filters out unwanted domains from search results</li>
                       <li>• Supports exact domain matching (e.g., "statefarm.com")</li>
+                      <li>• Supports wildcard patterns: "*.statefarm.com" blocks all subdomains</li>
+                      <li>• Supports TLD wildcards: "statefarm.*" blocks all TLDs</li>
                       <li>• Comments can be added with # prefix</li>
-                      <li>• Export/import as JSON for backup and sharing</li>
+                      <li>• Export/import as JSON with Business Scraper format headers</li>
                       <li>• Applied to all search providers (Google, Azure, DuckDuckGo)</li>
+                      <li>• Compatible with legacy array format for backward compatibility</li>
                     </ul>
                   </div>
                 </div>
@@ -743,14 +772,14 @@ export function ApiConfigurationPage({
                 </div>
                 <div className="mt-4 p-3 bg-purple-100 rounded-md">
                   <div className="flex items-start space-x-2">
-                    <Info className="h-4 w-4 text-purple-600 mt-0.5" />
-                    <div className="text-sm text-purple-800">
-                      <p className="font-medium">Mode Information:</p>
+                    <Info className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-purple-800 min-w-0 flex-1">
+                      <p className="font-medium mb-1">Mode Information:</p>
                       <ul className="mt-1 space-y-1 text-xs">
-                        <li>• <strong>Demo Mode:</strong> Uses sample data for testing without real web scraping</li>
-                        <li>• <strong>Real Mode:</strong> Performs actual web scraping using configured APIs</li>
-                        <li>• Demo mode is automatically enabled in development environment</li>
-                        <li>• Real mode requires proper API credentials to be configured</li>
+                        <li className="break-words">• <strong>Demo Mode:</strong> Uses sample data for testing without real web scraping</li>
+                        <li className="break-words">• <strong>Real Mode:</strong> Performs actual web scraping using configured APIs</li>
+                        <li className="break-words">• Demo mode is automatically enabled in development environment</li>
+                        <li className="break-words">• Real mode requires proper API credentials to be configured</li>
                       </ul>
                     </div>
                   </div>

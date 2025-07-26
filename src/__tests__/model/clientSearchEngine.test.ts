@@ -177,6 +177,126 @@ describe('ClientSearchEngine Domain Blacklist', () => {
       expect(filteredResults).toHaveLength(1)
     })
 
+    it('should support wildcard subdomain patterns', async () => {
+      const { retrieveApiCredentials } = require('@/utils/secureStorage')
+      retrieveApiCredentials.mockResolvedValue({
+        googleSearchApiKey: 'test-key',
+        googleSearchEngineId: 'test-engine',
+        domainBlacklist: ['*.statefarm.com']
+      })
+
+      const searchEngineWildcard = new ClientSearchEngine()
+      await searchEngineWildcard.initialize()
+
+      const mockResults: SearchResult[] = [
+        {
+          title: 'State Farm Main',
+          url: 'https://statefarm.com/insurance',
+          snippet: 'Main site'
+        },
+        {
+          title: 'State Farm Agent',
+          url: 'https://agent.statefarm.com/profile',
+          snippet: 'Agent site'
+        },
+        {
+          title: 'State Farm WWW',
+          url: 'https://www.statefarm.com/auto',
+          snippet: 'WWW site'
+        },
+        {
+          title: 'Good Business',
+          url: 'https://goodbusiness.com/contact',
+          snippet: 'Should not be filtered'
+        }
+      ]
+
+      const filteredResults = (searchEngineWildcard as any).applyDomainBlacklist(mockResults)
+
+      expect(filteredResults).toHaveLength(1)
+      expect(filteredResults[0].url).toBe('https://goodbusiness.com/contact')
+    })
+
+    it('should support TLD wildcard patterns', async () => {
+      const { retrieveApiCredentials } = require('@/utils/secureStorage')
+      retrieveApiCredentials.mockResolvedValue({
+        googleSearchApiKey: 'test-key',
+        googleSearchEngineId: 'test-engine',
+        domainBlacklist: ['statefarm.*']
+      })
+
+      const searchEngineTldWildcard = new ClientSearchEngine()
+      await searchEngineTldWildcard.initialize()
+
+      const mockResults: SearchResult[] = [
+        {
+          title: 'State Farm COM',
+          url: 'https://statefarm.com/insurance',
+          snippet: 'COM site'
+        },
+        {
+          title: 'State Farm NET',
+          url: 'https://statefarm.net/info',
+          snippet: 'NET site'
+        },
+        {
+          title: 'State Farm ORG',
+          url: 'https://statefarm.org/about',
+          snippet: 'ORG site'
+        },
+        {
+          title: 'Good Business',
+          url: 'https://goodbusiness.com/contact',
+          snippet: 'Should not be filtered'
+        }
+      ]
+
+      const filteredResults = (searchEngineTldWildcard as any).applyDomainBlacklist(mockResults)
+
+      expect(filteredResults).toHaveLength(1)
+      expect(filteredResults[0].url).toBe('https://goodbusiness.com/contact')
+    })
+
+    it('should support middle wildcard patterns', async () => {
+      const { retrieveApiCredentials } = require('@/utils/secureStorage')
+      retrieveApiCredentials.mockResolvedValue({
+        googleSearchApiKey: 'test-key',
+        googleSearchEngineId: 'test-engine',
+        domainBlacklist: ['*insurance*']
+      })
+
+      const searchEngineMiddleWildcard = new ClientSearchEngine()
+      await searchEngineMiddleWildcard.initialize()
+
+      const mockResults: SearchResult[] = [
+        {
+          title: 'My Insurance',
+          url: 'https://myinsurance.com/quotes',
+          snippet: 'Insurance site'
+        },
+        {
+          title: 'Best Insurance',
+          url: 'https://bestinsurance.net/auto',
+          snippet: 'Insurance site'
+        },
+        {
+          title: 'Insurance Quotes',
+          url: 'https://insurance-quotes.org/home',
+          snippet: 'Insurance site'
+        },
+        {
+          title: 'Good Business',
+          url: 'https://goodbusiness.com/contact',
+          snippet: 'Should not be filtered'
+        }
+      ]
+
+      const filteredResults = (searchEngineMiddleWildcard as any).applyDomainBlacklist(mockResults)
+
+      expect(filteredResults).toHaveLength(1)
+      expect(filteredResults[0].url).toBe('https://goodbusiness.com/contact')
+    })
+
     it('should handle invalid URLs gracefully', () => {
       const mockResults: SearchResult[] = [
         {
