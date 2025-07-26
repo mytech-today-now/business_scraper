@@ -18,7 +18,7 @@ export interface SearchResult {
  */
 export class ClientSearchEngine {
   private credentials: ApiCredentials | null = null
-  private cachedIndustries: { name: string; keywords: string[] }[] = []
+  private cachedIndustries: { name: string; keywords: string[]; domainBlacklist?: string[] }[] = []
   private isInitialized = false
 
   /**
@@ -57,18 +57,33 @@ export class ClientSearchEngine {
         keywords: industry.keywords
       }))
 
-      // Try to load custom industries from storage
+      // Try to load all industries from storage (including custom ones)
       try {
-        const customIndustries = await storage.getCustomIndustries()
-        for (const customIndustry of customIndustries) {
-          this.cachedIndustries.push({
-            name: customIndustry.name,
-            keywords: customIndustry.keywords
-          })
+        const allIndustries = await storage.getAllIndustries()
+        if (allIndustries.length > 0) {
+          // Use stored industries (which include both default and custom)
+          this.cachedIndustries = allIndustries.map(industry => ({
+            name: industry.name,
+            keywords: industry.keywords,
+            domainBlacklist: industry.domainBlacklist
+          }))
+        } else {
+          // Fallback to default industries if none stored
+          this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
+            name: industry.name,
+            keywords: industry.keywords,
+            domainBlacklist: industry.domainBlacklist
+          }))
         }
-        logger.info('ClientSearchEngine', `Loaded ${this.cachedIndustries.length} industries (${customIndustries.length} custom)`)
+        logger.info('ClientSearchEngine', `Loaded ${this.cachedIndustries.length} industries`)
       } catch (error) {
-        logger.warn('ClientSearchEngine', 'Failed to load custom industries, using defaults only', error)
+        logger.warn('ClientSearchEngine', 'Failed to load industries from storage, using defaults only', error)
+        // Fallback to default industries
+        this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
+          name: industry.name,
+          keywords: industry.keywords,
+          domainBlacklist: industry.domainBlacklist
+        }))
       }
     } catch (error) {
       logger.error('ClientSearchEngine', 'Failed to load industries', error)
@@ -92,6 +107,9 @@ export class ClientSearchEngine {
       await this.initialize()
     }
 
+    // Extract keywords from query for industry-specific blacklist filtering
+    const queryKeywords = query.toLowerCase().split(/\s+/).filter(Boolean)
+
     const searchMethods = [
       () => this.searchWithGoogle(query, location, maxResults),
       () => this.searchWithAzure(query, location, maxResults),
@@ -102,8 +120,8 @@ export class ClientSearchEngine {
       try {
         const results = await searchMethod()
         if (results.length > 0) {
-          // Apply domain blacklist filtering
-          const filteredResults = this.applyDomainBlacklist(results)
+          // Apply domain blacklist filtering with industry keywords
+          const filteredResults = this.applyDomainBlacklist(results, queryKeywords)
           if (filteredResults.length > 0) {
             return filteredResults
           }
@@ -269,8 +287,8 @@ export class ClientSearchEngine {
         allResults.push(...instantResults)
       }
 
-      // Filter, validate, and deduplicate results
-      const validResults = this.filterValidBusinessResults(allResults)
+      // Filter, validate, and deduplicate results (now async to handle Chamber of Commerce processing)
+      const validResults = await this.filterValidBusinessResults(allResults)
       const uniqueResults = this.removeDuplicateResults(validResults)
       const finalResults = uniqueResults.slice(0, maxResults)
 
@@ -458,13 +476,23 @@ export class ClientSearchEngine {
   }
 
   /**
-   * Filter results to only include valid business websites
+   * Filter results to only include valid business websites and process special directories
    */
-  private filterValidBusinessResults(results: SearchResult[]): SearchResult[] {
-    return results.filter(result => {
+  private async filterValidBusinessResults(results: SearchResult[]): Promise<SearchResult[]> {
+    const validResults: SearchResult[] = []
+
+    for (const result of results) {
       try {
         const url = new URL(result.url)
         const domain = url.hostname.toLowerCase()
+
+        // Check for Chamber of Commerce URLs and process them
+        if (domain.includes('chamberofcommerce.com')) {
+          logger.info('ClientSearchEngine', `Detected Chamber of Commerce URL: ${result.url}`)
+          const chamberResults = await this.processChamberOfCommerceUrl(result.url, 5)
+          validResults.push(...chamberResults)
+          continue
+        }
 
         // Include known business directory sites
         const businessDirectories = [
@@ -494,12 +522,17 @@ export class ClientSearchEngine {
 
         const isExcluded = excludeDomains.some(excluded => domain.includes(excluded))
 
-        return !isExcluded && (isBusinessDirectory || (hasBusinessTLD && hasBusinessKeywords))
+        // Include valid business results
+        if (!isExcluded && (isBusinessDirectory || (hasBusinessTLD && hasBusinessKeywords))) {
+          validResults.push(result)
+        }
 
-      } catch {
-        return false
+      } catch (error) {
+        logger.warn('ClientSearchEngine', `Error processing result ${result.url}:`, error)
       }
-    })
+    }
+
+    return validResults
   }
 
   /**
@@ -942,6 +975,54 @@ export class ClientSearchEngine {
   }
 
   /**
+   * Chamber of Commerce processing - processes chamberofcommerce.com URLs to find business websites
+   */
+  private async processChamberOfCommerceUrl(url: string, maxResults: number): Promise<SearchResult[]> {
+    try {
+      logger.info('ClientSearchEngine', `Starting Chamber of Commerce processing for: ${url}`)
+
+      // Use server-side Chamber of Commerce processing to avoid CORS issues
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: 'chamber-of-commerce',
+          url: url,
+          maxResults: maxResults,
+          maxPagesPerSite: 20
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Chamber of Commerce processing API error: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Chamber of Commerce processing failed')
+      }
+
+      // Convert server response to SearchResult format
+      const results = (data.results || []).map((result: any) => ({
+        url: result.url,
+        title: result.title,
+        snippet: result.snippet || `Business found via Chamber of Commerce processing`,
+        domain: result.domain || new URL(result.url).hostname,
+        address: result.address,
+        phone: result.phone
+      }))
+
+      logger.info('ClientSearchEngine', `Chamber of Commerce processing returned ${results.length} business websites`)
+      return results
+
+    } catch (error) {
+      logger.warn('ClientSearchEngine', `Chamber of Commerce processing failed for "${url}"`, error)
+      return []
+    }
+  }
+
+  /**
    * Yelp business discovery - uses Yelp as a conduit to find real business websites
    */
   private async searchYelpBusinessDiscovery(criteria: string, location: string, maxResults: number): Promise<SearchResult[]> {
@@ -957,7 +1038,8 @@ export class ClientSearchEngine {
           query: criteria,
           location: location,
           maxResults: maxResults,
-          zipRadius: this.credentials?.zipRadius || 25
+          zipRadius: this.credentials?.zipRadius || 25,
+          maxPagesPerSite: 20
         })
       })
 
@@ -1134,13 +1216,39 @@ export class ClientSearchEngine {
 
   /**
    * Apply domain blacklist filtering to search results
+   * Uses both global blacklist and industry-specific blacklists
    */
-  private applyDomainBlacklist(results: SearchResult[]): SearchResult[] {
-    if (!this.credentials?.domainBlacklist || this.credentials.domainBlacklist.length === 0) {
+  private applyDomainBlacklist(results: SearchResult[], industryKeywords?: string[]): SearchResult[] {
+    // Collect all blacklist patterns
+    const allBlacklistPatterns: string[] = []
+
+    // Add global domain blacklist
+    if (this.credentials?.domainBlacklist && this.credentials.domainBlacklist.length > 0) {
+      allBlacklistPatterns.push(...this.credentials.domainBlacklist)
+    }
+
+    // Add industry-specific blacklists
+    if (industryKeywords && this.cachedIndustries) {
+      for (const industry of this.cachedIndustries) {
+        // Check if this industry matches the search keywords
+        const hasMatchingKeyword = industry.keywords.some(keyword =>
+          industryKeywords.some(searchKeyword =>
+            searchKeyword.toLowerCase().includes(keyword.toLowerCase()) ||
+            keyword.toLowerCase().includes(searchKeyword.toLowerCase())
+          )
+        )
+
+        if (hasMatchingKeyword && industry.domainBlacklist && industry.domainBlacklist.length > 0) {
+          allBlacklistPatterns.push(...industry.domainBlacklist)
+        }
+      }
+    }
+
+    if (allBlacklistPatterns.length === 0) {
       return results
     }
 
-    const blacklistedPatterns = this.credentials.domainBlacklist.map(pattern =>
+    const blacklistedPatterns = allBlacklistPatterns.map(pattern =>
       pattern.toLowerCase().trim()
     )
 

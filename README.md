@@ -21,7 +21,11 @@ A comprehensive full-stack business web scraping application built with Next.js,
 - **🔄 Fallback Search Strategies**: Multiple search providers with automatic failover
 - **⚡ Optimized Query Processing**: Industry-specific templates and synonym expansion
 - **🔗 Azure AI Foundry Integration**: Modern "Grounding with Bing Custom Search" API support
-- **🚫 Domain Blacklist**: Filter out unwanted domains from search results
+- **🚫 Domain Blacklist**:
+  - **Global Blacklist**: Filter out unwanted domains from all searches
+  - **Per-Industry Blacklist**: Configure domain filtering specific to each industry category
+  - **Wildcard Support**: Use patterns like `*.domain.com`, `domain.*`, `*keyword*`
+  - **Theme-Aware Interface**: Text areas automatically adapt to light/dark mode
 
 ### Technical Features
 
@@ -341,11 +345,29 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Quick Links
 - **[Current Status](CURRENT_STATUS.md)** - Complete overview of implemented features and current capabilities
 - **[Feature Guide](FEATURE_GUIDE.md)** - Detailed guide to smart industry expansion, BBB discovery, and advanced search features
+- **[Chamber of Commerce Processing](CHAMBER_OF_COMMERCE_PROCESSING.md)** - Automatic processing of chamberofcommerce.com URLs with deep scraping
+- **[Yelp RESTful Scraping](YELP_RESTFUL_SCRAPING.md)** - RESTful Yelp processing with deep website analysis
+- **[Yelp Directory URL Fix](YELP_DIRECTORY_URL_FIX.md)** - Fix for directory URL skipping warnings
+- **[Per-Industry Blacklist](PER_INDUSTRY_BLACKLIST.md)** - Complete guide to the new per-industry domain filtering system
+- **[Domain Blacklist Format](DOMAIN_BLACKLIST_FORMAT.md)** - Legacy global domain blacklist import/export format
 - **[Changelog](CHANGELOG.md)** - Detailed history of changes and improvements
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.1.0)
+### Recent Major Updates (v1.3.0)
+- ✅ **Chamber of Commerce Processing (COCP)**: Automatic detection and processing of chamberofcommerce.com URLs
+- ✅ **Yelp RESTful Scraping**: Refactored Yelp processing with RESTful URLs and deep website analysis
+- ✅ **Directory URL Fix**: Eliminated warnings by preventing directory search URLs from being treated as business websites
+- ✅ **Enhanced Deep Scraping**: Up to 20 pages per business website with comprehensive contact extraction
+
+### Previous Updates (v1.2.0)
+- ✅ **Per-Industry Domain Blacklists**: Configure domain filtering specific to each industry category
+- ✅ **Enhanced Wildcard Support**: Use patterns like `*.domain.com`, `domain.*`, `*keyword*` for precise filtering
+- ✅ **Theme-Aware Interface**: Text areas automatically adapt to light/dark mode with proper contrast
+- ✅ **Improved Export/Import**: Complete industry configuration management with backward compatibility
+- ✅ **Expanded Editor Interface**: Dual text areas for keywords and domain blacklist editing
+
+### Previous Updates (v1.1.0)
 - ✅ **Smart Industry Expansion**: Automatic conversion of industry categories to specific business types
 - ✅ **Advanced BBB Discovery**: Real-time scraping of BBB profiles for actual business websites
 - ✅ **Precise ZIP Radius Validation**: Accurate geolocation-based filtering with distance calculations

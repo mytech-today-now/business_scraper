@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Plus, Trash2, Check, X, Download, Upload } from 'lucide-react'
+import { Plus, Trash2, Check, X, Download, Upload, Edit2 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { IndustryModal } from './IndustryModal'
+import { IndustryItemEditor } from './IndustryItemEditor'
 import { clsx } from 'clsx'
 import { IndustryCategory } from '@/types/business'
 import toast from 'react-hot-toast'
@@ -24,10 +25,12 @@ export function CategorySelector() {
     removeIndustry,
     updateIndustry,
     addCustomIndustry,
+    setAllIndustries,
   } = useConfig()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingIndustry, setEditingIndustry] = useState<IndustryCategory | undefined>(undefined)
+  const [expandedEditingId, setExpandedEditingId] = useState<string | null>(null)
   const [inlineEditingId, setInlineEditingId] = useState<string | null>(null)
   const [editingKeywords, setEditingKeywords] = useState<string>('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -105,6 +108,31 @@ export function CategorySelector() {
   }
 
   /**
+   * Handle starting expanded edit mode
+   */
+  const handleStartExpandedEdit = (industryId: string) => {
+    // Close any other editing modes
+    setInlineEditingId(null)
+    setEditingKeywords('')
+    setExpandedEditingId(industryId)
+  }
+
+  /**
+   * Handle canceling expanded edit mode
+   */
+  const handleCancelExpandedEdit = () => {
+    setExpandedEditingId(null)
+  }
+
+  /**
+   * Handle updating industry from expanded editor
+   */
+  const handleUpdateFromExpandedEdit = async (industry: IndustryCategory) => {
+    await updateIndustry(industry, true)
+    setExpandedEditingId(null)
+  }
+
+  /**
    * Handle textarea content change with auto-resize
    */
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -117,14 +145,15 @@ export function CategorySelector() {
   }
 
   /**
-   * Export custom industries to JSON file
+   * Export all industries to JSON file (including pre-populated ones with their current settings)
    */
   const handleExportIndustries = () => {
     try {
-      const customIndustries = state.industries.filter(industry => industry.isCustom)
+      // Export ALL industries with their current settings
+      const allIndustries = state.industries
 
-      if (customIndustries.length === 0) {
-        toast.error('No custom industries to export')
+      if (allIndustries.length === 0) {
+        toast.error('No industries to export')
         return
       }
 
@@ -134,10 +163,12 @@ export function CategorySelector() {
         url: "https://github.com/mytech-today-now/business_scraper",
         version: "1.0.0",
         exportDate: new Date().toISOString(),
-        customIndustries: customIndustries.map(industry => ({
+        industries: allIndustries.map(industry => ({
+          id: industry.id,
           name: industry.name,
           keywords: industry.keywords,
-          // Don't include id or isCustom as these will be regenerated on import
+          isCustom: industry.isCustom,
+          domainBlacklist: industry.domainBlacklist || []
         }))
       }
 
@@ -148,13 +179,13 @@ export function CategorySelector() {
 
       const link = document.createElement('a')
       link.href = url
-      link.download = `custom-industries-${new Date().toISOString().split('T')[0]}.json`
+      link.download = `industries-${new Date().toISOString().split('T')[0]}.json`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
 
-      toast.success(`Exported ${customIndustries.length} custom industries`)
+      toast.success(`Exported ${allIndustries.length} industries with their current settings`)
     } catch (error) {
       console.error('Export failed:', error)
       toast.error('Failed to export industries')
@@ -162,7 +193,7 @@ export function CategorySelector() {
   }
 
   /**
-   * Import custom industries from JSON file
+   * Import industries from JSON file (overwrites all current settings)
    */
   const handleImportIndustries = () => {
     fileInputRef.current?.click()
@@ -188,19 +219,33 @@ export function CategorySelector() {
         throw new Error('Invalid file format: Missing required Business Scraper metadata')
       }
 
-      if (!importData.customIndustries || !Array.isArray(importData.customIndustries)) {
-        throw new Error('Invalid file format: Expected JSON with "customIndustries" array')
+      // Support both old format (customIndustries) and new format (industries)
+      let industriesToImport: any[] = []
+
+      if (importData.industries && Array.isArray(importData.industries)) {
+        // New format - includes all industries with their settings
+        industriesToImport = importData.industries
+      } else if (importData.customIndustries && Array.isArray(importData.customIndustries)) {
+        // Legacy format - only custom industries
+        industriesToImport = importData.customIndustries.map((industry: any) => ({
+          ...industry,
+          isCustom: true,
+          domainBlacklist: []
+        }))
+      } else {
+        throw new Error('Invalid file format: Expected JSON with "industries" or "customIndustries" array')
       }
 
-      if (importData.customIndustries.length === 0) {
-        toast.info('No custom industries found in the file')
+      if (industriesToImport.length === 0) {
+        toast('No industries found in the file')
         return
       }
 
-      let importedCount = 0
+      // Validate and process industries
+      const validIndustries: IndustryCategory[] = []
       let skippedCount = 0
 
-      for (const industryData of importData.customIndustries) {
+      for (const industryData of industriesToImport) {
         // Validate industry data
         if (!industryData.name || !industryData.keywords || !Array.isArray(industryData.keywords)) {
           console.warn('Skipping invalid industry data:', industryData)
@@ -208,36 +253,30 @@ export function CategorySelector() {
           continue
         }
 
-        // Check if industry with same name already exists
-        const existingIndustry = state.industries.find(
-          existing => existing.name.toLowerCase() === industryData.name.toLowerCase()
-        )
-
-        if (existingIndustry) {
-          console.warn(`Skipping duplicate industry: ${industryData.name}`)
-          skippedCount++
-          continue
+        // Create industry object
+        const industry: IndustryCategory = {
+          id: industryData.id || `imported-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          name: industryData.name,
+          keywords: industryData.keywords.filter(Boolean), // Remove empty keywords
+          isCustom: industryData.isCustom !== undefined ? industryData.isCustom : true,
+          domainBlacklist: industryData.domainBlacklist && Array.isArray(industryData.domainBlacklist)
+            ? industryData.domainBlacklist.filter(Boolean)
+            : undefined
         }
 
-        // Import the industry
-        try {
-          await addCustomIndustry({
-            name: industryData.name,
-            keywords: industryData.keywords.filter(Boolean), // Remove empty keywords
-          })
-          importedCount++
-        } catch (error) {
-          console.error(`Failed to import industry ${industryData.name}:`, error)
-          skippedCount++
-        }
+        validIndustries.push(industry)
       }
+
+      if (validIndustries.length === 0) {
+        toast.error(`No valid industries found in file${skippedCount > 0 ? ` (${skippedCount} skipped due to invalid data)` : ''}`)
+        return
+      }
+
+      // Replace all industries with imported ones
+      await setAllIndustries(validIndustries)
 
       // Show results
-      if (importedCount > 0) {
-        toast.success(`Imported ${importedCount} custom industries${skippedCount > 0 ? ` (${skippedCount} skipped)` : ''}`)
-      } else {
-        toast.error(`No industries imported${skippedCount > 0 ? ` (${skippedCount} skipped due to duplicates or errors)` : ''}`)
-      }
+      toast.success(`Imported ${validIndustries.length} industries${skippedCount > 0 ? ` (${skippedCount} skipped)` : ''}. All previous industry settings have been replaced.`)
 
     } catch (error) {
       console.error('Import failed:', error)
@@ -326,6 +365,22 @@ export function CategorySelector() {
             .map((industry) => {
             const isSelected = state.selectedIndustries.includes(industry.id)
             const isInlineEditing = inlineEditingId === industry.id
+            const isExpandedEditing = expandedEditingId === industry.id
+
+            // Use expanded editor if in expanded editing mode
+            if (isExpandedEditing) {
+              return (
+                <div key={industry.id} className="md:col-span-2 lg:col-span-3">
+                  <IndustryItemEditor
+                    industry={industry}
+                    isSelected={isSelected}
+                    onToggle={() => toggleIndustry(industry.id)}
+                    onUpdate={handleUpdateFromExpandedEdit}
+                    onCancel={handleCancelExpandedEdit}
+                  />
+                </div>
+              )
+            }
 
             return (
               <div
@@ -340,9 +395,23 @@ export function CategorySelector() {
                 )}
                 onClick={() => !isInlineEditing && toggleIndustry(industry.id)}
               >
-                {/* Selection Indicator and Trash Icon */}
+                {/* Action buttons and Selection Indicator */}
                 {!isInlineEditing && (
                   <div className="absolute top-2 right-2 flex items-center space-x-1">
+                    {/* Edit button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleStartExpandedEdit(industry.id)
+                      }}
+                      title="Edit keywords and domain blacklist"
+                    >
+                      <Edit2 className="h-3 w-3" />
+                    </Button>
+
                     {/* Delete button for custom industries */}
                     {industry.isCustom && (
                       <Button
@@ -386,7 +455,7 @@ export function CategorySelector() {
                         ref={textareaRef}
                         value={editingKeywords}
                         onChange={handleTextareaChange}
-                        className="w-full p-3 text-sm border border-primary rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[80px] bg-white dark:bg-gray-800 font-mono overflow-hidden"
+                        className="w-full p-3 text-sm border border-primary rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[80px] bg-background text-foreground placeholder:text-muted-foreground font-mono overflow-hidden"
                         placeholder="Enter keywords, one per line..."
                         autoFocus
                       />
@@ -413,13 +482,21 @@ export function CategorySelector() {
                     <div className="mb-3">
                       <p
                         className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors hover:bg-accent rounded-md px-2 py-1 -mx-2 leading-relaxed"
-                        onClick={(e) => handleStartInlineEdit(industry, e)}
-                        title="Click to edit criteria"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleStartExpandedEdit(industry.id)
+                        }}
+                        title="Click to edit criteria and domain blacklist"
                       >
                         {industry.keywords.join(', ')}
                       </p>
+                      {industry.domainBlacklist && industry.domainBlacklist.length > 0 && (
+                        <p className="text-xs text-muted-foreground/80 mt-1 px-2">
+                          🚫 {industry.domainBlacklist.length} blocked domain{industry.domainBlacklist.length !== 1 ? 's' : ''}
+                        </p>
+                      )}
                       <p className="text-xs text-muted-foreground/60 mt-1 opacity-0 group-hover:opacity-100 transition-opacity px-2">
-                        Click criteria to edit
+                        Click criteria to edit keywords & blacklist
                       </p>
                     </div>
                   )}

@@ -334,6 +334,20 @@ export class StorageService {
     }
   }
 
+  /**
+   * Clear all industry categories
+   */
+  async clearIndustries(): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.clear('industries')
+      logger.info('Storage', 'Cleared all industries')
+    } catch (error) {
+      logger.error('Storage', 'Failed to clear industries', error)
+      throw error
+    }
+  }
+
   // Session Operations
 
   /**

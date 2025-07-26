@@ -31,8 +31,14 @@ export async function POST(request: NextRequest) {
 
     // Handle Yelp business discovery requests
     if (provider === 'yelp-discovery') {
-      const { location, zipRadius = 25 } = body
-      return await handleYelpBusinessDiscovery(query, location, zipRadius, maxResults)
+      const { location, zipRadius = 25, maxPagesPerSite = 20 } = body
+      return await handleYelpBusinessDiscovery(query, location, zipRadius, maxResults, maxPagesPerSite)
+    }
+
+    // Handle Chamber of Commerce processing requests
+    if (provider === 'chamber-of-commerce') {
+      const { url, maxPagesPerSite = 20 } = body
+      return await handleChamberOfCommerceProcessing(url, maxResults, maxPagesPerSite)
     }
 
     // Handle comprehensive search using search orchestrator
@@ -182,6 +188,9 @@ async function handleDuckDuckGoProxy(query: string, maxResults: number) {
     duckduckgoUrl.searchParams.set('no_html', '1')
     duckduckgoUrl.searchParams.set('skip_disambig', '1')
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
     const response = await fetch(duckduckgoUrl.toString(), {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -190,8 +199,10 @@ async function handleDuckDuckGoProxy(query: string, maxResults: number) {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache'
       },
-      timeout: 10000
+      signal: controller.signal
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       if (response.status === 503) {
@@ -747,15 +758,8 @@ async function handleBBBBusinessDiscovery(
       // Remove duplicates and limit results
       const uniqueResults = removeDuplicateBusinesses(allBusinessWebsites).slice(0, maxResults)
 
-      // If we didn't find enough business websites, add some alternative directory searches
-      if (uniqueResults.length < maxResults) {
-        const alternativeSearches = generateAlternativeBusinessSearches(
-          query,
-          location,
-          maxResults - uniqueResults.length
-        )
-        uniqueResults.push(...alternativeSearches)
-      }
+      // Note: No longer adding directory search URLs as business results
+      // Use dedicated discovery services (Yelp Discovery, BBB Discovery) instead
 
       logger.info('Search API', `BBB business discovery returned ${uniqueResults.length} business websites for expanded criteria`)
 
@@ -779,15 +783,8 @@ async function handleBBBBusinessDiscovery(
       maxResults
     })
 
-    // If we didn't find enough business websites, add some alternative directory searches
-    if (businessWebsites.length < maxResults) {
-      const alternativeSearches = generateAlternativeBusinessSearches(
-        query,
-        location,
-        maxResults - businessWebsites.length
-      )
-      businessWebsites.push(...alternativeSearches)
-    }
+    // Note: No longer adding directory search URLs as business results
+    // Use dedicated discovery services (Yelp Discovery, BBB Discovery) instead
 
     logger.info('Search API', `BBB business discovery returned ${businessWebsites.length} business websites`)
 
@@ -803,39 +800,19 @@ async function handleBBBBusinessDiscovery(
   } catch (error) {
     logger.error('Search API', 'BBB business discovery failed', error)
 
-    // Fallback to simplified approach if BBB scraping fails
-    logger.info('Search API', 'Falling back to BBB search URL generation')
-
-    const fallbackResults = generateAlternativeBusinessSearches(query, location, maxResults)
-
-    // Add BBB search URL as fallback
-    const bbbSearchUrl = new URL('https://www.bbb.org/search')
-    bbbSearchUrl.searchParams.set('find_country', 'USA')
-    bbbSearchUrl.searchParams.set('find_text', query)
-    bbbSearchUrl.searchParams.set('find_loc', location)
-
-    if (accreditedOnly) {
-      bbbSearchUrl.searchParams.set('find_type', 'accredited')
-    }
-
-    fallbackResults.unshift({
-      url: bbbSearchUrl.toString(),
-      title: `BBB Search: ${query} in ${location}`,
-      snippet: `Search ${accreditedOnly ? 'BBB Accredited' : 'All'} businesses for ${query} in ${location}`,
-      domain: 'bbb.org',
-      isBBBSearch: true
-    })
-
-    return NextResponse.json({
-      success: true,
-      provider: 'bbb-discovery',
-      query: query,
-      location: location,
-      results: fallbackResults,
-      count: fallbackResults.length,
-      fallback: true,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    })
+    // Return error when BBB scraping fails - no directory URLs as fallback
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'BBB business discovery failed and no fallback available',
+        provider: 'bbb-discovery',
+        query: query,
+        location: location,
+        results: [],
+        count: 0
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -952,51 +929,19 @@ function removeDuplicateBusinesses(businesses: any[]): any[] {
  * Generate alternative business search URLs when BBB scraping isn't available
  */
 function generateAlternativeBusinessSearches(query: string, location: string, maxResults: number): any[] {
-  const searches: any[] = []
-
-  const businessDirectories = [
-    {
-      name: 'Yelp',
-      domain: 'yelp.com',
-      url: `https://www.yelp.com/search?find_desc=${encodeURIComponent(query)}&find_loc=${encodeURIComponent(location)}`
-    },
-    {
-      name: 'YellowPages',
-      domain: 'yellowpages.com',
-      url: `https://www.yellowpages.com/search?search_terms=${encodeURIComponent(query)}&geo_location_terms=${encodeURIComponent(location)}`
-    },
-    {
-      name: 'Google Maps',
-      domain: 'google.com',
-      url: `https://www.google.com/maps/search/${encodeURIComponent(query + ' ' + location)}`
-    }
-  ]
-
-  for (let i = 0; i < Math.min(maxResults, businessDirectories.length); i++) {
-    const directory = businessDirectories[i]
-
-    if (!directory) {
-      continue
-    }
-
-    searches.push({
-      url: directory.url,
-      title: `${directory.name}: ${query} in ${location}`,
-      snippet: `Search for ${query} businesses in ${location} on ${directory.name}`,
-      domain: directory.domain,
-      isDirectorySearch: true
-    })
-  }
-
-  return searches
+  // Return empty array - directory search URLs should not be returned as business websites
+  // The proper approach is to use dedicated discovery services (Yelp Discovery, BBB Discovery)
+  // that extract actual business websites from directory pages
+  logger.info('Search API', `Not generating directory search URLs as business results for ${query} in ${location}`)
+  return []
 }
 
 /**
  * Handle Yelp business discovery
  */
-async function handleYelpBusinessDiscovery(query: string, location: string, zipRadius: number, maxResults: number) {
+async function handleYelpBusinessDiscovery(query: string, location: string, zipRadius: number, maxResults: number, maxPagesPerSite: number = 20) {
   try {
-    logger.info('Search API', `Yelp business discovery: ${query} in ${location}`)
+    logger.info('Search API', `Yelp business discovery with deep scraping: ${query} in ${location} (max ${maxPagesPerSite} pages per site)`)
 
     // Import Yelp scraping service
     const { yelpScrapingService } = await import('@/lib/yelpScrapingService')
@@ -1005,7 +950,8 @@ async function handleYelpBusinessDiscovery(query: string, location: string, zipR
       query,
       location,
       zipRadius,
-      maxResults
+      maxResults,
+      maxPagesPerSite
     })
 
     logger.info('Search API', `Yelp business discovery returned ${businessWebsites.length} business websites`)
@@ -1075,6 +1021,48 @@ async function handleComprehensiveSearch(
         success: false,
         error: 'Comprehensive search failed',
         message: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * Handle Chamber of Commerce processing
+ */
+async function handleChamberOfCommerceProcessing(url: string, maxResults: number, maxPagesPerSite: number = 20) {
+  try {
+    logger.info('Search API', `Chamber of Commerce processing: ${url} (max ${maxPagesPerSite} pages per site)`)
+
+    // Import Chamber of Commerce scraping service
+    const { chamberOfCommerceScrapingService } = await import('@/lib/chamberOfCommerceScrapingService')
+
+    const businessWebsites = await chamberOfCommerceScrapingService.processChamberOfCommercePage({
+      url,
+      maxBusinesses: maxResults,
+      maxPagesPerSite
+    })
+
+    logger.info('Search API', `Chamber of Commerce processing returned ${businessWebsites.length} business websites`)
+
+    return NextResponse.json({
+      success: true,
+      provider: 'chamber-of-commerce',
+      url: url,
+      results: businessWebsites,
+      count: businessWebsites.length
+    })
+
+  } catch (error) {
+    logger.error('Search API', 'Chamber of Commerce processing failed', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Chamber of Commerce processing failed',
+        provider: 'chamber-of-commerce',
+        url: url,
+        results: [],
+        count: 0
       },
       { status: 500 }
     )

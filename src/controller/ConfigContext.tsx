@@ -201,6 +201,7 @@ export interface ConfigContextType {
   addCustomIndustry: (industry: Omit<IndustryCategory, 'id' | 'isCustom'>) => Promise<void>
   updateIndustry: (industry: IndustryCategory, showToast?: boolean) => Promise<void>
   removeIndustry: (id: string) => Promise<void>
+  setAllIndustries: (industries: IndustryCategory[]) => Promise<void>
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
@@ -395,6 +396,34 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   }
 
   /**
+   * Set all industries (overwrites current industries)
+   */
+  const setAllIndustries = async (industries: IndustryCategory[]) => {
+    try {
+      // Clear existing industries from storage
+      await storage.clearIndustries()
+
+      // Save all new industries
+      for (const industry of industries) {
+        await storage.saveIndustry(industry)
+      }
+
+      // Update state
+      dispatch({ type: 'SET_INDUSTRIES', payload: industries })
+
+      // Update selected industries to only include valid IDs
+      const validIds = industries.map(i => i.id)
+      const validSelectedIds = state.selectedIndustries.filter(id => validIds.includes(id))
+      dispatch({ type: 'SET_SELECTED_INDUSTRIES', payload: validSelectedIds })
+
+      logger.info('ConfigProvider', 'All industries replaced', { count: industries.length })
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to set all industries', error)
+      throw error
+    }
+  }
+
+  /**
    * Remove industry
    */
   const removeIndustry = async (id: string) => {
@@ -493,6 +522,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     addCustomIndustry,
     updateIndustry,
     removeIndustry,
+    setAllIndustries,
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,

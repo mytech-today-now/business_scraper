@@ -21,12 +21,14 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
     name: 'Healthcare & Medical',
     keywords: ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
     isCustom: false,
+    domainBlacklist: ['*.webmd.*', '*.mayoclinic.*', '*.healthline.*'],
   },
   {
     id: 'professional',
     name: 'Professional Services',
     keywords: ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
     isCustom: false,
+    domainBlacklist: ['*.statefarm.*', '*.geico.*', '*.progressive.*', '*.allstate.*'],
   },
   {
     id: 'construction',

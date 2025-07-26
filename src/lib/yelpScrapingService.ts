@@ -1,12 +1,14 @@
 import puppeteer, { Browser, Page } from 'puppeteer'
 import { logger } from '@/utils/logger'
 import { zipCodeService } from './zipCodeService'
+import { BusinessRecord } from '@/types/business'
 
 export interface YelpSearchOptions {
   query: string
   location: string
   zipRadius: number
   maxResults: number
+  maxPagesPerSite?: number
 }
 
 export interface YelpBusinessResult {
@@ -17,6 +19,7 @@ export interface YelpBusinessResult {
   address?: string
   phone?: string
   yelpProfileUrl?: string
+  businessRecords?: BusinessRecord[]
 }
 
 export class YelpScrapingService {
@@ -197,9 +200,9 @@ export class YelpScrapingService {
    * Search for businesses on Yelp
    */
   async searchBusinesses(options: YelpSearchOptions): Promise<YelpBusinessResult[]> {
-    const { query, location, zipRadius, maxResults } = options
-    
-    logger.info('YelpScraping', `Starting Yelp search: ${query} in ${location} (radius: ${zipRadius}mi)`)
+    const { query, location, zipRadius, maxResults, maxPagesPerSite = 20 } = options
+
+    logger.info('YelpScraping', `Starting Yelp RESTful search: ${query} in ${location} (radius: ${zipRadius}mi)`)
 
     let page: Page | null = null
     let retries = 0
@@ -210,12 +213,12 @@ export class YelpScrapingService {
         
         page = await this.createPage()
         
-        // Build Yelp search URL
+        // Build RESTful Yelp search URL as specified
         const yelpSearchUrl = new URL('https://www.yelp.com/search')
-        yelpSearchUrl.searchParams.set('find_desc', query)
+        yelpSearchUrl.searchParams.set('find_desc', query.replace(/\s+/g, '+'))
         yelpSearchUrl.searchParams.set('find_loc', location)
 
-        logger.info('YelpScraping', `Navigating to: ${yelpSearchUrl.toString()}`)
+        logger.info('YelpScraping', `Navigating to RESTful URL: ${yelpSearchUrl.toString()}`)
         
         // Navigate to Yelp search page
         await page.goto(yelpSearchUrl.toString(), { 
@@ -229,26 +232,29 @@ export class YelpScrapingService {
         // Wait for search results to load
         await page.waitForSelector('.search-results, [data-testid="search-results"], .searchResults', { timeout: 15000 })
 
-        // Extract business information from search results
-        const businesses = await this.extractBusinessListings(page, maxResults)
-        
-        if (businesses.length === 0) {
-          logger.warn('YelpScraping', 'No businesses found on search page')
+        // Extract business listings from YERP (Yelp Engine Results Page)
+        const businessListings = await this.extractBusinessListingsFromYERP(page, maxResults)
+
+        if (businessListings.length === 0) {
+          logger.warn('YelpScraping', 'No businesses found on YERP')
           await page.close()
           return []
         }
 
-        logger.info('YelpScraping', `Found ${businesses.length} businesses on search page`)
+        logger.info('YelpScraping', `Found ${businessListings.length} businesses on YERP`)
 
-        // Extract actual business websites from Yelp profile pages
-        const businessesWithWebsites = await this.extractBusinessWebsites(page, businesses, maxResults)
-        
+        // Extract business websites from Yelp profile pages
+        const businessesWithWebsites = await this.extractBusinessWebsitesFromProfiles(page, businessListings, maxResults)
+
+        // Perform deep scraping of business websites
+        const businessesWithDeepData = await this.performDeepWebsiteScraping(businessesWithWebsites, maxPagesPerSite)
+
         // Filter businesses by ZIP radius if specified
-        const filteredBusinesses = await this.filterByZipRadius(businessesWithWebsites, options)
+        const filteredBusinesses = await this.filterByZipRadius(businessesWithDeepData, options)
         
         await page.close()
         
-        logger.info('YelpScraping', `Successfully extracted ${filteredBusinesses.length} business websites`)
+        logger.info('YelpScraping', `Successfully processed ${filteredBusinesses.length} businesses with deep scraping`)
         return filteredBusinesses
 
       } catch (error) {
@@ -274,21 +280,21 @@ export class YelpScrapingService {
   }
 
   /**
-   * Extract business listings from Yelp search results page
+   * Extract business listings from YERP (Yelp Engine Results Page) using the specified identifier
    */
-  private async extractBusinessListings(page: Page, maxResults: number): Promise<any[]> {
+  private async extractBusinessListingsFromYERP(page: Page, maxResults: number): Promise<any[]> {
     return await page.evaluate((maxResults) => {
       const businesses: any[] = []
       
-      console.log('Extracting Yelp business listings...')
-      
-      // Look for business name elements with the specific class you mentioned
+      console.log('Extracting Yelp business listings from YERP...')
+
+      // Use the specific identifier you mentioned for YERP entries
       const businessNameSelectors = [
+        'div.businessName__09f24__HG_pC.y-css-mhg9c5[data-traffic-crawl-id="SearchResultBizName"]',
         '.businessName__09f24__HG_pC[data-traffic-crawl-id="SearchResultBizName"]',
         '[data-traffic-crawl-id="SearchResultBizName"]',
         '.businessName__09f24__HG_pC',
-        '.business-name',
-        '[data-testid="business-name"]'
+        '.business-name'
       ]
       
       let businessElements: NodeListOf<Element> | null = null
@@ -376,9 +382,9 @@ export class YelpScrapingService {
   }
 
   /**
-   * Extract business websites from Yelp profile pages
+   * Extract business websites from Yelp profile pages using the specified URL pattern
    */
-  private async extractBusinessWebsites(page: Page, businesses: any[], maxResults: number): Promise<YelpBusinessResult[]> {
+  private async extractBusinessWebsitesFromProfiles(page: Page, businesses: any[], maxResults: number): Promise<YelpBusinessResult[]> {
     const businessesWithWebsites: YelpBusinessResult[] = []
     
     // Limit to first few businesses to avoid too many requests
@@ -401,47 +407,47 @@ export class YelpScrapingService {
         // Wait for business page to load
         await page.waitForSelector('.business-website, [data-testid="business-website"], .biz-website', { timeout: 10000 })
 
-        // Extract business website URL using the specific selector you mentioned
+        // Extract business website URL using the specific pattern you mentioned
         const websiteUrl = await page.evaluate(() => {
-          console.log('Looking for business website on Yelp profile page...')
-          
-          // Look for the specific pattern you mentioned: <p class="y-css-9fw56v">Business website</p>
+          console.log('Looking for business website URL on Yelp profile page...')
+
+          // Look for the specific URL pattern you mentioned:
+          // <div class="y-css-1ilqd8r"><a href="/biz_redir?url=https%3A%2F%2Fwww.rscbusinessgroup.com&amp;cachebuster=1753494273&amp;website_link_type=website&amp;src_bizid=eUpRo6nbHjcljDWfBywe5w&amp;s=59cd957b85fab6b8d7bc735840330c0796095d7bad24a1d0cbbc13f95a716a3a" class=" y-css-14ckas3" target="_blank">
           const websiteSelectors = [
-            'p.y-css-9fw56v:contains("Business website") + a',
-            'p:contains("Business website") + a',
+            'div.y-css-1ilqd8r a[href*="biz_redir"]',
+            'a[href*="biz_redir?url="]',
+            'a[href*="website_link_type=website"]',
             '.business-website a',
             '[data-testid="business-website"] a',
-            '.biz-website a',
             'a[href*="http"]:not([href*="yelp.com"]):not([href*="mailto:"]):not([href*="tel:"])'
           ]
           
           for (const selector of websiteSelectors) {
-            // Handle :contains() pseudo-selector manually
-            if (selector.includes(':contains(')) {
-              const elements = Array.from(document.querySelectorAll('p'))
-              for (const element of elements) {
-                if (element.textContent?.includes('Business website')) {
-                  const nextElement = element.nextElementSibling
-                  if (nextElement && nextElement.tagName === 'A') {
-                    const link = nextElement as HTMLAnchorElement
-                    if (link.href && !link.href.includes('yelp.com')) {
-                      console.log(`Found website via Business website label: ${link.href}`)
-                      return link.href
+            const links = Array.from(document.querySelectorAll(selector)) as HTMLAnchorElement[]
+            for (const link of links) {
+              if (link.href) {
+                // Handle biz_redir URLs - extract the actual business URL
+                if (link.href.includes('biz_redir?url=')) {
+                  try {
+                    const urlParams = new URLSearchParams(link.href.split('?')[1])
+                    const actualUrl = decodeURIComponent(urlParams.get('url') || '')
+                    if (actualUrl && actualUrl.startsWith('http')) {
+                      console.log(`Found business website via biz_redir: ${actualUrl}`)
+                      return actualUrl
                     }
+                  } catch (error) {
+                    console.log('Error parsing biz_redir URL:', error)
                   }
                 }
-              }
-            } else {
-              const links = Array.from(document.querySelectorAll(selector)) as HTMLAnchorElement[]
-              for (const link of links) {
-                if (link.href && 
-                    !link.href.includes('yelp.com') && 
-                    !link.href.includes('mailto:') && 
-                    !link.href.includes('tel:') &&
-                    !link.href.includes('facebook.com') &&
-                    !link.href.includes('twitter.com') &&
-                    !link.href.includes('instagram.com')) {
-                  console.log(`Found website: ${link.href}`)
+                // Handle direct URLs
+                else if (!link.href.includes('yelp.com') &&
+                         !link.href.includes('mailto:') &&
+                         !link.href.includes('tel:') &&
+                         !link.href.includes('facebook.com') &&
+                         !link.href.includes('twitter.com') &&
+                         !link.href.includes('instagram.com') &&
+                         link.href.startsWith('http')) {
+                  console.log(`Found direct website: ${link.href}`)
                   return link.href
                 }
               }
@@ -542,6 +548,57 @@ export class YelpScrapingService {
       this.browser = null
       logger.info('YelpScraping', 'Browser closed')
     }
+  }
+
+  /**
+   * Perform deep scraping of business websites
+   */
+  private async performDeepWebsiteScraping(businesses: YelpBusinessResult[], maxPagesPerSite: number): Promise<YelpBusinessResult[]> {
+    const businessesWithDeepData: YelpBusinessResult[] = []
+
+    logger.info('YelpScraping', `Starting deep scraping of ${businesses.length} business websites`)
+
+    for (const business of businesses) {
+      try {
+        await this.rateLimit()
+
+        logger.info('YelpScraping', `Deep scraping website: ${business.url}`)
+
+        // Import the scraper service for deep website scraping
+        const { scraperService } = await import('@/model/scraperService')
+
+        // Perform deep scraping of the business website using enhanced scraping
+        const scrapingResult = await scraperService.scrapeWebsiteEnhanced(
+          business.url,
+          2, // depth
+          maxPagesPerSite
+        )
+
+        if (scrapingResult && scrapingResult.length > 0) {
+          // Add the scraped business records to the result
+          const businessWithDeepData: YelpBusinessResult = {
+            ...business,
+            businessRecords: scrapingResult
+          }
+
+          businessesWithDeepData.push(businessWithDeepData)
+
+          logger.info('YelpScraping', `Successfully scraped ${scrapingResult.length} business records from ${business.url}`)
+        } else {
+          // Keep the business even if deep scraping failed
+          businessesWithDeepData.push(business)
+          logger.warn('YelpScraping', `Deep scraping failed for ${business.url}, keeping basic info`)
+        }
+
+      } catch (error) {
+        logger.error('YelpScraping', `Deep scraping error for ${business.url}:`, error)
+        // Keep the business even if deep scraping failed
+        businessesWithDeepData.push(business)
+      }
+    }
+
+    logger.info('YelpScraping', `Completed deep scraping. ${businessesWithDeepData.length} businesses processed`)
+    return businessesWithDeepData
   }
 
   /**

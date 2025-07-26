@@ -33,4 +33,5 @@ export interface IndustryCategory {
   name: string;
   keywords: string[];
   isCustom: boolean;
+  domainBlacklist?: string[];
 }

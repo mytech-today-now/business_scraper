@@ -2,12 +2,18 @@
 
 ## Overview
 
-The Business Scraper application supports importing and exporting domain blacklist configurations as JSON files. This allows you to:
+The Business Scraper application supports both **global domain blacklists** and **per-industry domain blacklists**. This documentation covers the legacy global blacklist format. For the new per-industry blacklist functionality, see [PER_INDUSTRY_BLACKLIST.md](./PER_INDUSTRY_BLACKLIST.md).
 
-- **Backup** your domain blacklist configurations
+### Legacy Global Blacklist
+
+The global domain blacklist allows you to:
+
+- **Backup** your global domain blacklist configurations
 - **Share** blacklist setups between different installations
 - **Migrate** configurations when upgrading or moving systems
 - **Collaborate** with team members using standardized domain filtering
+
+> **Note**: The new per-industry blacklist system provides more granular control. Consider migrating to per-industry blacklists for better filtering precision.
 
 ## JSON File Format
 
@@ -218,12 +224,14 @@ Multiple wildcards for advanced filtering:
 
 ## Integration with Search Providers
 
-The domain blacklist is applied to all search providers:
+The global domain blacklist is applied to all search providers:
 
 - **Google Custom Search**: Filtered from API results
-- **Azure AI Foundry**: Filtered from Bing Custom Search results  
+- **Azure AI Foundry**: Filtered from Bing Custom Search results
 - **DuckDuckGo SERP**: Filtered from scraped results
 - **BBB Discovery**: Filtered from extracted business websites
+
+> **Enhanced Filtering**: When using per-industry blacklists, both global and industry-specific patterns are combined for comprehensive filtering.
 
 ## File Naming Convention
 
