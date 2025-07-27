@@ -1,3 +1,30 @@
+/**
+ * Email validation result interface for advanced email validation
+ */
+export interface EmailValidationResult {
+  email: string;
+  isValid: boolean;
+  deliverabilityScore: number; // 0-100
+  isDisposable: boolean;
+  isRoleBased: boolean;
+  domain: string;
+  mxRecords: boolean;
+  confidence: number; // 0-100
+  validationTimestamp?: string;
+  errors?: string[];
+}
+
+/**
+ * Enhanced email validation metadata
+ */
+export interface EmailValidationMetadata {
+  validationResults: EmailValidationResult[];
+  overallConfidence: number;
+  bestEmail?: string;
+  validEmailCount: number;
+  totalEmailCount: number;
+}
+
 export interface BusinessRecord {
   id: string;
   businessName: string;
@@ -18,6 +45,7 @@ export interface BusinessRecord {
   };
   industry: string;
   scrapedAt: Date;
+  emailValidation?: EmailValidationMetadata;
 }
 
 export interface ScrapingConfig {

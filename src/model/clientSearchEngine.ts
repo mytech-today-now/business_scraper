@@ -262,11 +262,15 @@ export class ClientSearchEngine {
       logger.info('ClientSearchEngine', `Parsed ${searchCriteria.length} individual search criteria: ${searchCriteria.join(', ')}`)
 
       // Strategy 1: Search each criteria individually using DuckDuckGo SERP
-      for (const criteria of searchCriteria) {
-        if (allResults.length >= maxResults) break
+      // Get as many results as possible per criteria (no artificial limits)
+      const resultsPerCriteria = Math.max(100, maxResults) // Ensure we get substantial results per criteria
 
-        const serpResults = await this.searchDuckDuckGoSERP(criteria, location, Math.ceil(maxResults / searchCriteria.length))
+      for (const criteria of searchCriteria) {
+        logger.info('ClientSearchEngine', `Starting search for criteria: "${criteria}"`)
+        const serpResults = await this.searchDuckDuckGoSERP(criteria, location, resultsPerCriteria)
         allResults.push(...serpResults)
+
+        logger.info('ClientSearchEngine', `Completed search for "${criteria}": ${serpResults.length} results found`)
       }
 
       // Strategy 2: Comprehensive business discovery for each criteria (BBB + Yelp + SERP)
@@ -314,37 +318,32 @@ export class ClientSearchEngine {
    */
   private async searchDuckDuckGoSERP(query: string, location: string, maxResults: number): Promise<SearchResult[]> {
     try {
-      const searchQueries = [
-        `${query} ${location}`,
-        `${query} businesses ${location}`,
-        `${query} ${location} contact phone`,
-        `"${query}" "${location}" phone email`
-      ]
-
       const allResults: SearchResult[] = []
-      // Get configurable number of SERP pages from credentials
-      const maxPagesPerQuery = this.credentials?.duckduckgoSerpPages || 2
+      // Get configurable number of SERP pages from credentials, default to 6 pages for better coverage
+      const maxPagesPerQuery = this.credentials?.duckduckgoSerpPages || 6
 
-      for (const searchQuery of searchQueries) {
-        if (allResults.length >= maxResults) break
+      // Use only the primary search query to avoid diluting results
+      const primaryQuery = `${query} ${location}`
+      logger.info('ClientSearchEngine', `Scraping DuckDuckGo SERP for: ${primaryQuery}`)
 
-        logger.info('ClientSearchEngine', `Scraping DuckDuckGo SERP for: ${searchQuery}`)
+      // Scrape multiple pages of results for the primary query
+      for (let page = 0; page < maxPagesPerQuery; page++) {
+        const pageResults = await this.scrapeDuckDuckGoPage(primaryQuery, page)
+        allResults.push(...pageResults)
 
-        // Scrape multiple pages of results
-        for (let page = 0; page < maxPagesPerQuery; page++) {
-          if (allResults.length >= maxResults) break
+        logger.info('ClientSearchEngine', `Page ${page + 1}: Found ${pageResults.length} results`)
 
-          const pageResults = await this.scrapeDuckDuckGoPage(searchQuery, page)
-          allResults.push(...pageResults)
+        // Small delay between pages to be respectful
+        await new Promise(resolve => setTimeout(resolve, 1000))
 
-          logger.info('ClientSearchEngine', `Page ${page + 1}: Found ${pageResults.length} results`)
-
-          // Small delay between pages to be respectful
-          await new Promise(resolve => setTimeout(resolve, 1000))
+        // If we got no results on this page, likely no more pages available
+        if (pageResults.length === 0) {
+          logger.info('ClientSearchEngine', `No results on page ${page + 1}, stopping pagination`)
+          break
         }
       }
 
-      return allResults.slice(0, maxResults)
+      return allResults // Return all results found
 
     } catch (error) {
       logger.warn('ClientSearchEngine', 'DuckDuckGo SERP scraping failed', error)

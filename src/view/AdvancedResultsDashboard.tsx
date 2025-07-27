@@ -88,7 +88,7 @@ export function AdvancedResultsDashboard() {
   // Sorting and pagination
   const [sortConfig, setSortConfig] = useState<{ field: string; direction: 'asc' | 'desc' }[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(50)
+  const [pageSize, setPageSize] = useState(10000) // Show all results by default
   
   // Annotations and tags
   const [annotations, setAnnotations] = useState<ResultAnnotation[]>([])
@@ -549,10 +549,12 @@ export function AdvancedResultsDashboard() {
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
             className="px-3 py-1 border border-gray-300 rounded text-sm"
+            title="Results per page"
           >
             <option value={25}>25 per page</option>
             <option value={50}>50 per page</option>
             <option value={100}>100 per page</option>
+            <option value={10000}>Show All</option>
           </select>
         </div>
 

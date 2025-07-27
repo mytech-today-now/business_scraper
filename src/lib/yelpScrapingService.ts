@@ -200,7 +200,7 @@ export class YelpScrapingService {
    * Search for businesses on Yelp
    */
   async searchBusinesses(options: YelpSearchOptions): Promise<YelpBusinessResult[]> {
-    const { query, location, zipRadius, maxResults, maxPagesPerSite = 20 } = options
+    const { query, location, zipRadius, maxResults = 10000, maxPagesPerSite = 50 } = options
 
     logger.info('YelpScraping', `Starting Yelp RESTful search: ${query} in ${location} (radius: ${zipRadius}mi)`)
 

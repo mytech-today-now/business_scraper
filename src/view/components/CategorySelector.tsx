@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Plus, Trash2, Check, X, Download, Upload } from 'lucide-react'
+import { Plus, Trash2, Check, X, Download, Upload, RefreshCw } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
@@ -26,6 +26,7 @@ export function CategorySelector() {
     updateIndustry,
     addCustomIndustry,
     setAllIndustries,
+    refreshDefaultIndustries,
     startIndustryEdit,
     endIndustryEdit,
     clearAllEdits,
@@ -353,6 +354,15 @@ export function CategorySelector() {
               title="Import custom industries from JSON file"
             >
               Import
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              icon={RefreshCw}
+              onClick={refreshDefaultIndustries}
+              title="Refresh default industries with latest data"
+            >
+              Refresh Defaults
             </Button>
           </div>
         </CardTitle>

@@ -589,18 +589,18 @@ export function ApiConfigurationPage({
                   </label>
                   <select
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={credentials.maxSearchResults || 20}
+                    value={credentials.maxSearchResults || 1000}
                     onChange={(e) => handleInputChange('maxSearchResults' as keyof ApiCredentials, e.target.value)}
                     aria-label="Max Results Per Search"
                   >
-                    <option value={10}>10 results</option>
-                    <option value={20}>20 results</option>
-                    <option value={30}>30 results</option>
                     <option value={50}>50 results</option>
                     <option value={100}>100 results</option>
+                    <option value={500}>500 results</option>
+                    <option value={1000}>1000 results</option>
+                    <option value={10000}>Unlimited (10,000+)</option>
                   </select>
                   <p className="text-xs text-gray-600 mt-1">
-                    Maximum number of business websites to find per search
+                    Maximum number of business websites to find per search (higher values gather more comprehensive results)
                   </p>
                 </div>
               </div>

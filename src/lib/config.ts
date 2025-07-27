@@ -154,7 +154,7 @@ const configSchema: Record<string, ValidationRule> = {
   'SCRAPING_MAX_RETRIES': { type: 'number', min: 0, max: 10, default: 3 },
   'SCRAPING_DELAY_MS': { type: 'number', min: 0, default: 1000 },
   'SEARCH_ENGINE_TIMEOUT': { type: 'number', min: 1000, default: 10000 },
-  'MAX_SEARCH_RESULTS': { type: 'number', min: 1, max: 1000, default: 50 },
+  'MAX_SEARCH_RESULTS': { type: 'number', min: 1, default: 10000 }, // No upper limit - gather as many as possible
 
   // API Keys (optional)
   'GOOGLE_MAPS_API_KEY': { type: 'string', required: false },

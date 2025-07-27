@@ -10,7 +10,7 @@ import { bbbScrapingService } from '@/lib/bbbScrapingService'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { provider, query, location, maxResults = 10, industry, enableOptimization = false } = body
+    const { provider, query, location, maxResults = 1000, industry, enableOptimization = false } = body
 
 
 
@@ -57,8 +57,8 @@ export async function POST(request: NextRequest) {
     const sanitizedLocation = validationService.sanitizeInput(location).substring(0, 100)
     const sanitizedIndustry = industry ? validationService.sanitizeInput(industry).substring(0, 50) : undefined
 
-    // Validate maxResults
-    const validMaxResults = Math.min(Math.max(parseInt(maxResults) || 10, 1), 50)
+    // Parse maxResults (no upper limit - gather as many as possible)
+    const validMaxResults = Math.max(parseInt(maxResults) || 1000, 1)
 
     logger.info('Search API', `Search request: "${sanitizedQuery}" in "${sanitizedLocation}"`, {
       industry: sanitizedIndustry,

@@ -210,7 +210,12 @@ export function useScraperController() {
 
       const { config, selectedIndustries } = configState
       const industryNames = getSelectedIndustryNames()
-      
+
+      // Get the actual selected industry objects with their keywords
+      const selectedIndustryObjects = selectedIndustries
+        .map(id => configState.industries.find(industry => industry.id === id))
+        .filter(Boolean)
+
       logger.info('ScraperController', 'Starting scraping process', {
         industries: industryNames,
         zipCode: config.zipCode,
@@ -220,42 +225,39 @@ export function useScraperController() {
       toast.success('Scraping started!')
 
       // Process each industry completely before moving to the next
-      for (let industryIndex = 0; industryIndex < industryNames.length; industryIndex++) {
+      for (let industryIndex = 0; industryIndex < selectedIndustryObjects.length; industryIndex++) {
         if (abortControllerRef.current?.signal.aborted) break
 
-        const industry = industryNames[industryIndex]
+        const industryObject = selectedIndustryObjects[industryIndex]!
+        const industryName = industryObject.name
 
-        if (!industry) {
-          continue
-        }
-
-        logger.info('ScraperController', `Starting complete processing for industry: ${industry}`)
+        logger.info('ScraperController', `Starting complete processing for industry: ${industryName}`)
 
         // Update overall progress
-        updateProgress(industryIndex, industryNames.length, `Processing ${industry} businesses...`)
+        updateProgress(industryIndex, selectedIndustryObjects.length, `Processing ${industryName} businesses...`)
 
-        // Step 1: Search for websites for this industry
+        // Step 1: Search for websites for this industry using its keywords
         addProcessingStep({
-          name: `Searching ${industry} Businesses`,
+          name: `Searching ${industryName} Businesses`,
           status: 'running',
-          details: `Query: "${industry}" in ${config.zipCode}`
+          details: `Using keywords: "${industryObject.keywords.join(', ')}" in ${config.zipCode}`
         })
 
         let industryUrls: string[] = []
 
         try {
-          // Search for websites for this specific industry
-          const query: string = industry
+          // Use the industry keywords as the search query instead of the industry name
+          const query: string = industryObject.keywords.join(', ')
           industryUrls = await scraperService.searchForWebsites(
             query,
             config.zipCode,
             50 // Get up to 50 results per industry
           )
 
-          logger.info('ScraperController', `Found ${industryUrls.length} URLs for ${industry}`)
+          logger.info('ScraperController', `Found ${industryUrls.length} URLs for ${industryName}`)
 
           // Update search step as completed
-          const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industry}`))
+          const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industryName}`))
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
             // Check if we're actually using demo mode (fallback)
@@ -269,11 +271,11 @@ export function useScraperController() {
           }
 
         } catch (error) {
-          const errorMsg = `Failed to search for ${industry} businesses: ${error}`
+          const errorMsg = `Failed to search for ${industryName} businesses: ${error}`
           addError(errorMsg)
 
           // Update search step as failed
-          const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industry}`))
+          const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industryName}`))
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
             updateProcessingStep(latestSearchStep.id, {
@@ -290,7 +292,7 @@ export function useScraperController() {
           const uniqueIndustryUrls = Array.from(new Set(industryUrls))
 
           addProcessingStep({
-            name: `Scraping ${industry} Websites`,
+            name: `Scraping ${industryName} Websites`,
             status: 'running',
             details: `Processing ${uniqueIndustryUrls.length} websites with ${config.pagesPerSite} pages each`
           })
@@ -321,8 +323,8 @@ export function useScraperController() {
               try {
                 updateProgress(
                   industryIndex + (scrapedCount + index) / uniqueIndustryUrls.length,
-                  industryNames.length,
-                  `Scraping ${industry}: ${url} (${config.pagesPerSite} pages)...`
+                  selectedIndustryObjects.length,
+                  `Scraping ${industryName}: ${url} (${config.pagesPerSite} pages)...`
                 )
 
                 // Skip scraping directory/search pages
@@ -337,7 +339,7 @@ export function useScraperController() {
                 // Set industry for scraped businesses
                 const businessesWithIndustry = businesses.map(business => ({
                   ...business,
-                  industry: industry, // Use the current industry being processed
+                  industry: industryName, // Use the current industry being processed
                 }))
 
                 // Update scraping step as completed
@@ -360,7 +362,7 @@ export function useScraperController() {
                   // Save to storage
                   await storage.saveBusinesses(businessesWithIndustry)
 
-                  logger.info('ScraperController', `Scraped ${businessesWithIndustry.length} businesses from ${url} for ${industry}`)
+                  logger.info('ScraperController', `Scraped ${businessesWithIndustry.length} businesses from ${url} for ${industryName}`)
                 }
 
                 return businessesWithIndustry
@@ -391,16 +393,16 @@ export function useScraperController() {
           }
 
           // Update scraping step for this industry
-          const scrapingSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Scraping ${industry}`))
+          const scrapingSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Scraping ${industryName}`))
           const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
           if (latestScrapingStep) {
             updateProcessingStep(latestScrapingStep.id, {
               status: 'completed',
-              details: `Completed scraping ${uniqueIndustryUrls.length} websites for ${industry}`
+              details: `Completed scraping ${uniqueIndustryUrls.length} websites for ${industryName}`
             })
           }
 
-          logger.info('ScraperController', `Completed processing industry: ${industry}`)
+          logger.info('ScraperController', `Completed processing industry: ${industryName}`)
         }
       }
 

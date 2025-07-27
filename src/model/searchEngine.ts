@@ -34,7 +34,7 @@ const DEFAULT_CONFIG: SearchEngineConfig = {
   maxRetries: 3,
   retryDelay: 1000,
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-  maxResults: 50,
+  maxResults: 10000, // High default to gather as many results as possible
 }
 
 /**

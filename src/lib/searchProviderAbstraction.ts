@@ -103,11 +103,11 @@ export class SearchOrchestrator {
     // 3. Deduplicate and rank results
     const uniqueResults = this.deduplicateResults(allResults)
     const rankedResults = this.rankResults(uniqueResults, options)
-    
-    // 4. Limit to requested number of results
-    const finalResults = rankedResults.slice(0, options.maxResults)
 
-    logger.info('SearchOrchestrator', 
+    // 4. Return all results (no artificial limiting)
+    const finalResults = rankedResults
+
+    logger.info('SearchOrchestrator',
       `Search completed: ${allResults.length} total → ${uniqueResults.length} unique → ${finalResults.length} final results`
     )
 

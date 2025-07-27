@@ -35,7 +35,8 @@
     "config:summary": "node scripts/load-config.js summary",
     "config:dev": "node scripts/load-config.js generate development .env.development",
     "config:prod": "node scripts/load-config.js generate production .env.production",
-    "config:test": "node scripts/load-config.js generate test .env.test"
+    "config:test": "node scripts/load-config.js generate test .env.test",
+    "industries:refresh": "node scripts/refresh-industries.js"
   },
   "dependencies": {
     "@types/pg": "^8.15.4",

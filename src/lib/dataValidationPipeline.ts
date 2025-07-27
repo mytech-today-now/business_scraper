@@ -3,8 +3,9 @@
  * Comprehensive system for validating, cleaning, and enriching business data
  */
 
-import { BusinessRecord } from '@/types/business'
+import { BusinessRecord, EmailValidationResult, EmailValidationMetadata } from '@/types/business'
 import { logger } from '@/utils/logger'
+import { EmailValidationService } from './emailValidationService'
 import { geocoder } from '@/model/geocoder'
 
 export interface ValidationResult {
@@ -58,9 +59,14 @@ export interface EnrichmentResult {
  * Advanced Data Validation and Cleaning Pipeline
  */
 export class DataValidationPipeline {
+  private emailValidationService: EmailValidationService
   private emailValidationCache = new Map<string, boolean>()
   private phoneValidationCache = new Map<string, string>()
   private addressValidationCache = new Map<string, any>()
+
+  constructor() {
+    this.emailValidationService = EmailValidationService.getInstance()
+  }
 
   /**
    * Validate and clean a business record
@@ -251,39 +257,152 @@ export class DataValidationPipeline {
       return
     }
 
-    const validEmails: string[] = []
-    const invalidEmails: string[] = []
+    try {
+      // Perform advanced email validation
+      const validationResults = await this.emailValidationService.validateEmails(business.email)
 
-    for (const email of business.email) {
-      const isValid = await this.validateEmailAddress(email)
-      if (isValid) {
-        validEmails.push(email.toLowerCase().trim())
-      } else {
-        invalidEmails.push(email)
+      const validEmails: string[] = []
+      const invalidEmails: string[] = []
+      const disposableEmails: string[] = []
+      const roleBasedEmails: string[] = []
+
+      for (const validationResult of validationResults) {
+        if (validationResult.isValid) {
+          validEmails.push(validationResult.email.toLowerCase().trim())
+        } else {
+          invalidEmails.push(validationResult.email)
+        }
+
+        if (validationResult.isDisposable) {
+          disposableEmails.push(validationResult.email)
+        }
+
+        if (validationResult.isRoleBased) {
+          roleBasedEmails.push(validationResult.email)
+        }
       }
-    }
 
-    if (invalidEmails.length > 0) {
-      result.errors.push({
-        field: 'email',
-        code: 'INVALID_EMAILS',
-        message: `Invalid email addresses: ${invalidEmails.join(', ')}`,
-        severity: 'major',
+      // Report validation issues
+      if (invalidEmails.length > 0) {
+        result.errors.push({
+          field: 'email',
+          code: 'INVALID_EMAILS',
+          message: `Invalid email addresses: ${invalidEmails.join(', ')}`,
+          severity: 'major',
+        })
+      }
+
+      if (disposableEmails.length > 0) {
+        result.warnings.push({
+          field: 'email',
+          code: 'DISPOSABLE_EMAILS',
+          message: `Disposable email addresses detected: ${disposableEmails.join(', ')}`,
+          impact: 'high',
+        })
+      }
+
+      if (roleBasedEmails.length > 0) {
+        result.warnings.push({
+          field: 'email',
+          code: 'ROLE_BASED_EMAILS',
+          message: `Role-based email addresses: ${roleBasedEmails.join(', ')}`,
+          impact: 'medium',
+        })
+      }
+
+      // Check for duplicates
+      const uniqueEmails = Array.from(new Set(validEmails))
+      if (uniqueEmails.length !== validEmails.length) {
+        result.warnings.push({
+          field: 'email',
+          code: 'DUPLICATE_EMAILS',
+          message: 'Duplicate email addresses found',
+          impact: 'low',
+        })
+      }
+
+      // Store email validation metadata
+      const emailValidation: EmailValidationMetadata = {
+        validationResults,
+        overallConfidence: this.calculateEmailConfidence(validationResults),
+        bestEmail: this.findBestEmail(validationResults),
+        validEmailCount: validEmails.length,
+        totalEmailCount: business.email.length
+      }
+
+      result.cleanedData!.email = uniqueEmails
+      result.cleanedData!.emailValidation = emailValidation
+
+      logger.debug('DataValidationPipeline', `Email validation completed`, {
+        totalEmails: business.email.length,
+        validEmails: validEmails.length,
+        invalidEmails: invalidEmails.length,
+        disposableEmails: disposableEmails.length,
+        overallConfidence: emailValidation.overallConfidence
       })
-    }
 
-    // Check for duplicates
-    const uniqueEmails = Array.from(new Set(validEmails))
-    if (uniqueEmails.length !== validEmails.length) {
-      result.warnings.push({
-        field: 'email',
-        code: 'DUPLICATE_EMAILS',
-        message: 'Duplicate email addresses found',
-        impact: 'low',
-      })
-    }
+    } catch (error) {
+      logger.error('DataValidationPipeline', 'Advanced email validation failed, falling back to basic validation', error)
 
-    result.cleanedData!.email = uniqueEmails
+      // Fallback to basic validation
+      const validEmails: string[] = []
+      const invalidEmails: string[] = []
+
+      for (const email of business.email) {
+        const isValid = await this.validateEmailAddress(email)
+        if (isValid) {
+          validEmails.push(email.toLowerCase().trim())
+        } else {
+          invalidEmails.push(email)
+        }
+      }
+
+      if (invalidEmails.length > 0) {
+        result.errors.push({
+          field: 'email',
+          code: 'INVALID_EMAILS',
+          message: `Invalid email addresses: ${invalidEmails.join(', ')}`,
+          severity: 'major',
+        })
+      }
+
+      const uniqueEmails = Array.from(new Set(validEmails))
+      result.cleanedData!.email = uniqueEmails
+    }
+  }
+
+  /**
+   * Calculate overall email confidence from validation results
+   */
+  private calculateEmailConfidence(validationResults: EmailValidationResult[]): number {
+    if (validationResults.length === 0) return 0
+
+    const validResults = validationResults.filter(result => result.isValid)
+    if (validResults.length === 0) return 0
+
+    const avgConfidence = validResults.reduce((sum, result) => sum + result.confidence, 0) / validResults.length
+    const countBonus = Math.min(validResults.length * 5, 20)
+
+    return Math.min(100, Math.round(avgConfidence + countBonus))
+  }
+
+  /**
+   * Find the best email from validation results
+   */
+  private findBestEmail(validationResults: EmailValidationResult[]): string | undefined {
+    const validEmails = validationResults.filter(result =>
+      result.isValid && !result.isDisposable
+    )
+
+    if (validEmails.length === 0) return undefined
+
+    const sortedEmails = validEmails.sort((a, b) => {
+      if (!a.isRoleBased && b.isRoleBased) return -1
+      if (a.isRoleBased && !b.isRoleBased) return 1
+      return b.confidence - a.confidence
+    })
+
+    return sortedEmails[0].email
   }
 
   /**

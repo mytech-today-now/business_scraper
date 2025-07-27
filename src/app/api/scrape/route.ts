@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Validate maxResults
-        const numMaxResults = Math.min(Math.max(parseInt(maxResults) || 10, 1), 100)
+        // Parse maxResults (no upper limit - gather as many as possible)
+        const numMaxResults = Math.max(parseInt(maxResults) || 1000, 1)
 
         const urls = await scraperService.searchForWebsites(sanitizedQuery, sanitizedZipCode, numMaxResults)
         return NextResponse.json({ urls: urls || [] })

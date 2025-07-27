@@ -5,7 +5,8 @@
 
 import { Page } from 'puppeteer'
 import { logger } from '@/utils/logger'
-import { BusinessRecord } from '@/types/business'
+import { BusinessRecord, EmailValidationResult, EmailValidationMetadata } from '@/types/business'
+import { EmailValidationService } from './emailValidationService'
 
 export interface ExtractedContact {
   emails: string[]
@@ -17,6 +18,7 @@ export interface ExtractedContact {
   contactForms: ContactForm[]
   structuredData: StructuredData[]
   confidence: ContactConfidence
+  emailValidation?: EmailValidationMetadata
 }
 
 export interface SocialMediaProfile {
@@ -54,6 +56,8 @@ export interface ContactConfidence {
  * Advanced Contact Information Extractor
  */
 export class ContactExtractor {
+  private emailValidationService: EmailValidationService;
+
   private emailPatterns = [
     // Standard email pattern
     /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
@@ -103,6 +107,10 @@ export class ContactExtractor {
     youtube: /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:channel|user|c)\/[A-Za-z0-9._-]+/gi,
   }
 
+  constructor() {
+    this.emailValidationService = EmailValidationService.getInstance();
+  }
+
   /**
    * Extract comprehensive contact information from a page
    */
@@ -124,6 +132,9 @@ export class ContactExtractor {
       const contactForms = await this.extractContactForms(page)
       const structuredData = await this.extractStructuredData(page)
 
+      // Perform advanced email validation
+      const emailValidation = await this.validateEmails(emails)
+
       // Calculate confidence scores
       const confidence = this.calculateConfidence({
         emails,
@@ -134,6 +145,7 @@ export class ContactExtractor {
         businessHours,
         contactForms,
         structuredData,
+        emailValidation,
       })
 
       return {
@@ -146,6 +158,7 @@ export class ContactExtractor {
         contactForms,
         structuredData,
         confidence,
+        emailValidation,
       }
     } catch (error) {
       logger.error('ContactExtractor', `Failed to extract contact info from ${url}`, error)
@@ -397,7 +410,13 @@ export class ContactExtractor {
    * Calculate confidence scores
    */
   private calculateConfidence(contact: Partial<ExtractedContact>): ContactConfidence {
-    const emailConfidence = Math.min((contact.emails?.length || 0) * 0.3, 1.0)
+    // Enhanced email confidence using validation data
+    let emailConfidence = Math.min((contact.emails?.length || 0) * 0.3, 1.0)
+    if (contact.emailValidation) {
+      // Use advanced email validation confidence if available
+      emailConfidence = contact.emailValidation.overallConfidence / 100
+    }
+
     const phoneConfidence = Math.min((contact.phones?.length || 0) * 0.4, 1.0)
     const addressConfidence = Math.min((contact.addresses?.length || 0) * 0.5, 1.0)
     const businessNameConfidence = contact.businessName ? 0.8 : 0.0
@@ -462,6 +481,99 @@ export class ContactExtractor {
   private isValidPhone(phone: string): boolean {
     const cleanPhone = phone.replace(/[^\d]/g, '')
     return cleanPhone.length >= 10 && cleanPhone.length <= 15
+  }
+
+  /**
+   * Validate emails using advanced email validation service
+   */
+  private async validateEmails(emails: string[]): Promise<EmailValidationMetadata> {
+    if (emails.length === 0) {
+      return {
+        validationResults: [],
+        overallConfidence: 0,
+        validEmailCount: 0,
+        totalEmailCount: 0
+      }
+    }
+
+    try {
+      // Validate all emails
+      const validationResults = await this.emailValidationService.validateEmails(emails)
+
+      // Calculate metrics
+      const validEmailCount = validationResults.filter(result => result.isValid).length
+      const totalEmailCount = emails.length
+
+      // Find best email (highest confidence, valid, not disposable, preferably not role-based)
+      const bestEmail = this.findBestEmail(validationResults)
+
+      // Calculate overall confidence
+      const overallConfidence = this.calculateOverallEmailConfidence(validationResults)
+
+      logger.debug('ContactExtractor', `Email validation completed`, {
+        totalEmails: totalEmailCount,
+        validEmails: validEmailCount,
+        overallConfidence,
+        bestEmail
+      })
+
+      return {
+        validationResults,
+        overallConfidence,
+        bestEmail,
+        validEmailCount,
+        totalEmailCount
+      }
+    } catch (error) {
+      logger.error('ContactExtractor', 'Email validation failed', error)
+      return {
+        validationResults: [],
+        overallConfidence: 0,
+        validEmailCount: 0,
+        totalEmailCount: emails.length
+      }
+    }
+  }
+
+  /**
+   * Find the best email from validation results
+   */
+  private findBestEmail(validationResults: EmailValidationResult[]): string | undefined {
+    const validEmails = validationResults.filter(result =>
+      result.isValid && !result.isDisposable
+    )
+
+    if (validEmails.length === 0) return undefined
+
+    // Sort by confidence and preference (non-role-based preferred)
+    const sortedEmails = validEmails.sort((a, b) => {
+      // Prefer non-role-based emails
+      if (!a.isRoleBased && b.isRoleBased) return -1
+      if (a.isRoleBased && !b.isRoleBased) return 1
+
+      // Then by confidence
+      return b.confidence - a.confidence
+    })
+
+    return sortedEmails[0].email
+  }
+
+  /**
+   * Calculate overall email confidence score
+   */
+  private calculateOverallEmailConfidence(validationResults: EmailValidationResult[]): number {
+    if (validationResults.length === 0) return 0
+
+    const validResults = validationResults.filter(result => result.isValid)
+    if (validResults.length === 0) return 0
+
+    // Average confidence of valid emails
+    const avgConfidence = validResults.reduce((sum, result) => sum + result.confidence, 0) / validResults.length
+
+    // Bonus for having multiple valid emails
+    const countBonus = Math.min(validResults.length * 5, 20)
+
+    return Math.min(100, Math.round(avgConfidence + countBonus))
   }
 
   /**

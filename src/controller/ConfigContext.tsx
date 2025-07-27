@@ -227,6 +227,7 @@ export interface ConfigContextType {
   updateIndustry: (industry: IndustryCategory, showToast?: boolean) => Promise<void>
   removeIndustry: (id: string) => Promise<void>
   setAllIndustries: (industries: IndustryCategory[]) => Promise<void>
+  refreshDefaultIndustries: () => Promise<void>
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
@@ -258,6 +259,68 @@ interface ConfigProviderProps {
 }
 
 /**
+ * Check if default industries need to be updated
+ * This compares the current default industries with saved ones to detect changes
+ */
+async function checkIfDefaultIndustriesNeedUpdate(savedIndustries: IndustryCategory[]): Promise<boolean> {
+  if (savedIndustries.length === 0) {
+    return true // No saved industries, need to initialize
+  }
+
+  // Check if we have all default industries with correct data
+  for (const defaultIndustry of DEFAULT_INDUSTRIES) {
+    const savedIndustry = savedIndustries.find(saved => saved.id === defaultIndustry.id)
+
+    if (!savedIndustry) {
+      logger.info('ConfigProvider', `Missing default industry: ${defaultIndustry.id}`)
+      return true // Missing default industry
+    }
+
+    // Check if keywords have changed
+    if (JSON.stringify(savedIndustry.keywords.sort()) !== JSON.stringify(defaultIndustry.keywords.sort())) {
+      logger.info('ConfigProvider', `Keywords changed for industry: ${defaultIndustry.id}`)
+      return true
+    }
+
+    // Check if domain blacklist has changed
+    const savedBlacklist = savedIndustry.domainBlacklist || []
+    const defaultBlacklist = defaultIndustry.domainBlacklist || []
+    if (JSON.stringify(savedBlacklist.sort()) !== JSON.stringify(defaultBlacklist.sort())) {
+      logger.info('ConfigProvider', `Domain blacklist changed for industry: ${defaultIndustry.id}`)
+      return true
+    }
+
+    // Check if name has changed
+    if (savedIndustry.name !== defaultIndustry.name) {
+      logger.info('ConfigProvider', `Name changed for industry: ${defaultIndustry.id}`)
+      return true
+    }
+  }
+
+  return false // No updates needed
+}
+
+/**
+ * Update default industries while preserving custom industries
+ */
+async function updateDefaultIndustries(savedIndustries: IndustryCategory[]): Promise<IndustryCategory[]> {
+  // Separate custom industries from default ones
+  const customIndustries = savedIndustries.filter(industry => industry.isCustom)
+
+  // Combine updated default industries with existing custom industries
+  const updatedIndustries = [...DEFAULT_INDUSTRIES, ...customIndustries]
+
+  // Clear all industries and save the updated set
+  await storage.clearIndustries()
+  for (const industry of updatedIndustries) {
+    await storage.saveIndustry(industry)
+  }
+
+  logger.info('ConfigProvider', `Updated industries: ${DEFAULT_INDUSTRIES.length} default + ${customIndustries.length} custom`)
+  return updatedIndustries
+}
+
+/**
  * Configuration provider component
  * Manages global application configuration and state
  */
@@ -271,21 +334,29 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     const initialize = async () => {
       try {
         dispatch({ type: 'SET_LOADING', payload: true })
-        
+
         // Initialize storage
         await storage.initialize()
-        
+
         // Load saved configuration
         await loadConfig()
-        
+
         // Load industries (default + custom)
         const savedIndustries = await storage.getAllIndustries()
-        if (savedIndustries.length > 0) {
+
+        // Check if we need to update default industries
+        const needsUpdate = await checkIfDefaultIndustriesNeedUpdate(savedIndustries)
+
+        if (savedIndustries.length > 0 && !needsUpdate) {
           dispatch({ type: 'SET_INDUSTRIES', payload: savedIndustries })
         } else {
-          // Save default industries to storage
-          for (const industry of DEFAULT_INDUSTRIES) {
-            await storage.saveIndustry(industry)
+          // Update/save default industries to storage
+          const updatedIndustries = await updateDefaultIndustries(savedIndustries)
+          dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+
+          if (needsUpdate) {
+            toast.success('Default industries updated with latest data')
+            logger.info('ConfigProvider', 'Default industries updated successfully')
           }
         }
         
@@ -454,6 +525,24 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   }
 
   /**
+   * Refresh default industries with latest data
+   * This forces an update of all default industries while preserving custom ones
+   */
+  const refreshDefaultIndustries = async () => {
+    try {
+      const currentIndustries = await storage.getAllIndustries()
+      const updatedIndustries = await updateDefaultIndustries(currentIndustries)
+      dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+
+      toast.success('Default industries refreshed with latest data')
+      logger.info('ConfigProvider', 'Default industries manually refreshed')
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to refresh default industries', error)
+      toast.error('Failed to refresh default industries')
+    }
+  }
+
+  /**
    * Remove industry
    */
   const removeIndustry = async (id: string) => {
@@ -574,6 +663,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     updateIndustry,
     removeIndustry,
     setAllIndustries,
+    refreshDefaultIndustries,
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,

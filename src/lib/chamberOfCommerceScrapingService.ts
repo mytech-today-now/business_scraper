@@ -130,7 +130,7 @@ export class ChamberOfCommerceScrapingService {
    * Process Chamber of Commerce pages to find business listings
    */
   async processChamberOfCommercePage(options: ChamberOfCommerceSearchOptions): Promise<ChamberOfCommerceBusinessResult[]> {
-    const { url, maxBusinesses, maxPagesPerSite = 20 } = options
+    const { url, maxBusinesses = 10000, maxPagesPerSite = 50 } = options
     
     logger.info('COCPScraping', `Starting Chamber of Commerce processing for: ${url}`)
 
