@@ -25,41 +25,98 @@ export class ChamberOfCommerceScrapingService {
   private lastRequestTime = 0
   private readonly minDelay = 2000 // Minimum 2 seconds between requests
   private readonly maxRetries = 3
+  private browserInitRetries = 0
+  private readonly maxBrowserInitRetries = 3
 
   /**
-   * Initialize the browser instance
+   * Initialize the browser instance with enhanced error handling and retry logic
    */
   private async initBrowser(): Promise<Browser> {
     if (this.browser) {
       return this.browser
     }
 
-    logger.info('COCPScraping', 'Initializing Puppeteer browser for Chamber of Commerce processing')
-    
-    this.browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor',
-        '--disable-blink-features=AutomationControlled',
-        '--disable-extensions',
-        '--disable-plugins',
-        '--disable-images', // Speed up loading
-        '--disable-javascript-harmony-shipping',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding'
-      ]
-    })
+    while (this.browserInitRetries < this.maxBrowserInitRetries) {
+      try {
+        logger.info('COCPScraping', `Initializing Puppeteer browser (attempt ${this.browserInitRetries + 1}/${this.maxBrowserInitRetries})`)
 
-    return this.browser
+        // Determine if we're in a production environment
+        const isProduction = process.env.NODE_ENV === 'production'
+        const isWindows = process.platform === 'win32'
+
+        const launchOptions: any = {
+          headless: true,
+          timeout: 60000, // Increase timeout to 60 seconds
+          protocolTimeout: 120000, // 2 minutes for protocol operations
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-blink-features=AutomationControlled',
+            '--disable-extensions',
+            '--disable-plugins',
+            '--disable-images', // Speed up loading
+            '--disable-javascript-harmony-shipping',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            '--memory-pressure-off',
+            '--max_old_space_size=4096',
+            '--disable-ipc-flooding-protection'
+          ]
+        }
+
+        // Add Windows-specific args
+        if (isWindows) {
+          launchOptions.args.push('--disable-features=VizDisplayCompositor')
+        }
+
+        // Add production-specific args
+        if (isProduction) {
+          launchOptions.args.push(
+            '--single-process',
+            '--no-zygote'
+          )
+        }
+
+        this.browser = await puppeteer.launch(launchOptions)
+
+        // Test the browser by getting its version
+        const version = await this.browser.version()
+        logger.info('COCPScraping', `Puppeteer browser initialized successfully. Version: ${version}`)
+
+        this.browserInitRetries = 0 // Reset retry counter on success
+        return this.browser
+
+      } catch (error) {
+        this.browserInitRetries++
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        logger.warn('COCPScraping', `Browser initialization attempt ${this.browserInitRetries} failed: ${errorMessage}`)
+
+        if (this.browser) {
+          await this.browser.close().catch(() => {})
+          this.browser = null
+        }
+
+        if (this.browserInitRetries >= this.maxBrowserInitRetries) {
+          logger.error('COCPScraping', `Failed to initialize browser after ${this.maxBrowserInitRetries} attempts`)
+          throw new Error(`Browser initialization failed after ${this.maxBrowserInitRetries} attempts: ${errorMessage}`)
+        }
+
+        // Wait before retry
+        const waitTime = 1000 * this.browserInitRetries
+        logger.info('COCPScraping', `Waiting ${waitTime}ms before browser init retry`)
+        await new Promise(resolve => setTimeout(resolve, waitTime))
+      }
+    }
+
+    throw new Error('Browser initialization failed - max retries exceeded')
   }
 
   /**
@@ -127,12 +184,18 @@ export class ChamberOfCommerceScrapingService {
   }
 
   /**
-   * Process Chamber of Commerce pages to find business listings
+   * Process Chamber of Commerce pages to find business listings with enhanced error handling
    */
   async processChamberOfCommercePage(options: ChamberOfCommerceSearchOptions): Promise<ChamberOfCommerceBusinessResult[]> {
     const { url, maxBusinesses = 10000, maxPagesPerSite = 50 } = options
-    
+
     logger.info('COCPScraping', `Starting Chamber of Commerce processing for: ${url}`)
+
+    // Validate URL
+    if (!url || !url.includes('chamberofcommerce.com')) {
+      logger.error('COCPScraping', `Invalid Chamber of Commerce URL: ${url}`)
+      throw new Error('Invalid Chamber of Commerce URL provided')
+    }
 
     let page: Page | null = null
     let retries = 0
@@ -140,26 +203,34 @@ export class ChamberOfCommerceScrapingService {
     while (retries < this.maxRetries) {
       try {
         await this.rateLimit()
-        
+
+        // Initialize browser with timeout
+        logger.info('COCPScraping', `Attempt ${retries + 1}: Creating page for Chamber processing`)
         page = await this.createPage()
-        
+
         logger.info('COCPScraping', `Navigating to Chamber of Commerce page: ${url}`)
-        
-        // Navigate to the Chamber of Commerce page
-        await page.goto(url, { 
+
+        // Navigate to the Chamber of Commerce page with extended timeout
+        await page.goto(url, {
           waitUntil: 'networkidle2',
-          timeout: 30000 
+          timeout: 45000 // Increased timeout
         })
 
         // Simulate human behavior
         await this.simulateHumanBehavior(page)
 
-        // Wait for business listings to load
-        await page.waitForSelector('a[placeid], .card, .business-listing', { timeout: 15000 })
+        // Wait for business listings to load with multiple selectors
+        try {
+          await page.waitForSelector('a[placeid], .card, .business-listing, .listing, .business-item', { timeout: 20000 })
+        } catch (selectorError) {
+          logger.warn('COCPScraping', 'Standard selectors not found, trying alternative approach')
+          // Try to wait for any content to load
+          await page.waitForSelector('body', { timeout: 10000 })
+        }
 
         // Extract business listings from the Chamber of Commerce page
         const businessListings = await this.extractBusinessListingsFromChamberPage(page, maxBusinesses)
-        
+
         if (businessListings.length === 0) {
           logger.warn('COCPScraping', 'No business listings found on Chamber of Commerce page')
           await page.close()
@@ -170,31 +241,36 @@ export class ChamberOfCommerceScrapingService {
 
         // Extract business websites from Chamber profile pages
         const businessesWithWebsites = await this.extractBusinessWebsitesFromChamberProfiles(page, businessListings, maxBusinesses)
-        
+
         // Perform deep scraping of business websites
         const businessesWithDeepData = await this.performDeepWebsiteScraping(businessesWithWebsites, maxPagesPerSite)
-        
+
         await page.close()
-        
+
         logger.info('COCPScraping', `Successfully processed ${businessesWithDeepData.length} businesses from Chamber of Commerce`)
         return businessesWithDeepData
 
       } catch (error) {
         retries++
-        logger.warn('COCPScraping', `Processing attempt ${retries} failed:`, error)
-        
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        logger.warn('COCPScraping', `Processing attempt ${retries} failed: ${errorMessage}`, error)
+
         if (page) {
-          await page.close().catch(() => {})
+          await page.close().catch((closeError) => {
+            logger.warn('COCPScraping', 'Failed to close page', closeError)
+          })
           page = null
         }
-        
+
         if (retries >= this.maxRetries) {
-          logger.error('COCPScraping', `All ${this.maxRetries} processing attempts failed`)
-          throw error
+          logger.error('COCPScraping', `All ${this.maxRetries} processing attempts failed. Final error: ${errorMessage}`)
+          throw new Error(`Chamber of Commerce processing failed after ${this.maxRetries} attempts: ${errorMessage}`)
         }
-        
-        // Wait before retry
-        await new Promise(resolve => setTimeout(resolve, 2000 * retries))
+
+        // Wait before retry with exponential backoff
+        const waitTime = Math.min(2000 * Math.pow(2, retries - 1), 10000)
+        logger.info('COCPScraping', `Waiting ${waitTime}ms before retry ${retries + 1}`)
+        await new Promise(resolve => setTimeout(resolve, waitTime))
       }
     }
 
@@ -436,13 +512,43 @@ export class ChamberOfCommerceScrapingService {
   }
 
   /**
-   * Get service status
+   * Get service status with enhanced information
    */
   getStatus() {
     return {
       requestCount: this.requestCount,
       lastRequestTime: this.lastRequestTime,
-      browserActive: !!this.browser
+      browserActive: !!this.browser,
+      maxRetries: this.maxRetries,
+      minDelay: this.minDelay,
+      serviceReady: true
+    }
+  }
+
+  /**
+   * Health check method to test browser initialization
+   */
+  async healthCheck(): Promise<{ healthy: boolean; error?: string; browserVersion?: string }> {
+    try {
+      logger.info('COCPScraping', 'Performing health check')
+
+      const browser = await this.initBrowser()
+      const version = await browser.version()
+
+      logger.info('COCPScraping', `Health check passed. Browser version: ${version}`)
+
+      return {
+        healthy: true,
+        browserVersion: version
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      logger.error('COCPScraping', `Health check failed: ${errorMessage}`, error)
+
+      return {
+        healthy: false,
+        error: errorMessage
+      }
     }
   }
 }

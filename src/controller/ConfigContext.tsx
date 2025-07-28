@@ -368,17 +368,14 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
           document.documentElement.classList.toggle('dark', isDark)
         }
 
-        // Load demo mode preference (only in development)
-        if (process.env.NODE_ENV === 'development') {
-          const savedDemoMode = localStorage.getItem('demoMode')
-          if (savedDemoMode) {
-            const isDemoMode = JSON.parse(savedDemoMode)
-            dispatch({ type: 'SET_DEMO_MODE', payload: isDemoMode })
-          }
+        // Load demo mode preference from localStorage
+        const savedDemoMode = localStorage.getItem('demoMode')
+        if (savedDemoMode) {
+          const isDemoMode = JSON.parse(savedDemoMode)
+          dispatch({ type: 'SET_DEMO_MODE', payload: isDemoMode })
         } else {
-          // Force disable demo mode in production
+          // Default to real scraping mode (false) if no preference is saved
           dispatch({ type: 'SET_DEMO_MODE', payload: false })
-          localStorage.removeItem('demoMode') // Clear any persisted demo mode
         }
 
         dispatch({ type: 'SET_INITIALIZED', payload: true })

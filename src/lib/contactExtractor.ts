@@ -555,7 +555,7 @@ export class ContactExtractor {
       return b.confidence - a.confidence
     })
 
-    return sortedEmails[0].email
+    return sortedEmails[0]?.email || ''
   }
 
   /**

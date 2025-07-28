@@ -826,14 +826,27 @@ async function handleComprehensiveSearch(
 }
 
 /**
- * Handle Chamber of Commerce processing
+ * Handle Chamber of Commerce processing with enhanced error handling
  */
 async function handleChamberOfCommerceProcessing(url: string, maxResults: number, maxPagesPerSite: number = 20) {
   try {
     logger.info('Search API', `Chamber of Commerce processing: ${url} (max ${maxPagesPerSite} pages per site)`)
 
+    // Validate input parameters
+    if (!url || typeof url !== 'string') {
+      throw new Error('Invalid URL parameter')
+    }
+
+    if (!url.includes('chamberofcommerce.com')) {
+      throw new Error('URL must be a Chamber of Commerce URL')
+    }
+
     // Import Chamber of Commerce scraping service
     const { chamberOfCommerceScrapingService } = await import('@/lib/chamberOfCommerceScrapingService')
+
+    // Check service status before processing
+    const serviceStatus = chamberOfCommerceScrapingService.getStatus()
+    logger.info('Search API', `Chamber service status:`, serviceStatus)
 
     const businessWebsites = await chamberOfCommerceScrapingService.processChamberOfCommercePage({
       url,
@@ -848,21 +861,34 @@ async function handleChamberOfCommerceProcessing(url: string, maxResults: number
       provider: 'chamber-of-commerce',
       url: url,
       results: businessWebsites,
-      count: businessWebsites.length
+      count: businessWebsites.length,
+      serviceStatus: serviceStatus
     })
 
   } catch (error) {
-    logger.error('Search API', 'Chamber of Commerce processing failed', error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Chamber of Commerce processing failed',
-        provider: 'chamber-of-commerce',
-        url: url,
-        results: [],
-        count: 0
-      },
-      { status: 500 }
-    )
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logger.error('Search API', `Chamber of Commerce processing failed: ${errorMessage}`, error)
+
+    // Provide more detailed error information
+    const errorResponse = {
+      success: false,
+      error: 'Chamber of Commerce processing failed',
+      errorMessage: errorMessage,
+      provider: 'chamber-of-commerce',
+      url: url,
+      results: [],
+      count: 0,
+      timestamp: new Date().toISOString()
+    }
+
+    // Different status codes for different error types
+    let statusCode = 500
+    if (errorMessage.includes('Invalid URL') || errorMessage.includes('must be a Chamber')) {
+      statusCode = 400
+    } else if (errorMessage.includes('timeout') || errorMessage.includes('navigation')) {
+      statusCode = 504
+    }
+
+    return NextResponse.json(errorResponse, { status: statusCode })
   }
 }

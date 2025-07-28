@@ -753,8 +753,19 @@ export function ApiConfigurationPage({
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-purple-200">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-900">Demo Mode</label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-medium text-gray-900">
+                        {isDemoMode ? 'Demo Mode' : 'Active Mode'}
+                      </label>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        isDemoMode
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-green-100 text-green-800'
+                      }`}>
+                        {isDemoMode ? 'Demo Data' : 'Real Data'}
+                      </span>
+                    </div>
                     <p className="text-xs text-gray-600">
                       {isDemoMode
                         ? 'Using demo data for testing and development'

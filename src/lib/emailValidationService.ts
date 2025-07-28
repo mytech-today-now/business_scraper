@@ -187,12 +187,15 @@ export class EmailValidationService {
     
     // Additional checks
     const [localPart, domainPart] = email.split('@');
-    
+
+    // Check if parts exist
+    if (!localPart || !domainPart) return false;
+
     // Local part checks
     if (localPart.length > 64) return false;
     if (localPart.startsWith('.') || localPart.endsWith('.')) return false;
     if (localPart.includes('..')) return false;
-    
+
     // Domain part checks
     if (domainPart.length > 253) return false;
     if (domainPart.startsWith('-') || domainPart.endsWith('-')) return false;
@@ -243,7 +246,7 @@ export class EmailValidationService {
    */
   private extractDomain(email: string): string {
     const parts = email.split('@');
-    return parts.length === 2 ? parts[1].toLowerCase() : '';
+    return parts.length === 2 && parts[1] ? parts[1].toLowerCase() : '';
   }
 
   /**

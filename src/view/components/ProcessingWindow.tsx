@@ -1,20 +1,22 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { 
-  Globe, 
-  Search, 
-  Database, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  Globe,
+  Search,
+  Database,
+  CheckCircle,
+  XCircle,
+  Clock,
   AlertTriangle,
   Eye,
   EyeOff,
   Zap,
   Activity,
   Wifi,
-  WifiOff
+  WifiOff,
+  Copy,
+  Check
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
@@ -91,6 +93,81 @@ export function ProcessingWindow({
     args: any[]
   }>>([])
   const [showConsole, setShowConsole] = useState(false)
+  const [copyButtonState, setCopyButtonState] = useState<'idle' | 'copying' | 'copied'>('idle')
+
+  // Maintain a complete buffer of all console logs (increased from 1000 to 10000)
+  const MAX_CONSOLE_BUFFER = 10000
+
+  /**
+   * Copy console logs to clipboard, starting from the end and working backwards
+   * to fit as much as possible within clipboard limits
+   */
+  const copyConsoleToClipboard = useCallback(async () => {
+    if (consoleLogs.length === 0) {
+      return
+    }
+
+    setCopyButtonState('copying')
+
+    try {
+      // Format logs from newest to oldest (reverse order)
+      const reversedLogs = [...consoleLogs].reverse()
+
+      // Start building the text from the end, working backwards
+      const logTexts: string[] = []
+      let totalLength = 0
+      const maxClipboardSize = 1000000 // 1MB limit for most browsers
+
+      for (const log of reversedLogs) {
+        const logText = `[${log.timestamp.toLocaleTimeString()}] [${log.level.toUpperCase()}] ${log.message}`
+        const logLength = logText.length + 1 // +1 for newline
+
+        // Check if adding this log would exceed the limit
+        if (totalLength + logLength > maxClipboardSize) {
+          break
+        }
+
+        logTexts.unshift(logText) // Add to beginning to maintain chronological order
+        totalLength += logLength
+      }
+
+      const clipboardText = logTexts.join('\n')
+
+      // Try modern clipboard API first, fallback to legacy method
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(clipboardText)
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        const textArea = document.createElement('textarea')
+        textArea.value = clipboardText
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+
+        try {
+          document.execCommand('copy')
+        } finally {
+          document.body.removeChild(textArea)
+        }
+      }
+
+      setCopyButtonState('copied')
+
+      // Reset button state after 2 seconds
+      setTimeout(() => {
+        setCopyButtonState('idle')
+      }, 2000)
+
+      logger.info('ProcessingWindow', `Copied ${logTexts.length} console logs to clipboard (${totalLength} characters)`)
+
+    } catch (error) {
+      logger.error('ProcessingWindow', 'Failed to copy console logs to clipboard', error)
+      setCopyButtonState('idle')
+    }
+  }, [consoleLogs])
 
   // Auto-scroll to latest step when new steps are added
   useEffect(() => {
@@ -122,7 +199,7 @@ export function ProcessingWindow({
           typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
         ).join(' ')
 
-        setConsoleLogs(prev => [...prev.slice(-999), { // Keep last 1000 logs
+        setConsoleLogs(prev => [...prev.slice(-(MAX_CONSOLE_BUFFER - 1)), { // Keep last MAX_CONSOLE_BUFFER logs
           timestamp: new Date(),
           level,
           message,
@@ -394,8 +471,40 @@ export function ProcessingWindow({
         {/* Console Output Section */}
         <div className="mt-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-700">Console Output</h3>
+            <h3 className="text-sm font-medium text-gray-700">
+              Console Output
+              {consoleLogs.length > 0 && (
+                <span className="ml-2 text-xs text-gray-500">
+                  ({consoleLogs.length} logs)
+                </span>
+              )}
+            </h3>
             <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={copyConsoleToClipboard}
+                disabled={consoleLogs.length === 0 || copyButtonState === 'copying'}
+                className="text-xs"
+                title="Copy console logs to clipboard (from end backwards)"
+              >
+                {copyButtonState === 'copying' ? (
+                  <>
+                    <Activity className="h-3 w-3 mr-1 animate-spin" />
+                    Copying...
+                  </>
+                ) : copyButtonState === 'copied' ? (
+                  <>
+                    <Check className="h-3 w-3 mr-1" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3 w-3 mr-1" />
+                    Copy
+                  </>
+                )}
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"

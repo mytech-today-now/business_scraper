@@ -944,13 +944,27 @@ export class ClientSearchEngine {
       })
 
       if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error')
+        logger.warn('ClientSearchEngine', `Chamber API returned ${response.status}: ${errorText}`)
+
+        // Try to parse error response
+        try {
+          const errorData = JSON.parse(errorText)
+          if (errorData.errorMessage) {
+            throw new Error(`Chamber processing failed: ${errorData.errorMessage}`)
+          }
+        } catch (parseError) {
+          // Ignore parse errors, use original error
+        }
+
         throw new Error(`Chamber of Commerce processing API error: ${response.status}`)
       }
 
       const data = await response.json()
 
       if (!data.success) {
-        throw new Error(data.error || 'Chamber of Commerce processing failed')
+        const errorMessage = data.errorMessage || data.error || 'Chamber of Commerce processing failed'
+        throw new Error(errorMessage)
       }
 
       // Convert server response to SearchResult format
@@ -967,8 +981,16 @@ export class ClientSearchEngine {
       return results
 
     } catch (error) {
-      logger.warn('ClientSearchEngine', `Chamber of Commerce processing failed for "${url}"`, error)
-      return []
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      logger.warn('ClientSearchEngine', `Chamber of Commerce processing failed for "${url}": ${errorMessage}`, error)
+
+      // Return a fallback result with the original Chamber URL for manual inspection
+      return [{
+        url: url,
+        title: 'Chamber of Commerce Directory (Processing Failed)',
+        snippet: `Chamber of Commerce business directory. Processing failed: ${errorMessage}. Please visit manually to view businesses.`,
+        domain: new URL(url).hostname
+      }]
     }
   }
 

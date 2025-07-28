@@ -12,7 +12,7 @@ import { retrieveApiCredentials } from '@/utils/secureStorage'
  */
 export class ClientScraperService {
   private baseUrl = '/api'
-  private useDemoMode = process.env.NODE_ENV === 'development'
+  private useDemoMode = false // Default to real scraping, will be set by ConfigContext
 
   /**
    * Set demo mode
