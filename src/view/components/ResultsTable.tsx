@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import {
   Download,
   Edit,
@@ -11,7 +11,9 @@ import {
   SortAsc,
   SortDesc,
   Eye,
-  EyeOff
+  EyeOff,
+  AlertTriangle,
+  Zap
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
@@ -26,6 +28,64 @@ import {
 } from '@/utils/formatters'
 import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
+import { VirtualizedResultsTable } from './VirtualizedResultsTable'
+
+/**
+ * Performance monitoring hook for tracking memory usage and dataset size
+ */
+function usePerformanceMonitoring(datasetSize: number) {
+  const [memoryUsage, setMemoryUsage] = useState(0)
+  const [performanceWarnings, setPerformanceWarnings] = useState<string[]>([])
+
+  useEffect(() => {
+    // Monitor memory usage every 5 seconds
+    const monitor = setInterval(() => {
+      if ('memory' in performance && (performance as any).memory) {
+        const memory = (performance as any).memory
+        setMemoryUsage(memory.usedJSHeapSize)
+      }
+    }, 5000)
+
+    return () => clearInterval(monitor)
+  }, [])
+
+  useEffect(() => {
+    const warnings: string[] = []
+
+    // Dataset size warnings
+    if (datasetSize >= 5000) {
+      warnings.push('Very large dataset detected. Virtual scrolling recommended for optimal performance.')
+    } else if (datasetSize >= 2500) {
+      warnings.push('Large dataset detected. Consider enabling pagination or virtual scrolling.')
+    } else if (datasetSize >= 1000) {
+      warnings.push('Medium dataset size. Monitor performance if experiencing slowdowns.')
+    }
+
+    // Memory usage warnings (500MB threshold)
+    const memoryMB = memoryUsage / (1024 * 1024)
+    if (memoryMB > 500) {
+      warnings.push(`High memory usage detected: ${memoryMB.toFixed(0)}MB. Consider clearing old data.`)
+    }
+
+    setPerformanceWarnings(warnings)
+  }, [datasetSize, memoryUsage])
+
+  const isHighMemoryUsage = memoryUsage > 500 * 1024 * 1024 // 500MB
+  const shouldUseVirtualScrolling = datasetSize >= 5000
+  const shouldSuggestPagination = datasetSize >= 2500
+  const shouldShowWarning = datasetSize >= 1000
+
+  return {
+    memoryUsage,
+    memoryUsageMB: memoryUsage / (1024 * 1024),
+    performanceWarnings,
+    isHighMemoryUsage,
+    shouldUseVirtualScrolling,
+    shouldSuggestPagination,
+    shouldShowWarning,
+    datasetSize
+  }
+}
 
 /**
  * Column definition interface
@@ -110,7 +170,10 @@ export function ResultsTable({
   })
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [editingCell, setEditingCell] = useState<{ businessId: string; field: string } | null>(null)
-  const [showColumnSettings, setShowColumnSettings] = useState(false)
+  const [useVirtualScrolling, setUseVirtualScrolling] = useState(false)
+
+  // Performance monitoring
+  const performanceMetrics = usePerformanceMonitoring(businesses.length)
 
   /**
    * Get unique industries for filter dropdown
@@ -174,6 +237,30 @@ export function ResultsTable({
 
     return filtered
   }, [businesses, filterConfig, sortConfig])
+
+  const [showColumnSettings, setShowColumnSettings] = useState(false)
+
+  // Smart performance mode auto-detection
+  useEffect(() => {
+    const datasetSize = filteredAndSortedBusinesses.length
+
+    // Auto-enable virtual scrolling for very large datasets (5000+)
+    if (datasetSize >= 5000 && !useVirtualScrolling) {
+      setUseVirtualScrolling(true)
+      toast.success(`Large dataset detected (${datasetSize.toLocaleString()} results). Virtual scrolling enabled automatically for optimal performance.`, {
+        duration: 5000,
+        icon: '⚡'
+      })
+    }
+
+    // Show performance suggestions for medium-large datasets
+    if (datasetSize >= 2500 && datasetSize < 5000 && !useVirtualScrolling) {
+      toast(`Dataset size: ${datasetSize.toLocaleString()} results. Consider enabling virtual scrolling for better performance.`, {
+        duration: 4000,
+        icon: '💡'
+      })
+    }
+  }, [filteredAndSortedBusinesses.length, useVirtualScrolling])
 
   /**
    * Handle column sorting
@@ -576,7 +663,7 @@ export function ResultsTable({
       <CardContent className="space-y-4">
         {/* Business Summary Statistics */}
         {businesses.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-4 bg-muted/30 rounded-lg">
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">{businesses.length}</div>
               <div className="text-xs text-muted-foreground">Total Businesses</div>
@@ -598,6 +685,70 @@ export function ResultsTable({
                 {new Set(businesses.map(b => b.industry)).size}
               </div>
               <div className="text-xs text-muted-foreground">Industries</div>
+            </div>
+            <div className="text-center">
+              <div className={clsx(
+                "text-lg font-bold flex items-center justify-center gap-1",
+                useVirtualScrolling ? "text-green-600" : "text-gray-600"
+              )}>
+                {useVirtualScrolling ? <Zap className="h-4 w-4" /> : null}
+                {useVirtualScrolling ? "Virtual" : "Standard"}
+              </div>
+              <div className="text-xs text-muted-foreground">Table Mode</div>
+            </div>
+          </div>
+        )}
+
+        {/* Performance Warnings */}
+        {performanceMetrics.performanceWarnings.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-yellow-800 mb-2">Performance Notice</h4>
+                <ul className="text-sm text-yellow-700 space-y-1">
+                  {performanceMetrics.performanceWarnings.map((warning, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="w-1 h-1 bg-yellow-600 rounded-full mt-2 flex-shrink-0" />
+                      {warning}
+                    </li>
+                  ))}
+                </ul>
+                {performanceMetrics.memoryUsageMB > 0 && (
+                  <div className="mt-2 text-xs text-yellow-600">
+                    Current memory usage: {performanceMetrics.memoryUsageMB.toFixed(1)}MB
+                  </div>
+                )}
+                {performanceMetrics.shouldUseVirtualScrolling && (
+                  <div className="mt-3 flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-yellow-700 border-yellow-300 hover:bg-yellow-100"
+                      onClick={() => {
+                        setUseVirtualScrolling(true)
+                        toast.success('Virtual scrolling enabled! Performance should improve significantly.')
+                      }}
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      Enable Virtual Scrolling
+                    </Button>
+                    {useVirtualScrolling && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-gray-600 border-gray-300 hover:bg-gray-100"
+                        onClick={() => {
+                          setUseVirtualScrolling(false)
+                          toast.success('Virtual scrolling disabled. Using standard table view.')
+                        }}
+                      >
+                        Disable Virtual Scrolling
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -668,103 +819,120 @@ export function ResultsTable({
         )}
 
         {/* Enhanced Table with Better Organization */}
-        <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-900">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[1200px]">
-              <thead className="bg-muted/50 border-b">
-                <tr>
-                  <th className="w-12 p-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={allSelected}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="rounded"
-                      title="Select all businesses"
-                    />
-                  </th>
-                  {visibleColumns.map(column => (
-                    <th
-                      key={column.key}
-                      className="text-left p-3 font-medium text-sm border-r border-muted/30 last:border-r-0"
-                      style={{ width: column.width }}
-                    >
-                      {column.sortable ? (
-                        <button
-                          type="button"
-                          className="flex items-center gap-1 hover:text-primary transition-colors"
-                          onClick={() => handleSort(column.key as keyof BusinessRecord)}
-                        >
-                          {column.label}
-                          {sortConfig.key === column.key && (
-                            sortConfig.direction === 'asc' ?
-                              <SortAsc className="h-3 w-3" /> :
-                              <SortDesc className="h-3 w-3" />
-                          )}
-                        </button>
-                      ) : (
-                        <span className="text-muted-foreground">{column.label}</span>
-                      )}
+        {useVirtualScrolling || performanceMetrics.shouldUseVirtualScrolling ? (
+          <VirtualizedResultsTable
+            businesses={filteredAndSortedBusinesses}
+            columns={columns}
+            sortConfig={sortConfig}
+            selectedRows={selectedRows}
+            editingCell={editingCell}
+            onSort={handleSort}
+            onRowSelect={handleRowSelect}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onCellEdit={handleCellEdit}
+            height={600}
+            itemSize={60}
+          />
+        ) : (
+          <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-900">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[1200px]">
+                <thead className="bg-muted/50 border-b">
+                  <tr>
+                    <th className="w-12 p-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="rounded"
+                        title="Select all businesses"
+                      />
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-muted/30">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={visibleColumns.length + 1} className="p-8 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                        <span className="text-muted-foreground">Loading business data...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : filteredAndSortedBusinesses.length === 0 ? (
-                  <tr>
-                    <td colSpan={visibleColumns.length + 1} className="p-8 text-center text-muted-foreground">
-                      <div className="flex flex-col items-center gap-2">
-                        <Search className="h-8 w-8 text-muted-foreground/50" />
-                        <span>{businesses.length === 0 ? 'No businesses found' : 'No businesses match your filters'}</span>
-                        {businesses.length > 0 && (
-                          <span className="text-xs">Try adjusting your search filters</span>
+                    {visibleColumns.map(column => (
+                      <th
+                        key={column.key}
+                        className="text-left p-3 font-medium text-sm border-r border-muted/30 last:border-r-0"
+                        style={{ width: column.width }}
+                      >
+                        {column.sortable ? (
+                          <button
+                            type="button"
+                            className="flex items-center gap-1 hover:text-primary transition-colors"
+                            onClick={() => handleSort(column.key as keyof BusinessRecord)}
+                          >
+                            {column.label}
+                            {sortConfig.key === column.key && (
+                              sortConfig.direction === 'asc' ?
+                                <SortAsc className="h-3 w-3" /> :
+                                <SortDesc className="h-3 w-3" />
+                            )}
+                          </button>
+                        ) : (
+                          <span className="text-muted-foreground">{column.label}</span>
                         )}
-                      </div>
-                    </td>
+                      </th>
+                    ))}
                   </tr>
-                ) : (
-                  filteredAndSortedBusinesses.map((business, index) => (
-                    <tr
-                      key={business.id}
-                      className={clsx(
-                        'hover:bg-accent/50 transition-colors group',
-                        selectedRows.has(business.id) && 'bg-accent/30',
-                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/50'
-                      )}
-                    >
-                      <td className="p-3 border-r border-muted/20">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.has(business.id)}
-                          onChange={(e) => handleRowSelect(business.id, e.target.checked)}
-                          className="rounded"
-                          title={`Select ${business.businessName}`}
-                        />
+                </thead>
+                <tbody className="divide-y divide-muted/30">
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={visibleColumns.length + 1} className="p-8 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                          <span className="text-muted-foreground">Loading business data...</span>
+                        </div>
                       </td>
-                      {visibleColumns.map(column => (
-                        <td
-                          key={column.key}
-                          className="p-3 text-sm border-r border-muted/20 last:border-r-0 align-top"
-                          style={{ width: column.width }}
-                        >
-                          {renderCellContent(business, column)}
-                        </td>
-                      ))}
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : filteredAndSortedBusinesses.length === 0 ? (
+                    <tr>
+                      <td colSpan={visibleColumns.length + 1} className="p-8 text-center text-muted-foreground">
+                        <div className="flex flex-col items-center gap-2">
+                          <Search className="h-8 w-8 text-muted-foreground/50" />
+                          <span>{businesses.length === 0 ? 'No businesses found' : 'No businesses match your filters'}</span>
+                          {businesses.length > 0 && (
+                            <span className="text-xs">Try adjusting your search filters</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredAndSortedBusinesses.map((business, index) => (
+                      <tr
+                        key={business.id}
+                        className={clsx(
+                          'hover:bg-accent/50 transition-colors group',
+                          selectedRows.has(business.id) && 'bg-accent/30',
+                          index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/50'
+                        )}
+                      >
+                        <td className="p-3 border-r border-muted/20">
+                          <input
+                            type="checkbox"
+                            checked={selectedRows.has(business.id)}
+                            onChange={(e) => handleRowSelect(business.id, e.target.checked)}
+                            className="rounded"
+                            title={`Select ${business.businessName}`}
+                          />
+                        </td>
+                        {visibleColumns.map(column => (
+                          <td
+                            key={column.key}
+                            className="p-3 text-sm border-r border-muted/20 last:border-r-0 align-top"
+                            style={{ width: column.width }}
+                          >
+                            {renderCellContent(business, column)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Pagination could be added here for large datasets */}
       </CardContent>

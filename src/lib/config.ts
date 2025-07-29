@@ -49,6 +49,9 @@ export interface ApiKeysConfig {
   googleSearchEngineId?: string
   openCage?: string
   bingSearch?: string
+  azureAIFoundryApiKey?: string
+  azureAIFoundryEndpoint?: string
+  azureAIFoundryRegion?: string
   yandexSearch?: string
 }
 
@@ -162,6 +165,9 @@ const configSchema: Record<string, ValidationRule> = {
   'GOOGLE_SEARCH_ENGINE_ID': { type: 'string', required: false },
   'OPENCAGE_API_KEY': { type: 'string', required: false },
   'BING_SEARCH_API_KEY': { type: 'string', required: false },
+  'AZURE_AI_FOUNDRY_API_KEY': { type: 'string', required: false },
+  'AZURE_AI_FOUNDRY_ENDPOINT': { type: 'url', required: false },
+  'AZURE_AI_FOUNDRY_REGION': { type: 'string', required: false },
   'YANDEX_SEARCH_API_KEY': { type: 'string', required: false },
 
   // Cache
@@ -352,8 +358,13 @@ export function loadConfig(): AppConfig {
     },
     apiKeys: {
       googleMaps: config.GOOGLE_MAPS_API_KEY,
+      googleSearch: config.GOOGLE_SEARCH_API_KEY,
+      googleSearchEngineId: config.GOOGLE_SEARCH_ENGINE_ID,
       openCage: config.OPENCAGE_API_KEY,
       bingSearch: config.BING_SEARCH_API_KEY,
+      azureAIFoundryApiKey: config.AZURE_AI_FOUNDRY_API_KEY,
+      azureAIFoundryEndpoint: config.AZURE_AI_FOUNDRY_ENDPOINT,
+      azureAIFoundryRegion: config.AZURE_AI_FOUNDRY_REGION,
       yandexSearch: config.YANDEX_SEARCH_API_KEY,
     },
     cache: {

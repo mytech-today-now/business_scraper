@@ -18,7 +18,9 @@ import {
   ExternalLink,
   Lock,
   Unlock,
-  Search
+  Search,
+  Activity,
+  BarChart3
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
@@ -37,6 +39,7 @@ import {
   importCredentials
 } from '@/utils/secureStorage'
 import { logger } from '@/utils/logger'
+import { ProviderManagementPanel } from './ProviderManagementPanel'
 
 export interface ApiConfigurationPageProps {
   onClose: () => void
@@ -63,6 +66,7 @@ export function ApiConfigurationPage({
   const [testResults, setTestResults] = useState<{ [key: string]: boolean }>({})
   const [validationErrors, setValidationErrors] = useState<string[]>([])
   const [successMessage, setSuccessMessage] = useState('')
+  const [showProviderManagement, setShowProviderManagement] = useState(false)
   const [hasExistingCredentials, setHasExistingCredentials] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
@@ -319,9 +323,19 @@ export function ApiConfigurationPage({
               <p className="text-sm text-gray-600">Securely configure your search engine API credentials</p>
             </div>
           </div>
-          <Button variant="ghost" onClick={onClose}>
-            ✕
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowProviderManagement(true)}
+              className="flex items-center space-x-2"
+            >
+              <Activity className="h-4 w-4" />
+              <span>Provider Management</span>
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              ✕
+            </Button>
+          </div>
         </div>
 
         <div className="p-6 space-y-6">
@@ -853,6 +867,13 @@ export function ApiConfigurationPage({
           </div>
         </div>
       </div>
+
+      {/* Provider Management Panel */}
+      {showProviderManagement && (
+        <ProviderManagementPanel
+          onClose={() => setShowProviderManagement(false)}
+        />
+      )}
     </div>
   )
 }

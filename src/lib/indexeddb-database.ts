@@ -192,6 +192,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
       contactPerson: business.contactPerson,
       coordinates: business.coordinates,
       industry: business.industry || '',
+      source: business.source || 'direct',
       scrapedAt: business.scrapedAt || new Date(),
     }
 

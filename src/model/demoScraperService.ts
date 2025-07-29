@@ -150,6 +150,7 @@ export class DemoScraperService {
           lng: -118.2437 + (Math.random() - 0.5) * 0.1,
         },
         industry: matchingBusiness.industry!,
+        source: 'demo',
         scrapedAt: new Date(),
       }
 

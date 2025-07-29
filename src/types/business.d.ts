@@ -44,6 +44,7 @@ export interface BusinessRecord {
     lng: number;
   };
   industry: string;
+  source?: 'serp' | 'bbb' | 'yelp' | 'direct' | 'chamber' | 'demo' | 'test';
   scrapedAt: Date;
   emailValidation?: EmailValidationMetadata;
 }

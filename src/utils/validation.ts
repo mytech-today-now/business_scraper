@@ -55,6 +55,7 @@ const BusinessRecordSchema = z.object({
   contactPerson: z.string().optional(),
   coordinates: CoordinatesSchema.optional(),
   industry: z.string().min(1, 'Industry is required'),
+  source: z.enum(['serp', 'bbb', 'yelp', 'direct', 'chamber', 'demo', 'test']).optional(),
   scrapedAt: z.date(),
 })
 
