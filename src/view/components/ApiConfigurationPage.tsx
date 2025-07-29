@@ -46,6 +46,8 @@ export interface ApiConfigurationPageProps {
   onCredentialsUpdated?: (credentials: ApiCredentials) => void
   isDemoMode?: boolean
   onToggleDemoMode?: () => void
+  isVerboseLogging?: boolean
+  onToggleVerboseLogging?: () => void
 }
 
 /**
@@ -56,7 +58,9 @@ export function ApiConfigurationPage({
   onClose,
   onCredentialsUpdated,
   isDemoMode = false,
-  onToggleDemoMode
+  onToggleDemoMode,
+  isVerboseLogging = false,
+  onToggleVerboseLogging
 }: ApiConfigurationPageProps) {
   const [credentials, setCredentials] = useState<ApiCredentials>({})
   const [showPasswords, setShowPasswords] = useState<{ [key: string]: boolean }>({})
@@ -315,7 +319,7 @@ export function ApiConfigurationPage({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-10">
           <div className="flex items-center space-x-3">
             <Key className="h-6 w-6 text-blue-600" />
             <div>
@@ -424,7 +428,7 @@ export function ApiConfigurationPage({
                   <button
                     type="button"
                     onClick={() => togglePasswordVisibility('googleSearchApiKey')}
-                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600 z-0"
                   >
                     {showPasswords.googleSearchApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -476,7 +480,7 @@ export function ApiConfigurationPage({
                   <button
                     type="button"
                     onClick={() => togglePasswordVisibility('azureSearchApiKey')}
-                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600 z-0"
                   >
                     {showPasswords.azureSearchApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -558,7 +562,7 @@ export function ApiConfigurationPage({
                   <button
                     type="button"
                     onClick={() => togglePasswordVisibility('googleMapsApiKey')}
-                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600 z-0"
                   >
                     {showPasswords.googleMapsApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -717,7 +721,7 @@ export function ApiConfigurationPage({
                     type="file"
                     accept=".json"
                     onChange={importBlacklist}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0"
                     aria-label="Import blacklist file"
                   />
                   <Button
@@ -805,6 +809,63 @@ export function ApiConfigurationPage({
                         <li className="break-words">• <strong>Real Mode:</strong> Performs actual web scraping using configured APIs</li>
                         <li className="break-words">• Demo mode is automatically enabled in development environment</li>
                         <li className="break-words">• Real mode requires proper API credentials to be configured</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Verbose Logging Settings */}
+          {onToggleVerboseLogging && (
+            <Card className="border-blue-200 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Activity className="h-5 w-5" />
+                  <span>Console Logging</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-200">
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-medium text-gray-900">
+                        {isVerboseLogging ? 'Verbose Logging' : 'Standard Logging'}
+                      </label>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        isVerboseLogging
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {isVerboseLogging ? 'Detailed' : 'Standard'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      {isVerboseLogging
+                        ? 'Detailed console output with context, data, and stack traces'
+                        : 'Standard console output with basic information'}
+                    </p>
+                  </div>
+                  <Button
+                    variant={isVerboseLogging ? "default" : "outline"}
+                    size="sm"
+                    onClick={onToggleVerboseLogging}
+                    className="min-w-[80px]"
+                  >
+                    {isVerboseLogging ? 'Verbose' : 'Standard'}
+                  </Button>
+                </div>
+                <div className="mt-4 p-3 bg-blue-100 rounded-md">
+                  <div className="flex items-start space-x-2">
+                    <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800 min-w-0 flex-1">
+                      <p className="font-medium mb-1">Logging Information:</p>
+                      <ul className="mt-1 space-y-1 text-xs">
+                        <li className="break-words">• <strong>Standard:</strong> Basic log messages with timestamps and components</li>
+                        <li className="break-words">• <strong>Verbose:</strong> Detailed context, data objects, stack traces, and grouped output</li>
+                        <li className="break-words">• Verbose mode helps with debugging and development</li>
+                        <li className="break-words">• Setting is saved and persists across sessions</li>
                       </ul>
                     </div>
                   </div>

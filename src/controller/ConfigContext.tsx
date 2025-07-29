@@ -25,6 +25,7 @@ export interface ConfigState {
   // Application state
   isInitialized: boolean
   isDemoMode: boolean
+  isVerboseLogging: boolean
 
   // Edit state tracking
   industriesInEditMode: string[]
@@ -45,6 +46,7 @@ export type ConfigAction =
   | { type: 'DESELECT_ALL_INDUSTRIES' }
   | { type: 'SET_DARK_MODE'; payload: boolean }
   | { type: 'SET_DEMO_MODE'; payload: boolean }
+  | { type: 'SET_VERBOSE_LOGGING'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_INITIALIZED'; payload: boolean }
   | { type: 'RESET_CONFIG' }
@@ -69,6 +71,7 @@ const defaultState: ConfigState = {
   isLoading: false,
   isInitialized: false,
   isDemoMode: process.env.NODE_ENV === 'development', // Demo mode only in development, always false in production
+  isVerboseLogging: false, // Verbose logging disabled by default
   industriesInEditMode: [],
 }
 
@@ -168,6 +171,12 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         isDemoMode: action.payload,
       }
 
+    case 'SET_VERBOSE_LOGGING':
+      return {
+        ...state,
+        isVerboseLogging: action.payload,
+      }
+
     case 'SET_LOADING':
       return {
         ...state,
@@ -240,6 +249,7 @@ export interface ConfigContextType {
   // Theme methods
   toggleDarkMode: () => void
   toggleDemoMode: () => void
+  toggleVerboseLogging: () => void
 
   // Utility methods
   getSelectedIndustryNames: () => string[]
@@ -376,6 +386,15 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         } else {
           // Default to real scraping mode (false) if no preference is saved
           dispatch({ type: 'SET_DEMO_MODE', payload: false })
+        }
+
+        // Load verbose logging preference from localStorage
+        const savedVerboseLogging = localStorage.getItem('verboseLogging')
+        if (savedVerboseLogging) {
+          const isVerboseLogging = JSON.parse(savedVerboseLogging)
+          dispatch({ type: 'SET_VERBOSE_LOGGING', payload: isVerboseLogging })
+          // Update logger configuration
+          logger.setVerboseMode(isVerboseLogging)
         }
 
         dispatch({ type: 'SET_INITIALIZED', payload: true })
@@ -606,6 +625,21 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   }
 
   /**
+   * Toggle verbose logging mode
+   */
+  const toggleVerboseLogging = () => {
+    const newVerboseLogging = !state.isVerboseLogging
+    dispatch({ type: 'SET_VERBOSE_LOGGING', payload: newVerboseLogging })
+    localStorage.setItem('verboseLogging', JSON.stringify(newVerboseLogging))
+
+    // Update logger configuration
+    logger.setVerboseMode(newVerboseLogging)
+
+    logger.info('ConfigProvider', 'Verbose logging toggled', { verboseLogging: newVerboseLogging })
+    toast.success(`${newVerboseLogging ? 'Verbose logging enabled' : 'Standard logging enabled'}`)
+  }
+
+  /**
    * Get selected industry names
    */
   const getSelectedIndustryNames = (): string[] => {
@@ -669,6 +703,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     clearAllEdits,
     toggleDarkMode,
     toggleDemoMode,
+    toggleVerboseLogging,
     getSelectedIndustryNames,
     isConfigValid,
   }

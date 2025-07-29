@@ -77,6 +77,7 @@ export class Logger {
   private fileWriteStream: fs.WriteStream | null = null
   private currentFileSize = 0
   private fileRotationInProgress = false
+  private verboseMode = false
 
   constructor(config: Partial<LoggerConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config }
@@ -222,16 +223,48 @@ export class Logger {
   private logToConsoleText(entry: LogEntry): void {
     const timestamp = this.config.formatTimestamp(entry.timestamp)
     const levelName = LogLevel[entry.level]
-    const prefix = `[${timestamp}] <${entry.component}> ${levelName}:`
 
+    // Standard logging format
+    const prefix = `[${timestamp}] <${entry.component}> ${levelName}:`
     const args: any[] = [prefix, entry.message]
 
+    // Add data and error to args
     if (entry.data !== undefined) {
       args.push(entry.data)
     }
 
     if (entry.error) {
       args.push(entry.error)
+    }
+
+    // Verbose mode: Add additional context
+    if (this.verboseMode) {
+      const verboseInfo = {
+        timestamp: entry.timestamp.toISOString(),
+        level: levelName,
+        component: entry.component,
+        ...(entry.pid && { pid: entry.pid }),
+        ...(entry.hostname && { hostname: entry.hostname }),
+        ...(entry.data && { data: entry.data }),
+        ...(entry.error && {
+          error: {
+            name: entry.error.name,
+            message: entry.error.message,
+            stack: entry.error.stack
+          }
+        })
+      }
+
+      console.group(`🔍 VERBOSE: ${prefix} ${entry.message}`)
+      console.log('📊 Context:', verboseInfo)
+      if (entry.data) {
+        console.log('📋 Data:', entry.data)
+      }
+      if (entry.error) {
+        console.log('❌ Error:', entry.error)
+      }
+      console.groupEnd()
+      return
     }
 
     switch (entry.level) {
@@ -270,10 +303,11 @@ export class Logger {
       }),
       ...(entry.pid && { pid: entry.pid }),
       ...(entry.hostname && { hostname: entry.hostname }),
-      ...(entry.requestId && { requestId: entry.requestId })
+      ...(entry.requestId && { requestId: entry.requestId }),
+      ...(this.verboseMode && { verbose: true })
     }
 
-    const jsonString = JSON.stringify(jsonEntry)
+    const jsonString = JSON.stringify(jsonEntry, null, this.verboseMode ? 2 : 0)
 
     switch (entry.level) {
       case LogLevel.DEBUG:
@@ -528,6 +562,15 @@ export class Logger {
   updateConfig(config: Partial<LoggerConfig>): void {
     this.config = { ...this.config, ...config }
     this.info('Logger', 'Configuration updated', config)
+  }
+
+  /**
+   * Set verbose mode for enhanced console logging
+   * @param verbose - Enable verbose mode
+   */
+  setVerboseMode(verbose: boolean): void {
+    this.verboseMode = verbose
+    console.log(`🔧 Logger: ${verbose ? 'Verbose' : 'Standard'} logging mode enabled`)
   }
 
   /**

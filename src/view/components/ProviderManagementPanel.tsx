@@ -12,12 +12,14 @@ import {
   BarChart3,
   Zap,
   Shield,
-  RefreshCw
+  RefreshCw,
+  Search
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { logger } from '@/utils/logger'
+import toast from 'react-hot-toast'
 
 /**
  * Provider performance metrics interface
@@ -80,6 +82,7 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
     monthlyCostLimit: 500.0
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [isTesting, setIsTesting] = useState(false)
   const [activeTab, setActiveTab] = useState<'performance' | 'costs' | 'quotas'>('performance')
 
   useEffect(() => {
@@ -126,8 +129,208 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
     return tracker.monthlyQuota > 0 ? (tracker.monthlyUsage / tracker.monthlyQuota) * 100 : 0
   }
 
+  const handleRefresh = async () => {
+    try {
+      await loadProviderData()
+      toast.success('Provider data refreshed successfully!', {
+        duration: 3000,
+        icon: '🔄'
+      })
+    } catch (error) {
+      toast.error('Failed to refresh provider data', {
+        duration: 4000,
+        icon: '❌'
+      })
+    }
+  }
+
+  const runSearchProviderTest = async () => {
+    setIsTesting(true)
+
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Testing search providers (Google, Bing, DuckDuckGo)...')
+
+      logger.info('ProviderManagement', 'Starting search provider test with IT services in 60010')
+
+      // Create AbortController for timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => {
+        controller.abort()
+        logger.warn('ProviderManagement', 'Search provider test timed out after 30 seconds')
+      }, 30000) // 30 second timeout for search-only test
+
+      // Test search providers directly (no scraping)
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          provider: 'google', // Start with just Google for faster testing
+          query: 'IT consulting services',
+          location: '60010',
+          maxResults: 5,
+          zipRadius: 25,
+          accreditedOnly: false
+        }),
+        signal: controller.signal
+      })
+
+      // Clear timeout if request completes
+      clearTimeout(timeoutId)
+
+      logger.info('ProviderManagement', 'Search provider test API call completed, parsing response...')
+
+      const result = await response.json()
+
+      // Dismiss loading toast
+      toast.dismiss(loadingToast)
+
+      logger.info('ProviderManagement', 'Search provider test response received', {
+        success: result.success,
+        hasResults: !!result.count
+      })
+
+      if (result.success) {
+        logger.info('ProviderManagement', `Search provider test completed successfully. Found ${result.count} results.`, {
+          query: result.query,
+          location: result.location,
+          resultCount: result.count,
+          provider: 'google'
+        })
+
+        // Show success toast
+        toast.success(`Search provider test completed! Found ${result.count} results. Check console for details.`, {
+          duration: 6000,
+          icon: '🔍'
+        })
+
+        // Refresh provider data to show updated usage
+        await loadProviderData()
+      } else {
+        throw new Error(result.error || 'Search provider test failed')
+      }
+    } catch (error) {
+      logger.error('ProviderManagement', 'Search provider test failed', error)
+
+      // Show specific error message based on error type
+      let errorMessage = 'Search provider test failed. Check console for details.'
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = 'Search provider test timed out after 30 seconds. This may indicate API issues.'
+          logger.warn('ProviderManagement', 'Search provider test aborted due to timeout')
+        } else if (error.message.includes('fetch')) {
+          errorMessage = 'Network error during search provider test. Check your connection.'
+        }
+      }
+
+      toast.error(errorMessage, {
+        duration: 6000,
+        icon: '❌'
+      })
+    } finally {
+      setIsTesting(false)
+    }
+  }
+
+  const runProviderTest = async () => {
+    setIsTesting(true)
+
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Running provider test with real search requests...')
+
+      logger.info('ProviderManagement', 'Starting provider test with IT Consulting search in 60010')
+
+      // Create AbortController for timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => {
+        controller.abort()
+        logger.warn('ProviderManagement', 'Provider test timed out after 60 seconds')
+      }, 60000) // 60 second timeout
+
+      // Make comprehensive search request with limited results (3-5 per provider)
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          provider: 'comprehensive',
+          query: 'IT help near me',
+          location: '60010',
+          maxResults: 12, // This will be divided among providers (3-4 each)
+          zipRadius: 25,
+          accreditedOnly: false
+        }),
+        signal: controller.signal
+      })
+
+      // Clear timeout if request completes
+      clearTimeout(timeoutId)
+
+      logger.info('ProviderManagement', 'Provider test API call completed, parsing response...')
+
+      const result = await response.json()
+
+      // Dismiss loading toast
+      toast.dismiss(loadingToast)
+
+      logger.info('ProviderManagement', 'Provider test response received', {
+        success: result.success,
+        hasResults: !!result.count
+      })
+
+      if (result.success) {
+        logger.info('ProviderManagement', `Provider test completed successfully. Found ${result.count} results.`, {
+          query: result.query,
+          location: result.location,
+          resultCount: result.count,
+          providerStats: result.providerStats
+        })
+
+        // Show success toast
+        toast.success(`Provider test completed! Found ${result.count} results. Check console for details.`, {
+          duration: 6000,
+          icon: '🧪'
+        })
+
+        // Refresh provider data to show updated usage
+        await loadProviderData()
+      } else {
+        throw new Error(result.error || 'Provider test failed')
+      }
+    } catch (error) {
+      logger.error('ProviderManagement', 'Provider test failed', error)
+
+      // Show specific error message based on error type
+      let errorMessage = 'Provider test failed. Check console for details.'
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = 'Provider test timed out after 60 seconds. This may indicate API issues.'
+          logger.warn('ProviderManagement', 'Provider test aborted due to timeout')
+        } else if (error.message.includes('fetch')) {
+          errorMessage = 'Network error during provider test. Check your connection.'
+        }
+      }
+
+      toast.error(errorMessage, {
+        duration: 6000,
+        icon: '❌'
+      })
+    } finally {
+      setIsTesting(false)
+    }
+  }
+
   const saveQuotaSettings = async () => {
     try {
+      // Show loading toast
+      const loadingToast = toast.loading('Saving quota settings...')
+
       // Save quota settings via API
       const response = await fetch('/api/provider-management', {
         method: 'POST',
@@ -139,8 +342,17 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
 
       const result = await response.json()
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToast)
+
       if (result.success) {
         logger.info('ProviderManagement', 'Quota settings saved successfully', quotaLimits)
+
+        // Show success toast
+        toast.success('Quota settings saved successfully!', {
+          duration: 4000,
+          icon: '✅'
+        })
 
         // Refresh data to show updated settings
         await loadProviderData()
@@ -149,6 +361,12 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
       }
     } catch (error) {
       logger.error('ProviderManagement', 'Failed to save quota settings', error)
+
+      // Show error toast
+      toast.error('Failed to save quota settings. Please try again.', {
+        duration: 5000,
+        icon: '❌'
+      })
     }
   }
 
@@ -180,7 +398,7 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" onClick={loadProviderData} disabled={isLoading}>
+            <Button variant="ghost" onClick={handleRefresh} disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             </Button>
             {onClose && (
@@ -268,6 +486,82 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
                   </Card>
                 ))}
               </div>
+
+              {/* Provider Test Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Zap className="h-5 w-5 text-blue-600" />
+                    <span>Provider Testing</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-600">
+                      Test search providers to verify functionality and update usage metrics.
+                    </p>
+
+                    {/* Quick Search Test */}
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200">
+                      <div className="font-medium mb-2 text-blue-800 dark:text-blue-200">Quick Search Test (Recommended)</div>
+                      <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
+                        <li>• <strong>Query:</strong> "IT consulting services"</li>
+                        <li>• <strong>Location:</strong> 60010 (ZIP code)</li>
+                        <li>• <strong>Provider:</strong> Google Search API</li>
+                        <li>• <strong>Timeout:</strong> 30 seconds</li>
+                      </ul>
+                      <Button
+                        onClick={runSearchProviderTest}
+                        disabled={isTesting || isLoading}
+                        className="w-full mt-3"
+                        variant="default"
+                      >
+                        {isTesting ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            Testing Search Providers...
+                          </>
+                        ) : (
+                          <>
+                            <Search className="h-4 w-4 mr-2" />
+                            Quick Search Test
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Full Provider Test */}
+                    <div className="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg border border-amber-200">
+                      <div className="font-medium mb-2 text-amber-800 dark:text-amber-200">Full Provider Test (May Take Longer)</div>
+                      <ul className="space-y-1 text-sm text-amber-700 dark:text-amber-300">
+                        <li>• <strong>Query:</strong> "IT help near me"</li>
+                        <li>• <strong>Location:</strong> 60010 (ZIP code)</li>
+                        <li>• <strong>Providers:</strong> All (Google, Bing, DuckDuckGo + Scraping)</li>
+                        <li>• <strong>Timeout:</strong> 60 seconds</li>
+                        <li>• <strong>Note:</strong> May encounter CAPTCHA delays</li>
+                      </ul>
+                      <Button
+                        onClick={runProviderTest}
+                        disabled={isTesting || isLoading}
+                        className="w-full mt-3"
+                        variant="outline"
+                      >
+                        {isTesting ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            Running Full Test...
+                          </>
+                        ) : (
+                          <>
+                            <Zap className="h-4 w-4 mr-2" />
+                            Full Provider Test
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
@@ -432,7 +726,7 @@ export function ProviderManagementPanel({ onClose }: ProviderManagementPanelProp
 
         {/* Footer */}
         <div className="border-t px-6 py-4 flex justify-end space-x-3">
-          <Button variant="outline" onClick={loadProviderData}>
+          <Button variant="outline" onClick={handleRefresh}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh Data
           </Button>

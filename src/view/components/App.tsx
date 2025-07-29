@@ -360,7 +360,7 @@ function ScrapingPanel() {
  * Orchestrates the entire application interface
  */
 export function App() {
-  const { state, toggleDemoMode } = useConfig()
+  const { state, toggleDemoMode, toggleVerboseLogging } = useConfig()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
 
@@ -469,6 +469,8 @@ export function App() {
           }}
           isDemoMode={state.isDemoMode}
           onToggleDemoMode={toggleDemoMode}
+          isVerboseLogging={state.isVerboseLogging}
+          onToggleVerboseLogging={toggleVerboseLogging}
         />
       )}
     </div>
