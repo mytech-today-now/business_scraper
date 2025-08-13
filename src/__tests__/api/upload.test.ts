@@ -6,7 +6,7 @@
 import { NextRequest } from 'next/server'
 import { POST, GET } from '@/app/api/upload/route'
 import fs from 'fs'
-import path from 'path'
+
 
 // Mock dependencies
 jest.mock('@/lib/security', () => ({

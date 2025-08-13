@@ -241,7 +241,7 @@ export class BBBScrapingService {
         }
 
         // Find the parent container for this business to extract additional info
-        let businessContainer = link.closest('article') ||
+        const businessContainer = link.closest('article') ||
                                link.closest('div[class*="result"]') ||
                                link.closest('div')
 

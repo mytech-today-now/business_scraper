@@ -26,7 +26,7 @@ export default function LoginPage() {
   // Check if already authenticated
   useEffect(() => {
     checkAuthStatus()
-  }, [])
+  }, [checkAuthStatus])
 
   // Countdown timer for retry after rate limiting
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function LoginPage() {
         // Already authenticated, redirect to main app
         router.push('/')
       }
-    } catch (error) {
+    } catch (_error) {
       // Not authenticated, stay on login page
       logger.info('Login', 'User not authenticated')
     }

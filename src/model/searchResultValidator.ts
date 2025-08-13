@@ -180,7 +180,7 @@ export class SearchResultValidator {
     const domainText = result.domain.toLowerCase()
 
     let score = 0
-    let maxScore = queryTerms.length * 3 // Max points per term (title=2, snippet=1, domain=1)
+    const maxScore = queryTerms.length * 3 // Max points per term (title=2, snippet=1, domain=1)
 
     for (const term of queryTerms) {
       // Title matches are worth more

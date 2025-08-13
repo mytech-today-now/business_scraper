@@ -303,7 +303,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
     const sessions = await storage.getAllSessions()
     
     // Filter out campaign sessions if needed
-    let filtered = sessions.filter(s => !s.id.startsWith('campaign_'))
+    const filtered = sessions.filter(s => !s.id.startsWith('campaign_'))
     
     if (campaignId) {
       // For now, return all sessions since we don't have campaign association

@@ -3,10 +3,8 @@
  * Business Scraper Application - Security Validation Tests
  */
 
-import { 
-  DatabaseSecurityService, 
-  databaseSecurityService,
-  defaultDatabaseSecurityConfig 
+import {
+  DatabaseSecurityService
 } from '@/lib/databaseSecurity'
 import { SecureDatabase } from '@/lib/secureDatabase'
 

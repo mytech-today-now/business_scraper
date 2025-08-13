@@ -116,7 +116,7 @@ const scrapeHandler = withApiSecurity(
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-    } catch (error) {
+  } catch (error) {
       logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
       return NextResponse.json(
         { error: 'Internal server error' },

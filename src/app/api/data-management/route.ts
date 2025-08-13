@@ -278,17 +278,18 @@ const dataManagementHandler = withApiSecurity(
 
   } catch (error) {
     logger.error('DataManagementAPI', 'Request failed', error)
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }
+}
 
-  /**
-   * Get cleanup statistics
-   */
-  async function getCleanupStats() {
+/**
+ * Get cleanup statistics
+ */
+async function getCleanupStats() {
     const queries = [
       {
         name: 'duplicateEmails',

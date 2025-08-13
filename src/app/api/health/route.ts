@@ -8,7 +8,7 @@ import { performConfigHealthCheck } from '@/lib/config-validator'
 import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const startTime = Date.now()
   
   try {

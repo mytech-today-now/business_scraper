@@ -213,7 +213,7 @@ export class CSRFProtectionService {
     const headerToken = request.headers.get('x-csrf-token')
     const formData = request.headers.get('content-type')?.includes('application/x-www-form-urlencoded')
     
-    let csrfToken = headerToken
+    const csrfToken = headerToken
 
     // If it's a form submission, we might need to parse the body
     // For now, we'll rely on the header token

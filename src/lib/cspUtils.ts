@@ -99,7 +99,7 @@ export function isCSPSafe(content: string): boolean {
  */
 export function sanitizeForCSP(content: string): string {
   // Remove potentially unsafe patterns
-  let sanitized = content
+  const sanitized = content
     .replace(/eval\s*\(/g, '/* eval removed */')
     .replace(/Function\s*\(/g, '/* Function constructor removed */')
     .replace(/setTimeout\s*\(\s*["'][^"']*["']/g, '/* unsafe setTimeout removed */')

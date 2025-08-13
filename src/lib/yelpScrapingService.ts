@@ -331,7 +331,7 @@ export class YelpScrapingService {
           }
           
           // Find the parent container for this business to extract additional info
-          let businessContainer = businessElement.closest('[data-testid="search-result"]') || 
+          const businessContainer = businessElement.closest('[data-testid="search-result"]') || 
                                  businessElement.closest('.search-result') ||
                                  businessElement.closest('.businessContainer')
           

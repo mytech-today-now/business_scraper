@@ -9,7 +9,7 @@ import { performConfigHealthCheck, validateConfiguration, generateConfigReport }
 import { getAllFeatureFlags } from '@/lib/feature-flags'
 import { getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
-import { withApiSecurity } from '@/lib/api-security'
+
 import { withAuth } from '@/lib/auth-middleware'
 
 /**

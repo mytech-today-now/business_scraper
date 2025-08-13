@@ -6,37 +6,8 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import {
-  Activity,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Cpu,
-  Database,
-  Globe,
-  HardDrive,
-  MemoryStick,
-  Monitor,
-  Network,
-  Server,
-  Wifi,
-  Zap,
-  TrendingUp,
-  TrendingDown,
-  Pause,
-  Play,
-  Square,
-  RefreshCw,
-  Settings,
-  Download,
-  Filter,
-  Search,
-  Bell,
-  BellOff
-} from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
+import { Card } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
-import { Input } from '@/view/components/ui/Input'
 import { logger } from '@/utils/logger'
 
 interface ScrapingStats {
@@ -106,17 +77,9 @@ interface ScrapingJob {
 
 export function ScrapingDashboard() {
   const [stats, setStats] = useState<ScrapingStats | null>(null)
-  const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null)
-  const [errorLogs, setErrorLogs] = useState<ErrorLog[]>([])
-  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetric[]>([])
-  const [alerts, setAlerts] = useState<Alert[]>([])
-  const [jobs, setJobs] = useState<ScrapingJob[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
-  const [alertsEnabled, setAlertsEnabled] = useState(true)
-  const [selectedTimeRange, setSelectedTimeRange] = useState('1h')
-  const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'logs' | 'alerts'>('overview')
   const wsRef = useRef<WebSocket | null>(null)
 
   // WebSocket connection for real-time updates
@@ -128,7 +91,7 @@ export function ScrapingDashboard() {
     }
 
     return () => disconnectWebSocket()
-  }, [autoRefresh])
+  }, [autoRefresh, connectWebSocket])
 
   const connectWebSocket = () => {
     try {
@@ -492,7 +455,7 @@ export function ScrapingDashboard() {
       {!stats && !error && (
         <Card className="p-8 text-center">
           <p className="text-gray-500">
-            Enhanced scraping engine not initialized. Click "Initialize" to start.
+            Enhanced scraping engine not initialized. Click &quot;Initialize&quot; to start.
           </p>
         </Card>
       )}

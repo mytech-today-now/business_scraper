@@ -3,7 +3,7 @@
  * Provides CSRF token management for forms and API requests
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { logger } from '@/utils/logger'
 
 export interface CSRFToken {
@@ -271,6 +271,6 @@ export function withCSRFProtection<T extends object>(
   return function CSRFProtectedComponent(props: T & { csrfToken?: string }) {
     const { csrfToken } = useCSRFProtection()
     
-    return <Component {...props} csrfToken={csrfToken || props.csrfToken} />
+    return React.createElement(Component, { ...props, csrfToken: csrfToken || props.csrfToken })
   }
 }

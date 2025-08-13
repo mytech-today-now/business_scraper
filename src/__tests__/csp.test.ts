@@ -14,7 +14,7 @@ import {
 import { 
   isCSPSafe, 
   sanitizeForCSP, 
-  getClientCSPNonce,
+
   CSPReporter
 } from '@/lib/cspUtils'
 

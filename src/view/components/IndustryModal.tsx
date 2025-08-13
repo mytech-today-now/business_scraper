@@ -202,7 +202,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
             <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               <p>• Each line represents a search keyword or phrase</p>
               <p>• Keywords help identify relevant businesses during scraping</p>
-              <p>• Use specific terms for better results (e.g., "dental clinic" vs "dental")</p>
+              <p>• Use specific terms for better results (e.g., &quot;dental clinic&quot; vs &quot;dental&quot;)</p>
               {isEditing && (
                 <p className="text-blue-600 dark:text-blue-400 mt-1">
                   • Changes are automatically saved as you type (no interruptions)

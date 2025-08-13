@@ -752,7 +752,7 @@ export class ClientSearchEngine {
     }
 
     // Remove quoted phrases from the query to process remaining terms
-    let remainingQuery = query.replace(quotedRegex, '').trim()
+    const remainingQuery = query.replace(quotedRegex, '').trim()
 
     // If we have quoted phrases, process the remaining query normally
     if (quotedPhrases.length > 0) {

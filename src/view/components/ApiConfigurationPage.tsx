@@ -495,7 +495,7 @@ export function ApiConfigurationPage({
                       <p className="font-medium mb-1">Azure AI Foundry Setup:</p>
                       <ul className="mt-1 space-y-1 text-xs">
                         <li className="break-words">• <strong>NEW:</strong> Replaces deprecated Bing Search API (ends Aug 2025)</li>
-                        <li className="break-words">• Service: "Grounding with Bing Custom Search"</li>
+                        <li className="break-words">• Service: &quot;Grounding with Bing Custom Search&quot;</li>
                         <li className="break-words">• Portal: <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Azure Portal</a></li>
                         <li className="break-words">• Use either Key 1 or Key 2 from your resource</li>
                         <li className="break-words">• Endpoint format: <span className="break-all">https://[name].cognitiveservices.azure.com/</span></li>
@@ -653,7 +653,7 @@ export function ApiConfigurationPage({
                       <li>• Scrapes actual DuckDuckGo search result pages (SERP)</li>
                       <li>• Searches each industry criteria individually (medical, healthcare, clinic, etc.)</li>
                       <li>• Uses BBB as business discovery platform to find real business websites</li>
-                      <li>• Validates ZIP code radius and extracts "Visit Website" URLs from BBB</li>
+                      <li>• Validates ZIP code radius and extracts &quot;Visit Website&quot; URLs from BBB</li>
                       <li>• Scrapes actual business websites for contact information</li>
                     </ul>
                   </div>
@@ -728,9 +728,9 @@ export function ApiConfigurationPage({
                     <p className="font-medium">Domain Blacklist Usage:</p>
                     <ul className="mt-1 space-y-1 text-xs">
                       <li>• Filters out unwanted domains from search results</li>
-                      <li>• Supports exact domain matching (e.g., "statefarm.com")</li>
-                      <li>• Supports wildcard patterns: "*.statefarm.com" blocks all subdomains</li>
-                      <li>• Supports TLD wildcards: "statefarm.*" blocks all TLDs</li>
+                      <li>• Supports exact domain matching (e.g., &quot;statefarm.com&quot;)</li>
+                      <li>• Supports wildcard patterns: &quot;*.statefarm.com&quot; blocks all subdomains</li>
+                      <li>• Supports TLD wildcards: &quot;statefarm.*&quot; blocks all TLDs</li>
                       <li>• Comments can be added with # prefix</li>
                       <li>• Export/import as JSON with Business Scraper format headers</li>
                       <li>• Applied to all search providers (Google, Azure, DuckDuckGo)</li>
