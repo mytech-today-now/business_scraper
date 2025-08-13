@@ -49,52 +49,156 @@ function loadConfig(environment = 'development') {
 }
 
 /**
+ * Validate password strength
+ */
+function validatePasswordStrength(password, varName) {
+  if (!password) return { isValid: false, issues: [`${varName} is missing`] }
+
+  const issues = []
+
+  // Check for common weak passwords
+  const weakPasswords = ['admin123', 'password', 'postgres', 'admin', '123456', 'password123']
+  if (weakPasswords.includes(password.toLowerCase())) {
+    issues.push(`${varName} uses a common weak password`)
+  }
+
+  // Check minimum length
+  if (password.length < 12) {
+    issues.push(`${varName} must be at least 12 characters long`)
+  }
+
+  // Check for placeholder values
+  if (password.includes('CHANGE_ME') || password.includes('GENERATE_') || password.includes('YOUR_')) {
+    issues.push(`${varName} contains placeholder values`)
+  }
+
+  return { isValid: issues.length === 0, issues }
+}
+
+/**
+ * Validate encryption keys and secrets
+ */
+function validateSecrets() {
+  const env = process.env.NODE_ENV
+  const issues = []
+
+  // Critical secrets that must be present and secure
+  const criticalSecrets = [
+    'ENCRYPTION_KEY',
+    'JWT_SECRET',
+    'SESSION_SECRET'
+  ]
+
+  for (const secretName of criticalSecrets) {
+    const secret = process.env[secretName]
+
+    if (!secret) {
+      issues.push(`${secretName} is missing`)
+      continue
+    }
+
+    if (secret.includes('CHANGE_ME') || secret.includes('GENERATE_') || secret.includes('YOUR_')) {
+      issues.push(`${secretName} contains placeholder values`)
+    }
+
+    if (secretName === 'ENCRYPTION_KEY' && secret.length < 32) {
+      issues.push(`${secretName} must be at least 32 characters long`)
+    }
+
+    if (secretName === 'JWT_SECRET' && secret.length < 32) {
+      issues.push(`${secretName} must be at least 32 characters long`)
+    }
+  }
+
+  return issues
+}
+
+/**
  * Validate required configuration
  */
 function validateConfig() {
   console.log('🔍 Validating configuration...')
-  
+
   const requiredVars = [
     'NODE_ENV',
     'NEXT_PUBLIC_APP_NAME',
     'NEXT_PUBLIC_APP_VERSION'
   ]
-  
+
   const missingVars = []
-  
+  const securityIssues = []
+
   for (const varName of requiredVars) {
     if (!process.env[varName]) {
       missingVars.push(varName)
     }
   }
-  
+
   if (missingVars.length > 0) {
     console.error(`❌ Missing required environment variables: ${missingVars.join(', ')}`)
     return false
   }
-  
+
   // Environment-specific validation
   const env = process.env.NODE_ENV
-  
+
   if (env === 'production') {
+    console.log('🔒 Performing production security validation...')
+
     const productionRequiredVars = [
       'DB_PASSWORD',
-      'ADMIN_PASSWORD_HASH',
-      'ADMIN_PASSWORD_SALT'
+      'ENCRYPTION_KEY',
+      'JWT_SECRET',
+      'SESSION_SECRET'
     ]
-    
-    const missingProdVars = productionRequiredVars.filter(varName => 
-      !process.env[varName] || 
+
+    const missingProdVars = productionRequiredVars.filter(varName =>
+      !process.env[varName] ||
       process.env[varName].includes('CHANGE_ME') ||
       process.env[varName].includes('GENERATE_')
     )
-    
+
     if (missingProdVars.length > 0) {
       console.error(`❌ Production environment missing or has placeholder values for: ${missingProdVars.join(', ')}`)
       return false
     }
+
+    // Validate password strength for production
+    const dbPasswordValidation = validatePasswordStrength(process.env.DB_PASSWORD, 'DB_PASSWORD')
+    if (!dbPasswordValidation.isValid) {
+      securityIssues.push(...dbPasswordValidation.issues)
+    }
+
+    if (process.env.ADMIN_PASSWORD) {
+      const adminPasswordValidation = validatePasswordStrength(process.env.ADMIN_PASSWORD, 'ADMIN_PASSWORD')
+      if (!adminPasswordValidation.isValid) {
+        securityIssues.push(...adminPasswordValidation.issues)
+      }
+      console.warn('⚠️  ADMIN_PASSWORD is set in production. Consider using ADMIN_PASSWORD_HASH instead.')
+    }
+
+    // Validate authentication setup
+    if (process.env.ENABLE_AUTH !== 'true') {
+      securityIssues.push('Authentication should be enabled in production (ENABLE_AUTH=true)')
+    }
+
+    if (!process.env.ADMIN_PASSWORD_HASH || !process.env.ADMIN_PASSWORD_SALT) {
+      securityIssues.push('Production should use hashed passwords (ADMIN_PASSWORD_HASH and ADMIN_PASSWORD_SALT)')
+    }
   }
-  
+
+  // Validate secrets for all environments
+  const secretIssues = validateSecrets()
+  securityIssues.push(...secretIssues)
+
+  // Report security issues
+  if (securityIssues.length > 0) {
+    console.error('\n🚨 Security validation failed:')
+    securityIssues.forEach(issue => console.error(`   - ${issue}`))
+    console.error('\n💡 Generate secure secrets with: node scripts/generate-secrets.js')
+    return false
+  }
+
   console.log('✅ Configuration validation passed')
   return true
 }
@@ -162,7 +266,8 @@ function generateEnvFile(environment, outputPath = '.env') {
   const placeholders = content.match(/(CHANGE_ME|GENERATE_[A-Z_]+|YOUR_[A-Z_]+)/g)
   if (placeholders) {
     console.log('\n⚠️  Please update the following placeholder values:')
-    [...new Set(placeholders)].forEach(placeholder => {
+    const uniquePlaceholders = Array.from(new Set(placeholders))
+    uniquePlaceholders.forEach(placeholder => {
       console.log(`  - ${placeholder}`)
     })
   }

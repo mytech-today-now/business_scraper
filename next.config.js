@@ -1,4 +1,23 @@
 /** @type {import('next').NextConfig} */
+
+// CSP configuration for static headers
+const getStaticCSPHeader = () => {
+  // Basic CSP for static responses (will be enhanced by middleware)
+  return [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data:",
+    "connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "upgrade-insecure-requests"
+  ].join('; ')
+}
+
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -22,12 +41,16 @@ const nextConfig = {
     return config;
   },
 
-  // Security headers
+  // Enhanced security headers with CSP
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: getStaticCSPHeader()
+          },
           {
             key: 'X-Frame-Options',
             value: 'DENY'
@@ -41,10 +64,25 @@ const nextConfig = {
             value: 'strict-origin-when-cross-origin'
           },
           {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
           },
-
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin'
+          }
         ]
       }
     ];

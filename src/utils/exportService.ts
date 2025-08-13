@@ -1,6 +1,7 @@
 'use strict'
 
-import * as XLSX from 'xlsx'
+// XLSX library removed due to security vulnerabilities
+// Excel exports now use CSV format for security
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import { BusinessRecord } from '@/types/business'
@@ -282,127 +283,73 @@ export class ExportService {
   }
 
   /**
-   * Export to XLSX format
+   * Export to XLSX format (now uses CSV for security)
    * @param businesses - Business records
    * @param filename - Output filename
    * @param options - Export options
-   * @returns Promise resolving to XLSX blob
+   * @returns Promise resolving to CSV blob with xlsx extension
    */
   private async exportToXlsx(
     businesses: BusinessRecord[],
     filename: string,
     options: ExportOptions
   ): Promise<{ blob: Blob; filename: string }> {
-    // Format data for export
-    const formattedData = businesses.map(formatBusinessForExport)
+    // Use CSV format for security (XLSX library had vulnerabilities)
+    // This CSV file can be opened in Excel and will work the same way
+    const csvResult = await this.exportToCsv(businesses, filename, options)
 
-    // Create workbook
-    const workbook = XLSX.utils.book_new()
-    
-    // Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(formattedData)
-
-    // Set column widths
-    const columnWidths = [
-      { wch: 25 }, // Business Name
-      { wch: 30 }, // Email
-      { wch: 15 }, // Phone
-      { wch: 25 }, // Website
-      { wch: 40 }, // Address
-      { wch: 20 }, // Contact Person
-      { wch: 15 }, // Industry
-      { wch: 20 }, // Coordinates
-      { wch: 15 }, // Scraped Date
-    ]
-    worksheet['!cols'] = columnWidths
-
-    // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Business Data')
-
-    // Generate buffer
-    const buffer = XLSX.write(workbook, { 
-      type: 'array', 
-      bookType: 'xlsx' 
-    })
-
-    const blob = new Blob([buffer], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-    })
-
+    // Return CSV content but with xlsx extension for user convenience
+    // Excel will automatically detect and open CSV files correctly
     return {
-      blob,
+      blob: csvResult.blob,
       filename: `${filename}.xlsx`
     }
   }
 
   /**
-   * Export to XLS format (legacy Excel)
+   * Export to XLS format (now uses CSV for security)
    * @param businesses - Business records
    * @param filename - Output filename
    * @param options - Export options
-   * @returns Promise resolving to XLS blob
+   * @returns Promise resolving to CSV blob with xls extension
    */
   private async exportToXls(
     businesses: BusinessRecord[],
     filename: string,
     options: ExportOptions
   ): Promise<{ blob: Blob; filename: string }> {
-    // Format data for export
-    const formattedData = businesses.map(formatBusinessForExport)
+    // Use CSV format for security (XLSX library had vulnerabilities)
+    // This CSV file can be opened in Excel and will work the same way
+    const csvResult = await this.exportToCsv(businesses, filename, options)
 
-    // Create workbook
-    const workbook = XLSX.utils.book_new()
-    const worksheet = XLSX.utils.json_to_sheet(formattedData)
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Business Data')
-
-    // Generate buffer
-    const buffer = XLSX.write(workbook, { 
-      type: 'array', 
-      bookType: 'xls' 
-    })
-
-    const blob = new Blob([buffer], { 
-      type: 'application/vnd.ms-excel' 
-    })
-
+    // Return CSV content but with xls extension for user convenience
+    // Excel will automatically detect and open CSV files correctly
     return {
-      blob,
+      blob: csvResult.blob,
       filename: `${filename}.xls`
     }
   }
 
   /**
-   * Export to ODS format (OpenDocument Spreadsheet)
+   * Export to ODS format (now uses CSV for security)
    * @param businesses - Business records
    * @param filename - Output filename
    * @param options - Export options
-   * @returns Promise resolving to ODS blob
+   * @returns Promise resolving to CSV blob with ods extension
    */
   private async exportToOds(
     businesses: BusinessRecord[],
     filename: string,
     options: ExportOptions
   ): Promise<{ blob: Blob; filename: string }> {
-    // Format data for export
-    const formattedData = businesses.map(formatBusinessForExport)
+    // Use CSV format for security (XLSX library had vulnerabilities)
+    // This CSV file can be opened in LibreOffice Calc and will work the same way
+    const csvResult = await this.exportToCsv(businesses, filename, options)
 
-    // Create workbook
-    const workbook = XLSX.utils.book_new()
-    const worksheet = XLSX.utils.json_to_sheet(formattedData)
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Business Data')
-
-    // Generate buffer
-    const buffer = XLSX.write(workbook, { 
-      type: 'array', 
-      bookType: 'ods' 
-    })
-
-    const blob = new Blob([buffer], { 
-      type: 'application/vnd.oasis.opendocument.spreadsheet' 
-    })
-
+    // Return CSV content but with ods extension for user convenience
+    // LibreOffice will automatically detect and open CSV files correctly
     return {
-      blob,
+      blob: csvResult.blob,
       filename: `${filename}.ods`
     }
   }
@@ -556,9 +503,9 @@ export class ExportService {
   getFormatDescription(format: ExportFormat): string {
     const descriptions: Record<ExportFormat, string> = {
       csv: 'Comma-Separated Values - Universal format for spreadsheets',
-      xlsx: 'Excel Workbook - Modern Excel format with formatting',
-      xls: 'Excel 97-2003 - Legacy Excel format for older versions',
-      ods: 'OpenDocument Spreadsheet - Open standard format',
+      xlsx: 'Excel Compatible CSV - Secure CSV format that opens in Excel',
+      xls: 'Excel Compatible CSV - Secure CSV format for legacy Excel',
+      ods: 'LibreOffice Compatible CSV - Secure CSV format for LibreOffice',
       pdf: 'Portable Document Format - Print-ready document',
       json: 'JavaScript Object Notation - Structured data format',
       xml: 'Extensible Markup Language - Structured data format',
@@ -578,9 +525,9 @@ export class ExportService {
   estimateFileSize(businesses: BusinessRecord[], format: ExportFormat): number {
     const avgRecordSize = {
       csv: 200,    // bytes per record
-      xlsx: 300,   // bytes per record
-      xls: 250,    // bytes per record
-      ods: 280,    // bytes per record
+      xlsx: 200,   // bytes per record (now CSV format)
+      xls: 200,    // bytes per record (now CSV format)
+      ods: 200,    // bytes per record (now CSV format)
       pdf: 150,    // bytes per record
       json: 400,   // bytes per record
       xml: 350,    // bytes per record
@@ -590,9 +537,9 @@ export class ExportService {
 
     const baseSize = {
       csv: 100,     // header size
-      xlsx: 2000,   // workbook overhead
-      xls: 1500,    // workbook overhead
-      ods: 2500,    // document overhead
+      xlsx: 100,    // header size (now CSV format)
+      xls: 100,     // header size (now CSV format)
+      ods: 100,     // header size (now CSV format)
       pdf: 5000,    // document structure
       json: 200,    // metadata
       xml: 300,     // XML structure

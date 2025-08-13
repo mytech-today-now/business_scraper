@@ -92,12 +92,13 @@ describe('ExportService', () => {
   })
 
   describe('XLSX Export', () => {
-    it('should export businesses to XLSX format', async () => {
+    it('should export businesses to XLSX format (now CSV for security)', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'xlsx')
-      
+
       expect(result.blob).toBeInstanceOf(Blob)
       expect(result.filename).toMatch(/\.xlsx$/)
-      expect(result.blob.type).toBe('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      // Now returns CSV format for security (XLSX library had vulnerabilities)
+      expect(result.blob.type).toBe('text/csv;charset=utf-8')
     })
   })
 

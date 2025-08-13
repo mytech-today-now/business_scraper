@@ -6,6 +6,7 @@
 import crypto from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/utils/logger'
+import { getCSPHeader } from './cspConfig'
 
 // Security configuration
 export interface SecurityConfig {
@@ -55,17 +56,7 @@ function getSecurityConfiguration(): SecurityConfig {
       keyDerivationIterations: 100000,
 
       enableSecurityHeaders: true,
-      contentSecurityPolicy: `
-        default-src 'self';
-        script-src 'self' 'unsafe-eval' 'unsafe-inline';
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data: https:;
-        font-src 'self';
-        connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com;
-        frame-ancestors 'none';
-        base-uri 'self';
-        form-action 'self';
-      `.replace(/\s+/g, ' ').trim(),
+      contentSecurityPolicy: getCSPHeader(), // Use centralized CSP configuration
     }
   } catch (error) {
     // Fallback to environment variables if config system not available
@@ -83,17 +74,7 @@ function getSecurityConfiguration(): SecurityConfig {
       encryptionAlgorithm: 'aes-256-gcm',
       keyDerivationIterations: 100000,
       enableSecurityHeaders: true,
-      contentSecurityPolicy: `
-        default-src 'self';
-        script-src 'self' 'unsafe-eval' 'unsafe-inline';
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data: https:;
-        font-src 'self';
-        connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com;
-        frame-ancestors 'none';
-        base-uri 'self';
-        form-action 'self';
-      `.replace(/\s+/g, ' ').trim(),
+      contentSecurityPolicy: getCSPHeader(), // Use centralized CSP configuration
     }
   }
 }

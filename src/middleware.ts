@@ -3,13 +3,18 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  defaultSecurityConfig, 
-  checkRateLimit, 
-  getClientIP, 
+import crypto from 'crypto'
+import {
+  defaultSecurityConfig,
+  checkRateLimit,
+  getClientIP,
   getSession,
-  isLockedOut 
+  isLockedOut
 } from '@/lib/security'
+import { advancedRateLimitService } from '@/lib/advancedRateLimit'
+import { validateCSRFMiddleware, csrfProtectionService } from '@/lib/csrfProtection'
+import { securityMonitoringService } from '@/lib/securityMonitoring'
+import { getCSPHeader, generateCSPNonce } from '@/lib/cspConfig'
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -20,16 +25,23 @@ const publicRoutes = [
   '/static',
 ]
 
-// API routes that require rate limiting
-const rateLimitedRoutes = [
-  '/api/scrape',
-  '/api/geocode',
-  '/api/auth',
-]
+// API routes that require rate limiting with their types
+const rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {
+  '/api/scrape': 'scraping',
+  '/api/search': 'scraping',
+  '/api/geocode': 'general',
+  '/api/auth': 'auth',
+  '/api/data-management': 'general',
+  '/api/config': 'general',
+  '/api/upload': 'upload',
+  '/api/export': 'export',
+}
 
-// Scraping routes that require special rate limiting
-const scrapingRoutes = [
+// Routes that require burst protection
+const burstProtectedRoutes = [
+  '/api/auth',
   '/api/scrape',
+  '/api/upload',
 ]
 
 /**
@@ -40,96 +52,200 @@ function isPublicRoute(pathname: string): boolean {
 }
 
 /**
- * Check if a route requires rate limiting
+ * Get rate limit type for route
  */
-function isRateLimitedRoute(pathname: string): boolean {
-  return rateLimitedRoutes.some(route => pathname.startsWith(route))
+function getRateLimitType(pathname: string): 'general' | 'scraping' | 'auth' | 'upload' | 'export' | null {
+  for (const [route, type] of Object.entries(rateLimitedRoutes)) {
+    if (pathname.startsWith(route)) {
+      return type
+    }
+  }
+  return null
 }
 
 /**
- * Check if a route is a scraping route
+ * Check if route requires burst protection
  */
-function isScrapingRoute(pathname: string): boolean {
-  return scrapingRoutes.some(route => pathname.startsWith(route))
+function requiresBurstProtection(pathname: string): boolean {
+  return burstProtectedRoutes.some(route => pathname.startsWith(route))
 }
 
 /**
- * Add security headers to response
+ * Add enhanced security headers to response
  */
 function addSecurityHeaders(response: NextResponse): NextResponse {
   if (!defaultSecurityConfig.enableSecurityHeaders) {
     return response
   }
 
-  // Content Security Policy
-  response.headers.set('Content-Security-Policy', defaultSecurityConfig.contentSecurityPolicy)
-  
-  // Security headers
+  // Generate nonce for CSP
+  const nonce = generateCSPNonce()
+
+  // Get enhanced Content Security Policy from centralized config
+  const csp = getCSPHeader(nonce)
+  response.headers.set('Content-Security-Policy', csp)
+
+  // Add nonce to response for use in templates
+  response.headers.set('X-CSP-Nonce', nonce)
+
+  // Frame protection
   response.headers.set('X-Frame-Options', 'DENY')
+
+  // MIME type sniffing protection
   response.headers.set('X-Content-Type-Options', 'nosniff')
+
+  // Referrer policy
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-  
-  // HTTPS enforcement in production
+
+  // Feature policy / Permissions policy
+  const permissionsPolicy = [
+    'camera=()',
+    'microphone=()',
+    'geolocation=()',
+    'payment=()',
+    'usb=()',
+    'magnetometer=()',
+    'gyroscope=()',
+    'accelerometer=()',
+    'ambient-light-sensor=()',
+    'autoplay=()',
+    'encrypted-media=()',
+    'fullscreen=(self)',
+    'picture-in-picture=()'
+  ].join(', ')
+
+  response.headers.set('Permissions-Policy', permissionsPolicy)
+
+  // XSS protection (legacy but still useful)
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+
+  // Cross-Origin policies
+  response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
+  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
+  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')
+
+  // HSTS (only in production)
   if (process.env.NODE_ENV === 'production') {
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   }
-  
+
+  // Cache control for sensitive pages
+  const url = response.url || ''
+  if (url.includes('/login') || url.includes('/api/')) {
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+  }
+
   // Remove server information
   response.headers.delete('Server')
   response.headers.delete('X-Powered-By')
-  
+  response.headers.delete('X-AspNet-Version')
+  response.headers.delete('X-AspNetMvc-Version')
+
+  // Add security monitoring headers
+  response.headers.set('X-Request-ID', crypto.randomUUID())
+  response.headers.set('X-Security-Policy', 'enforced')
+
   return response
 }
 
 /**
- * Handle rate limiting
+ * Handle advanced rate limiting
  */
 function handleRateLimit(request: NextRequest): NextResponse | null {
-  const ip = getClientIP(request)
   const pathname = request.nextUrl.pathname
-  
-  // Check if IP is locked out
+  const ip = getClientIP(request)
+
+  // Skip rate limiting for public routes
+  if (isPublicRoute(pathname)) {
+    return null
+  }
+
+  // Check if user is locked out (legacy security check)
   if (isLockedOut(ip)) {
     return new NextResponse(
-      JSON.stringify({ 
-        error: 'Too many failed attempts. Please try again later.',
+      JSON.stringify({
+        error: 'Account temporarily locked due to too many failed attempts',
         retryAfter: Math.ceil(defaultSecurityConfig.lockoutDuration / 1000)
       }),
-      { 
+      {
         status: 429,
         headers: {
           'Content-Type': 'application/json',
-          'Retry-After': String(Math.ceil(defaultSecurityConfig.lockoutDuration / 1000))
+          'Retry-After': String(Math.ceil(defaultSecurityConfig.lockoutDuration / 1000)),
+          'X-RateLimit-Limit': '0',
+          'X-RateLimit-Remaining': '0'
         }
       }
     )
   }
-  
-  // Apply different rate limits based on route type
-  let rateLimit = defaultSecurityConfig.rateLimitMax
-  
-  if (isScrapingRoute(pathname)) {
-    rateLimit = defaultSecurityConfig.scrapingRateLimit
-  }
-  
-  if (isRateLimitedRoute(pathname) && !checkRateLimit(ip, rateLimit)) {
-    return new NextResponse(
-      JSON.stringify({ 
-        error: 'Rate limit exceeded. Please slow down.',
-        retryAfter: Math.ceil(defaultSecurityConfig.rateLimitWindow / 1000)
-      }),
-      { 
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': String(Math.ceil(defaultSecurityConfig.rateLimitWindow / 1000))
+
+  // Check burst protection first
+  if (requiresBurstProtection(pathname)) {
+    const burstResult = advancedRateLimitService.checkBurstRateLimit(`ip:${ip}`)
+    if (!burstResult.allowed) {
+      return new NextResponse(
+        JSON.stringify({
+          error: 'Too many requests in a short time. Please slow down.',
+          retryAfter: burstResult.retryAfter || 60
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(burstResult.retryAfter || 60),
+            'X-RateLimit-Limit': '20',
+            'X-RateLimit-Remaining': String(burstResult.remaining),
+            'X-RateLimit-Reset': String(burstResult.resetTime)
+          }
         }
-      }
-    )
+      )
+    }
   }
-  
+
+  // Check endpoint-specific rate limits
+  const rateLimitType = getRateLimitType(pathname)
+  if (rateLimitType) {
+    const rateLimitResult = advancedRateLimitService.checkApiRateLimit(request, rateLimitType)
+
+    if (!rateLimitResult.allowed) {
+      return new NextResponse(
+        JSON.stringify({
+          error: `Rate limit exceeded for ${rateLimitType} endpoints. Please slow down.`,
+          retryAfter: rateLimitResult.retryAfter || Math.ceil(defaultSecurityConfig.rateLimitWindow / 1000),
+          type: rateLimitType
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(rateLimitResult.retryAfter || Math.ceil(defaultSecurityConfig.rateLimitWindow / 1000)),
+            'X-RateLimit-Limit': getMaxRequestsForType(rateLimitType),
+            'X-RateLimit-Remaining': String(rateLimitResult.remaining),
+            'X-RateLimit-Reset': String(rateLimitResult.resetTime),
+            'X-RateLimit-Type': rateLimitType
+          }
+        }
+      )
+    }
+  }
+
   return null
+}
+
+/**
+ * Get max requests for rate limit type
+ */
+function getMaxRequestsForType(type: string): string {
+  const limits: Record<string, string> = {
+    general: '100',
+    scraping: '10',
+    auth: '5',
+    upload: '20',
+    export: '50'
+  }
+  return limits[type] || '100'
 }
 
 /**
@@ -193,68 +309,85 @@ function handleAuthentication(request: NextRequest): NextResponse | null {
  * Handle CSRF protection for state-changing requests
  */
 function handleCSRF(request: NextRequest): NextResponse | null {
-  const pathname = request.nextUrl.pathname
-  const method = request.method
-  
-  // Only check CSRF for state-changing requests to API endpoints
-  if (!pathname.startsWith('/api/') || !['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
-    return null
-  }
-  
-  // Skip CSRF for public routes
-  if (isPublicRoute(pathname)) {
-    return null
-  }
-  
   // Skip CSRF if authentication is disabled
   if (!defaultSecurityConfig.enableAuth) {
     return null
   }
-  
-  const csrfToken = request.headers.get('x-csrf-token')
-  const sessionId = request.cookies.get('session-id')?.value
-  
-  if (!csrfToken || !sessionId) {
-    return new NextResponse(
-      JSON.stringify({ error: 'CSRF token required' }),
-      { 
-        status: 403,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    )
-  }
-  
-  // Validate CSRF token (this would need to be implemented in the security module)
-  // For now, we'll skip the actual validation since it requires session access
-  
-  return null
+
+  // Use the enhanced CSRF protection middleware
+  return validateCSRFMiddleware(request)
 }
 
 /**
  * Main middleware function
  */
 export function middleware(request: NextRequest) {
+  // Track request signature for pattern analysis
+  securityMonitoringService.trackRequestSignature(request)
+
+  // Analyze request for immediate threats
+  const threats = securityMonitoringService.analyzeRequest(request)
+  if (threats.length > 0) {
+    // Log threats but continue processing (threats are already logged in analyzeRequest)
+    const highSeverityThreats = threats.filter(threat => threat.severity === 'high' || threat.severity === 'critical')
+    if (highSeverityThreats.length > 0) {
+      // Block high severity threats
+      return new NextResponse(
+        JSON.stringify({
+          error: 'Request blocked due to security policy violation',
+          threatCount: highSeverityThreats.length
+        }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      )
+    }
+  }
+
   // Handle rate limiting first
   const rateLimitResponse = handleRateLimit(request)
   if (rateLimitResponse) {
+    // Log rate limit event
+    securityMonitoringService.logSecurityEvent(
+      'rate_limit_exceeded',
+      'medium',
+      request,
+      { message: 'Rate limit exceeded' },
+      true
+    )
     return addSecurityHeaders(rateLimitResponse)
   }
-  
+
   // Handle authentication
   const authResponse = handleAuthentication(request)
   if (authResponse) {
     return addSecurityHeaders(authResponse)
   }
-  
+
   // Handle CSRF protection
   const csrfResponse = handleCSRF(request)
   if (csrfResponse) {
+    // Log CSRF violation
+    securityMonitoringService.logSecurityEvent(
+      'invalid_csrf_token',
+      'high',
+      request,
+      { message: 'CSRF token validation failed' },
+      true
+    )
     return addSecurityHeaders(csrfResponse)
   }
-  
+
   // Continue with the request
   const response = NextResponse.next()
-  
+
+  // Add CSRF headers if session exists
+  const sessionId = request.cookies.get('session-id')?.value
+  if (sessionId) {
+    csrfProtectionService.addCSRFHeaders(response, sessionId)
+  }
+
   // Add security headers to all responses
   return addSecurityHeaders(response)
 }

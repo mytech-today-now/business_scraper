@@ -6,10 +6,33 @@ import { getCacheConfig } from './config'
 import { Features } from './feature-flags'
 import { logger } from '@/utils/logger'
 
-// Cache interface
+// Redis client interface (simplified for our use case)
+interface RedisClient {
+  get(key: string): Promise<string | null>
+  set(key: string, value: string): Promise<void>
+  setEx(key: string, seconds: number, value: string): Promise<void>
+  del(key: string): Promise<number>
+  flushDb(): Promise<void>
+  exists(key: string): Promise<number>
+  keys(pattern: string): Promise<string[]>
+  connect(): Promise<void>
+  quit(): Promise<void>
+  on(event: string, listener: (...args: unknown[]) => void): void
+}
+
+// Redis configuration interface
+interface RedisConfig {
+  host: string
+  port: number
+  password?: string
+  db: number
+  keyPrefix: string
+}
+
+// Cache interface with proper generics
 export interface CacheInterface {
-  get<T = any>(key: string): Promise<T | null>
-  set(key: string, value: any, ttl?: number): Promise<void>
+  get<T>(key: string): Promise<T | null>
+  set<T>(key: string, value: T, ttl?: number): Promise<void>
   delete(key: string): Promise<void>
   clear(): Promise<void>
   exists(key: string): Promise<boolean>
@@ -17,9 +40,9 @@ export interface CacheInterface {
   close(): Promise<void>
 }
 
-// Cache entry for in-memory cache
-interface CacheEntry {
-  value: any
+// Cache entry for in-memory cache with generic type
+interface CacheEntry<T = unknown> {
+  value: T
   expiry: number
 }
 
@@ -27,7 +50,7 @@ interface CacheEntry {
  * In-memory cache implementation
  */
 class MemoryCache implements CacheInterface {
-  private cache = new Map<string, CacheEntry>()
+  private cache = new Map<string, CacheEntry<unknown>>()
   private cleanupInterval: NodeJS.Timeout | null = null
   private readonly defaultTtl: number
   private readonly maxSize: number
@@ -35,40 +58,40 @@ class MemoryCache implements CacheInterface {
   constructor(maxSize: number = 1000, defaultTtl: number = 3600000) {
     this.maxSize = maxSize
     this.defaultTtl = defaultTtl
-    
+
     // Start cleanup interval (every 5 minutes)
     this.cleanupInterval = setInterval(() => {
       this.cleanup()
     }, 5 * 60 * 1000)
-    
+
     logger.info('Cache', 'Memory cache initialized', { maxSize, defaultTtl })
   }
 
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T>(key: string): Promise<T | null> {
     const entry = this.cache.get(key)
-    
+
     if (!entry) {
       return null
     }
-    
+
     // Check if expired
     if (Date.now() > entry.expiry) {
       this.cache.delete(key)
       return null
     }
-    
+
     return entry.value as T
   }
 
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     const actualTtl = ttl || this.defaultTtl
     const expiry = Date.now() + actualTtl
-    
+
     // Check if we need to evict entries
     if (this.cache.size >= this.maxSize) {
       this.evictOldest()
     }
-    
+
     this.cache.set(key, { value, expiry })
   }
 
@@ -187,11 +210,11 @@ class MemoryCache implements CacheInterface {
  * Redis cache implementation
  */
 class RedisCache implements CacheInterface {
-  private client: any = null
+  private client: RedisClient | null = null
   private connected = false
-  private readonly config: any
+  private readonly config: RedisConfig
 
-  constructor(config: any) {
+  constructor(config: RedisConfig) {
     this.config = config
   }
 
@@ -203,9 +226,13 @@ class RedisCache implements CacheInterface {
     try {
       // Dynamically import Redis (optional dependency)
       // Use eval to prevent TypeScript from trying to resolve the module at compile time
-      const Redis = await eval('import("redis")').then((m: any) => m.default || m)
-      
-      this.client = Redis.createClient({
+      const redisModule = await eval('import("redis")') as { default?: unknown; createClient?: unknown }
+      const Redis = redisModule.default || redisModule
+
+      // Type assertion for the Redis client factory
+      const createClient = (Redis as { createClient: (config: unknown) => RedisClient }).createClient
+
+      this.client = createClient({
         host: this.config.host,
         port: this.config.port,
         password: this.config.password,
@@ -231,22 +258,26 @@ class RedisCache implements CacheInterface {
       })
 
       await this.client.connect()
-      
+
     } catch (error) {
       logger.error('Cache', 'Failed to connect to Redis', error)
       throw new Error('Redis connection failed')
     }
   }
 
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T>(key: string): Promise<T | null> {
     try {
       await this.ensureConnected()
+      if (!this.client) {
+        throw new Error('Redis client not available')
+      }
+
       const value = await this.client.get(key)
-      
+
       if (value === null) {
         return null
       }
-      
+
       return JSON.parse(value) as T
     } catch (error) {
       logger.error('Cache', `Failed to get key ${key} from Redis`, error)
@@ -254,11 +285,15 @@ class RedisCache implements CacheInterface {
     }
   }
 
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
       await this.ensureConnected()
+      if (!this.client) {
+        throw new Error('Redis client not available')
+      }
+
       const serialized = JSON.stringify(value)
-      
+
       if (ttl) {
         await this.client.setEx(key, Math.floor(ttl / 1000), serialized)
       } else {
@@ -406,14 +441,24 @@ export async function closeCache(): Promise<void> {
   return cacheManager.close()
 }
 
+// Type for cacheable method
+type CacheableMethod<T = unknown> = (...args: unknown[]) => Promise<T>
+
 /**
  * Cache decorator for functions
  */
 export function cached(ttl: number = 3600000, keyPrefix: string = '') {
-  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  return function <T>(
+    target: object,
+    propertyName: string,
+    descriptor: TypedPropertyDescriptor<CacheableMethod<T>>
+  ) {
     const method = descriptor.value
+    if (!method) {
+      throw new Error('Cached decorator can only be applied to methods')
+    }
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]): Promise<T> {
       if (!Features.isCachingEnabled()) {
         return method.apply(this, args)
       }
@@ -421,27 +466,27 @@ export function cached(ttl: number = 3600000, keyPrefix: string = '') {
       try {
         const cache = await getCache()
         const key = `${keyPrefix}${propertyName}:${JSON.stringify(args)}`
-        
+
         // Try to get from cache
-        const cached = await cache.get(key)
+        const cached = await cache.get<T>(key)
         if (cached !== null) {
           logger.debug('Cache', `Cache hit for ${key}`)
           return cached
         }
-        
+
         // Execute method and cache result
         const result = await method.apply(this, args)
         await cache.set(key, result, ttl)
-        
+
         logger.debug('Cache', `Cache miss for ${key}, result cached`)
         return result
-        
+
       } catch (error) {
         logger.error('Cache', `Cache error for ${propertyName}`, error)
         // Fallback to executing method without cache
         return method.apply(this, args)
       }
-    }
+    } as CacheableMethod<T>
   }
 }
 
@@ -452,7 +497,7 @@ export const CacheHelper = {
   /**
    * Get value from cache
    */
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T>(key: string): Promise<T | null> {
     try {
       const cache = await getCache()
       return cache.get<T>(key)
@@ -465,7 +510,7 @@ export const CacheHelper = {
   /**
    * Set value in cache
    */
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
       const cache = await getCache()
       await cache.set(key, value, ttl)
@@ -502,26 +547,26 @@ export const CacheHelper = {
   /**
    * Get or set pattern - get value, or set it if not exists
    */
-  async getOrSet<T = any>(
-    key: string, 
-    factory: () => Promise<T>, 
+  async getOrSet<T>(
+    key: string,
+    factory: () => Promise<T>,
     ttl?: number
   ): Promise<T> {
     try {
       const cache = await getCache()
-      
+
       // Try to get existing value
       const existing = await cache.get<T>(key)
       if (existing !== null) {
         return existing
       }
-      
+
       // Generate new value
       const value = await factory()
-      
+
       // Cache the new value
       await cache.set(key, value, ttl)
-      
+
       return value
     } catch (error) {
       logger.error('Cache', `Failed getOrSet for ${key}`, error)

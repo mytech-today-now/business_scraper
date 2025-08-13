@@ -1,16 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { searchEngine } from '@/model/searchEngine'
 import { logger } from '@/utils/logger'
+import { withApiSecurity } from '@/lib/api-security'
+import { withValidation, commonSchemas } from '@/lib/validation-middleware'
+import { getClientIP } from '@/lib/security'
 import { validationService } from '@/utils/validation'
 import { bbbScrapingService } from '@/lib/bbbScrapingService'
 
 /**
  * Search for businesses
  */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const { provider, query, location, maxResults = 1000, industry, enableOptimization = false } = body
+const searchHandler = withApiSecurity(
+  withValidation(
+    async (request: NextRequest, validatedData: any) => {
+      const ip = getClientIP(request)
+      const { provider, query, location, maxResults = 1000, industry, enableOptimization = false } = validatedData.body || {}
+
+      logger.info('Search API', `Search request from IP: ${ip}`, { provider, query, location })
 
 
 
@@ -110,16 +116,41 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error('Search API', 'Search request failed', error)
     
-    return NextResponse.json(
-      { 
-        success: false,
-        error: 'Search failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    )
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Search failed',
+            message: error instanceof Error ? error.message : 'Unknown error'
+          },
+          { status: 500 }
+        )
+      }
+    },
+    {
+      body: [
+        { field: 'provider', type: 'string' as const, allowedValues: ['duckduckgo-serp', 'bbb-discovery', 'yelp-discovery', 'chamber-of-commerce', 'comprehensive'] },
+        { field: 'query', required: true, type: 'string' as const, minLength: 1, maxLength: 500 },
+        { field: 'location', type: 'string' as const, maxLength: 200 },
+        { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
+        { field: 'industry', type: 'string' as const, maxLength: 100 },
+        { field: 'enableOptimization', type: 'boolean' as const },
+        { field: 'page', type: 'number' as const, min: 0, max: 100 },
+        { field: 'accreditedOnly', type: 'boolean' as const },
+        { field: 'zipRadius', type: 'number' as const, min: 1, max: 100 },
+        { field: 'maxPagesPerSite', type: 'number' as const, min: 1, max: 50 },
+        { field: 'url', type: 'url' as const }
+      ]
+    }
+  ),
+  {
+    requireAuth: false, // Allow public access for now, but with rate limiting
+    rateLimit: 'scraping',
+    validateInput: true,
+    logRequests: true
   }
-}
+)
+
+export const POST = searchHandler
 
 /**
  * Get search suggestions

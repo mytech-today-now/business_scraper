@@ -33,8 +33,8 @@ export interface ValidationWarning {
 
 export interface ValidationSuggestion {
   field: string
-  originalValue: any
-  suggestedValue: any
+  originalValue: unknown
+  suggestedValue: unknown
   reason: string
   confidence: number
 }
@@ -46,6 +46,25 @@ export interface DataQualityScore {
   consistency: number
   validity: number
   uniqueness: number
+}
+
+// Address validation result interface
+export interface AddressValidationResult {
+  isValid: boolean
+  confidence: number
+  normalizedAddress?: {
+    street: string
+    suite?: string
+    city: string
+    state: string
+    zipCode: string
+  }
+  coordinates?: {
+    lat: number
+    lng: number
+  }
+  errors: string[]
+  warnings: string[]
 }
 
 export interface EnrichmentResult {
@@ -62,7 +81,7 @@ export class DataValidationPipeline {
   private emailValidationService: EmailValidationService
   private emailValidationCache = new Map<string, boolean>()
   private phoneValidationCache = new Map<string, string>()
-  private addressValidationCache = new Map<string, any>()
+  private addressValidationCache = new Map<string, AddressValidationResult>()
 
   constructor() {
     this.emailValidationService = EmailValidationService.getInstance()
@@ -644,8 +663,8 @@ export class DataValidationPipeline {
     let completedFields = 0
     
     fields.forEach(field => {
-      const value = (business as any)[field]
-      if (value !== undefined && value !== null && value !== '' && 
+      const value = business[field as keyof BusinessRecord]
+      if (value !== undefined && value !== null && value !== '' &&
           !(Array.isArray(value) && value.length === 0)) {
         completedFields++
       }

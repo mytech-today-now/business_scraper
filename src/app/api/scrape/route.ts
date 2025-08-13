@@ -2,15 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { scraperService } from '@/model/scraperService'
 import { sanitizeInput, validateInput, getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
+import { withApiSecurity } from '@/lib/api-security'
+import { withValidation } from '@/lib/validation-middleware'
 
-export async function POST(request: NextRequest) {
-  const ip = getClientIP(request)
+const scrapeHandler = withApiSecurity(
+  withValidation(
+    async (request: NextRequest, validatedData: any) => {
+      const ip = getClientIP(request)
+      const { action, ...params } = validatedData.body || {}
 
-  try {
-    logger.info('Scrape API', `POST request received from IP: ${ip}`)
-
-    const body = await request.json()
-    const { action, ...params } = body
+      logger.info('Scrape API', `POST request received from IP: ${ip}`, { action })
 
     logger.info('Scrape API', `Request body: ${JSON.stringify({ action, ...Object.keys(params) })}`)
 
@@ -115,14 +116,35 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-  } catch (error) {
-    logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    } catch (error) {
+      logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      )
+    }
+  },
+  {
+    body: [
+      { field: 'action', required: true, type: 'string' as const, allowedValues: ['initialize', 'search', 'scrape', 'cleanup'] },
+      { field: 'query', type: 'string' as const, minLength: 1, maxLength: 500 },
+      { field: 'zipCode', type: 'zipcode' as const },
+      { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
+      { field: 'url', type: 'url' as const },
+      { field: 'depth', type: 'number' as const, min: 1, max: 5 },
+      { field: 'maxPages', type: 'number' as const, min: 1, max: 50 }
+    ]
   }
+),
+{
+  requireAuth: false, // Allow public access for now, but with rate limiting
+  rateLimit: 'scraping',
+  validateInput: true,
+  logRequests: true
 }
+)
+
+export const POST = scrapeHandler
 
 // Add GET endpoint for testing
 export async function GET() {

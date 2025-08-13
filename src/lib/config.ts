@@ -86,6 +86,20 @@ export interface FeatureFlags {
   enableExperimentalFeatures: boolean
 }
 
+export interface FileUploadConfig {
+  maxFileSize: number
+  uploadDir: string
+  tempDir: string
+  quarantineDir: string
+  enableQuarantine: boolean
+  enableMalwareScanning: boolean
+  enableMagicNumberValidation: boolean
+  fileScanTimeout: number
+  maxUploadFiles: number
+  allowedTypes: string[]
+  allowedExtensions: string[]
+}
+
 export interface AppConfig {
   app: {
     name: string
@@ -101,6 +115,7 @@ export interface AppConfig {
   cache: CacheConfig
   logging: LoggingConfig
   features: FeatureFlags
+  fileUpload: FileUploadConfig
 }
 
 // Environment variable validation rules
@@ -188,6 +203,17 @@ const configSchema: Record<string, ValidationRule> = {
   'FEATURE_ENABLE_RATE_LIMITING': { type: 'boolean', default: true },
   'FEATURE_ENABLE_METRICS': { type: 'boolean', default: false },
   'FEATURE_ENABLE_EXPERIMENTAL': { type: 'boolean', default: false },
+
+  // File Upload Configuration
+  'MAX_FILE_SIZE': { type: 'number', min: 1024, default: 10485760 }, // 10MB
+  'UPLOAD_DIR': { type: 'string', default: './uploads' },
+  'TEMP_DIR': { type: 'string', default: './temp' },
+  'QUARANTINE_DIR': { type: 'string', default: './quarantine' },
+  'ENABLE_FILE_QUARANTINE': { type: 'boolean', default: true },
+  'ENABLE_MALWARE_SCANNING': { type: 'boolean', default: true },
+  'ENABLE_MAGIC_NUMBER_VALIDATION': { type: 'boolean', default: true },
+  'FILE_SCAN_TIMEOUT': { type: 'number', min: 1000, default: 30000 },
+  'MAX_UPLOAD_FILES': { type: 'number', min: 1, max: 100, default: 10 },
 }
 
 /**
@@ -386,6 +412,26 @@ export function loadConfig(): AppConfig {
       enableMetrics: config.FEATURE_ENABLE_METRICS,
       enableDebugMode: config.NEXT_PUBLIC_DEBUG,
       enableExperimentalFeatures: config.FEATURE_ENABLE_EXPERIMENTAL,
+    },
+    fileUpload: {
+      maxFileSize: config.MAX_FILE_SIZE,
+      uploadDir: config.UPLOAD_DIR,
+      tempDir: config.TEMP_DIR,
+      quarantineDir: config.QUARANTINE_DIR,
+      enableQuarantine: config.ENABLE_FILE_QUARANTINE,
+      enableMalwareScanning: config.ENABLE_MALWARE_SCANNING,
+      enableMagicNumberValidation: config.ENABLE_MAGIC_NUMBER_VALIDATION,
+      fileScanTimeout: config.FILE_SCAN_TIMEOUT,
+      maxUploadFiles: config.MAX_UPLOAD_FILES,
+      allowedTypes: [
+        'image/jpeg', 'image/png', 'image/gif',
+        'text/plain', 'application/pdf', 'application/json',
+        'text/csv', 'application/vnd.ms-excel'
+      ],
+      allowedExtensions: [
+        '.jpg', '.jpeg', '.png', '.gif',
+        '.txt', '.pdf', '.json', '.csv', '.xlsx'
+      ],
     },
   }
 

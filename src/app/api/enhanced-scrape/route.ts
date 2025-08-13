@@ -8,6 +8,9 @@ import { enhancedScrapingEngine } from '@/lib/enhancedScrapingEngine'
 import { scraperService } from '@/model/scraperService'
 import { logger } from '@/utils/logger'
 import { validationService } from '@/utils/validation'
+import { withApiSecurity } from '@/lib/api-security'
+import { withErrorHandling, createSecureErrorResponse } from '@/lib/error-handling'
+import { getClientIP } from '@/lib/security'
 
 /**
  * POST /api/enhanced-scrape - Enhanced scraping operations

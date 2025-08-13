@@ -58,6 +58,72 @@ jest.mock('next/navigation', () => ({
 // Mock fetch globally
 global.fetch = jest.fn()
 
+// Mock Request and Response for Next.js API tests
+global.Request = class MockRequest {
+  constructor(input, init = {}) {
+    this.url = typeof input === 'string' ? input : input.url
+    this.method = init.method || 'GET'
+    this.headers = new Map(Object.entries(init.headers || {}))
+    this.body = init.body
+    this._bodyUsed = false
+  }
+
+  async json() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return JSON.parse(this.body || '{}')
+  }
+
+  async text() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return this.body || ''
+  }
+
+  async formData() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    const formData = new FormData()
+    return formData
+  }
+}
+
+global.Response = class MockResponse {
+  constructor(body, init = {}) {
+    this.body = body
+    this.status = init.status || 200
+    this.statusText = init.statusText || 'OK'
+    this.headers = new Map(Object.entries(init.headers || {}))
+    this.ok = this.status >= 200 && this.status < 300
+  }
+
+  async json() {
+    return JSON.parse(this.body || '{}')
+  }
+
+  async text() {
+    return this.body || ''
+  }
+
+  static json(data, init = {}) {
+    return new MockResponse(JSON.stringify(data), {
+      ...init,
+      headers: { 'Content-Type': 'application/json', ...init.headers }
+    })
+  }
+}
+
+// Mock crypto for Node.js environment
+global.crypto = {
+  randomUUID: () => Math.random().toString(36).substring(2, 15),
+  getRandomValues: (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = Math.floor(Math.random() * 256)
+    }
+    return arr
+  }
+}
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

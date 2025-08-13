@@ -21,7 +21,7 @@ export interface LogEntry {
   level: LogLevel
   component: string
   message: string
-  data?: any
+  data?: unknown
   error?: Error
   pid?: number
   hostname?: string
@@ -127,7 +127,7 @@ export class Logger {
    * @param message - Log message
    * @param data - Additional data
    */
-  debug(component: string, message: string, data?: any): void {
+  debug(component: string, message: string, data?: unknown): void {
     this.log(LogLevel.DEBUG, component, message, data)
   }
 
@@ -137,7 +137,7 @@ export class Logger {
    * @param message - Log message
    * @param data - Additional data
    */
-  info(component: string, message: string, data?: any): void {
+  info(component: string, message: string, data?: unknown): void {
     this.log(LogLevel.INFO, component, message, data)
   }
 
@@ -147,7 +147,7 @@ export class Logger {
    * @param message - Log message
    * @param data - Additional data
    */
-  warn(component: string, message: string, data?: any): void {
+  warn(component: string, message: string, data?: unknown): void {
     this.log(LogLevel.WARN, component, message, data)
   }
 
@@ -157,7 +157,7 @@ export class Logger {
    * @param message - Log message
    * @param error - Error object or additional data
    */
-  error(component: string, message: string, error?: Error | any): void {
+  error(component: string, message: string, error?: Error | unknown): void {
     const isError = error instanceof Error
     this.log(LogLevel.ERROR, component, message, isError ? undefined : error, isError ? error : undefined)
   }
@@ -170,7 +170,7 @@ export class Logger {
    * @param data - Additional data
    * @param error - Error object
    */
-  private log(level: LogLevel, component: string, message: string, data?: any, error?: Error): void {
+  private log(level: LogLevel, component: string, message: string, data?: unknown, error?: Error): void {
     // Check if log level meets threshold
     if (level < this.config.level) {
       return
@@ -224,7 +224,7 @@ export class Logger {
     const levelName = LogLevel[entry.level]
     const prefix = `[${timestamp}] <${entry.component}> ${levelName}:`
 
-    const args: any[] = [prefix, entry.message]
+    const args: unknown[] = [prefix, entry.message]
 
     if (entry.data !== undefined) {
       args.push(entry.data)
@@ -537,10 +537,10 @@ export class Logger {
    */
   createScope(component: string) {
     return {
-      debug: (message: string, data?: any) => this.debug(component, message, data),
-      info: (message: string, data?: any) => this.info(component, message, data),
-      warn: (message: string, data?: any) => this.warn(component, message, data),
-      error: (message: string, error?: Error | any) => this.error(component, message, error),
+      debug: (message: string, data?: unknown) => this.debug(component, message, data),
+      info: (message: string, data?: unknown) => this.info(component, message, data),
+      warn: (message: string, data?: unknown) => this.warn(component, message, data),
+      error: (message: string, error?: Error | unknown) => this.error(component, message, error),
     }
   }
 

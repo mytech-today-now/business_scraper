@@ -6,13 +6,16 @@
 import { Pool, PoolClient } from 'pg'
 import { DatabaseInterface, DatabaseConfig } from './database'
 import { logger } from '@/utils/logger'
+import { SecureDatabase } from './secureDatabase'
+import { databaseSecurityService } from './databaseSecurity'
 
 export class PostgreSQLDatabase implements DatabaseInterface {
-  private pool: Pool
+  private secureDb: SecureDatabase
   private connected = false
 
   constructor(config: DatabaseConfig) {
-    this.pool = new Pool({
+    // Create secure database connection with hardened configuration
+    this.secureDb = new SecureDatabase({
       host: config.host,
       port: config.port,
       database: config.database,
@@ -25,26 +28,17 @@ export class PostgreSQLDatabase implements DatabaseInterface {
       connectionTimeoutMillis: config.connectionTimeout || 5000,
     })
 
-    this.pool.on('error', (err) => {
-      logger.error('PostgreSQL', 'Pool error', err)
-    })
-
-    this.pool.on('connect', () => {
-      if (!this.connected) {
-        this.connected = true
-        logger.info('PostgreSQL', 'Database connected successfully')
-      }
-    })
+    this.connected = true
+    logger.info('PostgreSQL', 'Secure database connection initialized')
   }
 
   private async query(text: string, params?: any[]): Promise<any> {
-    const client = await this.pool.connect()
-    try {
-      const result = await client.query(text, params)
-      return result
-    } finally {
-      client.release()
-    }
+    // Use secure database wrapper with SQL injection protection
+    const result = await this.secureDb.query(text, params, {
+      validateQuery: true,
+      logQuery: process.env.NODE_ENV === 'development'
+    })
+    return result
   }
 
   // Campaign operations

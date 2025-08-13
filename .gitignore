@@ -24,9 +24,27 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# Environment files - NEVER commit files with secrets
 .env
+.env.*
+!.env.example
+.env*.local
+
+# Environment configuration files with secrets
+config/*.env
+!config/*.env.example
+
+# Docker environment files
+.env.docker
+docker-compose.override.yml
+
+# Secret management files
+secrets/
+.secrets/
+*.key
+*.pem
+*.p12
+*.pfx
 
 # vercel
 .vercel

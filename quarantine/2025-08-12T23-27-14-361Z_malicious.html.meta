@@ -1,0 +1,7 @@
+{
+  "originalFilename": "malicious.html",
+  "quarantineReason": "File extension '.html' is not allowed, File type 'application/octet-stream' is not allowed, File contains potentially malicious script content",
+  "timestamp": "2025-08-12T23:27:14.364Z",
+  "fileSize": 29,
+  "fileHash": "93a214db88ec419c2cdee5d96dd72c21d26e440995bb8a824bfa904225b6edf6"
+}

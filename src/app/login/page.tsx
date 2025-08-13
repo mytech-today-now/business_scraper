@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/view/components/ui/Button'
 import { Input } from '@/view/components/ui/Input'
 import { Card } from '@/view/components/ui/Card'
+import { useFormCSRFProtection } from '@/hooks/useCSRFProtection'
 import { logger } from '@/utils/logger'
 
 export default function LoginPage() {
@@ -18,6 +19,9 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [retryAfter, setRetryAfter] = useState(0)
   const router = useRouter()
+
+  // CSRF Protection
+  const { csrfToken, submitForm, isLoading: csrfLoading, error: csrfError } = useFormCSRFProtection()
 
   // Check if already authenticated
   useEffect(() => {
@@ -62,7 +66,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (retryAfter > 0) {
       return
     }
@@ -71,16 +75,10 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          username: username.trim(),
-          password
-        })
+      // Use CSRF-protected form submission
+      const response = await submitForm('/api/auth', {
+        username: username.trim(),
+        password
       })
 
       const data = await response.json()
@@ -93,13 +91,20 @@ export default function LoginPage() {
           // Rate limited
           setRetryAfter(data.retryAfter || 60)
           setError(`Too many failed attempts. Please wait ${data.retryAfter || 60} seconds.`)
+        } else if (response.status === 403 && data.needsRefresh) {
+          // CSRF token needs refresh
+          setError('Security token expired. Please try again.')
         } else {
           setError(data.error || 'Login failed')
         }
       }
     } catch (error) {
       logger.error('Login', 'Login request failed', error)
-      setError('Network error. Please try again.')
+      if (error instanceof Error && error.message.includes('CSRF')) {
+        setError('Security validation failed. Please refresh the page and try again.')
+      } else {
+        setError('Network error. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -162,10 +167,10 @@ export default function LoginPage() {
               />
             </div>
 
-            {error && (
+            {(error || csrfError) && (
               <div className="rounded-md bg-red-50 p-4">
                 <div className="text-sm text-red-700">
-                  {error}
+                  {error || csrfError}
                   {retryAfter > 0 && (
                     <div className="mt-1 font-medium">
                       Retry in {retryAfter} seconds
@@ -175,10 +180,18 @@ export default function LoginPage() {
               </div>
             )}
 
+            {csrfLoading && (
+              <div className="rounded-md bg-blue-50 p-4">
+                <div className="text-sm text-blue-700">
+                  Loading security token...
+                </div>
+              </div>
+            )}
+
             <div>
               <Button
                 type="submit"
-                disabled={isLoading || retryAfter > 0 || !username.trim() || !password}
+                disabled={isLoading || csrfLoading || retryAfter > 0 || !username.trim() || !password || !csrfToken}
                 className="group relative w-full flex justify-center"
               >
                 {isLoading ? (

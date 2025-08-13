@@ -5,6 +5,117 @@ import { logger } from '@/utils/logger'
 import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
 
+// API Response Interfaces
+
+// DuckDuckGo SERP API Response
+interface DuckDuckGoSerpResponse {
+  success: boolean
+  error?: string
+  results?: DuckDuckGoSerpResult[]
+}
+
+interface DuckDuckGoSerpResult {
+  url: string
+  title: string
+  snippet?: string
+  domain?: string
+}
+
+// DuckDuckGo Instant Answer API Response
+interface DuckDuckGoInstantResponse {
+  RelatedTopics?: DuckDuckGoRelatedTopic[]
+  Abstract?: string
+  AbstractURL?: string
+}
+
+interface DuckDuckGoRelatedTopic {
+  Text?: string
+  FirstURL?: string
+}
+
+// Google Custom Search API Response
+interface GoogleSearchResponse {
+  items?: GoogleSearchItem[]
+}
+
+interface GoogleSearchItem {
+  link: string
+  title: string
+  snippet?: string
+}
+
+// Azure AI Foundry Grounding with Bing Custom Search API Response
+interface AzureSearchResponse {
+  webPages?: {
+    value?: AzureSearchResult[]
+  }
+}
+
+interface AzureSearchResult {
+  url: string
+  name: string
+  snippet?: string
+}
+
+// Comprehensive Search API Response
+interface ComprehensiveSearchResponse {
+  success: boolean
+  error?: string
+  results?: ComprehensiveSearchResult[]
+}
+
+interface ComprehensiveSearchResult {
+  url: string
+  title: string
+  snippet?: string
+  domain?: string
+  source?: string
+}
+
+// BBB Discovery API Response
+interface BBBDiscoveryResponse {
+  success: boolean
+  error?: string
+  results?: BBBDiscoveryResult[]
+}
+
+interface BBBDiscoveryResult {
+  url: string
+  title: string
+  snippet?: string
+  domain?: string
+}
+
+// Chamber of Commerce API Response
+interface ChamberResponse {
+  success: boolean
+  error?: string
+  results?: ChamberResult[]
+}
+
+interface ChamberResult {
+  url: string
+  title: string
+  snippet?: string
+  domain?: string
+  address?: string
+}
+
+// Yelp Discovery API Response
+interface YelpDiscoveryResponse {
+  success: boolean
+  error?: string
+  results?: YelpDiscoveryResult[]
+}
+
+interface YelpDiscoveryResult {
+  url: string
+  title: string
+  snippet?: string
+  domain?: string
+  address?: string
+}
+
 export interface SearchResult {
   url: string
   title: string
@@ -372,14 +483,14 @@ export class ClientSearchEngine {
         throw new Error(`DuckDuckGo SERP API error: ${response.status}`)
       }
 
-      const data = await response.json()
+      const data = await response.json() as DuckDuckGoSerpResponse
 
       if (!data.success) {
         throw new Error(data.error || 'DuckDuckGo SERP search failed')
       }
 
       // Convert server response to SearchResult format
-      const results = (data.results || []).map((result: any) => ({
+      const results = (data.results || []).map((result: DuckDuckGoSerpResult) => ({
         url: result.url,
         title: result.title,
         snippet: result.snippet || '',
@@ -488,7 +599,7 @@ export class ClientSearchEngine {
   /**
    * Parse DuckDuckGo instant answer results
    */
-  private parseDuckDuckGoInstantResults(data: any): SearchResult[] {
+  private parseDuckDuckGoInstantResults(data: DuckDuckGoInstantResponse): SearchResult[] {
     const results: SearchResult[] = []
 
     // Parse related topics (often contains business listings)
@@ -849,21 +960,18 @@ export class ClientSearchEngine {
         throw new Error(`Comprehensive search API error: ${response.status}`)
       }
 
-      const data = await response.json()
+      const data = await response.json() as ComprehensiveSearchResponse
 
       if (!data.success) {
         throw new Error(data.error || 'Comprehensive search failed')
       }
 
       // Convert server response to SearchResult format
-      const results = (data.results || []).map((result: any) => ({
+      const results = (data.results || []).map((result: ComprehensiveSearchResult) => ({
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via ${result.source} for ${criteria}`,
-        domain: result.domain || new URL(result.url).hostname,
-        source: result.source,
-        address: result.address,
-        phone: result.phone
+        domain: result.domain || new URL(result.url).hostname
       }))
 
       logger.info('ClientSearchEngine', `Comprehensive search returned ${results.length} business websites for "${criteria}"`)
@@ -901,14 +1009,14 @@ export class ClientSearchEngine {
         throw new Error(`BBB discovery API error: ${response.status}`)
       }
 
-      const data = await response.json()
+      const data = await response.json() as BBBDiscoveryResponse
 
       if (!data.success) {
         throw new Error(data.error || 'BBB discovery failed')
       }
 
       // Convert server response to SearchResult format
-      const results = (data.results || []).map((result: any) => ({
+      const results = (data.results || []).map((result: BBBDiscoveryResult) => ({
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via BBB discovery for ${criteria}`,
@@ -947,20 +1055,18 @@ export class ClientSearchEngine {
         throw new Error(`Chamber of Commerce processing API error: ${response.status}`)
       }
 
-      const data = await response.json()
+      const data = await response.json() as ChamberResponse
 
       if (!data.success) {
         throw new Error(data.error || 'Chamber of Commerce processing failed')
       }
 
       // Convert server response to SearchResult format
-      const results = (data.results || []).map((result: any) => ({
+      const results = (data.results || []).map((result: ChamberResult) => ({
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via Chamber of Commerce processing`,
-        domain: result.domain || new URL(result.url).hostname,
-        address: result.address,
-        phone: result.phone
+        domain: result.domain || new URL(result.url).hostname
       }))
 
       logger.info('ClientSearchEngine', `Chamber of Commerce processing returned ${results.length} business websites`)
@@ -997,20 +1103,18 @@ export class ClientSearchEngine {
         throw new Error(`Yelp discovery API error: ${response.status}`)
       }
 
-      const data = await response.json()
+      const data = await response.json() as YelpDiscoveryResponse
 
       if (!data.success) {
         throw new Error(data.error || 'Yelp discovery failed')
       }
 
       // Convert server response to SearchResult format
-      const results = (data.results || []).map((result: any) => ({
+      const results = (data.results || []).map((result: YelpDiscoveryResult) => ({
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via Yelp discovery for ${criteria}`,
-        domain: result.domain || new URL(result.url).hostname,
-        address: result.address,
-        phone: result.phone
+        domain: result.domain || new URL(result.url).hostname
       }))
 
       logger.info('ClientSearchEngine', `Yelp discovery returned ${results.length} business websites for "${criteria}"`)
@@ -1094,10 +1198,10 @@ export class ClientSearchEngine {
   /**
    * Parse Google Custom Search results
    */
-  private parseGoogleResults(data: any, maxResults: number): SearchResult[] {
+  private parseGoogleResults(data: GoogleSearchResponse, maxResults: number): SearchResult[] {
     if (!data.items) return []
 
-    return data.items.slice(0, maxResults).map((item: any) => ({
+    return data.items.slice(0, maxResults).map((item: GoogleSearchItem) => ({
       url: item.link,
       title: item.title,
       snippet: item.snippet || '',
@@ -1108,7 +1212,7 @@ export class ClientSearchEngine {
   /**
    * Parse Azure AI Foundry "Grounding with Bing Custom Search" results
    */
-  private parseAzureGroundingResults(data: any, maxResults: number): SearchResult[] {
+  private parseAzureGroundingResults(data: AzureSearchResponse, maxResults: number): SearchResult[] {
     const results: SearchResult[] = []
 
     // The new Grounding with Bing Custom Search API returns results in webPages.value format
@@ -1150,7 +1254,7 @@ export class ClientSearchEngine {
    * Legacy method for backward compatibility
    * @deprecated Use parseAzureGroundingResults instead
    */
-  private parseAzureResults(data: any, maxResults: number): SearchResult[] {
+  private parseAzureResults(data: AzureSearchResponse, maxResults: number): SearchResult[] {
     return this.parseAzureGroundingResults(data, maxResults)
   }
 

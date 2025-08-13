@@ -11,16 +11,20 @@ import { exportService } from '@/utils/exportService'
 import { database } from '@/lib/postgresql-database'
 import { logger } from '@/utils/logger'
 import { validationService } from '@/utils/validation'
+import { withApiSecurity } from '@/lib/api-security'
+import { withValidation } from '@/lib/validation-middleware'
+import { getClientIP } from '@/lib/security'
 
 /**
  * POST /api/data-management - Data management operations
  */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const { action, ...params } = body
+const dataManagementHandler = withApiSecurity(
+  withValidation(
+    async (request: NextRequest, validatedData: any) => {
+      const ip = getClientIP(request)
+      const { action, ...params } = validatedData.body || {}
 
-    logger.info('DataManagementAPI', `Received ${action} request`)
+      logger.info('DataManagementAPI', `Received ${action} request from IP: ${ip}`)
 
     switch (action) {
       case 'validate-business':
@@ -379,9 +383,45 @@ export async function POST(request: NextRequest) {
     await database.executeQuery('REINDEX TABLE campaigns')
     await database.executeQuery('REINDEX TABLE scraping_sessions')
 
-    logger.info('DataManagementAPI', 'Database optimization completed')
+      logger.info('DataManagementAPI', 'Database optimization completed')
+    }
+  },
+  {
+    body: [
+      { field: 'action', required: true, type: 'string' as const, allowedValues: [
+        'validate-business', 'validate-batch', 'quality-score', 'enrich-data',
+        'detect-duplicates', 'compare-records', 'execute-retention-policy',
+        'toggle-retention-policy', 'export-data', 'cleanup-database', 'optimize-database'
+      ]},
+      { field: 'business', type: 'object' as const },
+      { field: 'businesses', type: 'array' as const },
+      { field: 'businessData', type: 'object' as const },
+      { field: 'businessToEnrich', type: 'object' as const },
+      { field: 'records', type: 'array' as const },
+      { field: 'record1', type: 'object' as const },
+      { field: 'record2', type: 'object' as const },
+      { field: 'policyName', type: 'string' as const, maxLength: 100 },
+      { field: 'togglePolicyName', type: 'string' as const, maxLength: 100 },
+      { field: 'enabled', type: 'boolean' as const },
+      { field: 'exportBusinesses', type: 'array' as const },
+      { field: 'format', type: 'string' as const, allowedValues: ['csv', 'xlsx', 'xls', 'ods', 'pdf', 'json', 'xml', 'vcf', 'sql'] },
+      { field: 'filters', type: 'object' as const },
+      { field: 'sorting', type: 'object' as const },
+      { field: 'customFields', type: 'array' as const },
+      { field: 'dryRun', type: 'boolean' as const }
+    ]
   }
+),
+{
+  requireAuth: true, // Data management requires authentication
+  requireCSRF: true,
+  rateLimit: 'general',
+  validateInput: true,
+  logRequests: true
 }
+)
+
+export const POST = dataManagementHandler
 
 /**
  * GET /api/data-management - Get data management statistics

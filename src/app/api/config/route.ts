@@ -9,6 +9,8 @@ import { performConfigHealthCheck, validateConfiguration, generateConfigReport }
 import { getAllFeatureFlags } from '@/lib/feature-flags'
 import { getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
+import { withApiSecurity } from '@/lib/api-security'
+import { withAuth } from '@/lib/auth-middleware'
 
 /**
  * GET /api/config - Get configuration information
@@ -111,14 +113,15 @@ export async function GET(request: NextRequest) {
 /**
  * POST /api/config - Update configuration (admin only)
  */
-export async function POST(request: NextRequest) {
-  const ip = getClientIP(request)
+const configUpdateHandler = withAuth(
+  async (request: NextRequest, authContext) => {
+    const ip = getClientIP(request)
 
-  try {
-    const body = await request.json()
-    const { action, ...params } = body
+    try {
+      const body = await request.json()
+      const { action, ...params } = body
 
-    logger.info('Config API', `Configuration update request: ${action} from IP: ${ip}`)
+      logger.info('Config API', `Configuration update request: ${action} from IP: ${ip} (authenticated: ${authContext?.authenticated})`)
 
     switch (action) {
       case 'add-domain-to-blacklist':
@@ -132,14 +135,18 @@ export async function POST(request: NextRequest) {
         )
     }
 
-  } catch (error) {
-    logger.error('Config API', `Error processing update request from IP: ${ip}`, error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
-  }
-}
+    } catch (error) {
+      logger.error('Config API', `Error processing update request from IP: ${ip}`, error)
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      )
+    }
+  },
+  { required: true } // Require authentication for config updates
+)
+
+export const POST = configUpdateHandler
 
 /**
  * Handle adding a domain to an industry blacklist

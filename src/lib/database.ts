@@ -4,6 +4,111 @@
  */
 
 import { logger } from '@/utils/logger'
+import { BusinessRecord } from '@/types/business'
+
+// Campaign data interface
+export interface CampaignData {
+  id?: string
+  name: string
+  description?: string
+  industries: string[]
+  zipCode: string
+  searchRadius: number
+  searchDepth: number
+  pagesPerSite: number
+  status: 'active' | 'paused' | 'completed' | 'cancelled'
+  createdAt?: Date
+  updatedAt?: Date
+  settings?: Record<string, unknown>
+}
+
+// Scraping session data interface
+export interface SessionData {
+  id?: string
+  campaignId: string
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'
+  startedAt?: Date
+  completedAt?: Date
+  progress: {
+    totalBusinesses: number
+    processedBusinesses: number
+    validBusinesses: number
+    errors: number
+  }
+  settings: {
+    industries: string[]
+    zipCode: string
+    searchRadius: number
+    maxResults: number
+  }
+  results?: {
+    businesses: BusinessRecord[]
+    errors: string[]
+    warnings: string[]
+  }
+  metadata?: Record<string, unknown>
+}
+
+// Setting data interface
+export interface SettingData {
+  key: string
+  value: unknown
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array'
+  category?: string
+  description?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+// Database statistics interface
+export interface DatabaseStats {
+  campaigns: {
+    total: number
+    active: number
+    completed: number
+  }
+  businesses: {
+    total: number
+    validated: number
+    withEmails: number
+  }
+  sessions: {
+    total: number
+    running: number
+    completed: number
+    failed: number
+  }
+  storage: {
+    size: number
+    tables: Record<string, number>
+  }
+}
+
+// Filter interfaces
+export interface CampaignFilters {
+  status?: CampaignData['status']
+  industry?: string
+  zipCode?: string
+  createdAfter?: Date
+  createdBefore?: Date
+}
+
+export interface BusinessFilters {
+  industry?: string
+  zipCode?: string
+  hasEmail?: boolean
+  hasPhone?: boolean
+  validated?: boolean
+  createdAfter?: Date
+  createdBefore?: Date
+}
+
+export interface SessionFilters {
+  status?: SessionData['status']
+  campaignId?: string
+  startedAfter?: Date
+  startedBefore?: Date
+}
 
 // Database configuration interface
 export interface DatabaseConfig {
@@ -127,33 +232,33 @@ export interface ConnectionStatus {
 // Abstract database interface for consistent API
 export interface DatabaseInterface {
   // Campaign operations
-  createCampaign(campaign: any): Promise<string>
-  getCampaign(id: string): Promise<any | null>
-  updateCampaign(id: string, updates: any): Promise<void>
+  createCampaign(campaign: Omit<CampaignData, 'id' | 'createdAt' | 'updatedAt'>): Promise<string>
+  getCampaign(id: string): Promise<CampaignData | null>
+  updateCampaign(id: string, updates: Partial<CampaignData>): Promise<void>
   deleteCampaign(id: string): Promise<void>
-  listCampaigns(filters?: any): Promise<any[]>
+  listCampaigns(filters?: CampaignFilters): Promise<CampaignData[]>
 
   // Business operations
-  createBusiness(business: any): Promise<string>
-  getBusiness(id: string): Promise<any | null>
-  updateBusiness(id: string, updates: any): Promise<void>
+  createBusiness(business: Omit<BusinessRecord, 'id' | 'scrapedAt'>): Promise<string>
+  getBusiness(id: string): Promise<BusinessRecord | null>
+  updateBusiness(id: string, updates: Partial<BusinessRecord>): Promise<void>
   deleteBusiness(id: string): Promise<void>
-  listBusinesses(campaignId?: string, filters?: any): Promise<any[]>
+  listBusinesses(campaignId?: string, filters?: BusinessFilters): Promise<BusinessRecord[]>
 
   // Scraping session operations
-  createSession(session: any): Promise<string>
-  getSession(id: string): Promise<any | null>
-  updateSession(id: string, updates: any): Promise<void>
+  createSession(session: Omit<SessionData, 'id' | 'startedAt' | 'completedAt'>): Promise<string>
+  getSession(id: string): Promise<SessionData | null>
+  updateSession(id: string, updates: Partial<SessionData>): Promise<void>
   deleteSession(id: string): Promise<void>
-  listSessions(campaignId?: string, filters?: any): Promise<any[]>
+  listSessions(campaignId?: string, filters?: SessionFilters): Promise<SessionData[]>
 
   // Settings operations
-  getSetting(key: string): Promise<any | null>
-  setSetting(key: string, value: any, type?: string): Promise<void>
-  getSettings(category?: string): Promise<any[]>
+  getSetting(key: string): Promise<SettingData | null>
+  setSetting(key: string, value: unknown, type?: SettingData['type']): Promise<void>
+  getSettings(category?: string): Promise<SettingData[]>
 
   // Utility operations
-  getStats(): Promise<any>
+  getStats(): Promise<DatabaseStats>
   close(): Promise<void>
 }
 
