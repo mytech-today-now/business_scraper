@@ -3,12 +3,13 @@
  * Business Scraper Application - SQL Injection Prevention & Connection Security
  */
 
-import { Pool, PoolClient, QueryResult } from 'pg'
+import { Pool, QueryResult } from 'pg'
+import * as crypto from 'crypto'
 import { logger } from '@/utils/logger'
-import { 
-  DatabaseSecurityService, 
+import {
+  DatabaseSecurityService,
   databaseSecurityService,
-  defaultDatabaseSecurityConfig 
+  defaultDatabaseSecurityConfig
 } from './databaseSecurity'
 
 /**
@@ -221,7 +222,7 @@ export class SecureDatabase {
       await client.query('BEGIN')
       
       const transaction: DatabaseTransaction = {
-        query: async <U = any>(text: string, params?: any[], options?: SecureQueryOptions) => {
+        query: async (text: string, params?: any[], _options?: SecureQueryOptions) => {
           const validation = this.securityService.validateQuery(text, params)
           if (!validation.isValid) {
             throw new Error(`Transaction query validation failed: ${validation.errors.join(', ')}`)
@@ -335,7 +336,7 @@ export class SecureDatabase {
    * Generate unique query ID for caching and logging
    */
   private generateQueryId(text: string, params?: any[]): string {
-    const queryHash = require('crypto')
+    const queryHash = crypto
       .createHash('md5')
       .update(text + JSON.stringify(params || []))
       .digest('hex')

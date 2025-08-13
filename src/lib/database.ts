@@ -5,6 +5,7 @@
 
 import { logger } from '@/utils/logger'
 import { BusinessRecord } from '@/types/business'
+import { getDatabaseConfig as getCentralizedDbConfig } from './config'
 
 // Campaign data interface
 export interface CampaignData {
@@ -129,7 +130,6 @@ export interface DatabaseConfig {
 export function getDatabaseConfig(): DatabaseConfig {
   try {
     // Try to use centralized configuration
-    const { getDatabaseConfig: getCentralizedDbConfig } = require('./config')
     const dbConfig = getCentralizedDbConfig()
 
     if (dbConfig.url && dbConfig.type === 'postgresql') {

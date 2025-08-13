@@ -1,7 +1,9 @@
 'use strict'
 
-import fs from 'fs'
-import path from 'path'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as os from 'os'
+import { getLoggingConfig } from '@/lib/config'
 
 /**
  * Log levels enum
@@ -184,7 +186,7 @@ export class Logger {
       data,
       error,
       pid: process.pid,
-      hostname: typeof window === 'undefined' ? require('os').hostname() : 'browser',
+      hostname: typeof window === 'undefined' ? os.hostname() : 'browser',
     }
 
     // Console logging
@@ -564,7 +566,6 @@ export class Logger {
   loadConfigFromEnvironment(): void {
     try {
       // Try to load from config system
-      const { getLoggingConfig } = require('@/lib/config')
       const loggingConfig = getLoggingConfig()
 
       this.updateConfig({
