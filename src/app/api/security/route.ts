@@ -11,7 +11,7 @@ import { logger } from '@/utils/logger'
 /**
  * GET /api/security - Get security monitoring data
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
   
   try {
@@ -162,7 +162,7 @@ export async function GET(request: NextRequest) {
 /**
  * POST /api/security - Manual security operations
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
   
   try {

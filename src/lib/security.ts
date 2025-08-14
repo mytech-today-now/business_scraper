@@ -4,9 +4,10 @@
  */
 
 import crypto from 'crypto'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { logger } from '@/utils/logger'
 import { getCSPHeader } from './cspConfig'
+import { getSecurityConfig } from './config'
 
 // Security configuration
 export interface SecurityConfig {
@@ -37,7 +38,6 @@ export interface SecurityConfig {
 // Get security configuration from centralized config
 function getSecurityConfiguration(): SecurityConfig {
   try {
-    const { getSecurityConfig } = require('./config')
     const config = getSecurityConfig()
 
     return {
@@ -234,8 +234,7 @@ export function cleanupExpiredSessions(): void {
  */
 export function checkRateLimit(ip: string, limit: number = defaultSecurityConfig.rateLimitMax): boolean {
   const now = Date.now()
-  const windowStart = now - defaultSecurityConfig.rateLimitWindow
-  
+
   const record = rateLimitStore.get(ip)
   
   if (!record || record.resetTime <= now) {

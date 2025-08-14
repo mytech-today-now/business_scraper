@@ -184,7 +184,9 @@ class FeatureFlagManager {
       logger.error('FeatureFlags', `Error evaluating feature flag ${flagKey}`, error)
       
       // Return default value on error
-      const flag = FEATURE_FLAGS[flagKey]
+      const flag = Object.prototype.hasOwnProperty.call(FEATURE_FLAGS, flagKey)
+        ? FEATURE_FLAGS[flagKey as keyof typeof FEATURE_FLAGS]
+        : null
       return flag ? flag.defaultValue : false
     }
   }
@@ -193,7 +195,9 @@ class FeatureFlagManager {
    * Evaluate a feature flag
    */
   private evaluateFlag(flagKey: string, context?: Partial<FeatureContext>): boolean {
-    const flag = FEATURE_FLAGS[flagKey]
+    const flag = Object.prototype.hasOwnProperty.call(FEATURE_FLAGS, flagKey)
+      ? FEATURE_FLAGS[flagKey as keyof typeof FEATURE_FLAGS]
+      : null
     
     if (!flag) {
       logger.warn('FeatureFlags', `Unknown feature flag: ${flagKey}`)
@@ -258,7 +262,9 @@ class FeatureFlagManager {
       default:
         // For other flags, check environment variables
         const envVar = `FEATURE_${flagKey}`
-        const envValue = process.env[envVar]
+        const envValue = Object.prototype.hasOwnProperty.call(process.env, envVar)
+          ? (process.env as Record<string, string | undefined>)[envVar]
+          : undefined
         if (envValue !== undefined) {
           enabled = ['true', '1', 'yes', 'on'].includes(envValue.toLowerCase())
         }
@@ -313,9 +319,16 @@ class FeatureFlagManager {
     const result: Record<string, { enabled: boolean; flag: FeatureFlag }> = {}
     
     for (const [key, flag] of Object.entries(FEATURE_FLAGS)) {
-      result[key] = {
-        enabled: this.isEnabled(key, context),
-        flag
+      if (typeof key === 'string' && key.length > 0) {
+        Object.defineProperty(result, key, {
+          value: {
+            enabled: this.isEnabled(key, context),
+            flag
+          },
+          writable: true,
+          enumerable: true,
+          configurable: true
+        })
       }
     }
     
@@ -334,7 +347,14 @@ class FeatureFlagManager {
     const result: Record<string, boolean> = {}
     
     for (const key of Object.keys(FEATURE_FLAGS)) {
-      result[key] = this.isEnabled(key, context)
+      if (typeof key === 'string' && key.length > 0) {
+        Object.defineProperty(result, key, {
+          value: this.isEnabled(key, context),
+          writable: true,
+          enumerable: true,
+          configurable: true
+        })
+      }
     }
     
     return result
@@ -349,8 +369,12 @@ class FeatureFlagManager {
     for (const [key, flag] of Object.entries(FEATURE_FLAGS)) {
       if (flag.dependencies) {
         for (const dependency of flag.dependencies) {
-          if (!FEATURE_FLAGS[dependency]) {
-            errors.push(`Feature ${key} depends on unknown feature: ${dependency}`)
+          if (typeof dependency === 'string' && dependency.length > 0) {
+            if (!Object.prototype.hasOwnProperty.call(FEATURE_FLAGS, dependency)) {
+              errors.push(`Feature ${key} depends on unknown feature: ${dependency}`)
+            }
+          } else {
+            errors.push(`Feature ${key} has invalid dependency: ${dependency}`)
           }
         }
       }

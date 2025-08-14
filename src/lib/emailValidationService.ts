@@ -12,7 +12,7 @@ import dns from 'dns/promises';
 export class EmailValidationService {
   private static instance: EmailValidationService;
   private validationCache = new Map<string, EmailValidationResult>();
-  private disposableDomainsCache = new Set<string>();
+
   private mxRecordCache = new Map<string, boolean>();
 
   // Common disposable email domains
@@ -72,8 +72,8 @@ export class EmailValidationService {
     /^(orders|shipping|returns|customer|clients|partners|vendors|suppliers)@/i
   ];
 
-  // Enhanced email regex for better syntax validation
-  private readonly emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  // Enhanced email regex for better syntax validation - ReDoS safe version
+  private readonly emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?){0,10}$/;
 
   private constructor() {
     this.initializeDisposableDomains();

@@ -107,8 +107,8 @@ export class DuplicateDetectionSystem {
 
     for (let i = 0; i < records.length; i++) {
       for (let j = i + 1; j < records.length; j++) {
-        const recordA = records[i]
-        const recordB = records[j]
+        const recordA = records.at(i)
+        const recordB = records.at(j)
 
         if (!recordA || !recordB) continue
 
@@ -365,24 +365,40 @@ export class DuplicateDetectionSystem {
     const matrix: number[][] = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(0))
 
     for (let i = 0; i <= str1.length; i++) {
-      matrix[0]![i] = i
+      const row = matrix.at(0)
+      if (row && i < row.length) {
+        row[i] = i
+      }
     }
     for (let j = 0; j <= str2.length; j++) {
-      matrix[j]![0] = j
+      const row = matrix.at(j)
+      if (row && row.length > 0) {
+        row[0] = j
+      }
     }
 
     for (let j = 1; j <= str2.length; j++) {
       for (let i = 1; i <= str1.length; i++) {
         const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1
-        matrix[j]![i] = Math.min(
-          matrix[j]![i - 1]! + 1,
-          matrix[j - 1]![i]! + 1,
-          matrix[j - 1]![i - 1]! + indicator
-        )
+        const currentRow = matrix.at(j)
+        const prevRow = matrix.at(j - 1)
+
+        if (currentRow && prevRow &&
+            i < currentRow.length &&
+            (i - 1) < currentRow.length &&
+            i < prevRow.length &&
+            (i - 1) < prevRow.length) {
+          currentRow[i] = Math.min(
+            currentRow[i - 1] + 1,
+            prevRow[i] + 1,
+            prevRow[i - 1] + indicator
+          )
+        }
       }
     }
 
-    return matrix[str2.length]?.[str1.length] ?? 0
+    const finalRow = matrix.at(str2.length)
+    return (finalRow && str1.length < finalRow.length) ? finalRow[str1.length] : 0
   }
 
   /**
@@ -436,7 +452,7 @@ export class DuplicateDetectionSystem {
     const cleaned = str.toLowerCase().replace(/[^a-z]/g, '')
     if (!cleaned) return '0000'
 
-    const firstLetter = cleaned[0]!
+    const firstLetter = cleaned.charAt(0)
     const mapping: Record<string, string> = {
       'bfpv': '1', 'cgjkqsxz': '2', 'dt': '3',
       'l': '4', 'mn': '5', 'r': '6'
@@ -444,11 +460,13 @@ export class DuplicateDetectionSystem {
 
     let code = firstLetter
     for (let i = 1; i < cleaned.length && code.length < 4; i++) {
-      const char = cleaned[i]!
-      for (const [chars, digit] of Object.entries(mapping)) {
-        if (chars.includes(char) && code[code.length - 1] !== digit) {
-          code += digit
-          break
+      const char = cleaned.charAt(i)
+      if (char) {
+        for (const [chars, digit] of Object.entries(mapping)) {
+          if (chars.includes(char) && code.charAt(code.length - 1) !== digit) {
+            code += digit
+            break
+          }
         }
       }
     }
@@ -491,7 +509,7 @@ export class DuplicateDetectionSystem {
   /**
    * Get matched fields between two records
    */
-  private getMatchedFields(record1: BusinessRecord, record2: BusinessRecord, similarity: SimilarityScores): string[] {
+  private getMatchedFields(_record1: BusinessRecord, _record2: BusinessRecord, similarity: SimilarityScores): string[] {
     const matched: string[] = []
     
     if (similarity.businessName > 0.8) matched.push('businessName')
@@ -578,12 +596,25 @@ export class DuplicateDetectionSystem {
     records.forEach(record => {
       record.email?.forEach(email => allEmails.add(email.toLowerCase()))
     })
-    fieldsToMerge.email = Array.from(allEmails)
+    Object.defineProperty(fieldsToMerge, 'email', {
+      value: Array.from(allEmails),
+      writable: true,
+      enumerable: true,
+      configurable: true
+    })
 
     // Check for conflicts in other fields
-    const fields = ['businessName', 'phone', 'website', 'industry']
+    const fields = ['businessName', 'phone', 'website', 'industry'] as const
     fields.forEach(field => {
-      const values = new Set(records.map(r => (r as any)[field]).filter(Boolean))
+      const values = new Set(records.map(r => {
+        switch (field) {
+          case 'businessName': return r.businessName
+          case 'phone': return r.phone
+          case 'website': return r.websiteUrl
+          case 'industry': return r.industry
+          default: return undefined
+        }
+      }).filter(Boolean))
       if (values.size > 1) {
         conflictingFields.push(field)
       }

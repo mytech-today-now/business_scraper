@@ -446,7 +446,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     try {
       const savedConfig = await storage.getConfig('default')
       if (savedConfig) {
-        const { id, ...config } = savedConfig
+        const { id: _id, ...config } = savedConfig
         dispatch({ type: 'SET_CONFIG', payload: config })
         dispatch({ type: 'SET_SELECTED_INDUSTRIES', payload: config.industries })
       }

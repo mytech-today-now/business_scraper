@@ -23,7 +23,7 @@ export const renderWithProvider = (component: React.ReactElement): RenderResult 
  * Suppress React act() warnings for specific test scenarios
  * Use sparingly and only when act() warnings are expected/unavoidable
  */
-export const suppressActWarnings = () => {
+export const suppressActWarnings = (): void => {
   const originalError = console.error
   beforeAll(() => {
     console.error = (...args: any[]) => {
@@ -46,7 +46,7 @@ export const suppressActWarnings = () => {
 /**
  * Enhanced user event setup with proper act() handling
  */
-export const setupUserEvent = () => {
+export const setupUserEvent = (): ReturnType<typeof userEvent.setup> => {
   return userEvent.setup()
 }
 
@@ -239,7 +239,7 @@ export const getByDisplayValue = (value: string | RegExp): HTMLElement => {
 /**
  * Debug helper to log current DOM state
  */
-export const debugDOM = (message?: string) => {
+export const debugDOM = (message?: string): void => {
   if (message) {
     console.log(`\n=== DEBUG: ${message} ===`)
   }
@@ -265,7 +265,7 @@ export const debugDOM = (message?: string) => {
 /**
  * Mock common dependencies for tests
  */
-export const mockDependencies = () => {
+export const mockDependencies = (): void => {
   // Mock storage
   jest.mock('@/model/storage', () => ({
     storage: {

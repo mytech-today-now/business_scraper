@@ -31,10 +31,29 @@ const uploadHandler = withApiSecurity(
 
       try {
         const results = []
-        const uploadDir = process.env.UPLOAD_DIR || './uploads'
+        // Validate and sanitize upload directory path
+        const baseUploadDir = process.env.UPLOAD_DIR || './uploads'
+        const uploadDir = path.resolve(baseUploadDir)
 
-        // Ensure upload directory exists
+        // Security check: ensure upload directory is within allowed paths
+        const allowedBasePaths = [
+          path.resolve('./uploads'),
+          path.resolve('./temp'),
+          path.resolve(process.cwd(), 'uploads')
+        ]
+
+        const isAllowedPath = allowedBasePaths.some(basePath =>
+          uploadDir.startsWith(basePath)
+        )
+
+        if (!isAllowedPath) {
+          throw new Error('Upload directory path not allowed')
+        }
+
+        // Ensure upload directory exists - using validated path
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         if (saveFiles && !fs.existsSync(uploadDir)) {
+          // eslint-disable-next-line security/detect-non-literal-fs-filename
           fs.mkdirSync(uploadDir, { recursive: true })
         }
 
@@ -61,9 +80,15 @@ const uploadHandler = withApiSecurity(
           // Save file if requested
           if (saveFiles) {
             const secureFilename = generateSecureFilename(file.originalName)
-            const filePath = path.join(uploadDir, secureFilename)
-            
+            const filePath = path.resolve(path.join(uploadDir, secureFilename))
+
+            // Security check: ensure file path is within upload directory
+            if (!filePath.startsWith(uploadDir)) {
+              throw new Error('File path outside upload directory not allowed')
+            }
+
             try {
+              // eslint-disable-next-line security/detect-non-literal-fs-filename
               await fs.promises.writeFile(filePath, file.buffer)
               result.savedAs = secureFilename
               result.savedPath = filePath
@@ -160,7 +185,9 @@ function getUploadConfig(url: URL) {
     }
   }
 
-  return configs[uploadType] || configs.documents
+  return Object.prototype.hasOwnProperty.call(configs, uploadType)
+    ? configs[uploadType as keyof typeof configs]
+    : configs.documents
 }
 
 /**
@@ -280,7 +307,7 @@ export const POST = uploadHandler
 /**
  * GET /api/upload - Get upload configuration and status
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const url = new URL(request.url)
     const type = url.searchParams.get('type') || 'documents'

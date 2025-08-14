@@ -13,7 +13,7 @@ import { validationService } from '@/utils/validation'
 /**
  * POST /api/enhanced-scrape - Enhanced scraping operations
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json()
     const { action, ...params } = body
@@ -266,7 +266,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/enhanced-scrape - Get enhanced scraping statistics
  */
-export async function GET(_request: NextRequest) {
+export async function GET(_request: NextRequest): Promise<NextResponse> {
   try {
     const stats = enhancedScrapingEngine.getStats()
     

@@ -3,7 +3,6 @@
  */
 
 import { AppConfig, getConfig } from './config'
-import { logger } from '@/utils/logger'
 
 export interface ValidationResult {
   isValid: boolean
@@ -334,7 +333,6 @@ export async function performConfigHealthCheck(): Promise<ConfigHealthCheck> {
 
   // Environment variables check
   try {
-    const config = getConfig()
     const requiredEnvVars = ['NODE_ENV']
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName])
     

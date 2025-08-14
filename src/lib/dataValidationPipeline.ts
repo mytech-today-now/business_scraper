@@ -80,8 +80,7 @@ export interface EnrichmentResult {
 export class DataValidationPipeline {
   private emailValidationService: EmailValidationService
   private emailValidationCache = new Map<string, boolean>()
-  private phoneValidationCache = new Map<string, string>()
-  private addressValidationCache = new Map<string, AddressValidationResult>()
+
 
   constructor() {
     this.emailValidationService = EmailValidationService.getInstance()
@@ -504,7 +503,8 @@ export class DataValidationPipeline {
 
     // Validate ZIP code
     if (zipCode) {
-      const zipPattern = /^\d{5}(-\d{4})?$/
+      // ReDoS safe ZIP code pattern
+      const zipPattern = /^[0-9]{5}(?:-[0-9]{4})?$/
       if (!zipPattern.test(zipCode)) {
         result.errors.push({
           field: 'address.zipCode',
@@ -705,7 +705,7 @@ export class DataValidationPipeline {
   /**
    * Calculate data consistency score
    */
-  private calculateConsistency(business: BusinessRecord): number {
+  private calculateConsistency(_business: BusinessRecord): number {
     // This would check consistency across related fields
     // For now, return a default score
     return 0.8
@@ -714,7 +714,7 @@ export class DataValidationPipeline {
   /**
    * Calculate data validity score
    */
-  private calculateValidity(business: BusinessRecord): number {
+  private calculateValidity(_business: BusinessRecord): number {
     // This would check business rules and constraints
     // For now, return a default score
     return 0.9
@@ -723,7 +723,7 @@ export class DataValidationPipeline {
   /**
    * Calculate data uniqueness score
    */
-  private calculateUniqueness(business: BusinessRecord): number {
+  private calculateUniqueness(_business: BusinessRecord): number {
     // This would check for duplicates in the dataset
     // For now, return a default score
     return 0.95

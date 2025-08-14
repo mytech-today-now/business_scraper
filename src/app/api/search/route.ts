@@ -22,32 +22,32 @@ const searchHandler = withApiSecurity(
 
     // Handle DuckDuckGo SERP scraping requests
     if (provider === 'duckduckgo-serp') {
-      const { page = 0 } = body
+      const { page = 0 } = validatedData.body || {}
       return await handleDuckDuckGoSERP(query, page, maxResults)
     }
 
     // Handle BBB business discovery requests
     if (provider === 'bbb-discovery') {
-      const { location, accreditedOnly = false, zipRadius = 10 } = body
-      return await handleBBBBusinessDiscovery(query, location, accreditedOnly, zipRadius, maxResults)
+      const { location: bbbLocation, accreditedOnly = false, zipRadius = 10 } = validatedData.body || {}
+      return await handleBBBBusinessDiscovery(query, bbbLocation || location, accreditedOnly, zipRadius, maxResults)
     }
 
     // Handle Yelp business discovery requests
     if (provider === 'yelp-discovery') {
-      const { location, zipRadius = 25, maxPagesPerSite = 20 } = body
-      return await handleYelpBusinessDiscovery(query, location, zipRadius, maxResults, maxPagesPerSite)
+      const { location: yelpLocation, zipRadius = 25, maxPagesPerSite = 20 } = validatedData.body || {}
+      return await handleYelpBusinessDiscovery(query, yelpLocation || location, zipRadius, maxResults, maxPagesPerSite)
     }
 
     // Handle Chamber of Commerce processing requests
     if (provider === 'chamber-of-commerce') {
-      const { url, maxPagesPerSite = 20 } = body
+      const { url, maxPagesPerSite = 20 } = validatedData.body || {}
       return await handleChamberOfCommerceProcessing(url, maxResults, maxPagesPerSite)
     }
 
     // Handle comprehensive search using search orchestrator
     if (provider === 'comprehensive') {
-      const { location, zipRadius = 25, accreditedOnly = false } = body
-      return await handleComprehensiveSearch(query, location, zipRadius, accreditedOnly, maxResults)
+      const { location: compLocation, zipRadius = 25, accreditedOnly = false } = validatedData.body || {}
+      return await handleComprehensiveSearch(query, compLocation || location, zipRadius, accreditedOnly, maxResults)
     }
 
     // Validate required fields for regular search
@@ -126,28 +126,28 @@ const searchHandler = withApiSecurity(
     )
   }
 },
-    {
-      body: [
-        { field: 'provider', type: 'string' as const, allowedValues: ['duckduckgo-serp', 'bbb-discovery', 'yelp-discovery', 'chamber-of-commerce', 'comprehensive'] },
-        { field: 'query', required: true, type: 'string' as const, minLength: 1, maxLength: 500 },
-        { field: 'location', type: 'string' as const, maxLength: 200 },
-        { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
-        { field: 'industry', type: 'string' as const, maxLength: 100 },
-        { field: 'enableOptimization', type: 'boolean' as const },
-        { field: 'page', type: 'number' as const, min: 0, max: 100 },
-        { field: 'accreditedOnly', type: 'boolean' as const },
-        { field: 'zipRadius', type: 'number' as const, min: 1, max: 100 },
-        { field: 'maxPagesPerSite', type: 'number' as const, min: 1, max: 50 },
-        { field: 'url', type: 'url' as const }
-      ]
-    }
-  ),
-  {
-    requireAuth: false, // Allow public access for now, but with rate limiting
-    rateLimit: 'scraping',
-    validateInput: true,
-    logRequests: true
-  }
+{
+  body: [
+    { field: 'provider', type: 'string' as const, allowedValues: ['duckduckgo-serp', 'bbb-discovery', 'yelp-discovery', 'chamber-of-commerce', 'comprehensive'] },
+    { field: 'query', required: true, type: 'string' as const, minLength: 1, maxLength: 500 },
+    { field: 'location', type: 'string' as const, maxLength: 200 },
+    { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
+    { field: 'industry', type: 'string' as const, maxLength: 100 },
+    { field: 'enableOptimization', type: 'boolean' as const },
+    { field: 'page', type: 'number' as const, min: 0, max: 100 },
+    { field: 'accreditedOnly', type: 'boolean' as const },
+    { field: 'zipRadius', type: 'number' as const, min: 1, max: 100 },
+    { field: 'maxPagesPerSite', type: 'number' as const, min: 1, max: 50 },
+    { field: 'url', type: 'url' as const }
+  ]
+}
+),
+{
+  requireAuth: false, // Allow public access for now, but with rate limiting
+  rateLimit: 'scraping',
+  validateInput: true,
+  logRequests: true
+}
 )
 
 export const POST = searchHandler
@@ -155,7 +155,7 @@ export const POST = searchHandler
 /**
  * Get search suggestions
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('q') || ''

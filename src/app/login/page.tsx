@@ -64,7 +64,7 @@ export default function LoginPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
 
     if (retryAfter > 0) {

@@ -5,7 +5,7 @@
 
 import puppeteer, { Browser, Page } from 'puppeteer'
 import { logger } from '@/utils/logger'
-import { getConfig } from '@/lib/config'
+
 
 export interface BrowserPoolConfig {
   maxBrowsers: number
@@ -47,8 +47,6 @@ export class BrowserPool {
   private healthCheckInterval?: NodeJS.Timeout
 
   constructor(config?: Partial<BrowserPoolConfig>) {
-    const appConfig = getConfig()
-    
     this.config = {
       maxBrowsers: 3,
       maxPagesPerBrowser: 5,

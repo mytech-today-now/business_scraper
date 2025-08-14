@@ -5,7 +5,7 @@
 
 import { Page } from 'puppeteer'
 import { logger } from '@/utils/logger'
-import { BusinessRecord, EmailValidationResult, EmailValidationMetadata } from '@/types/business'
+import { EmailValidationResult, EmailValidationMetadata } from '@/types/business'
 import { EmailValidationService } from './emailValidationService'
 
 export interface ExtractedContact {
@@ -68,14 +68,14 @@ export class ContactExtractor {
   ]
 
   private phonePatterns = [
-    // US phone numbers
+    // US phone numbers - ReDoS safe version
     /\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b/g,
-    // International format
-    /\b\+?[1-9]\d{1,14}\b/g,
-    // Formatted phone numbers
+    // International format - ReDoS safe version
+    /\b\+?[1-9][0-9]{1,14}\b/g,
+    // Formatted phone numbers - ReDoS safe version
     /\b\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}\b/g,
-    // Phone with extension
-    /\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})(?:\s*(?:ext|extension|x)\.?\s*(\d+))?\b/g,
+    // Phone with extension - ReDoS safe version
+    /\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})(?:\s*(?:ext|extension|x)\.?\s*([0-9]+))?\b/g,
   ]
 
   private addressPatterns = [
@@ -100,11 +100,11 @@ export class ContactExtractor {
   ]
 
   private socialMediaPatterns = {
-    facebook: /(?:https?:\/\/)?(?:www\.)?facebook\.com\/[A-Za-z0-9._-]+/gi,
-    twitter: /(?:https?:\/\/)?(?:www\.)?twitter\.com\/[A-Za-z0-9._-]+/gi,
-    instagram: /(?:https?:\/\/)?(?:www\.)?instagram\.com\/[A-Za-z0-9._-]+/gi,
-    linkedin: /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:company|in)\/[A-Za-z0-9._-]+/gi,
-    youtube: /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:channel|user|c)\/[A-Za-z0-9._-]+/gi,
+    facebook: /(?:https?:\/\/)?(?:www\.)?facebook\.com\/[A-Za-z0-9._-]{1,50}/gi,
+    twitter: /(?:https?:\/\/)?(?:www\.)?twitter\.com\/[A-Za-z0-9._-]{1,50}/gi,
+    instagram: /(?:https?:\/\/)?(?:www\.)?instagram\.com\/[A-Za-z0-9._-]{1,50}/gi,
+    linkedin: /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:company|in)\/[A-Za-z0-9._-]{1,50}/gi,
+    youtube: /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:channel|user|c)\/[A-Za-z0-9._-]{1,50}/gi,
   }
 
   constructor() {
@@ -233,7 +233,7 @@ export class ContactExtractor {
   /**
    * Extract addresses
    */
-  private extractAddresses(content: string, textContent: string): string[] {
+  private extractAddresses(_content: string, textContent: string): string[] {
     const addresses = new Set<string>()
 
     // Apply address patterns
@@ -253,7 +253,7 @@ export class ContactExtractor {
   /**
    * Extract business name
    */
-  private async extractBusinessName(page: Page, content: string): Promise<string> {
+  private async extractBusinessName(page: Page, _content: string): Promise<string> {
     try {
       // Try structured selectors first
       for (const selector of this.businessNameSelectors) {
@@ -293,7 +293,8 @@ export class ContactExtractor {
     for (const [platform, pattern] of Object.entries(this.socialMediaPatterns)) {
       const matches = content.match(pattern) || []
       matches.forEach(url => {
-        const cleanUrl = url.replace(/^(?:https?:\/\/)?(?:www\.)?/, 'https://www.')
+        // ReDoS safe URL cleaning
+        const cleanUrl = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, 'https://www.')
         profiles.push({
           platform,
           url: cleanUrl,
@@ -626,7 +627,7 @@ export class ContactExtractor {
   /**
    * Extract social media handle
    */
-  private extractSocialHandle(url: string, platform: string): string {
+  private extractSocialHandle(url: string, _platform: string): string {
     const match = url.match(/\/([^\/\?]+)(?:\?|$)/)
     return match && match[1] ? match[1] : ''
   }

@@ -3,7 +3,7 @@
  * High-performance, concurrent scraping with anti-bot detection bypass
  */
 
-import { browserPool, BrowserPool, PageInstance } from './browserPool'
+import { browserPool, PageInstance } from './browserPool'
 import { contactExtractor, ExtractedContact } from './contactExtractor'
 import { antiBotBypass } from './antiBotBypass'
 import { logger } from '@/utils/logger'
@@ -135,7 +135,7 @@ export class EnhancedScrapingEngine {
     // Remove from queue
     const queueIndex = this.jobQueue.findIndex(job => job.id === jobId)
     if (queueIndex !== -1) {
-      const job = this.jobQueue[queueIndex]
+      const job = this.jobQueue.at(queueIndex)
       if (job) {
         job.status = 'cancelled'
       }
@@ -557,10 +557,10 @@ export class EnhancedScrapingEngine {
     const addressPatterns = {
       // Street address with optional suite/unit
       street: /^([^,]+(?:suite|ste|unit|apt|#)\s*[^,]*)/i,
-      // City, State ZIP pattern
-      cityStateZip: /([^,]+),\s*([A-Z]{2})\s*(\d{5}(?:-\d{4})?)/i,
-      // ZIP code pattern
-      zipCode: /\b(\d{5}(?:-\d{4})?)\b/,
+      // City, State ZIP pattern - ReDoS safe version
+      cityStateZip: /([^,]{1,50}),\s*([A-Z]{2})\s*([0-9]{5}(?:-[0-9]{4})?)/i,
+      // ZIP code pattern - ReDoS safe version
+      zipCode: /\b([0-9]{5}(?:-[0-9]{4})?)\b/,
       // State abbreviation
       state: /\b([A-Z]{2})\b/
     }
@@ -620,8 +620,8 @@ export class EnhancedScrapingEngine {
     // If city not found, try second line (for multiline addresses)
     if (!city && lines.length > 1 && lines[1]) {
       const secondLine = lines[1].trim()
-      // Try to parse city, state, zip from the second line
-      const cityStateZipMatch2 = secondLine.match(/^([^,]+),?\s*([A-Z]{2})\s*(\d{5}(?:-\d{4})?)?/)
+      // Try to parse city, state, zip from the second line - ReDoS safe version
+      const cityStateZipMatch2 = secondLine.match(/^([^,]{1,50}),?\s*([A-Z]{2})\s*([0-9]{5}(?:-[0-9]{4})?)?/)
       if (cityStateZipMatch2 && cityStateZipMatch2[1]) {
         city = cityStateZipMatch2[1].trim()
         if (!state && cityStateZipMatch2[2]) {
@@ -745,13 +745,7 @@ export class EnhancedScrapingEngine {
     return phone
   }
 
-  /**
-   * Format address string into structured format (legacy method)
-   */
-  private formatAddress(addressString?: string): BusinessRecord['address'] {
-    // Use the enhanced parsing method
-    return this.parseAndFormatAddress(addressString)
-  }
+
 }
 
 /**

@@ -1,20 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Globe, 
-  Search, 
-  Database, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+import {
+  Search,
+  Database,
+  CheckCircle,
+  XCircle,
+  Clock,
   AlertTriangle,
   Eye,
   EyeOff,
   Zap,
   Activity,
-  Wifi,
-  WifiOff
+  Wifi
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
@@ -82,7 +80,7 @@ export function ProcessingWindow({
   onClear,
   progress,
   currentUrl
-}: ProcessingWindowProps) {
+}: ProcessingWindowProps): JSX.Element {
   const [autoScroll, setAutoScroll] = useState(true)
   const [consoleLogs, setConsoleLogs] = useState<Array<{
     timestamp: Date

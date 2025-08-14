@@ -3,6 +3,7 @@
  * Provides compatibility with the existing storage system
  */
 
+import crypto from 'crypto'
 import { DatabaseInterface } from './database'
 import { storage } from '@/model/storage'
 import { BusinessRecord, ScrapingConfig } from '@/types/business'
@@ -143,7 +144,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
     logger.info('IndexedDB', `Deleted campaign: ${id}`)
   }
 
-  async listCampaigns(filters?: any): Promise<any[]> {
+  async listCampaigns(_filters?: any): Promise<any[]> {
     await this.ensureInitialized()
     
     try {
@@ -229,7 +230,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
     logger.info('IndexedDB', `Deleted business: ${id}`)
   }
 
-  async listBusinesses(campaignId?: string, filters?: any): Promise<any[]> {
+  async listBusinesses(_campaignId?: string, _filters?: any): Promise<any[]> {
     await this.ensureInitialized()
     
     const businesses = await storage.getAllBusinesses()
@@ -297,7 +298,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
     logger.info('IndexedDB', `Deleted session: ${id}`)
   }
 
-  async listSessions(campaignId?: string, filters?: any): Promise<any[]> {
+  async listSessions(_campaignId?: string, _filters?: any): Promise<any[]> {
     await this.ensureInitialized()
     
     const sessions = await storage.getAllSessions()

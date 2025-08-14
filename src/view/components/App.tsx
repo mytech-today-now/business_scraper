@@ -1,14 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { 
-  Play, 
-  Square, 
-  Settings, 
-  Moon, 
-  Sun, 
+import {
+  Play,
+  Square,
+  Settings,
+  Moon,
+  Sun,
   FileText,
-  Download,
   Trash2,
   RefreshCw
 } from 'lucide-react'
@@ -29,7 +28,7 @@ import { clientScraperService } from '@/model/clientScraperService'
 /**
  * Configuration panel component
  */
-function ConfigurationPanel() {
+function ConfigurationPanel(): JSX.Element {
   const { state, updateConfig, toggleDarkMode, toggleDemoMode, isConfigValid } = useConfig()
 
   return (
@@ -137,7 +136,7 @@ function ConfigurationPanel() {
 /**
  * Scraping control panel component
  */
-function ScrapingPanel() {
+function ScrapingPanel(): JSX.Element {
   const { state: configState } = useConfig()
   const {
     scrapingState,
@@ -160,7 +159,7 @@ function ScrapingPanel() {
   /**
    * Handle export functionality
    */
-  const handleExport = async (format: string) => {
+  const handleExport = async (format: string): Promise<void> => {
     if (!scrapingState.results.length) {
       logger.warn('Export', 'No data to export')
       return
@@ -359,7 +358,7 @@ function ScrapingPanel() {
  * Main App component
  * Orchestrates the entire application interface
  */
-export function App() {
+export function App(): JSX.Element {
   const { state, toggleDemoMode } = useConfig()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)

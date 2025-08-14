@@ -54,7 +54,7 @@ export function ApiConfigurationPage({
   onCredentialsUpdated,
   isDemoMode = false,
   onToggleDemoMode
-}: ApiConfigurationPageProps) {
+}: ApiConfigurationPageProps): JSX.Element {
   const [credentials, setCredentials] = useState<ApiCredentials>({})
   const [showPasswords, setShowPasswords] = useState<{ [key: string]: boolean }>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -91,7 +91,7 @@ export function ApiConfigurationPage({
     }
   }
 
-  const handleInputChange = (field: keyof ApiCredentials, value: string) => {
+  const handleInputChange = (field: keyof ApiCredentials, value: string): void => {
     setCredentials(prev => ({
       ...prev,
       [field]: value.trim()
@@ -107,7 +107,7 @@ export function ApiConfigurationPage({
     }))
   }
 
-  const handleBlacklistChange = (value: string) => {
+  const handleBlacklistChange = (value: string): void => {
     setBlacklistText(value)
     // Parse domains from text and update credentials
     const domains = value
@@ -196,7 +196,7 @@ export function ApiConfigurationPage({
     event.target.value = ''
   }
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     setIsLoading(true)
     setValidationErrors([])
     setSuccessMessage('')
@@ -227,7 +227,7 @@ export function ApiConfigurationPage({
     }
   }
 
-  const handleTest = async () => {
+  const handleTest = async (): Promise<void> => {
     setIsTesting(true)
     setTestResults({})
 
@@ -251,7 +251,7 @@ export function ApiConfigurationPage({
     }
   }
 
-  const handleClear = async () => {
+  const handleClear = async (): Promise<void> => {
     if (confirm('Are you sure you want to clear all stored API credentials? This action cannot be undone.')) {
       clearApiCredentials()
       setCredentials({})
@@ -264,7 +264,7 @@ export function ApiConfigurationPage({
     }
   }
 
-  const handleExport = async () => {
+  const handleExport = async (): Promise<void> => {
     try {
       const exportData = await exportCredentials()
       if (exportData) {
@@ -282,7 +282,7 @@ export function ApiConfigurationPage({
     }
   }
 
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()

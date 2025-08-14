@@ -3,15 +3,16 @@
  * Server-side database operations using pg library
  */
 
+import crypto from 'crypto'
 import { Pool, PoolClient } from 'pg'
 import { DatabaseInterface, DatabaseConfig } from './database'
 import { logger } from '@/utils/logger'
 import { SecureDatabase } from './secureDatabase'
-import { databaseSecurityService } from './databaseSecurity'
+
 
 export class PostgreSQLDatabase implements DatabaseInterface {
   private secureDb: SecureDatabase
-  private connected = false
+
 
   constructor(config: DatabaseConfig) {
     // Create secure database connection with hardened configuration

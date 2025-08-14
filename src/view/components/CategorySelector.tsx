@@ -16,7 +16,7 @@ import toast from 'react-hot-toast'
  * CategorySelector component for managing industry categories
  * Allows users to select, add, and remove industry categories
  */
-export function CategorySelector() {
+export function CategorySelector(): JSX.Element {
   const {
     state,
     toggleIndustry,
@@ -29,7 +29,6 @@ export function CategorySelector() {
     refreshDefaultIndustries,
     startIndustryEdit,
     endIndustryEdit,
-    clearAllEdits,
   } = useConfig()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -43,7 +42,7 @@ export function CategorySelector() {
   /**
    * Handle opening modal for adding new industry
    */
-  const handleAddIndustry = () => {
+  const handleAddIndustry = (): void => {
     setEditingIndustry(undefined)
     setIsModalOpen(true)
   }
@@ -51,7 +50,7 @@ export function CategorySelector() {
   /**
    * Handle closing modal
    */
-  const handleCloseModal = () => {
+  const handleCloseModal = (): void => {
     setIsModalOpen(false)
     setEditingIndustry(undefined)
   }
@@ -59,7 +58,7 @@ export function CategorySelector() {
   /**
    * Handle starting inline editing of keywords
    */
-  const handleStartInlineEdit = (industry: IndustryCategory, e: React.MouseEvent) => {
+  const handleStartInlineEdit = (industry: IndustryCategory, e: React.MouseEvent): void => {
     e.stopPropagation()
     setInlineEditingId(industry.id)
     setEditingKeywords(industry.keywords.join('\n'))
@@ -78,7 +77,7 @@ export function CategorySelector() {
   /**
    * Handle saving inline edited keywords
    */
-  const handleSaveInlineEdit = async (industry: IndustryCategory) => {
+  const handleSaveInlineEdit = async (industry: IndustryCategory): Promise<void> => {
     const newKeywords = editingKeywords
       .split('\n')
       .map(k => k.trim())
@@ -106,7 +105,7 @@ export function CategorySelector() {
   /**
    * Handle canceling inline edit
    */
-  const handleCancelInlineEdit = () => {
+  const handleCancelInlineEdit = (): void => {
     setInlineEditingId(null)
     setEditingKeywords('')
   }
@@ -114,7 +113,7 @@ export function CategorySelector() {
   /**
    * Handle starting expanded edit mode
    */
-  const handleStartExpandedEdit = (industryId: string) => {
+  const handleStartExpandedEdit = (industryId: string): void => {
     // Close any other editing modes
     setInlineEditingId(null)
     setEditingKeywords('')
@@ -126,7 +125,7 @@ export function CategorySelector() {
   /**
    * Handle canceling expanded edit mode
    */
-  const handleCancelExpandedEdit = () => {
+  const handleCancelExpandedEdit = (): void => {
     if (expandedEditingId) {
       endIndustryEdit(expandedEditingId)
     }
@@ -136,7 +135,7 @@ export function CategorySelector() {
   /**
    * Handle updating industry from expanded editor
    */
-  const handleUpdateFromExpandedEdit = async (industry: IndustryCategory) => {
+  const handleUpdateFromExpandedEdit = async (industry: IndustryCategory): Promise<void> => {
     await updateIndustry(industry, true)
     endIndustryEdit(industry.id)
     setExpandedEditingId(null)
@@ -145,7 +144,7 @@ export function CategorySelector() {
   /**
    * Handle textarea content change with auto-resize
    */
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setEditingKeywords(e.target.value)
 
     // Auto-resize textarea
@@ -157,7 +156,7 @@ export function CategorySelector() {
   /**
    * Export all industries to JSON file (including pre-populated ones with their current settings)
    */
-  const handleExportIndustries = () => {
+  const handleExportIndustries = (): void => {
     try {
       // Export ALL industries with their current settings
       const allIndustries = state.industries
@@ -205,14 +204,14 @@ export function CategorySelector() {
   /**
    * Import industries from JSON file (overwrites all current settings)
    */
-  const handleImportIndustries = () => {
+  const handleImportIndustries = (): void => {
     fileInputRef.current?.click()
   }
 
   /**
    * Process imported file
    */
-  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const file = event.target.files?.[0]
     if (!file) return
 

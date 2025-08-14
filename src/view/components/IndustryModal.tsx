@@ -14,7 +14,7 @@ interface IndustryModalProps {
   industry?: IndustryCategory // If provided, we're editing; if not, we're adding
 }
 
-export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps) {
+export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps): JSX.Element {
   const { addCustomIndustry, updateIndustry } = useConfig()
   const [name, setName] = useState('')
   const [keywordsText, setKeywordsText] = useState('')
@@ -49,7 +49,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
     return () => clearTimeout(timeoutId)
   }, [name, keywordsText, isOpen, isEditing])
 
-  const handleAutoSave = async () => {
+  const handleAutoSave = async (): Promise<void> => {
     if (!isEditing || !industry || !name.trim()) return
 
     const keywords = keywordsText
@@ -76,7 +76,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
     }
   }
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     if (!name.trim()) {
       toast.error('Industry name is required')
       return
@@ -118,14 +118,14 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
     }
   }
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setName('')
     setKeywordsText('')
     setIsSaving(false)
     onClose()
   }
 
-  const handleKeywordsChange = (value: string) => {
+  const handleKeywordsChange = (value: string): void => {
     setKeywordsText(value)
     
     // Auto-resize textarea

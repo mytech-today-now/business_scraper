@@ -226,7 +226,7 @@ export class BBBScrapingService {
       }
 
       for (let i = 0; i < Math.min(businessLinks.length, maxResults); i++) {
-        const link = businessLinks[i]
+        const link = businessLinks.at(i)
 
         if (!link) {
           continue

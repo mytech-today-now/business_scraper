@@ -53,20 +53,44 @@ export function SettingsPanel() {
     { id: 'advanced', label: 'Advanced', icon: Zap },
   ]
 
-  const handlePreferenceChange = (path: string, value: any) => {
+  const handlePreferenceChange = (path: string, value: any): void => {
     const keys = path.split('.')
     const newPreferences = { ...localPreferences }
 
-    let current = newPreferences as any
+    // Safe nested object property assignment
+    let current: any = newPreferences
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i]
-      if (key && current[key]) {
-        current = current[key]
+      if (key && typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+        if (current && typeof current === 'object' && Object.prototype.hasOwnProperty.call(current, key)) {
+          current = (current as Record<string, any>)[key]
+        } else {
+          // Create nested object if it doesn't exist
+          Object.defineProperty(current, key, {
+            value: {},
+            writable: true,
+            enumerable: true,
+            configurable: true
+          })
+          current = (current as Record<string, any>)[key]
+        }
+      } else {
+        console.warn('Invalid preference key:', key)
+        return
       }
     }
+
     const lastKey = keys[keys.length - 1]
-    if (lastKey) {
-      current[lastKey] = value
+    if (lastKey && typeof lastKey === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(lastKey)) {
+      Object.defineProperty(current, lastKey, {
+        value,
+        writable: true,
+        enumerable: true,
+        configurable: true
+      })
+    } else {
+      console.warn('Invalid preference key:', lastKey)
+      return
     }
 
     setLocalPreferences(newPreferences)

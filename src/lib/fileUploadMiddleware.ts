@@ -36,7 +36,7 @@ export function withFileUploadSecurity(
 ) {
   return async (request: NextRequest): Promise<NextResponse> => {
     const {
-      requireAuth = true,
+      requireAuth: _requireAuth = true, // TODO: Implement authentication check
       maxFiles = 10,
       rateLimit = true,
       rateLimitKey = 'upload',
@@ -108,7 +108,7 @@ export function withFileUploadSecurity(
 
       // Process each file
       let fileCount = 0
-      for (const [key, value] of formData.entries()) {
+      for (const [_key, value] of formData.entries()) {
         if (value instanceof File) {
           fileCount++
           

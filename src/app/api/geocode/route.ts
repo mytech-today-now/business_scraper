@@ -3,7 +3,7 @@ import { geocoder } from '@/model/geocoder'
 import { sanitizeInput, validateInput, getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {

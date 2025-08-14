@@ -296,7 +296,18 @@ export function loadConfig(): AppConfig {
   // Validate all environment variables
   for (const [key, rule] of Object.entries(configSchema)) {
     try {
-      config[key] = validateEnvValue(key, process.env[key], rule)
+      // Safe object property assignment with validation
+      if (typeof key === 'string' && key.length > 0 && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+        const validatedValue = validateEnvValue(key, process.env[key], rule)
+        Object.defineProperty(config, key, {
+          value: validatedValue,
+          writable: true,
+          enumerable: true,
+          configurable: true
+        })
+      } else {
+        errors.push(`Invalid configuration key: ${key}`)
+      }
     } catch (error) {
       errors.push(error instanceof Error ? error.message : String(error))
     }
@@ -378,6 +389,8 @@ export function loadConfig(): AppConfig {
     },
     apiKeys: {
       googleMaps: config.GOOGLE_MAPS_API_KEY,
+      googleSearch: config.GOOGLE_SEARCH_API_KEY,
+      googleSearchEngineId: config.GOOGLE_SEARCH_ENGINE_ID,
       openCage: config.OPENCAGE_API_KEY,
       bingSearch: config.BING_SEARCH_API_KEY,
       yandexSearch: config.YANDEX_SEARCH_API_KEY,

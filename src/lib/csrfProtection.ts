@@ -211,8 +211,7 @@ export class CSRFProtectionService {
   validateFormSubmission(request: NextRequest, sessionId: string): CSRFValidationResult {
     // Check for CSRF token in various locations
     const headerToken = request.headers.get('x-csrf-token')
-    const formData = request.headers.get('content-type')?.includes('application/x-www-form-urlencoded')
-    
+
     const csrfToken = headerToken
 
     // If it's a form submission, we might need to parse the body

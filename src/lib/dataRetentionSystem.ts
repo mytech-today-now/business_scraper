@@ -5,7 +5,6 @@
 
 import { logger } from '@/utils/logger'
 import { database } from '@/lib/postgresql-database'
-import { BusinessRecord } from '@/types/business'
 
 export interface RetentionPolicy {
   name: string
@@ -56,7 +55,7 @@ export interface DataUsageStats {
  */
 export class DataRetentionSystem {
   private policies: Map<string, RetentionPolicy> = new Map()
-  private isRunning = false
+
   private scheduledJobs: Map<string, NodeJS.Timeout> = new Map()
 
   constructor() {

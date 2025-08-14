@@ -6,21 +6,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Plus, 
-  Play, 
-  Pause, 
-
-  Copy, 
-  Edit, 
-  Trash2, 
-  Calendar, 
-
+import {
+  Plus,
+  Play,
+  Pause,
+  Copy,
+  Edit,
+  Trash2,
+  Calendar,
   Target,
   TrendingUp,
   Users,
   MapPin,
-
   Search,
   MoreVertical,
   Download,

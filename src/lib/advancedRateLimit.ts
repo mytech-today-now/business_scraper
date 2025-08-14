@@ -159,7 +159,9 @@ export class AdvancedRateLimitService {
       }
     }
 
-    const config = configs[endpointType]
+    const config = Object.prototype.hasOwnProperty.call(configs, endpointType)
+      ? configs[endpointType as keyof typeof configs]
+      : configs.api
     return this.checkRateLimit(`${endpointType}:${key}`, config)
   }
 

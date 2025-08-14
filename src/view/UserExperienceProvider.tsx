@@ -290,7 +290,9 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
       
       const key = `${event.ctrlKey ? 'ctrl+' : ''}${event.shiftKey ? 'shift+' : ''}${event.altKey ? 'alt+' : ''}${event.key.toLowerCase()}`
       
-      const shortcut = state.keyboardShortcuts[key]
+      const shortcut = Object.prototype.hasOwnProperty.call(state.keyboardShortcuts, key)
+        ? state.keyboardShortcuts[key as keyof typeof state.keyboardShortcuts]
+        : null
       if (shortcut) {
         event.preventDefault()
         shortcut()
@@ -411,7 +413,7 @@ function OnboardingTour({ step }: { step: number }) {
     { title: 'Monitoring', content: 'Monitor system health and performance.' },
   ]
   
-  const currentStep = tourSteps[step]
+  const currentStep = tourSteps.at(step)
   
   if (!currentStep) return null
   

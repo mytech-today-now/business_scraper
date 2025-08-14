@@ -13,7 +13,7 @@ import { logger } from '@/utils/logger'
 /**
  * Get security monitoring dashboard data
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const clientIP = getClientIP(request)
     const { searchParams } = new URL(request.url)
@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
 /**
  * Get security alerts
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const clientIP = getClientIP(request)
     const body = await request.json()
@@ -288,7 +288,7 @@ function calculateSecurityScore(
 /**
  * Handle OPTIONS requests for CORS
  */
-export async function OPTIONS() {
+export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {
     status: 200,
     headers: {

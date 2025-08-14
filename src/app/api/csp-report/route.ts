@@ -11,7 +11,7 @@ import { getClientIP } from '@/lib/security'
 /**
  * Handle CSP violation reports
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Get client IP for logging
     const clientIP = getClientIP(request)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 /**
  * Handle preflight requests for CORS
  */
-export async function OPTIONS(_request: NextRequest) {
+export async function OPTIONS(_request: NextRequest): Promise<NextResponse> {
   return new NextResponse(null, {
     status: 200,
     headers: {
@@ -80,21 +80,21 @@ export async function OPTIONS(_request: NextRequest) {
 /**
  * Reject other HTTP methods
  */
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   return NextResponse.json(
     { error: 'Method not allowed' },
     { status: 405 }
   )
 }
 
-export async function PUT() {
+export async function PUT(): Promise<NextResponse> {
   return NextResponse.json(
     { error: 'Method not allowed' },
     { status: 405 }
   )
 }
 
-export async function DELETE() {
+export async function DELETE(): Promise<NextResponse> {
   return NextResponse.json(
     { error: 'Method not allowed' },
     { status: 405 }

@@ -159,7 +159,15 @@ export function useCSRFProtection(): CSRFHookResult {
 /**
  * Hook for form CSRF protection
  */
-export function useFormCSRFProtection() {
+export function useFormCSRFProtection(): {
+  csrfToken: string | null
+  isLoading: boolean
+  error: string | null
+  getCSRFInput: () => { name: string; type: 'hidden'; value: string } | null
+  validateForm: () => Promise<boolean>
+  submitForm: (url: string, formData: FormData | Record<string, any>, options?: RequestInit) => Promise<Response>
+  isTokenValid: () => boolean
+} {
   const { csrfToken, isLoading, error, refreshToken, isTokenValid } = useCSRFProtection()
 
   /**

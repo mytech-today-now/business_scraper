@@ -336,7 +336,7 @@ export class DuckDuckGoProvider implements SearchProvider {
 export class GoogleProvider implements SearchProvider {
   name = 'Google'
 
-  async searchSERP(options: SearchOptions): Promise<BusinessResult[]> {
+  async searchSERP(_options: SearchOptions): Promise<BusinessResult[]> {
     try {
       // This would use Google Custom Search API when configured
       logger.info('GoogleProvider', 'Google search not yet implemented')
@@ -354,7 +354,7 @@ export class GoogleProvider implements SearchProvider {
 export class BingProvider implements SearchProvider {
   name = 'Bing'
 
-  async searchSERP(options: SearchOptions): Promise<BusinessResult[]> {
+  async searchSERP(_options: SearchOptions): Promise<BusinessResult[]> {
     try {
       // This would use Bing Search API when configured
       logger.info('BingProvider', 'Bing search not yet implemented')

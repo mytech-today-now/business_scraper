@@ -98,7 +98,7 @@ export function ResultsTable({
   onExport,
   isLoading = false,
   isExporting = false
-}: ResultsTableProps) {
+}: ResultsTableProps): JSX.Element {
   // State management
   const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' })
@@ -178,7 +178,7 @@ export function ResultsTable({
   /**
    * Handle column sorting
    */
-  const handleSort = useCallback((key: keyof BusinessRecord) => {
+  const handleSort = useCallback((key: keyof BusinessRecord): void => {
     setSortConfig(prev => ({
       key,
       direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
@@ -188,7 +188,7 @@ export function ResultsTable({
   /**
    * Handle row selection
    */
-  const handleRowSelect = useCallback((businessId: string, selected: boolean) => {
+  const handleRowSelect = useCallback((businessId: string, selected: boolean): void => {
     setSelectedRows(prev => {
       const newSet = new Set(prev)
       if (selected) {
@@ -203,7 +203,7 @@ export function ResultsTable({
   /**
    * Handle select all rows
    */
-  const handleSelectAll = useCallback((selected: boolean) => {
+  const handleSelectAll = useCallback((selected: boolean): void => {
     if (selected) {
       setSelectedRows(new Set(filteredAndSortedBusinesses.map(b => b.id)))
     } else {
@@ -214,7 +214,7 @@ export function ResultsTable({
   /**
    * Handle column visibility toggle
    */
-  const handleColumnVisibility = useCallback((columnKey: string, visible: boolean) => {
+  const handleColumnVisibility = useCallback((columnKey: string, visible: boolean): void => {
     setColumns(prev => 
       prev.map(col => 
         col.key === columnKey ? { ...col, visible } : col
@@ -225,7 +225,7 @@ export function ResultsTable({
   /**
    * Handle cell editing
    */
-  const handleCellEdit = useCallback((businessId: string, field: string, value: any) => {
+  const handleCellEdit = useCallback((businessId: string, field: string, value: any): void => {
     if (onEdit) {
       const business = businesses.find(b => b.id === businessId)
       if (business) {
@@ -469,7 +469,7 @@ export function ResultsTable({
   /**
    * Handle adding domain to blacklist
    */
-  const handleAddToBlacklist = useCallback(async (url: string, industry: string) => {
+  const handleAddToBlacklist = useCallback(async (url: string, industry: string): Promise<void> => {
     try {
       const domain = extractDomain(url)
 

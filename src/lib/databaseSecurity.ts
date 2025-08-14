@@ -190,7 +190,7 @@ export class DatabaseSecurityService {
     const warnings: string[] = []
 
     for (let i = 0; i < parameters.length; i++) {
-      const param = parameters[i]
+      const param = parameters.at(i)
       
       // Check for null/undefined
       if (param === null || param === undefined) {

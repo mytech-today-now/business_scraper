@@ -537,7 +537,12 @@ export class Logger {
    * @param component - Component name
    * @returns Scoped logger functions
    */
-  createScope(component: string) {
+  createScope(component: string): {
+    debug: (message: string, data?: unknown) => void
+    info: (message: string, data?: unknown) => void
+    warn: (message: string, data?: unknown) => void
+    error: (message: string, error?: Error | unknown) => void
+  } {
     return {
       debug: (message: string, data?: unknown) => this.debug(component, message, data),
       info: (message: string, data?: unknown) => this.info(component, message, data),

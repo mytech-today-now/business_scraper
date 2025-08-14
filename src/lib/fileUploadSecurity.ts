@@ -4,7 +4,7 @@
  */
 
 import { logger } from '@/utils/logger'
-import { validationService, ValidationResult, FileValidationOptions } from '@/utils/validation'
+import { validationService, FileValidationOptions } from '@/utils/validation'
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
@@ -35,7 +35,25 @@ export class FileUploadSecurityService {
   private knownMalwareHashes: Set<string>
 
   constructor() {
-    this.quarantineDir = process.env.QUARANTINE_DIR || './quarantine'
+    // Validate and sanitize quarantine directory path
+    const baseQuarantineDir = process.env.QUARANTINE_DIR || './quarantine'
+    this.quarantineDir = path.resolve(baseQuarantineDir)
+
+    // Security check: ensure quarantine directory is within allowed paths
+    const allowedBasePaths = [
+      path.resolve('./quarantine'),
+      path.resolve('./temp'),
+      path.resolve(process.cwd(), 'quarantine')
+    ]
+
+    const isAllowedPath = allowedBasePaths.some(basePath =>
+      this.quarantineDir.startsWith(basePath)
+    )
+
+    if (!isAllowedPath) {
+      throw new Error('Quarantine directory path not allowed')
+    }
+
     this.knownMalwareHashes = new Set()
     this.initializeQuarantineDirectory()
   }
@@ -127,7 +145,7 @@ export class FileUploadSecurityService {
    * @param filename - Original filename
    * @returns Analysis result
    */
-  private async analyzeFileContent(buffer: Buffer, filename: string): Promise<{ threats: string[], warnings: string[] }> {
+  private async analyzeFileContent(buffer: Buffer, _filename: string): Promise<{ threats: string[], warnings: string[] }> {
     const threats: string[] = []
     const warnings: string[] = []
 
@@ -313,8 +331,14 @@ export class FileUploadSecurityService {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
       const quarantineFilename = `${timestamp}_${filename}`
-      const quarantinePath = path.join(this.quarantineDir, quarantineFilename)
+      const quarantinePath = path.resolve(path.join(this.quarantineDir, quarantineFilename))
 
+      // Security check: ensure quarantine path is within quarantine directory
+      if (!quarantinePath.startsWith(this.quarantineDir)) {
+        throw new Error('Quarantine path outside quarantine directory not allowed')
+      }
+
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       await fs.promises.writeFile(quarantinePath, buffer)
       
       // Create metadata file
@@ -326,8 +350,16 @@ export class FileUploadSecurityService {
         fileHash: this.generateFileHash(buffer)
       }
 
+      const metaPath = path.resolve(quarantinePath + '.meta')
+
+      // Security check: ensure meta path is within quarantine directory
+      if (!metaPath.startsWith(this.quarantineDir)) {
+        throw new Error('Meta path outside quarantine directory not allowed')
+      }
+
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       await fs.promises.writeFile(
-        quarantinePath + '.meta',
+        metaPath,
         JSON.stringify(metadata, null, 2)
       )
 
@@ -342,7 +374,10 @@ export class FileUploadSecurityService {
    */
   private initializeQuarantineDirectory(): void {
     try {
+      // Use the already validated quarantine directory path
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       if (!fs.existsSync(this.quarantineDir)) {
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         fs.mkdirSync(this.quarantineDir, { recursive: true })
       }
     } catch (error) {
@@ -364,7 +399,27 @@ export class FileUploadSecurityService {
    */
   async loadMalwareHashes(filePath: string): Promise<void> {
     try {
-      const content = await fs.promises.readFile(filePath, 'utf8')
+      // Validate and sanitize file path
+      const resolvedPath = path.resolve(filePath)
+
+      // Security check: ensure file path is within allowed directories
+      const allowedBasePaths = [
+        path.resolve('./config'),
+        path.resolve('./data'),
+        path.resolve(process.cwd(), 'config'),
+        path.resolve(process.cwd(), 'data')
+      ]
+
+      const isAllowedPath = allowedBasePaths.some(basePath =>
+        resolvedPath.startsWith(basePath)
+      )
+
+      if (!isAllowedPath) {
+        throw new Error('Malware hash file path not allowed')
+      }
+
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      const content = await fs.promises.readFile(resolvedPath, 'utf8')
       const hashes = content.split('\n').map(line => line.trim()).filter(line => line)
       
       for (const hash of hashes) {

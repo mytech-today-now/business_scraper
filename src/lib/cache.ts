@@ -126,8 +126,40 @@ class MemoryCache implements CacheInterface {
       return allKeys
     }
     
-    // Simple pattern matching (supports * wildcard)
-    const regex = new RegExp(pattern.replace(/\*/g, '.*'))
+    // Simple pattern matching (supports * wildcard) - secure implementation
+    // Use a safe pattern matching approach instead of dynamic RegExp
+    const normalizedPattern = pattern.toLowerCase()
+
+    if (normalizedPattern === '*') {
+      return allKeys // Return all keys for wildcard
+    }
+
+    // For simple patterns, use string methods instead of regex
+    if (!normalizedPattern.includes('*')) {
+      return allKeys.filter(key => key.toLowerCase() === normalizedPattern)
+    }
+
+    // For patterns with wildcards, use a safe approach
+    const parts = normalizedPattern.split('*')
+    return allKeys.filter(key => {
+      const lowerKey = key.toLowerCase()
+      let currentIndex = 0
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i]
+        if (part === '') continue
+
+        const foundIndex = lowerKey.indexOf(part, currentIndex)
+        if (foundIndex === -1) return false
+
+        if (i === 0 && foundIndex !== 0) return false // Must start with first part
+        if (i === parts.length - 1 && !lowerKey.endsWith(part)) return false // Must end with last part
+
+        currentIndex = foundIndex + part.length
+      }
+
+      return true
+    })
     return allKeys.filter(key => regex.test(key))
   }
 
@@ -173,7 +205,7 @@ class MemoryCache implements CacheInterface {
     const toRemove = Math.max(1, Math.floor(entries.length * 0.1))
     
     for (let i = 0; i < toRemove && i < entries.length; i++) {
-      const entry = entries[i]
+      const entry = entries.at(i)
       if (entry) {
         this.cache.delete(entry[0])
       }
@@ -225,8 +257,11 @@ class RedisCache implements CacheInterface {
 
     try {
       // Dynamically import Redis (optional dependency)
-      // Use eval to prevent TypeScript from trying to resolve the module at compile time
-      const redisModule = await eval('import("redis")') as { default?: unknown; createClient?: unknown }
+      // Use dynamic import instead of eval for security
+      const redisModule = await import('redis').catch(() => null)
+      if (!redisModule) {
+        throw new Error('Redis module not available')
+      }
       const Redis = redisModule.default || redisModule
 
       // Type assertion for the Redis client factory
@@ -449,7 +484,7 @@ type CacheableMethod<T = unknown> = (...args: unknown[]) => Promise<T>
  */
 export function cached(ttl: number = 3600000, keyPrefix: string = '') {
   return function <T>(
-    target: object,
+    _target: object,
     propertyName: string,
     descriptor: TypedPropertyDescriptor<CacheableMethod<T>>
   ) {

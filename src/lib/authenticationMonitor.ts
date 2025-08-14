@@ -80,7 +80,7 @@ export class AuthenticationMonitor {
   private attempts: AuthAttempt[] = []
   private patterns = new Map<string, AuthPattern>()
   private blockedIPs = new Map<string, Date>()
-  private suspiciousUsernames = new Set<string>()
+
   private maxAttempts = 10000
 
   private config: AuthMonitorConfig = {
@@ -446,10 +446,7 @@ export class AuthenticationMonitor {
       now < blockUntil
     ).length
 
-    // Count suspicious patterns
-    const suspiciousPatternCount = Array.from(this.patterns.values()).filter(pattern => 
-      pattern.riskScore >= 5
-    ).length
+
 
     // Trigger alerts if thresholds exceeded
     if (recentFailedAttempts >= this.config.alertThresholds.failedAttempts) {

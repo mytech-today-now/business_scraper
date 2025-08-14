@@ -15,7 +15,7 @@ import { withAuth } from '@/lib/auth-middleware'
 /**
  * GET /api/config - Get configuration information
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
   
   try {

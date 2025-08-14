@@ -117,24 +117,24 @@ const scrapeHandler = withApiSecurity(
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
-      logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
-      return NextResponse.json(
-        { error: 'Internal server error' },
-        { status: 500 }
-      )
-    }
-  },
-  {
-    body: [
-      { field: 'action', required: true, type: 'string' as const, allowedValues: ['initialize', 'search', 'scrape', 'cleanup'] },
-      { field: 'query', type: 'string' as const, minLength: 1, maxLength: 500 },
-      { field: 'zipCode', type: 'zipcode' as const },
-      { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
-      { field: 'url', type: 'url' as const },
-      { field: 'depth', type: 'number' as const, min: 1, max: 5 },
-      { field: 'maxPages', type: 'number' as const, min: 1, max: 50 }
-    ]
+    logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
+},
+{
+  body: [
+    { field: 'action', required: true, type: 'string' as const, allowedValues: ['initialize', 'search', 'scrape', 'cleanup'] },
+    { field: 'query', type: 'string' as const, minLength: 1, maxLength: 500 },
+    { field: 'zipCode', type: 'zipcode' as const },
+    { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
+    { field: 'url', type: 'url' as const },
+    { field: 'depth', type: 'number' as const, min: 1, max: 5 },
+    { field: 'maxPages', type: 'number' as const, min: 1, max: 50 }
+  ]
+}
 ),
 {
   requireAuth: false, // Allow public access for now, but with rate limiting
@@ -147,7 +147,7 @@ const scrapeHandler = withApiSecurity(
 export const POST = scrapeHandler
 
 // Add GET endpoint for testing
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   return NextResponse.json({
     status: 'Scrape API is working',
     timestamp: new Date().toISOString(),

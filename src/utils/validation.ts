@@ -1232,7 +1232,13 @@ export class ValidationService {
    * Get validation schemas for external use
    * @returns Object containing all validation schemas
    */
-  getSchemas() {
+  getSchemas(): {
+    BusinessRecordSchema: any
+    ScrapingConfigSchema: any
+    IndustryCategorySchema: any
+    AddressSchema: any
+    CoordinatesSchema: any
+  } {
     return {
       BusinessRecordSchema,
       ScrapingConfigSchema,

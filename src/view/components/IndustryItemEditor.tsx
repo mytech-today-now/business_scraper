@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Check, X, Edit2 } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { Button } from './ui/Button'
 import { IndustryCategory } from '@/types/business'
 import { clsx } from 'clsx'
@@ -14,13 +14,13 @@ interface IndustryItemEditorProps {
   onCancel: () => void
 }
 
-export function IndustryItemEditor({ 
-  industry, 
-  isSelected, 
-  onToggle, 
-  onUpdate, 
-  onCancel 
-}: IndustryItemEditorProps) {
+export function IndustryItemEditor({
+  industry,
+  isSelected,
+  onToggle,
+  onUpdate,
+  onCancel
+}: IndustryItemEditorProps): JSX.Element {
   const [keywordsText, setKeywordsText] = useState('')
   const [blacklistText, setBlacklistText] = useState('')
   const [isSaving, setIsSaving] = useState(false)
@@ -37,7 +37,7 @@ export function IndustryItemEditor({
     }, 100)
   }, [industry])
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     const keywords = keywordsText
       .split('\n')
       .map(k => k.trim())
@@ -67,7 +67,7 @@ export function IndustryItemEditor({
     }
   }
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     setKeywordsText(industry.keywords.join('\n'))
     setBlacklistText((industry.domainBlacklist || []).join('\n'))
     onCancel()

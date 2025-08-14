@@ -28,7 +28,7 @@ const DEFAULT_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
 /**
  * POST /api/auth - Login endpoint
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const ip = getClientIP(request)
     const body = await request.json()
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
 /**
  * DELETE /api/auth - Logout endpoint
  */
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
     const sessionId = request.cookies.get('session-id')?.value
     
@@ -151,7 +151,7 @@ export async function DELETE(request: NextRequest) {
 /**
  * GET /api/auth - Check session status
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const sessionId = request.cookies.get('session-id')?.value
     

@@ -46,11 +46,23 @@ export interface ScrapingState {
  * Scraper controller hook
  * Manages scraping operations and state
  */
-export function useScraperController() {
+export function useScraperController(): {
+  scrapingState: ScrapingState
+  startScraping: () => Promise<void>
+  stopScraping: () => void
+  clearResults: () => void
+  removeBusiness: (id: string) => void
+  updateBusiness: (id: string, updates: Partial<BusinessRecord>) => void
+  loadPreviousResults: () => Promise<void>
+  addProcessingStep: (step: Omit<ProcessingStep, 'id' | 'startTime'>) => void
+  updateProcessingStep: (id: string, updates: Partial<ProcessingStep>) => void
+  clearProcessingSteps: () => void
+  canStartScraping: boolean
+  hasResults: boolean
+  hasErrors: boolean
+} {
   const { state: configState, getSelectedIndustryNames, isConfigValid } = useConfig()
 
-
-  
   // Scraping state
   const [scrapingState, setScrapingState] = useState<ScrapingState>({
     isScrapingActive: false,
@@ -228,7 +240,11 @@ export function useScraperController() {
       for (let industryIndex = 0; industryIndex < selectedIndustryObjects.length; industryIndex++) {
         if (abortControllerRef.current?.signal.aborted) break
 
-        const industryObject = selectedIndustryObjects[industryIndex]!
+        const industryObject = selectedIndustryObjects.at(industryIndex)
+        if (!industryObject) {
+          logger.error('ScraperController', `Industry object not found at index ${industryIndex}`)
+          continue
+        }
         const industryName = industryObject.name
 
         logger.info('ScraperController', `Starting complete processing for industry: ${industryName}`)
