@@ -13,6 +13,14 @@ import { logger } from '@/utils/logger'
 import { withAuth } from '@/lib/auth-middleware'
 
 /**
+ * Interface for domain blacklist parameters
+ */
+interface AddDomainToBlacklistParams {
+  domain: string
+  industry: string
+}
+
+/**
  * GET /api/config - Get configuration information
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -151,7 +159,7 @@ export const POST = configUpdateHandler
 /**
  * Handle adding a domain to an industry blacklist
  */
-async function handleAddDomainToBlacklist(params: any, ip: string) {
+async function handleAddDomainToBlacklist(params: AddDomainToBlacklistParams, ip: string) {
   const { domain, industry } = params
 
   if (!domain || !industry) {

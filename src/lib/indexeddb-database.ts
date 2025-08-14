@@ -9,6 +9,28 @@ import { storage } from '@/model/storage'
 import { BusinessRecord, ScrapingConfig } from '@/types/business'
 import { logger } from '@/utils/logger'
 
+/**
+ * Interface for application settings
+ */
+interface AppSetting {
+  id: string
+  key: string
+  value: unknown
+  type: string
+  updatedAt: Date
+}
+
+/**
+ * Interface for setting with category
+ */
+interface CategorizedSetting {
+  key: string
+  value: unknown
+  type: string
+  category: string
+  updatedAt: Date
+}
+
 export class IndexedDBDatabase implements DatabaseInterface {
   private initialized = false
 
@@ -328,10 +350,10 @@ export class IndexedDBDatabase implements DatabaseInterface {
     }
   }
 
-  async setSetting(key: string, value: any, type?: string): Promise<void> {
+  async setSetting(key: string, value: unknown, type?: string): Promise<void> {
     await this.ensureInitialized()
-    
-    const setting = {
+
+    const setting: AppSetting = {
       id: `setting_${key}`,
       key,
       value,
@@ -339,24 +361,30 @@ export class IndexedDBDatabase implements DatabaseInterface {
       updatedAt: new Date(),
     }
 
-    await storage.saveConfig(setting as any)
+    // Note: This is a workaround since storage.saveConfig expects ScrapingConfig
+    // but we're storing application settings. In a real implementation,
+    // we would have a separate settings storage method.
+    await storage.saveConfig(setting as unknown as ScrapingConfig & { id: string })
     logger.info('IndexedDB', `Set setting: ${key}`)
   }
 
-  async getSettings(category?: string): Promise<any[]> {
+  async getSettings(category?: string): Promise<CategorizedSetting[]> {
     await this.ensureInitialized()
-    
+
     try {
       const configs = await storage.getAllConfigs()
       const settings = configs
         .filter(c => c.id.startsWith('setting_'))
-        .map(c => ({
-          key: c.id.replace('setting_', ''),
-          value: (c as any).value,
-          type: (c as any).type || 'string',
-          category: category || 'general',
-          updatedAt: (c as any).updatedAt || new Date(),
-        }))
+        .map(c => {
+          const settingData = c as unknown as AppSetting
+          return {
+            key: c.id.replace('setting_', ''),
+            value: settingData.value,
+            type: settingData.type || 'string',
+            category: category || 'general',
+            updatedAt: settingData.updatedAt || new Date(),
+          }
+        })
 
       return settings
     } catch (error) {

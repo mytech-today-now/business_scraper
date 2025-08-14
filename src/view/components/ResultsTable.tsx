@@ -155,9 +155,10 @@ export function ResultsTable({
 
     // Apply sorting
     if (sortConfig.key) {
+      const sortKey = sortConfig.key
       filtered.sort((a, b) => {
-        const aValue = a[sortConfig.key!]
-        const bValue = b[sortConfig.key!]
+        const aValue = a[sortKey]
+        const bValue = b[sortKey]
         
         let comparison = 0
 

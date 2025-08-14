@@ -6,13 +6,48 @@ import { withValidation, commonSchemas } from '@/lib/validation-middleware'
 import { getClientIP } from '@/lib/security'
 import { validationService } from '@/utils/validation'
 import { bbbScrapingService } from '@/lib/bbbScrapingService'
+import type { Page } from 'puppeteer'
+
+/**
+ * Interface for search request data
+ */
+interface SearchRequestData {
+  body: {
+    provider: string
+    query: string
+    location: string
+    maxResults?: number
+    industry?: string
+    enableOptimization?: boolean
+    page?: number
+    accreditedOnly?: boolean
+    zipRadius?: number
+    maxPagesPerSite?: number
+    url?: string
+  }
+}
+
+/**
+ * Interface for search result item
+ */
+interface SearchResultItem {
+  title: string
+  url: string
+  snippet?: string
+  businessName?: string
+  address?: string
+  phone?: string
+  website?: string
+  rating?: number
+  reviewCount?: number
+}
 
 /**
  * Search for businesses
  */
 const searchHandler = withApiSecurity(
   withValidation(
-    async (request: NextRequest, validatedData: any) => {
+    async (request: NextRequest, validatedData: SearchRequestData) => {
       const ip = getClientIP(request)
       const { provider, query, location, maxResults = 1000, industry, enableOptimization = false } = validatedData.body || {}
 
@@ -304,9 +339,9 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 /**
  * Extract search results from DuckDuckGo SERP using browser automation
  */
-async function extractDuckDuckGoSERPResults(page: any, maxResults: number): Promise<any[]> {
+async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Promise<SearchResultItem[]> {
   return await page.evaluate((maxResults: number) => {
-    const results: any[] = []
+    const results: SearchResultItem[] = []
 
     console.log('Extracting DuckDuckGo SERP results...')
 
@@ -430,8 +465,8 @@ async function extractDuckDuckGoSERPResults(page: any, maxResults: number): Prom
 /**
  * Parse DuckDuckGo SERP HTML to extract business website URLs (legacy fallback)
  */
-function parseDuckDuckGoSERP(html: string, maxResults: number): any[] {
-  const results: any[] = []
+function parseDuckDuckGoSERP(html: string, maxResults: number): SearchResultItem[] {
+  const results: SearchResultItem[] = []
 
   try {
     // DuckDuckGo uses various CSS selectors for search results
@@ -558,7 +593,7 @@ async function handleBBBBusinessDiscovery(
       logger.info('Search API', `Expanded industry category "${query}" to: ${expandedCriteria.join(', ')}`)
 
       // Search for each expanded criteria individually
-      const allBusinessWebsites: any[] = []
+      const allBusinessWebsites: SearchResultItem[] = []
       const resultsPerCriteria = Math.ceil(maxResults / expandedCriteria.length)
 
       for (const criteria of expandedCriteria) {
@@ -737,9 +772,9 @@ function expandIndustryCategories(query: string): string[] {
 /**
  * Remove duplicate businesses based on URL and title
  */
-function removeDuplicateBusinesses(businesses: any[]): any[] {
+function removeDuplicateBusinesses(businesses: SearchResultItem[]): SearchResultItem[] {
   const seen = new Set<string>()
-  const unique: any[] = []
+  const unique: SearchResultItem[] = []
 
   for (const business of businesses) {
     // Create a unique key based on URL and title
@@ -757,7 +792,7 @@ function removeDuplicateBusinesses(businesses: any[]): any[] {
 /**
  * Generate alternative business search URLs when BBB scraping isn't available
  */
-function generateAlternativeBusinessSearches(query: string, location: string, maxResults: number): any[] {
+function generateAlternativeBusinessSearches(query: string, location: string, maxResults: number): SearchResultItem[] {
   // Return empty array - directory search URLs should not be returned as business websites
   // The proper approach is to use dedicated discovery services (Yelp Discovery, BBB Discovery)
   // that extract actual business websites from directory pages

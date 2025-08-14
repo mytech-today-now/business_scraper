@@ -1189,7 +1189,7 @@ export class ValidationService {
    * @param businesses - Array of business records
    * @returns Validation summary
    */
-  validateBusinessArray(businesses: any[]): {
+  validateBusinessArray(businesses: BusinessRecord[]): {
     totalRecords: number
     validRecords: number
     invalidRecords: number

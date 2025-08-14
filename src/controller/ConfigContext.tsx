@@ -614,8 +614,8 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   const getSelectedIndustryNames = (): string[] => {
     return state.selectedIndustries
       .map(id => state.industries.find(industry => industry.id === id))
-      .filter(Boolean)
-      .map(industry => industry!.name)
+      .filter((industry): industry is Industry => Boolean(industry))
+      .map(industry => industry.name)
   }
 
   /**

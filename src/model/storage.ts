@@ -97,6 +97,17 @@ export class StorageService {
     }
   }
 
+  /**
+   * Get the database instance with proper error handling
+   */
+  private async getDatabase(): Promise<IDBPDatabase<StorageSchema>> {
+    await this.ensureInitialized()
+    if (!this.db) {
+      throw new Error('Failed to initialize database')
+    }
+    return this.db
+  }
+
   // Business Records Operations
 
   /**
@@ -104,9 +115,9 @@ export class StorageService {
    * @param business - Business record to save
    */
   async saveBusiness(business: BusinessRecord): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.put('businesses', business)
+      const db = await this.getDatabase()
+      await db.put('businesses', business)
       logger.info('Storage', `Saved business: ${business.businessName}`)
     } catch (error) {
       logger.error('Storage', 'Failed to save business', error)
@@ -119,10 +130,10 @@ export class StorageService {
    * @param businesses - Array of business records
    */
   async saveBusinesses(businesses: BusinessRecord[]): Promise<void> {
-    await this.ensureInitialized()
-    const tx = this.db!.transaction('businesses', 'readwrite')
-    
     try {
+      const db = await this.getDatabase()
+      const tx = db.transaction('businesses', 'readwrite')
+
       await Promise.all([
         ...businesses.map(business => tx.store.put(business)),
         tx.done,

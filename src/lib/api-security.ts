@@ -24,7 +24,7 @@ export interface ValidationRule {
   minLength?: number
   maxLength?: number
   pattern?: RegExp
-  allowedValues?: any[]
+  allowedValues?: (string | number | boolean)[]
 }
 
 /**

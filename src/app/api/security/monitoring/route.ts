@@ -11,6 +11,43 @@ import { getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
 
 /**
+ * Interface for security metrics data
+ */
+interface SecurityMetrics {
+  totalEvents: number
+  criticalEvents: number
+  warningEvents: number
+  blockedRequests: number
+  suspiciousActivity: number
+  averageResponseTime: number
+  errorRate: number
+}
+
+/**
+ * Interface for authentication statistics
+ */
+interface AuthStats {
+  totalAttempts: number
+  successfulLogins: number
+  failedAttempts: number
+  blockedIPs: number
+  suspiciousPatterns: number
+  averageSessionDuration: number
+}
+
+/**
+ * Interface for alert statistics
+ */
+interface AlertStats {
+  totalAlerts: number
+  criticalAlerts: number
+  warningAlerts: number
+  resolvedAlerts: number
+  activeAlerts: number
+  averageResolutionTime: number
+}
+
+/**
  * Get security monitoring dashboard data
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -177,9 +214,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  * Calculate overall security score
  */
 function calculateSecurityScore(
-  securityMetrics: any,
-  authStats: any,
-  alertStats: any
+  securityMetrics: SecurityMetrics,
+  authStats: AuthStats,
+  alertStats: AlertStats
 ): {
   score: number
   level: 'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR' | 'CRITICAL'

@@ -257,7 +257,9 @@ export class DataValidationPipeline {
         reason: 'Normalized capitalization and removed extra spaces',
         confidence: 0.9,
       })
-      result.cleanedData!.businessName = cleanedName
+      if (result.cleanedData) {
+        result.cleanedData.businessName = cleanedName
+      }
     }
   }
 
@@ -348,8 +350,10 @@ export class DataValidationPipeline {
         totalEmailCount: business.email.length
       }
 
-      result.cleanedData!.email = uniqueEmails
-      result.cleanedData!.emailValidation = emailValidation
+      if (result.cleanedData) {
+        result.cleanedData.email = uniqueEmails
+        result.cleanedData.emailValidation = emailValidation
+      }
 
       logger.debug('DataValidationPipeline', `Email validation completed`, {
         totalEmails: business.email.length,
@@ -385,7 +389,9 @@ export class DataValidationPipeline {
       }
 
       const uniqueEmails = Array.from(new Set(validEmails))
-      result.cleanedData!.email = uniqueEmails
+      if (result.cleanedData) {
+        result.cleanedData.email = uniqueEmails
+      }
     }
   }
 
@@ -453,7 +459,9 @@ export class DataValidationPipeline {
         reason: 'Standardized phone number format',
         confidence: 0.95,
       })
-      result.cleanedData!.phone = formattedPhone
+      if (result.cleanedData) {
+        result.cleanedData.phone = formattedPhone
+      }
     }
   }
 
@@ -525,7 +533,9 @@ export class DataValidationPipeline {
         reason: 'Standardized address format',
         confidence: 0.85,
       })
-      result.cleanedData!.address = cleanedAddress
+      if (result.cleanedData) {
+        result.cleanedData.address = cleanedAddress
+      }
     }
   }
 
@@ -567,7 +577,9 @@ export class DataValidationPipeline {
           reason: 'Cleaned and normalized URL',
           confidence: 0.9,
         })
-        result.cleanedData!.websiteUrl = cleanedUrl
+        if (result.cleanedData) {
+          result.cleanedData.websiteUrl = cleanedUrl
+        }
       }
 
     } catch (error) {

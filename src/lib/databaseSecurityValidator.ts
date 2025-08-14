@@ -94,14 +94,24 @@ export class DatabaseSecurityValidator {
   private async checkUserPermissions(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'User Permissions Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       // Check for superuser privileges
       const superuserQuery = `
-        SELECT rolname, rolsuper 
-        FROM pg_roles 
+        SELECT rolname, rolsuper
+        FROM pg_roles
         WHERE rolname = current_user
       `
-      const superuserResult = await this.pool!.query(superuserQuery)
+      const superuserResult = await this.pool.query(superuserQuery)
       
       if (superuserResult.rows[0]?.rolsuper) {
         results.push({
@@ -122,11 +132,11 @@ export class DatabaseSecurityValidator {
 
       // Check for dedicated application user
       const appUserQuery = `
-        SELECT COUNT(*) as count 
-        FROM pg_roles 
+        SELECT COUNT(*) as count
+        FROM pg_roles
         WHERE rolname IN ('business_scraper_app', 'business_scraper_readonly')
       `
-      const appUserResult = await this.pool!.query(appUserQuery)
+      const appUserResult = await this.pool.query(appUserQuery)
       
       if (appUserResult.rows[0]?.count < 2) {
         results.push({
@@ -163,9 +173,19 @@ export class DatabaseSecurityValidator {
   private async checkSSLConfiguration(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'SSL Configuration Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       const sslQuery = `SHOW ssl`
-      const sslResult = await this.pool!.query(sslQuery)
+      const sslResult = await this.pool.query(sslQuery)
       
       if (sslResult.rows[0]?.ssl === 'on') {
         results.push({
@@ -202,16 +222,26 @@ export class DatabaseSecurityValidator {
   private async checkPasswordSecurity(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Password Security Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       // Check for default passwords
       const weakPasswordQuery = `
-        SELECT rolname 
-        FROM pg_roles 
+        SELECT rolname
+        FROM pg_roles
         WHERE rolname IN ('postgres', 'business_scraper_app', 'business_scraper_readonly')
           AND rolpassword IS NOT NULL
       `
-      const weakPasswordResult = await this.pool!.query(weakPasswordQuery)
-      
+      const weakPasswordResult = await this.pool.query(weakPasswordQuery)
+
       // Note: We can't actually check password content, but we can check if passwords are set
       if (weakPasswordResult.rows.length > 0) {
         results.push({
@@ -225,7 +255,7 @@ export class DatabaseSecurityValidator {
 
       // Check password encryption
       const encryptionQuery = `SHOW password_encryption`
-      const encryptionResult = await this.pool!.query(encryptionQuery)
+      const encryptionResult = await this.pool.query(encryptionQuery)
       
       if (encryptionResult.rows[0]?.password_encryption === 'scram-sha-256') {
         results.push({
@@ -262,14 +292,24 @@ export class DatabaseSecurityValidator {
   private async checkRowLevelSecurity(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Row Level Security Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       const rlsQuery = `
-        SELECT schemaname, tablename, rowsecurity 
-        FROM pg_tables 
-        WHERE schemaname = 'public' 
+        SELECT schemaname, tablename, rowsecurity
+        FROM pg_tables
+        WHERE schemaname = 'public'
           AND tablename IN ('businesses', 'app_settings')
       `
-      const rlsResult = await this.pool!.query(rlsQuery)
+      const rlsResult = await this.pool.query(rlsQuery)
       
       const tablesWithRLS = rlsResult.rows.filter(row => row.rowsecurity).length
       const totalSensitiveTables = rlsResult.rows.length
@@ -317,16 +357,26 @@ export class DatabaseSecurityValidator {
   private async checkAuditLogging(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Audit Logging Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       // Check if audit log table exists
       const auditTableQuery = `
         SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
+          SELECT FROM information_schema.tables
+          WHERE table_schema = 'public'
             AND table_name = 'security_audit_log'
         ) as exists
       `
-      const auditTableResult = await this.pool!.query(auditTableQuery)
+      const auditTableResult = await this.pool.query(auditTableQuery)
       
       if (auditTableResult.rows[0]?.exists) {
         results.push({
@@ -363,13 +413,23 @@ export class DatabaseSecurityValidator {
   private async checkConnectionLimits(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Connection Limits Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       const settingsQuery = `
-        SELECT name, setting 
-        FROM pg_settings 
+        SELECT name, setting
+        FROM pg_settings
         WHERE name IN ('max_connections', 'statement_timeout', 'idle_in_transaction_session_timeout')
       `
-      const settingsResult = await this.pool!.query(settingsQuery)
+      const settingsResult = await this.pool.query(settingsQuery)
       
       const settings = settingsResult.rows.reduce((acc, row) => {
         acc[row.name] = row.setting
@@ -432,13 +492,23 @@ export class DatabaseSecurityValidator {
   private async checkDangerousExtensions(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Dangerous Extensions Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       const extensionsQuery = `
-        SELECT extname 
-        FROM pg_extension 
+        SELECT extname
+        FROM pg_extension
         WHERE extname IN ('dblink', 'postgres_fdw', 'file_fdw', 'plpythonu', 'plperlu')
       `
-      const extensionsResult = await this.pool!.query(extensionsQuery)
+      const extensionsResult = await this.pool.query(extensionsQuery)
       
       if (extensionsResult.rows.length === 0) {
         results.push({
@@ -476,16 +546,26 @@ export class DatabaseSecurityValidator {
   private async checkTablePermissions(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Table Permissions Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       // Check for overly permissive public permissions
       const publicPermsQuery = `
         SELECT COUNT(*) as count
-        FROM information_schema.table_privileges 
-        WHERE grantee = 'PUBLIC' 
+        FROM information_schema.table_privileges
+        WHERE grantee = 'PUBLIC'
           AND table_schema = 'public'
           AND privilege_type IN ('INSERT', 'UPDATE', 'DELETE')
       `
-      const publicPermsResult = await this.pool!.query(publicPermsQuery)
+      const publicPermsResult = await this.pool.query(publicPermsQuery)
       
       if (publicPermsResult.rows[0]?.count === 0) {
         results.push({
@@ -522,15 +602,25 @@ export class DatabaseSecurityValidator {
   private async checkSensitiveDataProtection(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
+    if (!this.pool) {
+      results.push({
+        checkName: 'Sensitive Data Protection Check',
+        status: 'FAIL',
+        message: 'No database connection available',
+        severity: 'CRITICAL'
+      })
+      return results
+    }
+
     try {
       // Check if sensitive columns are properly protected
       const sensitiveColumnsQuery = `
-        SELECT table_name, column_name 
-        FROM information_schema.columns 
-        WHERE table_schema = 'public' 
+        SELECT table_name, column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
           AND column_name IN ('email', 'phone', 'password', 'api_key', 'secret')
       `
-      const sensitiveColumnsResult = await this.pool!.query(sensitiveColumnsQuery)
+      const sensitiveColumnsResult = await this.pool.query(sensitiveColumnsQuery)
       
       if (sensitiveColumnsResult.rows.length > 0) {
         results.push({

@@ -497,8 +497,10 @@ export class AuthenticationMonitor {
     const failureReasons = recentAttempts
       .filter(attempt => !attempt.success && attempt.failureReason)
       .reduce((acc, attempt) => {
-        const reason = attempt.failureReason!
-        acc[reason] = (acc[reason] || 0) + 1
+        const reason = attempt.failureReason
+        if (reason) {
+          acc[reason] = (acc[reason] || 0) + 1
+        }
         return acc
       }, {} as Record<string, number>)
 

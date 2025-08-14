@@ -477,11 +477,16 @@ export class DataRetentionSystem {
    * Execute condition-based retention rule
    */
   private async executeConditionRule(rule: RetentionRule, result: CleanupResult): Promise<void> {
+    if (!rule.operator) {
+      logger.warn('DataRetentionSystem', 'Condition rule missing operator, skipping', { rule })
+      return
+    }
+
     const query = `
-      SELECT id FROM businesses 
-      WHERE ${rule.field} ${this.getOperatorSql(rule.operator!)} $1
+      SELECT id FROM businesses
+      WHERE ${rule.field} ${this.getOperatorSql(rule.operator)} $1
     `
-    
+
     const records = await database.executeQuery(query, [rule.value])
     result.recordsProcessed += records.rows.length
 

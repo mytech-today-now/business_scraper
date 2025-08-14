@@ -139,17 +139,23 @@ export class DemoScraperService {
     if (matchingBusiness) {
       const business: BusinessRecord = {
         id: `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        businessName: matchingBusiness.businessName!,
-        email: matchingBusiness.email!,
+        businessName: matchingBusiness.businessName || 'Demo Business',
+        email: matchingBusiness.email || ['demo@example.com'],
         phone: matchingBusiness.phone,
-        websiteUrl: matchingBusiness.websiteUrl!,
-        address: matchingBusiness.address!,
+        websiteUrl: matchingBusiness.websiteUrl || url,
+        address: matchingBusiness.address || {
+          street: '123 Demo Street',
+          city: 'Demo City',
+          state: 'CA',
+          zipCode: '90210',
+          country: 'USA'
+        },
         contactPerson: matchingBusiness.contactPerson,
         coordinates: {
           lat: 34.0522 + (Math.random() - 0.5) * 0.1,
           lng: -118.2437 + (Math.random() - 0.5) * 0.1,
         },
-        industry: matchingBusiness.industry!,
+        industry: matchingBusiness.industry || 'General Business',
         scrapedAt: new Date(),
       }
 
@@ -255,8 +261,8 @@ export class DemoScraperService {
     
     return {
       street: `${streetNumber} ${street}`,
-      city: city!,
-      state: state!,
+      city: city || 'Springfield',
+      state: state || 'CA',
       zipCode: zipCode.toString(),
     }
   }

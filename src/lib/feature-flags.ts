@@ -147,7 +147,7 @@ export const FEATURE_FLAGS: Record<string, FeatureFlag> = {
 
 // Feature flag evaluation context
 interface FeatureContext {
-  environment: string
+  environment: 'development' | 'production' | 'test' | string
   userId?: string
   userAgent?: string
   ipAddress?: string
@@ -221,7 +221,7 @@ class FeatureFlagManager {
     }
 
     // Check environment restrictions
-    if (flag.environments && !flag.environments.includes(evalContext.environment as any)) {
+    if (flag.environments && !flag.environments.includes(evalContext.environment as 'development' | 'production' | 'test')) {
       logger.debug('FeatureFlags', `Feature ${flagKey} not available in ${evalContext.environment} environment`)
       return false
     }

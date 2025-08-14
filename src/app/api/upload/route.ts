@@ -13,6 +13,27 @@ import fs from 'fs'
 import path from 'path'
 
 /**
+ * Interface for upload result
+ */
+interface UploadResult {
+  originalName: string
+  size: number
+  mimeType: string
+  isSecure: boolean
+  processed: boolean | unknown
+  securityScan?: {
+    scanDuration: number
+    fileHash: string
+    threats: string[]
+    warnings: string[]
+    quarantined: boolean
+  }
+  savedAs?: string
+  savedPath?: string
+  saveError?: string
+}
+
+/**
  * POST /api/upload - Secure file upload endpoint
  */
 const uploadHandler = withApiSecurity(
@@ -58,7 +79,7 @@ const uploadHandler = withApiSecurity(
         }
 
         for (const file of files) {
-          const result: any = {
+          const result: UploadResult = {
             originalName: file.originalName,
             size: file.size,
             mimeType: file.mimeType,

@@ -8,6 +8,31 @@ import { performConfigHealthCheck } from '@/lib/config-validator'
 import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
 
+/**
+ * Interface for health check response
+ */
+interface HealthCheckResponse {
+  status: string
+  timestamp: string
+  uptime: number
+  environment: string
+  version: string
+  checks: {
+    database: string
+    configuration: string
+    memory: string
+    disk: string
+  }
+  responseTime?: number
+  memory?: {
+    rss: number
+    heapTotal: number
+    heapUsed: number
+    external: number
+    arrayBuffers: number
+  }
+}
+
 export async function GET(_request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now()
   
@@ -16,7 +41,7 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
     const config = getConfig()
 
     // Basic health check data
-    const healthCheck = {
+    const healthCheck: HealthCheckResponse = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
@@ -72,7 +97,7 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
       healthCheck.checks.memory = heapUsagePercent > 90 ? 'warning' : 'healthy'
       
       // Add memory info to response
-      ;(healthCheck as any).memory = memUsageMB
+      healthCheck.memory = memUsageMB
     } catch (error) {
       healthCheck.checks.memory = 'unknown'
       logger.warn('Health', 'Memory check failed', error)

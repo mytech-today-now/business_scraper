@@ -14,13 +14,37 @@ import { logger } from '@/utils/logger'
 import { withApiSecurity } from '@/lib/api-security'
 import { withValidation } from '@/lib/validation-middleware'
 import { getClientIP } from '@/lib/security'
+import { BusinessRecord } from '@/types/business'
+
+/**
+ * Interface for data management request data
+ */
+interface DataManagementRequestData {
+  body: {
+    action: 'validate-business' | 'validate-batch' | 'quality-score' | 'enrich-data' |
+           'detect-duplicates' | 'compare-records' | 'execute-retention-policy' |
+           'export-data' | 'import-data' | 'backup-data' | 'restore-data'
+    business?: BusinessRecord
+    businesses?: BusinessRecord[]
+    businessData?: BusinessRecord
+    businessToEnrich?: BusinessRecord
+    records?: BusinessRecord[]
+    record1?: BusinessRecord
+    record2?: BusinessRecord
+    policyName?: string
+    format?: string
+    filters?: Record<string, unknown>
+    backupId?: string
+    data?: BusinessRecord[]
+  }
+}
 
 /**
  * POST /api/data-management - Data management operations
  */
 const dataManagementHandler = withApiSecurity(
   withValidation(
-    async (request: NextRequest, validatedData: any) => {
+    async (request: NextRequest, validatedData: DataManagementRequestData) => {
       const ip = getClientIP(request)
       const { action, ...params } = validatedData.body || {}
 

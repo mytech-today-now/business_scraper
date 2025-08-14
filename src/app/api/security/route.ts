@@ -9,6 +9,32 @@ import { getClientIP, getSession } from '@/lib/security'
 import { logger } from '@/utils/logger'
 
 /**
+ * Interface for security event filter
+ */
+interface SecurityEventFilter {
+  type?: SecurityEventType
+  severity?: SecuritySeverity
+  ip?: string
+  since?: number
+  limit?: number
+}
+
+/**
+ * Interface for security event
+ */
+interface SecurityEvent {
+  id: string
+  type: SecurityEventType
+  severity: SecuritySeverity
+  ip: string
+  timestamp: Date
+  message: string
+  details?: Record<string, unknown>
+  userAgent?: string
+  endpoint?: string
+}
+
+/**
  * GET /api/security - Get security monitoring data
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -54,7 +80,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         const since = url.searchParams.get('since')
         const limit = url.searchParams.get('limit')
 
-        const filter: any = {}
+        const filter: SecurityEventFilter = {}
         if (type) filter.type = type
         if (severity) filter.severity = severity
         if (filterIP) filter.ip = filterIP
@@ -243,7 +269,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 /**
  * Helper function to get top threats
  */
-function getTopThreats(events: any[]): Array<{ type: string; count: number }> {
+function getTopThreats(events: SecurityEvent[]): Array<{ type: string; count: number }> {
   const threatCounts: Record<string, number> = {}
   
   for (const event of events) {
@@ -259,7 +285,7 @@ function getTopThreats(events: any[]): Array<{ type: string; count: number }> {
 /**
  * Helper function to generate CSV report
  */
-function generateCSVReport(events: any[]): string {
+function generateCSVReport(events: SecurityEvent[]): string {
   const headers = [
     'Timestamp',
     'Type',

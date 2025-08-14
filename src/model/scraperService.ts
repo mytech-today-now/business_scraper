@@ -150,7 +150,11 @@ export class ScraperService {
       await this.initialize()
     }
 
-    const page = await this.browser!.newPage()
+    if (!this.browser) {
+      throw new Error('Failed to initialize browser')
+    }
+
+    const page = await this.browser.newPage()
 
     try {
       await page.setUserAgent(this.config.userAgent)

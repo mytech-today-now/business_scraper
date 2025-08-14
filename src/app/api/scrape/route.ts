@@ -5,9 +5,24 @@ import { logger } from '@/utils/logger'
 import { withApiSecurity } from '@/lib/api-security'
 import { withValidation } from '@/lib/validation-middleware'
 
+/**
+ * Interface for scrape request data
+ */
+interface ScrapeRequestData {
+  body: {
+    action: 'initialize' | 'search' | 'scrape' | 'cleanup'
+    query?: string
+    zipCode?: string
+    maxResults?: number
+    url?: string
+    depth?: number
+    maxPages?: number
+  }
+}
+
 const scrapeHandler = withApiSecurity(
   withValidation(
-    async (request: NextRequest, validatedData: any) => {
+    async (request: NextRequest, validatedData: ScrapeRequestData) => {
       const ip = getClientIP(request)
       const { action, ...params } = validatedData.body || {}
 
