@@ -7,7 +7,7 @@ const getStaticCSPHeader = () => {
     "default-src 'self'",
     "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https:",
+    "img-src 'self' data: blob: https: /_next/image* /_next/static/*",
     "font-src 'self' data:",
     "connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com",
     "object-src 'none'",
@@ -19,6 +19,21 @@ const getStaticCSPHeader = () => {
 }
 
 const nextConfig = {
+  // Image optimization configuration
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    domains: [
+      'nominatim.openstreetmap.org',
+      'api.opencagedata.com'
+    ],
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    minimumCacheTTL: 60,
+    unoptimized: false,
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Don't resolve 'fs', 'net', 'tls' modules on the client-side

@@ -103,7 +103,10 @@ const cspConfigs: Record<string, CSPConfig> = {
       "data:",
       "blob:",
       "https://nominatim.openstreetmap.org", // Specific image sources only
-      "https://api.opencagedata.com"
+      "https://api.opencagedata.com",
+      // Next.js image optimization domains
+      "/_next/image*", // Next.js image optimization endpoint
+      "/_next/static/*" // Next.js static assets
     ],
     fontSrc: ["'self'", "data:"],
     connectSrc: [

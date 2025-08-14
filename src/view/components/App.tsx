@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import {
   Play,
   Square,
@@ -383,10 +384,15 @@ export function App(): JSX.Element {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3">
-                <img
+                <Image
                   src="/favicon.ico"
                   alt="Business Scraper Logo"
-                  className="h-8 w-8 object-contain"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                  priority
+                  sizes="32px"
+                  quality={90}
                 />
                 <h1 className="text-2xl font-bold">Business Scraper</h1>
               </div>

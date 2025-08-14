@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Button } from '@/view/components/ui/Button'
 import { Input } from '@/view/components/ui/Input'
 import { Card } from '@/view/components/ui/Card'
@@ -115,10 +116,15 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="flex items-center justify-center gap-3 mb-2">
-            <img
+            <Image
               src="/favicon.ico"
               alt="Business Scraper Logo"
-              className="h-10 w-10 object-contain"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+              sizes="40px"
+              quality={90}
             />
             <h2 className="text-3xl font-extrabold text-gray-900">
               Business Scraper
