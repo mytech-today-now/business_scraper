@@ -44,9 +44,9 @@ Object.defineProperty(window, 'localStorage', {
 })
 
 // Test component that uses the config context
-function TestComponent() {
+function TestComponent(): JSX.Element {
   const { state, toggleDemoMode } = useConfig()
-  
+
   return (
     <div>
       <div data-testid="demo-mode-status">
@@ -59,9 +59,9 @@ function TestComponent() {
   )
 }
 
-function renderWithProvider(component: React.ReactElement) {
-  return act(() => {
-    return render(
+function renderWithProvider(component: React.ReactElement): void {
+  return act((): void => {
+    render(
       <ConfigProvider>
         {component}
       </ConfigProvider>

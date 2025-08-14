@@ -26,7 +26,7 @@ jest.mock('next/image', () => {
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
-  useRouter: () => ({
+  useRouter: (): { push: jest.Mock; replace: jest.Mock; back: jest.Mock } => ({
     push: jest.fn(),
     replace: jest.fn(),
     back: jest.fn(),
@@ -35,7 +35,7 @@ jest.mock('next/navigation', () => ({
 
 // Mock CSRF protection hook
 jest.mock('@/hooks/useCSRFProtection', () => ({
-  useFormCSRFProtection: () => ({
+  useFormCSRFProtection: (): { csrfToken: string; isLoading: boolean } => ({
     csrfToken: 'mock-token',
     isLoading: false,
   }),

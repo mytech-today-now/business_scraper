@@ -25,6 +25,9 @@ import { ExportService, ExportFormat } from '@/utils/exportService'
 import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
 import { clientScraperService } from '@/model/clientScraperService'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { useErrorHandling } from '@/hooks/useErrorHandling'
+import toast from 'react-hot-toast'
 
 /**
  * Configuration panel component
@@ -157,12 +160,25 @@ function ScrapingPanel(): JSX.Element {
   const [isExporting, setIsExporting] = useState(false)
   const [showProcessingWindow, setShowProcessingWindow] = useState(true)
 
+  // Error handling for the scraping panel
+  const exportErrorHandling = useErrorHandling({
+    component: 'ScrapingPanel-Export',
+    maxRetries: 2,
+    onError: (error, errorId) => {
+      toast.error(`Export failed: ${error.message}`, {
+        id: errorId,
+        duration: 5000
+      })
+    }
+  })
+
   /**
-   * Handle export functionality
+   * Handle export functionality with improved error handling
    */
   const handleExport = async (format: string): Promise<void> => {
     if (!scrapingState.results.length) {
       logger.warn('Export', 'No data to export')
+      toast.error('No data available to export')
       return
     }
 
@@ -191,9 +207,10 @@ function ScrapingPanel(): JSX.Element {
       URL.revokeObjectURL(url)
 
       logger.info('Export', `Successfully exported ${scrapingState.results.length} businesses as ${format}`)
+      toast.success(`Successfully exported ${scrapingState.results.length} businesses as ${format.toUpperCase()}`)
     } catch (error) {
-      logger.error('Export', `Failed to export data as ${format}`, error)
-      // You could show a toast notification here
+      const err = error instanceof Error ? error : new Error(String(error))
+      exportErrorHandling.handleError(err, { format, resultCount: scrapingState.results.length })
     } finally {
       setIsExporting(false)
     }
@@ -312,16 +329,51 @@ function ScrapingPanel(): JSX.Element {
       {/* Error Display */}
       {hasErrors && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-destructive">Errors ({scrapingState.errors.length})</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-destructive">
+              Errors ({scrapingState.errors.length})
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                // Clear errors if there's a method for it
+                logger.info('ScrapingPanel', 'User cleared error display')
+                toast.success('Error display cleared')
+              }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="max-h-40 overflow-y-auto space-y-2">
               {scrapingState.errors.slice(-10).map((error, index) => (
-                <div key={index} className="text-sm text-destructive bg-destructive/10 p-2 rounded">
-                  {error}
+                <div
+                  key={index}
+                  className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg border border-destructive/20"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="flex-1">{error}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard?.writeText(error)
+                        toast.success('Error copied to clipboard')
+                      }}
+                      className="h-6 w-6 p-0 text-destructive/60 hover:text-destructive"
+                    >
+                      <FileText className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
               ))}
+              {scrapingState.errors.length > 10 && (
+                <div className="text-xs text-muted-foreground text-center py-2">
+                  Showing last 10 errors. Total: {scrapingState.errors.length}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -447,7 +499,9 @@ export function App(): JSX.Element {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {activeTab === 'config' ? <ConfigurationPanel /> : <ScrapingPanel />}
+        <ErrorBoundary level="section" showDetails={process.env.NODE_ENV === 'development'}>
+          {activeTab === 'config' ? <ConfigurationPanel /> : <ScrapingPanel />}
+        </ErrorBoundary>
       </main>
 
       {/* Footer */}

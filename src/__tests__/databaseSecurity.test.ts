@@ -7,6 +7,7 @@ import {
   DatabaseSecurityService
 } from '@/lib/databaseSecurity'
 import { SecureDatabase } from '@/lib/secureDatabase'
+import { Pool } from 'pg'
 
 // Mock pg module
 jest.mock('pg', () => ({
@@ -216,7 +217,6 @@ describe('Secure Database Wrapper', () => {
     secureDb = new SecureDatabase(mockConfig)
     
     // Get the mocked pool instance
-    const { Pool } = require('pg')
     mockPool = new Pool()
   })
 

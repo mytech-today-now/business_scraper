@@ -65,9 +65,9 @@ describe('ExportService', () => {
       expect(result.blob.type).toMatch(/text\/csv/)
       
       // Read blob content using FileReader
-      const text = await new Promise<string>((resolve) => {
+      const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
+        reader.onload = (): void => resolve(reader.result as string)
         reader.readAsText(result.blob)
       })
       expect(text).toContain('Business Name')
@@ -111,9 +111,9 @@ describe('ExportService', () => {
       expect(result.blob.type).toBe('application/json')
       
       // Read and parse JSON content using FileReader
-      const text = await new Promise<string>((resolve) => {
+      const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
+        reader.onload = (): void => resolve(reader.result as string)
         reader.readAsText(result.blob)
       })
       const data = JSON.parse(text)
@@ -149,9 +149,9 @@ describe('ExportService', () => {
         includeHeaders: false
       })
       
-      const text = await new Promise<string>((resolve) => {
+      const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
+        reader.onload = (): void => resolve(reader.result as string)
         reader.readAsText(result.blob)
       })
       expect(text).not.toContain('Business Name')
@@ -163,9 +163,9 @@ describe('ExportService', () => {
         delimiter: ';'
       })
       
-      const text = await new Promise<string>((resolve) => {
+      const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
+        reader.onload = (): void => resolve(reader.result as string)
         reader.readAsText(result.blob)
       })
       expect(text).toContain(';')

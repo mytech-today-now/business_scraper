@@ -12,7 +12,6 @@ import {
 } from '@/lib/securityLogger'
 import { AuthenticationMonitor } from '@/lib/authenticationMonitor'
 import { SecurityAlertManager } from '@/lib/securityAlerts'
-import { NextRequest } from 'next/server'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({

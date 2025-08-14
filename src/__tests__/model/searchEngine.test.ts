@@ -1,10 +1,8 @@
-import { SearchEngineService, SearchResult } from '@/model/searchEngine'
+import { SearchEngineService } from '@/model/searchEngine'
 import axios from 'axios'
-import { logger } from '@/utils/logger'
 
 // Mock axios
 jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
 
 // Mock logger
 jest.mock('@/utils/logger', () => ({

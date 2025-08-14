@@ -7,6 +7,11 @@ import { checkDatabaseConnection } from '@/lib/database'
 import { performConfigHealthCheck } from '@/lib/config-validator'
 import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
+import {
+  withStandardErrorHandling,
+  createSuccessResponse,
+  handleAsyncApiOperation
+} from '@/utils/apiErrorHandling'
 
 /**
  * Interface for health check response
@@ -33,10 +38,10 @@ interface HealthCheckResponse {
   }
 }
 
-export async function GET(_request: NextRequest): Promise<NextResponse> {
-  const startTime = Date.now()
-  
-  try {
+async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
+  const result = await handleAsyncApiOperation(
+    async () => {
+      const startTime = Date.now()
     // Get configuration
     const config = getConfig()
 
@@ -114,20 +119,25 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
       healthCheck.status = 'warning'
     }
 
-    // Return appropriate status code
-    const statusCode = healthCheck.status === 'healthy' ? 200 : 
-                      healthCheck.status === 'warning' ? 200 : 503
+      // Return appropriate status code
+      const statusCode = healthCheck.status === 'healthy' ? 200 :
+                        healthCheck.status === 'warning' ? 200 : 503
 
-    return NextResponse.json(healthCheck, { status: statusCode })
+      return { healthCheck, statusCode }
+    },
+    {
+      operationName: 'Health Check',
+      endpoint: '/api/health',
+      request
+    }
+  )
 
-  } catch (error) {
-    logger.error('Health', 'Health check failed', error)
-    
-    return NextResponse.json({
-      status: 'unhealthy',
-      timestamp: new Date().toISOString(),
-      error: 'Health check failed',
-      responseTime: Date.now() - startTime
-    }, { status: 503 })
+  if (!result.success) {
+    return result.error
   }
+
+  const { healthCheck, statusCode } = result.data
+  return NextResponse.json(healthCheck, { status: statusCode })
 }
+
+export const GET = withStandardErrorHandling(healthCheckHandler)

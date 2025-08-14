@@ -1,5 +1,4 @@
-import { QueryOptimizer, OptimizedQuery, QueryPerformance } from '@/model/queryOptimizer'
-import { logger } from '@/utils/logger'
+import { QueryOptimizer, QueryPerformance } from '@/model/queryOptimizer'
 
 // Mock logger
 jest.mock('@/utils/logger', () => ({

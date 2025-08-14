@@ -1,6 +1,5 @@
-import { SearchResultValidator, ValidatedSearchResult } from '@/model/searchResultValidator'
+import { SearchResultValidator } from '@/model/searchResultValidator'
 import axios from 'axios'
-import { logger } from '@/utils/logger'
 
 // Mock axios
 jest.mock('axios')

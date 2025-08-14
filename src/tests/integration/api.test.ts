@@ -3,19 +3,13 @@
  * Comprehensive test suite for all API endpoints and their interactions
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach, jest } from '@jest/globals'
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals'
 
 // Mock API functions since we don't have the actual implementations yet
-const mockApiResponse = (data: any, status = 200) => ({
+const mockApiResponse = (data: unknown, status = 200): { json: jest.Mock; status: number } => ({
   json: jest.fn().mockResolvedValue(data),
   status,
 })
-
-// Mock API handlers
-const mockEnhancedScrapePost = jest.fn()
-const mockEnhancedScrapeGet = jest.fn()
-const mockDataManagementPost = jest.fn()
-const mockDataManagementGet = jest.fn()
 
 // Mock external dependencies
 jest.mock('@/lib/postgresql-database', () => ({
@@ -546,7 +540,6 @@ describe('API Integration Tests', () => {
       })
 
       const response = await enhancedScrapePost(request)
-      const data = await response.json()
 
       // Should either sanitize or reject the input
       expect(response.status).toBeLessThan(500)

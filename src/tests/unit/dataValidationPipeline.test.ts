@@ -36,15 +36,15 @@ interface BusinessRecord {
 
 // Mock DataValidationPipeline class
 class DataValidationPipeline {
-  async validateAndClean(business: BusinessRecord) {
+  async validateAndClean(business: BusinessRecord): Promise<BusinessRecord> {
     return mockDataValidationPipeline.validateAndClean(business)
   }
 
-  calculateDataQualityScore(business: BusinessRecord) {
+  calculateDataQualityScore(business: BusinessRecord): number {
     return mockDataValidationPipeline.calculateDataQualityScore(business)
   }
 
-  async enrichData(business: BusinessRecord) {
+  async enrichData(business: BusinessRecord): Promise<BusinessRecord> {
     return mockDataValidationPipeline.enrichData(business)
   }
 
@@ -268,15 +268,7 @@ describe('DataValidationPipeline', () => {
     it('should enrich business with geocoding data', async () => {
       const businessWithoutCoords = { ...mockBusiness }
       delete businessWithoutCoords.coordinates
-      
-      // Mock geocoder
-      const mockGeocoder = {
-        geocode: jest.fn().mockResolvedValue({
-          lat: 40.7128,
-          lng: -74.0060
-        })
-      }
-      
+
       const result = await pipeline.enrichData(businessWithoutCoords)
       
       expect(result.enriched).toBe(true)

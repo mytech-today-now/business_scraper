@@ -4,7 +4,6 @@
 
 import { EnhancedScrapingEngine } from '@/lib/enhancedScrapingEngine'
 import { ExtractedContact } from '@/lib/contactExtractor'
-import { BusinessRecord } from '@/types/business'
 
 // Mock the logger
 jest.mock('@/utils/logger', () => ({

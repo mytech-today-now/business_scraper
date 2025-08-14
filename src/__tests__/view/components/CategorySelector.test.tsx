@@ -9,11 +9,9 @@ import {
   clickButton,
   typeText,
   waitForText,
-  waitForTextToDisappear,
   findButtonByIcon,
   getByDisplayValue,
-  suppressActWarnings,
-  debugDOM
+  suppressActWarnings
 } from '../../utils/testUtils'
 
 // Mock the storage module

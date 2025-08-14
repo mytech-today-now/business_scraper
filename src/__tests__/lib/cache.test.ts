@@ -3,6 +3,7 @@
  */
 
 import { MemoryCache, CacheHelper, cached } from '@/lib/cache'
+import { Features } from '@/lib/feature-flags'
 
 // Mock the feature flags
 jest.mock('@/lib/feature-flags', () => ({
@@ -169,8 +170,7 @@ describe('Cache System', () => {
   describe('CacheHelper', () => {
     beforeEach(() => {
       // Reset feature flag mock
-      const { Features } = require('@/lib/feature-flags')
-      Features.isCachingEnabled.mockReturnValue(true)
+      ;(Features.isCachingEnabled as jest.Mock).mockReturnValue(true)
     })
 
     describe('Basic operations', () => {
@@ -300,8 +300,7 @@ describe('Cache System', () => {
 
     it('should work when caching is disabled', async () => {
       // Disable caching
-      const { Features } = require('@/lib/feature-flags')
-      Features.isCachingEnabled.mockReturnValue(false)
+      ;(Features.isCachingEnabled as jest.Mock).mockReturnValue(false)
       
       const result1 = await service.expensiveOperation('test')
       const result2 = await service.expensiveOperation('test')

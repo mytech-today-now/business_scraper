@@ -8,7 +8,25 @@ import '@testing-library/jest-dom'
 
 // Mock Next.js Image component for testing
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, width, height, priority, sizes, quality, ...props }: any) {
+  return function MockImage({
+    src,
+    alt,
+    width,
+    height,
+    priority,
+    sizes,
+    quality,
+    ...props
+  }: {
+    src: string
+    alt: string
+    width?: number
+    height?: number
+    priority?: boolean
+    sizes?: string
+    quality?: number
+    [key: string]: unknown
+  }): JSX.Element {
     return (
       <img
         src={src}
@@ -28,7 +46,7 @@ jest.mock('next/image', () => {
 import { App } from '@/view/components/App'
 
 describe('Image Optimization', () => {
-  beforeEach(() => {
+  beforeEach((): void => {
     // Mock the config context
     jest.mock('@/controller/ConfigContext', () => ({
       useConfig: () => ({
@@ -51,7 +69,7 @@ describe('Image Optimization', () => {
     }))
   })
 
-  test('should render optimized favicon image in header', () => {
+  test('should render optimized favicon image in header', (): void => {
     render(<App />)
     
     const logoImage = screen.getByAltText('Business Scraper Logo')
@@ -64,14 +82,14 @@ describe('Image Optimization', () => {
     expect(logoImage).toHaveAttribute('data-quality', '90')
   })
 
-  test('should have proper alt text for accessibility', () => {
+  test('should have proper alt text for accessibility', (): void => {
     render(<App />)
     
     const logoImage = screen.getByAltText('Business Scraper Logo')
     expect(logoImage).toHaveAttribute('alt', 'Business Scraper Logo')
   })
 
-  test('should use Next.js Image component with optimization settings', () => {
+  test('should use Next.js Image component with optimization settings', (): void => {
     render(<App />)
     
     const logoImage = screen.getByAltText('Business Scraper Logo')

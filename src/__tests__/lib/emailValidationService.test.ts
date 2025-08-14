@@ -4,7 +4,6 @@
  */
 
 import { EmailValidationService } from '../../lib/emailValidationService';
-import { EmailValidationResult } from '../../types/business';
 
 // Mock DNS module
 const mockResolveMx = jest.fn();

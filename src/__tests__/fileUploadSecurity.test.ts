@@ -7,7 +7,7 @@ import { FileUploadSecurityService } from '@/lib/fileUploadSecurity'
 import { validateFileUpload, generateSecureFilename } from '@/lib/fileUploadMiddleware'
 import { validationService } from '@/utils/validation'
 import fs from 'fs'
-import path from 'path'
+import crypto from 'crypto'
 
 describe('File Upload Security', () => {
   let securityService: FileUploadSecurityService
@@ -192,7 +192,7 @@ describe('File Upload Security', () => {
   describe('Hash Checking', () => {
     test('should detect known malware hashes', async () => {
       const testBuffer = Buffer.from('test malware content')
-      const hash = require('crypto').createHash('sha256').update(testBuffer).digest('hex')
+      const hash = crypto.createHash('sha256').update(testBuffer).digest('hex')
 
       securityService.addMalwareHash(hash)
 
@@ -284,7 +284,6 @@ describe('File Upload Security', () => {
 
     test('should handle malware scanning integration', async () => {
       const file = new File(['test content'], 'test.txt', { type: 'text/plain' })
-      const buffer = Buffer.from(await file.arrayBuffer())
 
       const scanResult = await validationService.scanFileForMalware(file)
 
