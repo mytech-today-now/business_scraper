@@ -47,7 +47,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
     }, 1000) // Auto-save after 1 second of inactivity
 
     return () => clearTimeout(timeoutId)
-  }, [name, keywordsText, isOpen, isEditing])
+  }, [name, keywordsText, isOpen, isEditing, isSaving, handleAutoSave])
 
   const handleAutoSave = async (): Promise<void> => {
     if (!isEditing || !industry || !name.trim()) return

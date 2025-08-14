@@ -392,7 +392,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     }
 
     initialize()
-  }, [])
+  }, [loadConfig])
 
   /**
    * Update configuration
@@ -442,7 +442,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   /**
    * Load configuration from storage
    */
-  const loadConfig = async () => {
+  const loadConfig = useCallback(async () => {
     try {
       const savedConfig = await storage.getConfig('default')
       if (savedConfig) {
@@ -454,7 +454,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       logger.error('ConfigProvider', 'Failed to load configuration', error)
       throw error
     }
-  }
+  }, [])
 
   /**
    * Add custom industry

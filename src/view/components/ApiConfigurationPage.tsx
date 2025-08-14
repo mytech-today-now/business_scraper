@@ -69,9 +69,9 @@ export function ApiConfigurationPage({
   // Load existing credentials on mount
   useEffect(() => {
     loadCredentials()
-  }, [])
+  }, [loadCredentials])
 
-  const loadCredentials = async () => {
+  const loadCredentials = useCallback(async () => {
     setIsLoading(true)
     try {
       const stored = await retrieveApiCredentials()
@@ -89,7 +89,7 @@ export function ApiConfigurationPage({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
   const handleInputChange = (field: keyof ApiCredentials, value: string): void => {
     setCredentials(prev => ({

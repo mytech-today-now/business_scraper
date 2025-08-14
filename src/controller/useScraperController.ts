@@ -472,7 +472,7 @@ export function useScraperController(): {
       }))
       abortControllerRef.current = null
     }
-  }, [configState, getSelectedIndustryNames, isConfigValid, scrapingState.isScrapingActive, scrapingState.results.length, scrapingState.errors.length, updateProgress, addError, addResults])
+  }, [configState, getSelectedIndustryNames, isConfigValid, scrapingState.isScrapingActive, scrapingState.results.length, scrapingState.errors.length, updateProgress, addError, addResults, updateProcessingStep, addProcessingStep])
 
   /**
    * Stop scraping process

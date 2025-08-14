@@ -106,7 +106,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     setupKeyboardListeners()
     setupAccessibilityFeatures()
     requestNotificationPermission()
-  }, [])
+  }, [loadPreferences, setupKeyboardListeners, setupAccessibilityFeatures, requestNotificationPermission])
 
   // Apply theme changes
   useEffect(() => {
@@ -118,7 +118,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     applyAccessibilitySettings(state.preferences.accessibility)
   }, [state.preferences.accessibility])
 
-  const loadPreferences = () => {
+  const loadPreferences = useCallback(() => {
     try {
       const saved = localStorage.getItem('userPreferences')
       if (saved) {
@@ -128,7 +128,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     } catch (error) {
       logger.error('UXProvider', 'Failed to load preferences', error)
     }
-  }
+  }, [])
 
   const savePreferences = (preferences: UserPreferences) => {
     try {
@@ -284,7 +284,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     root.style.setProperty('--animation-duration', accessibility.reducedMotion ? '0s' : '0.3s')
   }
 
-  const setupKeyboardListeners = () => {
+  const setupKeyboardListeners = useCallback(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!state.preferences.interface.keyboardNavigation) return
       
@@ -318,9 +318,9 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }
+  }, [state.preferences.interface.keyboardNavigation])
 
-  const setupAccessibilityFeatures = () => {
+  const setupAccessibilityFeatures = useCallback(() => {
     // Detect screen reader
     const hasScreenReader = window.navigator.userAgent.includes('NVDA') || 
                            window.navigator.userAgent.includes('JAWS') || 
@@ -339,15 +339,15 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
         accessibility: { ...state.preferences.accessibility, reducedMotion: true }
       })
     }
-  }
+  }, [state.preferences.accessibility])
 
-  const requestNotificationPermission = async () => {
+  const requestNotificationPermission = useCallback(async () => {
     if ('Notification' in window && state.preferences.notifications.desktop) {
       if (Notification.permission === 'default') {
         await Notification.requestPermission()
       }
     }
-  }
+  }, [state.preferences.notifications.desktop])
 
   const showKeyboardShortcuts = () => {
     showToast('Keyboard shortcuts: Ctrl+Z (Undo), Ctrl+Y (Redo), Ctrl+/ (Show shortcuts)', 'info')
