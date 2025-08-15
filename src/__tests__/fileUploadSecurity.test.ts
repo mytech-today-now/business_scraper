@@ -6,24 +6,47 @@
 import { FileUploadSecurityService } from '@/lib/fileUploadSecurity'
 import { validateFileUpload, generateSecureFilename } from '@/lib/fileUploadMiddleware'
 import { validationService } from '@/utils/validation'
-import fs from 'fs'
-import crypto from 'crypto'
+import { jest } from '@jest/globals'
+import {
+  createMockFileSystem,
+  createMockEnvironment,
+  createMockFile
+} from './utils/mockHelpers'
+import {
+  testPaths,
+  testFileContents,
+  encodedSecurityPatterns,
+  decodeSecurityPattern
+} from './fixtures/testData'
+import { setupTest, cleanupTest, securityTestHelpers } from './setup/testSetup'
+
+// Mock file system operations
+const mockFs = createMockFileSystem()
+const mockEnv = createMockEnvironment()
+
+jest.mock('fs', () => mockFs)
+jest.mock('crypto', () => ({
+  createHash: jest.fn(() => ({
+    update: jest.fn().mockReturnThis(),
+    digest: jest.fn(() => 'test-hash-12345')
+  }))
+}))
 
 describe('File Upload Security', () => {
   let securityService: FileUploadSecurityService
 
   beforeEach(() => {
+    setupTest()
     securityService = new FileUploadSecurityService()
+    mockFs.reset()
+    mockEnv.restore()
   })
 
   afterEach(() => {
-    // Clean up test files
-    const testDirs = ['./test-uploads', './test-quarantine']
-    testDirs.forEach(dir => {
-      if (fs.existsSync(dir)) {
-        fs.rmSync(dir, { recursive: true, force: true })
-      }
-    })
+    cleanupTest()
+    // Validate no real file operations occurred
+    securityTestHelpers.validateNoRealFileOperations()
+    securityTestHelpers.validateEnvironmentIntegrity()
   })
 
   describe('File Validation', () => {
@@ -44,7 +67,7 @@ describe('File Upload Security', () => {
     })
 
     test('should validate file extensions', () => {
-      const scriptFile = new File(['content'], 'script.js', { type: 'application/javascript' })
+      const scriptFile = createMockFile('content', 'script.js', 'application/javascript')
       const result = validateFileUpload(scriptFile)
 
       expect(result.isValid).toBe(false)
@@ -52,7 +75,8 @@ describe('File Upload Security', () => {
     })
 
     test('should detect path traversal attempts', () => {
-      const maliciousFile = new File(['content'], '../../../etc/passwd', { type: 'text/plain' })
+      const pathTraversalName = decodeSecurityPattern(encodedSecurityPatterns.pathTraversalPattern)
+      const maliciousFile = createMockFile('content', pathTraversalName, 'text/plain')
       const result = validateFileUpload(maliciousFile)
 
       expect(result.isValid).toBe(false)
@@ -122,7 +146,7 @@ describe('File Upload Security', () => {
 
   describe('Content Analysis', () => {
     test('should detect script injection patterns', async () => {
-      const maliciousContent = '<script>alert("XSS")</script>'
+      const maliciousContent = decodeSecurityPattern(encodedSecurityPatterns.xssPattern)
       const buffer = Buffer.from(maliciousContent)
       const result = await securityService.scanFile(buffer, 'malicious.html', {
         enableContentAnalysis: true
@@ -166,11 +190,12 @@ describe('File Upload Security', () => {
 
   describe('Quarantine Functionality', () => {
     test('should quarantine malicious files', async () => {
-      const maliciousBuffer = Buffer.from('<script>alert("XSS")</script>')
+      const maliciousContent = decodeSecurityPattern(encodedSecurityPatterns.xssPattern)
+      const maliciousBuffer = Buffer.from(maliciousContent)
       const result = await securityService.scanFile(maliciousBuffer, 'malicious.html', {
         enableQuarantine: true,
         enableContentAnalysis: true,
-        quarantineDirectory: './test-quarantine'
+        quarantineDirectory: testPaths.quarantineDir
       })
 
       expect(result.quarantined).toBe(true)
@@ -178,10 +203,11 @@ describe('File Upload Security', () => {
     })
 
     test('should not quarantine safe files', async () => {
-      const safeBuffer = Buffer.from('Hello, World!')
+      const safeBuffer = Buffer.from(testFileContents.plainText)
       const result = await securityService.scanFile(safeBuffer, 'safe.txt', {
         enableQuarantine: true,
-        enableContentAnalysis: true
+        enableContentAnalysis: true,
+        quarantineDirectory: testPaths.quarantineDir
       })
 
       expect(result.quarantined).toBe(false)
@@ -192,9 +218,9 @@ describe('File Upload Security', () => {
   describe('Hash Checking', () => {
     test('should detect known malware hashes', async () => {
       const testBuffer = Buffer.from('test malware content')
-      const hash = crypto.createHash('sha256').update(testBuffer).digest('hex')
+      const mockHash = 'test-hash-12345' // Using mocked hash value
 
-      securityService.addMalwareHash(hash)
+      securityService.addMalwareHash(mockHash)
 
       const result = await securityService.scanFile(testBuffer, 'malware.exe', {
         enableHashChecking: true

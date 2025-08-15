@@ -5,8 +5,26 @@
 
 import { NextRequest } from 'next/server'
 import { POST, GET } from '@/app/api/upload/route'
-import fs from 'fs'
+import { jest } from '@jest/globals'
+import {
+  createMockFileSystem,
+  createMockEnvironment,
+  createMockFile,
+  createMockNextRequest
+} from '../utils/mockHelpers'
+import {
+  testPaths,
+  testFileContents,
+  encodedSecurityPatterns,
+  decodeSecurityPattern
+} from '../fixtures/testData'
+import { setupTest, cleanupTest, securityTestHelpers } from '../setup/testSetup'
 
+// Mock file system and environment
+const mockFs = createMockFileSystem()
+const mockEnv = createMockEnvironment()
+
+jest.mock('fs', () => mockFs)
 
 // Mock dependencies
 jest.mock('@/lib/security', () => ({
@@ -24,23 +42,19 @@ jest.mock('@/utils/logger', () => ({
 
 describe('/api/upload', () => {
   beforeEach(() => {
-    // Clean up test directories
-    const testDirs = ['./test-uploads', './test-quarantine']
-    testDirs.forEach(dir => {
-      if (fs.existsSync(dir)) {
-        fs.rmSync(dir, { recursive: true, force: true })
-      }
-    })
+    setupTest()
+    mockFs.reset()
+    mockEnv.restore()
+    // Set up mock test directories
+    mockFs.addMockDirectory(testPaths.uploadsDir)
+    mockFs.addMockDirectory(testPaths.quarantineDir)
   })
 
   afterEach(() => {
-    // Clean up test directories
-    const testDirs = ['./test-uploads', './test-quarantine']
-    testDirs.forEach(dir => {
-      if (fs.existsSync(dir)) {
-        fs.rmSync(dir, { recursive: true, force: true })
-      }
-    })
+    cleanupTest()
+    // Validate no real file operations occurred
+    securityTestHelpers.validateNoRealFileOperations()
+    securityTestHelpers.validateEnvironmentIntegrity()
   })
 
   describe('GET /api/upload', () => {
@@ -83,10 +97,10 @@ describe('/api/upload', () => {
 
     test('should accept valid file uploads', async () => {
       const formData = new FormData()
-      const testFile = new File(['Hello, World!'], 'test.txt', { type: 'text/plain' })
+      const testFile = createMockFile(testFileContents.plainText, 'test.txt', 'text/plain')
       formData.append('file', testFile)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
         body: formData
       })
@@ -104,10 +118,10 @@ describe('/api/upload', () => {
     test('should reject files exceeding size limit', async () => {
       const formData = new FormData()
       const largeContent = 'x'.repeat(11 * 1024 * 1024) // 11MB
-      const largeFile = new File([largeContent], 'large.txt', { type: 'text/plain' })
+      const largeFile = createMockFile(largeContent, 'large.txt', 'text/plain')
       formData.append('file', largeFile)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
         body: formData
       })
@@ -121,10 +135,10 @@ describe('/api/upload', () => {
 
     test('should reject executable files', async () => {
       const formData = new FormData()
-      const execFile = new File(['MZ'], 'malware.exe', { type: 'application/octet-stream' })
+      const execFile = createMockFile('MZ', 'malware.exe', 'application/octet-stream')
       formData.append('file', execFile)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
         body: formData
       })
@@ -198,16 +212,16 @@ describe('/api/upload', () => {
 
     test('should save files when requested', async () => {
       const formData = new FormData()
-      const testFile = new File(['Test content'], 'test.txt', { type: 'text/plain' })
+      const testFile = createMockFile(testFileContents.plainText, 'test.txt', 'text/plain')
       formData.append('file', testFile)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=documents&save=true', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents&save=true', {
         method: 'POST',
         body: formData
       })
 
-      // Set upload directory for test
-      process.env.UPLOAD_DIR = './test-uploads'
+      // Set upload directory for test using mock environment
+      mockEnv.set('UPLOAD_DIR', testPaths.uploadsDir)
 
       const response = await POST(request)
       const data = await response.json()
@@ -219,10 +233,11 @@ describe('/api/upload', () => {
 
     test('should handle malicious script content', async () => {
       const formData = new FormData()
-      const maliciousFile = new File(['<script>alert("XSS")</script>'], 'malicious.html', { type: 'text/html' })
+      const maliciousContent = decodeSecurityPattern(encodedSecurityPatterns.xssPattern)
+      const maliciousFile = createMockFile(maliciousContent, 'malicious.html', 'text/html')
       formData.append('file', maliciousFile)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
         body: formData
       })
@@ -237,10 +252,10 @@ describe('/api/upload', () => {
 
     test('should validate JSON structure for backup files', async () => {
       const formData = new FormData()
-      const validJson = new File(['{"key": "value"}'], 'backup.json', { type: 'application/json' })
+      const validJson = createMockFile(testFileContents.jsonData, 'backup.json', 'application/json')
       formData.append('file', validJson)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=backup', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=backup', {
         method: 'POST',
         body: formData
       })
@@ -254,10 +269,10 @@ describe('/api/upload', () => {
 
     test('should reject invalid JSON for backup files', async () => {
       const formData = new FormData()
-      const invalidJson = new File(['invalid json content'], 'backup.json', { type: 'application/json' })
+      const invalidJson = createMockFile('invalid json content', 'backup.json', 'application/json')
       formData.append('file', invalidJson)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=backup', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=backup', {
         method: 'POST',
         body: formData
       })
@@ -271,10 +286,10 @@ describe('/api/upload', () => {
 
     test('should validate CSV structure for data import', async () => {
       const formData = new FormData()
-      const validCsv = new File(['name,category\nBusiness 1,Retail'], 'data.csv', { type: 'text/csv' })
+      const validCsv = createMockFile(testFileContents.csvData, 'data.csv', 'text/csv')
       formData.append('file', validCsv)
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=dataImport', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=dataImport', {
         method: 'POST',
         body: formData
       })
@@ -309,14 +324,13 @@ describe('/api/upload', () => {
 
     test('should handle file processing errors gracefully', async () => {
       const formData = new FormData()
-      const testFile = new File(['Test content'], 'test.txt', { type: 'text/plain' })
+      const testFile = createMockFile(testFileContents.plainText, 'test.txt', 'text/plain')
       formData.append('file', testFile)
 
-      // Mock a processing error
-      const originalEnv = process.env.UPLOAD_DIR
-      process.env.UPLOAD_DIR = '/invalid/path/that/does/not/exist'
+      // Mock a processing error by setting invalid path
+      mockEnv.set('UPLOAD_DIR', '/invalid/path/that/does/not/exist')
 
-      const request = new NextRequest('http://localhost:3000/api/upload?type=documents&save=true', {
+      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents&save=true', {
         method: 'POST',
         body: formData
       })
@@ -328,8 +342,7 @@ describe('/api/upload', () => {
       expect(response.status).toBe(200)
       expect(data.results[0].saveError).toBeDefined()
 
-      // Restore environment
-      process.env.UPLOAD_DIR = originalEnv
+      // Environment will be restored in afterEach
     })
   })
 
