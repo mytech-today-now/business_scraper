@@ -4,11 +4,14 @@
 
 import { MemoryCache, CacheHelper, cached } from '@/lib/cache'
 import { Features } from '@/lib/feature-flags'
+import { jest } from '@jest/globals'
+import { setupTest, cleanupTest } from '../setup/testSetup'
 
 // Mock the feature flags
+const mockIsCachingEnabled = jest.fn(() => true)
 jest.mock('@/lib/feature-flags', () => ({
   Features: {
-    isCachingEnabled: jest.fn(() => true)
+    isCachingEnabled: mockIsCachingEnabled
   }
 }))
 
@@ -28,11 +31,13 @@ describe('Cache System', () => {
     let cache: MemoryCache
 
     beforeEach(() => {
+      setupTest()
       cache = new MemoryCache(10, 60000) // Small cache for testing
     })
 
     afterEach(async () => {
       await cache.close()
+      cleanupTest()
     })
 
     describe('Basic operations', () => {
@@ -170,7 +175,7 @@ describe('Cache System', () => {
   describe('CacheHelper', () => {
     beforeEach(() => {
       // Reset feature flag mock
-      ;(Features.isCachingEnabled as jest.Mock).mockReturnValue(true)
+      mockIsCachingEnabled.mockReturnValue(true)
     })
 
     describe('Basic operations', () => {
@@ -300,7 +305,7 @@ describe('Cache System', () => {
 
     it('should work when caching is disabled', async () => {
       // Disable caching
-      ;(Features.isCachingEnabled as jest.Mock).mockReturnValue(false)
+      mockIsCachingEnabled.mockReturnValue(false)
       
       const result1 = await service.expensiveOperation('test')
       const result2 = await service.expensiveOperation('test')

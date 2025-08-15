@@ -4,6 +4,9 @@
 
 import { ClientSearchEngine } from '@/model/clientSearchEngine'
 import { ApiCredentials } from '@/utils/secureStorage'
+import { jest } from '@jest/globals'
+import { mockApiCredentials } from '../fixtures/testData'
+import { setupTest, cleanupTest } from '../setup/testSetup'
 
 // Mock the logger
 jest.mock('@/utils/logger', () => ({
@@ -16,8 +19,9 @@ jest.mock('@/utils/logger', () => ({
 }))
 
 // Mock the secure storage
+const mockRetrieveApiCredentials = jest.fn()
 jest.mock('@/utils/secureStorage', () => ({
-  retrieveApiCredentials: jest.fn(),
+  retrieveApiCredentials: mockRetrieveApiCredentials,
   ApiCredentials: {}
 }))
 
@@ -30,25 +34,21 @@ interface SearchResult {
 
 describe('ClientSearchEngine Domain Blacklist', () => {
   let searchEngine: ClientSearchEngine
-  let mockCredentials: ApiCredentials
+  let testCredentials: ApiCredentials
 
   beforeEach(async () => {
-    mockCredentials = {
-      googleSearchApiKey: 'test-key',
-      googleSearchEngineId: 'test-engine',
-      domainBlacklist: [
-        'spam.com',
-        'unwanted-site.net',
-        'bad-domain.org'
-      ]
-    }
+    setupTest()
+    testCredentials = mockApiCredentials
 
     // Mock the retrieveApiCredentials to return our test credentials
-    const { retrieveApiCredentials } = require('@/utils/secureStorage')
-    retrieveApiCredentials.mockResolvedValue(mockCredentials)
+    mockRetrieveApiCredentials.mockResolvedValue(testCredentials)
 
     searchEngine = new ClientSearchEngine()
     await searchEngine.initialize()
+  })
+
+  afterEach(() => {
+    cleanupTest()
   })
 
   describe('applyDomainBlacklist', () => {

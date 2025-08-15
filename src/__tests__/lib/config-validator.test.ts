@@ -2,14 +2,26 @@
  * Tests for configuration validator
  */
 
-import { 
-  validateConfiguration, 
+import {
+  validateConfiguration,
   performConfigHealthCheck,
-  generateConfigReport 
+  generateConfigReport
 } from '@/lib/config-validator'
+import { jest } from '@jest/globals'
+import { mockConfigData } from '../fixtures/testData'
+import { setupTest, cleanupTest } from '../setup/testSetup'
 
-// Mock the config module
-const mockConfig = {
+// Use safe mock configuration from fixtures
+const mockConfig = mockConfigData
+
+// Mock the config module properly
+const mockGetConfig = jest.fn(() => mockConfig)
+jest.mock('@/lib/config', () => ({
+  getConfig: mockGetConfig
+}))
+
+// Additional mock config for testing variations
+const testMockConfig = {
   app: {
     name: 'Test App',
     version: '1.0.0',
@@ -79,15 +91,15 @@ const mockConfig = {
   }
 }
 
-jest.mock('@/lib/config', () => ({
-  getConfig: jest.fn(() => mockConfig)
-}))
-
 describe('Configuration Validator', () => {
   beforeEach(() => {
+    setupTest()
     // Reset mock to default config
-    const { getConfig } = require('@/lib/config')
-    getConfig.mockReturnValue(mockConfig)
+    mockGetConfig.mockReturnValue(mockConfig)
+  })
+
+  afterEach(() => {
+    cleanupTest()
   })
 
   describe('validateConfiguration', () => {
@@ -99,121 +111,112 @@ describe('Configuration Validator', () => {
     })
 
     it('should detect empty app name', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         app: { ...mockConfig.app, name: '' }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Application name cannot be empty')
     })
 
     it('should warn about debug mode in production', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         app: { ...mockConfig.app, environment: 'production', debug: true }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Debug mode is enabled in production environment')
     })
 
     it('should validate database pool configuration', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         database: { ...mockConfig.database, poolMin: 10, poolMax: 5 }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Database pool minimum size cannot be greater than maximum size')
     })
 
     it('should warn about high database pool size', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         database: { ...mockConfig.database, poolMax: 100 }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Database pool maximum size is very high, consider reducing for better resource management')
     })
 
     it('should warn about SSL disabled in production', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         app: { ...mockConfig.app, environment: 'production' },
         database: { ...mockConfig.database, ssl: false }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('SSL is not enabled for database connection in production')
     })
 
     it('should validate authentication configuration', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
-        security: { 
-          ...mockConfig.security, 
-          enableAuth: true, 
+        security: {
+          ...mockConfig.security,
+          enableAuth: true,
           adminPassword: undefined,
           adminPasswordHash: undefined,
           adminPasswordSalt: undefined
         }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Authentication is enabled but no password is configured')
     })
 
     it('should warn about plain text password in production', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         app: { ...mockConfig.app, environment: 'production' },
         security: { ...mockConfig.security, enableAuth: true, adminPassword: 'plaintext' }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Plain text password is used in production, consider using hashed password')
     })
 
     it('should validate scraping configuration', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         scraping: { ...mockConfig.scraping, timeout: 1000 }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Scraping timeout is very low, may cause premature timeouts')
     })
 
     it('should warn about high scraping rate limit', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         security: { ...mockConfig.security, scrapingRateLimit: 200 }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Scraping rate limit is high, may cause issues with target websites')
     })
 
@@ -224,84 +227,78 @@ describe('Configuration Validator', () => {
     })
 
     it('should detect placeholder API keys', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         apiKeys: { ...mockConfig.apiKeys, googleMaps: 'your_api_key_here' }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('googleMaps API key appears to be a placeholder value')
     })
 
     it('should validate cache configuration', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
-        cache: { 
+        cache: {
           type: 'redis',
           redis: undefined,
           memory: mockConfig.cache.memory
         }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Redis cache is enabled but Redis configuration is missing')
     })
 
     it('should validate logging configuration', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
-        logging: { 
-          ...mockConfig.logging, 
-          enableConsole: false, 
-          enableFile: false 
+        logging: {
+          ...mockConfig.logging,
+          enableConsole: false,
+          enableFile: false
         }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Both console and file logging are disabled, no logs will be output')
     })
 
     it('should warn about debug logging in production', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         app: { ...mockConfig.app, environment: 'production' },
         logging: { ...mockConfig.logging, level: 'debug' }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Debug logging is enabled in production, may impact performance')
     })
 
     it('should validate feature flags', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockReturnValue({
+      mockGetConfig.mockReturnValue({
         ...mockConfig,
         app: { ...mockConfig.app, environment: 'production' },
         features: { ...mockConfig.features, enableExperimentalFeatures: true }
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.warnings).toContain('Experimental features are enabled in production')
     })
 
     it('should handle configuration loading errors', () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockImplementation(() => {
+      mockGetConfig.mockImplementation(() => {
         throw new Error('Config loading failed')
       })
-      
+
       const result = validateConfiguration()
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Configuration loading failed: Config loading failed')
     })
@@ -343,11 +340,10 @@ describe('Configuration Validator', () => {
     })
 
     it('should handle validation errors', async () => {
-      const { getConfig } = require('@/lib/config')
-      getConfig.mockImplementation(() => {
+      mockGetConfig.mockImplementation(() => {
         throw new Error('Config error')
       })
-      
+
       const result = await performConfigHealthCheck()
 
       expect(result.checks.configValidation?.status).toBe('fail')
