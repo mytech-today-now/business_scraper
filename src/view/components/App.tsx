@@ -25,7 +25,7 @@ import { ExportService, ExportFormat } from '@/utils/exportService'
 import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
 import { clientScraperService } from '@/model/clientScraperService'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { ErrorBoundary } from '../../components/ErrorBoundary'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
 import toast from 'react-hot-toast'
 

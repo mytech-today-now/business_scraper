@@ -28,27 +28,28 @@ const scrapeHandler = withApiSecurity(
 
       logger.info('Scrape API', `POST request received from IP: ${ip}`, { action })
 
-    logger.info('Scrape API', `Request body: ${JSON.stringify({ action, ...Object.keys(params) })}`)
+      try {
+        logger.info('Scrape API', `Request body: ${JSON.stringify({ action, ...Object.keys(params) })}`)
 
-    // Validate action parameter
-    if (!action || typeof action !== 'string') {
-      logger.warn('Scrape API', `Invalid action parameter from IP: ${ip}`)
-      return NextResponse.json({ error: 'Action parameter is required' }, { status: 400 })
-    }
+        // Validate action parameter
+        if (!action || typeof action !== 'string') {
+          logger.warn('Scrape API', `Invalid action parameter from IP: ${ip}`)
+          return NextResponse.json({ error: 'Action parameter is required' }, { status: 400 })
+        }
 
-    // Sanitize action
-    const sanitizedAction = sanitizeInput(action)
+        // Sanitize action
+        const sanitizedAction = sanitizeInput(action)
 
-    // Validate action against allowed values
-    const allowedActions = ['initialize', 'search', 'scrape', 'cleanup']
-    if (!allowedActions.includes(sanitizedAction)) {
-      logger.warn('Scrape API', `Invalid action '${sanitizedAction}' from IP: ${ip}`)
-      return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
-    }
+        // Validate action against allowed values
+        const allowedActions = ['initialize', 'search', 'scrape', 'cleanup']
+        if (!allowedActions.includes(sanitizedAction)) {
+          logger.warn('Scrape API', `Invalid action '${sanitizedAction}' from IP: ${ip}`)
+          return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
+        }
 
-    logger.info('Scrape API', `Action '${sanitizedAction}' requested from IP: ${ip}`)
+        logger.info('Scrape API', `Action '${sanitizedAction}' requested from IP: ${ip}`)
 
-    switch (sanitizedAction) {
+        switch (sanitizedAction) {
       case 'initialize':
         await scraperService.initialize()
         return NextResponse.json({ success: true })
@@ -130,15 +131,15 @@ const scrapeHandler = withApiSecurity(
 
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
-    }
-  } catch (error) {
-    logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
-  }
-},
+        }
+      } catch (error) {
+        logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
+        return NextResponse.json(
+          { error: 'Internal server error' },
+          { status: 500 }
+        )
+      }
+    },
 {
   body: [
     { field: 'action', required: true, type: 'string' as const, allowedValues: ['initialize', 'search', 'scrape', 'cleanup'] },

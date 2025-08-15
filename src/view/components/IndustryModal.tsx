@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { X, Save, Plus, Edit3 } from 'lucide-react'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
@@ -38,18 +38,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
     }
   }, [isOpen, industry])
 
-  // Auto-save functionality with debounce
-  useEffect(() => {
-    if (!isOpen || !isEditing || isSaving) return
-
-    const timeoutId = setTimeout(() => {
-      handleAutoSave()
-    }, 1000) // Auto-save after 1 second of inactivity
-
-    return () => clearTimeout(timeoutId)
-  }, [name, keywordsText, isOpen, isEditing, isSaving, handleAutoSave])
-
-  const handleAutoSave = async (): Promise<void> => {
+  const handleAutoSave = useCallback(async (): Promise<void> => {
     if (!isEditing || !industry || !name.trim()) return
 
     const keywords = keywordsText
@@ -74,7 +63,18 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
     } finally {
       setIsSaving(false)
     }
-  }
+  }, [isEditing, industry, name, keywordsText, updateIndustry])
+
+  // Auto-save functionality with debounce
+  useEffect(() => {
+    if (!isOpen || !isEditing || isSaving) return
+
+    const timeoutId = setTimeout(() => {
+      handleAutoSave()
+    }, 1000) // Auto-save after 1 second of inactivity
+
+    return () => clearTimeout(timeoutId)
+  }, [name, keywordsText, isOpen, isEditing, isSaving, handleAutoSave])
 
   const handleSave = async (): Promise<void> => {
     if (!name.trim()) {

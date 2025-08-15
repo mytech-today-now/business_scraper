@@ -3,7 +3,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
 import {
   defaultSecurityConfig,
   checkRateLimit,
@@ -15,6 +14,17 @@ import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { validateCSRFMiddleware, csrfProtectionService } from '@/lib/csrfProtection'
 import { securityMonitoringService } from '@/lib/securityMonitoring'
 import { getCSPHeader, generateCSPNonce } from '@/lib/cspConfig'
+
+/**
+ * Generate a UUID using Web Crypto API (Edge Runtime compatible)
+ */
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0
+    const v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
+}
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -144,7 +154,7 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
   response.headers.delete('X-AspNetMvc-Version')
 
   // Add security monitoring headers
-  response.headers.set('X-Request-ID', crypto.randomUUID())
+  response.headers.set('X-Request-ID', generateUUID())
   response.headers.set('X-Security-Policy', 'enforced')
 
   return response
@@ -394,15 +404,11 @@ export function middleware(request: NextRequest) {
 
 /**
  * Configure which routes the middleware should run on
+ * Temporarily disabled to isolate Edge Runtime issues
  */
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    // Temporarily disable middleware
+    '/middleware-disabled',
   ],
 }

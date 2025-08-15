@@ -3,8 +3,27 @@
  * Business Scraper Application - Enhanced Security Implementation
  */
 
-import crypto from 'crypto'
 import { logger } from '@/utils/logger'
+
+/**
+ * Generate a cryptographically secure nonce using Web Crypto API (Edge Runtime compatible)
+ */
+function generateSecureNonce(): string {
+  // Fallback for environments without crypto.getRandomValues
+  if (typeof crypto === 'undefined' || !crypto.getRandomValues) {
+    // Use Math.random as fallback (less secure but functional)
+    const array = new Uint8Array(16)
+    for (let i = 0; i < array.length; i++) {
+      array[i] = Math.floor(Math.random() * 256)
+    }
+    return btoa(String.fromCharCode(...array))
+  }
+
+  // Use Web Crypto API
+  const array = new Uint8Array(16)
+  crypto.getRandomValues(array)
+  return btoa(String.fromCharCode(...array))
+}
 
 export interface CSPConfig {
   // Core directives
@@ -157,7 +176,7 @@ const cspConfigs: Record<string, CSPConfig> = {
  * Generate a cryptographically secure nonce for CSP
  */
 export function generateCSPNonce(): string {
-  return crypto.randomBytes(16).toString('base64')
+  return generateSecureNonce()
 }
 
 /**

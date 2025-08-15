@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Key,
   Shield,
@@ -66,11 +66,6 @@ export function ApiConfigurationPage({
   const [hasExistingCredentials, setHasExistingCredentials] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
-  // Load existing credentials on mount
-  useEffect(() => {
-    loadCredentials()
-  }, [loadCredentials])
-
   const loadCredentials = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -90,6 +85,11 @@ export function ApiConfigurationPage({
       setIsLoading(false)
     }
   }, [])
+
+  // Load existing credentials on mount
+  useEffect(() => {
+    loadCredentials()
+  }, [loadCredentials])
 
   const handleInputChange = (field: keyof ApiCredentials, value: string): void => {
     setCredentials(prev => ({
@@ -266,9 +266,26 @@ export function ApiConfigurationPage({
 
   const handleExport = async (): Promise<void> => {
     try {
-      const exportData = await exportCredentials()
-      if (exportData) {
-        const blob = new Blob([exportData], { type: 'text/plain' })
+      // Export current form state (unsaved credentials) if no saved credentials exist
+      let credentialsToExport = credentials
+
+      // If there are saved credentials, prefer those over form state
+      const savedCredentials = await retrieveApiCredentials()
+      if (savedCredentials && Object.keys(savedCredentials).length > 0) {
+        credentialsToExport = savedCredentials
+      }
+
+      // Create export data structure
+      const exportData = {
+        credentials: credentialsToExport,
+        timestamp: Date.now(),
+        version: '1.0'
+      }
+
+      const exportString = btoa(JSON.stringify(exportData))
+
+      if (exportString) {
+        const blob = new Blob([exportString], { type: 'text/plain' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -276,9 +293,12 @@ export function ApiConfigurationPage({
         a.click()
         URL.revokeObjectURL(url)
         setSuccessMessage('Credentials exported successfully')
+      } else {
+        setValidationErrors(['No credentials to export'])
       }
     } catch (error) {
       setValidationErrors(['Failed to export credentials'])
+      logger.error('ApiConfiguration', 'Failed to export credentials', error)
     }
   }
 
@@ -389,45 +409,74 @@ export function ApiConfigurationPage({
             </Card>
           )}
 
-          {/* Google Search API */}
+          {/* Google APIs */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <span>Google Custom Search API</span>
+                <span>Google APIs</span>
                 {getTestIcon('googleSearch')}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative">
+            <CardContent className="space-y-6">
+              {/* Google Custom Search API */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-900 mb-3">Google Custom Search API</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="relative">
+                    <Input
+                      label="API Key"
+                      type={showPasswords.googleSearchApiKey ? 'text' : 'password'}
+                      value={credentials.googleSearchApiKey || ''}
+                      onChange={(e) => handleInputChange('googleSearchApiKey', e.target.value)}
+                      placeholder="Enter your Google Search API key"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility('googleSearchApiKey')}
+                      className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPasswords.googleSearchApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                   <Input
-                    label="API Key"
-                    type={showPasswords.googleSearchApiKey ? 'text' : 'password'}
-                    value={credentials.googleSearchApiKey || ''}
-                    onChange={(e) => handleInputChange('googleSearchApiKey', e.target.value)}
-                    placeholder="Enter your Google Search API key"
+                    label="Search Engine ID"
+                    value={credentials.googleSearchEngineId || ''}
+                    onChange={(e) => handleInputChange('googleSearchEngineId', e.target.value)}
+                    placeholder="Enter your Custom Search Engine ID"
                   />
-                  <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('googleSearchApiKey')}
-                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPasswords.googleSearchApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
                 </div>
-                <Input
-                  label="Search Engine ID"
-                  value={credentials.googleSearchEngineId || ''}
-                  onChange={(e) => handleInputChange('googleSearchEngineId', e.target.value)}
-                  placeholder="Enter your Custom Search Engine ID"
-                />
               </div>
+
+              {/* Google Maps API */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-900 mb-3">Google Maps API</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="relative">
+                    <Input
+                      label="API Key"
+                      type={showPasswords.googleMapsApiKey ? 'text' : 'password'}
+                      value={credentials.googleMapsApiKey || ''}
+                      onChange={(e) => handleInputChange('googleMapsApiKey', e.target.value)}
+                      placeholder="Enter your Google Maps API key"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility('googleMapsApiKey')}
+                      className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPasswords.googleMapsApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <div></div> {/* Empty div for grid alignment */}
+                </div>
+              </div>
+
               <div className="text-xs text-gray-600 flex items-center space-x-1">
                 <Info className="h-3 w-3" />
                 <span>Get your credentials from </span>
-                <a 
-                  href="https://console.cloud.google.com/" 
-                  target="_blank" 
+                <a
+                  href="https://console.cloud.google.com/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline flex items-center"
                 >
@@ -438,7 +487,7 @@ export function ApiConfigurationPage({
           </Card>
 
           {/* Additional API Services */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Azure AI Foundry - Grounding with Bing Custom Search */}
             <Card>
               <CardHeader>
@@ -527,30 +576,7 @@ export function ApiConfigurationPage({
               </CardContent>
             </Card>
 
-            {/* Google Maps API */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Google Maps API</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="relative">
-                  <Input
-                    label="API Key"
-                    type={showPasswords.googleMapsApiKey ? 'text' : 'password'}
-                    value={credentials.googleMapsApiKey || ''}
-                    onChange={(e) => handleInputChange('googleMapsApiKey', e.target.value)}
-                    placeholder="Enter your Google Maps API key"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('googleMapsApiKey')}
-                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPasswords.googleMapsApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
 
           {/* Search Configuration */}
@@ -812,7 +838,7 @@ export function ApiConfigurationPage({
             <Button
               variant="outline"
               onClick={handleExport}
-              disabled={!hasExistingCredentials}
+              disabled={!hasExistingCredentials && !Object.values(credentials).some(value => value && value.toString().trim().length > 0)}
               className="flex items-center space-x-2"
             >
               <Download className="h-4 w-4" />

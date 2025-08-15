@@ -53,9 +53,8 @@ const searchHandler = withApiSecurity(
 
       logger.info('Search API', `Search request from IP: ${ip}`, { provider, query, location })
 
-
-
-    // Handle DuckDuckGo SERP scraping requests
+      try {
+        // Handle DuckDuckGo SERP scraping requests
     if (provider === 'duckduckgo-serp') {
       const { page = 0 } = validatedData.body || {}
       return await handleDuckDuckGoSERP(query, page, maxResults)
@@ -148,19 +147,19 @@ const searchHandler = withApiSecurity(
     }
 
     return NextResponse.json(response)
-  } catch (error) {
-    logger.error('Search API', 'Search request failed', error)
+      } catch (error) {
+        logger.error('Search API', 'Search request failed', error)
 
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Search failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    )
-  }
-},
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Search failed',
+            message: error instanceof Error ? error.message : 'Unknown error'
+          },
+          { status: 500 }
+        )
+      }
+    },
 {
   body: [
     { field: 'provider', type: 'string' as const, allowedValues: ['duckduckgo-serp', 'bbb-discovery', 'yelp-discovery', 'chamber-of-commerce', 'comprehensive'] },

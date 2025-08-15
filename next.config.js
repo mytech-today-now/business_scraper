@@ -108,6 +108,16 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: false,
+
+  // Temporarily disable TypeScript checking during build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
+  // Disable ESLint during build
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;

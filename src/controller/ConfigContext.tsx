@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useReducer, useEffect, useCallback, ReactNode } from 'react'
 import { ScrapingConfig, IndustryCategory } from '@/types/business'
 import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
@@ -328,6 +328,23 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   const [state, dispatch] = useReducer(configReducer, defaultState)
 
   /**
+   * Load configuration from storage
+   */
+  const loadConfig = useCallback(async () => {
+    try {
+      const savedConfig = await storage.getConfig('default')
+      if (savedConfig) {
+        const { id: _id, ...config } = savedConfig
+        dispatch({ type: 'SET_CONFIG', payload: config })
+        dispatch({ type: 'SET_SELECTED_INDUSTRIES', payload: config.industries })
+      }
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to load configuration', error)
+      throw error
+    }
+  }, [])
+
+  /**
    * Initialize the configuration on mount
    */
   useEffect(() => {
@@ -359,7 +376,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
             logger.info('ConfigProvider', 'Default industries updated successfully')
           }
         }
-        
+
         // Load theme preference
         const savedTheme = localStorage.getItem('darkMode')
         if (savedTheme) {
@@ -439,22 +456,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     }
   }
 
-  /**
-   * Load configuration from storage
-   */
-  const loadConfig = useCallback(async () => {
-    try {
-      const savedConfig = await storage.getConfig('default')
-      if (savedConfig) {
-        const { id: _id, ...config } = savedConfig
-        dispatch({ type: 'SET_CONFIG', payload: config })
-        dispatch({ type: 'SET_SELECTED_INDUSTRIES', payload: config.industries })
-      }
-    } catch (error) {
-      logger.error('ConfigProvider', 'Failed to load configuration', error)
-      throw error
-    }
-  }, [])
+
 
   /**
    * Add custom industry
