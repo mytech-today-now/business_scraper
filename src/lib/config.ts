@@ -67,11 +67,25 @@ export interface CacheConfig {
     password?: string
     db: number
     keyPrefix: string
+    maxMemory?: string
+    evictionPolicy?: string
   }
   memory: {
     maxSize: number
     ttl: number
   }
+  // Multi-level cache settings
+  l1Cache?: {
+    maxSize: number
+    ttl: number
+  }
+  l2Cache?: {
+    ttl: number
+  }
+  l3Cache?: {
+    ttl: number
+  }
+  enableCacheWarming?: boolean
 }
 
 export interface LoggingConfig {
@@ -202,8 +216,17 @@ const configSchema: Record<string, ValidationRule> = {
   'REDIS_PASSWORD': { type: 'string', required: false },
   'REDIS_DB': { type: 'number', min: 0, max: 15, default: 0 },
   'REDIS_KEY_PREFIX': { type: 'string', default: 'business_scraper:' },
-  'CACHE_MAX_SIZE': { type: 'number', min: 1, default: 1000 },
-  'CACHE_TTL': { type: 'number', min: 1000, default: 3600000 },
+  'REDIS_MAX_MEMORY': { type: 'string', default: '256mb' },
+  'REDIS_EVICTION_POLICY': { type: 'string', default: 'allkeys-lru' },
+  'CACHE_MAX_SIZE': { type: 'number', min: 1, default: 2000 },
+  'CACHE_TTL': { type: 'number', min: 1000, default: 1800000 },
+
+  // Advanced Cache Settings
+  'CACHE_L1_MAX_SIZE': { type: 'number', min: 1, default: 1000 },
+  'CACHE_L1_TTL': { type: 'number', min: 1000, default: 1800000 },
+  'CACHE_L2_TTL': { type: 'number', min: 1000, default: 7200000 },
+  'CACHE_L3_TTL': { type: 'number', min: 1000, default: 86400000 },
+  'ENABLE_CACHE_WARMING': { type: 'boolean', default: false },
 
   // Logging
   'LOG_LEVEL': { type: 'string', choices: ['error', 'warn', 'info', 'debug'], default: 'info' },
@@ -426,11 +449,24 @@ export function loadConfig(): AppConfig {
         password: config.REDIS_PASSWORD,
         db: config.REDIS_DB,
         keyPrefix: config.REDIS_KEY_PREFIX,
+        maxMemory: config.REDIS_MAX_MEMORY,
+        evictionPolicy: config.REDIS_EVICTION_POLICY,
       } : undefined,
       memory: {
         maxSize: config.CACHE_MAX_SIZE,
         ttl: config.CACHE_TTL,
       },
+      l1Cache: {
+        maxSize: config.CACHE_L1_MAX_SIZE,
+        ttl: config.CACHE_L1_TTL,
+      },
+      l2Cache: {
+        ttl: config.CACHE_L2_TTL,
+      },
+      l3Cache: {
+        ttl: config.CACHE_L3_TTL,
+      },
+      enableCacheWarming: config.ENABLE_CACHE_WARMING,
     },
     logging: {
       level: config.LOG_LEVEL,

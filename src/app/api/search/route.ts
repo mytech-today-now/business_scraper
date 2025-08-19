@@ -320,6 +320,22 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
       // Apply comprehensive network spoofing
       await spoofingService.applyNetworkSpoofing(browserPage)
 
+      // Apply enhanced console filtering and resource blocking
+      const { setupCleanScraping } = await import('@/lib/consoleFilterUtils')
+      await setupCleanScraping(browserPage, {
+        consoleFilter: {
+          filterLevel: 'strict',
+          logCriticalErrors: true,
+          logPageErrors: true,
+          customFilters: [
+            'useTranslation: DISMISS is not available',
+            'expanded-maps-vertical',
+            'duckassist-ia'
+          ]
+        },
+        resourceBlocking: 'strict'
+      })
+
       // Additional stealth measures
       await browserPage.evaluateOnNewDocument(() => {
         // Override webdriver property
@@ -373,31 +389,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
       const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)]
       logger.debug('Search API', `Using backup user agent: ${randomUserAgent.substring(0, 50)}...`)
 
-      // Block unnecessary resources to improve performance and reduce detection
-      await browserPage.setRequestInterception(true)
-      browserPage.on('request', (request) => {
-        const resourceType = request.resourceType()
-        const url = request.url()
-
-        // Block images, stylesheets, fonts, and other non-essential resources
-        if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
-          request.abort()
-        }
-        // Block tracking and analytics scripts
-        else if (url.includes('google-analytics') ||
-                 url.includes('googletagmanager') ||
-                 url.includes('facebook.com') ||
-                 url.includes('doubleclick') ||
-                 url.includes('adsystem')) {
-          request.abort()
-        } else {
-          // Add random delays to requests to appear more human
-          const delay = Math.random() * 100 + 50 // 50-150ms delay
-          setTimeout(() => {
-            request.continue()
-          }, delay)
-        }
-      })
+      // Note: Resource blocking and console filtering is now handled by setupCleanScraping above
 
       // Construct DuckDuckGo search URL - use the format you specified
       const searchUrl = new URL('https://duckduckgo.com/')

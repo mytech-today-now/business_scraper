@@ -74,14 +74,14 @@ export class EnhancedScrapingEngine {
 
   constructor(config?: Partial<ScrapingConfig>) {
     this.config = {
-      maxConcurrentJobs: 3,
+      maxConcurrentJobs: 8,        // Increased from 3 to 8 for better throughput
       maxRetries: 3,
-      timeout: 60000,
-      retryDelay: 5000,
+      timeout: 45000,              // Reduced from 60000 for faster timeouts
+      retryDelay: 3000,            // Reduced from 5000 for faster retries
       enableAntiBot: true,
       enableContactExtraction: true,
       enablePerformanceMonitoring: true,
-      queueProcessingInterval: 1000,
+      queueProcessingInterval: 500, // Reduced from 1000 for faster processing
       ...config,
     }
   }

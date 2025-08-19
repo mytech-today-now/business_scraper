@@ -295,7 +295,8 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
     isCustom: false,
     domainBlacklist: [
       '*.greatschools.*',
-      '*.niche.*'
+      '*.niche.*',
+      '*.prepscholar.*'
     ]
   },
   {
@@ -401,7 +402,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
  */
 export const CONTACT_KEYWORDS = [
   'contact',
-  'about',
+  'about us',
   'corporate',
   'investor',
   'team',

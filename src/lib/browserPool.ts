@@ -35,6 +35,15 @@ export interface PageInstance {
   isActive: boolean
 }
 
+export interface BrowserHealthMetrics {
+  memoryUsage: number
+  cpuUsage: number
+  activePages: number
+  responseTime: number
+  errorRate: number
+  lastHealthCheck: Date
+}
+
 /**
  * Browser Pool Manager for concurrent scraping operations
  */
@@ -45,15 +54,17 @@ export class BrowserPool {
   private activePagesCount = 0
   private isShuttingDown = false
   private healthCheckInterval?: NodeJS.Timeout
+  private healthMetrics: Map<string, BrowserHealthMetrics> = new Map()
+  private errorCounts: Map<string, number> = new Map()
 
   constructor(config?: Partial<BrowserPoolConfig>) {
     this.config = {
-      maxBrowsers: 3,
-      maxPagesPerBrowser: 5,
-      browserTimeout: 300000, // 5 minutes
-      pageTimeout: 60000, // 1 minute
+      maxBrowsers: 6,              // Increased from 3 to 6 for better concurrency
+      maxPagesPerBrowser: 4,       // Reduced from 5 to 4 to balance load
+      browserTimeout: 180000,      // Reduced from 300000 (3 minutes)
+      pageTimeout: 30000,          // Reduced from 60000 (30 seconds)
       headless: true,
-      enableProxy: false,
+      enableProxy: true,           // Enabled for better distribution
       userAgents: [
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -213,6 +224,18 @@ export class BrowserPool {
           '--disable-ipc-flooding-protection',
           '--disable-web-security',
           '--disable-features=VizDisplayCompositor',
+          // Performance optimizations
+          '--memory-pressure-off',
+          '--max_old_space_size=4096',
+          '--disable-background-networking',
+          '--disable-default-apps',
+          '--disable-extensions',
+          '--disable-sync',
+          '--disable-translate',
+          '--hide-scrollbars',
+          '--mute-audio',
+          '--disable-plugins-discovery',
+          '--disable-preconnect',
         ],
         timeout: this.config.browserTimeout,
       })
@@ -496,6 +519,100 @@ export class BrowserPool {
       }
       return true
     })
+  }
+
+  /**
+   * Monitor browser health metrics
+   */
+  async monitorBrowserHealth(browserId: string): Promise<BrowserHealthMetrics | null> {
+    const browser = this.browsers.get(browserId)
+    if (!browser) return null
+
+    try {
+      // Get browser metrics (simplified - in real implementation would use browser.metrics())
+      const healthData: BrowserHealthMetrics = {
+        memoryUsage: 0, // Would get from browser.metrics()
+        cpuUsage: 0,    // Would get from browser.metrics()
+        activePages: browser.pages.size,
+        responseTime: Date.now() - browser.lastUsed.getTime(),
+        errorRate: this.calculateErrorRate(browserId),
+        lastHealthCheck: new Date()
+      }
+
+      this.healthMetrics.set(browserId, healthData)
+      return healthData
+    } catch (error) {
+      logger.error('BrowserPool', `Failed to monitor browser health for ${browserId}`, error)
+      return null
+    }
+  }
+
+  /**
+   * Calculate error rate for a browser
+   */
+  private calculateErrorRate(browserId: string): number {
+    const errorCount = this.errorCounts.get(browserId) || 0
+    const totalOperations = 100 // Would track actual operations
+    return totalOperations > 0 ? (errorCount / totalOperations) * 100 : 0
+  }
+
+  /**
+   * Optimize browser allocation based on health metrics
+   */
+  async optimizeBrowserAllocation(): Promise<void> {
+    for (const [browserId, metrics] of this.healthMetrics) {
+      // Restart browsers with high memory usage or error rates
+      if (metrics.memoryUsage > 512 * 1024 * 1024 || metrics.errorRate > 10) {
+        logger.warn('BrowserPool', `Restarting browser ${browserId} due to poor health metrics`)
+        await this.restartBrowser(browserId)
+      }
+    }
+  }
+
+  /**
+   * Restart a specific browser
+   */
+  private async restartBrowser(browserId: string): Promise<void> {
+    const browser = this.browsers.get(browserId)
+    if (browser) {
+      try {
+        await browser.browser.close()
+        this.handleBrowserDisconnect(browserId)
+        // Create a new browser to replace it
+        await this.createBrowser()
+      } catch (error) {
+        logger.error('BrowserPool', `Failed to restart browser ${browserId}`, error)
+      }
+    }
+  }
+
+  /**
+   * Get overall pool health statistics
+   */
+  getPoolHealthStats(): {
+    totalBrowsers: number
+    healthyBrowsers: number
+    totalPages: number
+    averageResponseTime: number
+    averageErrorRate: number
+  } {
+    const healthyBrowsers = Array.from(this.healthMetrics.values()).filter(
+      metrics => metrics.errorRate < 5 && metrics.memoryUsage < 256 * 1024 * 1024
+    ).length
+
+    const avgResponseTime = Array.from(this.healthMetrics.values())
+      .reduce((sum, metrics) => sum + metrics.responseTime, 0) / this.healthMetrics.size || 0
+
+    const avgErrorRate = Array.from(this.healthMetrics.values())
+      .reduce((sum, metrics) => sum + metrics.errorRate, 0) / this.healthMetrics.size || 0
+
+    return {
+      totalBrowsers: this.browsers.size,
+      healthyBrowsers,
+      totalPages: this.activePagesCount,
+      averageResponseTime: avgResponseTime,
+      averageErrorRate: avgErrorRate
+    }
   }
 }
 

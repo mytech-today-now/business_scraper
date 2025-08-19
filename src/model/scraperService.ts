@@ -44,7 +44,7 @@ export interface ScraperConfig {
 }
 
 /**
- * Default scraper configuration
+ * Default scraper configuration - Optimized for performance
  */
 const DEFAULT_SCRAPER_CONFIG: ScraperConfig = {
   timeout: 30000,
@@ -52,7 +52,7 @@ const DEFAULT_SCRAPER_CONFIG: ScraperConfig = {
   retryDelay: 1000,
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
   headless: true,
-  maxConcurrent: 3,
+  maxConcurrent: 6,              // Increased from 3 to 6 for better throughput
 }
 
 /**
