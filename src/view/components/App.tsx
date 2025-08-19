@@ -33,7 +33,7 @@ import toast from 'react-hot-toast'
  * Configuration panel component
  */
 function ConfigurationPanel(): JSX.Element {
-  const { state, updateConfig, toggleDarkMode, toggleDemoMode, isConfigValid } = useConfig()
+  const { state, updateConfig, toggleDarkMode, isConfigValid } = useConfig()
 
   return (
     <div className="space-y-6">
@@ -385,7 +385,7 @@ function ScrapingPanel(): JSX.Element {
         isActive={scrapingState.isScrapingActive}
         currentStep={scrapingState.currentUrl}
         steps={scrapingState.processingSteps}
-        isDemoMode={configState.isDemoMode}
+
         onToggleVisibility={() => setShowProcessingWindow(!showProcessingWindow)}
         onClear={clearProcessingSteps}
         progress={scrapingState.progress}
@@ -412,7 +412,7 @@ function ScrapingPanel(): JSX.Element {
  * Orchestrates the entire application interface
  */
 export function App(): JSX.Element {
-  const { state, toggleDemoMode } = useConfig()
+  const { state } = useConfig()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
 
@@ -526,8 +526,7 @@ export function App(): JSX.Element {
               hasAzureSearch: !!credentials.azureSearchApiKey
             })
           }}
-          isDemoMode={state.isDemoMode}
-          onToggleDemoMode={toggleDemoMode}
+
         />
       )}
     </div>

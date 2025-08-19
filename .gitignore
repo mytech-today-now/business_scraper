@@ -66,8 +66,8 @@ Thumbs.db
 logs
 *.log
 
-# Documentation
-/docs
+# Documentation (now included in repository)
+# /docs
 
 # Scraped data (temporary)
 /scraped-data
@@ -75,3 +75,154 @@ logs
 
 # Puppeteer
 .puppeteer_cache/
+
+# ========================================
+# SENSITIVE FILES - API KEYS & CREDENTIALS
+# ========================================
+
+# Real scraping guides with actual API keys
+REAL_SCRAPING_GUIDE.md
+*REAL_SCRAPING*.md
+*real_scraping*.md
+*real-scraping*.md
+# But allow example templates
+!*REAL_SCRAPING*.example.md
+!*real_scraping*.example.md
+!*real-scraping*.example.md
+
+# API credential backup files
+*api-credentials*.txt
+*api_credentials*.txt
+*credentials-backup*.txt
+*credentials_backup*.txt
+sample-api-credentials-backup.txt
+
+# Production configuration files
+*production-config*.md
+*production_config*.md
+*prod-config*.md
+*prod_config*.md
+
+# Files containing actual API keys (various formats)
+*-with-keys.md
+*_with_keys.md
+*-api-keys.md
+*_api_keys.md
+*-real-keys.md
+*_real_keys.md
+
+# Live/production guides
+*LIVE*.md
+*live*.md
+*PRODUCTION*.md
+*production*.md
+
+# Secret documentation
+*SECRET*.md
+*secret*.md
+*PRIVATE*.md
+*private*.md
+
+# Credential files
+*CREDENTIAL*.md
+*credential*.md
+*CREDS*.md
+*creds*.md
+
+# Configuration with sensitive data
+*-sensitive.md
+*_sensitive.md
+*-confidential.md
+*_confidential.md
+
+# Backup files that might contain sensitive data
+*.backup
+*.bak
+*-backup.*
+*_backup.*
+
+# ========================================
+# DEVELOPMENT & TESTING FILES
+# ========================================
+
+# Test files with real data
+*-real-test*.md
+*_real_test*.md
+*-live-test*.md
+*_live_test*.md
+
+# Personal notes that might contain sensitive info
+NOTES.md
+notes.md
+TODO-PRIVATE.md
+todo-private.md
+PERSONAL*.md
+personal*.md
+
+# ========================================
+# ADDITIONAL SECURITY PATTERNS
+# ========================================
+
+# Any file with "key" in the name (except examples)
+*key*.txt
+*key*.json
+*key*.md
+!*key*.example.*
+!*key*-example.*
+!example-*key*.*
+
+# Any file with "token" in the name
+*token*.txt
+*token*.json
+*token*.md
+!*token*.example.*
+!*token*-example.*
+
+# Any file with "auth" containing sensitive data
+*auth*.txt
+*auth*.json
+!*auth*.example.*
+!*auth*-example.*
+
+# Temporary files that might contain sensitive data
+*.tmp
+*.temp
+/tmp/
+/temp/
+
+# Database dumps that might contain sensitive data
+*.sql
+*.dump
+*.db
+!schema.sql
+!example*.sql
+!sample*.sql
+
+# ========================================
+# DEPLOYMENT & INFRASTRUCTURE
+# ========================================
+
+# Deployment scripts with credentials
+deploy-*.sh
+deploy_*.sh
+*-deploy.sh
+*_deploy.sh
+!deploy-example.sh
+!example-deploy.sh
+
+# Infrastructure files with secrets
+terraform.tfvars
+*.tfvars
+!*.tfvars.example
+
+# Kubernetes secrets
+*-secret.yaml
+*-secret.yml
+*_secret.yaml
+*_secret.yml
+
+# Docker files with secrets
+docker-compose.override.yml
+docker-compose.*.yml
+!docker-compose.example.yml
+!docker-compose.production.yml.example

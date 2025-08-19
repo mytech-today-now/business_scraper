@@ -98,8 +98,4 @@ remote_write:
       max_shards: 200
       capacity: 2500
 
-# Storage configuration
-storage:
-  tsdb:
-    retention.time: 15d
-    retention.size: 50GB
+# Storage configuration is handled via command line arguments in docker-compose

@@ -4,6 +4,7 @@ import { retrieveApiCredentials, ApiCredentials } from '@/utils/secureStorage'
 import { logger } from '@/utils/logger'
 import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
+import { makeApiCall } from '@/utils/apiErrorHandling'
 
 // API Response Interfaces
 
@@ -132,6 +133,81 @@ export class ClientSearchEngine {
   private cachedIndustries: { name: string; keywords: string[]; domainBlacklist?: string[] }[] = []
   private isInitialized = false
 
+  // Enhanced circuit breaker for rate limiting
+  private rateLimitFailures = 0
+  private lastRateLimitTime = 0
+  private readonly maxRateLimitFailures = 2 // More aggressive
+  private readonly rateLimitCooldown = 10 * 60 * 1000 // 10 minutes
+  private lastRequestTime = 0
+  private readonly baseDelay = 30000 // 30 seconds base delay
+  private readonly maxDelay = 300000 // 5 minutes max delay
+
+  /**
+   * Check if we should skip API calls due to rate limiting circuit breaker
+   */
+  private shouldSkipDueToRateLimit(): boolean {
+    if (this.rateLimitFailures >= this.maxRateLimitFailures) {
+      const timeSinceLastFailure = Date.now() - this.lastRateLimitTime
+      if (timeSinceLastFailure < this.rateLimitCooldown) {
+        logger.warn('ClientSearchEngine', `Skipping API call due to rate limit circuit breaker (${this.rateLimitFailures} failures)`)
+        return true
+      } else {
+        // Reset circuit breaker after cooldown
+        this.rateLimitFailures = 0
+        logger.info('ClientSearchEngine', 'Rate limit circuit breaker reset after cooldown')
+      }
+    }
+    return false
+  }
+
+  /**
+   * Record a rate limit failure with exponential backoff
+   */
+  private recordRateLimitFailure(): void {
+    this.rateLimitFailures++
+    this.lastRateLimitTime = Date.now()
+    logger.warn('ClientSearchEngine', `Rate limit failure recorded (${this.rateLimitFailures}/${this.maxRateLimitFailures})`)
+  }
+
+  /**
+   * Calculate delay with exponential backoff and jitter
+   */
+  private calculateDelay(): number {
+    const exponentialDelay = this.baseDelay * Math.pow(2, this.rateLimitFailures)
+    const jitter = Math.random() * 0.3 * exponentialDelay // 30% jitter
+    const finalDelay = Math.min(exponentialDelay + jitter, this.maxDelay)
+
+    logger.debug('ClientSearchEngine', `Calculated delay: ${finalDelay}ms (failures: ${this.rateLimitFailures})`)
+    return finalDelay
+  }
+
+  /**
+   * Wait with rate limiting and exponential backoff
+   */
+  private async waitWithRateLimit(): Promise<void> {
+    const now = Date.now()
+    const timeSinceLastRequest = now - this.lastRequestTime
+    const requiredDelay = this.calculateDelay()
+
+    if (timeSinceLastRequest < requiredDelay) {
+      const waitTime = requiredDelay - timeSinceLastRequest
+      logger.info('ClientSearchEngine', `Rate limiting: waiting ${waitTime}ms before next request`)
+      await new Promise(resolve => setTimeout(resolve, waitTime))
+    }
+
+    this.lastRequestTime = Date.now()
+  }
+
+  /**
+   * Reset rate limit failures on successful API call
+   */
+  private resetRateLimitFailures(): void {
+    if (this.rateLimitFailures > 0) {
+      logger.info('ClientSearchEngine', 'Rate limit failures reset after successful API call')
+      this.rateLimitFailures = 0
+    }
+  }
+
   /**
    * Initialize the search engine with stored credentials
    */
@@ -139,13 +215,18 @@ export class ClientSearchEngine {
     try {
       this.credentials = await retrieveApiCredentials()
       await this.loadIndustries()
+
+      // Load persistent domain blacklist from IndexedDB
+      await this.loadPersistentDomainBlacklist()
+
       this.isInitialized = true
 
       if (this.credentials) {
         logger.info('ClientSearchEngine', 'Initialized with stored credentials', {
           hasGoogleSearch: !!this.credentials.googleSearchApiKey,
           hasAzureSearch: !!this.credentials.azureSearchApiKey,
-          hasGoogleMaps: !!this.credentials.googleMapsApiKey
+          hasGoogleMaps: !!this.credentials.googleMapsApiKey,
+          hasDomainBlacklist: !!(this.credentials.domainBlacklist && this.credentials.domainBlacklist.length > 0)
         })
       } else {
         logger.info('ClientSearchEngine', 'No stored credentials found, using fallback methods')
@@ -154,6 +235,25 @@ export class ClientSearchEngine {
       logger.error('ClientSearchEngine', 'Failed to initialize with stored credentials', error)
       this.credentials = null
       this.isInitialized = true
+    }
+  }
+
+  /**
+   * Load persistent domain blacklist from IndexedDB
+   */
+  private async loadPersistentDomainBlacklist(): Promise<void> {
+    try {
+      const persistentBlacklist = await storage.getDomainBlacklist()
+      if (persistentBlacklist.length > 0) {
+        // Update credentials with persistent blacklist
+        this.credentials = {
+          ...this.credentials,
+          domainBlacklist: persistentBlacklist
+        }
+        logger.info('ClientSearchEngine', `Loaded ${persistentBlacklist.length} domains from persistent blacklist`)
+      }
+    } catch (error) {
+      logger.warn('ClientSearchEngine', 'Failed to load persistent domain blacklist', error)
     }
   }
 
@@ -289,7 +389,7 @@ export class ClientSearchEngine {
   }
 
   /**
-   * Search using Azure AI Foundry "Grounding with Bing Custom Search" API
+   * Search using Bing Grounding Custom Search API
    * This replaces the deprecated Bing Search API (discontinued August 2025)
    */
   private async searchWithAzure(
@@ -298,7 +398,7 @@ export class ClientSearchEngine {
     maxResults: number
   ): Promise<SearchResult[]> {
     if (!this.credentials?.azureSearchApiKey || !this.credentials?.azureSearchEndpoint) {
-      logger.info('ClientSearchEngine', 'Azure AI Foundry credentials not configured, skipping Azure search')
+      logger.info('ClientSearchEngine', 'Bing Grounding Custom Search credentials not configured, skipping Azure search')
       return []
     }
 
@@ -309,47 +409,49 @@ export class ClientSearchEngine {
       ? this.credentials.azureSearchEndpoint.slice(0, -1)
       : this.credentials.azureSearchEndpoint
 
-    // Use the new Grounding with Bing Custom Search endpoint
-    const url = new URL(`${baseUrl}/bing/v7.0/custom/search`)
+    // Use the Bing Grounding Custom Search endpoint
+    // For Bing Grounding Custom Search, the endpoint is typically https://api.bing.microsoft.com/
+    const url = new URL(`${baseUrl}/v7.0/custom/search`)
 
     try {
-      logger.info('ClientSearchEngine', `Searching Azure AI Foundry with query: ${searchQuery}`)
+      logger.info('ClientSearchEngine', `Searching Bing Grounding Custom Search with query: ${searchQuery}`)
 
-      const requestBody = {
-        q: searchQuery,
-        count: Math.min(maxResults, 50),
-        offset: 0,
-        mkt: 'en-US',
-        safesearch: 'Moderate',
-        responseFilter: 'Webpages',
-        freshness: 'Month',
-        textDecorations: false,
-        textFormat: 'Raw'
-      }
+      // Add query parameters for Bing Custom Search API
+      url.searchParams.append('q', searchQuery)
+      url.searchParams.append('count', Math.min(maxResults, 50).toString())
+      url.searchParams.append('offset', '0')
+      url.searchParams.append('mkt', 'en-US')
+      url.searchParams.append('safesearch', 'Moderate')
+      url.searchParams.append('responseFilter', 'Webpages')
+      url.searchParams.append('freshness', 'Month')
+      url.searchParams.append('textDecorations', 'false')
+      url.searchParams.append('textFormat', 'Raw')
+
+      // For Bing Custom Search, we might need a custom configuration ID
+      // If you have a custom search configuration, add it here:
+      // url.searchParams.append('customconfig', 'your-custom-config-id')
 
       const response = await fetch(url.toString(), {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Ocp-Apim-Subscription-Key': this.credentials.azureSearchApiKey,
-          'Content-Type': 'application/json',
           'User-Agent': 'BusinessScraperApp/1.0'
-        },
-        body: JSON.stringify(requestBody)
+        }
       })
 
       if (!response.ok) {
         const errorText = await response.text()
-        logger.error('ClientSearchEngine', `Azure AI Foundry API error: ${response.status} - ${errorText}`)
-        throw new Error(`Azure AI Foundry API error: ${response.status}`)
+        logger.error('ClientSearchEngine', `Bing Grounding Custom Search API error: ${response.status} - ${errorText}`)
+        throw new Error(`Bing Grounding Custom Search API error: ${response.status}`)
       }
 
       const data = await response.json()
       const results = this.parseAzureGroundingResults(data, maxResults)
 
-      logger.info('ClientSearchEngine', `Azure AI Foundry search returned ${results.length} results`)
+      logger.info('ClientSearchEngine', `Bing Grounding Custom Search returned ${results.length} results`)
       return results
     } catch (error) {
-      logger.error('ClientSearchEngine', 'Azure AI Foundry search failed', error)
+      logger.error('ClientSearchEngine', 'Bing Grounding Custom Search failed', error)
       throw error
     }
   }
@@ -444,8 +546,8 @@ export class ClientSearchEngine {
 
         logger.info('ClientSearchEngine', `Page ${page + 1}: Found ${pageResults.length} results`)
 
-        // Small delay between pages to be respectful
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        // Enhanced delay between pages with exponential backoff
+        await this.waitWithRateLimit()
 
         // If we got no results on this page, likely no more pages available
         if (pageResults.length === 0) {
@@ -466,28 +568,57 @@ export class ClientSearchEngine {
    * Scrape a single DuckDuckGo search results page
    */
   private async scrapeDuckDuckGoPage(query: string, page: number): Promise<SearchResult[]> {
-    try {
-      // Use server-side proxy to scrape DuckDuckGo SERP
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'duckduckgo-serp',
-          query: query,
-          page: page,
-          maxResults: 10
-        })
-      })
+    // Check circuit breaker before making API call
+    if (this.shouldSkipDueToRateLimit()) {
+      return []
+    }
 
-      if (!response.ok) {
-        throw new Error(`DuckDuckGo SERP API error: ${response.status}`)
+    // Apply rate limiting before each request
+    await this.waitWithRateLimit()
+
+    try {
+      // Use server-side proxy to scrape DuckDuckGo SERP with retry logic
+      const result = await makeApiCall<DuckDuckGoSerpResponse>(
+        '/api/search',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: 'duckduckgo-serp',
+            query: query,
+            page: page,
+            maxResults: 10
+          })
+        },
+        {
+          operation: `DuckDuckGo SERP scraping page ${page + 1}`,
+          component: 'ClientSearchEngine',
+          retries: 2, // Allow retries for 429 errors
+          retryDelay: 60000, // 1 minute retry delay
+          retryCondition: (error: any) => {
+            // Retry on rate limit errors
+            return error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Rate limit')
+          }
+        }
+      )
+
+      if (!result.success) {
+        // Check if this is a rate limiting error
+        if (result.error?.message?.includes('429') || result.error?.message?.includes('Rate limit')) {
+          this.recordRateLimitFailure()
+        }
+        logger.warn('ClientSearchEngine', `Failed to scrape DuckDuckGo page ${page + 1}`, result.error)
+        return []
       }
 
-      const data = await response.json() as DuckDuckGoSerpResponse
+      const data = result.data
 
       if (!data.success) {
         throw new Error(data.error || 'DuckDuckGo SERP search failed')
       }
+
+      // Reset rate limit failures on successful API call
+      this.resetRateLimitFailures()
 
       // Convert server response to SearchResult format
       const results = (data.results || []).map((result: DuckDuckGoSerpResult) => ({
@@ -500,6 +631,10 @@ export class ClientSearchEngine {
       return results
 
     } catch (error) {
+      // Check if this is a rate limiting error
+      if (error instanceof Error && (error.message.includes('429') || error.message.includes('Rate limit'))) {
+        this.recordRateLimitFailure()
+      }
       logger.warn('ClientSearchEngine', `Failed to scrape DuckDuckGo page ${page + 1}`, error)
       return []
     }
@@ -942,25 +1077,34 @@ export class ClientSearchEngine {
     try {
       logger.info('ClientSearchEngine', `Starting comprehensive business discovery for "${criteria}" in ${location}`)
 
-      // Use server-side comprehensive search orchestrator
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'comprehensive',
-          query: criteria,
-          location: location,
-          maxResults: maxResults,
-          accreditedOnly: this.credentials?.bbbAccreditedOnly || false,
-          zipRadius: this.credentials?.zipRadius || 25
-        })
-      })
+      // Use server-side comprehensive search orchestrator with retry logic
+      const result = await makeApiCall<ComprehensiveSearchResponse>(
+        '/api/search',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: 'comprehensive',
+            query: criteria,
+            location: location,
+            maxResults: maxResults,
+            accreditedOnly: this.credentials?.bbbAccreditedOnly || false,
+            zipRadius: this.credentials?.zipRadius || 25
+          })
+        },
+        {
+          operation: `Comprehensive business discovery for "${criteria}"`,
+          component: 'ClientSearchEngine',
+          retries: 0
+        }
+      )
 
-      if (!response.ok) {
-        throw new Error(`Comprehensive search API error: ${response.status}`)
+      if (!result.success) {
+        logger.warn('ClientSearchEngine', `Comprehensive search failed for "${criteria}"`, result.error)
+        return []
       }
 
-      const data = await response.json() as ComprehensiveSearchResponse
+      const data = result.data
 
       if (!data.success) {
         throw new Error(data.error || 'Comprehensive search failed')
@@ -991,25 +1135,34 @@ export class ClientSearchEngine {
     try {
       logger.info('ClientSearchEngine', `Starting BBB business discovery for "${criteria}" in ${location}`)
 
-      // Use server-side BBB scraping to avoid CORS issues
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'bbb-discovery',
-          query: criteria,
-          location: location,
-          maxResults: maxResults,
-          accreditedOnly: this.credentials?.bbbAccreditedOnly || false,
-          zipRadius: this.credentials?.zipRadius || 10
-        })
-      })
+      // Use server-side BBB scraping to avoid CORS issues with retry logic
+      const result = await makeApiCall<BBBDiscoveryResponse>(
+        '/api/search',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: 'bbb-discovery',
+            query: criteria,
+            location: location,
+            maxResults: maxResults,
+            accreditedOnly: this.credentials?.bbbAccreditedOnly || false,
+            zipRadius: this.credentials?.zipRadius || 10
+          })
+        },
+        {
+          operation: `BBB business discovery for "${criteria}"`,
+          component: 'ClientSearchEngine',
+          retries: 0
+        }
+      )
 
-      if (!response.ok) {
-        throw new Error(`BBB discovery API error: ${response.status}`)
+      if (!result.success) {
+        logger.warn('ClientSearchEngine', `BBB discovery failed for "${criteria}"`, result.error)
+        return []
       }
 
-      const data = await response.json() as BBBDiscoveryResponse
+      const data = result.data
 
       if (!data.success) {
         throw new Error(data.error || 'BBB discovery failed')
@@ -1039,23 +1192,32 @@ export class ClientSearchEngine {
     try {
       logger.info('ClientSearchEngine', `Starting Chamber of Commerce processing for: ${url}`)
 
-      // Use server-side Chamber of Commerce processing to avoid CORS issues
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'chamber-of-commerce',
-          url: url,
-          maxResults: maxResults,
-          maxPagesPerSite: 20
-        })
-      })
+      // Use server-side Chamber of Commerce processing to avoid CORS issues with retry logic
+      const result = await makeApiCall<ChamberResponse>(
+        '/api/search',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: 'chamber-of-commerce',
+            url: url,
+            maxResults: maxResults,
+            maxPagesPerSite: 20
+          })
+        },
+        {
+          operation: `Chamber of Commerce processing for ${url}`,
+          component: 'ClientSearchEngine',
+          retries: 0
+        }
+      )
 
-      if (!response.ok) {
-        throw new Error(`Chamber of Commerce processing API error: ${response.status}`)
+      if (!result.success) {
+        logger.warn('ClientSearchEngine', `Chamber of Commerce processing failed for "${url}"`, result.error)
+        return []
       }
 
-      const data = await response.json() as ChamberResponse
+      const data = result.data
 
       if (!data.success) {
         throw new Error(data.error || 'Chamber of Commerce processing failed')
@@ -1406,6 +1568,13 @@ export class ClientSearchEngine {
    */
   async refreshCredentials(): Promise<void> {
     await this.initialize()
+  }
+
+  /**
+   * Refresh domain blacklist from persistent storage
+   */
+  async refreshDomainBlacklist(): Promise<void> {
+    await this.loadPersistentDomainBlacklist()
   }
 }
 

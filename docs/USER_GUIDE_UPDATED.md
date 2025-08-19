@@ -121,7 +121,7 @@ The application shows real-time progress:
 ### Result Quality Indicators
 - **Contact Information**: Email addresses, phone numbers, addresses
 - **Business Details**: Names, websites, industry classifications
-- **Data Source**: Real web scraping vs. demo data indicators
+- **Data Source**: Real web scraping with live data collection
 
 ## 📊 Managing Large Result Sets
 

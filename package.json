@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "1.0.0",
+  "version": "1.4.1",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
@@ -28,7 +28,7 @@
     "db:status": "node database/scripts/migrate.js status",
     "db:reset": "node database/scripts/migrate.js reset",
     "db:setup": "psql -f database/setup.sql",
-    "db:sample": "psql -f database/sample_data.sql",
+
     "config:load": "node scripts/load-config.js load",
     "config:validate": "node scripts/load-config.js validate",
     "config:generate": "node scripts/load-config.js generate",

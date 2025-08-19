@@ -252,7 +252,6 @@ export class SearchEngineService {
       () => this.searchWithGoogle(query, location, maxResults), // Primary search provider (if API key available)
       () => this.searchWithBing(query, location, maxResults), // Secondary search provider (if API key available)
       () => this.searchWithYandex(query, location, maxResults), // Additional fallback
-      () => this.searchWithDemo(query, location, maxResults), // Demo fallback
     ]
 
     for (const searchMethod of searchMethods) {
@@ -267,9 +266,9 @@ export class SearchEngineService {
       }
     }
 
-    // If all methods fail, return demo results as last resort
-    logger.warn('SearchEngine', 'All search methods failed, using demo results')
-    return this.searchWithDemo(query, location, maxResults)
+    // If all methods fail, return empty results
+    logger.warn('SearchEngine', 'All search methods failed, returning empty results')
+    return []
   }
 
   /**
@@ -741,103 +740,7 @@ export class SearchEngineService {
     logger.info('SearchEngine', 'All caches cleared')
   }
 
-  /**
-   * Demo search method that returns predefined business URLs
-   * @param query - Search query
-   * @param location - Location
-   * @param maxResults - Maximum results
-   * @returns Promise resolving to demo search results
-   */
-  private async searchWithDemo(
-    query: string,
-    location: string,
-    maxResults: number
-  ): Promise<SearchResult[]> {
-    // Simulate search delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
 
-    const demoBusinesses = [
-      {
-        url: 'https://bellavista.com',
-        title: 'Bella Vista Restaurant',
-        snippet: 'Fine dining restaurant specializing in Italian cuisine',
-        domain: 'bellavista.com'
-      },
-      {
-        url: 'https://techflow.com',
-        title: 'TechFlow Solutions',
-        snippet: 'Professional IT services and consulting',
-        domain: 'techflow.com'
-      },
-      {
-        url: 'https://greenvalleymedical.com',
-        title: 'Green Valley Medical Center',
-        snippet: 'Healthcare and medical services',
-        domain: 'greenvalleymedical.com'
-      },
-      {
-        url: 'https://elitefitness.com',
-        title: 'Elite Fitness Center',
-        snippet: 'Professional fitness and wellness services',
-        domain: 'elitefitness.com'
-      },
-      {
-        url: 'https://artisancoffee.com',
-        title: 'Artisan Coffee House',
-        snippet: 'Specialty coffee and cafe services',
-        domain: 'artisancoffee.com'
-      },
-      {
-        url: 'https://example-business1.com',
-        title: 'Example Business 1',
-        snippet: 'Professional services business',
-        domain: 'example-business1.com'
-      },
-      {
-        url: 'https://example-business2.com',
-        title: 'Example Business 2',
-        snippet: 'Healthcare and medical business',
-        domain: 'example-business2.com'
-      },
-      {
-        url: 'https://example-business3.com',
-        title: 'Example Business 3',
-        snippet: 'Local service business',
-        domain: 'example-business3.com'
-      }
-    ]
-
-    // Filter results based on query keywords
-    const queryLower = query.toLowerCase()
-    let filteredResults = demoBusinesses
-
-    if (queryLower.includes('healthcare') || queryLower.includes('medical')) {
-      filteredResults = demoBusinesses.filter(b =>
-        b.snippet.toLowerCase().includes('medical') ||
-        b.snippet.toLowerCase().includes('healthcare')
-      )
-    } else if (queryLower.includes('professional') || queryLower.includes('services')) {
-      filteredResults = demoBusinesses.filter(b =>
-        b.snippet.toLowerCase().includes('professional') ||
-        b.snippet.toLowerCase().includes('services')
-      )
-    } else if (queryLower.includes('restaurant') || queryLower.includes('food')) {
-      filteredResults = demoBusinesses.filter(b =>
-        b.snippet.toLowerCase().includes('restaurant') ||
-        b.snippet.toLowerCase().includes('coffee')
-      )
-    }
-
-    // If no specific matches, return all demo businesses
-    if (filteredResults.length === 0) {
-      filteredResults = demoBusinesses
-    }
-
-    const results = filteredResults.slice(0, Math.min(maxResults, filteredResults.length))
-
-    logger.info('SearchEngine', `Demo search returned ${results.length} results for query: ${query}`)
-    return results
-  }
 
   /**
    * Get comprehensive cache statistics

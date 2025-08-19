@@ -99,13 +99,7 @@ npm run db:status
 
 You should see output showing the initial migration as applied.
 
-### 6. Load Sample Data (Optional)
 
-For development and testing:
-
-```bash
-npm run db:sample
-```
 
 ## Manual Setup Steps
 
@@ -319,8 +313,7 @@ For additional help:
 
 1. Check the database README: `database/README.md`
 2. Review migration files in `database/schema/`
-3. Examine sample data in `database/sample_data.sql`
-4. Check application logs for specific error messages
+3. Check application logs for specific error messages
 
 ## Next Steps
 

@@ -27,10 +27,10 @@ describe('SearchEngineService', () => {
   })
 
   describe('searchBusinesses', () => {
-    it('should return results from demo mode when no API keys configured', async () => {
+    it('should return results when search methods are available', async () => {
       const results = await searchEngine.searchBusinesses('restaurants', '90210', 10)
 
-      // Should return some results (demo mode or other fallback)
+      // Should return an array (might be empty if no search methods work)
       expect(Array.isArray(results)).toBe(true)
       // Note: Results might be empty if all search methods fail and validation filters everything
       if (results.length > 0) {
@@ -39,7 +39,7 @@ describe('SearchEngineService', () => {
         expect(results[0]).toHaveProperty('snippet')
         expect(results[0]).toHaveProperty('domain')
       }
-    }, 10000) // Increase timeout for demo search delay
+    }, 10000) // Increase timeout for search operations
 
     it('should use cache for repeated queries', async () => {
       const firstResult = await searchEngine.searchBusinesses('restaurants', '90210', 10)

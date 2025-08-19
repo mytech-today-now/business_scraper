@@ -1,8 +1,6 @@
 # Production Docker Compose Configuration
 # Comprehensive production deployment with monitoring, security, and scalability
 
-version: '3.8'
-
 services:
   # Main Application
   app:
@@ -18,12 +16,26 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/business_scraper
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - RATE_LIMIT_REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
       - JWT_SECRET=${JWT_SECRET}
-      - RATE_LIMIT_REDIS_URL=redis://redis:6379
+      - SESSION_SECRET=${SESSION_SECRET}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - ADMIN_PASSWORD_SALT=${ADMIN_PASSWORD_SALT}
       - MONITORING_ENABLED=true
       - LOG_LEVEL=info
+      # API Keys for real scraping
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - GOOGLE_CUSTOM_SEARCH_API_KEY=${GOOGLE_CUSTOM_SEARCH_API_KEY}
+      - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
+      - AZURE_AI_FOUNDRY_API_KEY=${AZURE_AI_FOUNDRY_API_KEY}
+      - AZURE_AI_FOUNDRY_ENDPOINT=${AZURE_AI_FOUNDRY_ENDPOINT}
+      - AZURE_AI_FOUNDRY_REGION=${AZURE_AI_FOUNDRY_REGION}
+      # Production scraping configuration - real scraping only
+      - ENABLE_REAL_SCRAPING=true
     depends_on:
       - postgres
       - redis
@@ -61,7 +73,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
-      - ./database/backups:/backups
     networks:
       - app-network
     ports:
@@ -215,50 +226,50 @@ services:
     networks:
       - app-network
 
-  # Backup Service
-  backup:
-    build:
-      context: ./backup
-      dockerfile: Dockerfile
-    container_name: business-scraper-backup
-    restart: unless-stopped
-    environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_DB=business_scraper
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - BACKUP_SCHEDULE=0 2 * * *  # Daily at 2 AM
-      - BACKUP_RETENTION_DAYS=30
-      - S3_BUCKET=${BACKUP_S3_BUCKET}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    volumes:
-      - ./database/backups:/backups
-      - backup-logs:/var/log/backup
-    depends_on:
-      - postgres
-    networks:
-      - app-network
+  # Backup Service (commented out - backup directory not available)
+  # backup:
+  #   build:
+  #     context: ./backup
+  #     dockerfile: Dockerfile
+  #   container_name: business-scraper-backup
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_HOST=postgres
+  #     - POSTGRES_DB=business_scraper
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #     - BACKUP_SCHEDULE=0 2 * * *  # Daily at 2 AM
+  #     - BACKUP_RETENTION_DAYS=30
+  #     - S3_BUCKET=${BACKUP_S3_BUCKET}
+  #     - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  #     - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  #   volumes:
+  #     - ./database/backups:/backups
+  #     - backup-logs:/var/log/backup
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - app-network
 
-  # Log aggregation with Fluentd
-  fluentd:
-    build:
-      context: ./logging
-      dockerfile: Dockerfile
-    container_name: business-scraper-fluentd
-    restart: unless-stopped
-    volumes:
-      - ./logging/fluent.conf:/fluentd/etc/fluent.conf:ro
-      - app-logs:/var/log/app:ro
-      - nginx-logs:/var/log/nginx:ro
-      - backup-logs:/var/log/backup:ro
-    ports:
-      - "24224:24224"
-      - "24224:24224/udp"
-    depends_on:
-      - elasticsearch
-    networks:
-      - app-network
+  # Log aggregation with Fluentd (commented out - logging directory not available)
+  # fluentd:
+  #   build:
+  #     context: ./logging
+  #     dockerfile: Dockerfile
+  #   container_name: business-scraper-fluentd
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./logging/fluent.conf:/fluentd/etc/fluent.conf:ro
+  #     - app-logs:/var/log/app:ro
+  #     - nginx-logs:/var/log/nginx:ro
+  #     - backup-logs:/var/log/backup:ro
+  #   ports:
+  #     - "24224:24224"
+  #     - "24224:24224/udp"
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - app-network
 
   # Security scanner
   security-scanner:

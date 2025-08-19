@@ -95,10 +95,7 @@ The schema includes comprehensive indexes for:
    psql -d business_scraper_db -f database/setup.sql
    ```
 
-3. **Insert Sample Data (Optional):**
-   ```bash
-   psql -d business_scraper_db -f database/sample_data.sql
-   ```
+
 
 ### Manual Migration
 
@@ -242,4 +239,4 @@ For issues or questions regarding the database schema:
 1. Check the migration status and logs
 2. Verify all required extensions are installed
 3. Ensure proper permissions are set
-4. Review the sample data for expected data formats
+4. Check the database schema documentation for expected data formats

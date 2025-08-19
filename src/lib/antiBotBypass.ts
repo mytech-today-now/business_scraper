@@ -74,6 +74,11 @@ export class AntiBotBypass {
     logger.debug('AntiBotBypass', 'Applying anti-bot bypass measures')
 
     try {
+      // Apply network spoofing first
+      if (this.config.enableProxyRotation) {
+        await this.applyNetworkSpoofing(page)
+      }
+
       if (this.config.enableFingerprinting) {
         await this.applyBrowserFingerprinting(page)
       }
@@ -85,6 +90,26 @@ export class AntiBotBypass {
       logger.debug('AntiBotBypass', 'Anti-bot bypass measures applied successfully')
     } catch (error) {
       logger.error('AntiBotBypass', 'Failed to apply bypass measures', error)
+    }
+  }
+
+  /**
+   * Apply network spoofing using the NetworkSpoofingService
+   */
+  private async applyNetworkSpoofing(page: Page): Promise<void> {
+    try {
+      const { NetworkSpoofingService } = await import('./networkSpoofingService')
+      const spoofingService = new NetworkSpoofingService({
+        enableIPSpoofing: true,
+        enableMACAddressSpoofing: true,
+        enableFingerprintSpoofing: true,
+        requestDelay: { min: 2000, max: 6000 }
+      })
+
+      await spoofingService.applyNetworkSpoofing(page)
+      logger.debug('AntiBotBypass', 'Network spoofing applied successfully')
+    } catch (error) {
+      logger.warn('AntiBotBypass', 'Failed to apply network spoofing', error)
     }
   }
 

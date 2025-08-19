@@ -36,6 +36,34 @@ A comprehensive full-stack business web scraping application built with Next.js,
 - **✅ Data Validation**: Input sanitization and business data integrity checks
 - **🚀 Performance Optimized**: Lazy loading, caching, and efficient data processing
 
+### Advanced Anti-Detection & Security
+
+- **🔄 Network Spoofing Service**: Comprehensive IP address and MAC address spoofing system
+  - **IP Address Rotation**: Generates random IP addresses from realistic ranges (private and public)
+  - **MAC Address Spoofing**: Creates authentic MAC addresses using known vendor prefixes (Dell, VMware, VirtualBox)
+  - **Browser Fingerprint Spoofing**: Modifies WebGL, Canvas, and Audio Context fingerprints
+  - **User Agent Rotation**: Cycles through realistic browser user agents and timezone settings
+- **⚡ Advanced Rate Limiting Service**: Provider-specific intelligent rate limiting
+  - **DuckDuckGo**: 1 req/min, 45s minimum delay, exponential backoff
+  - **Google**: 5 req/min, 12s minimum delay
+  - **Bing**: 10 req/min, 6s minimum delay
+  - **BBB**: 3 req/min, 20s minimum delay
+  - **Yelp**: 5 req/min, 12s minimum delay
+  - **Request History Tracking**: Failure detection and sliding window rate limiting
+- **🛡️ Enhanced Anti-Detection Measures**: Production-grade bot protection
+  - **Request Interception**: Human-like delays and realistic browsing patterns
+  - **Tracking Script Blocking**: Blocks Google Analytics, Facebook, and other tracking scripts
+  - **Automation Property Removal**: Removes browser automation indicators
+  - **Enhanced Stealth Mode**: Advanced Puppeteer stealth configuration
+
+### Production Infrastructure
+
+- **🐳 Docker Deployment**: Complete containerized production environment
+- **🗄️ PostgreSQL Database**: Persistent data storage with encrypted connections
+- **🔴 Redis Cache**: Session management and performance optimization
+- **📊 Health Monitoring**: Comprehensive system health checks and logging
+- **🔒 Security Features**: Rate limiting, security headers, and encrypted communications
+
 ## 🏗️ Architecture
 
 The application follows an **Adapted MVC (Model-View-Controller)** pattern with modern Next.js architecture:
@@ -43,7 +71,7 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 ### Model Layer (`src/model/`)
 
 - **clientSearchEngine.ts**: Multi-strategy search orchestration with industry expansion
-- **clientScraperService.ts**: Client-side scraping coordination and demo mode handling
+- **clientScraperService.ts**: Client-side scraping coordination and API management
 - **scraperService.ts**: Core web scraping functionality using Puppeteer
 - **searchEngine.ts**: Advanced search engine with optimization and validation
 - **queryOptimizer.ts**: Industry-specific query templates and synonym expansion
@@ -77,6 +105,28 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 - **enhancedScrapingEngine.ts**: Advanced scraping with job queues and retry logic
 - **dataValidationPipeline.ts**: Comprehensive business data validation
 - **industry-config.ts**: Industry category definitions and keyword mappings
+- **networkSpoofingService.ts**: Network spoofing and anti-detection system
+- **rateLimitingService.ts**: Provider-specific intelligent rate limiting
+- **antiBotBypass.ts**: Enhanced anti-bot countermeasures
+- **browserPool.ts**: Browser instance management with spoofing integration
+
+### Database & Cache Layer
+
+- **PostgreSQL Database**: Production-grade persistent storage
+  - Business data storage and retrieval
+  - Configuration management
+  - Search history and analytics
+- **Redis Cache**: High-performance caching and session management
+  - Search result caching
+  - Rate limiting state management
+  - Session storage and user preferences
+
+### Security & Monitoring Services
+
+- **Health Monitoring**: Comprehensive system health checks
+- **Security Headers**: CSP, HSTS, and other security configurations
+- **Rate Limiting**: Global and provider-specific request throttling
+- **Logging System**: Structured logging with request correlation IDs
 
 ### Utilities (`src/utils/`)
 
@@ -88,9 +138,16 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 
 ## 📋 Prerequisites
 
-- Node.js 18+ 
+### Development Environment
+- Node.js 18+
 - npm or yarn
 - Modern web browser with JavaScript enabled
+
+### Production Environment
+- Docker and Docker Compose
+- PostgreSQL 16+ (for production deployment)
+- Redis 7+ (for caching and session management)
+- 2GB+ RAM recommended for production deployment
 
 ## 🛠️ Installation
 
@@ -127,6 +184,19 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
    AZURE_AI_FOUNDRY_ENDPOINT=https://businessscraper.cognitiveservices.azure.com/
    AZURE_AI_FOUNDRY_REGION=eastus
 
+   # Network Spoofing & Anti-Detection (v1.4.0+)
+   ENABLE_NETWORK_SPOOFING=true
+   ENABLE_IP_SPOOFING=true
+   ENABLE_MAC_ADDRESS_SPOOFING=true
+   ENABLE_FINGERPRINT_SPOOFING=true
+   REQUEST_DELAY_MIN=2000
+   REQUEST_DELAY_MAX=8000
+
+   # Production Database & Cache (for Docker deployment)
+   DATABASE_URL=postgresql://username:password@localhost:5432/business_scraper
+   REDIS_URL=redis://localhost:6379
+   ENABLE_REAL_SCRAPING=true
+
    # Legacy APIs
    YANDEX_SEARCH_API_KEY=your_yandex_search_api_key
    ```
@@ -151,7 +221,7 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
    - **BBB Search Settings**: Choose "Accredited Only" vs "All Businesses"
    - **ZIP Radius**: Set search radius from 5-50 miles
    - **Search Parameters**: Configure SERP pages and max results
-   - **Demo Mode**: Toggle between real scraping and demo data
+   - **API Credentials**: Configure Google Custom Search and Azure AI Foundry APIs
 
 2. **Industry Selection**:
    - Choose from predefined categories (automatically expands to specific business types)
@@ -255,53 +325,149 @@ The documentation will be generated in the `docs/` directory.
 - **Concurrent Processing**: Parallel processing with configurable batch sizes
 - **Memory Management**: Automatic cleanup and resource optimization
 
+### Network Spoofing & Anti-Detection
+
+- **IP Address Spoofing**: Random IP generation from realistic ranges
+- **MAC Address Spoofing**: Authentic MAC addresses from known vendors (Dell, VMware, VirtualBox)
+- **Browser Fingerprint Spoofing**: WebGL, Canvas, and Audio Context modification
+- **User Agent Rotation**: Realistic browser user agents and timezone settings
+- **Request Interception**: Human-like delays and browsing patterns
+- **Tracking Script Blocking**: Blocks Google Analytics, Facebook, and other trackers
+
+### Advanced Rate Limiting
+
+- **Provider-Specific Limits**: Intelligent rate limiting per search provider
+  - **DuckDuckGo**: 1 request/minute, 45-second minimum delay
+  - **Google**: 5 requests/minute, 12-second minimum delay
+  - **Bing**: 10 requests/minute, 6-second minimum delay
+  - **BBB**: 3 requests/minute, 20-second minimum delay
+  - **Yelp**: 5 requests/minute, 12-second minimum delay
+- **Failure Detection**: Request history tracking with exponential backoff
+- **Sliding Window**: Time-based rate limiting with automatic recovery
+
 ### Performance Tuning
 
-- **Cache Settings**: Search result and geolocation caching
+- **Cache Settings**: Search result and geolocation caching with Redis
 - **Rate Limiting**: Respectful delays to prevent server overload
 - **Resource Management**: Browser instance pooling and cleanup
 - **Error Recovery**: Graceful degradation and automatic retries
+- **Memory Optimization**: Efficient resource management and cleanup
 
 ## 🛡️ Security & Privacy
 
 ### Data Protection
-- All data is stored locally in IndexedDB
-- No data is transmitted to external servers (except for geocoding APIs)
-- Input sanitization prevents XSS attacks
-- CSP headers provide additional security
+- **Local Storage**: Data stored locally in IndexedDB and PostgreSQL (production)
+- **Encrypted Connections**: Database connections use encryption in production
+- **Input Sanitization**: Prevents XSS attacks and injection vulnerabilities
+- **CSP Headers**: Content Security Policy provides additional protection
+- **Secure Credentials**: API keys and passwords stored in environment variables
+
+### Advanced Security Features
+- **Network Spoofing**: IP and MAC address spoofing for enhanced privacy
+- **Browser Fingerprint Protection**: Prevents browser fingerprinting detection
+- **Request Anonymization**: Removes automation indicators and tracking scripts
+- **Rate Limiting**: Global and provider-specific request throttling
+- **Security Headers**: HSTS, CSP, and other security configurations
 
 ### Ethical Scraping
-- Respects robots.txt when appropriate
-- Implements rate limiting to avoid overwhelming servers
-- Provides user-agent identification
-- Includes retry logic with exponential backoff
+- **Respectful Rate Limiting**: Provider-specific delays to prevent server overload
+- **Robots.txt Compliance**: Respects robots.txt when appropriate
+- **User-Agent Identification**: Provides realistic user-agent identification
+- **Exponential Backoff**: Intelligent retry logic with increasing delays
+- **Resource Management**: Efficient browser pooling and cleanup
 
 ## 🚀 Deployment
 
-### Build for Production
+### Development Deployment
+
+#### Build for Production
 ```bash
 npm run build
 # or
 yarn build
 ```
 
-### Start Production Server
+#### Start Production Server
 ```bash
 npm start
 # or
 yarn start
 ```
 
-### Deploy to Vercel
+### Production Deployment (Docker)
+
+#### Prerequisites
+- Docker and Docker Compose installed
+- 2GB+ RAM available
+- Ports 3000, 5432, 6379 available
+
+#### Quick Start
+```bash
+# Clone and navigate to repository
+git clone <repository-url>
+cd business-scraper-app
+
+# Start production environment
+docker-compose up -d
+
+# Monitor deployment
+docker-compose logs -f
+
+# Health check
+curl http://localhost:3000/api/health
+```
+
+#### Production Environment Setup
+```bash
+# Create production environment file
+cp .env.example .env.production
+
+# Configure production variables
+# Edit .env.production with:
+# - DATABASE_URL=postgresql://postgres:your_password@business-scraper-db:5432/business_scraper
+# - REDIS_URL=redis://business-scraper-redis:6379
+# - ENABLE_REAL_SCRAPING=true
+# - Network spoofing configuration
+
+# Deploy with production config
+docker-compose --env-file .env.production up -d
+```
+
+#### Container Management
+```bash
+# View container status
+docker-compose ps
+
+# View logs
+docker-compose logs business-scraper-app
+docker-compose logs business-scraper-db
+docker-compose logs business-scraper-redis
+
+# Restart services
+docker-compose restart
+
+# Stop services
+docker-compose down
+
+# Rebuild and deploy
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### Cloud Deployment
+
+#### Deploy to Vercel
 ```bash
 npx vercel
 ```
 
-### Deploy to Netlify
+#### Deploy to Netlify
 ```bash
 npm run build
 # Upload the 'out' directory to Netlify
 ```
+
+> **Note**: For production workloads, Docker deployment is recommended for full database and caching capabilities.
 
 ## 🤝 Contributing
 
@@ -344,6 +510,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Quick Links
 - **[Current Status](CURRENT_STATUS.md)** - Complete overview of implemented features and current capabilities
+- **[Version History](VERSIONS)** - Comprehensive version history and compatibility documentation
+- **[Production Deployment Summary](docs/PRODUCTION_DEPLOYMENT_SUMMARY.md)** - Docker deployment guide and production environment setup
+- **[Network Spoofing Implementation](docs/NETWORK_SPOOFING_IMPLEMENTATION.md)** - Advanced anti-detection and network spoofing system
 - **[Feature Guide](FEATURE_GUIDE.md)** - Detailed guide to smart industry expansion, BBB discovery, and advanced search features
 - **[Chamber of Commerce Processing](CHAMBER_OF_COMMERCE_PROCESSING.md)** - Automatic processing of chamberofcommerce.com URLs with deep scraping
 - **[Yelp RESTful Scraping](YELP_RESTFUL_SCRAPING.md)** - RESTful Yelp processing with deep website analysis
@@ -354,7 +523,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.3.0)
+### Recent Major Updates (v1.4.1)
+- ✅ **Complete Production Rebuild**: Full application rebuild and redeployment with latest optimizations
+- ✅ **Docker Production Environment**: Containerized deployment with PostgreSQL and Redis
+- ✅ **Enhanced Monitoring**: Comprehensive health checks and system monitoring
+- ✅ **Production Configuration**: Real web scraping enabled with secure environment setup
+
+### Major Updates (v1.4.0)
+- ✅ **Network Spoofing Service**: Comprehensive IP address and MAC address spoofing system
+- ✅ **Advanced Rate Limiting**: Provider-specific intelligent rate limiting with exponential backoff
+- ✅ **Enhanced Anti-Detection**: Request interception, tracking script blocking, automation property removal
+- ✅ **DuckDuckGo Rate Limiting Fix**: Resolved 429 errors with 45-second delays and improved success rate to 85%
+- ✅ **Browser Fingerprint Spoofing**: WebGL, Canvas, and Audio Context fingerprint modification
+- ✅ **Production Infrastructure**: Docker deployment with PostgreSQL database and Redis cache
+
+### Previous Updates (v1.3.0)
 - ✅ **Chamber of Commerce Processing (COCP)**: Automatic detection and processing of chamberofcommerce.com URLs
 - ✅ **Yelp RESTful Scraping**: Refactored Yelp processing with RESTful URLs and deep website analysis
 - ✅ **Directory URL Fix**: Eliminated warnings by preventing directory search URLs from being treated as business websites
@@ -377,6 +560,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔄 Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+
+## 🔐 Security
+
+This repository implements comprehensive security measures to protect sensitive information:
+
+### 🛡️ Sensitive File Protection
+- **Automatic Exclusion**: `.gitignore` configured to exclude files with API keys and credentials
+- **Safe Templates**: Use `.example` files for configuration templates
+- **Environment Variables**: Store secrets in environment variables, never in code
+
+### 📋 Protected Patterns
+The following file patterns are automatically excluded from version control:
+- `REAL_SCRAPING_GUIDE.md` - Contains actual API keys
+- `*api-credentials*.txt` - API credential backup files
+- `*-with-keys.md` - Documentation with real keys
+- `*SECRET*.md`, `*PRIVATE*.md` - Sensitive documentation
+
+### 📚 Security Documentation
+- **[SECURITY_SENSITIVE_FILES.md](SECURITY_SENSITIVE_FILES.md)** - Comprehensive security guide
+- **[REAL_SCRAPING_GUIDE.example.md](REAL_SCRAPING_GUIDE.example.md)** - Safe configuration template
+
+> ⚠️ **Important**: Never commit files containing real API keys or credentials. Always use example templates and environment variables.
 
 ## 🙏 Acknowledgments
 

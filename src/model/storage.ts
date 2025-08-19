@@ -38,6 +38,15 @@ interface BusinessScraperDB extends DBSchema {
       updatedAt: Date
     }
   }
+  domainBlacklist: {
+    key: string
+    value: {
+      id: string
+      domains: string[]
+      createdAt: Date
+      updatedAt: Date
+    }
+  }
 }
 
 /**
@@ -46,7 +55,7 @@ interface BusinessScraperDB extends DBSchema {
 export class StorageService {
   private db: IDBPDatabase<BusinessScraperDB> | null = null
   private readonly dbName = 'business-scraper-db'
-  private readonly dbVersion = 1
+  private readonly dbVersion = 2
 
   /**
    * Initialize the database connection
@@ -54,30 +63,39 @@ export class StorageService {
   async initialize(): Promise<void> {
     try {
       this.db = await openDB<BusinessScraperDB>(this.dbName, this.dbVersion, {
-        upgrade(db) {
-          // Create businesses store
-          const businessStore = db.createObjectStore('businesses', {
-            keyPath: 'id',
-          })
-          businessStore.createIndex('by-industry', 'industry')
-          businessStore.createIndex('by-scraped-date', 'scrapedAt')
-          businessStore.createIndex('by-business-name', 'businessName')
+        upgrade(db, oldVersion, newVersion, transaction) {
+          // Create businesses store (version 1)
+          if (oldVersion < 1) {
+            const businessStore = db.createObjectStore('businesses', {
+              keyPath: 'id',
+            })
+            businessStore.createIndex('by-industry', 'industry')
+            businessStore.createIndex('by-scraped-date', 'scrapedAt')
+            businessStore.createIndex('by-business-name', 'businessName')
 
-          // Create configs store
-          db.createObjectStore('configs', {
-            keyPath: 'id',
-          })
+            // Create configs store
+            db.createObjectStore('configs', {
+              keyPath: 'id',
+            })
 
-          // Create industries store
-          const industryStore = db.createObjectStore('industries', {
-            keyPath: 'id',
-          })
-          industryStore.createIndex('by-custom', 'isCustom')
+            // Create industries store
+            const industryStore = db.createObjectStore('industries', {
+              keyPath: 'id',
+            })
+            industryStore.createIndex('by-custom', 'isCustom')
 
-          // Create sessions store
-          db.createObjectStore('sessions', {
-            keyPath: 'id',
-          })
+            // Create sessions store
+            db.createObjectStore('sessions', {
+              keyPath: 'id',
+            })
+          }
+
+          // Add domain blacklist store (version 2)
+          if (oldVersion < 2) {
+            db.createObjectStore('domainBlacklist', {
+              keyPath: 'id',
+            })
+          }
         },
       })
 
@@ -100,7 +118,7 @@ export class StorageService {
   /**
    * Get the database instance with proper error handling
    */
-  private async getDatabase(): Promise<IDBPDatabase<StorageSchema>> {
+  private async getDatabase(): Promise<IDBPDatabase<BusinessScraperDB>> {
     await this.ensureInitialized()
     if (!this.db) {
       throw new Error('Failed to initialize database')
@@ -419,6 +437,87 @@ export class StorageService {
   }
 
   /**
+   * Save domain blacklist
+   * @param domains - Array of domain strings to blacklist
+   */
+  async saveDomainBlacklist(domains: string[]): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      const blacklistData = {
+        id: 'global-blacklist',
+        domains: domains.filter(domain => domain.trim().length > 0),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+
+      await this.db!.put('domainBlacklist', blacklistData)
+      logger.info('Storage', `Saved domain blacklist with ${domains.length} domains`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save domain blacklist', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get domain blacklist
+   * @returns Promise resolving to array of blacklisted domains
+   */
+  async getDomainBlacklist(): Promise<string[]> {
+    await this.ensureInitialized()
+    try {
+      const blacklistData = await this.db!.get('domainBlacklist', 'global-blacklist')
+      return blacklistData?.domains || []
+    } catch (error) {
+      logger.error('Storage', 'Failed to get domain blacklist', error)
+      return []
+    }
+  }
+
+  /**
+   * Add domain to blacklist
+   * @param domain - Domain to add to blacklist
+   */
+  async addDomainToBlacklist(domain: string): Promise<void> {
+    const currentBlacklist = await this.getDomainBlacklist()
+    const cleanDomain = domain.trim().toLowerCase()
+
+    if (!currentBlacklist.includes(cleanDomain)) {
+      const updatedBlacklist = [...currentBlacklist, cleanDomain]
+      await this.saveDomainBlacklist(updatedBlacklist)
+      logger.info('Storage', `Added domain to blacklist: ${cleanDomain}`)
+    }
+  }
+
+  /**
+   * Remove domain from blacklist
+   * @param domain - Domain to remove from blacklist
+   */
+  async removeDomainFromBlacklist(domain: string): Promise<void> {
+    const currentBlacklist = await this.getDomainBlacklist()
+    const cleanDomain = domain.trim().toLowerCase()
+    const updatedBlacklist = currentBlacklist.filter(d => d !== cleanDomain)
+
+    if (updatedBlacklist.length !== currentBlacklist.length) {
+      await this.saveDomainBlacklist(updatedBlacklist)
+      logger.info('Storage', `Removed domain from blacklist: ${cleanDomain}`)
+    }
+  }
+
+  /**
+   * Clear domain blacklist
+   */
+  async clearDomainBlacklist(): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.delete('domainBlacklist', 'global-blacklist')
+      logger.info('Storage', 'Cleared domain blacklist')
+    } catch (error) {
+      logger.error('Storage', 'Failed to clear domain blacklist', error)
+      throw error
+    }
+  }
+
+  /**
    * Get database statistics
    * @returns Promise resolving to database statistics
    */
@@ -427,20 +526,22 @@ export class StorageService {
     configs: number
     industries: number
     sessions: number
+    domainBlacklistEntries: number
   }> {
     await this.ensureInitialized()
     try {
-      const [businesses, configs, industries, sessions] = await Promise.all([
+      const [businesses, configs, industries, sessions, domainBlacklist] = await Promise.all([
         this.db!.count('businesses'),
         this.db!.count('configs'),
         this.db!.count('industries'),
         this.db!.count('sessions'),
+        this.getDomainBlacklist().then(domains => domains.length)
       ])
 
-      return { businesses, configs, industries, sessions }
+      return { businesses, configs, industries, sessions, domainBlacklistEntries: domainBlacklist }
     } catch (error) {
       logger.error('Storage', 'Failed to get statistics', error)
-      return { businesses: 0, configs: 0, industries: 0, sessions: 0 }
+      return { businesses: 0, configs: 0, industries: 0, sessions: 0, domainBlacklistEntries: 0 }
     }
   }
 

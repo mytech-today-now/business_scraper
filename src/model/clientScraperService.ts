@@ -2,7 +2,6 @@
 
 import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
-import { demoScraperService } from './demoScraperService'
 import { clientSearchEngine } from './clientSearchEngine'
 import { retrieveApiCredentials } from '@/utils/secureStorage'
 
@@ -12,24 +11,6 @@ import { retrieveApiCredentials } from '@/utils/secureStorage'
  */
 export class ClientScraperService {
   private baseUrl = '/api'
-  private useDemoMode = process.env.NODE_ENV === 'development'
-
-  /**
-   * Set demo mode
-   * @param demoMode - Whether to use demo mode
-   */
-  setDemoMode(demoMode: boolean): void {
-    this.useDemoMode = demoMode
-    logger.info('ClientScraper', `Demo mode ${demoMode ? 'enabled' : 'disabled'}`)
-  }
-
-  /**
-   * Get current demo mode status
-   * @returns Whether demo mode is enabled
-   */
-  isDemoMode(): boolean {
-    return this.useDemoMode
-  }
 
   /**
    * Initialize the scraper service
@@ -38,17 +19,11 @@ export class ClientScraperService {
     // Initialize the client search engine with stored credentials
     await clientSearchEngine.initialize()
 
-    // Check if we have stored API credentials (but don't override user's demo mode preference)
+    // Check if we have stored API credentials
     const credentials = await retrieveApiCredentials()
     const hasApiCredentials = !!(credentials && credentials.googleSearchApiKey)
 
-    logger.info('ClientScraper', `Initializing scraper - Demo mode: ${this.useDemoMode}, Has API credentials: ${hasApiCredentials}`)
-
-    if (this.useDemoMode) {
-      await demoScraperService.initialize()
-      logger.info('ClientScraper', 'Demo mode enabled by user preference')
-      return
-    }
+    logger.info('ClientScraper', `Initializing scraper - Has API credentials: ${hasApiCredentials}`)
 
     try {
       const response = await fetch(`${this.baseUrl}/scrape`, {
@@ -68,9 +43,8 @@ export class ClientScraperService {
 
       logger.info('ClientScraper', 'Scraper initialized successfully')
     } catch (error) {
-      logger.warn('ClientScraper', 'Failed to initialize real scraper, falling back to demo mode', error)
-      this.useDemoMode = true
-      await demoScraperService.initialize()
+      logger.error('ClientScraper', 'Failed to initialize scraper', error)
+      throw error
     }
   }
 
@@ -82,12 +56,8 @@ export class ClientScraperService {
     zipCode: string,
     maxResults: number = 50
   ): Promise<string[]> {
-    if (this.useDemoMode) {
-      return await demoScraperService.searchForWebsites(query, zipCode, maxResults)
-    }
-
     try {
-      // Try using stored API credentials with client search engine (includes DuckDuckGo SERP scraping)
+      // Use stored API credentials with client search engine (includes DuckDuckGo SERP scraping)
       const searchResults = await clientSearchEngine.searchBusinesses(query, zipCode, maxResults)
       const urls = searchResults.map(result => result.url)
 
@@ -97,13 +67,10 @@ export class ClientScraperService {
         return urls
       }
 
-      // When demo mode is OFF, don't fall back to server API that generates fake URLs
-      logger.warn('ClientScraper', `Client search returned no results for query: ${query}. No server fallback in real mode.`)
+      logger.warn('ClientScraper', `Client search returned no results for query: ${query}`)
       return []
     } catch (error) {
-      logger.error('ClientScraper', `All search methods failed for query: ${query}`, error)
-      // Don't fall back to demo data when user wants real scraping
-      // Return empty array to indicate no real results found
+      logger.error('ClientScraper', `Search failed for query: ${query}`, error)
       return []
     }
   }
@@ -112,10 +79,6 @@ export class ClientScraperService {
    * Scrape a website for business information
    */
   async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
-    if (this.useDemoMode) {
-      return await demoScraperService.scrapeWebsite(url, depth, maxPages)
-    }
-
     try {
       const response = await fetch(`${this.baseUrl}/scrape`, {
         method: 'POST',
@@ -137,8 +100,6 @@ export class ClientScraperService {
       return result.businesses
     } catch (error) {
       logger.error('ClientScraper', `Failed to scrape website: ${url}`, error)
-      // Don't fall back to demo data when user wants real scraping
-      // Return empty array to indicate scraping failed
       return []
     }
   }
@@ -147,11 +108,6 @@ export class ClientScraperService {
    * Cleanup scraper resources
    */
   async cleanup(): Promise<void> {
-    if (this.useDemoMode) {
-      await demoScraperService.cleanup()
-      return
-    }
-
     try {
       const response = await fetch(`${this.baseUrl}/scrape`, {
         method: 'POST',
@@ -170,8 +126,8 @@ export class ClientScraperService {
 
       logger.info('ClientScraper', 'Scraper cleaned up successfully')
     } catch (error) {
-      logger.warn('ClientScraper', 'Failed to cleanup scraper, using demo cleanup', error)
-      await demoScraperService.cleanup()
+      logger.error('ClientScraper', 'Failed to cleanup scraper', error)
+      throw error
     }
   }
 
@@ -202,10 +158,6 @@ export class ClientScraperService {
    * Get scraping statistics
    */
   getStats() {
-    if (this.useDemoMode) {
-      return demoScraperService.getStats()
-    }
-
     return {
       totalSites: 0,
       successfulScrapes: 0,
@@ -221,21 +173,19 @@ export class ClientScraperService {
   async refreshCredentials(): Promise<void> {
     await clientSearchEngine.refreshCredentials()
 
-    // Log credential status but don't override user's demo mode preference
+    // Log credential status
     const credentials = await retrieveApiCredentials()
     const hasCredentials = !!(credentials && credentials.googleSearchApiKey)
 
-    logger.info('ClientScraper', `Credentials refreshed - Has API credentials: ${hasCredentials}, Demo mode: ${this.useDemoMode}`)
+    logger.info('ClientScraper', `Credentials refreshed - Has API credentials: ${hasCredentials}`)
   }
 
   /**
    * Reset scraping statistics
    */
   resetStats(): void {
-    if (this.useDemoMode) {
-      demoScraperService.resetStats()
-    }
     // This would be handled server-side for real scraping
+    logger.info('ClientScraper', 'Stats reset requested - handled server-side')
   }
 }
 

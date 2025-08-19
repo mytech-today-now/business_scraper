@@ -139,7 +139,7 @@ export class AdvancedRateLimitService {
       },
       scraping: {
         windowMs: 60 * 60 * 1000, // 1 hour
-        maxRequests: 10,
+        maxRequests: 100, // Increased from 10 to 100 for better scraping performance
         onLimitReached: () => logger.warn('RateLimit', `Scraping rate limit exceeded for ${key}`)
       },
       auth: {

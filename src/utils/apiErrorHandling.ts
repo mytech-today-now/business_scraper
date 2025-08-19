@@ -130,9 +130,17 @@ export async function makeApiCall<T = any>(
     operation: string
     component?: string
     retries?: number
+    retryDelay?: number
+    retryCondition?: (error: ApiError) => boolean
   } = { operation: 'API Call' }
 ): Promise<{ success: true; data: T } | { success: false; error: ApiErrorResponse }> {
-  const { operation, component = 'ApiClient', retries = 0 } = context
+  const {
+    operation,
+    component = 'ApiClient',
+    retries = 0,
+    retryDelay = 1000,
+    retryCondition
+  } = context
   const maxRetries = 3
   
   try {
@@ -150,11 +158,18 @@ export async function makeApiCall<T = any>(
         timestamp: new Date().toISOString()
       }))
 
-      throw new ApiError(
+      // Extract Retry-After header for rate limiting
+      const retryAfter = response.headers.get('Retry-After')
+      const apiError = new ApiError(
         errorData.error || `Request failed with status ${response.status}`,
         response.status,
-        errorData
+        {
+          ...errorData,
+          retryAfter: retryAfter ? parseInt(retryAfter, 10) : undefined
+        }
       )
+
+      throw apiError
     }
 
     const data = await response.json()
@@ -190,11 +205,22 @@ export async function makeApiCall<T = any>(
     })
 
     // Retry logic for certain errors
-    if (retries < maxRetries && isRetryableError(apiError)) {
-      logger.info(component, `Retrying ${operation} (attempt ${retries + 1}/${maxRetries})`)
-      
-      await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)))
-      
+    const shouldRetry = retryCondition ? retryCondition(apiError) : isRetryableError(apiError)
+
+    if (retries < maxRetries && shouldRetry) {
+      // Calculate retry delay - use custom delay or default exponential backoff
+      let calculatedRetryDelay = retryDelay || (1000 * (retries + 1))
+
+      if (apiError.status === 429 && apiError.details?.retryAfter) {
+        // Use server-specified retry delay for rate limiting
+        calculatedRetryDelay = Math.max(apiError.details.retryAfter * 1000, calculatedRetryDelay)
+        logger.info(component, `Rate limited - using server-specified retry delay: ${calculatedRetryDelay}ms`)
+      }
+
+      logger.info(component, `Retrying ${operation} (attempt ${retries + 1}/${maxRetries}) in ${calculatedRetryDelay}ms`)
+
+      await new Promise(resolve => setTimeout(resolve, calculatedRetryDelay))
+
       return makeApiCall(url, options, {
         ...context,
         retries: retries + 1

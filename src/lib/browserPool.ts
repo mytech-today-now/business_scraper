@@ -294,55 +294,111 @@ export class BrowserPool {
    * Configure a new page with anti-detection measures
    */
   private async configurePage(page: Page): Promise<void> {
-    // Set random user agent
-    const userAgent = this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
-    if (userAgent) {
-      await page.setUserAgent(userAgent)
-    }
+    try {
+      // Apply comprehensive network spoofing
+      const { NetworkSpoofingService } = await import('./networkSpoofingService')
+      const spoofingService = new NetworkSpoofingService({
+        enableIPSpoofing: true,
+        enableMACAddressSpoofing: true,
+        enableFingerprintSpoofing: true,
+        requestDelay: { min: 1000, max: 4000 }
+      })
 
-    // Set random viewport
-    const viewport = this.config.viewports[Math.floor(Math.random() * this.config.viewports.length)]
-    if (viewport) {
-      await page.setViewport(viewport)
-    }
+      await spoofingService.applyNetworkSpoofing(page)
 
-    // Set extra headers
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Connection': 'keep-alive',
-      'Upgrade-Insecure-Requests': '1',
-    })
-
-    // Block unnecessary resources for performance
-    await page.setRequestInterception(true)
-    page.on('request', (request) => {
-      const resourceType = request.resourceType()
-      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
-        request.abort()
-      } else {
-        request.continue()
+      // Fallback: Set random user agent if spoofing service fails
+      const userAgent = this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
+      if (userAgent) {
+        await page.setUserAgent(userAgent)
       }
-    })
 
-    // Add stealth measures
-    await page.evaluateOnNewDocument(() => {
-      // Override webdriver property
-      Object.defineProperty(navigator, 'webdriver', {
-        get: () => undefined,
+      // Fallback: Set random viewport if spoofing service fails
+      const viewport = this.config.viewports[Math.floor(Math.random() * this.config.viewports.length)]
+      if (viewport) {
+        await page.setViewport(viewport)
+      }
+
+      // Enhanced request interception with anti-detection
+      await page.setRequestInterception(true)
+      page.on('request', (request) => {
+        const resourceType = request.resourceType()
+        const url = request.url()
+
+        // Block unnecessary resources and tracking
+        if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+          request.abort()
+        } else if (url.includes('google-analytics') ||
+                   url.includes('googletagmanager') ||
+                   url.includes('facebook.com') ||
+                   url.includes('doubleclick') ||
+                   url.includes('adsystem') ||
+                   url.includes('hotjar') ||
+                   url.includes('mixpanel')) {
+          request.abort()
+        } else {
+          // Add random delays to appear more human
+          const delay = Math.random() * 200 + 100 // 100-300ms delay
+          setTimeout(() => {
+            request.continue()
+          }, delay)
+        }
       })
 
-      // Override plugins
-      Object.defineProperty(navigator, 'plugins', {
-        get: () => [1, 2, 3, 4, 5],
+      // Enhanced stealth measures
+      await page.evaluateOnNewDocument(() => {
+        // Override webdriver property
+        Object.defineProperty(navigator, 'webdriver', {
+          get: () => undefined,
+        })
+
+        // Remove automation indicators
+        delete (window as any).cdc_adoQpoasnfa76pfcZLmcfl_Array
+        delete (window as any).cdc_adoQpoasnfa76pfcZLmcfl_Promise
+        delete (window as any).cdc_adoQpoasnfa76pfcZLmcfl_Symbol
+
+        // Override plugins with realistic values
+        Object.defineProperty(navigator, 'plugins', {
+          get: () => [
+            { name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer' },
+            { name: 'Chrome PDF Viewer', filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai' },
+            { name: 'Native Client', filename: 'internal-nacl-plugin' }
+          ],
+        })
+
+        // Override languages
+        Object.defineProperty(navigator, 'languages', {
+          get: () => ['en-US', 'en'],
+        })
+
+        // Override permissions
+        const originalQuery = window.navigator.permissions.query
+        window.navigator.permissions.query = (parameters) => (
+          parameters.name === 'notifications' ?
+            Promise.resolve({ state: Notification.permission }) :
+            originalQuery(parameters)
+        )
+
+        // Override battery API
+        Object.defineProperty(navigator, 'getBattery', {
+          get: () => () => Promise.resolve({
+            charging: true,
+            chargingTime: 0,
+            dischargingTime: Infinity,
+            level: 1
+          }),
+        })
       })
 
-      // Override languages
-      Object.defineProperty(navigator, 'languages', {
-        get: () => ['en-US', 'en'],
-      })
-    })
+      logger.debug('BrowserPool', 'Page configured with enhanced anti-detection measures')
+    } catch (error) {
+      logger.warn('BrowserPool', 'Failed to apply some anti-detection measures', error)
+
+      // Fallback configuration
+      const userAgent = this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
+      if (userAgent) {
+        await page.setUserAgent(userAgent)
+      }
+    }
   }
 
   /**

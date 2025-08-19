@@ -13,12 +13,12 @@ import {
   Trash2,
   Download,
   Upload,
-  TestTube,
   Info,
   ExternalLink,
   Lock,
   Unlock,
-  Search
+  Search,
+  TestTube
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
@@ -33,16 +33,17 @@ import {
   getCredentialsTimestamp,
   validateApiCredentials,
   testApiCredentials,
+  testApiCredentialsDetailed,
   exportCredentials,
-  importCredentials
+  importCredentials,
+  type ApiTestResult
 } from '@/utils/secureStorage'
 import { logger } from '@/utils/logger'
+import { storage } from '@/model/storage'
 
 export interface ApiConfigurationPageProps {
   onClose: () => void
   onCredentialsUpdated?: (credentials: ApiCredentials) => void
-  isDemoMode?: boolean
-  onToggleDemoMode?: () => void
 }
 
 /**
@@ -51,9 +52,7 @@ export interface ApiConfigurationPageProps {
  */
 export function ApiConfigurationPage({
   onClose,
-  onCredentialsUpdated,
-  isDemoMode = false,
-  onToggleDemoMode
+  onCredentialsUpdated
 }: ApiConfigurationPageProps): JSX.Element {
   const [credentials, setCredentials] = useState<ApiCredentials>({})
   const [showPasswords, setShowPasswords] = useState<{ [key: string]: boolean }>({})
@@ -61,6 +60,7 @@ export function ApiConfigurationPage({
   const [isTesting, setIsTesting] = useState(false)
   const [blacklistText, setBlacklistText] = useState('')
   const [testResults, setTestResults] = useState<{ [key: string]: boolean }>({})
+  const [detailedTestResults, setDetailedTestResults] = useState<{ [key: string]: ApiTestResult }>({})
   const [validationErrors, setValidationErrors] = useState<string[]>([])
   const [successMessage, setSuccessMessage] = useState('')
   const [hasExistingCredentials, setHasExistingCredentials] = useState(false)
@@ -74,8 +74,26 @@ export function ApiConfigurationPage({
         setCredentials(stored)
         setHasExistingCredentials(true)
         setLastUpdated(getCredentialsTimestamp())
-        // Load domain blacklist
-        if (stored.domainBlacklist) {
+      }
+
+      // Load domain blacklist from IndexedDB (persistent storage)
+      try {
+        const persistentBlacklist = await storage.getDomainBlacklist()
+        if (persistentBlacklist.length > 0) {
+          setBlacklistText(persistentBlacklist.join('\n'))
+          // Update credentials with persistent blacklist
+          setCredentials(prev => ({
+            ...prev,
+            domainBlacklist: persistentBlacklist
+          }))
+        } else if (stored?.domainBlacklist) {
+          // Fallback to localStorage blacklist if no persistent storage
+          setBlacklistText(stored.domainBlacklist.join('\n'))
+        }
+      } catch (error) {
+        logger.warn('ApiConfiguration', 'Failed to load persistent blacklist, using localStorage fallback', error)
+        // Fallback to localStorage blacklist
+        if (stored?.domainBlacklist) {
           setBlacklistText(stored.domainBlacklist.join('\n'))
         }
       }
@@ -107,7 +125,7 @@ export function ApiConfigurationPage({
     }))
   }
 
-  const handleBlacklistChange = (value: string): void => {
+  const handleBlacklistChange = async (value: string): Promise<void> => {
     setBlacklistText(value)
     // Parse domains from text and update credentials
     const domains = value
@@ -120,37 +138,55 @@ export function ApiConfigurationPage({
       ...prev,
       domainBlacklist: domains
     }))
-  }
 
-  const exportBlacklist = () => {
-    const blacklist = credentials.domainBlacklist || []
-
-    // Create export data with standardized Business Scraper format (same as industry export)
-    const exportData = {
-      name: "Business Scraper",
-      url: "https://github.com/mytech-today-now/business_scraper",
-      version: "1.0.0",
-      exportDate: new Date().toISOString(),
-      domainBlacklist: blacklist
+    // Save to IndexedDB for persistence
+    try {
+      await storage.saveDomainBlacklist(domains)
+      logger.info('ApiConfiguration', `Saved ${domains.length} domains to persistent blacklist`)
+    } catch (error) {
+      logger.error('ApiConfiguration', 'Failed to save domain blacklist to persistent storage', error)
+      toast.error('Failed to save domain blacklist persistently')
     }
-
-    const dataStr = JSON.stringify(exportData, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-
-    const exportFileDefaultName = `domain-blacklist-${new Date().toISOString().split('T')[0]}.json`
-
-    const linkElement = document.createElement('a')
-    linkElement.setAttribute('href', dataUri)
-    linkElement.setAttribute('download', exportFileDefaultName)
-    linkElement.click()
   }
 
-  const importBlacklist = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const exportBlacklist = async () => {
+    try {
+      // Get the most current blacklist from IndexedDB
+      const persistentBlacklist = await storage.getDomainBlacklist()
+      const blacklist = persistentBlacklist.length > 0 ? persistentBlacklist : (credentials.domainBlacklist || [])
+
+      // Create export data with standardized Business Scraper format (same as industry export)
+      const exportData = {
+        name: "Business Scraper",
+        url: "https://github.com/mytech-today-now/business_scraper",
+        version: "1.0.0",
+        exportDate: new Date().toISOString(),
+        domainBlacklist: blacklist
+      }
+
+      const dataStr = JSON.stringify(exportData, null, 2)
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
+
+      const exportFileDefaultName = `domain-blacklist-${new Date().toISOString().split('T')[0]}.json`
+
+      const linkElement = document.createElement('a')
+      linkElement.setAttribute('href', dataUri)
+      linkElement.setAttribute('download', exportFileDefaultName)
+      linkElement.click()
+
+      toast.success(`Exported ${blacklist.length} domains`)
+    } catch (error) {
+      logger.error('ApiConfiguration', 'Failed to export blacklist', error)
+      toast.error('Failed to export domain blacklist')
+    }
+  }
+
+  const importBlacklist = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const content = e.target?.result as string
         const parsedData = JSON.parse(content)
@@ -185,7 +221,14 @@ export function ApiConfigurationPage({
           domainBlacklist: validDomains
         }))
 
-        toast.success(`Imported ${validDomains.length} domains to blacklist`)
+        // Save to IndexedDB for persistence
+        try {
+          await storage.saveDomainBlacklist(validDomains)
+          toast.success(`Imported ${validDomains.length} domains to blacklist`)
+        } catch (error) {
+          logger.error('ApiConfiguration', 'Failed to save imported blacklist to persistent storage', error)
+          toast.error('Imported domains but failed to save persistently')
+        }
       } catch (error) {
         toast.error('Failed to parse blacklist file. Please check the format.')
       }
@@ -230,18 +273,30 @@ export function ApiConfigurationPage({
   const handleTest = async (): Promise<void> => {
     setIsTesting(true)
     setTestResults({})
+    setDetailedTestResults({})
+    setValidationErrors([])
+    setSuccessMessage('')
 
     try {
-      const results = await testApiCredentials(credentials)
-      setTestResults(results)
-      
-      const successCount = Object.values(results).filter(Boolean).length
-      const totalCount = Object.keys(results).length
-      
+      // Get detailed test results
+      const detailedResults = await testApiCredentialsDetailed(credentials)
+      console.log('[DEBUG] Received detailed test results:', detailedResults)
+      setDetailedTestResults(detailedResults)
+
+      // Convert to simple boolean results for backward compatibility
+      const simpleResults: { [key: string]: boolean } = {}
+      Object.keys(detailedResults).forEach(key => {
+        simpleResults[key] = detailedResults[key].success
+      })
+      setTestResults(simpleResults)
+
+      const successCount = Object.values(simpleResults).filter(Boolean).length
+      const totalCount = Object.keys(simpleResults).length
+
       if (successCount === totalCount) {
         setSuccessMessage(`All ${totalCount} API credentials tested successfully!`)
       } else {
-        setValidationErrors([`${successCount}/${totalCount} API credentials are working`])
+        setSuccessMessage(`${successCount}/${totalCount} API credentials are working`)
       }
     } catch (error) {
       setValidationErrors(['Failed to test API credentials'])
@@ -258,6 +313,7 @@ export function ApiConfigurationPage({
       setHasExistingCredentials(false)
       setLastUpdated(null)
       setTestResults({})
+      setDetailedTestResults({})
       setValidationErrors([])
       setSuccessMessage('All API credentials cleared')
       onCredentialsUpdated?.({})
@@ -361,49 +417,349 @@ export function ApiConfigurationPage({
             </CardContent>
           </Card>
 
-          {/* Status */}
-          {hasExistingCredentials && (
-            <Card className="border-green-200 bg-green-50">
+
+
+          {/* Debug: Show detailed test results count */}
+          {Object.keys(detailedTestResults).length > 0 && (
+            <Card className="border-yellow-200 bg-yellow-50 mb-4">
+              <CardContent className="p-4">
+                <p className="text-sm text-yellow-800">
+                  Debug: Found {Object.keys(detailedTestResults).length} detailed test results
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Detailed Test Results Display */}
+          {Object.keys(detailedTestResults).length > 0 && (
+            <Card className="border-blue-200 bg-blue-50">
               <CardContent className="p-6 pt-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Lock className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-800">
-                      Credentials Stored Securely
-                    </span>
+                <div className="flex items-center space-x-2 mb-4">
+                  <TestTube className="h-5 w-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-blue-900">API Credential Test Results</h3>
+                </div>
+                <div className="space-y-4">
+                  {Object.entries(detailedTestResults).map(([service, result]) => (
+                    <div key={service} className={`p-4 rounded-lg border-2 ${
+                      result.success
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-red-50 border-red-200'
+                    }`}>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-2 rounded-full ${
+                            result.success ? 'bg-green-100' : 'bg-red-100'
+                          }`}>
+                            {result.success ? (
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                              <XCircle className="h-5 w-5 text-red-600" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className={`text-base font-semibold ${
+                              result.success ? 'text-green-800' : 'text-red-800'
+                            }`}>
+                              {service.replace(/([A-Z])/g, ' $1').trim().replace(/^./, str => str.toUpperCase())}
+                            </h4>
+                            <p className={`text-sm ${
+                              result.success ? 'text-green-700' : 'text-red-700'
+                            }`}>
+                              {result.message}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                            result.success
+                              ? 'bg-green-200 text-green-800'
+                              : 'bg-red-200 text-red-800'
+                          }`}>
+                            {result.success ? 'WORKING' : 'FAILED'}
+                          </span>
+                          {result.statusCode && (
+                            <span className="text-xs px-2 py-1 bg-gray-200 text-gray-700 rounded">
+                              HTTP {result.statusCode}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {!result.success && (
+                        <div className="space-y-4">
+                          {/* Basic Error Information */}
+                          {result.error && (
+                            <div className="p-4 bg-red-100 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-red-800">Error Details:</p>
+                                  <p className="text-sm text-red-700 mt-1">{result.error}</p>
+                                  {result.errorType && (
+                                    <p className="text-xs text-red-600 mt-1">
+                                      Error Type: <span className="font-medium">{result.errorType.replace(/_/g, ' ').toUpperCase()}</span>
+                                    </p>
+                                  )}
+                                  {result.estimatedFixTime && (
+                                    <p className="text-xs text-red-600 mt-1">
+                                      Estimated Fix Time: <span className="font-medium">{result.estimatedFixTime}</span>
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Detailed Error Information */}
+                          {result.detailedError && (
+                            <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <Search className="h-4 w-4 text-red-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-red-800">Detailed Analysis:</p>
+                                  <p className="text-sm text-red-700 mt-1">{result.detailedError}</p>
+                                  {result.requestUrl && (
+                                    <p className="text-xs text-red-600 mt-2">
+                                      Request URL: <code className="bg-red-200 px-1 rounded text-xs">{result.requestUrl}</code>
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Common Causes */}
+                          {result.commonCauses && result.commonCauses.length > 0 && (
+                            <div className="p-4 bg-orange-50 border border-orange-200 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-orange-800">Common Causes:</p>
+                                  <ul className="text-sm text-orange-700 mt-1 space-y-1">
+                                    {result.commonCauses.map((cause, index) => (
+                                      <li key={index} className="flex items-start space-x-1">
+                                        <span className="text-orange-600 mt-0.5">•</span>
+                                        <span>{cause}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Troubleshooting Steps */}
+                          {result.troubleshootingSteps && result.troubleshootingSteps.length > 0 && (
+                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <Info className="h-4 w-4 text-blue-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-blue-800">Troubleshooting Steps:</p>
+                                  <ol className="text-sm text-blue-700 mt-1 space-y-1">
+                                    {result.troubleshootingSteps.map((step, index) => (
+                                      <li key={index} className="flex items-start space-x-2">
+                                        <span className="text-blue-600 font-medium min-w-[1rem]">{step.startsWith('✅') ? step.substring(0, 2) : `${index + 1}.`}</span>
+                                        <span>{step.startsWith('✅') ? step.substring(2).trim() : step.replace(/^\d+\.\s*/, '')}</span>
+                                      </li>
+                                    ))}
+                                  </ol>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Suggested Solution */}
+                          {result.suggestion && (
+                            <div className="p-4 bg-yellow-100 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <Info className="h-4 w-4 text-yellow-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-yellow-800">Suggested Solution:</p>
+                                  <p className="text-sm text-yellow-700 mt-1">{result.suggestion}</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Next Steps */}
+                          {result.nextSteps && result.nextSteps.length > 0 && (
+                            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-green-800">Next Steps:</p>
+                                  <ul className="text-sm text-green-700 mt-1 space-y-1">
+                                    {result.nextSteps.map((step, index) => (
+                                      <li key={index} className="flex items-start space-x-1">
+                                        <span className="text-green-600 mt-0.5">→</span>
+                                        <span>{step}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Documentation Link */}
+                          {result.documentationUrl && (
+                            <div className="flex items-center space-x-2 pt-2">
+                              <ExternalLink className="h-4 w-4 text-blue-600" />
+                              <a
+                                href={result.documentationUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:text-blue-800 underline font-medium"
+                              >
+                                📚 View Official Documentation
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {result.success && (
+                        <div className="space-y-3">
+                          {/* Success Message */}
+                          {result.suggestion && (
+                            <div className="p-4 bg-green-100 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-green-800">Success!</p>
+                                  <p className="text-sm text-green-700 mt-1">{result.suggestion}</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Detailed Success Information */}
+                          {result.detailedError && (
+                            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <Info className="h-4 w-4 text-green-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-green-800">Connection Details:</p>
+                                  <p className="text-sm text-green-700 mt-1">{result.detailedError}</p>
+                                  {result.requestUrl && (
+                                    <p className="text-xs text-green-600 mt-2">
+                                      Tested URL: <code className="bg-green-200 px-1 rounded text-xs">{result.requestUrl}</code>
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Success Verification Steps */}
+                          {result.troubleshootingSteps && result.troubleshootingSteps.length > 0 && (
+                            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                              <div className="flex items-start space-x-2">
+                                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-green-800">Verification Checks:</p>
+                                  <ul className="text-sm text-green-700 mt-1 space-y-1">
+                                    {result.troubleshootingSteps.map((step, index) => (
+                                      <li key={index} className="flex items-start space-x-2">
+                                        <span className="text-green-600 font-medium">{step.startsWith('✅') ? '✅' : '✓'}</span>
+                                        <span>{step.startsWith('✅') ? step.substring(2).trim() : step}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-100 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-semibold mb-2">Understanding Test Results:</p>
+                      <ul className="space-y-1 text-blue-700">
+                        <li>• <strong>WORKING</strong>: API credentials are valid and the service responded successfully</li>
+                        <li>• <strong>FAILED</strong>: There was an issue with the credentials or service connectivity</li>
+                        <li>• <strong>HTTP Status Codes</strong>: Indicate the specific type of response from the API</li>
+                        <li>• <strong>Error Types</strong>: Help identify whether the issue is with credentials, network, or service availability</li>
+                        <li>• <strong>DuckDuckGo</strong>: Always available as a fallback (no API key required)</li>
+                      </ul>
+                    </div>
                   </div>
-                  {lastUpdated && (
-                    <span className="text-xs text-green-600">
-                      Last updated: {lastUpdated.toLocaleDateString()} {lastUpdated.toLocaleTimeString()}
-                    </span>
-                  )}
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Messages */}
-          {validationErrors.length > 0 && (
-            <Card className="border-red-200 bg-red-50">
+          {/* Fallback: Always show test results if any tests have been run */}
+          {Object.keys(testResults).length > 0 && Object.keys(detailedTestResults).length === 0 && (
+            <Card className="border-orange-200 bg-orange-50">
               <CardContent className="p-6 pt-6">
-                <div className="flex items-start space-x-2">
-                  <AlertTriangle className="h-4 w-4 text-red-600 mt-1" />
-                  <div>
-                    {validationErrors.map((error, index) => (
-                      <p key={index} className="text-sm text-red-700">{error}</p>
-                    ))}
-                  </div>
+                <div className="flex items-center space-x-2 mb-4">
+                  <TestTube className="h-5 w-5 text-orange-600" />
+                  <h3 className="text-lg font-semibold text-orange-900">API Test Results (Basic)</h3>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {successMessage && (
-            <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-6 pt-6">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <p className="text-sm text-green-700">{successMessage}</p>
+                <div className="space-y-3">
+                  {Object.entries(testResults).map(([service, isWorking]) => (
+                    <div key={service} className={`p-4 rounded-lg border-2 ${
+                      isWorking
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-red-50 border-red-200'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium capitalize">
+                          {service.replace(/([A-Z])/g, ' $1').trim()}
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          {isWorking ? (
+                            <>
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              <span className="text-xs text-green-600 font-semibold px-2 py-1 bg-green-100 rounded-full">
+                                WORKING
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="h-4 w-4 text-red-500" />
+                              <span className="text-xs text-red-600 font-semibold px-2 py-1 bg-red-100 rounded-full">
+                                FAILED
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      {!isWorking && (
+                        <div className="mt-3 p-3 bg-red-100 rounded-md">
+                          <div className="flex items-start space-x-2">
+                            <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-red-800">Test Failed</p>
+                              <p className="text-sm text-red-700 mt-1">
+                                The API credentials for {service.replace(/([A-Z])/g, ' $1').trim()} are not working.
+                                This could be due to invalid API keys, network issues, or service unavailability.
+                              </p>
+                              <p className="text-xs text-red-600 mt-2">
+                                💡 Check your API credentials and ensure they are correctly configured.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 bg-orange-100 rounded-md">
+                  <div className="flex items-start space-x-2">
+                    <Info className="h-4 w-4 text-orange-600 mt-0.5" />
+                    <div className="text-sm text-orange-700">
+                      <p className="font-medium mb-1">Note:</p>
+                      <p>Detailed error information is not available. Basic test results only show success/failure status.</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -488,25 +844,25 @@ export function ApiConfigurationPage({
 
           {/* Additional API Services */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Azure AI Foundry - Grounding with Bing Custom Search */}
+            {/* Bing Grounding Custom Search */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <span>Azure AI Foundry</span>
+                  <span>Bing Grounding Custom Search</span>
                   {getTestIcon('azureSearch')}
                 </CardTitle>
                 <div className="text-sm text-gray-600 mt-1">
-                  Grounding with Bing Custom Search
+                  Microsoft Bing Custom Search API
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="relative">
                   <Input
-                    label="API Key (Key 1 or Key 2)"
+                    label="Subscription Key (Key 1 or Key 2)"
                     type={showPasswords.azureSearchApiKey ? 'text' : 'password'}
                     value={credentials.azureSearchApiKey || ''}
                     onChange={(e) => handleInputChange('azureSearchApiKey', e.target.value)}
-                    placeholder="Enter your Azure AI Foundry API key"
+                    placeholder="Enter your Bing Custom Search subscription key"
                   />
                   <button
                     type="button"
@@ -521,33 +877,38 @@ export function ApiConfigurationPage({
                   <Input
                     label="Endpoint URL"
                     type="text"
-                    value={credentials.azureSearchEndpoint || ''}
+                    value={credentials.azureSearchEndpoint || 'https://api.bing.microsoft.com/'}
                     onChange={(e) => handleInputChange('azureSearchEndpoint', e.target.value)}
-                    placeholder="https://businessscraper.cognitiveservices.azure.com/"
+                    placeholder="https://api.bing.microsoft.com/"
+                    disabled
                   />
+                  <p className="text-xs text-gray-500 mt-1">Fixed endpoint for Bing Custom Search API</p>
                 </div>
 
                 <div>
                   <Input
-                    label="Region"
+                    label="Resource Name (Optional)"
                     type="text"
                     value={credentials.azureSearchRegion || ''}
                     onChange={(e) => handleInputChange('azureSearchRegion', e.target.value)}
-                    placeholder="eastus"
+                    placeholder="BusinessScraperGood"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Your Azure resource name for reference</p>
                 </div>
 
                 <div className="mt-3 p-3 bg-blue-50 rounded-md">
                   <div className="flex items-start space-x-2">
                     <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-blue-800 min-w-0 flex-1">
-                      <p className="font-medium mb-1">Azure AI Foundry Setup:</p>
+                      <p className="font-medium mb-1">Bing Grounding Custom Search Setup:</p>
                       <ul className="mt-1 space-y-1 text-xs">
-                        <li className="break-words">• <strong>NEW:</strong> Replaces deprecated Bing Search API (ends Aug 2025)</li>
-                        <li className="break-words">• Service: &quot;Grounding with Bing Custom Search&quot;</li>
-                        <li className="break-words">• Portal: <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Azure Portal</a></li>
-                        <li className="break-words">• Use either Key 1 or Key 2 from your resource</li>
-                        <li className="break-words">• Endpoint format: <span className="break-all">https://[name].cognitiveservices.azure.com/</span></li>
+                        <li className="break-words">• <strong>Service Type:</strong> microsoft.bing/accounts</li>
+                        <li className="break-words">• <strong>Kind:</strong> Bing.GroundingCustomSearch</li>
+                        <li className="break-words">• <strong>Location:</strong> global (worldwide availability)</li>
+                        <li className="break-words">• <strong>Portal:</strong> <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Azure Portal</a></li>
+                        <li className="break-words">• <strong>Get Keys:</strong> Resource → Keys and Endpoint → Key 1 or Key 2</li>
+                        <li className="break-words">• <strong>Endpoint:</strong> https://api.bing.microsoft.com/ (fixed)</li>
+                        <li className="break-words">• <strong>Resource ID:</strong> /subscriptions/.../providers/Microsoft.Bing/accounts/[name]</li>
                       </ul>
                     </div>
                   </div>
@@ -768,47 +1129,52 @@ export function ApiConfigurationPage({
             </CardContent>
           </Card>
 
-          {/* Application Mode Settings */}
-          {onToggleDemoMode && (
-            <Card className="border-purple-200 bg-purple-50">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <TestTube className="h-5 w-5" />
-                  <span>Application Mode</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-purple-200">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-900">Demo Mode</label>
-                    <p className="text-xs text-gray-600">
-                      {isDemoMode
-                        ? 'Using demo data for testing and development'
-                        : 'Using real web scraping (requires API setup)'}
-                    </p>
+
+
+          {/* Status Messages - Moved to bottom above action buttons */}
+          {/* Status */}
+          {hasExistingCredentials && (
+            <Card className="border-green-200 bg-green-50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Lock className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-medium text-green-800">
+                      Credentials Stored Securely
+                    </span>
                   </div>
-                  <Button
-                    variant={isDemoMode ? "default" : "outline"}
-                    size="sm"
-                    onClick={onToggleDemoMode}
-                    className="min-w-[80px]"
-                  >
-                    {isDemoMode ? 'Demo' : 'Real'}
-                  </Button>
+                  {lastUpdated && (
+                    <span className="text-xs text-green-600">
+                      Last updated: {lastUpdated.toLocaleDateString()} {lastUpdated.toLocaleTimeString()}
+                    </span>
+                  )}
                 </div>
-                <div className="mt-4 p-3 bg-purple-100 rounded-md">
-                  <div className="flex items-start space-x-2">
-                    <Info className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-purple-800 min-w-0 flex-1">
-                      <p className="font-medium mb-1">Mode Information:</p>
-                      <ul className="mt-1 space-y-1 text-xs">
-                        <li className="break-words">• <strong>Demo Mode:</strong> Uses sample data for testing without real web scraping</li>
-                        <li className="break-words">• <strong>Real Mode:</strong> Performs actual web scraping using configured APIs</li>
-                        <li className="break-words">• Demo mode is automatically enabled in development environment</li>
-                        <li className="break-words">• Real mode requires proper API credentials to be configured</li>
-                      </ul>
-                    </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Messages */}
+          {validationErrors.length > 0 && (
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="p-4">
+                <div className="flex items-start space-x-2">
+                  <AlertTriangle className="h-4 w-4 text-red-600 mt-1" />
+                  <div>
+                    {validationErrors.map((error, index) => (
+                      <p key={index} className="text-sm text-red-700">{error}</p>
+                    ))}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {successMessage && (
+            <Card className="border-green-200 bg-green-50">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <p className="text-sm text-green-700">{successMessage}</p>
                 </div>
               </CardContent>
             </Card>
@@ -845,16 +1211,22 @@ export function ApiConfigurationPage({
               <span>Export Backup</span>
             </Button>
 
-            <label className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
-              <Upload className="h-4 w-4" />
-              <span>Import Backup</span>
+            <div className="relative">
               <input
                 type="file"
                 accept=".txt"
                 onChange={handleImport}
-                className="hidden"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                id="import-backup-input"
               />
-            </label>
+              <label
+                htmlFor="import-backup-input"
+                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Import Backup</span>
+              </label>
+            </div>
 
             <Button
               variant="destructive"

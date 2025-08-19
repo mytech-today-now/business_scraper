@@ -7,7 +7,7 @@ const getStaticCSPHeader = () => {
     "default-src 'self'",
     "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https: /_next/image* /_next/static/*",
+    "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com",
     "object-src 'none'",
@@ -108,6 +108,9 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: false,
+
+  // Enable standalone output for Docker deployment
+  output: 'standalone',
 
   // Temporarily disable TypeScript checking during build
   typescript: {

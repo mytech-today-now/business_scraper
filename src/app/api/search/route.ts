@@ -179,7 +179,7 @@ const searchHandler = withApiSecurity(
 {
   requireAuth: false, // Allow public access for now, but with rate limiting
   rateLimit: 'scraping',
-  validateInput: true,
+  validateInput: false, // Disable to avoid conflict with withValidation middleware
   logRequests: true
 }
 )
@@ -242,14 +242,54 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * Handle DuckDuckGo SERP scraping to get real business websites using headless browser
  */
 async function handleDuckDuckGoSERP(query: string, page: number, maxResults: number) {
+  const startTime = Date.now()
+  let browserInstance: any = null
+
   try {
-    logger.info('Search API', `DuckDuckGo SERP scraping: ${query} (page ${page + 1})`)
+    // Import rate limiting service
+    const { RateLimitingService } = await import('@/lib/rateLimitingService')
+    const rateLimiter = new RateLimitingService()
 
-    // Import Puppeteer dynamically
+    // Check rate limits and wait if necessary
+    await rateLimiter.waitForRequest('duckduckgo')
+
+    const rateLimitStatus = rateLimiter.canMakeRequest('duckduckgo')
+    if (!rateLimitStatus.canMakeRequest) {
+      logger.warn('Search API', `DuckDuckGo rate limit exceeded`, rateLimitStatus)
+      return NextResponse.json({
+        success: false,
+        error: 'Rate limit exceeded',
+        message: '429',
+        retryAfter: rateLimitStatus.recommendedDelay
+      }, { status: 429 })
+    }
+
+    logger.info('Search API', `DuckDuckGo SERP scraping: ${query} (page ${page + 1})`, {
+      rateLimitStatus: {
+        requestsInLastMinute: rateLimitStatus.requestsInLastMinute,
+        requestsInLastHour: rateLimitStatus.requestsInLastHour,
+        backoffLevel: rateLimitStatus.backoffLevel
+      }
+    })
+
+    // Import required modules
     const puppeteer = await import('puppeteer')
+    const { NetworkSpoofingService } = await import('@/lib/networkSpoofingService')
 
-    // Launch browser with stealth settings
-    const browser = await puppeteer.default.launch({
+    // Initialize network spoofing service
+    const spoofingService = new NetworkSpoofingService({
+      enableProxyRotation: false, // Disable for now to avoid connection issues
+      enableIPSpoofing: true,
+      enableMACAddressSpoofing: true,
+      enableFingerprintSpoofing: true,
+      requestDelay: { min: 5000, max: 12000 } // Longer delays for DuckDuckGo
+    })
+
+    // Get proxy arguments for browser launch (if enabled)
+    const proxyArgs = spoofingService.getCurrentProxyArgs()
+
+    // Launch browser with enhanced stealth settings
+    browserInstance = await puppeteer.default.launch({
       headless: true,
       args: [
         '--no-sandbox',
@@ -260,25 +300,103 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         '--no-zygote',
         '--disable-gpu',
         '--disable-web-security',
-        '--disable-features=VizDisplayCompositor'
+        '--disable-features=VizDisplayCompositor',
+        '--disable-blink-features=AutomationControlled',
+        '--disable-extensions',
+        '--disable-plugins',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
+        '--disable-features=TranslateUI',
+        '--disable-ipc-flooding-protection',
+        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        ...proxyArgs
       ]
     })
 
     try {
-      const browserPage = await browser.newPage()
+      const browserPage = await browserInstance.newPage()
 
-      // Set realistic user agent and viewport
-      await browserPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-      await browserPage.setViewport({ width: 1366, height: 768 })
+      // Apply comprehensive network spoofing
+      await spoofingService.applyNetworkSpoofing(browserPage)
 
-      // Set extra headers to appear more like a real browser
+      // Additional stealth measures
+      await browserPage.evaluateOnNewDocument(() => {
+        // Override webdriver property
+        Object.defineProperty(navigator, 'webdriver', {
+          get: () => undefined,
+        })
+
+        // Override automation properties
+        delete (window as any).cdc_adoQpoasnfa76pfcZLmcfl_Array
+        delete (window as any).cdc_adoQpoasnfa76pfcZLmcfl_Promise
+        delete (window as any).cdc_adoQpoasnfa76pfcZLmcfl_Symbol
+
+        // Override plugins
+        Object.defineProperty(navigator, 'plugins', {
+          get: () => [1, 2, 3, 4, 5],
+        })
+
+        // Override permissions
+        const originalQuery = window.navigator.permissions.query
+        window.navigator.permissions.query = (parameters) => (
+          parameters.name === 'notifications' ?
+            Promise.resolve({ state: Notification.permission }) :
+            originalQuery(parameters)
+        )
+      })
+
+      // Set additional headers to appear more human-like
       await browserPage.setExtraHTTPHeaders({
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'DNT': '1'
+      })
+
+      // Randomize user agent from a pool (backup to spoofing service)
+      const userAgents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0'
+      ]
+
+      // Backup user agent setting (spoofing service already handles this)
+      const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)]
+      logger.debug('Search API', `Using backup user agent: ${randomUserAgent.substring(0, 50)}...`)
+
+      // Block unnecessary resources to improve performance and reduce detection
+      await browserPage.setRequestInterception(true)
+      browserPage.on('request', (request) => {
+        const resourceType = request.resourceType()
+        const url = request.url()
+
+        // Block images, stylesheets, fonts, and other non-essential resources
+        if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+          request.abort()
+        }
+        // Block tracking and analytics scripts
+        else if (url.includes('google-analytics') ||
+                 url.includes('googletagmanager') ||
+                 url.includes('facebook.com') ||
+                 url.includes('doubleclick') ||
+                 url.includes('adsystem')) {
+          request.abort()
+        } else {
+          // Add random delays to requests to appear more human
+          const delay = Math.random() * 100 + 50 // 50-150ms delay
+          setTimeout(() => {
+            request.continue()
+          }, delay)
+        }
       })
 
       // Construct DuckDuckGo search URL - use the format you specified
@@ -293,21 +411,52 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 
       logger.info('Search API', `Navigating to DuckDuckGo SERP: ${searchUrl.toString()}`)
 
+      // Add random delay before navigation to simulate human behavior
+      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000))
+
       // Navigate to DuckDuckGo search page
       await browserPage.goto(searchUrl.toString(), {
         waitUntil: 'networkidle2',
-        timeout: 30000
+        timeout: 45000 // Increased timeout
       })
 
-      // Wait for search results to load
-      await browserPage.waitForSelector('[data-testid="result"], .result, .web-result', { timeout: 15000 })
+      // Simulate human-like behavior after page load
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
+
+      // Random mouse movement
+      await browserPage.mouse.move(Math.random() * 800, Math.random() * 600)
+      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000))
+
+      // Check if page is blocked or rate limited
+      const pageContent = await browserPage.content()
+      const pageTitle = await browserPage.title()
+
+      if (pageContent.includes('rate limit') || pageContent.includes('too many requests') ||
+          pageTitle.includes('blocked') || pageContent.includes('429')) {
+        logger.warn('Search API', 'DuckDuckGo page indicates rate limiting or blocking')
+        throw new Error('429')
+      }
+
+      // Wait for search results to load with increased timeout
+      await browserPage.waitForSelector('[data-testid="result"], .result, .web-result', { timeout: 20000 })
 
       // Extract search results using the browser
       const results = await extractDuckDuckGoSERPResults(browserPage, maxResults)
 
-      await browser.close()
+      await browserInstance.close()
+      browserInstance = null
 
-      logger.info('Search API', `DuckDuckGo SERP scraping returned ${results.length} results`)
+      const responseTime = Date.now() - startTime
+
+      // Record successful request
+      const { RateLimitingService } = await import('@/lib/rateLimitingService')
+      const rateLimiter = new RateLimitingService()
+      rateLimiter.recordRequest('duckduckgo', true, responseTime, 200)
+
+      logger.info('Search API', `DuckDuckGo SERP scraping returned ${results.length} results`, {
+        responseTime,
+        resultsCount: results.length
+      })
 
       return NextResponse.json({
         success: true,
@@ -315,22 +464,74 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         query: query,
         page: page,
         results: results,
-        count: results.length
+        count: results.length,
+        responseTime
       })
 
     } finally {
-      await browser.close()
+      if (browserInstance) {
+        await browserInstance.close()
+      }
     }
 
   } catch (error) {
-    logger.error('Search API', 'DuckDuckGo SERP scraping failed', error)
+    // Clean up browser if it exists
+    if (browserInstance) {
+      try {
+        await browserInstance.close()
+      } catch (closeError) {
+        logger.warn('Search API', 'Failed to close browser', closeError)
+      }
+    }
+
+    const responseTime = Date.now() - startTime
+
+    // Record failed request
+    try {
+      const { RateLimitingService } = await import('@/lib/rateLimitingService')
+      const rateLimiter = new RateLimitingService()
+
+      // Determine error type and status code
+      let statusCode = 500
+      let errorType = 'unknown'
+
+      if (error instanceof Error) {
+        if (error.message.includes('429') || error.message.includes('Rate limit')) {
+          statusCode = 429
+          errorType = 'rate_limit'
+        } else if (error.message.includes('timeout') || error.message.includes('Timeout')) {
+          statusCode = 408
+          errorType = 'timeout'
+        } else if (error.message.includes('blocked') || error.message.includes('forbidden')) {
+          statusCode = 403
+          errorType = 'blocked'
+        }
+      }
+
+      rateLimiter.recordRequest('duckduckgo', false, responseTime, statusCode, errorType)
+    } catch (rateLimiterError) {
+      logger.warn('Search API', 'Failed to record failed request in rate limiter', rateLimiterError)
+    }
+
+    logger.error('Search API', 'DuckDuckGo SERP scraping failed', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      responseTime,
+      query,
+      page
+    })
+
+    // Check if this is a rate limiting error
+    const isRateLimit = error instanceof Error &&
+      (error.message.includes('429') || error.message.includes('Rate limit'))
+
     return NextResponse.json(
       {
         success: false,
-        error: 'DuckDuckGo SERP scraping failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        error: isRateLimit ? 'Rate limit exceeded' : 'DuckDuckGo SERP scraping failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+        responseTime
       },
-      { status: 500 }
+      { status: isRateLimit ? 429 : 500 }
     )
   }
 }

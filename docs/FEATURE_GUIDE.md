@@ -188,7 +188,7 @@ phrase "fine dining" within 10 miles of Chicago
 ### Performance Optimization
 - **Start with smaller radius** and expand if needed
 - **Use fewer search terms** for faster processing
-- **Enable demo mode** for testing configurations
+- **Test with small datasets** before running large scraping operations
 - **Monitor rate limits** to avoid being blocked
 
 ### Troubleshooting

@@ -79,11 +79,12 @@ export function useScraperController(): {
   const sessionIdRef = useRef<string | null>(null)
 
   /**
-   * Update scraper service demo mode when configuration changes
+   * Initialize scraper service when component mounts
    */
   useEffect(() => {
-    scraperService.setDemoMode(configState.isDemoMode)
-  }, [configState.isDemoMode])
+    // Scraper service is always in real mode now
+    logger.info('ScraperController', 'Scraper service initialized in real mode')
+  }, [])
 
   /**
    * Update scraping progress
@@ -116,7 +117,7 @@ export function useScraperController(): {
       ...step,
       id: `step-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       startTime: new Date(),
-      dataSource: step.dataSource || (scraperService.isDemoMode() ? 'demo' : 'real')
+      dataSource: step.dataSource || 'real'
     }
 
     setScrapingState(prev => ({
@@ -204,7 +205,7 @@ export function useScraperController(): {
       addProcessingStep({
         name: 'Initializing Scraper',
         status: 'running',
-        details: configState.isDemoMode ? 'Setting up demo data source' : 'Connecting to live web services'
+        details: 'Connecting to live web services'
       })
 
       // Initialize scraper service
@@ -216,7 +217,7 @@ export function useScraperController(): {
       if (initStepId) {
         updateProcessingStep(initStepId, {
           status: 'completed',
-          details: configState.isDemoMode ? 'Demo data source ready' : 'Connected to live web services'
+          details: 'Connected to live web services'
         })
       }
 
@@ -276,13 +277,11 @@ export function useScraperController(): {
           const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industryName}`))
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
-            // Check if we're actually using demo mode (fallback)
-            const isUsingDemo = scraperService.isDemoMode() || industryUrls.some(url => url.includes('demo') || url.includes('example'))
             updateProcessingStep(latestSearchStep.id, {
               status: 'completed',
-              details: `Found ${industryUrls.length} websites${isUsingDemo ? ' (using demo data)' : ''}`,
+              details: `Found ${industryUrls.length} websites`,
               businessesFound: industryUrls.length,
-              dataSource: isUsingDemo ? 'demo' : 'real'
+              dataSource: 'real'
             })
           }
 
@@ -362,13 +361,11 @@ export function useScraperController(): {
                 const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
                 const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
                 if (latestScrapingStep) {
-                  // Check if we're using demo mode
-                  const isUsingDemo = scraperService.isDemoMode() || url.includes('demo') || url.includes('example') || url.includes('bellavista') || url.includes('techflow')
                   updateProcessingStep(latestScrapingStep.id, {
                     status: 'completed',
-                    details: `Found ${businessesWithIndustry.length} businesses${isUsingDemo ? ' (demo data)' : ''}`,
+                    details: `Found ${businessesWithIndustry.length} businesses`,
                     businessesFound: businessesWithIndustry.length,
-                    dataSource: isUsingDemo ? 'demo' : 'real'
+                    dataSource: 'real'
                   })
                 }
 

@@ -63,9 +63,24 @@ export class ScraperService {
   private config: ScraperConfig
   private browser: Browser | null = null
   private stats: ScrapingStats | null = null
+  private demoMode: boolean = false
 
   constructor(config: Partial<ScraperConfig> = {}) {
     this.config = { ...DEFAULT_SCRAPER_CONFIG, ...config }
+  }
+
+  /**
+   * Check if demo mode is enabled
+   */
+  isDemoMode(): boolean {
+    return this.demoMode
+  }
+
+  /**
+   * Set demo mode
+   */
+  setDemoMode(enabled: boolean): void {
+    this.demoMode = enabled
   }
 
   /**

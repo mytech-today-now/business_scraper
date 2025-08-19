@@ -41,6 +41,13 @@ export interface ScrapingConfig {
   delayMs: number
   searchEngineTimeout: number
   maxSearchResults: number
+  enableNetworkSpoofing: boolean
+  enableProxyRotation: boolean
+  enableIPSpoofing: boolean
+  enableMACAddressSpoofing: boolean
+  enableFingerprintSpoofing: boolean
+  requestDelayMin: number
+  requestDelayMax: number
 }
 
 export interface ApiKeysConfig {
@@ -170,6 +177,15 @@ const configSchema: Record<string, ValidationRule> = {
   'SCRAPING_DELAY_MS': { type: 'number', min: 0, default: 1000 },
   'SEARCH_ENGINE_TIMEOUT': { type: 'number', min: 1000, default: 10000 },
   'MAX_SEARCH_RESULTS': { type: 'number', min: 1, default: 10000 }, // No upper limit - gather as many as possible
+
+  // Network Spoofing
+  'ENABLE_NETWORK_SPOOFING': { type: 'boolean', default: true },
+  'ENABLE_PROXY_ROTATION': { type: 'boolean', default: false }, // Disabled by default to avoid connection issues
+  'ENABLE_IP_SPOOFING': { type: 'boolean', default: true },
+  'ENABLE_MAC_ADDRESS_SPOOFING': { type: 'boolean', default: true },
+  'ENABLE_FINGERPRINT_SPOOFING': { type: 'boolean', default: true },
+  'REQUEST_DELAY_MIN': { type: 'number', min: 1000, default: 3000 },
+  'REQUEST_DELAY_MAX': { type: 'number', min: 2000, default: 8000 },
 
   // API Keys (optional)
   'GOOGLE_MAPS_API_KEY': { type: 'string', required: false },
@@ -386,6 +402,13 @@ export function loadConfig(): AppConfig {
       delayMs: config.SCRAPING_DELAY_MS,
       searchEngineTimeout: config.SEARCH_ENGINE_TIMEOUT,
       maxSearchResults: config.MAX_SEARCH_RESULTS,
+      enableNetworkSpoofing: config.ENABLE_NETWORK_SPOOFING,
+      enableProxyRotation: config.ENABLE_PROXY_ROTATION,
+      enableIPSpoofing: config.ENABLE_IP_SPOOFING,
+      enableMACAddressSpoofing: config.ENABLE_MAC_ADDRESS_SPOOFING,
+      enableFingerprintSpoofing: config.ENABLE_FINGERPRINT_SPOOFING,
+      requestDelayMin: config.REQUEST_DELAY_MIN,
+      requestDelayMax: config.REQUEST_DELAY_MAX,
     },
     apiKeys: {
       googleMaps: config.GOOGLE_MAPS_API_KEY,

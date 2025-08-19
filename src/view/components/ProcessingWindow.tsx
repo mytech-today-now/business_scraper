@@ -28,7 +28,7 @@ export interface ProcessingStep {
   duration?: number
   details?: string
   error?: string
-  dataSource?: 'demo' | 'real'
+  dataSource?: 'real'
   businessesFound?: number
 }
 
@@ -37,7 +37,7 @@ export interface ProcessingWindowProps {
   isActive: boolean
   currentStep?: string
   steps: ProcessingStep[]
-  isDemoMode: boolean
+
   onToggleVisibility: () => void
   onClear: () => void
   progress: {
@@ -68,14 +68,13 @@ function getConsoleLogColor(level: string): string {
 
 /**
  * Processing Window Component
- * Shows real-time processing status and clearly indicates demo vs real scraping
+ * Shows real-time processing status for web scraping operations
  */
 export function ProcessingWindow({
   isVisible,
   isActive,
   currentStep,
   steps,
-  isDemoMode,
   onToggleVisibility,
   onClear,
   progress,
@@ -186,26 +185,13 @@ export function ProcessingWindow({
     }
   }
 
-  const getDataSourceBadge = (dataSource?: 'demo' | 'real') => {
+  const getDataSourceBadge = (dataSource?: 'real') => {
     if (!dataSource) return null
-    
+
     return (
-      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-        dataSource === 'demo' 
-          ? 'bg-orange-100 text-orange-800' 
-          : 'bg-green-100 text-green-800'
-      }`}>
-        {dataSource === 'demo' ? (
-          <>
-            <Database className="h-3 w-3 mr-1" />
-            Demo Data
-          </>
-        ) : (
-          <>
-            <Wifi className="h-3 w-3 mr-1" />
-            Live Web
-          </>
-        )}
+      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        <Wifi className="h-3 w-3 mr-1" />
+        Live Web
       </span>
     )
   }
@@ -244,17 +230,10 @@ export function ProcessingWindow({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <CardTitle className="text-lg">Processing Status</CardTitle>
-            {isDemoMode ? (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
-                <Database className="h-4 w-4 mr-1" />
-                Demo Mode
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                <Wifi className="h-4 w-4 mr-1" />
-                Live Scraping
-              </span>
-            )}
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              <Wifi className="h-4 w-4 mr-1" />
+              Live Scraping
+            </span>
           </div>
           <div className="flex items-center space-x-2">
             <Button
