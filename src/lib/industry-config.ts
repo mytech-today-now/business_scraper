@@ -284,19 +284,34 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
     id: 'education',
     name: 'Private & Charter Schools',
     keywords: [
-      'private elementary school',
-      'independent high school',
-      'charter school near me',
-      'college preparatory school',
-      'Montessori academy',
-      'faith-based private schools',
-      'STEM private education'
+      'private school',
+      'charter school',
+      'independent school',
+      'Montessori school',
+      'Catholic school',
+      'Christian school',
+      'preparatory academy',
+      'private academy'
     ],
     isCustom: false,
     domainBlacklist: [
       '*.greatschools.*',
       '*.niche.*',
-      '*.prepscholar.*'
+      '*.prepscholar.*',
+      '*.schooldigger.*',
+      '*.publicschoolreview.*',
+      '*.usnews.*',
+      '*.ed.gov',
+      '*.state.*.us',
+      '*.gov',
+      '*.edu',
+      '*.nces.ed.gov',
+      '*.doe.*',
+      '*.dph.*',
+      '*.yelp.*',
+      '*.yellowpages.*',
+      '*.superpages.*',
+      '*.whitepages.*'
     ]
   },
   {

@@ -318,6 +318,14 @@ export class ClientSearchEngine {
       await this.initialize()
     }
 
+    // Check if this is an industry category that should be expanded
+    const expandedCriteria = this.expandIndustryCategories(query)
+
+    if (expandedCriteria.length > 0) {
+      logger.info('ClientSearchEngine', `Expanded industry category "${query}" to ${expandedCriteria.length} keywords`)
+      return await this.searchWithExpandedCriteria(expandedCriteria, location, maxResults)
+    }
+
     // Extract keywords from query for industry-specific blacklist filtering
     const queryKeywords = query.toLowerCase().split(/\s+/).filter(Boolean)
 
@@ -345,6 +353,79 @@ export class ClientSearchEngine {
 
     logger.warn('ClientSearchEngine', 'All search methods failed')
     return []
+  }
+
+  /**
+   * Search with expanded industry criteria using multiple targeted queries
+   */
+  private async searchWithExpandedCriteria(
+    criteria: string[],
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
+    const allResults: SearchResult[] = []
+    const resultsPerCriteria = Math.ceil(maxResults / Math.min(criteria.length, 3)) // Limit to top 3 keywords
+    const topCriteria = criteria.slice(0, 3) // Use only the most relevant keywords
+
+    logger.info('ClientSearchEngine', `Searching with ${topCriteria.length} targeted criteria, ${resultsPerCriteria} results each`)
+
+    for (const criterion of topCriteria) {
+      try {
+        // Create a more targeted search query
+        const targetedQuery = `${criterion} ${location}`.trim()
+
+        const searchMethods = [
+          () => this.searchWithGoogle(targetedQuery, '', resultsPerCriteria),
+          () => this.searchWithAzure(targetedQuery, '', resultsPerCriteria),
+          () => this.searchWithDuckDuckGo(targetedQuery, '', resultsPerCriteria)
+        ]
+
+        for (const searchMethod of searchMethods) {
+          try {
+            const results = await searchMethod()
+            if (results.length > 0) {
+              // Apply domain blacklist filtering
+              const queryKeywords = criterion.toLowerCase().split(/\s+/).filter(Boolean)
+              const filteredResults = this.applyDomainBlacklist(results, queryKeywords)
+              allResults.push(...filteredResults)
+              break // Move to next criterion if this method succeeded
+            }
+          } catch (error) {
+            logger.warn('ClientSearchEngine', `Search method failed for criterion "${criterion}"`, error)
+            continue
+          }
+        }
+
+        // Stop if we have enough results
+        if (allResults.length >= maxResults) {
+          break
+        }
+      } catch (error) {
+        logger.warn('ClientSearchEngine', `Failed to search for criterion "${criterion}"`, error)
+        continue
+      }
+    }
+
+    // Remove duplicates and limit results
+    const uniqueResults = this.removeDuplicates(allResults).slice(0, maxResults)
+    logger.info('ClientSearchEngine', `Expanded criteria search returned ${uniqueResults.length} unique results`)
+
+    return uniqueResults
+  }
+
+  /**
+   * Remove duplicate search results based on URL
+   */
+  private removeDuplicates(results: SearchResult[]): SearchResult[] {
+    const seen = new Set<string>()
+    return results.filter(result => {
+      const normalizedUrl = result.url.toLowerCase().replace(/\/$/, '')
+      if (seen.has(normalizedUrl)) {
+        return false
+      }
+      seen.add(normalizedUrl)
+      return true
+    })
   }
 
   /**
@@ -1476,6 +1557,12 @@ export class ClientSearchEngine {
         // Remove www. prefix for comparison
         const cleanDomain = domain.startsWith('www.') ? domain.substring(4) : domain
 
+        // Check for government and educational sites (high priority filter)
+        if (this.isGovernmentOrEducationalSite(domain, result.url.toLowerCase())) {
+          logger.debug('ClientSearchEngine', `Filtered out government/educational site: ${domain}`)
+          return false
+        }
+
         // Check if domain matches any blacklist pattern (exact or wildcard)
         const isBlacklisted = this.isDomainBlacklisted(domain, blacklistedPatterns) ||
                              this.isDomainBlacklisted(cleanDomain, blacklistedPatterns)
@@ -1497,6 +1584,64 @@ export class ClientSearchEngine {
     }
 
     return filteredResults
+  }
+
+  /**
+   * Check if a domain/URL is a government or educational site
+   */
+  private isGovernmentOrEducationalSite(domain: string, url: string): boolean {
+    // Government domains and patterns
+    const govPatterns = [
+      '.gov',
+      '.state.',
+      '.us',
+      'dph.',
+      'doe.',
+      'ed.gov',
+      'nces.ed.gov',
+      'department',
+      'agency',
+      'bureau',
+      'office',
+      'administration',
+      'illinois.gov',
+      'state.il.us'
+    ]
+
+    // Educational domains and patterns
+    const eduPatterns = [
+      '.edu',
+      'university',
+      'college',
+      'school.edu',
+      'district.edu'
+    ]
+
+    // Directory and listing sites that aren't actual businesses
+    const directoryPatterns = [
+      'yelp.',
+      'yellowpages.',
+      'whitepages.',
+      'superpages.',
+      'manta.',
+      'bizapedia.',
+      'spoke.',
+      'zoominfo.',
+      'linkedin.com/company',
+      'facebook.com/pages',
+      'google.com/maps',
+      'mapquest.',
+      'foursquare.',
+      'citysearch.',
+      'goingmerry.com',
+      'nationalblueribbonschools.ed.gov'
+    ]
+
+    const allPatterns = [...govPatterns, ...eduPatterns, ...directoryPatterns]
+
+    return allPatterns.some(pattern =>
+      domain.includes(pattern) || url.includes(pattern)
+    )
   }
 
   /**
