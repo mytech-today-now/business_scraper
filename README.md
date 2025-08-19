@@ -15,15 +15,18 @@ A comprehensive full-stack business web scraping application built with Next.js,
 
 ### Advanced Search Capabilities
 
-- **🔍 Individual Criteria Parsing**: Processes comma-separated and quoted search terms individually
+- **🔍 Individual Criteria Parsing**: Processes comma-separated and quoted search terms individually for higher precision
 - **🏢 BBB Business Discovery**: Real-time scraping of Better Business Bureau for verified business websites
 - **📐 ZIP Radius Validation**: Accurate distance calculation with fallback geolocation data
 - **🔄 Fallback Search Strategies**: Multiple search providers with automatic failover
-- **⚡ Optimized Query Processing**: Industry-specific templates and synonym expansion
+- **⚡ Optimized Query Processing**: Industry-specific templates and synonym expansion with targeted keyword searches
 - **🔗 Azure AI Foundry Integration**: Modern "Grounding with Bing Custom Search" API support
-- **🚫 Domain Blacklist**:
+- **🛡️ Enhanced Result Filtering**: Automatic rejection of government offices, educational databases, and directory listings
+- **🚫 Advanced Domain Filtering**:
   - **Global Blacklist**: Filter out unwanted domains from all searches
   - **Per-Industry Blacklist**: Configure domain filtering specific to each industry category
+  - **Government/Educational Site Detection**: Automatic filtering of *.gov, *.edu, and department sites
+  - **Directory Site Filtering**: Blocks Yelp, Yellow Pages, and other listing sites for direct business results
   - **Wildcard Support**: Use patterns like `*.domain.com`, `domain.*`, `*keyword*`
   - **Theme-Aware Interface**: Text areas automatically adapt to light/dark mode
 
@@ -536,7 +539,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.5.0)
+### Recent Major Updates (v1.5.1)
+- 🔍 **Enhanced Search Quality**: Fixed Private & Charter Schools search returning irrelevant government office results
+- 🎯 **Improved Industry Targeting**: Refined keywords and search strategy for better result accuracy
+- 🚫 **Advanced Filtering**: Comprehensive domain blacklist including government, educational, and directory sites
+- 📍 **Better Location Accuracy**: Enhanced ZIP radius filtering for more relevant local results
+
+### Performance Optimizations (v1.5.0)
 - 🚀 **Comprehensive Performance Optimizations**: 3x faster concurrent processing with enhanced throughput
 - ⚡ **Multi-Level Smart Caching**: L1/L2/L3 caching strategy with intelligent cache warming
 - 🌊 **Real-Time Streaming**: Live search results and progress updates via Server-Sent Events

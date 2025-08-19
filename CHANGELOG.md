@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2025-08-19
+
+### Fixed
+- **🔍 Private & Charter Schools Search Quality** - Resolved issue with irrelevant government office results
+  - **Enhanced Industry Keywords**: Replaced overly broad terms with targeted keywords like 'private school', 'charter school', 'Montessori school'
+  - **Comprehensive Domain Blacklist**: Added 15+ patterns including government sites (*.gov, *.dph.*), educational databases (*.edu), and directory sites (*.yelp.*, *.yellowpages.*)
+  - **Improved Search Strategy**: Individual keyword searches instead of concatenated query for better search engine compatibility
+  - **Government/Educational Site Filtering**: Automatic rejection of government offices, educational databases, and directory listings
+  - **Location Accuracy**: Better ZIP radius filtering without interference from government sites
+  - **Result Quality**: Focus on actual private school websites with proper business contact information
+  - Files affected: `src/lib/industry-config.ts`, `src/model/clientSearchEngine.ts`
+
+## [1.5.0] - 2025-08-19
+
 ### Added
 - **🚀 Comprehensive Performance Optimizations** (v1.5.0)
   - **3x Faster Concurrent Processing**: Increased maxConcurrentJobs from 3 to 8 for enhanced throughput
