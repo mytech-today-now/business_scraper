@@ -7,6 +7,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2025-08-19 🔍 **MAJOR SEARCH REFACTOR**
+
+### 🚀 **Breaking Changes**
+- **COMPLETE SEARCH ARCHITECTURE OVERHAUL**: Fundamentally changed how keyword searches are processed
+- **Individual Keyword Processing**: Each keyword/key-phrase is now searched individually with ZIP code instead of combining all keywords into a single query
+- **Enhanced Search Precision**: Moved from broad multi-keyword searches to targeted individual keyword + location searches
+
+### 🔧 **Changed**
+- **Search Controller Refactor** (`src/controller/useScraperController.ts`)
+  - Completely rewrote search iteration logic to process each keyword individually
+  - Implemented sequential keyword processing with rate limiting protection
+  - Enhanced progress tracking to show individual keyword search status
+  - Added comprehensive error handling for individual keyword failures
+  - Improved result deduplication across multiple keyword searches
+
+- **Search Engine Enhancement** (`src/model/searchEngine.ts`)
+  - Optimized Google query formatting for individual keyword + ZIP code searches
+  - Implemented proper query quoting for exact keyword matching
+  - Enhanced location handling with automatic "near me" to ZIP code conversion
+  - Added business-specific search terms to improve result relevance
+  - Expanded domain blacklist for better result filtering
+
+### ✨ **Added**
+- **Pet Services Industry** (`src/lib/industry-config.ts`)
+  - Comprehensive pet services industry configuration with 12 targeted keywords
+  - Example keywords: "dog groomer", "dog walker", "dog spa near me", "veterinary clinic"
+  - Domain blacklist for major pet retail chains (Petco, PetSmart, Chewy)
+  - Demonstrates new individual keyword search capabilities
+
+- **Advanced Progress Tracking**
+  - Individual keyword search progress indicators
+  - Detailed logging for each keyword search attempt
+  - Real-time status updates for each search phase
+  - Enhanced error reporting with keyword-specific failure details
+
+- **Rate Limiting Protection**
+  - 1-second delays between individual keyword searches
+  - Configurable search result limits (10 results per keyword)
+  - Automatic retry mechanisms for failed searches
+  - Search engine abuse prevention measures
+
+### 🛠 **Technical Implementation**
+- **Search Pattern**: `"[keyword] [ZIP_CODE]"` for precise location-based results
+- **Query Format**: Properly quoted searches for exact keyword matching
+- **Location Processing**: Smart conversion of "near me" phrases to specific ZIP codes
+- **Result Aggregation**: Intelligent deduplication of URLs across multiple keyword searches
+- **Error Resilience**: Individual keyword failures don't affect other searches
+- **Performance**: Optimized for search engine compatibility and result quality
+
+### 📊 **Impact & Benefits**
+- **🎯 Improved Search Precision**: Individual keywords provide more targeted, relevant results
+- **📍 Better Location Accuracy**: Direct ZIP code integration with each search query
+- **🔍 Enhanced Result Quality**: Quoted queries ensure exact keyword matching
+- **👀 Better User Experience**: Detailed progress tracking for each search phase
+- **🛡️ Fault Tolerance**: Graceful handling of individual keyword search failures
+- **⚡ Rate Limit Protection**: Built-in delays prevent search engine blocking
+
+### 📁 **Files Modified**
+- `src/controller/useScraperController.ts` - Complete search logic refactor (70+ lines changed)
+- `src/model/searchEngine.ts` - Enhanced query formatting and location handling (30+ lines changed)
+- `src/lib/industry-config.ts` - Added Pet Services industry example (15+ lines added)
+
 ## [1.5.1] - 2025-08-19
 
 ### Fixed
