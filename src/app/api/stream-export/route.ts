@@ -6,8 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { streamingExportService } from '@/lib/streamingExportService'
 import { logger } from '@/utils/logger'
-import { validationService } from '@/lib/validationService'
-import { advancedRateLimitService } from '@/lib/advancedRateLimitService'
+import { validationService } from '@/lib/validation-middleware'
+import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { BusinessRecord } from '@/types/business'
 
 export async function POST(request: NextRequest) {
