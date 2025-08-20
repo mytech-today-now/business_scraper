@@ -868,12 +868,23 @@ export class SearchEngineService {
     const cleanQuery = query.trim().toLowerCase()
     const cleanLocation = location.trim()
 
-    // Build Google-specific query with operators
-    let googleQuery = `${cleanQuery}`
+    // Build Google-specific query optimized for individual keyword + location searches
+    let googleQuery = `"${cleanQuery}"`
 
-    // Add location if provided
+    // Add location if provided - for individual keyword searches, location is crucial
     if (cleanLocation) {
-      googleQuery += ` ${cleanLocation}`
+      // Check if the query already contains location-specific terms
+      const hasLocationTerms = cleanQuery.includes('near me') ||
+                              cleanQuery.includes('nearby') ||
+                              cleanQuery.includes('local')
+
+      if (hasLocationTerms) {
+        // Replace "near me" with specific location for better results
+        googleQuery = `"${cleanQuery.replace(/near me/gi, cleanLocation)}"`
+      } else {
+        // Add location to the quoted query for precise matching
+        googleQuery = `"${cleanQuery} ${cleanLocation}"`
+      }
     }
 
     // Add site restrictions to filter out directories and social media
@@ -881,7 +892,8 @@ export class SearchEngineService {
       'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
       'yelp.com', 'yellowpages.com', 'whitepages.com', 'superpages.com',
       'foursquare.com', 'tripadvisor.com', 'indeed.com', 'glassdoor.com',
-      'craigslist.org', 'amazon.com', 'ebay.com'
+      'craigslist.org', 'amazon.com', 'ebay.com', 'nextdoor.com',
+      'thumbtack.com', 'angi.com', 'homeadvisor.com'
     ]
 
     for (const site of excludeSites) {
@@ -889,10 +901,13 @@ export class SearchEngineService {
     }
 
     // Add file type restrictions
-    googleQuery += ' -filetype:pdf -filetype:doc -filetype:docx -filetype:ppt'
+    googleQuery += ' -filetype:pdf -filetype:doc -filetype:docx -filetype:ppt -filetype:xls -filetype:xlsx'
 
     // Prefer business-related domains and content
     googleQuery += ' (site:*.com OR site:*.org OR site:*.net OR site:*.biz)'
+
+    // Add business-specific terms to improve relevance for individual keyword searches
+    googleQuery += ' (contact OR about OR services OR business OR company OR office OR location)'
 
     return googleQuery
   }

@@ -253,33 +253,91 @@ export function useScraperController(): {
         // Update overall progress
         updateProgress(industryIndex, selectedIndustryObjects.length, `Processing ${industryName} businesses...`)
 
-        // Step 1: Search for websites for this industry using its keywords
+        // Step 1: Search for websites for this industry using individual keywords
         addProcessingStep({
           name: `Searching ${industryName} Businesses`,
           status: 'running',
-          details: `Using keywords: "${industryObject.keywords.join(', ')}" in ${config.zipCode}`
+          details: `Processing ${industryObject.keywords.length} keywords individually in ${config.zipCode}`
         })
 
         let industryUrls: string[] = []
 
         try {
-          // Use the industry keywords as the search query instead of the industry name
-          const query: string = industryObject.keywords.join(', ')
-          industryUrls = await scraperService.searchForWebsites(
-            query,
-            config.zipCode,
-            50 // Get up to 50 results per industry
-          )
+          // Process each keyword individually with ZIP code
+          logger.info('ScraperController', `Processing ${industryObject.keywords.length} keywords for ${industryName}`)
 
-          logger.info('ScraperController', `Found ${industryUrls.length} URLs for ${industryName}`)
+          for (let i = 0; i < industryObject.keywords.length; i++) {
+            const keyword = industryObject.keywords[i]
 
-          // Update search step as completed
+            // Add individual keyword search step
+            addProcessingStep({
+              name: `Searching "${keyword}"`,
+              status: 'running',
+              details: `Searching for "${keyword} ${config.zipCode}"`
+            })
+
+            try {
+              // Search for this specific keyword with ZIP code
+              const keywordUrls = await scraperService.searchForWebsites(
+                keyword,
+                config.zipCode,
+                10 // Get up to 10 results per keyword
+              )
+
+              industryUrls.push(...keywordUrls)
+
+              logger.info('ScraperController', `Found ${keywordUrls.length} URLs for keyword "${keyword}"`)
+
+              // Update keyword search step as completed
+              const keywordSearchSteps = scrapingState.processingSteps.filter(s =>
+                s.name.includes(`Searching "${keyword}"`)
+              )
+              const latestKeywordStep = keywordSearchSteps[keywordSearchSteps.length - 1]
+              if (latestKeywordStep) {
+                updateProcessingStep(latestKeywordStep.id, {
+                  status: 'completed',
+                  details: `Found ${keywordUrls.length} websites for "${keyword} ${config.zipCode}"`,
+                  businessesFound: keywordUrls.length,
+                  dataSource: 'real'
+                })
+              }
+
+              // Add small delay between keyword searches to avoid rate limiting
+              if (i < industryObject.keywords.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 1000))
+              }
+
+            } catch (keywordError) {
+              logger.error('ScraperController', `Failed to search for keyword "${keyword}": ${keywordError}`)
+
+              // Update keyword search step as failed
+              const keywordSearchSteps = scrapingState.processingSteps.filter(s =>
+                s.name.includes(`Searching "${keyword}"`)
+              )
+              const latestKeywordStep = keywordSearchSteps[keywordSearchSteps.length - 1]
+              if (latestKeywordStep) {
+                updateProcessingStep(latestKeywordStep.id, {
+                  status: 'failed',
+                  details: `Failed to search for "${keyword}": ${keywordError}`,
+                  businessesFound: 0,
+                  dataSource: 'real'
+                })
+              }
+            }
+          }
+
+          // Remove duplicates from combined results
+          industryUrls = [...new Set(industryUrls)]
+
+          logger.info('ScraperController', `Found ${industryUrls.length} unique URLs for ${industryName} after processing all keywords`)
+
+          // Update main search step as completed
           const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industryName}`))
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
             updateProcessingStep(latestSearchStep.id, {
               status: 'completed',
-              details: `Found ${industryUrls.length} websites`,
+              details: `Found ${industryUrls.length} unique websites from ${industryObject.keywords.length} keywords`,
               businessesFound: industryUrls.length,
               dataSource: 'real'
             })

@@ -410,6 +410,30 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       '*.practicepanther.*'
     ]
   },
+  {
+    id: 'pets',
+    name: 'Pet Services',
+    keywords: [
+      'dog groomer',
+      'dog walker',
+      'dog spa near me',
+      'pet grooming services',
+      'veterinary clinic',
+      'pet boarding facility',
+      'dog daycare',
+      'pet training services',
+      'mobile pet grooming',
+      'cat grooming salon',
+      'pet sitting services',
+      'animal hospital'
+    ],
+    isCustom: false,
+    domainBlacklist: [
+      '*.petco.*',
+      '*.petsmart.*',
+      '*.chewy.*'
+    ]
+  },
 ];
 
 /**
