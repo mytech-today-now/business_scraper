@@ -5,7 +5,175 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] - 2025-01-22
+
+### Added
+- **Concurrent Search Functionality**: Implemented concurrent search execution in SearchOrchestrator
+  - Search providers (Google, Bing, DuckDuckGo) now run simultaneously using Promise.all()
+  - Business discovery providers (BBB, Yelp) execute concurrently with SERP providers
+  - Configurable concurrent search settings with timeout protection
+  - Graceful error handling for partial provider failures
+  - Backward compatibility with sequential search mode for debugging
+
+### Enhanced
+- **SearchOrchestrator Configuration**: Added comprehensive configuration options
+  - `enableConcurrentSearches`: Toggle between concurrent and sequential modes
+  - `maxConcurrentProviders`: Control maximum concurrent provider execution
+  - `searchTimeout`: Per-provider timeout protection (default: 2 minutes)
+  - Runtime configuration updates via `updateConfig()` method
+
+### Improved
+- **Search Performance**: Significant performance improvements through concurrent execution
+  - Reduced total search time from sum of all providers to max of slowest provider
+  - Better resource utilization with existing browser pool and rate limiting
+  - Maintained rate limiting compliance per provider (respects maxConcurrentRequests)
+
+### Technical
+- **Error Handling**: Enhanced error handling for concurrent operations
+  - Individual provider failures don't affect other providers
+  - Timeout protection prevents hanging searches
+  - Comprehensive logging for debugging and monitoring
+- **Testing**: Added comprehensive test suite for concurrent search functionality
+  - Unit tests for concurrent vs sequential execution
+  - Error handling and timeout scenarios
+  - Configuration management validation
+
+### Documentation
+- **README.md**: Added comprehensive "Application Redeployment" section
+  - Complete redeployment process with step-by-step instructions
+  - Quick redeployment option for minor changes
+  - Verification steps and troubleshooting guide
+  - Platform-specific commands for Windows and Unix systems
+
 ## [Unreleased]
+
+## [1.7.0] - 2025-08-21 🎯 **B2C INDUSTRY EXPANSION & KEYWORD OPTIMIZATION**
+
+### ✨ **Added**
+- **B2C Industry Categories**: Added 3 new industry categories optimized for B2C users
+  - **Home & Lifestyle Services**: 22 keywords targeting homeowners and renters
+    - Keywords: house cleaning service near me, landscaping company near me, handyman near me, etc.
+    - Domain blacklist: 14 entries excluding major marketplace platforms
+  - **Personal Health & Wellness**: 25 keywords for individual health and wellness services
+    - Keywords: personal trainer near me, yoga studio near me, massage therapist near me, etc.
+    - Domain blacklist: 16 entries excluding health directories and booking platforms
+  - **Entertainment & Recreation**: 28 keywords for consumer entertainment venues
+    - Keywords: movie theater near me, bowling alley near me, escape room near me, etc.
+    - Domain blacklist: 15 entries excluding ticketing and review platforms
+
+### 🔧 **Changed**
+- **Search Engine Optimization**: Refactored all industry keywords for better search engine performance
+  - **Legal Services**: Enhanced with 16 optimized keywords including "near me" patterns
+  - **Accounting & Tax Services**: Improved with 14 search-optimized keywords
+  - **Architectural Services**: Refined with 13 targeted keywords for better discovery
+  - **Medical Clinics**: Optimized with 13 healthcare-focused search terms
+  - **Dental Offices**: Enhanced with 13 dental-specific keywords
+  - **Marketing Agencies**: Expanded to 13 digital marketing keywords
+  - **E-commerce Businesses**: Optimized with 14 online retail keywords
+  - **Pet Services**: Refined with 15 pet care keywords
+- **Keyword Strategy**: Added location-based modifiers ("near me") for local search optimization
+- **Search Intent Optimization**: Improved keyword targeting for both B2B and B2C search patterns
+- **Fixed E-commerce Category**: Corrected `isCustom: true` to `isCustom: false` for proper categorization
+
+### 🎨 **Enhanced**
+- **Stop Scraping UX**: Dramatically improved user experience when stopping scraping operations
+  - **Immediate Visual Feedback**: Button changes to "Stopping..." state instantly
+  - **Status Indicators**: Added animated status dots (Active/Stopping/Idle) with color coding
+  - **Progress Bar Enhancement**: Shows yellow "finalizing" state during stop process
+  - **Processing Steps**: Added "Stopping Scraper" step with completion tracking
+  - **Completion Summary**: Shows final results summary when scraping completes
+  - **Toast Notifications**: Immediate success notification when stop is triggered
+
+### 🔧 **Fixed**
+- **DuckDuckGo Search Issues**: Resolved persistent 429 (Too Many Requests) errors
+  - **Circuit Breaker Pattern**: Automatically disables DuckDuckGo after 5 consecutive failures
+  - **Temporary Disable**: Service disabled for 1 hour when rate limits are consistently hit
+  - **Enhanced Stealth**: Improved anti-bot countermeasures with longer delays and better browser settings
+  - **Graceful Degradation**: Application continues with other search providers when DuckDuckGo is unavailable
+  - **Automatic Recovery**: Service re-enables automatically after cooldown period
+  - **Better Error Handling**: Clear logging and user feedback when DuckDuckGo is temporarily disabled
+
+### 📝 **Files Modified**
+- `src/lib/industry-config.ts`: Added 3 new B2C categories and optimized all existing keywords
+- `src/controller/useScraperController.ts`: Enhanced stop functionality with immediate UI feedback
+- `src/view/components/App.tsx`: Added status indicators, stopping states, and completion summary
+- `src/view/components/ProcessingWindow.tsx`: Enhanced status display for stopping state
+- `package.json`: Version bump to 1.7.0
+- `VERSIONS`: Updated current version and release notes
+- `CHANGELOG.md`: Added detailed change documentation
+
+## [1.6.1] - 2025-08-21 🔧 **FILENAME PATTERN REFACTOR**
+
+### 🔧 **Changed**
+- **Export Filename Pattern**: Refactored from `[Industry(s)]_[# of Results]_[YYYY-MM-DD]-[HH-MM-SS].[ext]` to `[YYYY-MM-DD]_[HH(00–23)-MM(00–59)]_[Industry(s)]_[# of Results].[ext]`
+  - **Improved Sorting**: Date-first format enables chronological file sorting
+  - **Simplified Time Format**: Removed seconds for cleaner timestamps (HH-MM instead of HH-MM-SS)
+  - **Better Organization**: Timestamp prefix groups files by date naturally
+  - **Examples**:
+    - `2025-08-21_14-30_Legal-Services_247.csv`
+    - `2025-08-21_09-15_Multiple-Industries_1024.pdf`
+
+### 🧪 **Testing**
+- **Updated Test Suite**: Modified all filename tests to match new pattern
+- **Maintained Coverage**: 100% test coverage preserved for export functionality
+
+## [1.6.0] - 2025-08-21 📊 **EXPORT SYSTEM REVOLUTION**
+
+### 🚀 **Major Features**
+- **Standardized Filename Format**: Implemented `[YYYY-MM-DD]_[HH(00–23)-MM(00–59)]_[Industry(s)]_[# of Results].[ext]` format for all exports
+- **Filtered Export Capability**: Added ability to export only selected businesses from results table
+- **Custom Export Templates**: Introduced comprehensive template system for customized data exports
+- **Enhanced Export Formats**: Expanded UI to include JSON, XML, VCF, and SQL export options
+
+### 🔧 **Enhanced**
+- **Export Service** (`src/utils/exportService.ts`)
+  - Added `ExportContext` interface for industry and search metadata
+  - Implemented `generateStandardizedFilename()` method with industry name sanitization
+  - Added `applyTemplate()` method for custom field selection and formatting
+  - Enhanced filtered export support with `selectedBusinesses` parameter
+  - Added template support to CSV, JSON, and PDF export methods
+  - Improved filename generation to prevent double extensions
+
+- **Results Table** (`src/view/components/ResultsTable.tsx`)
+  - Added export dropdown with primary and additional format sections
+  - Implemented "Export Selected" functionality for filtered exports
+  - Integrated Export Template Manager with custom template creation
+  - Enhanced export UI with format descriptions and categorization
+
+- **Export Template Manager** (`src/view/components/ExportTemplateManager.tsx`)
+  - Created comprehensive template management interface
+  - Added default templates: Basic Contact Info, Full Business Profile, Location Data
+  - Implemented custom field selection with nested property support
+  - Added template persistence using localStorage
+  - Included template validation and error handling
+
+- **App Component** (`src/view/components/App.tsx`)
+  - Updated export handler to support filtered exports and templates
+  - Added industry context passing for standardized filenames
+  - Enhanced export success messages with template information
+
+### 🧪 **Testing**
+- **Enhanced Export Tests** (`src/__tests__/utils/exportService.enhanced.test.ts`)
+  - Added comprehensive test suite for filename standardization
+  - Implemented filtered export testing scenarios
+  - Added custom template application tests
+  - Included integration tests combining all new features
+  - Achieved 100% test coverage for new export functionality
+
+### 📋 **Export Features Summary**
+- **Filename Standardization**: Professional naming convention with industry and timestamp
+- **Filtered Exports**: Export selected businesses only
+- **Template System**: Custom field selection and header customization
+- **Format Expansion**: 9 total formats available (CSV, XLSX, PDF, JSON, XML, VCF, SQL)
+- **UI Enhancement**: Organized export dropdown with format categorization
+- **Template Manager**: Visual interface for creating and managing export templates
+
+### 🎯 **Business Value**
+- **Professional Output**: Standardized filenames improve organization and workflow
+- **Selective Exports**: Reduces file sizes and focuses on relevant data
+- **Customization**: Templates allow users to export exactly the data they need
+- **Workflow Integration**: Proper naming convention supports automated processing
+- **User Experience**: Intuitive interface for complex export operations
 
 ## [1.5.2] - 2025-08-19 🔍 **MAJOR SEARCH REFACTOR**
 
