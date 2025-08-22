@@ -21,7 +21,7 @@ import { ApiConfigurationPage } from './ApiConfigurationPage'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
-import { ExportService, ExportFormat } from '@/utils/exportService'
+import { ExportService, ExportFormat, ExportTemplate } from '@/utils/exportService'
 import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
 import { clientScraperService } from '@/model/clientScraperService'
@@ -173,9 +173,9 @@ function ScrapingPanel(): JSX.Element {
   })
 
   /**
-   * Handle export functionality with improved error handling
+   * Handle export functionality with improved error handling and context
    */
-  const handleExport = async (format: string): Promise<void> => {
+  const handleExport = async (format: string, selectedIds?: string[], template?: ExportTemplate): Promise<void> => {
     if (!scrapingState.results.length) {
       logger.warn('Export', 'No data to export')
       toast.error('No data available to export')
@@ -187,12 +187,27 @@ function ScrapingPanel(): JSX.Element {
 
     try {
       const exportService = new ExportService()
+
+      // Get selected industry names for context
+      const selectedIndustryNames = configState.selectedIndustries.map(industryId => {
+        const industry = configState.industries.find(ind => ind.id === industryId)
+        return industry?.name || industryId
+      })
+
       const { blob, filename } = await exportService.exportBusinesses(
         scrapingState.results,
         format as ExportFormat,
         {
           includeHeaders: true,
-          dateFormat: 'YYYY-MM-DD HH:mm:ss'
+          dateFormat: 'YYYY-MM-DD HH:mm:ss',
+          context: {
+            selectedIndustries: selectedIndustryNames,
+            searchLocation: configState.config.zipCode,
+            searchRadius: configState.config.searchRadius,
+            totalResults: scrapingState.results.length
+          },
+          selectedBusinesses: selectedIds,
+          template: template
         }
       )
 
@@ -206,8 +221,12 @@ function ScrapingPanel(): JSX.Element {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
 
-      logger.info('Export', `Successfully exported ${scrapingState.results.length} businesses as ${format}`)
-      toast.success(`Successfully exported ${scrapingState.results.length} businesses as ${format.toUpperCase()}`)
+      const exportCount = selectedIds ? selectedIds.length : scrapingState.results.length
+      const exportType = selectedIds ? 'selected' : 'all'
+      const templateInfo = template ? ` using template "${template.name}"` : ''
+
+      logger.info('Export', `Successfully exported ${exportCount} ${exportType} businesses as ${format}${templateInfo}`)
+      toast.success(`Successfully exported ${exportCount} ${exportType} businesses as ${format.toUpperCase()}${templateInfo}`)
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error))
       exportErrorHandling.handleError(err, { format, resultCount: scrapingState.results.length })
@@ -257,8 +276,18 @@ function ScrapingPanel(): JSX.Element {
                 variant="destructive"
                 icon={Square}
                 onClick={stopScraping}
+                className="animate-pulse"
               >
                 Stop Scraping
+              </Button>
+            ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
+              <Button
+                variant="outline"
+                icon={Square}
+                disabled
+                className="opacity-75"
+              >
+                Stopping...
               </Button>
             ) : (
               <>
@@ -271,26 +300,83 @@ function ScrapingPanel(): JSX.Element {
                 </Button>
               </>
             )}
+
+            {/* Status Indicator */}
+            <div className="flex items-center gap-2 text-sm">
+              {scrapingState.isScrapingActive ? (
+                <>
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-green-600 font-medium">Active</span>
+                </>
+              ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
+                <>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                  <span className="text-yellow-600 font-medium">Stopping</span>
+                </>
+              ) : (
+                <>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <span className="text-gray-500">Idle</span>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Progress Display */}
-          {scrapingState.isScrapingActive && (
+          {(scrapingState.isScrapingActive || scrapingState.currentUrl === 'Stopping scraping...') && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span>Progress</span>
-                <span>{scrapingState.progress.percentage}%</span>
+                <span>
+                  {scrapingState.currentUrl === 'Stopping scraping...' ? 'Stopping' : 'Progress'}
+                </span>
+                <span>
+                  {scrapingState.currentUrl === 'Stopping scraping...'
+                    ? 'Finalizing...'
+                    : `${scrapingState.progress.percentage}%`
+                  }
+                </span>
               </div>
               <div className="w-full bg-secondary rounded-full h-2">
                 <div
-                  className="bg-primary h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${scrapingState.progress.percentage}%` }}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    scrapingState.currentUrl === 'Stopping scraping...'
+                      ? 'bg-yellow-500 animate-pulse'
+                      : 'bg-primary'
+                  }`}
+                  style={{
+                    width: scrapingState.currentUrl === 'Stopping scraping...'
+                      ? '100%'
+                      : `${scrapingState.progress.percentage}%`
+                  }}
                 />
               </div>
               {scrapingState.currentUrl && (
-                <p className="text-xs text-muted-foreground truncate">
+                <p className={`text-xs truncate ${
+                  scrapingState.currentUrl === 'Stopping scraping...'
+                    ? 'text-yellow-600 font-medium'
+                    : 'text-muted-foreground'
+                }`}>
                   {scrapingState.currentUrl}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Completion Summary - shown when scraping is stopped */}
+          {!scrapingState.isScrapingActive && scrapingState.currentUrl === '' && scrapingState.results.length > 0 && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-green-700 font-medium">Scraping Completed</span>
+              </div>
+              <div className="text-sm text-green-600">
+                Found {scrapingState.results.length} businesses.
+                {scrapingState.errors.length > 0 && (
+                  <span className="ml-1">
+                    {scrapingState.errors.length} errors encountered.
+                  </span>
+                )}
+              </div>
             </div>
           )}
 

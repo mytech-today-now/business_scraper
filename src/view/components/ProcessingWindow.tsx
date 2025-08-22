@@ -230,9 +230,20 @@ export function ProcessingWindow({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <CardTitle className="text-lg">Processing Status</CardTitle>
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+              currentStep === 'Stopping scraping...'
+                ? 'bg-yellow-100 text-yellow-800'
+                : isActive
+                ? 'bg-green-100 text-green-800'
+                : 'bg-gray-100 text-gray-800'
+            }`}>
               <Wifi className="h-4 w-4 mr-1" />
-              Live Scraping
+              {currentStep === 'Stopping scraping...'
+                ? 'Stopping'
+                : isActive
+                ? 'Live Scraping'
+                : 'Idle'
+              }
             </span>
           </div>
           <div className="flex items-center space-x-2">

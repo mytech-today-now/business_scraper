@@ -11,7 +11,8 @@ import {
   SortAsc,
   SortDesc,
   Eye,
-  EyeOff
+  EyeOff,
+  FileText
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
@@ -26,6 +27,8 @@ import {
 } from '@/utils/formatters'
 import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
+import { ExportTemplateManager } from './ExportTemplateManager'
+import { ExportTemplate } from '@/utils/exportService'
 
 /**
  * Column definition interface
@@ -63,7 +66,7 @@ export interface ResultsTableProps {
   businesses: BusinessRecord[]
   onEdit?: (businessId: string, updates: Partial<BusinessRecord>) => void
   onDelete?: (businessId: string) => void
-  onExport?: (format: string) => void
+  onExport?: (format: string, selectedIds?: string[], template?: ExportTemplate) => void
   isLoading?: boolean
   isExporting?: boolean
 }
@@ -108,6 +111,7 @@ export function ResultsTable({
     hasEmail: null,
     hasPhone: null,
   })
+  const [showTemplateManager, setShowTemplateManager] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [editingCell, setEditingCell] = useState<{ businessId: string; field: string } | null>(null)
   const [showColumnSettings, setShowColumnSettings] = useState(false)
@@ -504,6 +508,7 @@ export function ResultsTable({
   const someSelected = selectedRows.size > 0
 
   return (
+    <>
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
@@ -521,18 +526,60 @@ export function ResultsTable({
                   {isExporting ? 'Exporting...' : 'Export'}
                 </Button>
                 {!isExporting && (
-                  <div className="absolute right-0 top-full mt-1 w-48 bg-popover border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                  <div className="absolute right-0 top-full mt-1 w-56 bg-popover border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
                     <div className="p-1">
-                      {['CSV', 'XLSX', 'PDF'].map(format => (
+                      {/* Primary formats */}
+                      <div className="border-b border-border pb-1 mb-1">
+                        <div className="px-3 py-1 text-xs font-medium text-muted-foreground">Primary Formats</div>
+                        {['CSV', 'XLSX', 'PDF'].map(format => (
+                          <button
+                            key={format}
+                            type="button"
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm"
+                            onClick={() => onExport(format.toLowerCase())}
+                          >
+                            Export as {format}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Additional formats */}
+                      <div>
+                        <div className="px-3 py-1 text-xs font-medium text-muted-foreground">Additional Formats</div>
+                        {[
+                          { format: 'JSON', description: 'Structured data' },
+                          { format: 'XML', description: 'Markup format' },
+                          { format: 'VCF', description: 'Contact cards' },
+                          { format: 'SQL', description: 'Database inserts' }
+                        ].map(({ format, description }) => (
+                          <button
+                            key={format}
+                            type="button"
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm"
+                            onClick={() => onExport(format.toLowerCase())}
+                          >
+                            <div className="flex flex-col">
+                              <span>Export as {format}</span>
+                              <span className="text-xs text-muted-foreground">{description}</span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Template Manager */}
+                      <div className="border-t border-border pt-1 mt-1">
                         <button
-                          key={format}
                           type="button"
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm"
-                          onClick={() => onExport(format.toLowerCase())}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm flex items-center gap-2"
+                          onClick={() => setShowTemplateManager(true)}
                         >
-                          Export as {format}
+                          <FileText className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span>Custom Templates</span>
+                            <span className="text-xs text-muted-foreground">Manage export templates</span>
+                          </div>
                         </button>
-                      ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -652,6 +699,37 @@ export function ResultsTable({
             >
               Clear Selection
             </Button>
+
+            {/* Export Selected */}
+            {onExport && (
+              <div className="relative group">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={Download}
+                  disabled={isExporting}
+                >
+                  {isExporting ? 'Exporting...' : 'Export Selected'}
+                </Button>
+                {!isExporting && (
+                  <div className="absolute left-0 top-full mt-1 w-48 bg-popover border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                    <div className="p-1">
+                      {['CSV', 'XLSX', 'PDF', 'JSON'].map(format => (
+                        <button
+                          key={format}
+                          type="button"
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm"
+                          onClick={() => onExport(format.toLowerCase(), Array.from(selectedRows))}
+                        >
+                          Export as {format}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {onDelete && (
               <Button
                 variant="destructive"
@@ -770,5 +848,19 @@ export function ResultsTable({
         {/* Pagination could be added here for large datasets */}
       </CardContent>
     </Card>
+
+    {/* Export Template Manager */}
+    {showTemplateManager && (
+      <ExportTemplateManager
+        onTemplateSelect={(template) => {
+          setShowTemplateManager(false)
+          if (onExport) {
+            onExport('csv', undefined, template)
+          }
+        }}
+        onClose={() => setShowTemplateManager(false)}
+      />
+    )}
+  </>
   )
 }
