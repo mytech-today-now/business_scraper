@@ -142,6 +142,12 @@ export class ClientSearchEngine {
   private readonly baseDelay = 30000 // 30 seconds base delay
   private readonly maxDelay = 300000 // 5 minutes max delay
 
+  // DuckDuckGo circuit breaker
+  private duckduckgoFailures = 0
+  private duckduckgoLastFailureTime = 0
+  private readonly duckduckgoMaxFailures = 5
+  private readonly duckduckgoDisableTime = 60 * 60 * 1000 // 1 hour
+
   /**
    * Check if we should skip API calls due to rate limiting circuit breaker
    */
@@ -612,6 +618,12 @@ export class ClientSearchEngine {
    */
   private async searchDuckDuckGoSERP(query: string, location: string, maxResults: number): Promise<SearchResult[]> {
     try {
+      // Check if DuckDuckGo is temporarily disabled
+      if (this.isDuckDuckGoTemporarilyDisabled()) {
+        logger.warn('ClientSearchEngine', 'DuckDuckGo SERP search skipped - service temporarily disabled due to rate limiting')
+        return []
+      }
+
       const allResults: SearchResult[] = []
       // Get configurable number of SERP pages from credentials, default to 6 pages for better coverage
       const maxPagesPerQuery = this.credentials?.duckduckgoSerpPages || 6
@@ -674,19 +686,26 @@ export class ClientSearchEngine {
         {
           operation: `DuckDuckGo SERP scraping page ${page + 1}`,
           component: 'ClientSearchEngine',
-          retries: 2, // Allow retries for 429 errors
-          retryDelay: 60000, // 1 minute retry delay
+          retries: 1, // Reduced retries to avoid prolonged failures
+          retryDelay: 120000, // 2 minute retry delay
           retryCondition: (error: any) => {
-            // Retry on rate limit errors
-            return error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Rate limit')
+            // Only retry on specific rate limit errors, not on service unavailable
+            return error?.status === 429 && !error?.message?.includes('temporarily disabled')
           }
         }
       )
 
       if (!result.success) {
+        // Check if DuckDuckGo is temporarily disabled
+        if (result.error?.message?.includes('temporarily disabled') || result.error?.message?.includes('Service temporarily unavailable')) {
+          logger.warn('ClientSearchEngine', 'DuckDuckGo is temporarily disabled due to rate limiting')
+          throw new Error('DuckDuckGo temporarily unavailable - using alternative search methods')
+        }
+
         // Check if this is a rate limiting error
         if (result.error?.message?.includes('429') || result.error?.message?.includes('Rate limit')) {
           this.recordRateLimitFailure()
+          this.recordDuckDuckGoFailure() // Also record DuckDuckGo-specific failure
         }
         logger.warn('ClientSearchEngine', `Failed to scrape DuckDuckGo page ${page + 1}`, result.error)
         return []
@@ -700,6 +719,7 @@ export class ClientSearchEngine {
 
       // Reset rate limit failures on successful API call
       this.resetRateLimitFailures()
+      this.resetDuckDuckGoFailures()
 
       // Convert server response to SearchResult format
       const results = (data.results || []).map((result: DuckDuckGoSerpResult) => ({
@@ -1720,6 +1740,47 @@ export class ClientSearchEngine {
    */
   async refreshDomainBlacklist(): Promise<void> {
     await this.loadPersistentDomainBlacklist()
+  }
+
+  /**
+   * Check if DuckDuckGo is temporarily disabled due to repeated failures
+   */
+  private isDuckDuckGoTemporarilyDisabled(): boolean {
+    if (this.duckduckgoFailures >= this.duckduckgoMaxFailures) {
+      const timeSinceLastFailure = Date.now() - this.duckduckgoLastFailureTime
+      if (timeSinceLastFailure < this.duckduckgoDisableTime) {
+        return true
+      } else {
+        // Reset failures after disable time has passed
+        this.duckduckgoFailures = 0
+        this.duckduckgoLastFailureTime = 0
+      }
+    }
+    return false
+  }
+
+  /**
+   * Record a DuckDuckGo failure
+   */
+  private recordDuckDuckGoFailure(): void {
+    this.duckduckgoFailures++
+    this.duckduckgoLastFailureTime = Date.now()
+    logger.warn('ClientSearchEngine', `DuckDuckGo failure recorded. Count: ${this.duckduckgoFailures}/${this.duckduckgoMaxFailures}`)
+
+    if (this.duckduckgoFailures >= this.duckduckgoMaxFailures) {
+      logger.warn('ClientSearchEngine', `DuckDuckGo temporarily disabled for ${this.duckduckgoDisableTime / 60000} minutes due to repeated failures`)
+    }
+  }
+
+  /**
+   * Reset DuckDuckGo failures on successful request
+   */
+  private resetDuckDuckGoFailures(): void {
+    if (this.duckduckgoFailures > 0) {
+      logger.info('ClientSearchEngine', 'DuckDuckGo failures reset after successful request')
+      this.duckduckgoFailures = 0
+      this.duckduckgoLastFailureTime = 0
+    }
   }
 }
 
