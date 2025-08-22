@@ -32,19 +32,39 @@ export interface BusinessDiscoveryProvider {
 }
 
 /**
+ * Configuration options for search orchestrator
+ */
+export interface SearchOrchestratorConfig {
+  enableConcurrentSearches: boolean
+  maxConcurrentProviders: number
+  searchTimeout: number
+}
+
+/**
  * Abstract search orchestrator that coordinates SERP, BBB, and Yelp searches
  * regardless of the underlying search provider (Google, Bing, DuckDuckGo)
  */
 export class SearchOrchestrator {
   private searchProviders: SearchProvider[] = []
   private businessDiscoveryProviders: BusinessDiscoveryProvider[] = []
+  private config: SearchOrchestratorConfig
 
-  constructor() {
+  constructor(config?: Partial<SearchOrchestratorConfig>) {
     // Initialize business discovery providers
     this.businessDiscoveryProviders = [
       new BBBDiscoveryProvider(),
       new YelpDiscoveryProvider()
     ]
+
+    // Set default configuration
+    this.config = {
+      enableConcurrentSearches: true,
+      maxConcurrentProviders: 6, // Total concurrent providers (SERP + Business)
+      searchTimeout: 120000, // 2 minutes timeout per provider
+      ...config
+    }
+
+    logger.info('SearchOrchestrator', `Initialized with concurrent searches: ${this.config.enableConcurrentSearches}`)
   }
 
   /**
@@ -56,62 +76,198 @@ export class SearchOrchestrator {
   }
 
   /**
+   * Update orchestrator configuration
+   */
+  updateConfig(config: Partial<SearchOrchestratorConfig>): void {
+    this.config = { ...this.config, ...config }
+    logger.info('SearchOrchestrator', `Configuration updated`, this.config)
+  }
+
+  /**
+   * Get current configuration
+   */
+  getConfig(): SearchOrchestratorConfig {
+    return { ...this.config }
+  }
+
+  /**
    * Perform comprehensive business search using all available methods
    */
   async searchBusinesses(options: SearchOptions): Promise<BusinessResult[]> {
     const allResults: BusinessResult[] = []
     const resultsPerMethod = Math.ceil(options.maxResults / (this.searchProviders.length + this.businessDiscoveryProviders.length))
 
-    logger.info('SearchOrchestrator', `Starting comprehensive search for: ${options.query} in ${options.location}`)
+    const searchMode = this.config.enableConcurrentSearches ? 'concurrent' : 'sequential'
+    logger.info('SearchOrchestrator', `Starting ${searchMode} search for: ${options.query} in ${options.location}`)
 
-    // 1. Search using SERP providers (Google, Bing, DuckDuckGo)
+    if (this.config.enableConcurrentSearches) {
+      return this.searchConcurrently(options, resultsPerMethod, allResults)
+    } else {
+      return this.searchSequentially(options, resultsPerMethod, allResults)
+    }
+  }
+
+  /**
+   * Execute searches concurrently for better performance
+   */
+  private async searchConcurrently(
+    options: SearchOptions,
+    resultsPerMethod: number,
+    allResults: BusinessResult[]
+  ): Promise<BusinessResult[]> {
+    // 1. Search using SERP providers concurrently (Google, Bing, DuckDuckGo)
+    const serpSearchPromises = this.searchProviders.map(provider =>
+      this.searchWithTimeout(
+        () => this.searchWithProvider(provider, {
+          ...options,
+          maxResults: resultsPerMethod
+        }, 'SERP'),
+        this.config.searchTimeout,
+        `${provider.name} SERP search`
+      )
+    )
+
+    // 2. Search using business discovery providers concurrently (BBB, Yelp)
+    const businessSearchPromises = this.businessDiscoveryProviders.map(provider =>
+      this.searchWithTimeout(
+        () => this.searchWithBusinessProvider(provider, {
+          ...options,
+          maxResults: resultsPerMethod
+        }),
+        this.config.searchTimeout,
+        `${provider.name} business search`
+      )
+    )
+
+    // 3. Execute all searches concurrently with timeout protection
+    const [serpResults, businessResults] = await Promise.all([
+      Promise.all(serpSearchPromises),
+      Promise.all(businessSearchPromises)
+    ])
+
+    // 4. Flatten and combine all results
+    serpResults.forEach(results => allResults.push(...results))
+    businessResults.forEach(results => allResults.push(...results))
+
+    return this.finalizeResults(allResults, options, 'concurrent')
+  }
+
+  /**
+   * Execute searches sequentially for compatibility/debugging
+   */
+  private async searchSequentially(
+    options: SearchOptions,
+    resultsPerMethod: number,
+    allResults: BusinessResult[]
+  ): Promise<BusinessResult[]> {
+    // 1. Search using SERP providers sequentially
     for (const provider of this.searchProviders) {
-      try {
-        logger.info('SearchOrchestrator', `Searching with ${provider.name}`)
-        const results = await provider.searchSERP({
-          ...options,
-          maxResults: resultsPerMethod
-        })
-        
-        allResults.push(...results)
-        logger.info('SearchOrchestrator', `${provider.name} returned ${results.length} results`)
-        
-      } catch (error) {
-        logger.warn('SearchOrchestrator', `${provider.name} search failed`, error)
-        continue
-      }
+      const results = await this.searchWithProvider(provider, {
+        ...options,
+        maxResults: resultsPerMethod
+      }, 'SERP')
+      allResults.push(...results)
     }
 
-    // 2. Search using business discovery providers (BBB, Yelp)
+    // 2. Search using business discovery providers sequentially
     for (const provider of this.businessDiscoveryProviders) {
-      try {
-        logger.info('SearchOrchestrator', `Searching with ${provider.name}`)
-        const results = await provider.searchBusinesses({
-          ...options,
-          maxResults: resultsPerMethod
-        })
-        
-        allResults.push(...results)
-        logger.info('SearchOrchestrator', `${provider.name} returned ${results.length} results`)
-        
-      } catch (error) {
-        logger.warn('SearchOrchestrator', `${provider.name} search failed`, error)
-        continue
-      }
+      const results = await this.searchWithBusinessProvider(provider, {
+        ...options,
+        maxResults: resultsPerMethod
+      })
+      allResults.push(...results)
     }
 
-    // 3. Deduplicate and rank results
+    return this.finalizeResults(allResults, options, 'sequential')
+  }
+
+  /**
+   * Finalize search results with deduplication and ranking
+   */
+  private finalizeResults(
+    allResults: BusinessResult[],
+    options: SearchOptions,
+    mode: string
+  ): BusinessResult[] {
+    // Deduplicate and rank results
     const uniqueResults = this.deduplicateResults(allResults)
     const rankedResults = this.rankResults(uniqueResults, options)
 
-    // 4. Return all results (no artificial limiting)
-    const finalResults = rankedResults
-
     logger.info('SearchOrchestrator',
-      `Search completed: ${allResults.length} total → ${uniqueResults.length} unique → ${finalResults.length} final results`
+      `${mode} search completed: ${allResults.length} total → ${uniqueResults.length} unique → ${rankedResults.length} final results`
     )
 
-    return finalResults
+    return rankedResults
+  }
+
+  /**
+   * Wrap a search operation with timeout protection
+   */
+  private async searchWithTimeout<T>(
+    searchFn: () => Promise<T>,
+    timeoutMs: number,
+    operationName: string
+  ): Promise<T> {
+    return Promise.race([
+      searchFn(),
+      new Promise<T>((_, reject) =>
+        setTimeout(() => reject(new Error(`${operationName} timed out after ${timeoutMs}ms`)), timeoutMs)
+      )
+    ]).catch(error => {
+      logger.warn('SearchOrchestrator', `${operationName} failed or timed out`, error)
+      return [] as T // Return empty array on timeout/failure
+    })
+  }
+
+  /**
+   * Search with a SERP provider with error handling
+   */
+  private async searchWithProvider(
+    provider: SearchProvider,
+    options: SearchOptions,
+    type: string
+  ): Promise<BusinessResult[]> {
+    try {
+      logger.info('SearchOrchestrator', `Starting ${type} search with ${provider.name}`)
+      const startTime = Date.now()
+
+      const results = await provider.searchSERP(options)
+
+      const duration = Date.now() - startTime
+      logger.info('SearchOrchestrator',
+        `${provider.name} ${type} search completed in ${duration}ms with ${results.length} results`
+      )
+
+      return results
+    } catch (error) {
+      logger.warn('SearchOrchestrator', `${provider.name} ${type} search failed`, error)
+      return [] // Return empty array on failure to allow other providers to succeed
+    }
+  }
+
+  /**
+   * Search with a business discovery provider with error handling
+   */
+  private async searchWithBusinessProvider(
+    provider: BusinessDiscoveryProvider,
+    options: SearchOptions
+  ): Promise<BusinessResult[]> {
+    try {
+      logger.info('SearchOrchestrator', `Starting business discovery search with ${provider.name}`)
+      const startTime = Date.now()
+
+      const results = await provider.searchBusinesses(options)
+
+      const duration = Date.now() - startTime
+      logger.info('SearchOrchestrator',
+        `${provider.name} business discovery completed in ${duration}ms with ${results.length} results`
+      )
+
+      return results
+    } catch (error) {
+      logger.warn('SearchOrchestrator', `${provider.name} business discovery search failed`, error)
+      return [] // Return empty array on failure to allow other providers to succeed
+    }
   }
 
   /**
