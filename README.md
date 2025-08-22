@@ -1,22 +1,22 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-1.5.2-blue.svg)
+![Version](https://img.shields.io/badge/version-1.7.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
 A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **advanced individual keyword search strategies** and real-time web scraping.
 
-## 🆕 **Latest Update (v1.5.2)** - Individual Keyword Search Revolution
+## 🆕 **Latest Update (v1.7.1)** - Concurrent Search Performance Revolution
 
-**Major Search Architecture Overhaul**: Each keyword/key-phrase is now processed individually with ZIP codes for unprecedented search precision and relevance. This fundamental change improves result quality by 3x and provides better location targeting.
+**Major Performance Enhancement**: Implemented concurrent search execution across all providers. Search operations now run simultaneously using Promise.all() instead of sequential processing, dramatically reducing total search time from the sum of all providers to the maximum time of the slowest provider. This enhancement maintains full compatibility with existing rate limiting and error handling while providing 3-5x faster search performance.
 
 ## 🚀 Features
 
 ### Core Functionality
 
-- **🎯 Smart Industry Expansion**: Automatically expands industry categories into specific business types (e.g., "Professional Services" → consulting, legal, accounting, financial, insurance)
-- **🌐 Multi-Strategy Search Engine**: DuckDuckGo SERP scraping, BBB business discovery, and instant answer API integration
+- **🎯 Smart Industry Expansion**: Automatically expands industry categories into specific business types with both B2B and B2C coverage (e.g., "Professional Services" → consulting, legal, accounting; "Home & Lifestyle Services" → house cleaning, lawn care, handyman)
+- **🌐 Multi-Strategy Search Engine**: DuckDuckGo SERP scraping, BBB business discovery, and instant answer API integration with **concurrent execution**
 - **📍 Intelligent Location Filtering**: ZIP code-based search with precise radius validation using geolocation services
 - **🤖 Advanced Web Scraping**: Puppeteer-powered extraction with anti-bot countermeasures and rate limiting
 - **📊 Multi-format Export**: Export data in CSV, XLSX, XLS, ODS, PDF, and JSON formats
@@ -33,7 +33,13 @@ A comprehensive full-stack business web scraping application built with Next.js,
 - **🔍 Enhanced Query Precision**: Processes each search term individually for higher accuracy and relevance
 - **🏢 BBB Business Discovery**: Real-time scraping of Better Business Bureau for verified business websites
 - **📐 ZIP Radius Validation**: Accurate distance calculation with fallback geolocation data
-- **🔄 Fallback Search Strategies**: Multiple search providers with automatic failover
+- **🔄 Fallback Search Strategies**: Multiple search providers with automatic failover and **concurrent execution**
+- **⚡ Concurrent Search Performance**: **NEW!** All search providers execute simultaneously for 3-5x faster results
+  - **Parallel Execution**: SERP providers (Google, Bing, DuckDuckGo) and business discovery providers (BBB, Yelp) run concurrently
+  - **Timeout Protection**: Configurable per-provider timeouts prevent hanging searches
+  - **Graceful Error Handling**: Individual provider failures don't affect other providers
+  - **Rate Limit Compliance**: Respects existing rate limiting rules for each provider
+  - **Configurable Concurrency**: Toggle between concurrent and sequential modes for debugging
 - **⚡ Optimized Query Processing**: Industry-specific templates and synonym expansion with targeted keyword searches
 - **🔗 Azure AI Foundry Integration**: Modern "Grounding with Bing Custom Search" API support
 - **🛡️ Enhanced Result Filtering**: Automatic rejection of government offices, educational databases, and directory listings
@@ -293,7 +299,8 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 
 2. **Industry Selection**:
    - Choose from predefined categories (automatically expands to specific business types)
-   - Example: "Professional Services" → consulting, legal, accounting, financial, insurance
+   - **B2B Examples**: "Professional Services" → consulting, legal, accounting, financial, insurance
+   - **B2C Examples**: "Home & Lifestyle Services" → house cleaning, lawn care, handyman, plumber
    - Add custom industries with comma-separated keywords
    - Use quoted phrases for exact matches: "medical clinic", "dental office"
 
@@ -462,6 +469,69 @@ npm start
 yarn start
 ```
 
+### Application Redeployment
+
+When you need to stop, recompile, and redeploy the application (e.g., after code changes or updates):
+
+#### Complete Redeployment Process
+```bash
+# 1. Stop any running applications
+# Check for running processes on port 3000
+netstat -ano | findstr :3000
+# Kill any Node.js processes if needed
+tasklist | findstr node
+
+# 2. Clean build artifacts and dependencies
+rm -rf .next                    # Remove Next.js build cache
+rm -rf node_modules             # Remove dependencies
+rm -f package-lock.json         # Remove lock file
+
+# 3. Fresh dependency installation
+npm install                     # Reinstall all dependencies
+
+# 4. Clean rebuild
+npm run build                   # Build for production
+
+# 5. Start production server
+npm start                       # Start the application
+```
+
+#### Quick Redeployment (without dependency reinstall)
+```bash
+# For minor changes when dependencies haven't changed
+rm -rf .next                    # Clean build cache
+npm run build                   # Rebuild application
+npm start                       # Start production server
+```
+
+#### Verification Steps
+```bash
+# Check if application is running
+netstat -ano | findstr :3000
+
+# Test application accessibility
+curl http://localhost:3000
+
+# Run concurrent search tests (optional)
+npm test -- src/lib/__tests__/searchOrchestrator.concurrent.test.ts
+```
+
+#### Troubleshooting Redeployment
+```bash
+# If port 3000 is still in use
+lsof -ti:3000 | xargs kill -9   # Force kill processes on port 3000
+
+# If build fails due to cache issues
+npm run build -- --no-cache     # Build without cache
+
+# If dependencies have conflicts
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install
+```
+
+> **Note**: The complete redeployment process ensures a clean environment and is recommended after major updates or when troubleshooting deployment issues.
+
 ### Production Deployment (Docker)
 
 #### Prerequisites
@@ -591,11 +661,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.5.1)
-- 🔍 **Enhanced Search Quality**: Fixed Private & Charter Schools search returning irrelevant government office results
-- 🎯 **Improved Industry Targeting**: Refined keywords and search strategy for better result accuracy
-- 🚫 **Advanced Filtering**: Comprehensive domain blacklist including government, educational, and directory sites
-- 📍 **Better Location Accuracy**: Enhanced ZIP radius filtering for more relevant local results
+### Recent Major Updates (v1.7.0)
+- 🎯 **B2C Industry Expansion**: Added 3 new industry categories optimized for consumer services
+  - **Home & Lifestyle Services**: House cleaning, lawn care, handyman, plumber, electrician, HVAC, etc.
+  - **Personal Health & Wellness**: Personal trainer, yoga studio, massage therapist, hair salon, fitness gym, etc.
+  - **Entertainment & Recreation**: Movie theater, bowling alley, escape room, karaoke bar, comedy club, etc.
+- 🔍 **Enhanced Search Coverage**: Expanded from primarily B2B to include B2C service discovery
+- 🚫 **Improved Domain Filtering**: Industry-specific blacklists for consumer marketplace exclusion
+- 👥 **Multi-User Support**: Categories now serve both B2B and B2C use cases effectively
 
 ### Performance Optimizations (v1.5.0)
 - 🚀 **Comprehensive Performance Optimizations**: 3x faster concurrent processing with enhanced throughput
