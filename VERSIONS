@@ -1,8 +1,8 @@
 # Business Scraper Application - Version History
 
-**Current Version:** v1.4.1  
-**Release Date:** August 19, 2025  
-**Status:** Production Ready  
+**Current Version:** v1.7.1
+**Release Date:** January 22, 2025
+**Status:** Production Ready
 
 ---
 
@@ -12,7 +12,37 @@ This document provides a comprehensive overview of all versions of the Business 
 
 ## 🚀 Current Release
 
-### v1.4.1 (Latest) - August 19, 2025
+### v1.7.0 (Latest) - August 21, 2025
+**Status:** ✅ **CURRENT PRODUCTION VERSION**
+**Type:** Minor Release
+**Compatibility:** Full backward compatibility with v1.6.x
+
+#### Key Features
+- **🎯 B2C Industry Categories**: Added 3 new industry categories optimized for B2C users
+  - Home & Lifestyle Services (20 keywords, 14 domain blacklist entries)
+  - Personal Health & Wellness (24 keywords, 16 domain blacklist entries)
+  - Entertainment & Recreation (27 keywords, 15 domain blacklist entries)
+- **🔍 Enhanced Search Coverage**: Expanded from B2B-focused to include consumer-oriented businesses
+- **🚫 Improved Filtering**: Industry-specific domain blacklists for better result quality
+- **👥 Multi-User Support**: Categories now serve both B2B and B2C use cases
+
+#### User Experience Enhancements
+- **🎨 Enhanced Stop Scraping UX**: Dramatically improved feedback when stopping operations
+  - Immediate visual state changes and status indicators
+  - Animated progress bars with stopping states
+  - Processing step tracking for stop operations
+  - Completion summaries and toast notifications
+- **📊 Status Indicators**: Real-time status dots (Active/Stopping/Idle) with color coding
+- **✨ Better Visual Feedback**: Clear indication of scraping state transitions
+
+#### Technical Improvements
+- Enhanced industry configuration with consumer-friendly keywords
+- Optimized search terms for local service discovery
+- Improved domain filtering for consumer marketplace exclusion
+- Enhanced state management and UI synchronization
+- Improved scraping operation lifecycle handling
+
+### v1.4.1 - August 19, 2025
 **Status:** ✅ **CURRENT PRODUCTION VERSION**  
 **Type:** Patch Release  
 **Compatibility:** Full backward compatibility with v1.4.0  
