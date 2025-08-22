@@ -58,12 +58,12 @@ export class RateLimitingService {
       {
         name: 'duckduckgo',
         requestsPerMinute: 1,
-        requestsPerHour: 10,
-        requestsPerDay: 100,
-        minDelayBetweenRequests: 45000, // 45 seconds
+        requestsPerHour: 5, // Reduced from 10 to 5
+        requestsPerDay: 20, // Reduced from 100 to 20
+        minDelayBetweenRequests: 120000, // Increased from 45s to 2 minutes
         maxConcurrentRequests: 1,
-        backoffMultiplier: 2,
-        maxBackoffDelay: 300000, // 5 minutes
+        backoffMultiplier: 3, // Increased from 2 to 3
+        maxBackoffDelay: 600000, // Increased from 5 to 10 minutes
         resetHour: 0
       },
       {
@@ -319,5 +319,24 @@ export class RateLimitingService {
       this.providerLimits.set(provider, updatedLimits)
       logger.info('RateLimiting', `Updated limits for ${provider}`, newLimits)
     }
+  }
+
+  /**
+   * Get the number of consecutive failures for a provider
+   */
+  getFailureCount(provider: string): number {
+    const history = this.requestHistory.get(provider) || []
+    let consecutiveFailures = 0
+
+    // Count consecutive failures from the most recent requests
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (!history[i].success) {
+        consecutiveFailures++
+      } else {
+        break // Stop counting when we hit a success
+      }
+    }
+
+    return consecutiveFailures
   }
 }
