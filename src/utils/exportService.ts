@@ -14,6 +14,17 @@ import { logger } from './logger'
 export type ExportFormat = 'csv' | 'xlsx' | 'xls' | 'ods' | 'pdf' | 'json' | 'xml' | 'vcf' | 'sql'
 
 /**
+ * Export context interface for generating standardized filenames
+ */
+export interface ExportContext {
+  industries?: string[]
+  selectedIndustries?: string[]
+  searchLocation?: string
+  searchRadius?: number
+  totalResults?: number
+}
+
+/**
  * Export options interface
  */
 export interface ExportOptions {
@@ -29,6 +40,8 @@ export interface ExportOptions {
   customFields?: CustomField[]
   compression?: boolean
   password?: string
+  context?: ExportContext
+  selectedBusinesses?: string[] // IDs of selected businesses for filtered export
 }
 
 /**
@@ -84,6 +97,126 @@ export interface CustomField {
  */
 export class ExportService {
   /**
+   * Generate standardized filename in format: [YYYY-MM-DD]_[HH(00–23)-MM(00–59)]_[Industry(s)]_[# of Results].[ext]
+   * @param businesses - Array of business records
+   * @param format - Export format
+   * @param context - Export context with industry information
+   * @returns Standardized filename
+   */
+  private generateStandardizedFilename(
+    businesses: BusinessRecord[],
+    format: ExportFormat,
+    context?: ExportContext
+  ): string {
+    // Generate timestamp in required format
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+
+    const dateStr = `${year}-${month}-${day}`
+    const timeStr = `${hours}-${minutes}`
+
+    // Determine industry names
+    let industryPart = 'All-Industries'
+    if (context?.selectedIndustries && context.selectedIndustries.length > 0) {
+      if (context.selectedIndustries.length === 1) {
+        // Single industry - use the industry name
+        industryPart = context.selectedIndustries[0]
+          .replace(/[^a-zA-Z0-9]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+      } else if (context.selectedIndustries.length <= 3) {
+        // Multiple industries (up to 3) - combine them
+        industryPart = context.selectedIndustries
+          .map(industry => industry.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''))
+          .join('-')
+      } else {
+        // Many industries - use "Multiple-Industries"
+        industryPart = 'Multiple-Industries'
+      }
+    }
+
+    // Get result count (filtered or total)
+    const resultCount = context?.selectedBusinesses
+      ? context.selectedBusinesses.length
+      : businesses.length
+
+    // Construct filename: [YYYY-MM-DD]_[HH(00–23)-MM(00–59)]_[Industry(s)]_[# of Results].[ext]
+    return `${dateStr}_${timeStr}_${industryPart}_${resultCount}.${format}`
+  }
+
+  /**
+   * Apply export template to business data
+   * @param businesses - Business records
+   * @param template - Export template
+   * @returns Formatted data according to template
+   */
+  private applyTemplate(businesses: BusinessRecord[], template?: ExportTemplate): any[] {
+    if (!template) {
+      return businesses.map(formatBusinessForExport)
+    }
+
+    return businesses.map(business => {
+      const result: any = {}
+
+      for (const field of template.fields) {
+        const value = this.getNestedValue(business, field)
+        const header = template.customHeaders?.[field] || field
+
+        // Apply custom formatting if available
+        if (template.formatting?.[field]) {
+          result[header] = template.formatting[field](value)
+        } else {
+          result[header] = this.formatValue(value, field)
+        }
+      }
+
+      return result
+    })
+  }
+
+  /**
+   * Get nested value from object using dot notation
+   * @param obj - Object to get value from
+   * @param path - Dot notation path (e.g., 'address.street')
+   * @returns Value at path
+   */
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((current, key) => current?.[key], obj)
+  }
+
+  /**
+   * Format value based on field type
+   * @param value - Value to format
+   * @param field - Field name for context
+   * @returns Formatted value
+   */
+  private formatValue(value: any, field: string): string {
+    if (value === null || value === undefined) {
+      return ''
+    }
+
+    // Handle arrays (like email addresses)
+    if (Array.isArray(value)) {
+      return value.join('; ')
+    }
+
+    // Handle dates
+    if (field.includes('Date') || field.includes('At') || value instanceof Date) {
+      return new Date(value).toLocaleDateString()
+    }
+
+    // Handle coordinates
+    if (field.includes('lat') || field.includes('lng')) {
+      return typeof value === 'number' ? value.toFixed(6) : String(value)
+    }
+
+    return String(value)
+  }
+  /**
    * Export businesses to specified format
    * @param businesses - Array of business records
    * @param format - Export format
@@ -95,31 +228,44 @@ export class ExportService {
     format: ExportFormat,
     options: ExportOptions = {}
   ): Promise<{ blob: Blob; filename: string }> {
-    const defaultFilename = `business-data-${new Date().toISOString().split('T')[0]}`
-    const filename = options.filename || defaultFilename
+    // Filter businesses if selectedBusinesses is provided
+    let businessesToExport = businesses
+    if (options.selectedBusinesses) {
+      businessesToExport = businesses.filter(business =>
+        options.selectedBusinesses!.includes(business.id)
+      )
+      logger.info('ExportService', `Filtered export: ${businessesToExport.length} of ${businesses.length} businesses selected`)
+    }
+
+    // Generate standardized filename
+    const filename = options.filename || this.generateStandardizedFilename(
+      businessesToExport,
+      format,
+      options.context
+    )
 
     try {
-      logger.info('ExportService', `Exporting ${businesses.length} businesses as ${format}`)
+      logger.info('ExportService', `Exporting ${businessesToExport.length} businesses as ${format} to ${filename}`)
 
       switch (format) {
         case 'csv':
-          return this.exportToCsv(businesses, filename, options)
+          return this.exportToCsv(businessesToExport, filename, options)
         case 'xlsx':
-          return this.exportToXlsx(businesses, filename, options)
+          return this.exportToXlsx(businessesToExport, filename, options)
         case 'xls':
-          return this.exportToXls(businesses, filename, options)
+          return this.exportToXls(businessesToExport, filename, options)
         case 'ods':
-          return this.exportToOds(businesses, filename, options)
+          return this.exportToOds(businessesToExport, filename, options)
         case 'pdf':
-          return this.exportToPdf(businesses, filename, options)
+          return this.exportToPdf(businessesToExport, filename, options)
         case 'json':
-          return this.exportToJson(businesses, filename, options)
+          return this.exportToJson(businessesToExport, filename, options)
         case 'xml':
-          return this.exportToXml(businesses, filename, options)
+          return this.exportToXml(businessesToExport, filename, options)
         case 'vcf':
-          return this.exportToVcf(businesses, filename, options)
+          return this.exportToVcf(businessesToExport, filename, options)
         case 'sql':
-          return this.exportToSql(businesses, filename, options)
+          return this.exportToSql(businessesToExport, filename, options)
         default:
           throw new Error(`Unsupported export format: ${format}`)
       }
@@ -253,8 +399,8 @@ export class ExportService {
     const delimiter = options.delimiter || ','
     const includeHeaders = options.includeHeaders !== false
 
-    // Format data for export
-    const formattedData = businesses.map(formatBusinessForExport)
+    // Format data for export (with template support)
+    const formattedData = this.applyTemplate(businesses, options.template)
     
     let csvContent = ''
 
@@ -278,7 +424,7 @@ export class ExportService {
 
     return {
       blob,
-      filename: `${filename}.csv`
+      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
     }
   }
 
@@ -378,8 +524,8 @@ export class ExportService {
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30)
     doc.text(`Total Records: ${businesses.length}`, 14, 36)
 
-    // Prepare table data
-    const formattedData = businesses.map(formatBusinessForExport)
+    // Prepare table data (with template support)
+    const formattedData = this.applyTemplate(businesses, options.template)
     
     if (formattedData.length > 0) {
       const headers = Object.keys(formattedData[0]!)
@@ -444,7 +590,7 @@ export class ExportService {
         totalRecords: businesses.length,
         version: '1.0.0',
       },
-      businesses: businesses.map(formatBusinessForExport),
+      businesses: this.applyTemplate(businesses, options.template),
     }
 
     const jsonContent = JSON.stringify(exportData, null, 2)
@@ -455,7 +601,7 @@ export class ExportService {
 
     return {
       blob,
-      filename: `${filename}.json`
+      filename: filename.endsWith('.json') ? filename : `${filename}.json`
     }
   }
 
@@ -489,10 +635,14 @@ export class ExportService {
 
   /**
    * Get supported export formats
+   * @param includeAll - Whether to include all formats or just primary ones
    * @returns Array of supported formats
    */
-  getSupportedFormats(): ExportFormat[] {
-    return ['csv', 'xlsx', 'xls', 'ods', 'pdf', 'json']
+  getSupportedFormats(includeAll: boolean = false): ExportFormat[] {
+    const primaryFormats: ExportFormat[] = ['csv', 'xlsx', 'pdf']
+    const allFormats: ExportFormat[] = ['csv', 'xlsx', 'xls', 'ods', 'pdf', 'json', 'xml', 'vcf', 'sql']
+
+    return includeAll ? allFormats : primaryFormats
   }
 
   /**
