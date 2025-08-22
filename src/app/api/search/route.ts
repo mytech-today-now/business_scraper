@@ -250,6 +250,18 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
     const { RateLimitingService } = await import('@/lib/rateLimitingService')
     const rateLimiter = new RateLimitingService()
 
+    // Check if DuckDuckGo is temporarily disabled due to repeated failures
+    const failureCount = rateLimiter.getFailureCount('duckduckgo')
+    if (failureCount >= 5) {
+      logger.warn('Search API', `DuckDuckGo temporarily disabled due to ${failureCount} consecutive failures`)
+      return NextResponse.json({
+        success: false,
+        error: 'Service temporarily unavailable',
+        message: 'DuckDuckGo is temporarily disabled due to repeated rate limiting',
+        retryAfter: 3600000 // 1 hour
+      }, { status: 503 })
+    }
+
     // Check rate limits and wait if necessary
     await rateLimiter.waitForRequest('duckduckgo')
 
@@ -276,21 +288,21 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
     const puppeteer = await import('puppeteer')
     const { NetworkSpoofingService } = await import('@/lib/networkSpoofingService')
 
-    // Initialize network spoofing service
+    // Initialize network spoofing service with enhanced stealth
     const spoofingService = new NetworkSpoofingService({
       enableProxyRotation: false, // Disable for now to avoid connection issues
       enableIPSpoofing: true,
       enableMACAddressSpoofing: true,
       enableFingerprintSpoofing: true,
-      requestDelay: { min: 5000, max: 12000 } // Longer delays for DuckDuckGo
+      requestDelay: { min: 8000, max: 20000 } // Much longer delays for DuckDuckGo
     })
 
     // Get proxy arguments for browser launch (if enabled)
     const proxyArgs = spoofingService.getCurrentProxyArgs()
 
-    // Launch browser with enhanced stealth settings
+    // Launch browser with maximum stealth settings for DuckDuckGo
     browserInstance = await puppeteer.default.launch({
-      headless: true,
+      headless: 'new',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -309,9 +321,19 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         '--disable-renderer-backgrounding',
         '--disable-features=TranslateUI',
         '--disable-ipc-flooding-protection',
+        '--disable-automation',
+        '--exclude-switches=enable-automation',
+        '--disable-extensions-http-throttling',
+        '--disable-client-side-phishing-detection',
+        '--disable-sync',
+        '--disable-default-apps',
+        '--disable-component-update',
+        '--disable-background-networking',
         '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         ...proxyArgs
-      ]
+      ],
+      ignoreDefaultArgs: ['--enable-automation'],
+      ignoreHTTPSErrors: true
     })
 
     try {
@@ -403,21 +425,29 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 
       logger.info('Search API', `Navigating to DuckDuckGo SERP: ${searchUrl.toString()}`)
 
-      // Add random delay before navigation to simulate human behavior
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000))
+      // Add much longer random delay before navigation to simulate human behavior
+      await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 10000))
 
-      // Navigate to DuckDuckGo search page
+      // Navigate to DuckDuckGo search page with longer timeout
       await browserPage.goto(searchUrl.toString(), {
         waitUntil: 'networkidle2',
-        timeout: 45000 // Increased timeout
+        timeout: 60000 // Increased timeout to 60 seconds
       })
 
-      // Simulate human-like behavior after page load
-      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
+      // Simulate extensive human-like behavior after page load
+      await new Promise(resolve => setTimeout(resolve, 3000 + Math.random() * 5000))
 
-      // Random mouse movement
-      await browserPage.mouse.move(Math.random() * 800, Math.random() * 600)
-      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000))
+      // Multiple random mouse movements to simulate human browsing
+      for (let i = 0; i < 3; i++) {
+        await browserPage.mouse.move(Math.random() * 1200, Math.random() * 800)
+        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
+      }
+
+      // Simulate scrolling behavior
+      await browserPage.evaluate(() => {
+        window.scrollTo(0, Math.random() * 500)
+      })
+      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000))
 
       // Check if page is blocked or rate limited
       const pageContent = await browserPage.content()

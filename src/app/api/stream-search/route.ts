@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { streamingSearchService } from '@/lib/streamingSearchService'
 import { logger } from '@/utils/logger'
-import { validationService } from '@/lib/validation-middleware'
+import { validationService } from '@/utils/validation'
 import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 
 export async function GET(request: NextRequest) {

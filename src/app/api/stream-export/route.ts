@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { streamingExportService } from '@/lib/streamingExportService'
 import { logger } from '@/utils/logger'
-import { validationService } from '@/lib/validation-middleware'
+import { validationService } from '@/utils/validation'
 import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { BusinessRecord } from '@/types/business'
 
