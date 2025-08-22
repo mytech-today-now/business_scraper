@@ -7,6 +7,8 @@ import 'jspdf-autotable'
 import { BusinessRecord } from '@/types/business'
 import { formatBusinessForExport, formatCsvCell } from './formatters'
 import { logger } from './logger'
+import { prioritizedDataProcessor, PrioritizedBusinessRecord } from '@/lib/prioritizedDataProcessor'
+import { prioritizedExportFormatter } from './prioritizedExportFormatter'
 
 /**
  * Export format types
@@ -217,7 +219,7 @@ export class ExportService {
     return String(value)
   }
   /**
-   * Export businesses to specified format
+   * Export businesses to specified format with prioritized data processing
    * @param businesses - Array of business records
    * @param format - Export format
    * @param options - Export options
@@ -237,35 +239,47 @@ export class ExportService {
       logger.info('ExportService', `Filtered export: ${businessesToExport.length} of ${businesses.length} businesses selected`)
     }
 
-    // Generate standardized filename
-    const filename = options.filename || this.generateStandardizedFilename(
-      businessesToExport,
-      format,
-      options.context
-    )
+    // Process data with prioritized deduplication
+    const { processedRecords, stats } = await prioritizedDataProcessor.processBusinessRecords(businessesToExport)
+
+    logger.info('ExportService', `Data processing complete:`, {
+      original: stats.totalRecords,
+      duplicatesRemoved: stats.duplicatesRemoved,
+      final: stats.finalRecords,
+      withEmail: stats.recordsWithEmail,
+      withPhone: stats.recordsWithPhone,
+      withAddress: stats.recordsWithAddress
+    })
+
+    // Generate prioritized filename
+    const filename = options.filename || prioritizedExportFormatter.generateFilename({
+      industries: options.context?.industries,
+      location: options.context?.searchLocation,
+      totalRecords: processedRecords.length
+    })
 
     try {
-      logger.info('ExportService', `Exporting ${businessesToExport.length} businesses as ${format} to ${filename}`)
+      logger.info('ExportService', `Exporting ${processedRecords.length} prioritized businesses as ${format} to ${filename}`)
 
       switch (format) {
         case 'csv':
-          return this.exportToCsv(businessesToExport, filename, options)
+          return this.exportPrioritizedToCsv(processedRecords, filename, options)
         case 'xlsx':
-          return this.exportToXlsx(businessesToExport, filename, options)
+          return this.exportPrioritizedToXlsx(processedRecords, filename, options)
         case 'xls':
-          return this.exportToXls(businessesToExport, filename, options)
+          return this.exportPrioritizedToXls(processedRecords, filename, options)
         case 'ods':
-          return this.exportToOds(businessesToExport, filename, options)
+          return this.exportPrioritizedToOds(processedRecords, filename, options)
         case 'pdf':
-          return this.exportToPdf(businessesToExport, filename, options)
+          return this.exportPrioritizedToPdf(processedRecords, filename, options)
         case 'json':
-          return this.exportToJson(businessesToExport, filename, options)
+          return this.exportPrioritizedToJson(processedRecords, filename, options)
         case 'xml':
-          return this.exportToXml(businessesToExport, filename, options)
+          return this.exportToXml(businessesToExport, filename, options) // Keep original for XML
         case 'vcf':
-          return this.exportToVcf(businessesToExport, filename, options)
+          return this.exportToVcf(businessesToExport, filename, options) // Keep original for VCF
         case 'sql':
-          return this.exportToSql(businessesToExport, filename, options)
+          return this.exportToSql(businessesToExport, filename, options) // Keep original for SQL
         default:
           throw new Error(`Unsupported export format: ${format}`)
       }
@@ -425,6 +439,169 @@ export class ExportService {
     return {
       blob,
       filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
+    }
+  }
+
+  /**
+   * Export prioritized records to CSV format
+   * @param records - Prioritized business records
+   * @param filename - Output filename
+   * @param options - Export options
+   * @returns Promise resolving to CSV blob
+   */
+  private async exportPrioritizedToCsv(
+    records: PrioritizedBusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const csvContent = prioritizedExportFormatter.formatForCSV(records)
+
+    const blob = new Blob([csvContent], {
+      type: 'text/csv;charset=utf-8'
+    })
+
+    return {
+      blob,
+      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
+    }
+  }
+
+  /**
+   * Export prioritized records to XLSX format (CSV with xlsx extension)
+   * @param records - Prioritized business records
+   * @param filename - Output filename
+   * @param options - Export options
+   * @returns Promise resolving to CSV blob with xlsx extension
+   */
+  private async exportPrioritizedToXlsx(
+    records: PrioritizedBusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const csvResult = await this.exportPrioritizedToCsv(records, filename, options)
+
+    return {
+      blob: csvResult.blob,
+      filename: filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`
+    }
+  }
+
+  /**
+   * Export prioritized records to XLS format (CSV with xls extension)
+   * @param records - Prioritized business records
+   * @param filename - Output filename
+   * @param options - Export options
+   * @returns Promise resolving to CSV blob with xls extension
+   */
+  private async exportPrioritizedToXls(
+    records: PrioritizedBusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const csvResult = await this.exportPrioritizedToCsv(records, filename, options)
+
+    return {
+      blob: csvResult.blob,
+      filename: filename.endsWith('.xls') ? filename : `${filename}.xls`
+    }
+  }
+
+  /**
+   * Export prioritized records to ODS format (CSV with ods extension)
+   * @param records - Prioritized business records
+   * @param filename - Output filename
+   * @param options - Export options
+   * @returns Promise resolving to CSV blob with ods extension
+   */
+  private async exportPrioritizedToOds(
+    records: PrioritizedBusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const csvResult = await this.exportPrioritizedToCsv(records, filename, options)
+
+    return {
+      blob: csvResult.blob,
+      filename: filename.endsWith('.ods') ? filename : `${filename}.ods`
+    }
+  }
+
+  /**
+   * Export prioritized records to JSON format
+   * @param records - Prioritized business records
+   * @param filename - Output filename
+   * @param options - Export options
+   * @returns Promise resolving to JSON blob
+   */
+  private async exportPrioritizedToJson(
+    records: PrioritizedBusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const jsonData = prioritizedExportFormatter.formatForJSON(records)
+    const jsonContent = JSON.stringify(jsonData, null, 2)
+
+    const blob = new Blob([jsonContent], {
+      type: 'application/json'
+    })
+
+    return {
+      blob,
+      filename: filename.endsWith('.json') ? filename : `${filename}.json`
+    }
+  }
+
+  /**
+   * Export prioritized records to PDF format
+   * @param records - Prioritized business records
+   * @param filename - Output filename
+   * @param options - Export options
+   * @returns Promise resolving to PDF blob
+   */
+  private async exportPrioritizedToPdf(
+    records: PrioritizedBusinessRecord[],
+    filename: string,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    const doc = new jsPDF()
+
+    // Add title
+    doc.setFontSize(16)
+    doc.text('Business Contact Directory', 20, 20)
+
+    // Add export summary
+    const summary = prioritizedExportFormatter.generateExportSummary(records)
+    doc.setFontSize(10)
+    doc.text(`Total Records: ${summary.totalRecords}`, 20, 35)
+    doc.text(`Records with Email: ${summary.recordsWithEmail}`, 20, 42)
+    doc.text(`Records with Phone: ${summary.recordsWithPhone}`, 20, 49)
+    doc.text(`Average Quality: ${Math.round(summary.averageConfidence * 100)}%`, 20, 56)
+
+    // Prepare table data
+    const tableData = records.slice(0, 100).map(record => [
+      record.email || '',
+      record.phone || '',
+      record.businessName || '',
+      record.streetAddress || '',
+      record.city || '',
+      record.state || '',
+      record.zipCode || ''
+    ])
+
+    // Add table
+    ;(doc as any).autoTable({
+      head: [['Email', 'Phone', 'Business', 'Address', 'City', 'State', 'ZIP']],
+      body: tableData,
+      startY: 65,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [66, 139, 202] }
+    })
+
+    const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' })
+
+    return {
+      blob: pdfBlob,
+      filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`
     }
   }
 

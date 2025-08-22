@@ -6,6 +6,8 @@
 import { logger } from '@/utils/logger'
 import { BusinessRecord } from '@/types/business'
 import { Readable, Transform } from 'stream'
+import { prioritizedDataProcessor, PrioritizedBusinessRecord } from './prioritizedDataProcessor'
+import { prioritizedExportFormatter } from '@/utils/prioritizedExportFormatter'
 import { pipeline } from 'stream/promises'
 
 export interface ExportOptions {
@@ -281,6 +283,36 @@ export class StreamingExportService {
       const escaped = String(field).replace(/"/g, '""')
       return field.includes(',') || field.includes('"') || field.includes('\n') 
         ? `"${escaped}"` 
+        : escaped
+    }).join(',')
+  }
+
+  /**
+   * Convert prioritized business record to CSV row
+   */
+  private prioritizedRecordToCSV(record: PrioritizedBusinessRecord): string {
+    const fields = [
+      record.email || '',
+      record.phone || '',
+      record.streetAddress || '',
+      record.city || '',
+      record.zipCode || '',
+      record.state || '',
+      record.businessName || '',
+      record.contactName || '',
+      record.website || '',
+      record.coordinates || '',
+      record.additionalEmails.join('; ') || '',
+      record.additionalPhones.join('; ') || '',
+      `${Math.round(record.confidence * 100)}%`,
+      record.sources.join('; ') || ''
+    ]
+
+    // Escape CSV fields
+    return fields.map(field => {
+      const escaped = String(field).replace(/"/g, '""')
+      return field.includes(',') || field.includes('"') || field.includes('\n')
+        ? `"${escaped}"`
         : escaped
     }).join(',')
   }
