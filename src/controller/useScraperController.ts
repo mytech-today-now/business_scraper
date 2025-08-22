@@ -533,12 +533,44 @@ export function useScraperController(): {
    * Stop scraping process
    */
   const stopScraping = useCallback(() => {
-    if (abortControllerRef.current) {
+    if (abortControllerRef.current && scrapingState.isScrapingActive) {
+      // Immediately update UI state to show stopping
+      setScrapingState(prev => ({
+        ...prev,
+        isScrapingActive: false,
+        currentUrl: 'Stopping scraping...',
+      }))
+
+      // Add processing step for stopping
+      const stoppingStepId = `stopping-${Date.now()}`
+      addProcessingStep({
+        name: 'Stopping Scraper',
+        status: 'running',
+        details: 'Cancelling active operations and cleaning up resources'
+      })
+
+      // Abort the scraping process
       abortControllerRef.current.abort()
-      toast('Scraping stopped by user')
-      logger.info('ScraperController', 'Scraping stopped by user')
+
+      // Show immediate feedback
+      toast.success('Scraping stopped by user')
+
+      logger.info('ScraperController', 'Scraping stopped by user - immediate UI update applied')
+
+      // Update the stopping step after a brief delay to show completion
+      setTimeout(() => {
+        setScrapingState(prev => ({
+          ...prev,
+          currentUrl: '',
+          processingSteps: prev.processingSteps.map(step =>
+            step.name === 'Stopping Scraper' && step.status === 'running'
+              ? { ...step, status: 'completed' as const, details: 'Scraping stopped successfully', endTime: new Date() }
+              : step
+          )
+        }))
+      }, 1500)
     }
-  }, [])
+  }, [scrapingState.isScrapingActive, addProcessingStep, updateProcessingStep])
 
   /**
    * Clear results
