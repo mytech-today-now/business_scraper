@@ -110,6 +110,11 @@ const ScrapingConfigSchema = z.object({
   searchRadius: z.number().min(1, 'Search radius must be at least 1 mile').max(100, 'Search radius cannot exceed 100 miles'),
   searchDepth: z.number().min(1, 'Search depth must be at least 1').max(5, 'Search depth cannot exceed 5'),
   pagesPerSite: z.number().min(1, 'Pages per site must be at least 1').max(20, 'Pages per site cannot exceed 20'),
+  // Search configuration (optional fields)
+  duckduckgoSerpPages: z.number().min(1).max(5).optional(),
+  maxSearchResults: z.number().min(50).max(10000).optional(),
+  bbbAccreditedOnly: z.boolean().optional(),
+  zipRadius: z.number().min(5).max(50).optional(),
 })
 
 /**

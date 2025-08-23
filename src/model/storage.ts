@@ -437,6 +437,20 @@ export class StorageService {
   }
 
   /**
+   * Clear all sessions
+   */
+  async clearSessions(): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.clear('sessions')
+      logger.info('Storage', 'Cleared all sessions')
+    } catch (error) {
+      logger.error('Storage', 'Failed to clear sessions', error)
+      throw error
+    }
+  }
+
+  /**
    * Save domain blacklist
    * @param domains - Array of domain strings to blacklist
    */
@@ -542,6 +556,117 @@ export class StorageService {
     } catch (error) {
       logger.error('Storage', 'Failed to get statistics', error)
       return { businesses: 0, configs: 0, industries: 0, sessions: 0, domainBlacklistEntries: 0 }
+    }
+  }
+
+  /**
+   * Clear all data from IndexedDB (complete reset)
+   * This will purge all user data and reset the application to a fresh state
+   */
+  async clearAllData(): Promise<void> {
+    try {
+      await this.ensureInitialized()
+      const db = await this.getDatabase()
+
+      // Clear all object stores
+      const storeNames = ['businesses', 'configs', 'industries', 'sessions', 'domainBlacklist']
+      const clearPromises = storeNames.map(storeName => {
+        try {
+          return db.clear(storeName as keyof BusinessScraperDB)
+        } catch (error) {
+          logger.warn('Storage', `Failed to clear store ${storeName}`, error)
+          return Promise.resolve()
+        }
+      })
+
+      await Promise.allSettled(clearPromises)
+      logger.info('Storage', 'All IndexedDB data cleared successfully')
+    } catch (error) {
+      logger.error('Storage', 'Failed to clear all data', error)
+      throw error
+    }
+  }
+
+  /**
+   * Reset database (delete and recreate)
+   * This is a more aggressive reset that completely removes the database
+   */
+  async resetDatabase(): Promise<void> {
+    try {
+      // Close current connection
+      if (this.db) {
+        this.db.close()
+        this.db = null
+      }
+
+      // Delete the entire database
+      await new Promise<void>((resolve, reject) => {
+        const deleteRequest = indexedDB.deleteDatabase(this.dbName)
+
+        deleteRequest.onsuccess = () => {
+          logger.info('Storage', 'Database deleted successfully')
+          resolve()
+        }
+
+        deleteRequest.onerror = () => {
+          logger.error('Storage', 'Failed to delete database', deleteRequest.error)
+          reject(deleteRequest.error)
+        }
+
+        deleteRequest.onblocked = () => {
+          logger.warn('Storage', 'Database deletion blocked - other connections may be open')
+          // Continue anyway after a short delay
+          setTimeout(() => resolve(), 1000)
+        }
+      })
+
+      // Reinitialize the database
+      await this.initialize()
+      logger.info('Storage', 'Database reset and reinitialized successfully')
+    } catch (error) {
+      logger.error('Storage', 'Failed to reset database', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get database statistics for all stores
+   */
+  async getStatistics(): Promise<{
+    businesses: number
+    configs: number
+    industries: number
+    sessions: number
+    domainBlacklistEntries: number
+  }> {
+    try {
+      await this.ensureInitialized()
+      const db = await this.getDatabase()
+
+      const [businesses, configs, industries, sessions, domainBlacklistEntries] = await Promise.all([
+        db.count('businesses'),
+        db.count('configs'),
+        db.count('industries'),
+        db.count('sessions'),
+        db.count('domainBlacklist')
+      ])
+
+      return {
+        businesses,
+        configs,
+        industries,
+        sessions,
+        domainBlacklistEntries
+      }
+    } catch (error) {
+      logger.error('Storage', 'Failed to get database statistics', error)
+      return {
+        businesses: 0,
+        configs: 0,
+        industries: 0,
+        sessions: 0,
+        domainBlacklistEntries: 0
+      }
     }
   }
 

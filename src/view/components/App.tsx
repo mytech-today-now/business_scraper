@@ -10,7 +10,10 @@ import {
   Sun,
   FileText,
   Trash2,
-  RefreshCw
+  RefreshCw,
+  RotateCcw,
+  Search,
+  Info
 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { useScraperController } from '@/controller/useScraperController'
@@ -20,6 +23,7 @@ import { ProcessingWindow } from './ProcessingWindow'
 import { ApiConfigurationPage } from './ApiConfigurationPage'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
+import { ZipCodeInput } from './ui/ZipCodeInput'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { ExportService, ExportFormat, ExportTemplate } from '@/utils/exportService'
 import { logger } from '@/utils/logger'
@@ -27,6 +31,8 @@ import { clsx } from 'clsx'
 import { clientScraperService } from '@/model/clientScraperService'
 import { ErrorBoundary } from '../../components/ErrorBoundary'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
+import ResetDataDialog from './ui/ResetDataDialog'
+import { DataResetResult } from '@/utils/dataReset'
 import toast from 'react-hot-toast'
 
 /**
@@ -84,13 +90,22 @@ function ConfigurationPanel(): JSX.Element {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
+            <ZipCodeInput
               label="ZIP Code"
-              placeholder="e.g., 90210"
+              placeholder="e.g., 90210 or 123 Main St, Beverly Hills, CA 90210"
               value={state.config.zipCode}
-              onChange={(e) => updateConfig({ zipCode: e.target.value })}
-              helperText="Center point for business search"
+              onChange={(zipCode) => updateConfig({ zipCode })}
+              onValidZipCode={(zipCode) => {
+                logger.info('App', `Valid ZIP code entered: ${zipCode}`)
+                toast.success(`ZIP code "${zipCode}" is valid`)
+              }}
+              onInvalidInput={(error) => {
+                logger.warn('App', `Invalid ZIP code input: ${error}`)
+              }}
+              helperText="Enter ZIP code or full address - we'll extract the ZIP code"
               disabled={scrapingState.isScrapingActive}
+              showExtractedWarning={true}
+              debounceMs={300}
             />
             <Input
               label="Search Radius (miles)"
@@ -105,9 +120,6 @@ function ConfigurationPanel(): JSX.Element {
           </div>
         </CardContent>
       </Card>
-
-      {/* Industry Categories */}
-      <CategorySelector disabled={scrapingState.isScrapingActive} />
 
       {/* Scraping Settings */}
       <Card>
@@ -144,6 +156,127 @@ function ConfigurationPanel(): JSX.Element {
           </div>
         </CardContent>
       </Card>
+
+      {/* Search Configuration */}
+      <Card className="border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Search className="h-5 w-5" />
+            <span>Search Configuration</span>
+          </CardTitle>
+          {scrapingState.isScrapingActive && (
+            <p className="text-sm text-muted-foreground">
+              🔒 Settings cannot be changed during active scraping
+            </p>
+          )}
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                DuckDuckGo SERP Pages
+              </label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={state.config.duckduckgoSerpPages || 2}
+                onChange={(e) => updateConfig({ duckduckgoSerpPages: parseInt(e.target.value) })}
+                aria-label="DuckDuckGo SERP Pages"
+                disabled={scrapingState.isScrapingActive}
+              >
+                <option value={1}>1 page (~30 results)</option>
+                <option value={2}>2 pages (~60 results)</option>
+                <option value={3}>3 pages (~90 results)</option>
+                <option value={4}>4 pages (~120 results)</option>
+                <option value={5}>5 pages (~150 results)</option>
+              </select>
+              <p className="text-xs text-gray-600 mt-1">
+                Number of DuckDuckGo search result pages to scrape per query
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Max Results Per Search
+              </label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={state.config.maxSearchResults || 1000}
+                onChange={(e) => updateConfig({ maxSearchResults: parseInt(e.target.value) })}
+                aria-label="Max Results Per Search"
+                disabled={scrapingState.isScrapingActive}
+              >
+                <option value={50}>50 results</option>
+                <option value={100}>100 results</option>
+                <option value={500}>500 results</option>
+                <option value={1000}>1000 results</option>
+                <option value={10000}>Unlimited (10,000+)</option>
+              </select>
+              <p className="text-xs text-gray-600 mt-1">
+                Maximum number of business websites to find per search (higher values gather more comprehensive results)
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-blue-200">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                BBB Search Type
+              </label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={state.config.bbbAccreditedOnly ? 'accredited' : 'all'}
+                onChange={(e) => updateConfig({ bbbAccreditedOnly: e.target.value === 'accredited' })}
+                aria-label="BBB Search Type"
+                disabled={scrapingState.isScrapingActive}
+              >
+                <option value="accredited">BBB Accredited Businesses Only</option>
+                <option value="all">All Businesses</option>
+              </select>
+              <p className="text-xs text-gray-600 mt-1">
+                Choose whether to search only BBB accredited businesses or all businesses
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ZIP Code Radius (miles)
+              </label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={state.config.zipRadius || 10}
+                onChange={(e) => updateConfig({ zipRadius: parseInt(e.target.value) })}
+                aria-label="ZIP Code Radius"
+                disabled={scrapingState.isScrapingActive}
+              >
+                <option value={5}>5 miles</option>
+                <option value={10}>10 miles</option>
+                <option value={15}>15 miles</option>
+                <option value={25}>25 miles</option>
+                <option value={50}>50 miles</option>
+              </select>
+              <p className="text-xs text-gray-600 mt-1">
+                Radius around the ZIP code to include businesses
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 p-3 bg-blue-100 rounded-md">
+            <div className="flex items-start space-x-2">
+              <Info className="h-4 w-4 text-blue-600 mt-0.5" />
+              <div className="text-sm text-blue-800">
+                <p className="font-medium">Comprehensive Search Strategy:</p>
+                <ul className="mt-1 space-y-1 text-xs">
+                  <li>• Scrapes actual DuckDuckGo search result pages (SERP)</li>
+                  <li>• Searches each industry criteria individually (medical, healthcare, clinic, etc.)</li>
+                  <li>• Uses BBB as business discovery platform to find real business websites</li>
+                  <li>• Validates ZIP code radius and extracts "Visit Website" URLs from BBB</li>
+                  <li>• Scrapes actual business websites for contact information</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Industry Categories */}
+      <CategorySelector disabled={scrapingState.isScrapingActive} />
 
       {/* Configuration Status */}
       <div className={clsx(
@@ -532,10 +665,38 @@ function ScrapingPanel(): JSX.Element {
  * Orchestrates the entire application interface
  */
 export function App(): JSX.Element {
-  const { state } = useConfig()
+  const { state, resetApplicationData } = useConfig()
   const { scrapingState } = useScraperController()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
+  const [showResetDialog, setShowResetDialog] = useState(false)
+  const [isResetting, setIsResetting] = useState(false)
+
+  /**
+   * Handle application data reset
+   */
+  const handleResetData = async (options: {
+    includeApiCredentials: boolean
+    useAggressiveReset: boolean
+  }): Promise<DataResetResult> => {
+    setIsResetting(true)
+    try {
+      const result = await resetApplicationData(options)
+      return result
+    } catch (error) {
+      logger.error('App', 'Failed to reset application data', error)
+      toast.error('Failed to reset application data')
+      return {
+        success: false,
+        clearedStores: [],
+        clearedLocalStorage: [],
+        errors: [error instanceof Error ? error.message : 'Unknown error'],
+        fallbackUsed: false
+      }
+    } finally {
+      setIsResetting(false)
+    }
+  }
 
   // Show loading screen while initializing
   if (!state.isInitialized) {
@@ -615,6 +776,23 @@ export function App(): JSX.Element {
                     </span>
                   )}
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowResetDialog(true)}
+                  disabled={scrapingState.isScrapingActive || isResetting}
+                  title={scrapingState.isScrapingActive
+                    ? 'Cannot reset data while scraping is active. Please stop scraping first.'
+                    : 'Reset all application data to start fresh'
+                  }
+                  className={clsx(
+                    'ml-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300',
+                    (scrapingState.isScrapingActive || isResetting) && 'opacity-50 cursor-not-allowed'
+                  )}
+                >
+                  <RotateCcw className="h-4 w-4 mr-1" />
+                  Reset Data
+                </Button>
               </div>
             </div>
             
@@ -667,6 +845,14 @@ export function App(): JSX.Element {
 
         />
       )}
+
+      {/* Reset Data Confirmation Dialog */}
+      <ResetDataDialog
+        isOpen={showResetDialog}
+        onClose={() => setShowResetDialog(false)}
+        onConfirm={handleResetData}
+        isLoading={isResetting}
+      />
     </div>
   )
 }

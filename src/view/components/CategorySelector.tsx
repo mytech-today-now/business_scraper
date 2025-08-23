@@ -336,14 +336,6 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
             <Button
               variant="outline"
               size="sm"
-              onClick={allSelected ? deselectAllIndustries : selectAllIndustries}
-              disabled={disabled}
-            >
-              {allSelected ? 'Deselect All' : 'Select All'}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
               icon={Plus}
               onClick={handleAddIndustry}
               disabled={disabled}
@@ -384,9 +376,58 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Selection Summary */}
-        <div className="text-sm text-muted-foreground">
-          {state.selectedIndustries.length} of {state.industries.length} categories selected
+        {/* Enhanced Selection Summary and Quick Actions */}
+        <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border">
+          <div className="flex items-center space-x-4">
+            <div className="text-sm font-medium text-foreground">
+              {state.selectedIndustries.length} of {state.industries.length} categories selected
+            </div>
+            {state.selectedIndustries.length > 0 && (
+              <div className="text-xs text-muted-foreground">
+                ({Math.round((state.selectedIndustries.length / state.industries.length) * 100)}% selected)
+              </div>
+            )}
+          </div>
+
+          {/* Quick Selection Actions */}
+          <div className="flex items-center space-x-3">
+            <Button
+              variant={allSelected ? "default" : "outline"}
+              size="sm"
+              onClick={allSelected ? deselectAllIndustries : selectAllIndustries}
+              className={clsx(
+                "transition-all duration-200",
+                allSelected
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "hover:bg-primary/10 hover:border-primary/50"
+              )}
+            >
+              {allSelected ? (
+                <>
+                  <X className="h-3 w-3 mr-1" />
+                  Deselect All
+                </>
+              ) : (
+                <>
+                  <Check className="h-3 w-3 mr-1" />
+                  Select All
+                </>
+              )}
+            </Button>
+
+            {/* Selection Progress Indicator */}
+            <div className="flex items-center space-x-2">
+              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300 ease-out"
+                  style={{ width: `${(state.selectedIndustries.length / state.industries.length) * 100}%` }}
+                />
+              </div>
+              <span className="text-xs text-muted-foreground min-w-[2.5rem] text-right">
+                {Math.round((state.selectedIndustries.length / state.industries.length) * 100)}%
+              </span>
+            </div>
+          </div>
         </div>
 
 

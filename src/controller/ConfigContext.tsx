@@ -5,6 +5,8 @@ import { ScrapingConfig, IndustryCategory } from '@/types/business'
 import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
 import { logger } from '@/utils/logger'
+import { AddressInputHandler } from '@/utils/addressInputHandler'
+import { DataResetService, DataResetResult } from '@/utils/dataReset'
 import toast from 'react-hot-toast'
 
 /**
@@ -46,6 +48,7 @@ export type ConfigAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_INITIALIZED'; payload: boolean }
   | { type: 'RESET_CONFIG' }
+  | { type: 'RESET_STATE' }
   | { type: 'START_INDUSTRY_EDIT'; payload: string }
   | { type: 'END_INDUSTRY_EDIT'; payload: string }
   | { type: 'CLEAR_ALL_EDITS' }
@@ -60,6 +63,11 @@ const defaultState: ConfigState = {
     searchRadius: 25,
     searchDepth: 2,
     pagesPerSite: 5,
+    // Search configuration defaults
+    duckduckgoSerpPages: 2,
+    maxSearchResults: 1000,
+    bbbAccreditedOnly: false,
+    zipRadius: 10,
   },
   industries: DEFAULT_INDUSTRIES,
   selectedIndustries: [],
@@ -177,6 +185,12 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         isInitialized: state.isInitialized,
       }
 
+    case 'RESET_STATE':
+      return {
+        ...defaultState,
+        isInitialized: false,
+      }
+
     case 'START_INDUSTRY_EDIT':
       return {
         ...state,
@@ -219,6 +233,8 @@ export interface ConfigContextType {
   removeIndustry: (id: string) => Promise<void>
   setAllIndustries: (industries: IndustryCategory[]) => Promise<void>
   refreshDefaultIndustries: () => Promise<void>
+  cleanupDuplicateIndustries: () => Promise<void>
+  resetApplicationData: (options?: { includeApiCredentials?: boolean; useAggressiveReset?: boolean }) => Promise<DataResetResult>
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
@@ -294,8 +310,20 @@ async function checkIfDefaultIndustriesNeedUpdate(savedIndustries: IndustryCateg
  * Update default industries while preserving custom industries
  */
 async function updateDefaultIndustries(savedIndustries: IndustryCategory[]): Promise<IndustryCategory[]> {
-  // Separate custom industries from default ones
-  const customIndustries = savedIndustries.filter(industry => industry.isCustom)
+  // Separate custom industries from default ones, but exclude duplicates of default industries
+  const defaultIndustryNames = new Set(DEFAULT_INDUSTRIES.map(ind => ind.name.toLowerCase()))
+  const customIndustries = savedIndustries.filter(industry =>
+    industry.isCustom && !defaultIndustryNames.has(industry.name.toLowerCase())
+  )
+
+  // Log any duplicate custom industries that are being removed
+  const duplicateCustoms = savedIndustries.filter(industry =>
+    industry.isCustom && defaultIndustryNames.has(industry.name.toLowerCase())
+  )
+
+  if (duplicateCustoms.length > 0) {
+    logger.info('ConfigProvider', `Removing ${duplicateCustoms.length} duplicate custom industries: ${duplicateCustoms.map(i => i.name).join(', ')}`)
+  }
 
   // Combine updated default industries with existing custom industries
   const updatedIndustries = [...DEFAULT_INDUSTRIES, ...customIndustries]
@@ -526,6 +554,103 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   }
 
   /**
+   * Clean up duplicate custom industries
+   * Removes custom industries that have the same name as default industries
+   */
+  const cleanupDuplicateIndustries = async () => {
+    try {
+      const savedIndustries = await storage.getAllIndustries()
+      const defaultIndustryNames = new Set(DEFAULT_INDUSTRIES.map(ind => ind.name.toLowerCase()))
+
+      // Find duplicate custom industries
+      const duplicateCustoms = savedIndustries.filter(industry =>
+        industry.isCustom && defaultIndustryNames.has(industry.name.toLowerCase())
+      )
+
+      if (duplicateCustoms.length === 0) {
+        toast.info('No duplicate industries found')
+        return
+      }
+
+      // Remove duplicate custom industries
+      for (const duplicate of duplicateCustoms) {
+        await storage.deleteIndustry(duplicate.id)
+        logger.info('ConfigProvider', `Removed duplicate custom industry: ${duplicate.name}`)
+      }
+
+      // Refresh the industry list
+      const updatedIndustries = await storage.getAllIndustries()
+      dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+
+      toast.success(`Removed ${duplicateCustoms.length} duplicate custom industries`)
+      logger.info('ConfigProvider', `Cleaned up ${duplicateCustoms.length} duplicate custom industries`)
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to cleanup duplicate industries', error)
+      toast.error('Failed to cleanup duplicate industries')
+    }
+  }
+
+  /**
+   * Reset all application data (complete data purge)
+   * This will clear all user data and reset the application to a fresh state
+   */
+  const resetApplicationData = async (options: {
+    includeApiCredentials?: boolean
+    useAggressiveReset?: boolean
+  } = {}): Promise<DataResetResult> => {
+    try {
+      logger.info('ConfigProvider', 'Starting application data reset')
+
+      // Get data statistics for logging
+      const stats = await DataResetService.getDataStatistics()
+      logger.info('ConfigProvider', `Data before reset: ${stats.businesses} businesses, ${stats.configs} configs, ${stats.industries} industries, ${stats.sessions} sessions, ${stats.localStorageItems} localStorage items`)
+
+      // Perform the reset
+      const result = await DataResetService.resetAllData({
+        includeApiCredentials: options.includeApiCredentials ?? true,
+        includeLocalStorage: true,
+        useAggressiveReset: options.useAggressiveReset ?? false,
+        confirmationRequired: false // Confirmation handled by UI
+      })
+
+      if (result.success) {
+        // Reset the application state to initial values
+        dispatch({ type: 'RESET_STATE' })
+
+        // Reinitialize with default industries
+        const updatedIndustries = await updateDefaultIndustries([])
+        dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+
+        toast.success(`Application reset successfully! Cleared ${result.clearedStores.length} data stores and ${result.clearedLocalStorage.length} localStorage items`)
+        logger.info('ConfigProvider', `Application reset completed successfully`)
+
+        // Optionally reload the page for a complete fresh start
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      } else {
+        const errorMessage = result.errors.length > 0 ? result.errors[0] : 'Unknown error'
+        toast.error(`Reset partially failed: ${errorMessage}`)
+        logger.error('ConfigProvider', `Application reset failed`, result.errors)
+      }
+
+      return result
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      toast.error(`Reset failed: ${errorMessage}`)
+      logger.error('ConfigProvider', 'Failed to reset application data', error)
+
+      return {
+        success: false,
+        clearedStores: [],
+        clearedLocalStorage: [],
+        errors: [errorMessage],
+        fallbackUsed: false
+      }
+    }
+  }
+
+  /**
    * Remove industry
    */
   const removeIndustry = async (id: string) => {
@@ -596,13 +721,30 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
    * Check if configuration is valid
    */
   const isConfigValid = (): boolean => {
-    return (
-      state.selectedIndustries.length > 0 &&
-      state.config.zipCode.trim().length > 0 &&
-      state.config.searchRadius > 0 &&
-      state.config.searchDepth > 0 &&
-      state.config.pagesPerSite > 0
-    )
+    try {
+      // Check basic requirements
+      if (state.selectedIndustries.length === 0) {
+        return false
+      }
+
+      if (state.config.searchRadius <= 0 || state.config.searchDepth <= 0 || state.config.pagesPerSite <= 0) {
+        return false
+      }
+
+      // Validate ZIP code using address input handler
+      const zipCodeInput = state.config.zipCode.trim()
+      if (zipCodeInput.length === 0) {
+        return false
+      }
+
+      // Try to parse and extract ZIP code
+      const parseResult = AddressInputHandler.parseAddressInput(zipCodeInput)
+      return parseResult.zipCode !== null && !parseResult.error
+
+    } catch (error) {
+      logger.warn('ConfigContext', 'Error validating configuration', error)
+      return false
+    }
   }
 
   /**
@@ -638,6 +780,8 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     removeIndustry,
     setAllIndustries,
     refreshDefaultIndustries,
+    cleanupDuplicateIndustries,
+    resetApplicationData,
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,

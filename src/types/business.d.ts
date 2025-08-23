@@ -54,6 +54,11 @@ export interface ScrapingConfig {
   searchRadius: number;
   searchDepth: number;
   pagesPerSite: number;
+  // Search configuration
+  duckduckgoSerpPages?: number;
+  maxSearchResults?: number;
+  bbbAccreditedOnly?: boolean;
+  zipRadius?: number;
 }
 
 export interface IndustryCategory {
