@@ -573,7 +573,13 @@ export function App(): JSX.Element {
                 <Button
                   variant={activeTab === 'config' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setActiveTab('config')}
+                  onClick={() => {
+                    if (scrapingState.isScrapingActive) {
+                      toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
+                      return
+                    }
+                    setActiveTab('config')
+                  }}
                   disabled={scrapingState.isScrapingActive}
                   title={scrapingState.isScrapingActive
                     ? 'Configuration cannot be changed while scraping is active. Please stop scraping first.'
