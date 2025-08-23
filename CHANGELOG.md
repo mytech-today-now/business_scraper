@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Configurable concurrent search settings with timeout protection
   - Graceful error handling for partial provider failures
   - Backward compatibility with sequential search mode for debugging
+- **Standardized Export Filename Pattern**: Implemented user-friendly export filename generation
+  - New format: YYYY-MM-DD_[Industry]_[Additional Industry]_[repeat additional industries]_[number of rows].[ext]
+  - Uses actual industry names from configuration interface instead of generic labels
+  - Supports unlimited number of industries in filename (no artificial limits)
+  - Proper industry name sanitization while preserving readability
+- **Scraping Session Lock**: Comprehensive functionality to prevent configuration changes during active scraping
+  - Navigation tab disabling with lock icons and tooltips when scraping is active
+  - Prominent orange warning banner on configuration screen during scraping sessions
+  - Complete input field locking for location settings, scraping parameters, and industry selection
+  - Industry management protection with disabled buttons and non-interactive elements
 
 ### Enhanced
 - **SearchOrchestrator Configuration**: Added comprehensive configuration options
@@ -21,6 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `maxConcurrentProviders`: Control maximum concurrent provider execution
   - `searchTimeout`: Per-provider timeout protection (default: 2 minutes)
   - Runtime configuration updates via `updateConfig()` method
+- **Export Services**: Updated both ExportService and PrioritizedExportFormatter
+  - Fixed export service to pass selectedIndustries to prioritized formatter correctly
+  - Each industry gets its own segment separated by underscores in filename
+  - Maintains backward compatibility with existing export functionality
+- **User Experience**: Improved configuration interface during scraping sessions
+  - App component with scraping state awareness and navigation control
+  - CategorySelector component with comprehensive disabled prop and locking mechanisms
+  - Clear user feedback messages explaining why configuration is locked
+  - Professional UX design with consistent orange warning theme and accessibility support
 
 ### Improved
 - **Search Performance**: Significant performance improvements through concurrent execution
@@ -33,6 +52,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Individual provider failures don't affect other providers
   - Timeout protection prevents hanging searches
   - Comprehensive logging for debugging and monitoring
+- **Testing**: Added comprehensive test coverage for new functionality
+  - 13 test cases for scraping session lock functionality
+  - Updated all export tests to match new filename format and prioritized export structure
+  - Integrated scraping state management across all configuration components
+  - Implemented proper ARIA attributes and keyboard navigation support
+
+### Fixed
+- **Export Filename Generation**: Export filenames now use user's actual industry names
+  - Replaced generic identifiers with meaningful industry names from configuration
+  - Consistent filename pattern across all file formats and export types
+  - Examples: 2025-01-19_Legal-Services_25.csv, 2025-01-19_My-Custom-Industry_75.json
+- **Scraping Session Management**: Prevented configuration changes during active scraping
+  - Issue where users could navigate to configuration during scraping and make changes
+  - Problem where scraping sessions would stop or become inconsistent due to mid-session changes
+  - User confusion about why scraping stopped when configuration was modified during sessions
 - **Testing**: Added comprehensive test suite for concurrent search functionality
   - Unit tests for concurrent vs sequential execution
   - Error handling and timeout scenarios

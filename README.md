@@ -340,6 +340,24 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 | PDF | Print-ready document | Reports and presentations |
 | JSON | Structured data | API integration |
 
+### Export Filename Pattern
+
+All exported files follow a standardized naming pattern that includes the date, selected industries, and record count:
+
+**Format**: `YYYY-MM-DD_[Industry]_[Additional Industry]_[repeat additional industries]_[number of rows].[ext]`
+
+**Examples**:
+- Single industry: `2025-01-19_Legal-Services_25.csv`
+- Multiple industries: `2025-01-19_Legal-Services_Medical-Services_Financial-Services_150.xlsx`
+- Custom industries: `2025-01-19_My-Custom-Industry_Another-Custom-Business-Type_75.json`
+- All industries: `2025-01-19_All-Industries_500.pdf`
+
+This naming convention makes it easy to:
+- **Identify content**: Know exactly which industries are included
+- **Track date**: See when the data was exported
+- **Organize files**: Sort and group exports by industry or date
+- **Verify completeness**: Check record count at a glance
+
 ## 🧪 Testing
 
 Run the test suite:

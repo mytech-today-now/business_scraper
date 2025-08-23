@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
