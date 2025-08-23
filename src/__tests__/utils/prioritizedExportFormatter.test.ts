@@ -99,33 +99,49 @@ describe('PrioritizedExportFormatter', () => {
   })
 
   describe('generateFilename', () => {
-    it('should generate filename with timestamp', () => {
+    it('should generate filename with date in YYYY-MM-DD format', () => {
       const filename = formatter.generateFilename()
-      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_\d{2}_\d{2}/)
+      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_All-Industries_0$/)
     })
 
-    it('should include context information in filename', () => {
+    it('should include all industries as separate segments', () => {
       const context = {
         industries: ['Technology', 'Healthcare'],
-        location: 'New York, NY',
         totalRecords: 150
       }
-      
+
       const filename = formatter.generateFilename(context)
-      expect(filename).toContain('Technology-Healthcare')
-      expect(filename).toContain('New-York--NY')
-      expect(filename).toContain('150')
+      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_Technology_Healthcare_150$/)
     })
 
-    it('should limit industries in filename', () => {
+    it('should include all industries without limiting', () => {
       const context = {
         industries: ['Technology', 'Healthcare', 'Finance', 'Education'],
         totalRecords: 100
       }
-      
+
       const filename = formatter.generateFilename(context)
-      expect(filename).toContain('Technology-Healthcare') // Only first 2
-      expect(filename).not.toContain('Finance')
+      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_Technology_Healthcare_Finance_Education_100$/)
+    })
+
+    it('should sanitize industry names properly', () => {
+      const context = {
+        industries: ['Legal & Law Services', 'Medical/Health Care'],
+        totalRecords: 50
+      }
+
+      const filename = formatter.generateFilename(context)
+      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_Legal-Law-Services_MedicalHealth-Care_50$/)
+    })
+
+    it('should handle custom industry names', () => {
+      const context = {
+        industries: ['My Custom Industry', 'Another Custom Business Type'],
+        totalRecords: 25
+      }
+
+      const filename = formatter.generateFilename(context)
+      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_My-Custom-Industry_Another-Custom-Business-Type_25$/)
     })
   })
 

@@ -256,35 +256,40 @@ export class PrioritizedExportFormatter {
   }
 
   /**
-   * Generate filename with timestamp and context
+   * Generate filename in format: YYYY-MM-DD_[Industry]_[Additional Industry if selected]_[repeat additional industries if selected]_[number of rows in the file]
    */
   generateFilename(context?: {
     industries?: string[]
     location?: string
     totalRecords?: number
   }): string {
-    const timestamp = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '_')
-    
-    let filename = timestamp
-    
+    // Generate date in required format (YYYY-MM-DD)
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const dateStr = `${year}-${month}-${day}`
+
+    // Build industry parts - each industry gets its own segment
+    let industryParts: string[] = []
     if (context?.industries && context.industries.length > 0) {
-      const industriesStr = context.industries
-        .slice(0, 2) // Limit to first 2 industries
-        .map(industry => industry.replace(/[^a-zA-Z0-9]/g, '-'))
-        .join('-')
-      filename += `_${industriesStr}`
+      industryParts = context.industries.map(industry =>
+        industry
+          .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      )
+    } else {
+      industryParts = ['All-Industries']
     }
-    
-    if (context?.location) {
-      const locationStr = context.location.replace(/[^a-zA-Z0-9]/g, '-')
-      filename += `_${locationStr}`
-    }
-    
-    if (context?.totalRecords) {
-      filename += `_${context.totalRecords}`
-    }
-    
-    return filename
+
+    // Get record count
+    const recordCount = context?.totalRecords || 0
+
+    // Construct filename: YYYY-MM-DD_[Industry]_[Additional Industry]_..._[number of rows]
+    const filenameParts = [dateStr, ...industryParts, recordCount.toString()]
+    return filenameParts.join('_')
   }
 
   /**

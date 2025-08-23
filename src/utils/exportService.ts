@@ -99,7 +99,7 @@ export interface CustomField {
  */
 export class ExportService {
   /**
-   * Generate standardized filename in format: [YYYY-MM-DD]_[HH(00–23)-MM(00–59)]_[Industry(s)]_[# of Results].[ext]
+   * Generate standardized filename in format: YYYY-MM-DD_[Industry]_[Additional Industry if selected]_[repeat additional industries if selected]_[number of rows in the file].[ext]
    * @param businesses - Array of business records
    * @param format - Export format
    * @param context - Export context with industry information
@@ -110,35 +110,25 @@ export class ExportService {
     format: ExportFormat,
     context?: ExportContext
   ): string {
-    // Generate timestamp in required format
+    // Generate date in required format (YYYY-MM-DD)
     const now = new Date()
     const year = now.getFullYear()
     const month = String(now.getMonth() + 1).padStart(2, '0')
     const day = String(now.getDate()).padStart(2, '0')
-    const hours = String(now.getHours()).padStart(2, '0')
-    const minutes = String(now.getMinutes()).padStart(2, '0')
-
     const dateStr = `${year}-${month}-${day}`
-    const timeStr = `${hours}-${minutes}`
 
-    // Determine industry names
-    let industryPart = 'All-Industries'
+    // Build industry parts - each industry gets its own segment
+    let industryParts: string[] = []
     if (context?.selectedIndustries && context.selectedIndustries.length > 0) {
-      if (context.selectedIndustries.length === 1) {
-        // Single industry - use the industry name
-        industryPart = context.selectedIndustries[0]
-          .replace(/[^a-zA-Z0-9]/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-|-$/g, '')
-      } else if (context.selectedIndustries.length <= 3) {
-        // Multiple industries (up to 3) - combine them
-        industryPart = context.selectedIndustries
-          .map(industry => industry.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''))
-          .join('-')
-      } else {
-        // Many industries - use "Multiple-Industries"
-        industryPart = 'Multiple-Industries'
-      }
+      industryParts = context.selectedIndustries.map(industry =>
+        industry
+          .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      )
+    } else {
+      industryParts = ['All-Industries']
     }
 
     // Get result count (filtered or total)
@@ -146,8 +136,9 @@ export class ExportService {
       ? context.selectedBusinesses.length
       : businesses.length
 
-    // Construct filename: [YYYY-MM-DD]_[HH(00–23)-MM(00–59)]_[Industry(s)]_[# of Results].[ext]
-    return `${dateStr}_${timeStr}_${industryPart}_${resultCount}.${format}`
+    // Construct filename: YYYY-MM-DD_[Industry]_[Additional Industry]_..._[number of rows].[ext]
+    const filenameParts = [dateStr, ...industryParts, resultCount.toString()]
+    return `${filenameParts.join('_')}.${format}`
   }
 
   /**
@@ -251,9 +242,9 @@ export class ExportService {
       withAddress: stats.recordsWithAddress
     })
 
-    // Generate prioritized filename
+    // Generate prioritized filename using selected industry names
     const filename = options.filename || prioritizedExportFormatter.generateFilename({
-      industries: options.context?.industries,
+      industries: options.context?.selectedIndustries,
       location: options.context?.searchLocation,
       totalRecords: processedRecords.length
     })
