@@ -13,10 +13,17 @@ import { IndustryCategory } from '@/types/business'
 import toast from 'react-hot-toast'
 
 /**
+ * CategorySelector component props
+ */
+interface CategorySelectorProps {
+  disabled?: boolean
+}
+
+/**
  * CategorySelector component for managing industry categories
  * Allows users to select, add, and remove industry categories
  */
-export function CategorySelector(): JSX.Element {
+export function CategorySelector({ disabled = false }: CategorySelectorProps): JSX.Element {
   const {
     state,
     toggleIndustry,
@@ -320,11 +327,17 @@ export function CategorySelector(): JSX.Element {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Industry Categories</span>
+          {disabled && (
+            <p className="text-sm text-muted-foreground">
+              🔒 Industry selection is locked during scraping
+            </p>
+          )}
           <div className="flex gap-2 flex-wrap">
             <Button
               variant="outline"
               size="sm"
               onClick={allSelected ? deselectAllIndustries : selectAllIndustries}
+              disabled={disabled}
             >
               {allSelected ? 'Deselect All' : 'Select All'}
             </Button>
@@ -333,6 +346,7 @@ export function CategorySelector(): JSX.Element {
               size="sm"
               icon={Plus}
               onClick={handleAddIndustry}
+              disabled={disabled}
             >
               Add Custom
             </Button>
@@ -342,6 +356,7 @@ export function CategorySelector(): JSX.Element {
               icon={Download}
               onClick={handleExportIndustries}
               title="Export custom industries to JSON file"
+              disabled={disabled}
             >
               Export
             </Button>
@@ -351,6 +366,7 @@ export function CategorySelector(): JSX.Element {
               icon={Upload}
               onClick={handleImportIndustries}
               title="Import custom industries from JSON file"
+              disabled={disabled}
             >
               Import
             </Button>
@@ -408,16 +424,17 @@ export function CategorySelector(): JSX.Element {
                   'hover:border-primary/50 hover:bg-accent/50',
                   isSelected && 'border-primary bg-primary/5',
                   !isSelected && 'border-border',
-                  !isInlineEditing && 'cursor-pointer',
-                  isInlineEditing && 'border-primary bg-primary/10'
+                  !isInlineEditing && !disabled && 'cursor-pointer',
+                  isInlineEditing && 'border-primary bg-primary/10',
+                  disabled && 'opacity-50 cursor-not-allowed'
                 )}
-                onClick={() => !isInlineEditing && toggleIndustry(industry.id)}
+                onClick={() => !isInlineEditing && !disabled && toggleIndustry(industry.id)}
               >
                 {/* Action buttons and Selection Indicator */}
                 {!isInlineEditing && (
                   <div className="absolute top-2 right-2 flex items-center space-x-1">
                     {/* Delete button for custom industries */}
-                    {industry.isCustom && (
+                    {industry.isCustom && !disabled && (
                       <Button
                         variant="ghost"
                         size="icon"
@@ -485,12 +502,17 @@ export function CategorySelector(): JSX.Element {
                   ) : (
                     <div className="mb-3">
                       <p
-                        className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors hover:bg-accent rounded-md px-2 py-1 -mx-2 leading-relaxed"
+                        className={clsx(
+                          "text-sm text-muted-foreground transition-colors rounded-md px-2 py-1 -mx-2 leading-relaxed",
+                          !disabled && "cursor-pointer hover:text-primary hover:bg-accent"
+                        )}
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleStartExpandedEdit(industry.id)
+                          if (!disabled) {
+                            e.stopPropagation()
+                            handleStartExpandedEdit(industry.id)
+                          }
                         }}
-                        title="Click to edit criteria and domain blacklist"
+                        title={disabled ? "Editing disabled during scraping" : "Click to edit criteria and domain blacklist"}
                       >
                         {industry.keywords.join(', ')}
                       </p>

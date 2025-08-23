@@ -34,6 +34,7 @@ import toast from 'react-hot-toast'
  */
 function ConfigurationPanel(): JSX.Element {
   const { state, updateConfig, toggleDarkMode, isConfigValid } = useConfig()
+  const { scrapingState } = useScraperController()
 
   return (
     <div className="space-y-6">
@@ -50,12 +51,36 @@ function ConfigurationPanel(): JSX.Element {
         </Button>
       </div>
 
+      {/* Scraping Active Banner */}
+      {scrapingState.isScrapingActive && (
+        <Card className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="h-2 w-2 bg-orange-500 rounded-full animate-pulse" />
+              <div>
+                <h3 className="font-medium text-orange-900 dark:text-orange-100">
+                  🔒 Configuration Locked - Scraping in Progress
+                </h3>
+                <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                  Configuration settings are locked while scraping is active. Stop the scraping process to make changes.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
 
 
       {/* Location Settings */}
       <Card>
         <CardHeader>
           <CardTitle>Location Settings</CardTitle>
+          {scrapingState.isScrapingActive && (
+            <p className="text-sm text-muted-foreground">
+              🔒 Configuration is locked while scraping is active
+            </p>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -65,6 +90,7 @@ function ConfigurationPanel(): JSX.Element {
               value={state.config.zipCode}
               onChange={(e) => updateConfig({ zipCode: e.target.value })}
               helperText="Center point for business search"
+              disabled={scrapingState.isScrapingActive}
             />
             <Input
               label="Search Radius (miles)"
@@ -74,18 +100,24 @@ function ConfigurationPanel(): JSX.Element {
               value={state.config.searchRadius}
               onChange={(e) => updateConfig({ searchRadius: parseInt(e.target.value) || 25 })}
               helperText="How far to search from ZIP code"
+              disabled={scrapingState.isScrapingActive}
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Industry Categories */}
-      <CategorySelector />
+      <CategorySelector disabled={scrapingState.isScrapingActive} />
 
       {/* Scraping Settings */}
       <Card>
         <CardHeader>
           <CardTitle>Scraping Settings</CardTitle>
+          {scrapingState.isScrapingActive && (
+            <p className="text-sm text-muted-foreground">
+              🔒 Settings cannot be changed during active scraping
+            </p>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -97,6 +129,7 @@ function ConfigurationPanel(): JSX.Element {
               value={state.config.searchDepth}
               onChange={(e) => updateConfig({ searchDepth: parseInt(e.target.value) || 2 })}
               helperText="How deep to crawl each website"
+              disabled={scrapingState.isScrapingActive}
             />
             <Input
               label="Pages per Site"
@@ -106,6 +139,7 @@ function ConfigurationPanel(): JSX.Element {
               value={state.config.pagesPerSite}
               onChange={(e) => updateConfig({ pagesPerSite: parseInt(e.target.value) || 5 })}
               helperText="Maximum pages to scrape per website"
+              disabled={scrapingState.isScrapingActive}
             />
           </div>
         </CardContent>
@@ -499,6 +533,7 @@ function ScrapingPanel(): JSX.Element {
  */
 export function App(): JSX.Element {
   const { state } = useConfig()
+  const { scrapingState } = useScraperController()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
 
@@ -539,8 +574,19 @@ export function App(): JSX.Element {
                   variant={activeTab === 'config' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setActiveTab('config')}
+                  disabled={scrapingState.isScrapingActive}
+                  title={scrapingState.isScrapingActive
+                    ? 'Configuration cannot be changed while scraping is active. Please stop scraping first.'
+                    : undefined
+                  }
+                  className={scrapingState.isScrapingActive ? 'opacity-50 cursor-not-allowed' : ''}
                 >
                   Configuration
+                  {scrapingState.isScrapingActive && (
+                    <span className="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
+                      🔒
+                    </span>
+                  )}
                 </Button>
                 <Button
                   variant={activeTab === 'scraping' ? 'default' : 'ghost'}
