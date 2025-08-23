@@ -36,67 +36,83 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     formatter: (value: string) => formatPhoneForExport(value)
   },
   
-  // Priority 3: Street Address
+  // Priority 3: Street Number
   {
-    key: 'streetAddress',
-    header: 'Street Address',
+    key: 'streetNumber',
+    header: 'Street Number',
     priority: 3,
     formatter: (value: string) => value || ''
   },
-  
-  // Priority 4: City
+
+  // Priority 4: Street Name
   {
-    key: 'city',
-    header: 'City',
+    key: 'streetName',
+    header: 'Street Name',
     priority: 4,
     formatter: (value: string) => value || ''
   },
-  
-  // Priority 5: ZIP Code
+
+  // Priority 5: Suite/Unit
   {
-    key: 'zipCode',
-    header: 'ZIP',
+    key: 'suite',
+    header: 'Suite',
     priority: 5,
     formatter: (value: string) => value || ''
   },
-  
-  // Priority 6: State
+
+  // Priority 6: City
   {
-    key: 'state',
-    header: 'State',
+    key: 'city',
+    header: 'City',
     priority: 6,
     formatter: (value: string) => value || ''
   },
-  
-  // Priority 7: Business Name
+
+  // Priority 7: State
   {
-    key: 'businessName',
-    header: 'Business Name',
+    key: 'state',
+    header: 'State',
     priority: 7,
     formatter: (value: string) => value || ''
   },
-  
-  // Priority 8: Contact Name
+
+  // Priority 8: ZIP Code
   {
-    key: 'contactName',
-    header: 'Contact Name',
+    key: 'zipCode',
+    header: 'ZIP',
     priority: 8,
     formatter: (value: string) => value || ''
   },
   
-  // Priority 9: Website
+  // Priority 9: Business Name
   {
-    key: 'website',
-    header: 'Website',
+    key: 'businessName',
+    header: 'Business Name',
     priority: 9,
     formatter: (value: string) => value || ''
   },
-  
-  // Priority 10: Coordinates
+
+  // Priority 10: Contact Name
+  {
+    key: 'contactName',
+    header: 'Contact Name',
+    priority: 10,
+    formatter: (value: string) => value || ''
+  },
+
+  // Priority 11: Website
+  {
+    key: 'website',
+    header: 'Website',
+    priority: 11,
+    formatter: (value: string) => value || ''
+  },
+
+  // Priority 12: Coordinates
   {
     key: 'coordinates',
     header: 'Coordinates',
-    priority: 10,
+    priority: 12,
     formatter: (value: string) => value || ''
   },
   
@@ -104,28 +120,28 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
   {
     key: 'additionalEmails',
     header: 'Additional Emails',
-    priority: 11,
+    priority: 13,
     formatter: (value: string[]) => value.join('; ')
   },
-  
+
   {
     key: 'additionalPhones',
     header: 'Additional Phones',
-    priority: 12,
+    priority: 14,
     formatter: (value: string[]) => value.map(formatPhoneForExport).join('; ')
   },
-  
+
   {
     key: 'confidence',
     header: 'Data Quality',
-    priority: 13,
+    priority: 15,
     formatter: (value: number) => `${Math.round(value * 100)}%`
   },
-  
+
   {
     key: 'sources',
     header: 'Sources',
-    priority: 14,
+    priority: 16,
     formatter: (value: string[]) => value.join('; ')
   }
 ]
@@ -349,20 +365,30 @@ export class PrioritizedExportFormatter {
 
 /**
  * Format phone number for export display
+ * Uses the enhanced phone formatter for consistent formatting
  */
 function formatPhoneForExport(phone: string): string {
   if (!phone) return ''
-  
-  // Remove all non-digits
-  const digits = phone.replace(/\D/g, '')
-  
-  // Format US phone numbers
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
-  } else if (digits.length === 11 && digits.startsWith('1')) {
-    return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`
+
+  // If already formatted programmatically, convert to display format
+  if (/^\d{10}$/.test(phone)) {
+    return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6)}`
   }
-  
+
+  // Remove all non-digits for processing
+  const digits = phone.replace(/\D/g, '')
+
+  // Handle +1 country code removal
+  let workingDigits = digits
+  if (workingDigits.length === 11 && workingDigits.startsWith('1')) {
+    workingDigits = workingDigits.substring(1)
+  }
+
+  // Format US phone numbers
+  if (workingDigits.length === 10) {
+    return `(${workingDigits.slice(0, 3)}) ${workingDigits.slice(3, 6)}-${workingDigits.slice(6)}`
+  }
+
   // Return original if not standard format
   return phone
 }

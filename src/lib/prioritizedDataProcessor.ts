@@ -7,21 +7,25 @@
 
 import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
+import { addressParser, ParsedAddress } from '@/utils/addressParser'
+import { phoneFormatter } from '@/utils/phoneFormatter'
 
 export interface PrioritizedBusinessRecord {
   id: string
   email: string // Primary email (highest priority)
-  phone: string // Primary phone number
-  streetAddress: string // Street address
-  city: string
-  state: string
-  zipCode: string
+  phone: string // Primary phone number (standardized format)
+  streetNumber: string // Street number (e.g., "123")
+  streetName: string // Street name (e.g., "Main St")
+  suite?: string // Suite/unit information
+  city: string // City name
+  state: string // State abbreviation
+  zipCode: string // ZIP or ZIP+4
   businessName: string
   contactName: string
   website: string
   coordinates: string
   additionalEmails: string[] // Secondary emails
-  additionalPhones: string[] // Secondary phones
+  additionalPhones: string[] // Secondary phones (standardized)
   confidence: number
   sources: string[] // URLs where this business was found
 }
@@ -29,7 +33,8 @@ export interface PrioritizedBusinessRecord {
 export interface DeduplicationKey {
   email: string
   phone: string
-  streetAddress: string
+  streetNumber: string
+  streetName: string
   city: string
   zipCode: string
 }
@@ -92,7 +97,7 @@ export class PrioritizedDataProcessor {
     const valuableRecords = prioritizedRecords.filter(record => {
       const hasEmail = record.email.length > 0
       const hasPhone = record.phone.length > 0
-      const hasAddress = record.streetAddress.length > 0
+      const hasAddress = record.streetName.length > 0 || record.streetNumber.length > 0
 
       if (hasEmail) stats.recordsWithEmail++
       if (hasPhone) stats.recordsWithPhone++
@@ -126,20 +131,21 @@ export class PrioritizedDataProcessor {
     const primaryEmail = emails[0] || ''
     const additionalEmails = emails.slice(1)
 
-    // Prioritize phones
+    // Prioritize and format phones
     const phones = this.prioritizePhones([record.phone].filter(Boolean))
-    const primaryPhone = phones[0] || ''
-    const additionalPhones = phones.slice(1)
+    const primaryPhone = this.formatPhoneNumber(phones[0] || '')
+    const additionalPhones = phones.slice(1).map(phone => this.formatPhoneNumber(phone)).filter(Boolean)
 
-    // Format address components
+    // Parse address components using enhanced parser
     const address = record.address || {}
-    const streetAddress = this.cleanStreetAddress(address.street || '')
-    const city = this.cleanCityName(address.city || '')
-    const state = this.cleanStateName(address.state || '')
-    const zipCode = this.cleanZipCode(address.zipCode || '')
+    const rawAddress = this.buildRawAddressString(address)
+    const parsedAddress = addressParser.parseAddress(rawAddress, {
+      allowPartialMatches: true,
+      logErrors: false
+    })
 
     // Format coordinates
-    const coordinates = record.coordinates 
+    const coordinates = record.coordinates
       ? `${record.coordinates.lat.toFixed(6)}, ${record.coordinates.lng.toFixed(6)}`
       : ''
 
@@ -147,10 +153,12 @@ export class PrioritizedDataProcessor {
       id: record.id,
       email: primaryEmail,
       phone: primaryPhone,
-      streetAddress,
-      city,
-      state,
-      zipCode,
+      streetNumber: parsedAddress.streetNumber || '',
+      streetName: parsedAddress.streetName || this.cleanStreetAddress(address.street || ''),
+      suite: parsedAddress.suite,
+      city: parsedAddress.city || this.cleanCityName(address.city || ''),
+      state: parsedAddress.state || this.cleanStateName(address.state || ''),
+      zipCode: parsedAddress.zipCode || this.cleanZipCode(address.zipCode || ''),
       businessName: this.cleanBusinessName(record.businessName || ''),
       contactName: record.contactPerson || '',
       website: record.websiteUrl || '',
@@ -217,6 +225,37 @@ export class PrioritizedDataProcessor {
   }
 
   /**
+   * Format phone number using enhanced formatter
+   */
+  private formatPhoneNumber(phone: string): string {
+    if (!phone) return ''
+
+    const result = phoneFormatter.formatPhone(phone, {
+      format: 'programmatic',
+      removeCountryCode: true,
+      strictValidation: false
+    })
+
+    return result.formatted || ''
+  }
+
+  /**
+   * Build raw address string from address components
+   */
+  private buildRawAddressString(address: BusinessRecord['address']): string {
+    if (!address) return ''
+
+    const parts = [
+      address.street,
+      address.city,
+      address.state,
+      address.zipCode
+    ].filter(Boolean)
+
+    return parts.join(', ')
+  }
+
+  /**
    * Get phone format quality score
    */
   private getPhoneFormatScore(phone: string): number {
@@ -266,7 +305,7 @@ export class PrioritizedDataProcessor {
     const parts = [
       record.email.toLowerCase(),
       this.normalizePhone(record.phone),
-      this.normalizeAddress(record.streetAddress),
+      this.normalizeAddress(`${record.streetNumber} ${record.streetName}`),
       record.city.toLowerCase(),
       record.zipCode
     ].filter(Boolean)

@@ -192,7 +192,8 @@ describe('PrioritizedDataProcessor', () => {
       
       expect(record.businessName).toBe('test company llc') // Cleaned spacing
       expect(record.email).toBe('info@test.com') // Lowercase and trimmed
-      expect(record.streetAddress).toBe('123 main st') // Cleaned spacing
+      expect(record.streetNumber).toBe('123') // Parsed street number
+      expect(record.streetName).toBe('main st') // Parsed street name
       expect(record.city).toBe('test city') // Cleaned spacing
       expect(record.state).toBe('CA') // Uppercase
       expect(record.zipCode).toBe('12345-6789') // Preserved format
