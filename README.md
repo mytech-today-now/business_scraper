@@ -358,6 +358,69 @@ This naming convention makes it easy to:
 - **Organize files**: Sort and group exports by industry or date
 - **Verify completeness**: Check record count at a glance
 
+## 🏗️ Enhanced Data Processing
+
+### Address Parsing & Standardization
+
+The application features intelligent address parsing that automatically separates address components for better data analysis:
+
+**Input**: `"123 Main St Suite 200, Anytown, CA 90210-1234"`
+
+**Parsed Output**:
+- **Street Number**: `123`
+- **Street Name**: `Main St`
+- **Suite**: `Suite 200`
+- **City**: `Anytown`
+- **State**: `CA` (standardized abbreviation)
+- **ZIP**: `90210-1234`
+
+**Supported Address Formats**:
+- Standard format: `123 Main St, Anytown, CA 90210`
+- With suite info: `456 Oak Ave Apt 3B, Springfield, IL 62701`
+- ZIP+4 format: `789 Pine Rd, Boston, MA 02101-1234`
+- Full state names: `321 Elm St, Dallas, Texas 75201`
+- Various separators: `123 Main St\nAnytown, CA 90210`
+
+**Suite/Unit Recognition**:
+- Suite, Ste, Unit, Apt, Apartment
+- Floor, Fl, Room, Rm, Building, Bldg
+- Office, Ofc, # (hash symbol)
+
+### Phone Number Standardization
+
+All phone numbers are automatically standardized for programmatic access and CRM integration:
+
+**Input Formats Supported**:
+- `(555) 123-4567`
+- `555-123-4567`
+- `555.123.4567`
+- `555 123 4567`
+- `+1-555-123-4567`
+- `1 555 123 4567`
+- `555-123-4567 ext 123`
+
+**Standardized Output**: `5551234567`
+
+**Features**:
+- **Country Code Removal**: Automatically removes +1 for US/Canada numbers
+- **Extension Handling**: Removes extensions while preserving main number
+- **Format Validation**: Validates area codes, exchanges, and number patterns
+- **Invalid Detection**: Identifies fake numbers (555-555-5555, 123-456-7890)
+- **Multiple Formats**: Programmatic (5551234567), Standard ((555) 123-4567), Display (555-123-4567)
+
+### Data Quality Improvements
+
+**Enhanced Deduplication**:
+- Uses parsed address components for better duplicate detection
+- Normalizes phone numbers for accurate matching
+- Confidence scoring for data quality assessment
+
+**Export Column Structure**:
+- Separate columns for Street Number, Street Name, Suite
+- Standardized phone format for database integration
+- Clean, consistent city and state formatting
+- Proper ZIP code validation and formatting
+
 ## 🧪 Testing
 
 Run the test suite:

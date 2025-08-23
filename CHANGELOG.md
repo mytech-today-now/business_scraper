@@ -5,6 +5,85 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2025-01-19
+
+### MAJOR ENHANCEMENT: Enhanced Address Parsing and Phone Number Standardization
+
+### Added
+- **Enhanced AddressParser**: Comprehensive address parsing with multiple strategies
+  - Structured address parsing for standard formats: "123 Main St, Anytown, CA 90210"
+  - Comma-separated component parsing with intelligent fallback strategies
+  - Pattern-based parsing for partial or malformed addresses
+  - Support for suite/unit information (Suite, Apt, #, Floor, Unit, etc.)
+  - Full state name to abbreviation conversion (e.g., "California" -> "CA")
+  - ZIP+4 format support with proper validation
+  - Confidence scoring system for parsing quality assessment
+- **Enhanced PhoneFormatter**: Programmatic phone number standardization
+  - Automatic +1 country code detection and removal for US/Canada numbers
+  - Standardized 10-digit output format: "5551234567" for programmatic access
+  - Support for multiple input formats: (555) 123-4567, 555-123-4567, +1-555-123-4567
+  - Intelligent extension removal: "555-123-4567 ext 123" -> "5551234567"
+  - Comprehensive US/Canada area code validation database
+  - Exchange and number validation (no leading 0 or 1 digits)
+  - Invalid pattern detection (sequential digits, repeated digits, fake numbers)
+  - Multiple output formats: programmatic, standard display, dash-separated
+- **Separated Address Fields**: Enhanced data structure for better analysis
+  - streetNumber: Isolated street number (e.g., "123")
+  - streetName: Clean street name (e.g., "Main St")
+  - suite: Optional suite/unit information (e.g., "Suite 200", "Apt 3B", "#5")
+  - city: Cleaned city name
+  - state: Standardized state abbreviation
+  - zipCode: ZIP or ZIP+4 format
+
+### Enhanced
+- **PrioritizedDataProcessor**: Complete integration with new parsing utilities
+  - Automatic address parsing for all scraped business records
+  - Phone number standardization applied to all phone data
+  - Improved deduplication logic using parsed address components
+  - Enhanced confidence scoring based on parsing quality metrics
+  - Better error handling for malformed address and phone data
+- **Export System**: Updated column structure for better data analysis
+  - Separate Street Number, Street Name, Suite columns (replaces single Street Address)
+  - Standardized phone number format in all export types
+  - Maintains full backward compatibility with existing export workflows
+  - Enhanced export filename pattern with industry names
+- **Data Quality**: Significant improvements in data consistency and accuracy
+  - Intelligent parsing handles various address formats and edge cases
+  - Phone numbers formatted consistently for CRM and database integration
+  - Better duplicate detection using normalized address components
+
+### Technical
+- **Comprehensive Testing**: 40+ new test cases for enhanced functionality
+  - AddressParser: 16 test cases covering structured addresses, partial parsing, edge cases
+  - PhoneFormatter: 25+ test cases for input formats, validation, edge cases
+  - Integration tests for data processor with new parsing capabilities
+  - Full test coverage for suite/unit parsing, state conversion, phone validation
+- **Multi-Strategy Parsing**: Robust fallback mechanisms ensure maximum data extraction
+  - Primary strategy: Full structured address parsing
+  - Secondary: Comma-separated component parsing
+  - Tertiary: Pattern-based extraction for partial data
+  - Fallback: Best-effort parsing with confidence scoring
+- **Performance Optimized**: Efficient implementation for high-volume processing
+  - Optimized regex patterns for address and phone parsing
+  - Cached state mappings and area code validation
+  - Minimal memory footprint with intelligent string processing
+- **Type Safety**: Full TypeScript interfaces and comprehensive validation
+  - Strongly typed parsing results with confidence metrics
+  - Comprehensive error handling and graceful degradation
+  - Clear interfaces for parsed address and phone components
+
+### Fixed
+- **Address Data Quality**: Addresses now properly separated into logical components
+  - Street numbers isolated from street names for better sorting and analysis
+  - City names cleaned and standardized for consistency
+  - State names converted to standard abbreviations
+  - ZIP codes properly formatted and validated
+- **Phone Number Consistency**: All phone numbers now in standardized format
+  - Consistent 10-digit format across all exports and data processing
+  - Removal of inconsistent formatting (parentheses, dashes, spaces)
+  - Proper handling of country codes and extensions
+  - Validation prevents invalid phone numbers from corrupting data
+
 ## [1.7.1] - 2025-01-22
 
 ### Added
