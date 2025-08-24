@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "2.2.0",
+  "version": "3.0.1",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
@@ -21,7 +21,7 @@
     "test:cache": "jest --testPathPattern=cache",
     "test:validation": "jest --testPathPattern=validation",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
-    "docs": "echo 'Documentation generation removed due to security vulnerabilities. Use JSDoc comments in code for documentation.'",
+    "docs": "echo 'Documentation: Use JSDoc comments in code. Consider installing typedoc for TypeScript documentation or @storybook/react for component docs.'",
     "type-check": "tsc --noEmit",
     "db:migrate": "node database/scripts/migrate.js up",
     "db:migrate:down": "node database/scripts/migrate.js down",
@@ -110,7 +110,6 @@
     "@typescript-eslint/parser": "^8.39.1",
     "audit-ci": "^7.1.0",
     "autoprefixer": "^10.4.0",
-    "documentation": "^6.2.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.0.0",
     "eslint-plugin-security": "^3.0.1",
