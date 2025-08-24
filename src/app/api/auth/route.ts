@@ -1,12 +1,12 @@
 /**
  * Authentication API endpoints
- * Handles login, logout, and session management for single-user application
+ * Handles multi-user authentication, session management, and security
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  createSession, 
-  getSession, 
+import {
+  createSession,
+  getSession,
   invalidateSession,
   verifyPassword,
   trackLoginAttempt,
@@ -15,9 +15,11 @@ import {
   validateInput,
   defaultSecurityConfig
 } from '@/lib/security'
+import { UserManagementService } from '@/lib/user-management'
+import { AuditService } from '@/lib/audit-service'
 import { logger } from '@/utils/logger'
 
-// Single user credentials (in production, this should be in environment variables)
+// Legacy single user credentials (for backward compatibility)
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin'
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || ''
 const ADMIN_PASSWORD_SALT = process.env.ADMIN_PASSWORD_SALT || ''

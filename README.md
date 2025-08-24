@@ -1,13 +1,53 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
-A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Memory Management Optimization**, **Real-Time Result Streaming**, **AI-powered lead scoring**, **predictive analytics**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
+A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **AI-powered lead scoring**, **predictive analytics**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v2.2.0)** - Memory Management Optimization
+## 🆕 **Latest Update (v3.0.0)** - Multi-User Collaboration & Team Management
+
+**👥 Revolutionary Collaboration Platform**: Implemented comprehensive multi-user collaboration system with role-based access control, team workspaces, shared projects, and advanced analytics dashboard. This major enhancement transforms the application from single-user to enterprise-ready with granular permissions, real-time collaboration, and comprehensive audit trails.
+
+### 🎯 **Multi-User Collaboration Features**
+
+#### 👥 **Team Management**
+- **Role-Based Access Control (RBAC)**: Five distinct user roles (Admin, Manager, Analyst, Contributor, Viewer) with TypeScript-based type safety
+- **Team Workspaces**: Dedicated collaborative environments for building scraping campaigns and managing datasets
+- **Shared Project Management**: Real-time collaboration on keyword strategies and lead curation with conflict resolution
+- **Activity Tracking**: Immutable audit logs for compliance, accountability, and performance insights
+
+#### 📊 **Advanced Analytics Dashboard**
+- **Real-Time Performance Metrics**: Live Puppeteer job execution monitoring with WebSocket-driven updates
+- **Data Quality Analytics**: Enrichment accuracy tracking, duplicate detection, and keyword-to-result success ratios
+- **User Activity Insights**: Team performance analytics with productivity metrics and role-specific dashboards
+- **ROI Tracking**: Business value correlation with downstream KPIs and exportable reports
+
+#### 🔐 **Enterprise Security**
+- **Granular Permissions**: 50+ specific permissions covering all system operations with inheritance hierarchy
+- **Session Management**: Multi-device tracking, IP monitoring, and security breach detection
+- **Audit Compliance**: Complete activity logging with structured metadata for regulatory requirements
+- **Data Protection**: Input validation, SQL injection prevention, and secure credential management
+
+## 🚀 **Getting Started with Multi-User Collaboration**
+
+### **Quick Setup**
+1. **Database Migration**: `node scripts/run-migration.js migrate`
+2. **Default Login**: Username: `admin`, Password: `admin123`
+3. **Create Team**: Set up your first team and workspace
+4. **Invite Users**: Add team members with appropriate roles
+5. **Start Collaborating**: Begin shared scraping campaigns
+
+### **User Roles & Permissions**
+- **👑 Admin**: Full system access, user management, global settings
+- **📊 Manager**: Team leadership, workspace management, analytics access
+- **🔍 Analyst**: Data analysis, reporting, validation workflows
+- **✏️ Contributor**: Active scraping, data entry, campaign participation
+- **👁️ Viewer**: Read-only access to assigned workspaces and data
+
+## 🆕 **Previous Update (v2.2.0)** - Memory Management Optimization
 
 **🧠 Revolutionary Memory Intelligence**: Implemented comprehensive memory management optimization with real-time monitoring, automatic cleanup, data compression, and smart garbage collection. This enhancement prevents memory bloat, ensures smooth performance during high-volume operations, and provides users with both automated safety nets and manual control for optimal memory health.
 
@@ -576,14 +616,43 @@ All phone numbers are automatically standardized for programmatic access and CRM
 - Clean, consistent city and state formatting
 - Proper ZIP code validation and formatting
 
-## 🧪 Testing
+## 🧪 **Testing**
 
-Run the test suite:
+### **Running Tests**
 ```bash
-npm test
-# or
-yarn test
+# All tests
+npm run test
+
+# Unit tests only
+npm run test:unit
+
+# Multi-user collaboration tests
+npm run test:multi-user
+
+# E2E tests
+npm run test:e2e
+
+# Coverage report
+npm run test:coverage
+
+# Watch mode for development
+npm run test:watch
 ```
+
+### **Multi-User Test Coverage**
+- **User Management**: Authentication, registration, role assignment, profile management
+- **RBAC System**: Permission checking, role inheritance, access control validation
+- **API Endpoints**: All multi-user API routes with authorization and error handling
+- **Real-Time Collaboration**: WebSocket connections, resource locking, live updates
+- **Team & Workspace Management**: Creation, membership, settings, and permissions
+- **Analytics & Audit**: Metrics calculation, audit logging, and reporting features
+
+### **Test Categories**
+- **Unit Tests**: Individual service and utility function testing (85%+ coverage)
+- **Integration Tests**: API endpoint and database interaction testing
+- **Collaboration Tests**: Real-time features and WebSocket functionality
+- **Security Tests**: Authentication, authorization, and input validation
+- **Performance Tests**: Load testing for multi-user scenarios
 
 Run tests in watch mode:
 ```bash
