@@ -12,7 +12,7 @@ import { retrieveApiCredentials } from '@/utils/secureStorage'
 export class ClientScraperService {
   private baseUrl = '/api'
   private maxRetries = 3
-  private retryDelay = 1000 // 1 second base delay
+  private retryDelay = 250 // 250ms base delay for faster recovery
 
   /**
    * Check if the scraping API is available
