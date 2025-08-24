@@ -83,11 +83,31 @@ export class StorageService {
   private readonly dbVersion = 3
 
   /**
-   * Initialize the database connection
+   * Check if we're running in a browser environment
+   */
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof indexedDB !== 'undefined'
+  }
+
+  /**
+   * Initialize the database connection with timeout
    */
   async initialize(): Promise<void> {
     try {
-      this.db = await openDB<BusinessScraperDB>(this.dbName, this.dbVersion, {
+      // Only initialize IndexedDB in browser environment
+      if (!this.isBrowser()) {
+        logger.warn('Storage', 'IndexedDB not available in server environment')
+        return
+      }
+
+      if (this.db) {
+        return // Already initialized
+      }
+
+      logger.info('Storage', 'Initializing database connection...')
+
+      // Add timeout to prevent hanging
+      const initPromise = openDB<BusinessScraperDB>(this.dbName, this.dbVersion, {
         upgrade(db, oldVersion, newVersion, transaction) {
           // Create businesses store (version 1)
           if (oldVersion < 1) {
@@ -148,9 +168,27 @@ export class StorageService {
         },
       })
 
+      // Create timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Database initialization timeout after 10 seconds'))
+        }, 10000) // 10 second timeout
+      })
+
+      // Race between initialization and timeout
+      this.db = await Promise.race([initPromise, timeoutPromise])
+
       logger.info('Storage', 'Database initialized successfully')
     } catch (error) {
       logger.error('Storage', 'Failed to initialize database', error)
+
+      // If initialization fails, set a flag to prevent further attempts
+      if (this.isBrowser()) {
+        logger.warn('Storage', 'Database initialization failed, will operate in fallback mode')
+        // Don't throw error to prevent app from hanging
+        return
+      }
+
       throw error
     }
   }
@@ -168,9 +206,13 @@ export class StorageService {
    * Get the database instance with proper error handling
    */
   private async getDatabase(): Promise<IDBPDatabase<BusinessScraperDB>> {
+    if (!this.isBrowser()) {
+      throw new Error('Database operations not available in server environment')
+    }
+
     await this.ensureInitialized()
     if (!this.db) {
-      throw new Error('Failed to initialize database')
+      throw new Error('Database not available - initialization may have failed or timed out')
     }
     return this.db
   }

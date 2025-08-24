@@ -370,42 +370,58 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       try {
         dispatch({ type: 'SET_LOADING', payload: true })
 
-        // Initialize storage
-        await storage.initialize()
+        // Check if we're in browser environment
+        const isBrowser = typeof window !== 'undefined'
 
-        // Load saved configuration
-        await loadConfig()
+        if (isBrowser) {
+          try {
+            // Initialize storage only in browser with timeout
+            await storage.initialize()
 
-        // Load industries (default + custom)
-        const savedIndustries = await storage.getAllIndustries()
+            // Load saved configuration
+            await loadConfig()
 
-        // Check if we need to update default industries
-        const needsUpdate = await checkIfDefaultIndustriesNeedUpdate(savedIndustries)
+            // Load industries (default + custom)
+            const savedIndustries = await storage.getAllIndustries()
 
-        if (savedIndustries.length > 0 && !needsUpdate) {
-          dispatch({ type: 'SET_INDUSTRIES', payload: savedIndustries })
-        } else {
-          // Update/save default industries to storage
-          const updatedIndustries = await updateDefaultIndustries(savedIndustries)
-          dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+          // Check if we need to update default industries
+          const needsUpdate = await checkIfDefaultIndustriesNeedUpdate(savedIndustries)
 
-          if (needsUpdate) {
-            toast.success('Default industries updated with latest data')
-            logger.info('ConfigProvider', 'Default industries updated successfully')
+          if (savedIndustries.length > 0 && !needsUpdate) {
+            dispatch({ type: 'SET_INDUSTRIES', payload: savedIndustries })
+          } else {
+            // Update/save default industries to storage
+            const updatedIndustries = await updateDefaultIndustries(savedIndustries)
+            dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+
+            if (needsUpdate) {
+              toast.success('Default industries updated with latest data')
+              logger.info('ConfigProvider', 'Default industries updated successfully')
+            }
           }
-        }
 
-        // Load theme preference
-        const savedTheme = localStorage.getItem('darkMode')
-        if (savedTheme) {
-          const isDark = JSON.parse(savedTheme)
-          dispatch({ type: 'SET_DARK_MODE', payload: isDark })
-          document.documentElement.classList.toggle('dark', isDark)
-        }
+          // Load theme preference
+          const savedTheme = localStorage.getItem('darkMode')
+          if (savedTheme) {
+            const isDark = JSON.parse(savedTheme)
+            dispatch({ type: 'SET_DARK_MODE', payload: isDark })
+            document.documentElement.classList.toggle('dark', isDark)
+          }
 
-        // Clear any persisted demo mode from localStorage
-        localStorage.removeItem('demoMode')
-        logger.info('ConfigProvider', 'Real scraping mode enabled')
+          // Clear any persisted demo mode from localStorage
+          localStorage.removeItem('demoMode')
+          logger.info('ConfigProvider', 'Real scraping mode enabled')
+          } catch (storageError) {
+            // Storage initialization failed, use default industries
+            logger.warn('ConfigProvider', 'Storage initialization failed, using defaults', storageError)
+            dispatch({ type: 'SET_INDUSTRIES', payload: DEFAULT_INDUSTRIES })
+            toast.warn('Storage unavailable - using default settings')
+          }
+        } else {
+          // Server-side initialization - use default industries
+          dispatch({ type: 'SET_INDUSTRIES', payload: DEFAULT_INDUSTRIES })
+          logger.info('ConfigProvider', 'Server-side initialization with default industries')
+        }
 
         dispatch({ type: 'SET_INITIALIZED', payload: true })
         logger.info('ConfigProvider', 'Configuration initialized successfully')

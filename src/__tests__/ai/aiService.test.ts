@@ -141,8 +141,7 @@ describe('AIService', () => {
           street: '123 Main St',
           city: 'Test City',
           state: 'TS',
-          zipCode: '12345',
-          country: 'US'
+          zipCode: '12345'
         },
         industry: 'Technology',
         description: 'A test business for unit testing',
@@ -265,8 +264,7 @@ describe('AIService', () => {
           street: '456 Oak St',
           city: 'Test City',
           state: 'TS',
-          zipCode: '12345',
-          country: 'US'
+          zipCode: '12345'
         },
         industry: 'Retail',
         description: 'A test business without website',
@@ -291,7 +289,12 @@ describe('AIService', () => {
         email: [],
         phone: '',
         websiteUrl: '',
-        address: undefined,
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: ''
+        },
         industry: '',
         description: '',
         scrapedAt: new Date(),
@@ -321,7 +324,12 @@ describe('AIService', () => {
         email: [],
         phone: '',
         websiteUrl: '',
-        address: undefined,
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: ''
+        },
         industry: '',
         description: '',
         scrapedAt: new Date(),

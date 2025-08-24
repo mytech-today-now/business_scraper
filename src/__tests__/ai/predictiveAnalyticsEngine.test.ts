@@ -43,8 +43,7 @@ describe('PredictiveAnalyticsEngine', () => {
         street: '123 Main St',
         city: 'Test City',
         state: 'TS',
-        zipCode: '12345',
-        country: 'US'
+        zipCode: '12345'
       },
       industry: 'Technology',
       description: 'A test business for unit testing',
@@ -164,7 +163,12 @@ describe('PredictiveAnalyticsEngine', () => {
         email: [],
         phone: '',
         websiteUrl: '',
-        address: undefined,
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: ''
+        },
         industry: '',
         description: '',
         scrapedAt: new Date(),
