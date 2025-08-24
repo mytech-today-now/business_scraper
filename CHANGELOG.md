@@ -5,6 +5,39 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2025-08-24 - Major Industry Expansion & UI Optimization
+
+### 🏢 Added - 10 Additional Industry Categories
+- **AI & Machine Learning**: 20 keywords including AI consulting, ML services, computer vision, NLP, automation
+- **E-commerce & Retail Technology**: 20 keywords covering online store development, POS systems, inventory management
+- **Blockchain & Cryptocurrency**: 20 keywords for blockchain development, smart contracts, DeFi, NFT marketplaces
+- **IoT & Smart Devices**: 20 keywords including IoT development, smart home automation, connected devices
+- **EdTech & E-Learning**: 20 keywords covering e-learning platforms, educational technology, virtual classrooms
+- **PropTech & Real Estate Technology**: 20 keywords for real estate tech, property management, virtual tours
+- **AgTech & Agriculture Technology**: 20 keywords including precision agriculture, farm management, agricultural IoT
+- **Gaming & Entertainment Technology**: 20 keywords for game development, VR/AR, esports platforms
+- **Logistics & Supply Chain Technology**: 20 keywords covering supply chain management, warehouse systems, fleet management
+- **CleanTech & Environmental Technology**: 20 keywords for environmental tech, waste management, sustainability
+
+### 🎨 Enhanced - UI/UX Improvements
+- **Compact Design**: Reduced padding from `p-3` to `p-2` and border radius from `rounded-lg` to `rounded-md`
+- **Smaller Text**: Industry titles reduced from `text-sm` to `text-xs` for better density
+- **Tighter Spacing**: Keywords text reduced from `text-sm` to `text-xs` with `leading-tight`
+- **Optimized Grid**: Added `xl:grid-cols-4` for better large screen utilization and reduced gap from `gap-3` to `gap-2`
+- **Refined Margins**: Reduced margins and padding throughout for more compact presentation
+
+### 🚫 Enhanced - Domain Blacklists
+- **200+ New Blacklisted Domains**: Added comprehensive blacklists for all 10 new industry categories
+- **Major Platform Exclusions**: Filtered out industry giants like Google, Microsoft, Amazon, Apple across relevant categories
+- **Specialized Filtering**: Industry-specific blacklists for gaming platforms, educational sites, real estate portals, etc.
+
+### 📊 Impact Summary
+- **Total Industries**: Expanded from 25 to **35 categories** (+40% increase)
+- **Total Keywords**: Added **200 new SEO-optimized keywords** (total: 346+ keywords)
+- **Total Blacklisted Domains**: Added **200+ new domain filters** (total: 307+ domains)
+- **UI Density**: Improved information density by ~30% with compact styling
+- **Screen Utilization**: Better use of large screens with 4-column grid layout
+
 ## [1.10.1] - 2025-08-24 - Industry Categories Expansion
 
 ### 🏢 Added - New Industry Categories

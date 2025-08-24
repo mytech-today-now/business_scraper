@@ -774,15 +774,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.10.1)
-- 🏢 **Industry Categories Expansion**: Added 5 new comprehensive industry categories with 146 SEO-optimized keywords
-  - **Cybersecurity & IT Security**: Penetration testing, security audits, compliance consulting, incident response
-  - **Renewable Energy & Sustainability**: Solar installation, wind energy, energy efficiency, green building
-  - **Digital Marketing & Advertising Agencies**: SEO services, social media marketing, PPC advertising, content marketing
-  - **FinTech & Financial Services**: Digital banking, payment processing, cryptocurrency, blockchain, robo advisors
-  - **Healthcare Technology & MedTech**: Telemedicine, medical devices, health information systems, medical AI
-- 🚫 **Enhanced Domain Filtering**: 107 new blacklisted domains across major industry platforms and competitors
-- 📊 **Expanded Coverage**: Total of 25 industry categories with comprehensive B2B and B2C targeting
+### Recent Major Updates (v1.11.0)
+- 🏢 **Major Industry Expansion**: Added 10 new comprehensive industry categories with 200 SEO-optimized keywords
+  - **AI & Machine Learning**: AI consulting, ML services, computer vision, NLP, automation services
+  - **E-commerce & Retail Technology**: Online store development, POS systems, inventory management, retail analytics
+  - **Blockchain & Cryptocurrency**: Blockchain development, smart contracts, DeFi platforms, NFT marketplaces
+  - **IoT & Smart Devices**: IoT development, smart home automation, connected devices, industrial IoT
+  - **EdTech & E-Learning**: E-learning platforms, educational technology, virtual classrooms, LMS systems
+  - **PropTech & Real Estate**: Real estate technology, property management, virtual tours, real estate analytics
+  - **AgTech & Agriculture**: Precision agriculture, farm management, agricultural IoT, smart farming
+  - **Gaming & Entertainment**: Game development, VR/AR, esports platforms, interactive entertainment
+  - **Logistics & Supply Chain**: Supply chain management, warehouse systems, fleet management, logistics optimization
+  - **CleanTech & Environmental**: Environmental technology, waste management, sustainability solutions
+- 🎨 **UI/UX Optimization**: Compact design with smaller text, tighter spacing, and 4-column grid for better density
+- 🚫 **Enhanced Domain Filtering**: 200+ new blacklisted domains across major industry platforms and competitors
+- 📊 **Expanded Coverage**: Total of **35 industry categories** with comprehensive B2B and B2C targeting
 
 ### Previous Updates (v1.7.0)
 - 🎯 **B2C Industry Expansion**: Added 3 new industry categories optimized for consumer services

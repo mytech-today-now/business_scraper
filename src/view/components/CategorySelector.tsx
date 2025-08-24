@@ -433,7 +433,7 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
 
 
         {/* Industry Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {state.industries
             .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
@@ -461,7 +461,7 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
               <div
                 key={industry.id}
                 className={clsx(
-                  'relative p-3 border rounded-lg transition-all group',
+                  'relative p-2 border rounded-md transition-all group',
                   'hover:border-primary/50 hover:bg-accent/50',
                   isSelected && 'border-primary bg-primary/5',
                   !isSelected && 'border-border',
@@ -507,8 +507,8 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
                 )}
 
                 {/* Industry Info */}
-                <div className={clsx('transition-all', !isInlineEditing && 'pr-6')}>
-                  <h4 className="font-medium text-sm mb-2">{industry.name}</h4>
+                <div className={clsx('transition-all', !isInlineEditing && 'pr-5')}>
+                  <h4 className="font-medium text-xs mb-1">{industry.name}</h4>
 
                   {/* Keywords Display/Edit */}
                   {isInlineEditing ? (
@@ -541,10 +541,10 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
                       </div>
                     </div>
                   ) : (
-                    <div className="mb-3">
+                    <div className="mb-2">
                       <p
                         className={clsx(
-                          "text-sm text-muted-foreground transition-colors rounded-md px-2 py-1 -mx-2 leading-relaxed",
+                          "text-xs text-muted-foreground transition-colors rounded-sm px-1 py-0.5 -mx-1 leading-tight",
                           !disabled && "cursor-pointer hover:text-primary hover:bg-accent"
                         )}
                         onClick={(e) => {
@@ -558,11 +558,11 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
                         {industry.keywords.join(', ')}
                       </p>
                       {industry.domainBlacklist && industry.domainBlacklist.length > 0 && (
-                        <p className="text-xs text-muted-foreground/80 mt-1 px-2">
+                        <p className="text-xs text-muted-foreground/80 mt-0.5 px-1">
                           🚫 {industry.domainBlacklist.length} blocked domain{industry.domainBlacklist.length !== 1 ? 's' : ''}
                         </p>
                       )}
-                      <p className="text-xs text-muted-foreground/60 mt-1 opacity-0 group-hover:opacity-100 transition-opacity px-2">
+                      <p className="text-xs text-muted-foreground/60 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity px-1">
                         Click criteria to edit keywords & blacklist
                       </p>
                     </div>
@@ -572,7 +572,7 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
                   {!isInlineEditing && industry.isCustom && (
                     <div className="flex items-center justify-start">
                       {/* Custom Industry Badge */}
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground">
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-secondary text-secondary-foreground">
                         Custom
                       </span>
                     </div>
