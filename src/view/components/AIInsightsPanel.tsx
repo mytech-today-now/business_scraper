@@ -38,6 +38,20 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
   const [error, setError] = useState<string | null>(null)
 
   /**
+   * Safely get array property with fallback to empty array
+   */
+  const safeArray = (arr: any[] | undefined | null): any[] => {
+    return Array.isArray(arr) ? arr : []
+  }
+
+  /**
+   * Safely get number property with fallback to 0
+   */
+  const safeNumber = (num: number | undefined | null): number => {
+    return typeof num === 'number' && !isNaN(num) ? num : 0
+  }
+
+  /**
    * Load AI insights from API
    */
   const loadInsights = async (regenerate = false) => {
@@ -53,8 +67,18 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
       }
 
       const data = await response.json()
-      if (data.success) {
-        setInsights(data.data)
+      if (data.success && data.data) {
+        // Ensure all required arrays exist and are properly formatted
+        const normalizedInsights: AIInsightsSummary = {
+          totalAnalyzed: safeNumber(data.data.totalAnalyzed),
+          averageLeadScore: safeNumber(data.data.averageLeadScore),
+          highPriorityLeads: safeNumber(data.data.highPriorityLeads),
+          topIndustries: safeArray(data.data.topIndustries),
+          keyTrends: safeArray(data.data.keyTrends),
+          recommendations: safeArray(data.data.recommendations),
+          generatedAt: data.data.generatedAt ? new Date(data.data.generatedAt) : new Date()
+        }
+        setInsights(normalizedInsights)
         logger.info('AIInsightsPanel', 'Insights loaded successfully')
       } else {
         throw new Error(data.error || 'Failed to load insights')
@@ -88,8 +112,18 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
       }
 
       const data = await response.json()
-      if (data.success) {
-        setInsights(data.data)
+      if (data.success && data.data) {
+        // Ensure all required arrays exist and are properly formatted
+        const normalizedInsights: AIInsightsSummary = {
+          totalAnalyzed: safeNumber(data.data.totalAnalyzed),
+          averageLeadScore: safeNumber(data.data.averageLeadScore),
+          highPriorityLeads: safeNumber(data.data.highPriorityLeads),
+          topIndustries: safeArray(data.data.topIndustries),
+          keyTrends: safeArray(data.data.keyTrends),
+          recommendations: safeArray(data.data.recommendations),
+          generatedAt: data.data.generatedAt ? new Date(data.data.generatedAt) : new Date()
+        }
+        setInsights(normalizedInsights)
         logger.info('AIInsightsPanel', 'Insights generated successfully')
         if (onRefresh) onRefresh()
       } else {
@@ -181,6 +215,29 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
         </Card>
       )}
 
+      {/* No Data State */}
+      {!insights && !loading && !error && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No AI Insights Available</h3>
+              <p className="text-gray-500 mb-4">
+                Generate AI-powered insights to analyze your business data and get actionable recommendations.
+              </p>
+              <Button
+                variant="default"
+                onClick={generateInsights}
+                disabled={loading}
+              >
+                <Brain className="h-4 w-4 mr-2" />
+                Generate Insights
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Insights Content */}
       {insights && !loading && (
         <>
@@ -229,7 +286,7 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Industries</p>
-                    <p className="text-2xl font-bold">{insights.topIndustries.length}</p>
+                    <p className="text-2xl font-bold">{safeArray(insights?.topIndustries).length}</p>
                   </div>
                   <Target className="h-8 w-8 text-purple-600" />
                 </div>
@@ -246,23 +303,26 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {insights.topIndustries.length > 0 ? (
-                <div className="space-y-2">
-                  {insights.topIndustries.map((industry, index) => (
-                    <div key={industry} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <span className="flex items-center justify-center w-6 h-6 bg-blue-600 text-white text-sm font-bold rounded-full">
-                          {index + 1}
-                        </span>
-                        <span className="font-medium">{industry}</span>
+              {(() => {
+                const topIndustries = safeArray(insights?.topIndustries)
+                return topIndustries.length > 0 ? (
+                  <div className="space-y-2">
+                    {topIndustries.map((industry, index) => (
+                      <div key={`industry-${index}-${industry}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center justify-center w-6 h-6 bg-blue-600 text-white text-sm font-bold rounded-full">
+                            {index + 1}
+                          </span>
+                          <span className="font-medium">{industry || 'Unknown Industry'}</span>
+                        </div>
+                        <TrendingUp className="h-4 w-4 text-green-600" />
                       </div>
-                      <TrendingUp className="h-4 w-4 text-green-600" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No industry data available</p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">No industry data available</p>
+                )
+              })()}
             </CardContent>
           </Card>
 
@@ -275,18 +335,21 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {insights.keyTrends.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {insights.keyTrends.map((trend, index) => (
-                    <div key={index} className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                      <TrendingUp className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                      <span className="text-sm">{trend}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No trends identified yet</p>
-              )}
+              {(() => {
+                const keyTrends = safeArray(insights?.keyTrends)
+                return keyTrends.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {keyTrends.map((trend, index) => (
+                      <div key={`trend-${index}`} className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                        <TrendingUp className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <span className="text-sm">{trend || 'Unknown trend'}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">No trends identified yet</p>
+                )
+              })()}
             </CardContent>
           </Card>
 
@@ -299,59 +362,71 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {insights.recommendations.length > 0 ? (
-                <div className="space-y-3">
-                  {insights.recommendations.map((recommendation, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <Lightbulb className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{recommendation}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No recommendations available</p>
-              )}
+              {(() => {
+                const recommendations = safeArray(insights?.recommendations)
+                return recommendations.length > 0 ? (
+                  <div className="space-y-3">
+                    {recommendations.map((recommendation, index) => (
+                      <div key={`recommendation-${index}`} className="flex items-start gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <Lightbulb className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm">{recommendation || 'No recommendation text available'}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">No recommendations available</p>
+                )
+              })()}
             </CardContent>
           </Card>
 
           {/* Recent Analytics Preview */}
-          {businessAnalytics.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Recent Business Analytics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {businessAnalytics.slice(0, 5).map((analytics) => (
-                    <div key={analytics.businessId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        {getPriorityIcon(analytics.leadScoring.overallScore)}
-                        <div>
-                          <p className="font-medium">Business ID: {analytics.businessId}</p>
-                          <p className="text-sm text-gray-600">
-                            Generated: {new Date(analytics.generatedAt).toLocaleDateString()}
-                          </p>
+          {(() => {
+            const analytics = safeArray(businessAnalytics)
+            return analytics.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Recent Business Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {analytics.slice(0, 5).map((analyticsItem, index) => {
+                      const leadScore = safeNumber(analyticsItem?.leadScoring?.overallScore)
+                      const businessId = analyticsItem?.businessId || `business-${index}`
+                      const generatedAt = analyticsItem?.generatedAt ? new Date(analyticsItem.generatedAt) : new Date()
+
+                      return (
+                        <div key={`analytics-${businessId}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            {getPriorityIcon(leadScore)}
+                            <div>
+                              <p className="font-medium">Business ID: {businessId}</p>
+                              <p className="text-sm text-gray-600">
+                                Generated: {generatedAt.toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className={`font-bold ${getPriorityColor(leadScore)}`}>
+                              {leadScore}
+                            </p>
+                            <p className="text-sm text-gray-600">Lead Score</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className={`font-bold ${getPriorityColor(analytics.leadScoring.overallScore)}`}>
-                          {analytics.leadScoring.overallScore}
-                        </p>
-                        <p className="text-sm text-gray-600">Lead Score</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })()}
 
           {/* Last Updated */}
           <div className="text-center text-sm text-gray-500">
-            Last updated: {new Date(insights.generatedAt).toLocaleString()}
+            Last updated: {insights?.generatedAt ? new Date(insights.generatedAt).toLocaleString() : 'Unknown'}
           </div>
         </>
       )}

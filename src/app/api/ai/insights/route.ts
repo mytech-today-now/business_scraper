@@ -104,12 +104,25 @@ async function initializeServerDatabase() {
  */
 function generateMockInsights(): AIInsightsSummary {
   const currentDate = new Date()
-  const expiresAt = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000) // 24 hours from now
 
   return {
-    id: `mock-${Date.now()}`,
-    title: 'Business Intelligence Summary',
-    summary: 'Based on current industry trends and market analysis, we\'ve identified key opportunities for business growth. The brick & mortar retail sector shows strong potential, with local businesses experiencing increased foot traffic and customer engagement.',
+    totalAnalyzed: 25,
+    averageLeadScore: 72,
+    highPriorityLeads: 8,
+    topIndustries: [
+      'Retail & Shopping',
+      'Food & Restaurants',
+      'Professional Services',
+      'Healthcare',
+      'Technology'
+    ],
+    keyTrends: [
+      'Increased demand for local services',
+      'Growing emphasis on digital presence',
+      'Rising customer service expectations',
+      'Shift towards sustainable business practices',
+      'Mobile-first customer interactions'
+    ],
     recommendations: [
       'Focus on local retail stores and shopping centers for immediate opportunities',
       'Target food service establishments with strong community presence',
@@ -117,19 +130,7 @@ function generateMockInsights(): AIInsightsSummary {
       'Consider seasonal trends when planning outreach campaigns',
       'Leverage location-based marketing for better conversion rates'
     ],
-    dataSources: [
-      'Industry trend analysis',
-      'Local market research',
-      'Competitor analysis',
-      'Customer behavior patterns',
-      'Economic indicators'
-    ],
-    confidenceLevel: 'high',
-    impactScore: 0.85,
-    category: 'market_analysis',
-    tags: ['retail', 'local_business', 'market_trends', 'growth_opportunities'],
-    generatedAt: currentDate,
-    expiresAt: expiresAt
+    generatedAt: currentDate
   }
 }
 
@@ -149,22 +150,23 @@ export async function GET(request: NextRequest) {
 
       if (!regenerate) {
         // Try to get existing insights from PostgreSQL
-        const latestInsights = await db.getLatestAIInsights(1)
-        if (latestInsights.length > 0) {
-          const insight = latestInsights[0]
-          insights = {
-            id: insight.id,
-            title: insight.title,
-            summary: insight.summary,
-            recommendations: insight.recommendations || [],
-            dataSources: insight.dataSources || [],
-            confidenceLevel: insight.confidenceLevel || 'medium',
-            impactScore: insight.impactScore || 0.0,
-            category: insight.category || 'general',
-            tags: insight.tags || [],
-            generatedAt: insight.createdAt,
-            expiresAt: insight.expiresAt
+        try {
+          const latestInsights = await db.getLatestAIInsights(1)
+          if (latestInsights.length > 0) {
+            const insight = latestInsights[0]
+            // Convert database format to AIInsightsSummary format
+            insights = {
+              totalAnalyzed: insight.totalAnalyzed || 0,
+              averageLeadScore: insight.averageLeadScore || 0,
+              highPriorityLeads: insight.highPriorityLeads || 0,
+              topIndustries: Array.isArray(insight.topIndustries) ? insight.topIndustries : [],
+              keyTrends: Array.isArray(insight.keyTrends) ? insight.keyTrends : [],
+              recommendations: Array.isArray(insight.recommendations) ? insight.recommendations : [],
+              generatedAt: insight.createdAt || new Date()
+            }
           }
+        } catch (dbQueryError) {
+          logger.warn('AI API', 'Failed to query existing insights, will generate new ones', dbQueryError)
         }
       }
 
@@ -172,18 +174,28 @@ export async function GET(request: NextRequest) {
         // Generate new insights
         insights = await generateInsightsSummary()
 
-        // Save to PostgreSQL
-        await db.saveAIInsights({
-          title: insights.title,
-          summary: insights.summary,
-          recommendations: insights.recommendations,
-          dataSources: insights.dataSources,
-          confidenceLevel: insights.confidenceLevel,
-          impactScore: insights.impactScore,
-          category: insights.category,
-          tags: insights.tags,
-          expiresAt: insights.expiresAt
-        })
+        // Save to PostgreSQL (convert AIInsightsSummary to database format)
+        try {
+          await db.saveAIInsights({
+            title: 'AI Insights Summary',
+            summary: `Generated insights for ${insights.totalAnalyzed} businesses with average lead score of ${insights.averageLeadScore}`,
+            recommendations: insights.recommendations,
+            dataSources: ['Business analytics', 'Lead scoring', 'Industry trends'],
+            confidenceLevel: 'high',
+            impactScore: insights.averageLeadScore / 100,
+            category: 'business_intelligence',
+            tags: ['ai_insights', 'lead_scoring', 'business_analytics'],
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+            // Store additional AIInsightsSummary data in a custom field if supported
+            totalAnalyzed: insights.totalAnalyzed,
+            averageLeadScore: insights.averageLeadScore,
+            highPriorityLeads: insights.highPriorityLeads,
+            topIndustries: insights.topIndustries,
+            keyTrends: insights.keyTrends
+          })
+        } catch (dbSaveError) {
+          logger.warn('AI API', 'Failed to save insights to database', dbSaveError)
+        }
       }
     } catch (dbError) {
       // Database connection failed, use mock data for development
@@ -231,18 +243,28 @@ export async function POST(request: NextRequest) {
       // Generate insights
       insights = await generateInsightsSummary()
 
-      // Save insights to PostgreSQL
-      await db.saveAIInsights({
-        title: insights.title,
-        summary: insights.summary,
-        recommendations: insights.recommendations,
-        dataSources: insights.dataSources,
-        confidenceLevel: insights.confidenceLevel,
-        impactScore: insights.impactScore,
-        category: insights.category,
-        tags: insights.tags,
-        expiresAt: insights.expiresAt
-      })
+      // Save insights to PostgreSQL (convert AIInsightsSummary to database format)
+      try {
+        await db.saveAIInsights({
+          title: 'AI Insights Summary',
+          summary: `Generated insights for ${insights.totalAnalyzed} businesses with average lead score of ${insights.averageLeadScore}`,
+          recommendations: insights.recommendations,
+          dataSources: ['Business analytics', 'Lead scoring', 'Industry trends'],
+          confidenceLevel: 'high',
+          impactScore: insights.averageLeadScore / 100,
+          category: 'business_intelligence',
+          tags: ['ai_insights', 'lead_scoring', 'business_analytics'],
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+          // Store additional AIInsightsSummary data in a custom field if supported
+          totalAnalyzed: insights.totalAnalyzed,
+          averageLeadScore: insights.averageLeadScore,
+          highPriorityLeads: insights.highPriorityLeads,
+          topIndustries: insights.topIndustries,
+          keyTrends: insights.keyTrends
+        })
+      } catch (dbSaveError) {
+        logger.warn('AI API', 'Failed to save insights to database', dbSaveError)
+      }
     } catch (dbError) {
       // Database connection failed, use mock data for development
       logger.warn('AI API', 'Database connection failed, generating mock insights', dbError)
@@ -330,23 +352,42 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
       .slice(0, 5)
       .map(item => item.industry)
 
-    // Initialize predictive analytics engine
-    if (!predictiveAnalyticsEngine.isInitialized()) {
-      await predictiveAnalyticsEngine.initialize()
-    }
-
-    // Analyze trends for top industries
+    // Generate key trends (simplified approach for now)
     const keyTrends: string[] = []
-    for (const industry of topIndustries.slice(0, 3)) {
-      try {
-        const trendAnalysis = await predictiveAnalyticsEngine.analyzeIndustryTrends(industry)
-        if (trendAnalysis.trendDirection === 'growing') {
-          keyTrends.push(`${industry} industry showing growth trend`)
-        }
-        keyTrends.push(...trendAnalysis.insights.emergingKeywords.slice(0, 2))
-      } catch (error) {
-        logger.warn('AI API', `Failed to analyze trends for ${industry}`, error)
+
+    try {
+      // Try to use predictive analytics engine if available
+      const { predictiveAnalyticsEngine } = await import('@/lib/aiLeadScoringService')
+
+      if (predictiveAnalyticsEngine && !predictiveAnalyticsEngine.isInitialized()) {
+        await predictiveAnalyticsEngine.initialize()
       }
+
+      // Analyze trends for top industries
+      for (const industry of topIndustries.slice(0, 3)) {
+        try {
+          if (predictiveAnalyticsEngine) {
+            const trendAnalysis = await predictiveAnalyticsEngine.analyzeIndustryTrends(industry)
+            if (trendAnalysis.trendDirection === 'growing') {
+              keyTrends.push(`${industry} industry showing growth trend`)
+            }
+            keyTrends.push(...trendAnalysis.insights.emergingKeywords.slice(0, 2))
+          }
+        } catch (error) {
+          logger.warn('AI API', `Failed to analyze trends for ${industry}`, error)
+        }
+      }
+    } catch (importError) {
+      logger.warn('AI API', 'Predictive analytics engine not available, using fallback trends', importError)
+
+      // Fallback trends when analytics engine is not available
+      keyTrends.push(
+        'Digital transformation accelerating across industries',
+        'Increased focus on customer experience',
+        'Growing demand for sustainable business practices',
+        'Remote work driving technology adoption',
+        'Local businesses emphasizing community engagement'
+      )
     }
 
     // Generate recommendations
