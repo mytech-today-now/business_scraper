@@ -33,6 +33,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
 import { Input } from '@/view/components/ui/Input'
+import { VirtualizedResultsTable } from '@/view/components/VirtualizedResultsTable'
 import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
 
@@ -76,6 +77,7 @@ export function AdvancedResultsDashboard() {
   const [filteredBusinesses, setFilteredBusinesses] = useState<BusinessRecord[]>([])
   const [selectedBusinesses, setSelectedBusinesses] = useState<Set<string>>(new Set())
   const [viewMode, setViewMode] = useState<'table' | 'grid' | 'map'>('table')
+  const [useVirtualScrolling, setUseVirtualScrolling] = useState(true)
   const [showVisualization, setShowVisualization] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   
@@ -544,7 +546,28 @@ export function AdvancedResultsDashboard() {
               <Map className="h-4 w-4" />
             </Button>
           </div>
-          
+
+          {/* Virtual Scrolling Toggle (only show for table view) */}
+          {viewMode === 'table' && (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Performance:</span>
+              <Button
+                variant={useVirtualScrolling ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseVirtualScrolling(true)}
+              >
+                Virtual
+              </Button>
+              <Button
+                variant={!useVirtualScrolling ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseVirtualScrolling(false)}
+              >
+                Traditional
+              </Button>
+            </div>
+          )}
+
           <select
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
@@ -601,14 +624,46 @@ export function AdvancedResultsDashboard() {
 
       {/* Results Display */}
       {viewMode === 'table' ? (
-        <ResultsTable
-          businesses={paginatedBusinesses}
-          selectedBusinesses={selectedBusinesses}
-          onToggleSelection={toggleBusinessSelection}
-          sortConfig={sortConfig}
-          onSort={setSortConfig}
-          annotations={annotations}
-        />
+        useVirtualScrolling ? (
+          <VirtualizedResultsTable
+            onEdit={(business) => {
+              // Handle business edit
+              const updatedBusinesses = businesses.map(b =>
+                b.id === business.id ? business : b
+              )
+              setBusinesses(updatedBusinesses)
+            }}
+            onDelete={(businessId) => {
+              const updatedBusinesses = businesses.filter(b => b.id !== businessId)
+              setBusinesses(updatedBusinesses)
+            }}
+            onExport={(exportBusinesses) => {
+              // Handle export
+              console.log('Exporting businesses:', exportBusinesses.length)
+            }}
+            isLoading={isLoading}
+            height={600}
+            initialFilters={{
+              search: searchQuery,
+              industry: '',
+              hasEmail: undefined,
+              hasPhone: undefined
+            }}
+            initialSort={{
+              field: 'scrapedAt',
+              order: 'desc'
+            }}
+          />
+        ) : (
+          <ResultsTable
+            businesses={paginatedBusinesses}
+            selectedBusinesses={selectedBusinesses}
+            onToggleSelection={toggleBusinessSelection}
+            sortConfig={sortConfig}
+            onSort={setSortConfig}
+            annotations={annotations}
+          />
+        )
       ) : viewMode === 'grid' ? (
         <ResultsGrid
           businesses={paginatedBusinesses}

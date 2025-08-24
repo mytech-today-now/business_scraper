@@ -1,6 +1,7 @@
 'use client'
 
 import { ConfigProvider } from '@/controller/ConfigContext'
+import { PerformanceProvider } from '@/controller/PerformanceContext'
 import { App } from '@/view/components/App'
 
 /**
@@ -10,7 +11,9 @@ import { App } from '@/view/components/App'
 export default function HomePage(): JSX.Element {
   return (
     <ConfigProvider>
-      <App />
+      <PerformanceProvider>
+        <App />
+      </PerformanceProvider>
     </ConfigProvider>
   )
 }

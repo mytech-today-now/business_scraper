@@ -40,6 +40,9 @@ export interface ScrapingState {
   stats: ScrapingStats | null
   errors: string[]
   processingSteps: ProcessingStep[]
+  sessionId: string
+  isStreamingEnabled: boolean
+  canStopEarly: boolean
 }
 
 /**
@@ -50,6 +53,7 @@ export function useScraperController(): {
   scrapingState: ScrapingState
   startScraping: () => Promise<void>
   stopScraping: () => void
+  stopEarly: () => void
   clearResults: () => void
   removeBusiness: (id: string) => void
   updateBusiness: (id: string, updates: Partial<BusinessRecord>) => void
@@ -72,11 +76,16 @@ export function useScraperController(): {
     stats: null,
     errors: [],
     processingSteps: [],
+    sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    isStreamingEnabled: true,
+    canStopEarly: false,
   })
   
   // Refs for managing scraping process
   const abortControllerRef = useRef<AbortController | null>(null)
   const sessionIdRef = useRef<string | null>(null)
+  const wsRef = useRef<WebSocket | null>(null)
+  const isStoppedEarlyRef = useRef<boolean>(false)
 
   /**
    * Initialize scraper service when component mounts
@@ -170,6 +179,113 @@ export function useScraperController(): {
   }, [])
 
   /**
+   * Connect to WebSocket for real-time streaming
+   */
+  const connectWebSocket = useCallback(() => {
+    if (wsRef.current) {
+      wsRef.current.close()
+    }
+
+    try {
+      const wsUrl = `ws://localhost:3001/ws/streaming?sessionId=${scrapingState.sessionId}`
+      wsRef.current = new WebSocket(wsUrl)
+
+      wsRef.current.onopen = () => {
+        logger.info('ScraperController', 'WebSocket connected for real-time streaming')
+      }
+
+      wsRef.current.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data)
+          handleRealtimeUpdate(data)
+        } catch (error) {
+          logger.error('ScraperController', 'Failed to parse WebSocket message', error)
+        }
+      }
+
+      wsRef.current.onclose = () => {
+        logger.info('ScraperController', 'WebSocket disconnected')
+      }
+
+      wsRef.current.onerror = (error) => {
+        logger.error('ScraperController', 'WebSocket error', error)
+      }
+    } catch (error) {
+      logger.error('ScraperController', 'Failed to connect WebSocket', error)
+    }
+  }, [scrapingState.sessionId])
+
+  /**
+   * Handle real-time updates from WebSocket
+   */
+  const handleRealtimeUpdate = useCallback((data: any) => {
+    switch (data.type) {
+      case 'result':
+        if (data.data) {
+          // Add single result immediately
+          setScrapingState(prev => ({
+            ...prev,
+            results: [...prev.results, data.data],
+            canStopEarly: true, // Enable stop early once we have results
+          }))
+          logger.info('ScraperController', `Received real-time result: ${data.data.businessName}`)
+        }
+        break
+
+      case 'progress':
+        if (data.progress) {
+          setScrapingState(prev => ({
+            ...prev,
+            progress: {
+              current: data.progress.processed || prev.progress.current,
+              total: data.progress.totalFound || prev.progress.total,
+              percentage: data.progress.percentage || prev.progress.percentage,
+            },
+            currentUrl: data.progress.currentUrl || prev.currentUrl,
+          }))
+        }
+        break
+
+      case 'error':
+        if (data.error) {
+          setScrapingState(prev => ({
+            ...prev,
+            errors: [...prev.errors, data.error],
+          }))
+        }
+        break
+
+      case 'complete':
+        setScrapingState(prev => ({
+          ...prev,
+          isScrapingActive: false,
+          canStopEarly: false,
+        }))
+        toast.success('Scraping completed!')
+        break
+
+      case 'stopped':
+        setScrapingState(prev => ({
+          ...prev,
+          isScrapingActive: false,
+          canStopEarly: false,
+        }))
+        toast.info('Scraping stopped by user')
+        break
+    }
+  }, [])
+
+  /**
+   * Disconnect WebSocket
+   */
+  const disconnectWebSocket = useCallback(() => {
+    if (wsRef.current) {
+      wsRef.current.close()
+      wsRef.current = null
+    }
+  }, [])
+
+  /**
    * Start scraping process
    */
   const startScraping = useCallback(async () => {
@@ -185,7 +301,9 @@ export function useScraperController(): {
 
     try {
       // Initialize scraping state
-      setScrapingState({
+      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      setScrapingState(prev => ({
+        ...prev,
         isScrapingActive: true,
         currentUrl: '',
         progress: { current: 0, total: 0, percentage: 0 },
@@ -193,13 +311,15 @@ export function useScraperController(): {
         stats: null,
         errors: [],
         processingSteps: [],
-      })
+        sessionId: newSessionId,
+        canStopEarly: false,
+      }))
 
       // Create abort controller
       abortControllerRef.current = new AbortController()
 
       // Create session
-      sessionIdRef.current = `session-${Date.now()}`
+      sessionIdRef.current = newSessionId
 
       // Add initialization step
       addProcessingStep({
@@ -207,6 +327,30 @@ export function useScraperController(): {
         status: 'running',
         details: 'Connecting to live web services'
       })
+
+      // Start WebSocket server
+      try {
+        const wsResponse = await fetch('/api/websocket', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'start' })
+        })
+
+        if (!wsResponse.ok) {
+          throw new Error('Failed to start WebSocket server')
+        }
+
+        // Connect to WebSocket for real-time streaming
+        connectWebSocket()
+
+        // Wait a moment for connection to establish
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      } catch (error) {
+        logger.warn('ScraperController', 'Failed to start WebSocket server, continuing without real-time streaming', error)
+      }
+
+      // Set session ID on scraper service
+      scraperService.setSessionId(newSessionId)
 
       // Initialize scraper service
       await scraperService.initialize()
@@ -573,6 +717,42 @@ export function useScraperController(): {
   }, [scrapingState.isScrapingActive, addProcessingStep, updateProcessingStep])
 
   /**
+   * Stop scraping early (user satisfaction with current results)
+   */
+  const stopEarly = useCallback(() => {
+    if (scrapingState.isScrapingActive && scrapingState.canStopEarly) {
+      isStoppedEarlyRef.current = true
+
+      // Send stop signal via WebSocket
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'stop_session',
+          sessionId: scrapingState.sessionId
+        }))
+      }
+
+      // Update UI state
+      setScrapingState(prev => ({
+        ...prev,
+        isScrapingActive: false,
+        canStopEarly: false,
+        currentUrl: 'Stopped early by user',
+      }))
+
+      // Abort the scraping process
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+
+      // Disconnect WebSocket
+      disconnectWebSocket()
+
+      toast.success(`Scraping stopped early. Found ${scrapingState.results.length} results.`)
+      logger.info('ScraperController', `Scraping stopped early by user with ${scrapingState.results.length} results`)
+    }
+  }, [scrapingState.isScrapingActive, scrapingState.canStopEarly, scrapingState.sessionId, scrapingState.results.length, disconnectWebSocket])
+
+  /**
    * Clear results
    */
   const clearResults = useCallback(() => {
@@ -662,6 +842,7 @@ export function useScraperController(): {
     // Actions
     startScraping,
     stopScraping,
+    stopEarly,
     clearResults,
     removeBusiness,
     updateBusiness,

@@ -14,15 +14,19 @@ import {
   RotateCcw,
   Search,
   Info,
-  Brain
+  Brain,
+  StopCircle
 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
+import { PerformanceProvider } from '@/controller/PerformanceContext'
 import { useScraperController } from '@/controller/useScraperController'
 import { CategorySelector } from './CategorySelector'
 import { ResultsTable } from './ResultsTable'
+import { VirtualizedResultsTable } from './VirtualizedResultsTable'
 import { ProcessingWindow } from './ProcessingWindow'
 import { ApiConfigurationPage } from './ApiConfigurationPage'
 import { AIInsightsPanel } from './AIInsightsPanel'
+import { MemoryDashboard } from './MemoryDashboard'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
@@ -315,6 +319,7 @@ function ScrapingPanel(): JSX.Element {
     scrapingState,
     startScraping,
     stopScraping,
+    stopEarly,
     clearResults,
     loadPreviousResults,
     removeBusiness,
@@ -328,6 +333,9 @@ function ScrapingPanel(): JSX.Element {
   const [showExportOptions, setShowExportOptions] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [showProcessingWindow, setShowProcessingWindow] = useState(true)
+
+  // Virtual scrolling toggle
+  const [useVirtualScrolling, setUseVirtualScrolling] = useState(true)
 
   // Error handling for the scraping panel
   const exportErrorHandling = useErrorHandling({
@@ -441,14 +449,26 @@ function ScrapingPanel(): JSX.Element {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             {scrapingState.isScrapingActive ? (
-              <Button
-                variant="destructive"
-                icon={Square}
-                onClick={stopScraping}
-                className="animate-pulse"
-              >
-                Stop Scraping
-              </Button>
+              <>
+                <Button
+                  variant="destructive"
+                  icon={Square}
+                  onClick={stopScraping}
+                  className="animate-pulse"
+                >
+                  Stop Scraping
+                </Button>
+                {scrapingState.canStopEarly && (
+                  <Button
+                    variant="outline"
+                    icon={StopCircle}
+                    onClick={stopEarly}
+                    className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                  >
+                    Stop Early ({scrapingState.results.length} found)
+                  </Button>
+                )}
+              </>
             ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
               <Button
                 variant="outline"
@@ -496,7 +516,7 @@ function ScrapingPanel(): JSX.Element {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>
-                  {scrapingState.currentUrl === 'Stopping scraping...' ? 'Stopping' : 'Progress'}
+                  {scrapingState.currentUrl === 'Stopping scraping...' ? 'Stopping' : 'Real-Time Progress'}
                 </span>
                 <span>
                   {scrapingState.currentUrl === 'Stopping scraping...'
@@ -505,6 +525,19 @@ function ScrapingPanel(): JSX.Element {
                   }
                 </span>
               </div>
+
+              {/* Real-time results counter */}
+              {scrapingState.isStreamingEnabled && scrapingState.results.length > 0 && (
+                <div className="flex items-center justify-between text-xs text-green-600 dark:text-green-400">
+                  <span className="flex items-center gap-1">
+                    <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+                    Live Results Streaming
+                  </span>
+                  <span className="font-medium">
+                    {scrapingState.results.length} businesses found
+                  </span>
+                </div>
+              )}
               <div className="w-full bg-secondary rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
@@ -649,14 +682,41 @@ function ScrapingPanel(): JSX.Element {
 
       {/* Results Table */}
       {hasResults && (
-        <ResultsTable
-          businesses={scrapingState.results}
-          onEdit={updateBusiness}
-          onDelete={removeBusiness}
-          onExport={handleExport}
-          isLoading={scrapingState.isScrapingActive}
-          isExporting={isExporting}
-        />
+        <div className="space-y-4">
+          {/* Table Mode Toggle */}
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Business Results ({scrapingState.results.length.toLocaleString()})</h3>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Table Mode:</span>
+              <Button
+                variant={useVirtualScrolling ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseVirtualScrolling(true)}
+              >
+                Virtual (High Performance)
+              </Button>
+              <Button
+                variant={!useVirtualScrolling ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseVirtualScrolling(false)}
+              >
+                Traditional
+              </Button>
+            </div>
+          </div>
+
+          {/* Smart Performance Mode Table Rendering */}
+          <PerformanceProvider datasetSize={scrapingState.results.length}>
+            <ResultsTable
+              businesses={scrapingState.results}
+              onEdit={updateBusiness}
+              onDelete={removeBusiness}
+              onExport={handleExport}
+              isLoading={scrapingState.isScrapingActive}
+              isExporting={isExporting}
+            />
+          </PerformanceProvider>
+        </div>
       )}
     </div>
   )
@@ -786,6 +846,13 @@ export function App(): JSX.Element {
                   AI Insights
                 </Button>
                 <Button
+                  variant={activeTab === 'memory' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setActiveTab('memory')}
+                >
+                  Memory
+                </Button>
+                <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowResetDialog(true)}
@@ -805,18 +872,21 @@ export function App(): JSX.Element {
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon">
-                <FileText className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowApiConfig(true)}
-                title="API Configuration"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
+            <div className="flex items-center gap-4">
+              <MemoryDashboard compact className="hidden md:flex" />
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon">
+                  <FileText className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowApiConfig(true)}
+                  title="API Configuration"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -829,6 +899,8 @@ export function App(): JSX.Element {
             <ConfigurationPanel />
           ) : activeTab === 'scraping' ? (
             <ScrapingPanel />
+          ) : activeTab === 'memory' ? (
+            <MemoryDashboard />
           ) : (
             <AIInsightsPanel />
           )}

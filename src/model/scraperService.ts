@@ -8,6 +8,9 @@ import { searchEngine } from './searchEngine'
 import { logger } from '@/utils/logger'
 import { CONTACT_KEYWORDS } from '@/lib/industry-config'
 import { enhancedScrapingEngine, ScrapingJob } from '@/lib/enhancedScrapingEngine'
+import { webSocketServer } from '@/lib/websocket-server'
+import { memoryMonitor } from '@/lib/memory-monitor'
+import { memoryCleanup } from '@/lib/memory-cleanup'
 
 /**
  * Interface for scraping statistics
@@ -64,9 +67,24 @@ export class ScraperService {
   private browser: Browser | null = null
   private stats: ScrapingStats | null = null
   private demoMode: boolean = false
+  private sessionId: string = 'default'
 
   constructor(config: Partial<ScraperConfig> = {}) {
     this.config = { ...DEFAULT_SCRAPER_CONFIG, ...config }
+  }
+
+  /**
+   * Set session ID for WebSocket streaming
+   */
+  setSessionId(sessionId: string): void {
+    this.sessionId = sessionId
+  }
+
+  /**
+   * Get current session ID
+   */
+  getSessionId(): string {
+    return this.sessionId
   }
 
   /**
@@ -103,6 +121,16 @@ export class ScraperService {
         ],
       })
       logger.info('Scraper', 'Browser initialized successfully')
+
+      // Start memory monitoring
+      if (!memoryMonitor.isActive()) {
+        memoryMonitor.startMonitoring()
+        logger.info('Scraper', 'Memory monitoring started')
+      }
+
+      // Start auto cleanup
+      memoryCleanup.startAutoCleanup()
+
     } catch (error) {
       logger.error('Scraper', 'Failed to initialize browser', error)
       throw error
@@ -118,6 +146,15 @@ export class ScraperService {
       this.browser = null
       logger.info('Scraper', 'Browser closed')
     }
+
+    // Stop memory monitoring and cleanup
+    memoryMonitor.stopMonitoring()
+    memoryCleanup.stopAutoCleanup()
+
+    // Perform final cleanup
+    await memoryCleanup.performAutomaticCleanup()
+
+    logger.info('Scraper', 'Memory cleanup completed')
   }
 
   /**
@@ -337,6 +374,13 @@ export class ScraperService {
 
           businesses.push(business)
           logger.info('Scraper', `Extracted business data from ${url}`)
+
+          // Emit result in real-time via WebSocket
+          try {
+            webSocketServer.broadcastResult(this.sessionId, business)
+          } catch (error) {
+            logger.warn('Scraper', 'Failed to broadcast result via WebSocket', error)
+          }
         }
       } catch (error) {
         logger.error('Scraper', `Failed to extract data from ${url}`, error)

@@ -4,6 +4,7 @@ import { openDB, DBSchema, IDBPDatabase } from 'idb'
 import { BusinessRecord, ScrapingConfig, IndustryCategory } from '@/types/business'
 import { PredictiveAnalytics, AIProcessingJob, AIInsightsSummary } from '@/types/ai'
 import { logger } from '@/utils/logger'
+import { DataCompression, CompressedData } from '@/lib/data-compression'
 
 /**
  * Database schema interface
@@ -226,7 +227,11 @@ export class StorageService {
   async saveBusiness(business: BusinessRecord): Promise<void> {
     try {
       const db = await this.getDatabase()
-      await db.put('businesses', business)
+
+      // Compress business data before storing
+      const compressedBusiness = DataCompression.compress(business)
+
+      await db.put('businesses', compressedBusiness as any)
       logger.info('Storage', `Saved business: ${business.businessName}`)
     } catch (error) {
       logger.error('Storage', 'Failed to save business', error)
@@ -243,11 +248,14 @@ export class StorageService {
       const db = await this.getDatabase()
       const tx = db.transaction('businesses', 'readwrite')
 
+      // Compress businesses in batches for better performance
+      const compressedBusinesses = DataCompression.batchCompress(businesses)
+
       await Promise.all([
-        ...businesses.map(business => tx.store.put(business)),
+        ...compressedBusinesses.map(business => tx.store.put(business as any)),
         tx.done,
       ])
-      logger.info('Storage', `Saved ${businesses.length} businesses`)
+      logger.info('Storage', `Saved ${businesses.length} businesses with compression`)
     } catch (error) {
       logger.error('Storage', 'Failed to save businesses', error)
       throw error
@@ -261,7 +269,11 @@ export class StorageService {
   async getAllBusinesses(): Promise<BusinessRecord[]> {
     await this.ensureInitialized()
     try {
-      const businesses = await this.db!.getAll('businesses')
+      const compressedBusinesses = await this.db!.getAll('businesses')
+
+      // Decompress businesses
+      const businesses = DataCompression.batchDecompress(compressedBusinesses)
+
       return businesses.sort((a, b) => b.scrapedAt.getTime() - a.scrapedAt.getTime())
     } catch (error) {
       logger.error('Storage', 'Failed to get businesses', error)
@@ -277,8 +289,12 @@ export class StorageService {
   async getBusiness(id: string): Promise<BusinessRecord | null> {
     await this.ensureInitialized()
     try {
-      const business = await this.db!.get('businesses', id)
-      return business || null
+      const compressedBusiness = await this.db!.get('businesses', id)
+      if (!compressedBusiness) return null
+
+      // Decompress business data
+      const business = DataCompression.decompress(compressedBusiness)
+      return business
     } catch (error) {
       logger.error('Storage', 'Failed to get business', error)
       return null

@@ -46,6 +46,7 @@ export function SettingsPanel() {
   const sections = [
     { id: 'general', label: 'General', icon: Settings },
     { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'performance', label: 'Performance', icon: Zap },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'accessibility', label: 'Accessibility', icon: Accessibility },
     { id: 'keyboard', label: 'Keyboard', icon: Keyboard },
@@ -211,6 +212,13 @@ export function SettingsPanel() {
 
           {activeSection === 'appearance' && (
             <AppearanceSettings
+              preferences={localPreferences}
+              onChange={handlePreferenceChange}
+            />
+          )}
+
+          {activeSection === 'performance' && (
+            <PerformanceSettings
               preferences={localPreferences}
               onChange={handlePreferenceChange}
             />
@@ -613,6 +621,149 @@ function PrivacySettings({ preferences, onChange }: {
               <Button variant="destructive" size="sm">
                 Delete All Data
               </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function PerformanceSettings({ preferences, onChange }: {
+  preferences: UserPreferences
+  onChange: (path: string, value: any) => void
+}) {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Zap className="h-5 w-5 mr-2" />
+            Performance Optimization
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="text-sm font-medium">Auto-Detection</label>
+              <p className="text-xs text-gray-500">Automatically optimize performance based on dataset size</p>
+            </div>
+            <input
+              type="checkbox"
+              checked={preferences.performance.autoDetection}
+              onChange={(e) => onChange('performance.autoDetection', e.target.checked)}
+              className="rounded"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="text-sm font-medium">Performance Monitoring</label>
+              <p className="text-xs text-gray-500">Monitor memory usage and performance metrics</p>
+            </div>
+            <input
+              type="checkbox"
+              checked={preferences.performance.enableMonitoring}
+              onChange={(e) => onChange('performance.enableMonitoring', e.target.checked)}
+              className="rounded"
+            />
+          </div>
+
+          <div className="pt-4 border-t">
+            <h4 className="text-sm font-medium mb-3">Rendering Preferences</h4>
+
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <label className="text-sm font-medium">Force Disable Virtualization</label>
+                <p className="text-xs text-gray-500">Never use virtualized rendering, even for large datasets</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={preferences.performance.forceDisableVirtualization}
+                onChange={(e) => onChange('performance.forceDisableVirtualization', e.target.checked)}
+                className="rounded"
+              />
+            </div>
+
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <label className="text-sm font-medium">Force Enable Pagination</label>
+                <p className="text-xs text-gray-500">Always use pagination for medium to large datasets</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={preferences.performance.forceEnablePagination}
+                onChange={(e) => onChange('performance.forceEnablePagination', e.target.checked)}
+                className="rounded"
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-sm font-medium">Page Size</label>
+                <p className="text-xs text-gray-500">Number of items per page in pagination mode</p>
+              </div>
+              <select
+                value={preferences.performance.pageSize}
+                onChange={(e) => onChange('performance.pageSize', Number(e.target.value))}
+                className="border rounded px-2 py-1 text-sm bg-background"
+              >
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value={200}>200</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t">
+            <h4 className="text-sm font-medium mb-3">Performance Thresholds</h4>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium">Advisory Threshold</label>
+                  <p className="text-xs text-gray-500">Show performance advisory at this count</p>
+                </div>
+                <Input
+                  type="number"
+                  value={preferences.performance.customThresholds.advisory}
+                  onChange={(e) => onChange('performance.customThresholds.advisory', Number(e.target.value))}
+                  className="w-20 text-sm"
+                  min={100}
+                  max={10000}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium">Pagination Threshold</label>
+                  <p className="text-xs text-gray-500">Prompt for pagination at this count</p>
+                </div>
+                <Input
+                  type="number"
+                  value={preferences.performance.customThresholds.pagination}
+                  onChange={(e) => onChange('performance.customThresholds.pagination', Number(e.target.value))}
+                  className="w-20 text-sm"
+                  min={500}
+                  max={25000}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium">Virtualization Threshold</label>
+                  <p className="text-xs text-gray-500">Auto-switch to virtualization at this count</p>
+                </div>
+                <Input
+                  type="number"
+                  value={preferences.performance.customThresholds.virtualization}
+                  onChange={(e) => onChange('performance.customThresholds.virtualization', Number(e.target.value))}
+                  className="w-20 text-sm"
+                  min={1000}
+                  max={50000}
+                />
+              </div>
             </div>
           </div>
         </CardContent>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, Suspense } from 'react'
 import {
   Download,
   Edit,
@@ -12,7 +12,9 @@ import {
   SortDesc,
   Eye,
   EyeOff,
-  FileText
+  FileText,
+  Zap,
+  Activity
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
@@ -30,6 +32,12 @@ import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
 import { ExportTemplateManager } from './ExportTemplateManager'
 import { ExportTemplate } from '@/utils/exportService'
+import { usePerformance } from '@/controller/PerformanceContext'
+import { PerformanceAdvisoryBanner, PerformanceModePrompt } from './PerformanceAdvisoryBanner'
+
+// Dynamic imports for performance optimization
+const VirtualizedResultsTable = React.lazy(() => import('./VirtualizedResultsTable').then(module => ({ default: module.VirtualizedResultsTable })))
+const PaginatedResultsTable = React.lazy(() => import('./PaginatedResultsTable').then(module => ({ default: module.PaginatedResultsTable })))
 
 /**
  * Column definition interface
@@ -104,6 +112,9 @@ export function ResultsTable({
   isLoading = false,
   isExporting = false
 }: ResultsTableProps): JSX.Element {
+  // Performance context
+  const { mode, showAdvisoryBanner, showPaginationPrompt } = usePerformance()
+
   // State management
   const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' })
@@ -518,12 +529,56 @@ export function ResultsTable({
   const allSelected = selectedRows.size === filteredAndSortedBusinesses.length && filteredAndSortedBusinesses.length > 0
   const someSelected = selectedRows.size > 0
 
-  return (
-    <>
+  // Dynamic rendering based on performance mode
+  const renderTable = () => {
+    switch (mode) {
+      case 'virtualized':
+        return (
+          <Suspense fallback={<div className="p-8 text-center">Loading virtualized view...</div>}>
+            <VirtualizedResultsTable
+              businesses={filteredAndSortedBusinesses}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onExport={onExport}
+              isLoading={isLoading}
+              isExporting={isExporting}
+            />
+          </Suspense>
+        )
+
+      case 'pagination':
+        return (
+          <Suspense fallback={<div className="p-8 text-center">Loading paginated view...</div>}>
+            <PaginatedResultsTable
+              businesses={filteredAndSortedBusinesses}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onExport={onExport}
+              isLoading={isLoading}
+              isExporting={isExporting}
+            />
+          </Suspense>
+        )
+
+      default:
+        // Normal table rendering for small datasets
+        return renderNormalTable()
+    }
+  }
+
+  const renderNormalTable = () => (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Business Results ({filteredAndSortedBusinesses.length})</span>
+          <div className="flex items-center gap-2">
+            <span>Business Results ({filteredAndSortedBusinesses.length})</span>
+            {mode === 'advisory' && (
+              <div className="flex items-center gap-1 text-yellow-600">
+                <Activity className="h-4 w-4" />
+                <span className="text-xs">Performance Mode</span>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             {/* Export Button */}
             {onExport && (
@@ -859,19 +914,31 @@ export function ResultsTable({
         {/* Pagination could be added here for large datasets */}
       </CardContent>
     </Card>
+  )
 
-    {/* Export Template Manager */}
-    {showTemplateManager && (
-      <ExportTemplateManager
-        onTemplateSelect={(template) => {
-          setShowTemplateManager(false)
-          if (onExport) {
-            onExport('csv', undefined, template)
-          }
-        }}
-        onClose={() => setShowTemplateManager(false)}
-      />
-    )}
-  </>
+  return (
+    <>
+      {/* Performance Advisory Banner */}
+      <PerformanceAdvisoryBanner />
+
+      {/* Performance Mode Prompt */}
+      <PerformanceModePrompt />
+
+      {/* Dynamic Table Rendering */}
+      {renderTable()}
+
+      {/* Export Template Manager */}
+      {showTemplateManager && (
+        <ExportTemplateManager
+          onTemplateSelect={(template) => {
+            setShowTemplateManager(false)
+            if (onExport) {
+              onExport('csv', undefined, template)
+            }
+          }}
+          onClose={() => setShowTemplateManager(false)}
+        />
+      )}
+    </>
   )
 }

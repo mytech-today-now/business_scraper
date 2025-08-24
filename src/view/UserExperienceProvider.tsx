@@ -32,6 +32,19 @@ export interface UserPreferences {
     keyboardNavigation: boolean
     autoSave: boolean
   }
+  performance: {
+    autoDetection: boolean
+    forceDisableVirtualization: boolean
+    forceEnablePagination: boolean
+    pageSize: number
+    enableMonitoring: boolean
+    customThresholds: {
+      advisory: number
+      pagination: number
+      virtualization: number
+      memoryThreshold: number
+    }
+  }
 }
 
 export interface UXState {
@@ -82,6 +95,19 @@ const defaultPreferences: UserPreferences = {
     showTooltips: true,
     keyboardNavigation: true,
     autoSave: true,
+  },
+  performance: {
+    autoDetection: true,
+    forceDisableVirtualization: false,
+    forceEnablePagination: false,
+    pageSize: 50,
+    enableMonitoring: true,
+    customThresholds: {
+      advisory: 1000,
+      pagination: 2500,
+      virtualization: 5000,
+      memoryThreshold: 500 * 1024 * 1024, // 500MB
+    },
   },
 }
 

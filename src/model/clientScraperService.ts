@@ -13,6 +13,21 @@ export class ClientScraperService {
   private baseUrl = '/api'
   private maxRetries = 3
   private retryDelay = 250 // 250ms base delay for faster recovery
+  private sessionId: string = 'default'
+
+  /**
+   * Set session ID for WebSocket streaming
+   */
+  setSessionId(sessionId: string): void {
+    this.sessionId = sessionId
+  }
+
+  /**
+   * Get current session ID
+   */
+  getSessionId(): string {
+    return this.sessionId
+  }
 
   /**
    * Check if the scraping API is available
@@ -94,7 +109,7 @@ export class ClientScraperService {
       const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'initialize' }),
+        body: JSON.stringify({ action: 'initialize', sessionId: this.sessionId }),
       })
 
       if (!response.ok) {
@@ -153,6 +168,7 @@ export class ClientScraperService {
           url,
           depth,
           maxPages,
+          sessionId: this.sessionId,
         }),
       })
 

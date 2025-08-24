@@ -17,6 +17,7 @@ interface ScrapeRequestData {
     url?: string
     depth?: number
     maxPages?: number
+    sessionId?: string
   }
 }
 
@@ -50,6 +51,12 @@ const scrapeHandler = async (request: NextRequest) => {
         }
 
         logger.info('Scrape API', `Action '${sanitizedAction}' requested from IP: ${ip}`)
+
+        // Extract session ID if provided
+        const { sessionId } = params
+        if (sessionId && typeof sessionId === 'string') {
+          scraperService.setSessionId(sessionId)
+        }
 
         switch (sanitizedAction) {
       case 'initialize':

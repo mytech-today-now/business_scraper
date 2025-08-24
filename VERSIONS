@@ -1,8 +1,8 @@
 # Business Scraper Application - Version History
 
-**Current Version:** v1.7.1
-**Release Date:** January 22, 2025
-**Status:** Production Ready
+**Current Version:** v1.8.0
+**Release Date:** August 24, 2024
+**Status:** Production Ready - Smart Performance Mode
 
 ---
 
@@ -12,9 +12,21 @@ This document provides a comprehensive overview of all versions of the Business 
 
 ## 🚀 Current Release
 
-### v1.7.0 (Latest) - August 21, 2025
-**Status:** ✅ **CURRENT PRODUCTION VERSION**
-**Type:** Minor Release
+### v1.8.0 (Latest) - August 24, 2024
+**Status:** ✅ **CURRENT PRODUCTION VERSION - SMART PERFORMANCE MODE**
+**Type:** Minor Release - Major Performance Enhancement
+**Compatibility:** Full backward compatibility with v1.7.x
+
+#### 🎯 **Major Feature: Smart Performance Mode Auto-Detection**
+- **Intelligent Optimization Engine**: Automatic dataset size detection and performance mode switching
+- **Adaptive Thresholds**: 1K advisory, 2.5K pagination, 5K virtualization with user customization
+- **Real-time Performance Monitoring**: Memory usage, FPS, and render time tracking
+- **User Control & Override**: Comprehensive performance settings with preference persistence
+- **Business Intelligence Preservation**: AI features maintained across all performance modes
+
+### v1.7.1 - January 22, 2025
+**Status:** ✅ Previous Production Version
+**Type:** Patch Release
 **Compatibility:** Full backward compatibility with v1.6.x
 
 #### Key Features
