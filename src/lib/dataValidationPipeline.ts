@@ -3,9 +3,11 @@
  * Comprehensive system for validating, cleaning, and enriching business data
  */
 
-import { BusinessRecord, EmailValidationResult, EmailValidationMetadata } from '@/types/business'
+import { BusinessRecord, EmailValidationResult, EmailValidationMetadata, PhoneValidationResult, BusinessIntelligence } from '@/types/business'
 import { logger } from '@/utils/logger'
 import { EmailValidationService } from './emailValidationService'
+import { PhoneValidationService } from './phoneValidationService'
+import { BusinessIntelligenceService } from './businessIntelligenceService'
 import { geocoder } from '@/model/geocoder'
 
 export interface ValidationResult {
@@ -79,11 +81,14 @@ export interface EnrichmentResult {
  */
 export class DataValidationPipeline {
   private emailValidationService: EmailValidationService
+  private phoneValidationService: PhoneValidationService
+  private businessIntelligenceService: BusinessIntelligenceService
   private emailValidationCache = new Map<string, boolean>()
-
 
   constructor() {
     this.emailValidationService = EmailValidationService.getInstance()
+    this.phoneValidationService = PhoneValidationService.getInstance()
+    this.businessIntelligenceService = BusinessIntelligenceService.getInstance()
   }
 
   /**
@@ -141,9 +146,9 @@ export class DataValidationPipeline {
   }
 
   /**
-   * Enrich business data from external sources
+   * Enrich business data from external sources with comprehensive intelligence
    */
-  async enrichData(business: BusinessRecord): Promise<EnrichmentResult> {
+  async enrichData(business: BusinessRecord, page?: any): Promise<EnrichmentResult> {
     const result: EnrichmentResult = {
       enriched: false,
       sources: [],
@@ -152,11 +157,59 @@ export class DataValidationPipeline {
     }
 
     try {
-      // Enrich address with geocoding
+      // 1. Enhanced Email Validation (if not already done)
+      if (business.email && business.email.length > 0 && !business.emailValidation) {
+        const emailValidationResults = await this.emailValidationService.validateEmails(business.email)
+
+        const emailValidation: EmailValidationMetadata = {
+          validationResults: emailValidationResults,
+          overallConfidence: this.calculateOverallEmailConfidence(emailValidationResults),
+          bestEmail: this.findBestEmail(emailValidationResults),
+          validEmailCount: emailValidationResults.filter(r => r.isValid).length,
+          totalEmailCount: emailValidationResults.length,
+          averageReputationScore: this.calculateAverageReputationScore(emailValidationResults),
+          averageBounceRate: this.calculateAverageBounceRate(emailValidationResults),
+          smtpVerifiedCount: emailValidationResults.filter(r => r.smtpVerified).length
+        }
+
+        business.emailValidation = emailValidation
+        result.enriched = true
+        result.sources.push('advanced_email_validation')
+        result.addedFields.push('emailValidation')
+      }
+
+      // 2. Phone Number Intelligence
+      if (business.phone && !business.phoneValidation) {
+        const phoneValidationResult = await this.phoneValidationService.validatePhone(
+          business.phone,
+          business.address ? `${business.address.city}, ${business.address.state}` : undefined
+        )
+
+        business.phoneValidation = phoneValidationResult
+        result.enriched = true
+        result.sources.push('phone_intelligence')
+        result.addedFields.push('phoneValidation')
+      }
+
+      // 3. Business Intelligence Enrichment
+      if (business.websiteUrl && !business.businessIntelligence) {
+        const businessIntelligence = await this.businessIntelligenceService.enrichBusinessData(
+          business.websiteUrl,
+          business.businessName,
+          page
+        )
+
+        business.businessIntelligence = businessIntelligence
+        result.enriched = true
+        result.sources.push('business_intelligence')
+        result.addedFields.push('businessIntelligence')
+      }
+
+      // 4. Address geocoding (existing functionality)
       if (business.address && !business.coordinates) {
         const addressString = this.formatAddressString(business.address)
         const geocodingResult = await geocoder.geocodeAddress(addressString)
-        
+
         if (geocodingResult) {
           business.coordinates = {
             lat: geocodingResult.lat,
@@ -168,7 +221,7 @@ export class DataValidationPipeline {
         }
       }
 
-      // Enrich industry classification
+      // 5. Industry classification (existing functionality)
       if (business.businessName && (!business.industry || business.industry === 'Unknown')) {
         const suggestedIndustry = this.classifyIndustry(business.businessName, business.websiteUrl)
         if (suggestedIndustry) {
@@ -179,14 +232,23 @@ export class DataValidationPipeline {
         }
       }
 
-      // Calculate enrichment confidence
-      result.confidence = result.addedFields.length > 0 ? 0.8 : 0.0
+      // 6. Calculate overall data quality score
+      business.dataQualityScore = this.calculateDataQualityScore(business)
+      business.enrichmentSources = result.sources
+      business.lastEnriched = new Date()
 
-      logger.info('DataValidationPipeline', 
-        `Enrichment ${result.enriched ? 'successful' : 'skipped'}: ${result.addedFields.length} fields added`)
+      // Calculate enrichment confidence based on all factors
+      result.confidence = this.calculateEnrichmentConfidence(business, result.addedFields.length)
+
+      logger.info('DataValidationPipeline',
+        `Advanced enrichment ${result.enriched ? 'successful' : 'skipped'}: ${result.addedFields.length} fields added`, {
+          sources: result.sources,
+          dataQualityScore: business.dataQualityScore,
+          confidence: result.confidence
+        })
 
     } catch (error) {
-      logger.error('DataValidationPipeline', 'Data enrichment failed', error)
+      logger.error('DataValidationPipeline', 'Advanced data enrichment failed', error)
     }
 
     return result
@@ -781,6 +843,148 @@ export class DataValidationPipeline {
       .trim()
       .replace(/\s+/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase())
+  }
+
+  /**
+   * Calculate overall email confidence from validation results
+   */
+  private calculateOverallEmailConfidence(results: EmailValidationResult[]): number {
+    if (results.length === 0) return 0
+
+    const totalConfidence = results.reduce((sum, result) => sum + result.confidence, 0)
+    return Math.round(totalConfidence / results.length)
+  }
+
+  /**
+   * Find the best email from validation results
+   */
+  private findBestEmail(results: EmailValidationResult[]): string | undefined {
+    const validEmails = results.filter(r => r.isValid)
+    if (validEmails.length === 0) return undefined
+
+    // Sort by confidence and reputation score
+    validEmails.sort((a, b) => {
+      const scoreA = a.confidence + (a.reputationScore || 50)
+      const scoreB = b.confidence + (b.reputationScore || 50)
+      return scoreB - scoreA
+    })
+
+    return validEmails[0].email
+  }
+
+  /**
+   * Calculate average reputation score from email validation results
+   */
+  private calculateAverageReputationScore(results: EmailValidationResult[]): number | undefined {
+    const scoresWithReputation = results.filter(r => r.reputationScore !== undefined)
+    if (scoresWithReputation.length === 0) return undefined
+
+    const totalScore = scoresWithReputation.reduce((sum, result) => sum + (result.reputationScore || 0), 0)
+    return Math.round(totalScore / scoresWithReputation.length)
+  }
+
+  /**
+   * Calculate average bounce rate from email validation results
+   */
+  private calculateAverageBounceRate(results: EmailValidationResult[]): number | undefined {
+    const resultsWithBounceRate = results.filter(r => r.bounceRatePrediction !== undefined)
+    if (resultsWithBounceRate.length === 0) return undefined
+
+    const totalBounceRate = resultsWithBounceRate.reduce((sum, result) => sum + (result.bounceRatePrediction || 0), 0)
+    return Math.round(totalBounceRate / resultsWithBounceRate.length)
+  }
+
+  /**
+   * Calculate overall data quality score for a business record
+   */
+  private calculateDataQualityScore(business: BusinessRecord): number {
+    let score = 0
+    let maxScore = 0
+
+    // Email quality (25 points)
+    maxScore += 25
+    if (business.emailValidation) {
+      score += (business.emailValidation.overallConfidence / 100) * 25
+    } else if (business.email && business.email.length > 0) {
+      score += 10 // Basic email presence
+    }
+
+    // Phone quality (20 points)
+    maxScore += 20
+    if (business.phoneValidation) {
+      score += (business.phoneValidation.confidence / 100) * 20
+    } else if (business.phone) {
+      score += 8 // Basic phone presence
+    }
+
+    // Business intelligence (25 points)
+    maxScore += 25
+    if (business.businessIntelligence) {
+      let biScore = 0
+      if (business.businessIntelligence.companySize) {
+        biScore += (business.businessIntelligence.companySize.confidence / 100) * 8
+      }
+      if (business.businessIntelligence.revenue) {
+        biScore += (business.businessIntelligence.revenue.confidence / 100) * 7
+      }
+      if (business.businessIntelligence.technologyStack) {
+        biScore += (business.businessIntelligence.technologyStack.confidence / 100) * 5
+      }
+      if (business.businessIntelligence.socialMediaPresence) {
+        biScore += (business.businessIntelligence.socialMediaPresence.overallPresence / 100) * 5
+      }
+      score += biScore
+    }
+
+    // Address and location (15 points)
+    maxScore += 15
+    if (business.coordinates) {
+      score += 10 // Geocoded address
+    }
+    if (business.address && business.address.street && business.address.city) {
+      score += 5 // Complete address
+    }
+
+    // Basic business information (15 points)
+    maxScore += 15
+    if (business.businessName && business.businessName.trim().length > 0) {
+      score += 5
+    }
+    if (business.websiteUrl && business.websiteUrl.trim().length > 0) {
+      score += 5
+    }
+    if (business.industry && business.industry !== 'Unknown') {
+      score += 5
+    }
+
+    // Normalize to 0-100 scale
+    return Math.round((score / maxScore) * 100)
+  }
+
+  /**
+   * Calculate enrichment confidence based on enriched fields and data quality
+   */
+  private calculateEnrichmentConfidence(business: BusinessRecord, enrichedFieldsCount: number): number {
+    let confidence = 0
+
+    // Base confidence from number of enriched fields
+    confidence += Math.min(50, enrichedFieldsCount * 10)
+
+    // Boost from data quality score
+    if (business.dataQualityScore) {
+      confidence += (business.dataQualityScore / 100) * 30
+    }
+
+    // Boost from successful validations
+    if (business.emailValidation && business.emailValidation.validEmailCount > 0) {
+      confidence += 10
+    }
+
+    if (business.phoneValidation && business.phoneValidation.isValid) {
+      confidence += 10
+    }
+
+    return Math.min(100, Math.max(0, Math.round(confidence)))
   }
 
   private cleanAddress(address: BusinessRecord['address']): BusinessRecord['address'] {
