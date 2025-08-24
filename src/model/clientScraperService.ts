@@ -11,6 +11,65 @@ import { retrieveApiCredentials } from '@/utils/secureStorage'
  */
 export class ClientScraperService {
   private baseUrl = '/api'
+  private maxRetries = 3
+  private retryDelay = 1000 // 1 second base delay
+
+  /**
+   * Check if the scraping API is available
+   */
+  async checkApiHealth(): Promise<boolean> {
+    try {
+      const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        return result.status === 'Scrape API is working'
+      }
+      return false
+    } catch (error) {
+      logger.error('ClientScraper', 'API health check failed', error)
+      return false
+    }
+  }
+
+  /**
+   * Enhanced fetch with retry logic and connection failure handling
+   */
+  private async fetchWithRetry(url: string, options: RequestInit, retryCount = 0): Promise<Response> {
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+      return response
+    } catch (error) {
+      const isConnectionError = error instanceof TypeError &&
+        (error.message.includes('Failed to fetch') ||
+         error.message.includes('ERR_CONNECTION_REFUSED') ||
+         error.message.includes('NetworkError'))
+
+      const isTimeoutError = error.name === 'AbortError'
+
+      if ((isConnectionError || isTimeoutError) && retryCount < this.maxRetries) {
+        const delay = this.retryDelay * Math.pow(2, retryCount) // Exponential backoff
+        logger.warn('ClientScraper', `Connection failed, retrying in ${delay}ms (attempt ${retryCount + 1}/${this.maxRetries})`, error)
+
+        await new Promise(resolve => setTimeout(resolve, delay))
+        return this.fetchWithRetry(url, options, retryCount + 1)
+      }
+
+      // If we've exhausted retries or it's a different error, throw it
+      throw error
+    }
+  }
 
   /**
    * Initialize the scraper service
@@ -25,8 +84,14 @@ export class ClientScraperService {
 
     logger.info('ClientScraper', `Initializing scraper - Has API credentials: ${hasApiCredentials}`)
 
+    // Check API health before attempting initialization
+    const isApiHealthy = await this.checkApiHealth()
+    if (!isApiHealthy) {
+      throw new Error('Scraping API is not available. Please check server connection.')
+    }
+
     try {
-      const response = await fetch(`${this.baseUrl}/scrape`, {
+      const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'initialize' }),
@@ -80,7 +145,7 @@ export class ClientScraperService {
    */
   async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/scrape`, {
+      const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,7 +162,7 @@ export class ClientScraperService {
 
       const result = await response.json()
       logger.info('ClientScraper', `Scraped ${result.businesses.length} businesses from: ${url}`)
-      return result.businesses
+      return result.businesses || []
     } catch (error) {
       logger.error('ClientScraper', `Failed to scrape website: ${url}`, error)
       return []
@@ -109,7 +174,7 @@ export class ClientScraperService {
    */
   async cleanup(): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/scrape`, {
+      const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'cleanup' }),
@@ -127,7 +192,8 @@ export class ClientScraperService {
       logger.info('ClientScraper', 'Scraper cleaned up successfully')
     } catch (error) {
       logger.error('ClientScraper', 'Failed to cleanup scraper', error)
-      throw error
+      // Don't throw error for cleanup failures - log and continue
+      logger.warn('ClientScraper', 'Cleanup failed but continuing - this may leave resources uncleaned')
     }
   }
 
@@ -136,7 +202,7 @@ export class ClientScraperService {
    */
   async geocodeAddress(address: string): Promise<any> {
     try {
-      const response = await fetch(`${this.baseUrl}/geocode`, {
+      const response = await this.fetchWithRetry(`${this.baseUrl}/geocode`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address }),
