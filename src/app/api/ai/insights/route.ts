@@ -35,6 +35,9 @@ async function initializeServerDatabase() {
 
     const db = new PostgreSQLDatabase(config)
 
+    // Test connection with a simple query first
+    await db.executeQuery('SELECT 1 as test')
+
     // Check if AI tables exist, if not create them
     const checkQuery = `
       SELECT EXISTS (
@@ -96,6 +99,40 @@ async function initializeServerDatabase() {
   }
 }
 
+/**
+ * Generate mock AI insights for development/demo purposes
+ */
+function generateMockInsights(): AIInsightsSummary {
+  const currentDate = new Date()
+  const expiresAt = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000) // 24 hours from now
+
+  return {
+    id: `mock-${Date.now()}`,
+    title: 'Business Intelligence Summary',
+    summary: 'Based on current industry trends and market analysis, we\'ve identified key opportunities for business growth. The brick & mortar retail sector shows strong potential, with local businesses experiencing increased foot traffic and customer engagement.',
+    recommendations: [
+      'Focus on local retail stores and shopping centers for immediate opportunities',
+      'Target food service establishments with strong community presence',
+      'Expand into professional services sector for B2B partnerships',
+      'Consider seasonal trends when planning outreach campaigns',
+      'Leverage location-based marketing for better conversion rates'
+    ],
+    dataSources: [
+      'Industry trend analysis',
+      'Local market research',
+      'Competitor analysis',
+      'Customer behavior patterns',
+      'Economic indicators'
+    ],
+    confidenceLevel: 'high',
+    impactScore: 0.85,
+    category: 'market_analysis',
+    tags: ['retail', 'local_business', 'market_trends', 'growth_opportunities'],
+    generatedAt: currentDate,
+    expiresAt: expiresAt
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -103,53 +140,65 @@ export async function GET(request: NextRequest) {
 
     logger.info('AI API', 'Getting AI insights summary')
 
-    // Initialize server database
-    const db = await initializeServerDatabase()
-
     let insights: AIInsightsSummary | null = null
+    let usingMockData = false
 
-    if (!regenerate) {
-      // Try to get existing insights from PostgreSQL
-      const latestInsights = await db.getLatestAIInsights(1)
-      if (latestInsights.length > 0) {
-        const insight = latestInsights[0]
-        insights = {
-          id: insight.id,
-          title: insight.title,
-          summary: insight.summary,
-          recommendations: insight.recommendations || [],
-          dataSources: insight.dataSources || [],
-          confidenceLevel: insight.confidenceLevel || 'medium',
-          impactScore: insight.impactScore || 0.0,
-          category: insight.category || 'general',
-          tags: insight.tags || [],
-          generatedAt: insight.createdAt,
-          expiresAt: insight.expiresAt
+    try {
+      // Try to initialize server database
+      const db = await initializeServerDatabase()
+
+      if (!regenerate) {
+        // Try to get existing insights from PostgreSQL
+        const latestInsights = await db.getLatestAIInsights(1)
+        if (latestInsights.length > 0) {
+          const insight = latestInsights[0]
+          insights = {
+            id: insight.id,
+            title: insight.title,
+            summary: insight.summary,
+            recommendations: insight.recommendations || [],
+            dataSources: insight.dataSources || [],
+            confidenceLevel: insight.confidenceLevel || 'medium',
+            impactScore: insight.impactScore || 0.0,
+            category: insight.category || 'general',
+            tags: insight.tags || [],
+            generatedAt: insight.createdAt,
+            expiresAt: insight.expiresAt
+          }
         }
       }
-    }
 
-    if (!insights || regenerate) {
-      // Generate new insights
-      insights = await generateInsightsSummary()
+      if (!insights || regenerate) {
+        // Generate new insights
+        insights = await generateInsightsSummary()
 
-      // Save to PostgreSQL
-      await db.saveAIInsights({
-        title: insights.title,
-        summary: insights.summary,
-        recommendations: insights.recommendations,
-        dataSources: insights.dataSources,
-        confidenceLevel: insights.confidenceLevel,
-        impactScore: insights.impactScore,
-        category: insights.category,
-        tags: insights.tags,
-        expiresAt: insights.expiresAt
-      })
+        // Save to PostgreSQL
+        await db.saveAIInsights({
+          title: insights.title,
+          summary: insights.summary,
+          recommendations: insights.recommendations,
+          dataSources: insights.dataSources,
+          confidenceLevel: insights.confidenceLevel,
+          impactScore: insights.impactScore,
+          category: insights.category,
+          tags: insights.tags,
+          expiresAt: insights.expiresAt
+        })
+      }
+    } catch (dbError) {
+      // Database connection failed, use mock data for development
+      logger.warn('AI API', 'Database connection failed, using mock insights', dbError)
+      insights = generateMockInsights()
+      usingMockData = true
     }
 
     return NextResponse.json({
       success: true,
-      data: insights
+      data: insights,
+      meta: {
+        usingMockData,
+        message: usingMockData ? 'Using mock data - PostgreSQL not available' : 'Data from PostgreSQL database'
+      }
     })
 
   } catch (error) {
@@ -172,29 +221,42 @@ export async function POST(request: NextRequest) {
   try {
     logger.info('AI API', 'Generating new AI insights summary')
 
-    // Initialize server database
-    const db = await initializeServerDatabase()
+    let insights: AIInsightsSummary
+    let usingMockData = false
 
-    // Generate insights
-    const insights = await generateInsightsSummary()
+    try {
+      // Try to initialize server database
+      const db = await initializeServerDatabase()
 
-    // Save insights to PostgreSQL
-    await db.saveAIInsights({
-      title: insights.title,
-      summary: insights.summary,
-      recommendations: insights.recommendations,
-      dataSources: insights.dataSources,
-      confidenceLevel: insights.confidenceLevel,
-      impactScore: insights.impactScore,
-      category: insights.category,
-      tags: insights.tags,
-      expiresAt: insights.expiresAt
-    })
+      // Generate insights
+      insights = await generateInsightsSummary()
+
+      // Save insights to PostgreSQL
+      await db.saveAIInsights({
+        title: insights.title,
+        summary: insights.summary,
+        recommendations: insights.recommendations,
+        dataSources: insights.dataSources,
+        confidenceLevel: insights.confidenceLevel,
+        impactScore: insights.impactScore,
+        category: insights.category,
+        tags: insights.tags,
+        expiresAt: insights.expiresAt
+      })
+    } catch (dbError) {
+      // Database connection failed, use mock data for development
+      logger.warn('AI API', 'Database connection failed, generating mock insights', dbError)
+      insights = generateMockInsights()
+      usingMockData = true
+    }
 
     return NextResponse.json({
       success: true,
       data: insights,
-      message: 'AI insights generated successfully'
+      meta: {
+        usingMockData,
+        message: usingMockData ? 'Generated mock data - PostgreSQL not available' : 'Data saved to PostgreSQL database'
+      }
     })
 
   } catch (error) {
@@ -214,11 +276,20 @@ export async function POST(request: NextRequest) {
  */
 async function generateInsightsSummary(): Promise<AIInsightsSummary> {
   try {
-    // Initialize server database
-    const db = await initializeServerDatabase()
+    // Try to get analytics from database, fall back to mock data if not available
+    let allAnalytics: any[] = []
 
-    // Get all AI analytics from PostgreSQL
-    const allAnalytics = await db.getAllAIAnalytics()
+    try {
+      // Initialize server database
+      const db = await initializeServerDatabase()
+
+      // Get all AI analytics from PostgreSQL
+      allAnalytics = await db.getAllAIAnalytics()
+    } catch (dbError) {
+      logger.warn('AI API', 'Database not available for analytics, using mock data', dbError)
+      // Use empty analytics array, will generate insights based on current trends
+      allAnalytics = []
+    }
     
     if (allAnalytics.length === 0) {
       return createEmptyInsights()

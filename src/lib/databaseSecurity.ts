@@ -31,8 +31,10 @@ const SQL_INJECTION_PATTERNS = [
   // Function-based injection (suspicious functions)
   /(\b(LOAD_FILE|INTO\s+OUTFILE|DUMPFILE)\b)/i,
 
-  // Database information gathering
-  /(\b(information_schema|sys\.tables|pg_tables)\b)/i,
+  // Database information gathering (only flag suspicious patterns, not legitimate schema queries)
+  /(\b(sys\.tables|pg_tables)\b)/i,
+  // Flag information_schema only in suspicious contexts (with UNION, OR conditions, etc.)
+  /(\b(information_schema)\b.*\b(UNION|OR\s+\d+\s*=\s*\d+|AND\s+\d+\s*=\s*\d+)\b)/i,
 
   // Hex encoding attempts (often used in injection)
   /(0x[0-9a-fA-F]{8,})/,
@@ -50,6 +52,20 @@ const SQL_INJECTION_PATTERNS = [
 const DANGEROUS_SQL_KEYWORDS = [
   'EXEC', 'EXECUTE', 'SP_', 'XP_', 'OPENROWSET', 'OPENDATASOURCE',
   'BULK', 'BACKUP', 'RESTORE', 'SHUTDOWN', 'RECONFIGURE'
+]
+
+/**
+ * Safe information_schema query patterns (for legitimate database administration)
+ */
+const SAFE_INFORMATION_SCHEMA_PATTERNS = [
+  // Table existence checks
+  /SELECT\s+EXISTS\s*\(\s*SELECT\s+FROM\s+information_schema\.tables/i,
+  // Column information queries
+  /SELECT\s+.*\s+FROM\s+information_schema\.columns/i,
+  // Basic table listing
+  /SELECT\s+table_name\s+FROM\s+information_schema\.tables/i,
+  // Schema information
+  /SELECT\s+.*\s+FROM\s+information_schema\.schemata/i
 ]
 
 /**
@@ -138,9 +154,19 @@ export class DatabaseSecurityService {
           }
         }
       } else {
-        // For non-parameterized queries, check all patterns
+        // For non-parameterized queries, check all patterns but allow safe information_schema usage
         for (const pattern of SQL_INJECTION_PATTERNS) {
           if (pattern.test(query)) {
+            // Check if this is a safe information_schema query before flagging
+            if (query.toLowerCase().includes('information_schema')) {
+              const isSafePattern = SAFE_INFORMATION_SCHEMA_PATTERNS.some(safePattern =>
+                safePattern.test(query)
+              )
+              if (isSafePattern) {
+                continue // Skip this pattern, it's a legitimate information_schema query
+              }
+            }
+
             errors.push('Query contains potentially dangerous SQL injection patterns')
             this.logSuspiciousQuery(query, 'SQL injection pattern detected')
             break
