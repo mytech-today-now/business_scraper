@@ -13,7 +13,8 @@ import {
   RefreshCw,
   RotateCcw,
   Search,
-  Info
+  Info,
+  Brain
 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { useScraperController } from '@/controller/useScraperController'
@@ -21,6 +22,7 @@ import { CategorySelector } from './CategorySelector'
 import { ResultsTable } from './ResultsTable'
 import { ProcessingWindow } from './ProcessingWindow'
 import { ApiConfigurationPage } from './ApiConfigurationPage'
+import { AIInsightsPanel } from './AIInsightsPanel'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
@@ -667,7 +669,7 @@ function ScrapingPanel(): JSX.Element {
 export function App(): JSX.Element {
   const { state, resetApplicationData } = useConfig()
   const { scrapingState } = useScraperController()
-  const [activeTab, setActiveTab] = useState<'config' | 'scraping'>('config')
+  const [activeTab, setActiveTab] = useState<'config' | 'scraping' | 'ai-insights'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [isResetting, setIsResetting] = useState(false)
@@ -777,6 +779,13 @@ export function App(): JSX.Element {
                   )}
                 </Button>
                 <Button
+                  variant={activeTab === 'ai-insights' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setActiveTab('ai-insights')}
+                >
+                  AI Insights
+                </Button>
+                <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowResetDialog(true)}
@@ -816,7 +825,13 @@ export function App(): JSX.Element {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <ErrorBoundary level="section" showDetails={process.env.NODE_ENV === 'development'}>
-          {activeTab === 'config' ? <ConfigurationPanel /> : <ScrapingPanel />}
+          {activeTab === 'config' ? (
+            <ConfigurationPanel />
+          ) : activeTab === 'scraping' ? (
+            <ScrapingPanel />
+          ) : (
+            <AIInsightsPanel />
+          )}
         </ErrorBoundary>
       </main>
 
@@ -824,7 +839,7 @@ export function App(): JSX.Element {
       <footer className="border-t bg-card mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>Business Scraper App v1.0.0</p>
+            <p>Business Scraper App v1.10.0 - AI Enhanced</p>
             <p>Built with Next.js, React, and TypeScript</p>
           </div>
         </div>

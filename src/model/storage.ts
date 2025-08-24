@@ -2,6 +2,7 @@
 
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
 import { BusinessRecord, ScrapingConfig, IndustryCategory } from '@/types/business'
+import { PredictiveAnalytics, AIProcessingJob, AIInsightsSummary } from '@/types/ai'
 import { logger } from '@/utils/logger'
 
 /**
@@ -47,6 +48,30 @@ interface BusinessScraperDB extends DBSchema {
       updatedAt: Date
     }
   }
+  aiAnalytics: {
+    key: string
+    value: PredictiveAnalytics & { businessId: string }
+    indexes: {
+      'by-business-id': string
+      'by-generated-date': Date
+    }
+  }
+  aiJobs: {
+    key: string
+    value: AIProcessingJob
+    indexes: {
+      'by-status': string
+      'by-business-id': string
+      'by-created-date': Date
+    }
+  }
+  aiInsights: {
+    key: string
+    value: AIInsightsSummary
+    indexes: {
+      'by-generated-date': Date
+    }
+  }
 }
 
 /**
@@ -55,7 +80,7 @@ interface BusinessScraperDB extends DBSchema {
 export class StorageService {
   private db: IDBPDatabase<BusinessScraperDB> | null = null
   private readonly dbName = 'business-scraper-db'
-  private readonly dbVersion = 2
+  private readonly dbVersion = 3
 
   /**
    * Initialize the database connection
@@ -95,6 +120,30 @@ export class StorageService {
             db.createObjectStore('domainBlacklist', {
               keyPath: 'id',
             })
+          }
+
+          // Add AI analytics stores (version 3)
+          if (oldVersion < 3) {
+            // AI Analytics store
+            const aiAnalyticsStore = db.createObjectStore('aiAnalytics', {
+              keyPath: 'businessId',
+            })
+            aiAnalyticsStore.createIndex('by-business-id', 'businessId')
+            aiAnalyticsStore.createIndex('by-generated-date', 'generatedAt')
+
+            // AI Jobs store
+            const aiJobsStore = db.createObjectStore('aiJobs', {
+              keyPath: 'id',
+            })
+            aiJobsStore.createIndex('by-status', 'status')
+            aiJobsStore.createIndex('by-business-id', 'businessId')
+            aiJobsStore.createIndex('by-created-date', 'createdAt')
+
+            // AI Insights store
+            const aiInsightsStore = db.createObjectStore('aiInsights', {
+              keyPath: 'generatedAt',
+            })
+            aiInsightsStore.createIndex('by-generated-date', 'generatedAt')
           }
         },
       })
@@ -638,17 +687,23 @@ export class StorageService {
     industries: number
     sessions: number
     domainBlacklistEntries: number
+    aiAnalytics: number
+    aiJobs: number
+    aiInsights: number
   }> {
     try {
       await this.ensureInitialized()
       const db = await this.getDatabase()
 
-      const [businesses, configs, industries, sessions, domainBlacklistEntries] = await Promise.all([
+      const [businesses, configs, industries, sessions, domainBlacklistEntries, aiAnalytics, aiJobs, aiInsights] = await Promise.all([
         db.count('businesses'),
         db.count('configs'),
         db.count('industries'),
         db.count('sessions'),
-        db.count('domainBlacklist')
+        db.count('domainBlacklist'),
+        db.count('aiAnalytics'),
+        db.count('aiJobs'),
+        db.count('aiInsights')
       ])
 
       return {
@@ -656,7 +711,10 @@ export class StorageService {
         configs,
         industries,
         sessions,
-        domainBlacklistEntries
+        domainBlacklistEntries,
+        aiAnalytics,
+        aiJobs,
+        aiInsights
       }
     } catch (error) {
       logger.error('Storage', 'Failed to get database statistics', error)
@@ -665,8 +723,208 @@ export class StorageService {
         configs: 0,
         industries: 0,
         sessions: 0,
-        domainBlacklistEntries: 0
+        domainBlacklistEntries: 0,
+        aiAnalytics: 0,
+        aiJobs: 0,
+        aiInsights: 0
       }
+    }
+  }
+
+  // AI Analytics Operations
+
+  /**
+   * Save AI analytics for a business
+   */
+  async saveAIAnalytics(businessId: string, analytics: PredictiveAnalytics): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      const analyticsWithId = { ...analytics, businessId }
+      await db.put('aiAnalytics', analyticsWithId)
+      logger.info('Storage', `Saved AI analytics for business: ${businessId}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save AI analytics', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get AI analytics for a business
+   */
+  async getAIAnalytics(businessId: string): Promise<PredictiveAnalytics | null> {
+    try {
+      const db = await this.getDatabase()
+      const result = await db.get('aiAnalytics', businessId)
+      return result || null
+    } catch (error) {
+      logger.error('Storage', 'Failed to get AI analytics', error)
+      return null
+    }
+  }
+
+  /**
+   * Get all AI analytics
+   */
+  async getAllAIAnalytics(): Promise<(PredictiveAnalytics & { businessId: string })[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAll('aiAnalytics')
+    } catch (error) {
+      logger.error('Storage', 'Failed to get all AI analytics', error)
+      return []
+    }
+  }
+
+  /**
+   * Delete AI analytics for a business
+   */
+  async deleteAIAnalytics(businessId: string): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.delete('aiAnalytics', businessId)
+      logger.info('Storage', `Deleted AI analytics for business: ${businessId}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to delete AI analytics', error)
+      throw error
+    }
+  }
+
+  // AI Jobs Operations
+
+  /**
+   * Save AI processing job
+   */
+  async saveAIJob(job: AIProcessingJob): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('aiJobs', job)
+      logger.info('Storage', `Saved AI job: ${job.id}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save AI job', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get AI job by ID
+   */
+  async getAIJob(jobId: string): Promise<AIProcessingJob | null> {
+    try {
+      const db = await this.getDatabase()
+      const result = await db.get('aiJobs', jobId)
+      return result || null
+    } catch (error) {
+      logger.error('Storage', 'Failed to get AI job', error)
+      return null
+    }
+  }
+
+  /**
+   * Get AI jobs by status
+   */
+  async getAIJobsByStatus(status: string): Promise<AIProcessingJob[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAllFromIndex('aiJobs', 'by-status', status)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get AI jobs by status', error)
+      return []
+    }
+  }
+
+  /**
+   * Get AI jobs for a business
+   */
+  async getAIJobsForBusiness(businessId: string): Promise<AIProcessingJob[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAllFromIndex('aiJobs', 'by-business-id', businessId)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get AI jobs for business', error)
+      return []
+    }
+  }
+
+  /**
+   * Update AI job status
+   */
+  async updateAIJobStatus(jobId: string, status: string, result?: PredictiveAnalytics, error?: string): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      const job = await db.get('aiJobs', jobId)
+      if (job) {
+        job.status = status as any
+        job.result = result || job.result
+        job.error = error || job.error
+        if (status === 'running' && !job.startedAt) {
+          job.startedAt = new Date()
+        }
+        if (status === 'completed' || status === 'failed') {
+          job.completedAt = new Date()
+        }
+        await db.put('aiJobs', job)
+        logger.info('Storage', `Updated AI job status: ${jobId} -> ${status}`)
+      }
+    } catch (error) {
+      logger.error('Storage', 'Failed to update AI job status', error)
+      throw error
+    }
+  }
+
+  /**
+   * Delete AI job
+   */
+  async deleteAIJob(jobId: string): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.delete('aiJobs', jobId)
+      logger.info('Storage', `Deleted AI job: ${jobId}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to delete AI job', error)
+      throw error
+    }
+  }
+
+  // AI Insights Operations
+
+  /**
+   * Save AI insights summary
+   */
+  async saveAIInsights(insights: AIInsightsSummary): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('aiInsights', insights)
+      logger.info('Storage', 'Saved AI insights summary')
+    } catch (error) {
+      logger.error('Storage', 'Failed to save AI insights', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get latest AI insights
+   */
+  async getLatestAIInsights(): Promise<AIInsightsSummary | null> {
+    try {
+      const db = await this.getDatabase()
+      const insights = await db.getAllFromIndex('aiInsights', 'by-generated-date')
+      return insights.length > 0 ? insights[insights.length - 1] : null
+    } catch (error) {
+      logger.error('Storage', 'Failed to get latest AI insights', error)
+      return null
+    }
+  }
+
+  /**
+   * Get all AI insights
+   */
+  async getAllAIInsights(): Promise<AIInsightsSummary[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAll('aiInsights')
+    } catch (error) {
+      logger.error('Storage', 'Failed to get all AI insights', error)
+      return []
     }
   }
 

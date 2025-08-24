@@ -18,6 +18,7 @@ import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { LeadScoreBadge } from './LeadScoreBadge'
 import {
   formatBusinessName,
   formatAddress,
@@ -34,7 +35,7 @@ import { ExportTemplate } from '@/utils/exportService'
  * Column definition interface
  */
 interface Column {
-  key: keyof BusinessRecord | 'actions' | 'street' | 'city' | 'state' | 'zipCode' | 'source'
+  key: keyof BusinessRecord | 'actions' | 'street' | 'city' | 'state' | 'zipCode' | 'source' | 'leadScore'
   label: string
   sortable: boolean
   visible: boolean
@@ -76,6 +77,7 @@ export interface ResultsTableProps {
  */
 const DEFAULT_COLUMNS: Column[] = [
   { key: 'businessName', label: 'Business Name', sortable: true, visible: true, width: '200px' },
+  { key: 'leadScore', label: 'Lead Score', sortable: false, visible: true, width: '120px' },
   { key: 'contactPerson', label: 'Contact Person', sortable: false, visible: true, width: '150px' },
   { key: 'email', label: 'Email', sortable: false, visible: true, width: '220px' },
   { key: 'phone', label: 'Phone', sortable: false, visible: true, width: '130px' },
@@ -410,6 +412,15 @@ export function ResultsTable({
           </div>
         )
       
+      case 'leadScore':
+        return (
+          <LeadScoreBadge
+            business={business}
+            showDetails={true}
+            size="sm"
+          />
+        )
+
       case 'actions':
         return (
           <div className="flex items-center gap-1">
@@ -433,7 +444,7 @@ export function ResultsTable({
             )}
           </div>
         )
-      
+
       default:
         return String(business[column.key as keyof BusinessRecord] || '')
     }
