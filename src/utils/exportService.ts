@@ -3,7 +3,7 @@
 // XLSX library removed due to security vulnerabilities
 // Excel exports now use CSV format for security
 import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 import { BusinessRecord } from '@/types/business'
 import { formatBusinessForExport, formatCsvCell } from './formatters'
 import { logger } from './logger'
@@ -700,7 +700,7 @@ export class ExportService {
       const rows = formattedData.map(row => Object.values(row))
 
       // Add table using autoTable plugin
-      ;(doc as any).autoTable({
+      autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 45,
