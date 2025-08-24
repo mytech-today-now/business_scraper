@@ -740,8 +740,162 @@ export class PostgreSQLDatabase implements DatabaseInterface {
     return this.query(text, params)
   }
 
+  // AI Analytics operations
+  async saveAIAnalytics(analytics: any): Promise<string> {
+    const id = analytics.id || crypto.randomUUID()
+
+    const query = `
+      INSERT INTO ai_analytics (
+        id, campaign_id, analysis_type, data, insights, confidence_score,
+        processing_time_ms, model_version, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)
+      RETURNING id
+    `
+
+    const values = [
+      id,
+      analytics.campaignId,
+      analytics.analysisType,
+      JSON.stringify(analytics.data || {}),
+      JSON.stringify(analytics.insights || {}),
+      analytics.confidenceScore || 0.0,
+      analytics.processingTimeMs || 0,
+      analytics.modelVersion || 'v1.0',
+    ]
+
+    try {
+      const result = await this.query(query, values)
+      logger.info('PostgreSQL', `Saved AI analytics: ${analytics.analysisType}`)
+      return result.rows[0].id
+    } catch (error) {
+      logger.error('PostgreSQL', 'Failed to save AI analytics', error)
+      throw error
+    }
+  }
+
+  async getAIAnalytics(id: string): Promise<any | null> {
+    const query = 'SELECT * FROM ai_analytics WHERE id = $1'
+
+    try {
+      const result = await this.query(query, [id])
+      if (result.rows.length === 0) {
+        return null
+      }
+
+      const row = result.rows[0]
+      return {
+        id: row.id,
+        campaignId: row.campaign_id,
+        analysisType: row.analysis_type,
+        data: row.data,
+        insights: row.insights,
+        confidenceScore: row.confidence_score,
+        processingTimeMs: row.processing_time_ms,
+        modelVersion: row.model_version,
+        createdAt: row.created_at,
+      }
+    } catch (error) {
+      logger.error('PostgreSQL', 'Failed to get AI analytics', error)
+      return null
+    }
+  }
+
+  async getAllAIAnalytics(campaignId?: string): Promise<any[]> {
+    let query = 'SELECT * FROM ai_analytics'
+    const values = []
+
+    if (campaignId) {
+      query += ' WHERE campaign_id = $1'
+      values.push(campaignId)
+    }
+
+    query += ' ORDER BY created_at DESC'
+
+    try {
+      const result = await this.query(query, values)
+      return result.rows.map((row: any) => ({
+        id: row.id,
+        campaignId: row.campaign_id,
+        analysisType: row.analysis_type,
+        data: row.data,
+        insights: row.insights,
+        confidenceScore: row.confidence_score,
+        processingTimeMs: row.processing_time_ms,
+        modelVersion: row.model_version,
+        createdAt: row.created_at,
+      }))
+    } catch (error) {
+      logger.error('PostgreSQL', 'Failed to get all AI analytics', error)
+      return []
+    }
+  }
+
+  // AI Insights operations
+  async saveAIInsights(insights: any): Promise<string> {
+    const id = insights.id || crypto.randomUUID()
+
+    const query = `
+      INSERT INTO ai_insights (
+        id, title, summary, recommendations, data_sources, confidence_level,
+        impact_score, category, tags, expires_at, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP)
+      RETURNING id
+    `
+
+    const values = [
+      id,
+      insights.title,
+      insights.summary,
+      JSON.stringify(insights.recommendations || []),
+      JSON.stringify(insights.dataSources || []),
+      insights.confidenceLevel || 'medium',
+      insights.impactScore || 0.0,
+      insights.category || 'general',
+      JSON.stringify(insights.tags || []),
+      insights.expiresAt,
+    ]
+
+    try {
+      const result = await this.query(query, values)
+      logger.info('PostgreSQL', `Saved AI insights: ${insights.title}`)
+      return result.rows[0].id
+    } catch (error) {
+      logger.error('PostgreSQL', 'Failed to save AI insights', error)
+      throw error
+    }
+  }
+
+  async getLatestAIInsights(limit: number = 10): Promise<any[]> {
+    const query = `
+      SELECT * FROM ai_insights
+      WHERE expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP
+      ORDER BY created_at DESC
+      LIMIT $1
+    `
+
+    try {
+      const result = await this.query(query, [limit])
+      return result.rows.map((row: any) => ({
+        id: row.id,
+        title: row.title,
+        summary: row.summary,
+        recommendations: row.recommendations,
+        dataSources: row.data_sources,
+        confidenceLevel: row.confidence_level,
+        impactScore: row.impact_score,
+        category: row.category,
+        tags: row.tags,
+        expiresAt: row.expires_at,
+        createdAt: row.created_at,
+      }))
+    } catch (error) {
+      logger.error('PostgreSQL', 'Failed to get latest AI insights', error)
+      return []
+    }
+  }
+
   async close(): Promise<void> {
-    await this.pool.end()
+    await this.secureDb.close()
     this.connected = false
     logger.info('PostgreSQL', 'Database connection closed')
   }

@@ -6,8 +6,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { storage } from '@/model/storage'
-import { predictiveAnalyticsEngine } from '@/lib/predictiveAnalyticsEngine'
 import { logger } from '@/utils/logger'
 import { AIInsightsSummary } from '@/types/ai'
 
@@ -15,6 +13,89 @@ import { AIInsightsSummary } from '@/types/ai'
  * GET /api/ai/insights
  * Get AI insights summary
  */
+/**
+ * Initialize server-side database with AI tables
+ */
+async function initializeServerDatabase() {
+  try {
+    const { PostgreSQLDatabase } = await import('@/lib/postgresql-database')
+
+    const config = {
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      database: process.env.DB_NAME || 'business_scraper',
+      username: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || '',
+      ssl: process.env.DB_SSL === 'true',
+      poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
+      poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
+      idleTimeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
+      connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '5000'),
+    }
+
+    const db = new PostgreSQLDatabase(config)
+
+    // Check if AI tables exist, if not create them
+    const checkQuery = `
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_schema = 'public'
+        AND table_name = 'ai_analytics'
+      ) as ai_tables_exist
+    `
+
+    const result = await db.executeQuery(checkQuery)
+    const aiTablesExist = result.rows[0]?.ai_tables_exist
+
+    if (!aiTablesExist) {
+      logger.info('AI API', 'AI tables not found, creating them...')
+
+      // Create AI tables directly
+      const createTablesSQL = `
+        -- AI Analytics Table
+        CREATE TABLE IF NOT EXISTS ai_analytics (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          campaign_id UUID,
+          analysis_type VARCHAR(100) NOT NULL,
+          data JSONB NOT NULL DEFAULT '{}',
+          insights JSONB NOT NULL DEFAULT '{}',
+          confidence_score DECIMAL(5,4) DEFAULT 0.0,
+          processing_time_ms INTEGER DEFAULT 0,
+          model_version VARCHAR(50) DEFAULT 'v1.0',
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- AI Insights Table
+        CREATE TABLE IF NOT EXISTS ai_insights (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          title VARCHAR(255) NOT NULL,
+          summary TEXT NOT NULL,
+          recommendations JSONB DEFAULT '[]',
+          data_sources JSONB DEFAULT '[]',
+          confidence_level VARCHAR(20) DEFAULT 'medium',
+          impact_score DECIMAL(5,4) DEFAULT 0.0,
+          category VARCHAR(100) DEFAULT 'general',
+          tags JSONB DEFAULT '[]',
+          expires_at TIMESTAMP WITH TIME ZONE,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Indexes
+        CREATE INDEX IF NOT EXISTS idx_ai_analytics_created_at ON ai_analytics(created_at DESC);
+        CREATE INDEX IF NOT EXISTS idx_ai_insights_created_at ON ai_insights(created_at DESC);
+      `
+
+      await db.executeQuery(createTablesSQL)
+      logger.info('AI API', 'AI tables created successfully')
+    }
+
+    return db
+  } catch (error) {
+    logger.error('AI API', 'Failed to initialize server database', error)
+    throw error
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -22,17 +103,48 @@ export async function GET(request: NextRequest) {
 
     logger.info('AI API', 'Getting AI insights summary')
 
+    // Initialize server database
+    const db = await initializeServerDatabase()
+
     let insights: AIInsightsSummary | null = null
 
     if (!regenerate) {
-      // Try to get existing insights
-      insights = await storage.getLatestAIInsights()
+      // Try to get existing insights from PostgreSQL
+      const latestInsights = await db.getLatestAIInsights(1)
+      if (latestInsights.length > 0) {
+        const insight = latestInsights[0]
+        insights = {
+          id: insight.id,
+          title: insight.title,
+          summary: insight.summary,
+          recommendations: insight.recommendations || [],
+          dataSources: insight.dataSources || [],
+          confidenceLevel: insight.confidenceLevel || 'medium',
+          impactScore: insight.impactScore || 0.0,
+          category: insight.category || 'general',
+          tags: insight.tags || [],
+          generatedAt: insight.createdAt,
+          expiresAt: insight.expiresAt
+        }
+      }
     }
 
     if (!insights || regenerate) {
       // Generate new insights
       insights = await generateInsightsSummary()
-      await storage.saveAIInsights(insights)
+
+      // Save to PostgreSQL
+      await db.saveAIInsights({
+        title: insights.title,
+        summary: insights.summary,
+        recommendations: insights.recommendations,
+        dataSources: insights.dataSources,
+        confidenceLevel: insights.confidenceLevel,
+        impactScore: insights.impactScore,
+        category: insights.category,
+        tags: insights.tags,
+        expiresAt: insights.expiresAt
+      })
     }
 
     return NextResponse.json({
@@ -60,11 +172,24 @@ export async function POST(request: NextRequest) {
   try {
     logger.info('AI API', 'Generating new AI insights summary')
 
+    // Initialize server database
+    const db = await initializeServerDatabase()
+
     // Generate insights
     const insights = await generateInsightsSummary()
 
-    // Save insights
-    await storage.saveAIInsights(insights)
+    // Save insights to PostgreSQL
+    await db.saveAIInsights({
+      title: insights.title,
+      summary: insights.summary,
+      recommendations: insights.recommendations,
+      dataSources: insights.dataSources,
+      confidenceLevel: insights.confidenceLevel,
+      impactScore: insights.impactScore,
+      category: insights.category,
+      tags: insights.tags,
+      expiresAt: insights.expiresAt
+    })
 
     return NextResponse.json({
       success: true,
@@ -89,8 +214,11 @@ export async function POST(request: NextRequest) {
  */
 async function generateInsightsSummary(): Promise<AIInsightsSummary> {
   try {
-    // Get all AI analytics
-    const allAnalytics = await storage.getAllAIAnalytics()
+    // Initialize server database
+    const db = await initializeServerDatabase()
+
+    // Get all AI analytics from PostgreSQL
+    const allAnalytics = await db.getAllAIAnalytics()
     
     if (allAnalytics.length === 0) {
       return createEmptyInsights()

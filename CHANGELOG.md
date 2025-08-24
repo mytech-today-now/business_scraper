@@ -31,12 +31,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Major Platform Exclusions**: Filtered out industry giants like Google, Microsoft, Amazon, Apple across relevant categories
 - **Specialized Filtering**: Industry-specific blacklists for gaming platforms, educational sites, real estate portals, etc.
 
+### 🐛 Fixed - Critical AI Insights Error
+- **Server-Side Database Support**: Fixed "Internal Server Error" when accessing AI Insights page
+- **PostgreSQL AI Tables**: Added `ai_analytics`, `ai_insights`, and `ai_jobs` tables with automatic migration
+- **Environment-Aware Database**: Created database factory for server-side PostgreSQL and client-side IndexedDB
+- **API Route Optimization**: Updated `/api/ai/insights` to use server-side database operations directly
+- **Error Resolution**: Resolved IndexedDB server-side access issue that was causing AI features to fail
+
 ### 📊 Impact Summary
 - **Total Industries**: Expanded from 25 to **35 categories** (+40% increase)
 - **Total Keywords**: Added **200 new SEO-optimized keywords** (total: 346+ keywords)
 - **Total Blacklisted Domains**: Added **200+ new domain filters** (total: 307+ domains)
 - **UI Density**: Improved information density by ~30% with compact styling
 - **Screen Utilization**: Better use of large screens with 4-column grid layout
+- **AI Functionality**: ✅ Fully operational with proper server-side database support
 
 ## [1.10.1] - 2025-08-24 - Industry Categories Expansion
 
