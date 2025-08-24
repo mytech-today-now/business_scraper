@@ -774,7 +774,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.11.0)
+### Recent Major Updates (v1.12.0)
+- 🏢 **Brick & Mortar Business Categories**: Added 6 specialized categories for physical location businesses with 180 SEO-optimized keywords
+  - **B2C Categories**: Retail stores & shopping centers, food service & dining establishments, personal services & wellness centers
+  - **B2B Categories**: Professional office services, industrial & manufacturing facilities, commercial trade & construction services
+  - **Location-Based Keywords**: Optimized for "near me" searches and local business discovery
+  - **Physical Business Focus**: Specialized targeting for stores, offices, factories, and service centers
+- 🚫 **Enhanced Domain Filtering**: 150+ new blacklisted domains for major retail chains, restaurant franchises, and corporate giants
+- 📊 **Expanded Coverage**: Total of **41 industry categories** with 526+ keywords and comprehensive B2B/B2C targeting
+
+### Previous Updates (v1.11.0)
 - 🏢 **Major Industry Expansion**: Added 10 new comprehensive industry categories with 200 SEO-optimized keywords
   - **AI & Machine Learning**: AI consulting, ML services, computer vision, NLP, automation services
   - **E-commerce & Retail Technology**: Online store development, POS systems, inventory management, retail analytics
@@ -788,7 +797,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   - **CleanTech & Environmental**: Environmental technology, waste management, sustainability solutions
 - 🎨 **UI/UX Optimization**: Compact design with smaller text, tighter spacing, and 4-column grid for better density
 - 🚫 **Enhanced Domain Filtering**: 200+ new blacklisted domains across major industry platforms and competitors
-- 📊 **Expanded Coverage**: Total of **35 industry categories** with comprehensive B2B and B2C targeting
 
 ### Previous Updates (v1.7.0)
 - 🎯 **B2C Industry Expansion**: Added 3 new industry categories optimized for consumer services

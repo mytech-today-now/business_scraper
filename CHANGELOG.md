@@ -5,6 +5,35 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2025-08-24 - Brick & Mortar Business Categories
+
+### 🏢 Added - 6 Brick & Mortar Industry Categories
+**Designed specifically for physical location businesses with 180+ SEO-optimized keywords**
+
+#### **B2C Categories (Consumer-Focused)**
+- **Retail Stores & Shopping Centers**: 30 keywords including clothing stores, electronics retailers, furniture stores, sporting goods, bookstores, jewelry stores, department stores, specialty shops
+- **Food Service & Dining Establishments**: 30 keywords covering restaurants, cafes, bakeries, fast food, pizza places, coffee shops, bars, catering services, food trucks
+- **Personal Services & Wellness Centers**: 30 keywords for hair salons, spas, fitness gyms, medical offices, auto services, pet grooming, dry cleaners, daycare centers
+
+#### **B2B Categories (Business-Focused)**
+- **Professional Office Services**: 30 keywords including accounting firms, law offices, consulting firms, marketing agencies, real estate offices, insurance agencies, IT consulting
+- **Industrial & Manufacturing Facilities**: 30 keywords covering factories, machine shops, fabrication companies, chemical plants, packaging facilities, automotive suppliers
+- **Commercial Trade & Construction Services**: 30 keywords for contractors, construction companies, facility maintenance, security services, equipment rental
+
+### 🚫 Enhanced - Domain Blacklists (150+ domains)
+- **Retail**: Amazon, Walmart, Target, Best Buy, Home Depot, Macy's, Costco, CVS, Walgreens
+- **Food Service**: McDonald's, Starbucks, Subway, Pizza Hut, Domino's, Taco Bell, Chipotle
+- **Professional Services**: Deloitte, PwC, McKinsey, Accenture, IBM, Microsoft, Google
+- **Manufacturing**: GE, Boeing, Ford, GM, Siemens, Honeywell, Caterpillar, John Deere
+- **Construction**: Home Depot, Lowe's, Sherwin Williams, Carrier, Trane, UPS, FedEx
+
+### 📊 Impact Summary
+- **Total Industries**: Expanded from 35 to **41 categories** (+17% increase)
+- **Total Keywords**: Added **180 new location-based keywords** (total: 526+ keywords)
+- **Total Blacklisted Domains**: Added **150+ new domain filters** (total: 457+ domains)
+- **Brick & Mortar Focus**: Specialized targeting for physical location businesses
+- **B2B/B2C Balance**: Equal representation for both business and consumer markets
+
 ## [1.11.0] - 2025-08-24 - Major Industry Expansion & UI Optimization
 
 ### 🏢 Added - 10 Additional Industry Categories
