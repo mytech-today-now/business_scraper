@@ -388,5 +388,12 @@ Reviewers must check for:
 - Adapt architecture patterns to the project’s domain.  
 - Maintain strict security and testing standards.  
 - Follow consistent documentation practices.  
-- Implement structured error handling and logging.  
+- Implement structured error handling and logging.
+
+### At All Time:
+- Follow the Rules and Guidelines for the project.  
+- Plan out your actions.  
+- Work logically through the process.  
+- Be sure to cover all of the instances where am enhancement alters the application.  
+- Handle errors and fallback to seamless solutions.  
 
