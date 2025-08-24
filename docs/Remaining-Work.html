@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remaining Work - ESLint & Code Quality Improvements - Business Scraper Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-link:hover {
+            text-decoration: underline;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .table-responsive {
+            margin: 1rem 0;
+        }
+        .nav-breadcrumb {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .back-to-docs {
+            margin-bottom: 2rem;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .alert {
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="back-to-docs">
+            <a href="readme.html" class="btn btn-outline-primary">
+                ← Back to Documentation Hub
+            </a>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="readme.html">Documentation</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Remaining Work - ESLint & Code Quality Improvements</li>
+                </ol>
+            </nav>
+        </div>
+
+        <main class="documentation-content">
+            <h1>Remaining Work - ESLint &amp; Code Quality Improvements</h1>
+<p>This document contains a series of prompts for Augment AI in VS Code to systematically complete the remaining ESLint violations and code quality improvements in the business scraper application.</p>
+<h2>Current Status</h2>
+<ul>
+<li><strong>ESLint violations reduced from 1,079 to ~1,050</strong></li>
+<li><strong>All critical parsing errors fixed</strong></li>
+<li><strong>React hooks dependencies corrected</strong></li>
+<li><strong>JSX quote escaping completed</strong></li>
+<li><strong>Major unused imports/variables removed</strong></li>
+</ul>
+<hr>
+<h2>Phase 1: Critical Error Fixes (High Priority)</h2>
+<h3>Prompt 1.1: Fix Security Violations in Production Code</h3>
+<pre><code>Fix all security-related ESLint violations in production code (non-test files). Focus on:
+1. Generic Object Injection Sink violations in src/lib/ and src/view/ files
+2. Variable Assigned to Object Injection Sink issues
+3. Script URL eval violations
+4. Non-literal filesystem operations
+
+Exclude test files from this fix. Ensure all fixes maintain functionality while improving security.
+</code></pre>
+<h3>Prompt 1.2: Remove Remaining Unused Variables in Production Code</h3>
+<pre><code>Remove all unused variables, imports, and function parameters in production code (src/lib/, src/view/, src/model/, src/controller/, src/app/). Focus on:
+1. Unused imports in component files
+2. Unused function parameters (prefix with underscore if needed for API compatibility)
+3. Unused variables in business logic files
+4. Unused destructured properties
+
+Do not modify test files in this pass.
+</code></pre>
+<h3>Prompt 1.3: Fix Require Import Violations</h3>
+<pre><code>Replace all require() style imports with ES6 import statements in production code. Focus on:
+1. Dynamic require() calls that can be converted to static imports
+2. Conditional require() calls that need proper dynamic import() syntax
+3. Test utility require() calls in production code
+
+Maintain functionality while modernizing import syntax.
+</code></pre>
+<hr>
+<h2>Phase 2: React &amp; TypeScript Improvements (Medium Priority)</h2>
+<h3>Prompt 2.1: Add Missing Return Type Annotations</h3>
+<pre><code>Add explicit return type annotations to all functions missing them in production code. Focus on:
+1. React component functions
+2. Event handler functions
+3. Utility functions in src/lib/ and src/utils/
+4. API route handlers
+5. Hook functions
+
+Use proper TypeScript return types (JSX.Element, void, Promise&lt;T&gt;, etc.).
+</code></pre>
+<h3>Prompt 2.2: Fix Remaining React Hook Dependencies</h3>
+<pre><code>Fix all remaining React hook dependency violations. Focus on:
+1. useEffect hooks with missing dependencies
+2. useCallback hooks with missing dependencies
+3. useMemo hooks with missing dependencies
+4. Custom hooks with dependency issues
+
+Ensure all dependencies are properly included to prevent stale closures and bugs.
+</code></pre>
+<h3>Prompt 2.3: Replace Non-Null Assertions in Production Code</h3>
+<pre><code>Replace all non-null assertions (!) in production code with proper null checks or optional chaining. Focus on:
+1. Property access with ! operator
+2. Array/object access with ! operator
+3. Function call results with ! operator
+
+Add proper error handling or default values instead of assertions.
+</code></pre>
+<hr>
+<h2>Phase 3: Code Quality &amp; Standards (Lower Priority)</h2>
+<h3>Prompt 3.1: Fix Remaining &#39;any&#39; Types in Production Code</h3>
+<pre><code>Replace remaining &#39;any&#39; types in production code with proper TypeScript types. Focus on:
+1. Function parameters with &#39;any&#39; type
+2. Object properties with &#39;any&#39; type
+3. Array elements with &#39;any&#39; type
+4. Return types using &#39;any&#39;
+
+Create proper interfaces and type definitions where needed.
+</code></pre>
+<h3>Prompt 3.2: Optimize Image Usage</h3>
+<pre><code>Replace &lt;img&gt; elements with Next.js &lt;Image&gt; components for better performance. Focus on:
+1. Static images in components
+2. Dynamic images with proper optimization
+3. Add proper alt text and loading strategies
+4. Implement responsive image sizing
+
+Improve LCP and bandwidth usage across the application.
+</code></pre>
+<h3>Prompt 3.3: Improve Error Handling Patterns</h3>
+<pre><code>Standardize error handling patterns across the application. Focus on:
+1. Consistent error logging in try-catch blocks
+2. Proper error propagation in async functions
+3. User-friendly error messages in UI components
+4. Error boundary implementation for React components
+
+Ensure robust error handling throughout the application.
+</code></pre>
+<hr>
+<h2>Phase 4: Test File Cleanup (Optional)</h2>
+<h3>Prompt 4.1: Clean Up Test File ESLint Violations</h3>
+<pre><code>Fix ESLint violations in test files that don&#39;t compromise test functionality. Focus on:
+1. Unused imports in test files
+2. Missing return types in test helper functions
+3. Consistent test structure and formatting
+4. Remove unused test variables
+
+Maintain test coverage while improving code quality.
+</code></pre>
+<h3>Prompt 4.2: Improve Test Security Practices</h3>
+<pre><code>Address security violations in test files where appropriate. Focus on:
+1. Replace hardcoded file paths with proper test fixtures
+2. Use mock data instead of real file system operations
+3. Sanitize test inputs and outputs
+4. Implement proper test isolation
+
+Balance security with test functionality requirements.
+</code></pre>
+<hr>
+<h2>Phase 5: Performance &amp; Optimization</h2>
+<h3>Prompt 5.1: Optimize Bundle Size</h3>
+<pre><code>Analyze and optimize the application bundle size. Focus on:
+1. Remove unused dependencies from package.json
+2. Implement proper tree shaking for large libraries
+3. Use dynamic imports for heavy components
+4. Optimize icon imports (use specific imports instead of full libraries)
+
+Improve application loading performance.
+</code></pre>
+<h3>Prompt 5.2: Implement Code Splitting</h3>
+<pre><code>Implement strategic code splitting for better performance. Focus on:
+1. Route-based code splitting for pages
+2. Component-based splitting for heavy components
+3. Lazy loading for non-critical features
+4. Proper loading states and error boundaries
+
+Improve initial page load times and user experience.
+</code></pre>
+<hr>
+<h2>Execution Guidelines</h2>
+<h3>For Each Prompt:</h3>
+<ol>
+<li><strong>Run ESLint first</strong> to identify current violations</li>
+<li><strong>Make targeted fixes</strong> for the specific category</li>
+<li><strong>Test functionality</strong> after changes</li>
+<li><strong>Run ESLint again</strong> to verify improvements</li>
+<li><strong>Commit changes</strong> with descriptive messages</li>
+</ol>
+<h3>Priority Order:</h3>
+<ol>
+<li><strong>Phase 1</strong> - Critical errors that could cause runtime issues</li>
+<li><strong>Phase 2</strong> - React/TypeScript improvements for maintainability</li>
+<li><strong>Phase 3</strong> - Code quality and standards</li>
+<li><strong>Phase 4</strong> - Test file cleanup (optional)</li>
+<li><strong>Phase 5</strong> - Performance optimizations</li>
+</ol>
+<h3>Success Metrics:</h3>
+<ul>
+<li><strong>ESLint error count reduction</strong></li>
+<li><strong>No new runtime errors introduced</strong></li>
+<li><strong>Maintained test coverage</strong></li>
+<li><strong>Improved TypeScript strict mode compliance</strong></li>
+<li><strong>Better performance metrics</strong></li>
+</ul>
+<hr>
+<h2>Final Verification</h2>
+<h3>Prompt: Final ESLint Cleanup Verification</h3>
+<pre><code>Run a comprehensive ESLint check and create a final report showing:
+1. Total violations remaining by category
+2. Files with the most violations
+3. Comparison with initial violation count
+4. Recommendations for any remaining issues
+
+Ensure the codebase meets production quality standards.
+</code></pre>
+<hr>
+<h2>Specific File Targets</h2>
+<h3>High-Priority Files (Most Violations)</h3>
+<p>Based on current ESLint output, focus on these files first:</p>
+<h4>API Routes:</h4>
+<ul>
+<li><code>src/app/api/upload/route.ts</code> - Security violations, unused variables</li>
+<li><code>src/app/api/security/route.ts</code> - Unused functions, any types</li>
+<li><code>src/app/api/security/monitoring/route.ts</code> - Any types, missing return types</li>
+</ul>
+<h4>View Components:</h4>
+<ul>
+<li><code>src/view/components/ApiConfigurationPage.tsx</code> - Security violations, unused variables</li>
+<li><code>src/view/SettingsPanel.tsx</code> - Security violations, unused imports</li>
+<li><code>src/view/UserExperienceProvider.tsx</code> - Security violations, any types</li>
+<li><code>src/view/components/ResultsTable.tsx</code> - Non-null assertions, any types</li>
+</ul>
+<h4>Controllers:</h4>
+<ul>
+<li><code>src/controller/useScraperController.ts</code> - Security violations, hook dependencies</li>
+<li><code>src/controller/ConfigContext.tsx</code> - Missing return types, unused variables</li>
+</ul>
+<h4>Library Files:</h4>
+<ul>
+<li><code>src/lib/advancedRateLimit.ts</code> - Security violations</li>
+<li><code>src/hooks/useCSRFProtection.ts</code> - Any types, missing return types</li>
+</ul>
+<h3>Test Files (Lower Priority):</h3>
+<ul>
+<li><code>src/__tests__/lib/config-validator.test.ts</code> - Multiple require() imports</li>
+<li><code>src/__tests__/lib/cache.test.ts</code> - Require() imports</li>
+<li><code>src/__tests__/model/clientSearchEngine.test.ts</code> - Any types, require() imports</li>
+</ul>
+<hr>
+<h2>ESLint Configuration Improvements</h2>
+<h3>Prompt: Optimize ESLint Configuration</h3>
+<pre><code>Review and optimize the ESLint configuration to:
+1. Add more specific rules for React hooks
+2. Configure proper TypeScript strict mode rules
+3. Add security-focused rules for production code
+4. Set up different rule sets for test vs production files
+5. Configure auto-fix rules for consistent formatting
+
+Update .eslintrc.json with improved rule configuration.
+</code></pre>
+<hr>
+<h2>Automation Scripts</h2>
+<h3>Prompt: Create ESLint Automation Scripts</h3>
+<pre><code>Create npm scripts and automation tools for ESLint management:
+1. Script to run ESLint with different configurations for prod vs test files
+2. Pre-commit hook to prevent commits with ESLint errors
+3. CI/CD integration script for ESLint checking
+4. Script to generate ESLint violation reports
+5. Auto-fix script for safe violations
+
+Add these to package.json and document usage.
+</code></pre>
+<hr>
+<h2>Documentation Updates</h2>
+<h3>Prompt: Update Development Documentation</h3>
+<pre><code>Update development documentation to reflect ESLint improvements:
+1. Update README.md with ESLint setup and usage
+2. Create CONTRIBUTING.md with code quality guidelines
+3. Document ESLint rules and exceptions
+4. Add code review checklist including ESLint compliance
+5. Create troubleshooting guide for common ESLint issues
+
+Ensure new developers can maintain code quality standards.
+</code></pre>
+<hr>
+<h2>Monitoring &amp; Maintenance</h2>
+<h3>Prompt: Set Up Code Quality Monitoring</h3>
+<pre><code>Implement ongoing code quality monitoring:
+1. Set up automated ESLint reporting in CI/CD
+2. Create dashboard for tracking code quality metrics
+3. Implement alerts for regression in code quality
+4. Set up periodic code quality reviews
+5. Create metrics for tracking improvement over time
+
+Ensure sustained code quality improvements.
+</code></pre>
+
+        </main>
+
+        <footer class="text-center mt-5 pt-4 border-top">
+            <p class="text-muted">
+                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
+            </p>
+            <p class="text-muted">
+                <a href="readme.html">Documentation Hub</a> | 
+                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+            </p>
+            <p class="text-muted small">Last updated: 8/24/2025</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

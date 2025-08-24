@@ -198,6 +198,7 @@ The **12 primary categories of testing** that must be considered are:
 - Use structured logging for errors.  
 - Provide descriptive, actionable error messages where appropriate.  
 - Implement graceful fallback strategies.  
+- When a test case encounters an error, log the error as an "Issue" on GitHub, with the proper descriptive, actionable error messages where appropriate.
 
 ---
 

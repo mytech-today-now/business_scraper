@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Scraper App - API Documentation - Business Scraper Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-link:hover {
+            text-decoration: underline;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .table-responsive {
+            margin: 1rem 0;
+        }
+        .nav-breadcrumb {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .back-to-docs {
+            margin-bottom: 2rem;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .alert {
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="back-to-docs">
+            <a href="readme.html" class="btn btn-outline-primary">
+                ← Back to Documentation Hub
+            </a>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="readme.html">Documentation</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Business Scraper App - API Documentation</li>
+                </ol>
+            </nav>
+        </div>
+
+        <main class="documentation-content">
+            <h1>Business Scraper App - API Documentation</h1>
+<p>This document provides comprehensive documentation for the Business Scraper App&#39;s internal APIs, services, and components.</p>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#architecture-overview">Architecture Overview</a></li>
+<li><a href="#model-layer-apis">Model Layer APIs</a></li>
+<li><a href="#controller-layer-apis">Controller Layer APIs</a></li>
+<li><a href="#view-layer-components">View Layer Components</a></li>
+<li><a href="#utility-services">Utility Services</a></li>
+<li><a href="#type-definitions">Type Definitions</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#error-handling">Error Handling</a></li>
+</ol>
+<h2>Architecture Overview</h2>
+<p>The application follows an <strong>Adapted MVC (Model-View-Controller)</strong> pattern:</p>
+<pre><code>src/
+├── model/          # Data layer and business logic
+├── view/           # UI components and presentation
+├── controller/     # State management and workflow orchestration
+├── utils/          # Utility functions and services
+└── types/          # TypeScript type definitions
+</code></pre>
+<h2>Model Layer APIs</h2>
+<h3>ScraperService</h3>
+<p><strong>Location</strong>: <code>src/model/scraperService.ts</code></p>
+<p>Core web scraping functionality using Puppeteer.</p>
+<h4>Methods</h4>
+<h5><code>initialize(): Promise&lt;void&gt;</code></h5>
+<p>Initializes the browser instance for scraping operations.</p>
+<pre><code class="language-typescript">await scraperService.initialize()
+</code></pre>
+<h5><code>searchForWebsites(query: string, zipCode: string, maxResults?: number): Promise&lt;string[]&gt;</code></h5>
+<p>Searches for business websites based on industry and location.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>query</code>: Industry or business type to search for</li>
+<li><code>zipCode</code>: ZIP code for location-based search</li>
+<li><code>maxResults</code>: Maximum number of URLs to return (default: 50)</li>
+</ul>
+<p><strong>Returns:</strong> Array of website URLs</p>
+<pre><code class="language-typescript">const urls = await scraperService.searchForWebsites(
+  &#39;restaurants&#39;, 
+  &#39;90210&#39;, 
+  25
+)
+</code></pre>
+<h5><code>scrapeWebsite(url: string, depth?: number): Promise&lt;BusinessRecord[]&gt;</code></h5>
+<p>Scrapes a website for business information.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>url</code>: Website URL to scrape</li>
+<li><code>depth</code>: Maximum crawl depth (default: 2)</li>
+</ul>
+<p><strong>Returns:</strong> Array of business records found on the website</p>
+<pre><code class="language-typescript">const businesses = await scraperService.scrapeWebsite(
+  &#39;https://example.com&#39;,
+  3
+)
+</code></pre>
+<h5><code>cleanup(): Promise&lt;void&gt;</code></h5>
+<p>Closes the browser instance and cleans up resources.</p>
+<pre><code class="language-typescript">await scraperService.cleanup()
+</code></pre>
+<h3>GeocoderService</h3>
+<p><strong>Location</strong>: <code>src/model/geocoder.ts</code></p>
+<p>Address geocoding with multiple provider fallbacks.</p>
+<h4>Methods</h4>
+<h5><code>geocodeAddress(address: string): Promise&lt;GeocodingResult | null&gt;</code></h5>
+<p>Converts an address to coordinates.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>address</code>: Street address to geocode</li>
+</ul>
+<p><strong>Returns:</strong> Geocoding result with lat/lng coordinates</p>
+<pre><code class="language-typescript">const result = await geocoder.geocodeAddress(&#39;123 Main St, Anytown, CA 12345&#39;)
+if (result) {
+  console.log(`Coordinates: ${result.lat}, ${result.lng}`)
+}
+</code></pre>
+<h5><code>clearCache(): void</code></h5>
+<p>Clears the geocoding cache.</p>
+<pre><code class="language-typescript">geocoder.clearCache()
+</code></pre>
+<h3>SearchEngineService</h3>
+<p><strong>Location</strong>: <code>src/model/searchEngine.ts</code></p>
+<p>Search engine integration for finding business websites.</p>
+<h4>Methods</h4>
+<h5><code>searchBusinesses(query: string, location: string, maxResults?: number): Promise&lt;SearchResult[]&gt;</code></h5>
+<p>Searches for businesses using multiple search providers.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>query</code>: Search query</li>
+<li><code>location</code>: Location (ZIP code or city)</li>
+<li><code>maxResults</code>: Maximum results to return</li>
+</ul>
+<p><strong>Returns:</strong> Array of search results</p>
+<pre><code class="language-typescript">const results = await searchEngine.searchBusinesses(
+  &#39;coffee shops&#39;,
+  &#39;Seattle, WA&#39;,
+  20
+)
+</code></pre>
+<h3>StorageService</h3>
+<p><strong>Location</strong>: <code>src/model/storage.ts</code></p>
+<p>IndexedDB operations for data persistence.</p>
+<h4>Methods</h4>
+<h5><code>saveBusiness(business: BusinessRecord): Promise&lt;void&gt;</code></h5>
+<p>Saves a business record to storage.</p>
+<pre><code class="language-typescript">await storage.saveBusiness(businessRecord)
+</code></pre>
+<h5><code>getAllBusinesses(): Promise&lt;BusinessRecord[]&gt;</code></h5>
+<p>Retrieves all business records.</p>
+<pre><code class="language-typescript">const businesses = await storage.getAllBusinesses()
+</code></pre>
+<h5><code>saveConfig(config: ScrapingConfig &amp; { id: string }): Promise&lt;void&gt;</code></h5>
+<p>Saves scraping configuration.</p>
+<pre><code class="language-typescript">await storage.saveConfig({ id: &#39;default&#39;, ...config })
+</code></pre>
+<h2>Controller Layer APIs</h2>
+<h3>ConfigContext</h3>
+<p><strong>Location</strong>: <code>src/controller/ConfigContext.tsx</code></p>
+<p>Global configuration state management using React Context.</p>
+<h4>Hook: <code>useConfig()</code></h4>
+<p>Returns configuration state and methods:</p>
+<pre><code class="language-typescript">const {
+  state,
+  updateConfig,
+  addCustomIndustry,
+  toggleIndustry,
+  selectAllIndustries,
+  toggleDarkMode,
+  isConfigValid
+} = useConfig()
+</code></pre>
+<h4>State Properties</h4>
+<ul>
+<li><code>config</code>: Current scraping configuration</li>
+<li><code>industries</code>: Available industry categories</li>
+<li><code>selectedIndustries</code>: Currently selected industry IDs</li>
+<li><code>isDarkMode</code>: Dark mode preference</li>
+<li><code>isLoading</code>: Loading state</li>
+<li><code>isInitialized</code>: Initialization status</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><code>updateConfig(config: Partial&lt;ScrapingConfig&gt;)</code>: Update configuration</li>
+<li><code>addCustomIndustry(industry)</code>: Add custom industry category</li>
+<li><code>toggleIndustry(id: string)</code>: Toggle industry selection</li>
+<li><code>selectAllIndustries()</code>: Select all available industries</li>
+<li><code>toggleDarkMode()</code>: Toggle dark/light mode</li>
+</ul>
+<h3>useScraperController</h3>
+<p><strong>Location</strong>: <code>src/controller/useScraperController.ts</code></p>
+<p>Scraping workflow orchestration hook.</p>
+<h4>Returns</h4>
+<pre><code class="language-typescript">const {
+  scrapingState,
+  startScraping,
+  stopScraping,
+  clearResults,
+  removeBusiness,
+  updateBusiness,
+  canStartScraping,
+  hasResults
+} = useScraperController()
+</code></pre>
+<h4>State Properties</h4>
+<ul>
+<li><code>isScrapingActive</code>: Whether scraping is currently running</li>
+<li><code>currentUrl</code>: Currently being scraped URL</li>
+<li><code>progress</code>: Scraping progress information</li>
+<li><code>results</code>: Array of scraped business records</li>
+<li><code>stats</code>: Scraping statistics</li>
+<li><code>errors</code>: Array of error messages</li>
+</ul>
+<h4>Methods</h4>
+<ul>
+<li><code>startScraping()</code>: Begin the scraping process</li>
+<li><code>stopScraping()</code>: Stop the current scraping process</li>
+<li><code>clearResults()</code>: Clear all scraped results</li>
+<li><code>removeBusiness(id)</code>: Remove a specific business record</li>
+<li><code>updateBusiness(id, updates)</code>: Update business information</li>
+</ul>
+<h2>View Layer Components</h2>
+<h3>App</h3>
+<p><strong>Location</strong>: <code>src/view/components/App.tsx</code></p>
+<p>Main application component that orchestrates the entire interface.</p>
+<h4>Props</h4>
+<p>No props - uses context for state management.</p>
+<h3>CategorySelector</h3>
+<p><strong>Location</strong>: <code>src/view/components/CategorySelector.tsx</code></p>
+<p>Industry category selection interface.</p>
+<h4>Features</h4>
+<ul>
+<li>Display available industry categories</li>
+<li>Select/deselect individual categories</li>
+<li>Bulk select/deselect all categories</li>
+<li>Add custom industry categories</li>
+<li>Remove custom categories</li>
+</ul>
+<h3>ResultsTable</h3>
+<p><strong>Location</strong>: <code>src/view/components/ResultsTable.tsx</code></p>
+<p>Data display and management table for scraped business data.</p>
+<h4>Props</h4>
+<pre><code class="language-typescript">interface ResultsTableProps {
+  businesses: BusinessRecord[]
+  onEdit?: (business: BusinessRecord) =&gt; void
+  onDelete?: (businessId: string) =&gt; void
+  onExport?: (format: string) =&gt; void
+  isLoading?: boolean
+}
+</code></pre>
+<h4>Features</h4>
+<ul>
+<li>Sortable columns</li>
+<li>Advanced filtering</li>
+<li>Inline editing</li>
+<li>Bulk operations</li>
+<li>Column visibility controls</li>
+<li>Export functionality</li>
+</ul>
+<h2>Utility Services</h2>
+<h3>ExportService</h3>
+<p><strong>Location</strong>: <code>src/utils/exportService.ts</code></p>
+<p>Multi-format data export functionality.</p>
+<h4>Methods</h4>
+<h5><code>exportBusinesses(businesses, format, options): Promise&lt;{blob: Blob, filename: string}&gt;</code></h5>
+<p>Exports business data to specified format.</p>
+<p><strong>Supported Formats:</strong></p>
+<ul>
+<li><code>csv</code>: Comma-separated values</li>
+<li><code>xlsx</code>: Excel workbook</li>
+<li><code>xls</code>: Legacy Excel format</li>
+<li><code>ods</code>: OpenDocument spreadsheet</li>
+<li><code>pdf</code>: PDF document</li>
+<li><code>json</code>: JSON format</li>
+</ul>
+<pre><code class="language-typescript">const { blob, filename } = await exportService.exportBusinesses(
+  businesses,
+  &#39;xlsx&#39;,
+  { filename: &#39;my-export&#39; }
+)
+exportService.downloadBlob(blob, filename)
+</code></pre>
+<h3>ValidationService</h3>
+<p><strong>Location</strong>: <code>src/utils/validation.ts</code></p>
+<p>Data validation and sanitization.</p>
+<h4>Methods</h4>
+<h5><code>validateBusinessRecord(business): ValidationResult</code></h5>
+<p>Validates a business record against the schema.</p>
+<h5><code>validateScrapingConfig(config): ValidationResult</code></h5>
+<p>Validates scraping configuration.</p>
+<h5><code>sanitizeInput(input: string): string</code></h5>
+<p>Sanitizes user input for security.</p>
+<pre><code class="language-typescript">const result = validationService.validateBusinessRecord(business)
+if (!result.isValid) {
+  console.log(&#39;Validation errors:&#39;, result.errors)
+}
+</code></pre>
+<h3>Logger</h3>
+<p><strong>Location</strong>: <code>src/utils/logger.ts</code></p>
+<p>Structured logging system.</p>
+<h4>Methods</h4>
+<pre><code class="language-typescript">logger.info(&#39;Component&#39;, &#39;Message&#39;, optionalData)
+logger.warn(&#39;Component&#39;, &#39;Warning message&#39;)
+logger.error(&#39;Component&#39;, &#39;Error message&#39;, errorObject)
+logger.debug(&#39;Component&#39;, &#39;Debug info&#39;)
+</code></pre>
+<h4>Features</h4>
+<ul>
+<li>Multiple log levels (DEBUG, INFO, WARN, ERROR)</li>
+<li>Component-based logging</li>
+<li>In-memory log storage</li>
+<li>Export capabilities</li>
+<li>Console and storage output</li>
+</ul>
+<h2>Type Definitions</h2>
+<h3>BusinessRecord</h3>
+<p><strong>Location</strong>: <code>src/types/business.d.ts</code></p>
+<pre><code class="language-typescript">interface BusinessRecord {
+  id: string
+  businessName: string
+  email: string[]
+  phone?: string
+  websiteUrl: string
+  address: {
+    street: string
+    suite?: string
+    city: string
+    state: string
+    zipCode: string
+  }
+  contactPerson?: string
+  coordinates?: {
+    lat: number
+    lng: number
+  }
+  industry: string
+  scrapedAt: Date
+}
+</code></pre>
+<h3>ScrapingConfig</h3>
+<pre><code class="language-typescript">interface ScrapingConfig {
+  industries: string[]
+  zipCode: string
+  searchRadius: number
+  searchDepth: number
+  pagesPerSite: number
+}
+</code></pre>
+<h3>IndustryCategory</h3>
+<pre><code class="language-typescript">interface IndustryCategory {
+  id: string
+  name: string
+  keywords: string[]
+  isCustom: boolean
+}
+</code></pre>
+<h2>Configuration</h2>
+<h3>Environment Variables</h3>
+<pre><code class="language-env"># Optional API keys for enhanced functionality
+GOOGLE_MAPS_API_KEY=your_key_here
+GOOGLE_SEARCH_API_KEY=your_key_here
+GOOGLE_SEARCH_ENGINE_ID=your_engine_id_here
+OPENCAGE_API_KEY=your_key_here
+BING_SEARCH_API_KEY=your_key_here
+
+# Scraping configuration
+SCRAPING_TIMEOUT=30000
+SCRAPING_MAX_RETRIES=3
+SCRAPING_DELAY_MS=1000
+
+# Application settings
+NODE_ENV=development
+NEXT_PUBLIC_DEBUG=false
+</code></pre>
+<h3>Default Configuration</h3>
+<pre><code class="language-typescript">const DEFAULT_CONFIG = {
+  timeout: 30000,
+  maxRetries: 3,
+  retryDelay: 1000,
+  searchRadius: 25,
+  searchDepth: 2,
+  pagesPerSite: 5
+}
+</code></pre>
+<h2>Error Handling</h2>
+<h3>Error Types</h3>
+<ol>
+<li><strong>Network Errors</strong>: Connection timeouts, DNS failures</li>
+<li><strong>Scraping Errors</strong>: Website blocking, parsing failures</li>
+<li><strong>Validation Errors</strong>: Invalid data format, missing required fields</li>
+<li><strong>Storage Errors</strong>: IndexedDB failures, quota exceeded</li>
+<li><strong>Configuration Errors</strong>: Invalid settings, missing API keys</li>
+</ol>
+<h3>Error Recovery</h3>
+<ul>
+<li>Automatic retry with exponential backoff</li>
+<li>Graceful degradation for optional features</li>
+<li>User-friendly error messages</li>
+<li>Detailed logging for debugging</li>
+</ul>
+<h3>Example Error Handling</h3>
+<pre><code class="language-typescript">try {
+  const result = await scraperService.scrapeWebsite(url)
+  return result
+} catch (error) {
+  logger.error(&#39;Scraper&#39;, &#39;Failed to scrape website&#39;, error)
+  
+  if (error.code === &#39;TIMEOUT&#39;) {
+    // Retry with longer timeout
+    return await scraperService.scrapeWebsite(url, { timeout: 60000 })
+  }
+  
+  throw new Error(`Scraping failed: ${error.message}`)
+}
+</code></pre>
+<h2>Performance Considerations</h2>
+<h3>Optimization Strategies</h3>
+<ol>
+<li><strong>Lazy Loading</strong>: Components and routes loaded on demand</li>
+<li><strong>Caching</strong>: Search results and geocoding cached locally</li>
+<li><strong>Batch Processing</strong>: Multiple operations grouped together</li>
+<li><strong>Memory Management</strong>: Cleanup of unused resources</li>
+<li><strong>Rate Limiting</strong>: Prevents overwhelming target servers</li>
+</ol>
+<h3>Monitoring</h3>
+<ul>
+<li>Real-time progress tracking</li>
+<li>Performance metrics collection</li>
+<li>Memory usage monitoring</li>
+<li>Error rate tracking</li>
+</ul>
+<hr>
+<p>For more detailed information about specific implementations, refer to the JSDoc comments in the source code files.</p>
+
+        </main>
+
+        <footer class="text-center mt-5 pt-4 border-top">
+            <p class="text-muted">
+                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
+            </p>
+            <p class="text-muted">
+                <a href="readme.html">Documentation Hub</a> | 
+                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+            </p>
+            <p class="text-muted small">Last updated: 8/24/2025</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

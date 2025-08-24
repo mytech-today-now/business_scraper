@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Scraper Testing Guide - Business Scraper Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-link:hover {
+            text-decoration: underline;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .table-responsive {
+            margin: 1rem 0;
+        }
+        .nav-breadcrumb {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .back-to-docs {
+            margin-bottom: 2rem;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .alert {
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="back-to-docs">
+            <a href="readme.html" class="btn btn-outline-primary">
+                ← Back to Documentation Hub
+            </a>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="readme.html">Documentation</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Business Scraper Testing Guide</li>
+                </ol>
+            </nav>
+        </div>
+
+        <main class="documentation-content">
+            <h1>Business Scraper Testing Guide</h1>
+<h2>Overview</h2>
+<p>This guide provides comprehensive testing procedures for the newly implemented unlimited results functionality and industry criteria fixes.</p>
+<h2>🎯 Test 1: Unlimited Results Functionality</h2>
+<h3>Purpose</h3>
+<p>Verify that the application now gathers comprehensive results without artificial limits.</p>
+<h3>Test Steps</h3>
+<ol>
+<li><p><strong>Access Application</strong></p>
+<ul>
+<li>Navigate to <a href="http://localhost:3000">http://localhost:3000</a></li>
+<li>Ensure application loads successfully</li>
+</ul>
+</li>
+<li><p><strong>Configure Search Settings</strong></p>
+<ul>
+<li>Go to API Configuration page</li>
+<li>Set &quot;Max Results Per Search&quot; to &quot;Unlimited (10,000+)&quot;</li>
+<li>Set &quot;DuckDuckGo SERP Pages&quot; to 6 pages</li>
+<li>Save configuration</li>
+</ul>
+</li>
+<li><p><strong>Select Industry for Testing</strong></p>
+<ul>
+<li>Choose &quot;Accounting &amp; Tax Services&quot; (has multiple keywords)</li>
+<li>Enter ZIP code: 60010 (Barrington, IL - good test area)</li>
+<li>Set search radius to 25 miles</li>
+</ul>
+</li>
+<li><p><strong>Monitor Search Processing</strong></p>
+<ul>
+<li>Start scraping process</li>
+<li>Watch console logs for pagination behavior</li>
+<li>Expected pattern:<pre><code>[INFO] Starting search for criteria: &quot;CPA firm&quot;
+[INFO] Page 1: Found 10 results
+[INFO] Page 2: Found 10 results
+[INFO] Page 3: Found 10 results
+[INFO] Page 4: Found 10 results
+[INFO] Page 5: Found 10 results
+[INFO] Page 6: Found 10 results
+[INFO] Completed search for &quot;CPA firm&quot;: 60 results found
+[INFO] Starting search for criteria: &quot;accounting services for businesses&quot;
+[INFO] Page 1: Found 10 results
+...
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>Verify Result Counts</strong></p>
+<ul>
+<li>Previous behavior: ~50-100 total results</li>
+<li>Expected new behavior: 500-1000+ total results</li>
+<li>Check that each criteria gets full page coverage</li>
+</ul>
+</li>
+</ol>
+<h3>Success Criteria</h3>
+<ul>
+<li>✅ Each search criteria processes 6 pages before moving to next</li>
+<li>✅ Total results significantly higher than previous limits</li>
+<li>✅ No early termination due to maxResults constraints</li>
+<li>✅ All criteria from selected industry are processed</li>
+</ul>
+<h2>🎯 Test 2: Industry Criteria Fix</h2>
+<h3>Purpose</h3>
+<p>Verify that custom industries use only their specified keywords.</p>
+<h3>Test Steps</h3>
+<ol>
+<li><p><strong>Create Custom Industry</strong></p>
+<ul>
+<li>Go to Industry Categories section</li>
+<li>Click &quot;Add Custom&quot;</li>
+<li>Name: &quot;Test Industry&quot;</li>
+<li>Keywords: &quot;CPA firm&quot;</li>
+<li>Save the custom industry</li>
+</ul>
+</li>
+<li><p><strong>Select Only Custom Industry</strong></p>
+<ul>
+<li>Deselect all other industries</li>
+<li>Select only &quot;Test Industry&quot;</li>
+<li>Verify only this industry is selected</li>
+</ul>
+</li>
+<li><p><strong>Start Scraping Process</strong></p>
+<ul>
+<li>Enter ZIP code: 60010</li>
+<li>Start scraping</li>
+<li>Monitor console logs carefully</li>
+</ul>
+</li>
+<li><p><strong>Verify Search Queries</strong></p>
+<ul>
+<li>Expected log: <code>Using keywords: &quot;CPA firm&quot; in 60010</code></li>
+<li>Expected search: <code>Scraping DuckDuckGo SERP for: CPA firm 60010</code></li>
+<li>Should NOT see other accounting terms like:<ul>
+<li>&quot;bookkeeping service&quot;</li>
+<li>&quot;tax advisory firms&quot;</li>
+<li>&quot;financial auditing firms&quot;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Verify Results</strong></p>
+<ul>
+<li>All results should be CPA firms only</li>
+<li>No bookkeeping services, tax preparers, or other accounting businesses</li>
+<li>Results should match the specific &quot;CPA firm&quot; criteria</li>
+</ul>
+</li>
+</ol>
+<h3>Success Criteria</h3>
+<ul>
+<li>✅ Console shows only &quot;CPA firm&quot; as search criteria</li>
+<li>✅ No expansion to other accounting-related terms</li>
+<li>✅ Results contain only CPA firms</li>
+<li>✅ No cross-contamination from other industry keywords</li>
+</ul>
+<h2>🎯 Test 3: UI Display of Large Result Sets</h2>
+<h3>Purpose</h3>
+<p>Verify that the UI can handle and display large numbers of results.</p>
+<h3>Test Steps</h3>
+<ol>
+<li><p><strong>Run Comprehensive Search</strong></p>
+<ul>
+<li>Select multiple industries (3-4 industries)</li>
+<li>Use populated ZIP code (60010, 90210, 10001)</li>
+<li>Let search complete fully</li>
+</ul>
+</li>
+<li><p><strong>Check Results Table</strong></p>
+<ul>
+<li>Navigate to results view</li>
+<li>Verify &quot;Show All&quot; is selected by default</li>
+<li>Check that all results are displayed without pagination</li>
+<li>Verify table performance with large datasets</li>
+</ul>
+</li>
+<li><p><strong>Test Filtering and Sorting</strong></p>
+<ul>
+<li>Use search filters to narrow results</li>
+<li>Test sorting by different columns</li>
+<li>Verify performance remains acceptable</li>
+</ul>
+</li>
+<li><p><strong>Test Export Functionality</strong></p>
+<ul>
+<li>Export results to CSV/Excel</li>
+<li>Verify all results are included in export</li>
+<li>Check file size and completeness</li>
+</ul>
+</li>
+</ol>
+<h3>Success Criteria</h3>
+<ul>
+<li>✅ UI displays all results without artificial pagination</li>
+<li>✅ Performance remains acceptable with 1000+ results</li>
+<li>✅ Filtering and sorting work correctly</li>
+<li>✅ Export includes all gathered results</li>
+</ul>
+<h2>🎯 Test 4: Performance and Resource Usage</h2>
+<h3>Purpose</h3>
+<p>Monitor application performance with unlimited results.</p>
+<h3>Test Steps</h3>
+<ol>
+<li><p><strong>Monitor Browser Performance</strong></p>
+<ul>
+<li>Open browser developer tools</li>
+<li>Monitor memory usage during large searches</li>
+<li>Check for memory leaks or excessive usage</li>
+</ul>
+</li>
+<li><p><strong>Monitor Server Performance</strong></p>
+<ul>
+<li>Watch server logs for processing times</li>
+<li>Monitor CPU and memory usage on server</li>
+<li>Check for any timeout errors</li>
+</ul>
+</li>
+<li><p><strong>Test Search Duration</strong></p>
+<ul>
+<li>Time complete search processes</li>
+<li>Compare with previous limited searches</li>
+<li>Verify reasonable completion times</li>
+</ul>
+</li>
+</ol>
+<h3>Success Criteria</h3>
+<ul>
+<li>✅ Browser memory usage remains reasonable</li>
+<li>✅ Server performance is acceptable</li>
+<li>✅ Search completion times are reasonable</li>
+<li>✅ No timeout or resource exhaustion errors</li>
+</ul>
+<h2>🎯 Test 5: Configuration Flexibility</h2>
+<h3>Purpose</h3>
+<p>Verify that users can still control result limits if desired.</p>
+<h3>Test Steps</h3>
+<ol>
+<li><p><strong>Test Lower Limits</strong></p>
+<ul>
+<li>Set &quot;Max Results Per Search&quot; to 100</li>
+<li>Verify system respects this limit</li>
+<li>Check that pagination works correctly</li>
+</ul>
+</li>
+<li><p><strong>Test Page Limits</strong></p>
+<ul>
+<li>Set &quot;DuckDuckGo SERP Pages&quot; to 2</li>
+<li>Verify only 2 pages are processed per criteria</li>
+<li>Confirm total results are appropriately limited</li>
+</ul>
+</li>
+<li><p><strong>Test UI Pagination</strong></p>
+<ul>
+<li>Change results display to &quot;50 per page&quot;</li>
+<li>Verify pagination controls work</li>
+<li>Test navigation between pages</li>
+</ul>
+</li>
+</ol>
+<h3>Success Criteria</h3>
+<ul>
+<li>✅ Lower limits are respected when set</li>
+<li>✅ Page limits work correctly</li>
+<li>✅ UI pagination functions properly</li>
+<li>✅ Users maintain control over performance vs. comprehensiveness</li>
+</ul>
+<h2>📊 Expected Results Summary</h2>
+<h3>Before Refactor</h3>
+<ul>
+<li><strong>Total Results</strong>: 50-100 businesses max</li>
+<li><strong>Search Pattern</strong>: 1 page per criteria, early termination</li>
+<li><strong>Custom Industries</strong>: Used wrong keywords (expansion issues)</li>
+<li><strong>UI Display</strong>: 25-50 results per page with pagination</li>
+</ul>
+<h3>After Refactor</h3>
+<ul>
+<li><strong>Total Results</strong>: 500-1000+ businesses (comprehensive)</li>
+<li><strong>Search Pattern</strong>: 6 pages per criteria, full coverage</li>
+<li><strong>Custom Industries</strong>: Use exact specified keywords only</li>
+<li><strong>UI Display</strong>: Show all results by default, optional pagination</li>
+</ul>
+<h2>🚨 Troubleshooting</h2>
+<h3>If Tests Fail</h3>
+<ol>
+<li><p><strong>Check Configuration</strong></p>
+<ul>
+<li>Verify API settings are saved correctly</li>
+<li>Confirm industry selections are active</li>
+</ul>
+</li>
+<li><p><strong>Review Console Logs</strong></p>
+<ul>
+<li>Look for error messages</li>
+<li>Verify search patterns match expectations</li>
+</ul>
+</li>
+<li><p><strong>Clear Browser Cache</strong></p>
+<ul>
+<li>Clear application data</li>
+<li>Refresh industries from defaults</li>
+</ul>
+</li>
+<li><p><strong>Restart Application</strong></p>
+<ul>
+<li>Stop and restart server</li>
+<li>Clear any cached data</li>
+</ul>
+</li>
+</ol>
+<h2>📝 Test Results Documentation</h2>
+<p>When testing, document:</p>
+<ul>
+<li>Actual vs. expected result counts</li>
+<li>Search processing patterns observed</li>
+<li>Any performance issues encountered</li>
+<li>UI responsiveness with large datasets</li>
+<li>Any errors or unexpected behavior</li>
+</ul>
+<p>This comprehensive testing ensures the unlimited results refactor and industry criteria fixes are working correctly and providing the intended improvements to the Business Scraper application.</p>
+
+        </main>
+
+        <footer class="text-center mt-5 pt-4 border-top">
+            <p class="text-muted">
+                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
+            </p>
+            <p class="text-muted">
+                <a href="readme.html">Documentation Hub</a> | 
+                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+            </p>
+            <p class="text-muted small">Last updated: 8/24/2025</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

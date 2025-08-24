@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industries Update Implementation - Business Scraper Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-link:hover {
+            text-decoration: underline;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .table-responsive {
+            margin: 1rem 0;
+        }
+        .nav-breadcrumb {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .back-to-docs {
+            margin-bottom: 2rem;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .alert {
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="back-to-docs">
+            <a href="readme.html" class="btn btn-outline-primary">
+                ← Back to Documentation Hub
+            </a>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="readme.html">Documentation</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Industries Update Implementation</li>
+                </ol>
+            </nav>
+        </div>
+
+        <main class="documentation-content">
+            <h1>Industries Update Implementation</h1>
+<h2>Overview</h2>
+<p>This document describes the implementation of automatic and manual industry updates to ensure that the default industries, criteria, and blacklists from <code>industries-2025-07-26-final.json</code> are properly synchronized with both development and production versions of the Business Scraper application.</p>
+<h2>Problem Statement</h2>
+<p>Previously, the application would only initialize default industries if no industries were saved in the browser&#39;s IndexedDB storage. Once industries were saved, they would never be updated with new defaults, even if the <code>industry-config.ts</code> file was updated. This meant that users would not receive updates to:</p>
+<ul>
+<li>Industry keywords</li>
+<li>Domain blacklists</li>
+<li>New industries</li>
+<li>Industry name changes</li>
+</ul>
+<h2>Solution Implementation</h2>
+<h3>1. Automatic Update Detection</h3>
+<p><strong>File:</strong> <code>src/controller/ConfigContext.tsx</code></p>
+<p>Added intelligent update detection that compares saved industries with current defaults:</p>
+<ul>
+<li><strong><code>checkIfDefaultIndustriesNeedUpdate()</code></strong>: Compares saved industries with <code>DEFAULT_INDUSTRIES</code></li>
+<li>Checks for changes in keywords, domain blacklists, names, and missing industries</li>
+<li>Preserves custom industries while updating defaults</li>
+</ul>
+<h3>2. Smart Industry Refresh</h3>
+<p><strong>Function:</strong> <code>updateDefaultIndustries()</code></p>
+<ul>
+<li>Separates custom industries from default ones</li>
+<li>Updates all default industries with latest data</li>
+<li>Preserves all custom industries created by users</li>
+<li>Logs the update process for debugging</li>
+</ul>
+<h3>3. Manual Refresh Capability</h3>
+<p><strong>UI Component:</strong> Added &quot;Refresh Defaults&quot; button in CategorySelector</p>
+<ul>
+<li>Located next to Export/Import buttons</li>
+<li>Allows users to manually trigger industry updates</li>
+<li>Provides immediate feedback via toast notifications</li>
+</ul>
+<p><strong>API Method:</strong> <code>refreshDefaultIndustries()</code> in ConfigContext</p>
+<ul>
+<li>Can be called programmatically</li>
+<li>Forces update of default industries</li>
+<li>Preserves custom industries</li>
+</ul>
+<h3>4. Command Line Script</h3>
+<p><strong>File:</strong> <code>scripts/refresh-industries.js</code><br><strong>NPM Script:</strong> <code>npm run industries:refresh</code></p>
+<ul>
+<li>Validates the <code>industries-2025-07-26-final.json</code> file</li>
+<li>Provides status information about current industries</li>
+<li>Gives clear instructions for next steps</li>
+</ul>
+<h2>Files Modified</h2>
+<h3>Core Logic</h3>
+<ul>
+<li><code>src/controller/ConfigContext.tsx</code> - Added update detection and refresh logic</li>
+<li><code>src/view/components/CategorySelector.tsx</code> - Added refresh button UI</li>
+</ul>
+<h3>Scripts</h3>
+<ul>
+<li><code>scripts/refresh-industries.js</code> - New refresh script</li>
+<li><code>package.json</code> - Added <code>industries:refresh</code> script</li>
+</ul>
+<h2>How It Works</h2>
+<h3>Automatic Updates (On App Start)</h3>
+<ol>
+<li>Application loads saved industries from IndexedDB</li>
+<li><code>checkIfDefaultIndustriesNeedUpdate()</code> compares with current defaults</li>
+<li>If changes detected:<ul>
+<li>Custom industries are preserved</li>
+<li>Default industries are updated with latest data</li>
+<li>User sees success notification</li>
+<li>Industries are saved back to storage</li>
+</ul>
+</li>
+</ol>
+<h3>Manual Updates (UI Button)</h3>
+<ol>
+<li>User clicks &quot;Refresh Defaults&quot; button</li>
+<li><code>refreshDefaultIndustries()</code> is called</li>
+<li>Current industries are loaded from storage</li>
+<li>Default industries are updated while preserving custom ones</li>
+<li>UI is updated with new industry list</li>
+<li>Success notification is shown</li>
+</ol>
+<h3>Command Line Updates</h3>
+<ol>
+<li>Run <code>npm run industries:refresh</code></li>
+<li>Script validates the industries file</li>
+<li>Provides status and instructions</li>
+<li>Next app restart will apply updates</li>
+</ol>
+<h2>Industry Data Structure</h2>
+<p>The system handles industries with the following structure:</p>
+<pre><code class="language-typescript">interface IndustryCategory {
+  id: string
+  name: string
+  keywords: string[]
+  isCustom: boolean
+  domainBlacklist?: string[]
+}
+</code></pre>
+<h3>Default vs Custom Industries</h3>
+<ul>
+<li><strong>Default Industries</strong>: <code>isCustom: false</code> - Updated automatically</li>
+<li><strong>Custom Industries</strong>: <code>isCustom: true</code> - Always preserved during updates</li>
+</ul>
+<h2>Testing the Implementation</h2>
+<h3>1. Production Testing</h3>
+<pre><code class="language-bash">npm run build
+npm start
+# Visit http://localhost:3000
+</code></pre>
+<h3>2. Development Testing</h3>
+<pre><code class="language-bash">npm run dev
+# Visit http://localhost:3001
+</code></pre>
+<h3>3. Script Testing</h3>
+<pre><code class="language-bash">npm run industries:refresh
+</code></pre>
+<h2>Benefits</h2>
+<ol>
+<li><strong>Automatic Updates</strong>: Users get latest industry data without manual intervention</li>
+<li><strong>Preservation</strong>: Custom industries are never lost during updates</li>
+<li><strong>Manual Control</strong>: Users can force refresh when needed</li>
+<li><strong>Transparency</strong>: Clear logging and notifications about updates</li>
+<li><strong>Backward Compatibility</strong>: Works with existing saved data</li>
+</ol>
+<h2>Current Industry Data</h2>
+<p>The implementation uses data from <code>industries-2025-07-26-final.json</code>:</p>
+<ul>
+<li><strong>19 total industries</strong> with updated keywords and blacklists</li>
+<li><strong>Export date</strong>: 2025-07-26T16:00:00.000Z</li>
+<li><strong>Version</strong>: 1.0.1</li>
+</ul>
+<h3>Key Industries Included:</h3>
+<ul>
+<li>Legal Services</li>
+<li>Accounting &amp; Tax Services</li>
+<li>Architectural Services</li>
+<li>Medical Clinics</li>
+<li>Dental Offices</li>
+<li>Real Estate Agencies</li>
+<li>Insurance Agencies</li>
+<li>Financial Advisory Services</li>
+<li>Nonprofit Organizations</li>
+<li>Staffing &amp; Recruiting Firms</li>
+<li>Event Planning &amp; Management</li>
+<li>Hospitality &amp; Hotel Management</li>
+<li>Engineering Firms</li>
+<li>Private &amp; Charter Schools</li>
+<li>Marketing &amp; Creative Agencies</li>
+<li>E-commerce Businesses</li>
+<li>Manufacturing Companies</li>
+<li>Logistics &amp; Supply Chain</li>
+<li>Legal Tech SaaS</li>
+</ul>
+<h2>Future Maintenance</h2>
+<p>To update industries in the future:</p>
+<ol>
+<li>Update <code>src/lib/industry-config.ts</code> with new data</li>
+<li>Users will automatically get updates on next app start</li>
+<li>Or users can manually refresh using the UI button</li>
+<li>Or run <code>npm run industries:refresh</code> script</li>
+</ol>
+<p>This implementation ensures that industry data stays current while preserving user customizations.</p>
+
+        </main>
+
+        <footer class="text-center mt-5 pt-4 border-top">
+            <p class="text-muted">
+                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
+            </p>
+            <p class="text-muted">
+                <a href="readme.html">Documentation Hub</a> | 
+                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+            </p>
+            <p class="text-muted small">Last updated: 8/24/2025</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

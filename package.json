@@ -67,6 +67,7 @@
     "lighthouse": "^12.8.1",
     "lucide-react": "^0.292.0",
     "lz-string": "^1.5.0",
+    "marked": "^16.2.0",
     "ml-matrix": "^6.12.1",
     "natural": "^8.1.0",
     "next": "^14.0.0",

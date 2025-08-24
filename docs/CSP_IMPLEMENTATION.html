@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Security Policy (CSP) Implementation Guide - Business Scraper Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-link:hover {
+            text-decoration: underline;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .table-responsive {
+            margin: 1rem 0;
+        }
+        .nav-breadcrumb {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .back-to-docs {
+            margin-bottom: 2rem;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .alert {
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="back-to-docs">
+            <a href="readme.html" class="btn btn-outline-primary">
+                ← Back to Documentation Hub
+            </a>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="readme.html">Documentation</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Content Security Policy (CSP) Implementation Guide</li>
+                </ol>
+            </nav>
+        </div>
+
+        <main class="documentation-content">
+            <h1>Content Security Policy (CSP) Implementation Guide</h1>
+<h2>Overview</h2>
+<p>The Business Scraper application implements a comprehensive Content Security Policy (CSP) system to protect against XSS attacks, code injection, and other security vulnerabilities. This document outlines the implementation details and usage guidelines.</p>
+<h2>Architecture</h2>
+<h3>Centralized Configuration</h3>
+<ul>
+<li><strong><code>src/lib/cspConfig.ts</code></strong>: Main CSP configuration module with environment-specific policies</li>
+<li><strong><code>src/lib/cspUtils.ts</code></strong>: Client-side utilities and helpers</li>
+<li><strong><code>src/components/CSPSafeComponents.tsx</code></strong>: React components for CSP-safe content loading</li>
+</ul>
+<h3>Integration Points</h3>
+<ul>
+<li><strong><code>src/middleware.ts</code></strong>: Server-side CSP header injection with nonce generation</li>
+<li><strong><code>next.config.js</code></strong>: Static CSP headers for build-time optimization</li>
+<li><strong><code>src/app/api/csp-report/route.ts</code></strong>: CSP violation reporting endpoint</li>
+</ul>
+<h2>Environment-Specific Policies</h2>
+<h3>Development Environment</h3>
+<pre><code class="language-typescript">{
+  defaultSrc: [&quot;&#39;self&#39;&quot;],
+  scriptSrc: [&quot;&#39;self&#39;&quot;, &quot;&#39;unsafe-eval&#39;&quot;, &quot;&#39;unsafe-inline&#39;&quot;, &quot;&#39;nonce-{nonce}&#39;&quot;],
+  styleSrc: [&quot;&#39;self&#39;&quot;, &quot;&#39;unsafe-inline&#39;&quot;, &quot;&#39;nonce-{nonce}&#39;&quot;],
+  connectSrc: [&quot;&#39;self&#39;&quot;, &quot;ws://localhost:*&quot;, &quot;http://localhost:*&quot;, ...externalAPIs],
+  upgradeInsecureRequests: false,
+  blockAllMixedContent: false
+}
+</code></pre>
+<h3>Production Environment</h3>
+<pre><code class="language-typescript">{
+  defaultSrc: [&quot;&#39;self&#39;&quot;],
+  scriptSrc: [&quot;&#39;self&#39;&quot;, &quot;&#39;unsafe-eval&#39;&quot;, &quot;&#39;nonce-{nonce}&#39;&quot;],
+  styleSrc: [&quot;&#39;self&#39;&quot;, &quot;&#39;unsafe-inline&#39;&quot;, &quot;&#39;nonce-{nonce}&#39;&quot;],
+  connectSrc: [&quot;&#39;self&#39;&quot;, ...externalAPIs],
+  upgradeInsecureRequests: true,
+  blockAllMixedContent: true
+}
+</code></pre>
+<h3>Test Environment</h3>
+<pre><code class="language-typescript">{
+  defaultSrc: [&quot;&#39;self&#39;&quot;],
+  scriptSrc: [&quot;&#39;self&#39;&quot;, &quot;&#39;unsafe-eval&#39;&quot;, &quot;&#39;unsafe-inline&#39;&quot;],
+  styleSrc: [&quot;&#39;self&#39;&quot;, &quot;&#39;unsafe-inline&#39;&quot;],
+  upgradeInsecureRequests: false,
+  blockAllMixedContent: false
+}
+</code></pre>
+<h2>External API Allowlist</h2>
+<p>The CSP configuration includes necessary external connections for business scraper functionality:</p>
+<ul>
+<li><p><strong>Geocoding Services</strong>:</p>
+<ul>
+<li><code>https://nominatim.openstreetmap.org</code></li>
+<li><code>https://api.opencagedata.com</code></li>
+</ul>
+</li>
+<li><p><strong>Cloud Services</strong>:</p>
+<ul>
+<li><code>https://*.googleapis.com</code> (Google APIs)</li>
+<li><code>https://*.cognitiveservices.azure.com</code> (Azure services)</li>
+</ul>
+</li>
+<li><p><strong>Search Services</strong>:</p>
+<ul>
+<li><code>https://api.duckduckgo.com</code></li>
+<li><code>https://duckduckgo.com</code></li>
+</ul>
+</li>
+</ul>
+<h2>Usage Examples</h2>
+<h3>Basic CSP Header Generation</h3>
+<pre><code class="language-typescript">import { getCSPHeader, generateCSPNonce } from &#39;@/lib/cspConfig&#39;
+
+// Generate nonce for current request
+const nonce = generateCSPNonce()
+
+// Get CSP header with nonce
+const cspHeader = getCSPHeader(nonce)
+
+// Set header in response
+response.headers.set(&#39;Content-Security-Policy&#39;, cspHeader)
+</code></pre>
+<h3>CSP-Safe React Components</h3>
+<pre><code class="language-tsx">import { CSPScript, CSPStyle, CSPNonceProvider } from &#39;@/components/CSPSafeComponents&#39;
+
+function MyComponent() {
+  return (
+    &lt;CSPNonceProvider nonce={nonce}&gt;
+      &lt;CSPStyle&gt;
+        {`.my-class { color: red; }`}
+      &lt;/CSPStyle&gt;
+      
+      &lt;CSPScript&gt;
+        {`console.log(&#39;CSP-safe script&#39;);`}
+      &lt;/CSPScript&gt;
+    &lt;/CSPNonceProvider&gt;
+  )
+}
+</code></pre>
+<h3>Content Validation</h3>
+<pre><code class="language-typescript">import { isCSPSafe, sanitizeForCSP } from &#39;@/lib/cspUtils&#39;
+
+const userContent = `eval(&quot;malicious code&quot;)`
+
+if (!isCSPSafe(userContent)) {
+  const sanitized = sanitizeForCSP(userContent)
+  // Use sanitized content
+}
+</code></pre>
+<h3>Dynamic Script Loading</h3>
+<pre><code class="language-typescript">import { loadScriptSafely } from &#39;@/lib/cspUtils&#39;
+
+// Load external script with CSP compliance
+await loadScriptSafely(&#39;https://example.com/script.js&#39;, nonce)
+</code></pre>
+<h2>CSP Violation Reporting</h2>
+<h3>Automatic Reporting</h3>
+<p>CSP violations are automatically reported to <code>/api/csp-report</code> endpoint and logged for monitoring.</p>
+<h3>Manual Reporting</h3>
+<pre><code class="language-typescript">import { CSPReporter } from &#39;@/lib/cspUtils&#39;
+
+const reporter = CSPReporter.getInstance()
+reporter.reportViolation(&#39;script-src&#39;, &#39;https://blocked-domain.com/script.js&#39;)
+</code></pre>
+<h3>Violation Monitoring</h3>
+<pre><code class="language-typescript">// Get recent violations
+const violations = reporter.getViolations()
+
+// Clear violation history
+reporter.clearViolations()
+</code></pre>
+<h2>Security Features</h2>
+<h3>Nonce-Based Script/Style Loading</h3>
+<ul>
+<li>Cryptographically secure nonces generated per request</li>
+<li>Automatic nonce injection in middleware</li>
+<li>React components support nonce-based loading</li>
+</ul>
+<h3>Content Sanitization</h3>
+<ul>
+<li>Automatic detection of unsafe patterns</li>
+<li>Content sanitization for CSP compliance</li>
+<li>Removal of <code>eval()</code>, <code>Function()</code>, inline handlers</li>
+</ul>
+<h3>Environment Awareness</h3>
+<ul>
+<li>Stricter policies in production</li>
+<li>Development-friendly policies for local development</li>
+<li>Test-specific configurations</li>
+</ul>
+<h2>Best Practices</h2>
+<h3>1. Use CSP-Safe Components</h3>
+<pre><code class="language-tsx">// ✅ Good - Use CSP-safe components
+&lt;CSPScript nonce={nonce}&gt;
+  {safeScriptContent}
+&lt;/CSPScript&gt;
+
+// ❌ Bad - Direct script injection
+&lt;script dangerouslySetInnerHTML={{__html: unsafeContent}} /&gt;
+</code></pre>
+<h3>2. Validate External Content</h3>
+<pre><code class="language-typescript">// ✅ Good - Validate before use
+if (isCSPSafe(externalContent)) {
+  useContent(externalContent)
+} else {
+  useContent(sanitizeForCSP(externalContent))
+}
+
+// ❌ Bad - Use external content directly
+useContent(externalContent)
+</code></pre>
+<h3>3. Monitor Violations</h3>
+<pre><code class="language-typescript">// ✅ Good - Monitor and respond to violations
+useEffect(() =&gt; {
+  const handleViolation = (event) =&gt; {
+    console.warn(&#39;CSP Violation:&#39;, event.violatedDirective)
+    // Take appropriate action
+  }
+  
+  document.addEventListener(&#39;securitypolicyviolation&#39;, handleViolation)
+  return () =&gt; document.removeEventListener(&#39;securitypolicyviolation&#39;, handleViolation)
+}, [])
+</code></pre>
+<h3>4. Environment-Specific Policies</h3>
+<pre><code class="language-typescript">// ✅ Good - Use environment-specific configurations
+const config = getCSPConfig(process.env.NODE_ENV)
+
+// ❌ Bad - One-size-fits-all policy
+const config = getCSPConfig(&#39;production&#39;) // Always production
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<ol>
+<li><strong>Script Blocked</strong>: Add nonce to script tags or whitelist the source</li>
+<li><strong>Style Blocked</strong>: Use nonce-based styles or add to style-src</li>
+<li><strong>External API Blocked</strong>: Add domain to connect-src allowlist</li>
+<li><strong>Inline Handler Blocked</strong>: Replace with event listeners</li>
+</ol>
+<h3>Debug Mode</h3>
+<p>In development, use the CSP status indicator:</p>
+<pre><code class="language-tsx">import { CSPStatusIndicator } from &#39;@/components/CSPSafeComponents&#39;
+
+// Shows violation count and current nonce
+&lt;CSPStatusIndicator /&gt;
+</code></pre>
+<h3>Violation Analysis</h3>
+<p>Check browser console for CSP violation details:</p>
+<pre><code>Content Security Policy: The page&#39;s settings blocked the loading of a resource at https://example.com/script.js (&quot;script-src&quot;).
+</code></pre>
+<h2>Testing</h2>
+<p>Run CSP tests to verify implementation:</p>
+<pre><code class="language-bash">npm test -- src/__tests__/csp.test.ts
+</code></pre>
+<p>The test suite covers:</p>
+<ul>
+<li>Configuration validation</li>
+<li>Header generation</li>
+<li>Content sanitization</li>
+<li>Violation reporting</li>
+<li>Environment-specific policies</li>
+</ul>
+<h2>Migration Guide</h2>
+<h3>From Basic CSP to Enhanced CSP</h3>
+<ol>
+<li><p><strong>Update imports</strong>:</p>
+<pre><code class="language-typescript">// Old
+const csp = &quot;default-src &#39;self&#39;&quot;
+
+// New
+import { getCSPHeader } from &#39;@/lib/cspConfig&#39;
+const csp = getCSPHeader()
+</code></pre>
+</li>
+<li><p><strong>Replace inline scripts</strong>:</p>
+<pre><code class="language-tsx">// Old
+&lt;script&gt;{inlineScript}&lt;/script&gt;
+
+// New
+&lt;CSPScript nonce={nonce}&gt;{inlineScript}&lt;/CSPScript&gt;
+</code></pre>
+</li>
+<li><p><strong>Add violation monitoring</strong>:</p>
+<pre><code class="language-typescript">// New
+import { initializeCSPReporting } from &#39;@/lib/cspUtils&#39;
+initializeCSPReporting()
+</code></pre>
+</li>
+</ol>
+<h2>Security Considerations</h2>
+<ul>
+<li><strong>Nonce Rotation</strong>: Nonces are generated per request for maximum security</li>
+<li><strong>External Dependencies</strong>: Only necessary external domains are whitelisted</li>
+<li><strong>Content Validation</strong>: All dynamic content is validated before use</li>
+<li><strong>Violation Monitoring</strong>: All violations are logged and can trigger alerts</li>
+<li><strong>Environment Isolation</strong>: Production policies are stricter than development</li>
+</ul>
+<h2>Future Enhancements</h2>
+<ul>
+<li><strong>Strict CSP</strong>: Gradual migration to remove <code>unsafe-inline</code> and <code>unsafe-eval</code></li>
+<li><strong>Report-Only Mode</strong>: Test new policies without breaking functionality</li>
+<li><strong>Automated Monitoring</strong>: Integration with security monitoring services</li>
+<li><strong>Policy Optimization</strong>: Regular review and tightening of CSP policies</li>
+</ul>
+
+        </main>
+
+        <footer class="text-center mt-5 pt-4 border-top">
+            <p class="text-muted">
+                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
+            </p>
+            <p class="text-muted">
+                <a href="readme.html">Documentation Hub</a> | 
+                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+            </p>
+            <p class="text-muted small">Last updated: 8/24/2025</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

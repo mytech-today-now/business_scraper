@@ -875,7 +875,12 @@ export function App(): JSX.Element {
             <div className="flex items-center gap-4">
               <MemoryDashboard compact className="hidden md:flex" />
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => window.open('/docs/readme.html', '_blank')}
+                  title="Documentation"
+                >
                   <FileText className="h-4 w-4" />
                 </Button>
                 <Button

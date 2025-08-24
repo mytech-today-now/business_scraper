@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Scraper - User Guide (Updated) - Business Scraper Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <style>
+        .header-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-link:hover {
+            text-decoration: underline;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .table-responsive {
+            margin: 1rem 0;
+        }
+        .nav-breadcrumb {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .back-to-docs {
+            margin-bottom: 2rem;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .alert {
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="back-to-docs">
+            <a href="readme.html" class="btn btn-outline-primary">
+                ← Back to Documentation Hub
+            </a>
+        </div>
+        
+        <div class="nav-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="readme.html">Documentation</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Business Scraper - User Guide (Updated)</li>
+                </ol>
+            </nav>
+        </div>
+
+        <main class="documentation-content">
+            <h1>Business Scraper - User Guide (Updated)</h1>
+<h2>🚀 What&#39;s New - Unlimited Results &amp; Precision Targeting</h2>
+<h3>Major Improvements</h3>
+<h4>✅ Unlimited Results Capability</h4>
+<ul>
+<li><strong>No More Artificial Limits</strong>: Gather 500-1000+ businesses per search instead of 50-100</li>
+<li><strong>Comprehensive Coverage</strong>: Each search criteria now processes 6 pages before moving to the next</li>
+<li><strong>Maximum Value</strong>: Get the most complete business database possible from your searches</li>
+</ul>
+<h4>✅ Precision Industry Targeting</h4>
+<ul>
+<li><strong>Custom Industries Work Correctly</strong>: Your custom industry keywords are used exactly as specified</li>
+<li><strong>No Cross-Contamination</strong>: Custom industries won&#39;t include criteria from other industries</li>
+<li><strong>Predictable Results</strong>: Get exactly what you search for, nothing more, nothing less</li>
+</ul>
+<h4>✅ Enhanced Search Processing</h4>
+<ul>
+<li><strong>Deep Page Coverage</strong>: 6 pages per search criteria (configurable)</li>
+<li><strong>Sequential Processing</strong>: Complete each criteria fully before moving to the next</li>
+<li><strong>Better Logging</strong>: Clear visibility into what&#39;s being searched and found</li>
+</ul>
+<h2>📋 Getting Started</h2>
+<h3>1. Application Access</h3>
+<ul>
+<li>Navigate to <a href="http://localhost:3000">http://localhost:3000</a></li>
+<li>Ensure the application loads successfully</li>
+<li>Check that all industry categories are visible</li>
+</ul>
+<h3>2. Basic Configuration</h3>
+<h4>API Configuration</h4>
+<ol>
+<li>Go to <strong>API Configuration</strong> page</li>
+<li>Set <strong>Max Results Per Search</strong>: <ul>
+<li>Choose &quot;Unlimited (10,000+)&quot; for maximum results</li>
+<li>Or select lower values (100, 500, 1000) for faster searches</li>
+</ul>
+</li>
+<li>Set <strong>DuckDuckGo SERP Pages</strong>: <ul>
+<li>Default: 6 pages (recommended for comprehensive results)</li>
+<li>Lower values (2-3) for faster searches</li>
+</ul>
+</li>
+<li>Save configuration</li>
+</ol>
+<h4>Search Parameters</h4>
+<ol>
+<li><strong>ZIP Code</strong>: Enter your target area (e.g., 60010, 90210, 10001)</li>
+<li><strong>Search Radius</strong>: Set distance (10-50 miles recommended)</li>
+<li><strong>Pages Per Site</strong>: Number of pages to scrape per website (default: 20)</li>
+</ol>
+<h3>3. Industry Selection</h3>
+<h4>Using Default Industries</h4>
+<ol>
+<li>Browse the <strong>Industry Categories</strong> section</li>
+<li>Select industries relevant to your target market</li>
+<li>Each industry has pre-configured keywords for optimal results</li>
+</ol>
+<h4>Creating Custom Industries</h4>
+<ol>
+<li>Click <strong>&quot;Add Custom&quot;</strong> button</li>
+<li>Enter a descriptive name (e.g., &quot;Local CPAs&quot;, &quot;Tech Startups&quot;)</li>
+<li>Add specific keywords:<ul>
+<li>Use precise terms: &quot;CPA firm&quot;, &quot;software development company&quot;</li>
+<li>Separate multiple keywords with commas</li>
+<li>Use quotes for exact phrases: &quot;digital marketing agency&quot;</li>
+</ul>
+</li>
+<li>Save your custom industry</li>
+</ol>
+<h2>🎯 Search Strategies</h2>
+<h3>Maximum Results Strategy</h3>
+<ul>
+<li><strong>Goal</strong>: Get the most comprehensive business database</li>
+<li><strong>Settings</strong>: <ul>
+<li>Max Results: Unlimited (10,000+)</li>
+<li>SERP Pages: 6</li>
+<li>Multiple industries selected</li>
+</ul>
+</li>
+<li><strong>Expected Results</strong>: 500-1000+ businesses</li>
+<li><strong>Time</strong>: 15-30 minutes for multiple industries</li>
+</ul>
+<h3>Fast Results Strategy</h3>
+<ul>
+<li><strong>Goal</strong>: Quick overview of business landscape</li>
+<li><strong>Settings</strong>:<ul>
+<li>Max Results: 100-500</li>
+<li>SERP Pages: 2-3</li>
+<li>1-2 industries selected</li>
+</ul>
+</li>
+<li><strong>Expected Results</strong>: 100-300 businesses</li>
+<li><strong>Time</strong>: 5-10 minutes</li>
+</ul>
+<h3>Precision Targeting Strategy</h3>
+<ul>
+<li><strong>Goal</strong>: Find very specific business types</li>
+<li><strong>Settings</strong>:<ul>
+<li>Create custom industry with precise keywords</li>
+<li>Max Results: Unlimited</li>
+<li>SERP Pages: 6</li>
+</ul>
+</li>
+<li><strong>Expected Results</strong>: Highly relevant businesses only</li>
+<li><strong>Time</strong>: 10-20 minutes</li>
+</ul>
+<h2>🔍 Understanding Search Results</h2>
+<h3>What You&#39;ll See</h3>
+<h4>Console Monitoring</h4>
+<p>During searches, monitor the browser console (F12) to see:</p>
+<pre><code>[INFO] Starting search for criteria: &quot;CPA firm&quot;
+[INFO] Scraping DuckDuckGo SERP for: CPA firm 60010
+[INFO] Page 1: Found 10 results
+[INFO] Page 2: Found 10 results
+[INFO] Page 3: Found 10 results
+[INFO] Page 4: Found 10 results
+[INFO] Page 5: Found 10 results
+[INFO] Page 6: Found 10 results
+[INFO] Completed search for &quot;CPA firm&quot;: 60 results found
+</code></pre>
+<h4>Processing Steps</h4>
+<p>The application shows real-time progress:</p>
+<ul>
+<li><strong>Searching [Industry] Businesses</strong>: Finding business websites</li>
+<li><strong>Scraping [Industry] Websites</strong>: Extracting contact information</li>
+<li><strong>Processing</strong>: Number of websites and pages being processed</li>
+</ul>
+<h4>Results Display</h4>
+<ul>
+<li><strong>Show All</strong>: Default view showing all results without pagination</li>
+<li><strong>Pagination Options</strong>: 25, 50, 100 per page, or Show All</li>
+<li><strong>Filtering</strong>: Search within results by business name, industry, contact info</li>
+<li><strong>Sorting</strong>: Click column headers to sort results</li>
+</ul>
+<h3>Result Quality Indicators</h3>
+<ul>
+<li><strong>Contact Information</strong>: Email addresses, phone numbers, addresses</li>
+<li><strong>Business Details</strong>: Names, websites, industry classifications</li>
+<li><strong>Data Source</strong>: Real web scraping with live data collection</li>
+</ul>
+<h2>📊 Managing Large Result Sets</h2>
+<h3>Performance Considerations</h3>
+<h4>Browser Performance</h4>
+<ul>
+<li><strong>Memory Usage</strong>: Monitor browser memory with large datasets</li>
+<li><strong>Scroll Performance</strong>: Use pagination for 1000+ results if needed</li>
+<li><strong>Filter Response</strong>: Large datasets may have slower filter response</li>
+</ul>
+<h4>Optimization Tips</h4>
+<ol>
+<li><strong>Use Filters</strong>: Narrow results using search and filter options</li>
+<li><strong>Enable Pagination</strong>: Switch to paginated view for better performance</li>
+<li><strong>Export Regularly</strong>: Export results to avoid browser memory issues</li>
+<li><strong>Clear Old Results</strong>: Remove previous search results before new searches</li>
+</ol>
+<h3>Export Options</h3>
+<ul>
+<li><strong>CSV Format</strong>: Compatible with Excel, Google Sheets</li>
+<li><strong>Excel Format</strong>: Native Excel file with formatting</li>
+<li><strong>All Results</strong>: Exports include all gathered businesses, not just visible ones</li>
+</ul>
+<h2>🛠️ Troubleshooting</h2>
+<h3>Common Issues</h3>
+<h4>Slow Performance with Large Results</h4>
+<p><strong>Symptoms</strong>: Browser becomes slow, UI unresponsive<br><strong>Solutions</strong>:</p>
+<ul>
+<li>Enable pagination mode (50-100 results per page)</li>
+<li>Clear browser cache and restart</li>
+<li>Use filtering to reduce visible results</li>
+<li>Export results and clear the display</li>
+</ul>
+<h4>Custom Industry Not Working as Expected</h4>
+<p><strong>Symptoms</strong>: Getting unrelated businesses in results<br><strong>Solutions</strong>:</p>
+<ul>
+<li>Check industry keywords are specific enough</li>
+<li>Use quotes for exact phrases: &quot;CPA firm&quot; not just CPA firm</li>
+<li>Verify only your custom industry is selected</li>
+<li>Review console logs to confirm correct keywords are being used</li>
+</ul>
+<h4>Search Taking Too Long</h4>
+<p><strong>Symptoms</strong>: Searches running for 30+ minutes<br><strong>Solutions</strong>:</p>
+<ul>
+<li>Reduce number of selected industries</li>
+<li>Lower SERP pages setting (2-3 instead of 6)</li>
+<li>Set lower max results limit</li>
+<li>Check internet connection stability</li>
+</ul>
+<h4>Memory Issues</h4>
+<p><strong>Symptoms</strong>: Browser crashes or becomes unresponsive<br><strong>Solutions</strong>:</p>
+<ul>
+<li>Enable pagination for large datasets</li>
+<li>Export and clear results regularly</li>
+<li>Restart browser between large searches</li>
+<li>Close other browser tabs during searches</li>
+</ul>
+<h3>Getting Help</h3>
+<ol>
+<li><strong>Check Console Logs</strong>: Browser developer tools (F12) show detailed information</li>
+<li><strong>Review Processing Steps</strong>: Application shows real-time progress and errors</li>
+<li><strong>Test with Smaller Datasets</strong>: Reduce scope to isolate issues</li>
+<li><strong>Clear Application Data</strong>: Reset to default state if needed</li>
+</ol>
+<h2>📈 Best Practices</h2>
+<h3>For Maximum Results</h3>
+<ol>
+<li><strong>Plan Your Search</strong>: Select relevant industries for your target market</li>
+<li><strong>Use Populated Areas</strong>: ZIP codes in business districts yield more results</li>
+<li><strong>Monitor Progress</strong>: Watch console logs to ensure searches are working correctly</li>
+<li><strong>Export Regularly</strong>: Don&#39;t lose results due to browser issues</li>
+</ol>
+<h3>For Custom Industries</h3>
+<ol>
+<li><strong>Be Specific</strong>: Use precise keywords that match your target businesses</li>
+<li><strong>Test Keywords</strong>: Start with one keyword, then add more if needed</li>
+<li><strong>Use Business Language</strong>: Terms that businesses use to describe themselves</li>
+<li><strong>Avoid Generic Terms</strong>: &quot;business&quot; or &quot;company&quot; are too broad</li>
+</ol>
+<h3>For Performance</h3>
+<ol>
+<li><strong>Start Small</strong>: Test with one industry before running large searches</li>
+<li><strong>Monitor Resources</strong>: Watch browser memory usage during large searches</li>
+<li><strong>Use Pagination</strong>: Enable for datasets over 1000 businesses</li>
+<li><strong>Regular Exports</strong>: Save results frequently to avoid data loss</li>
+</ol>
+<h2>🎯 Success Metrics</h2>
+<h3>What to Expect</h3>
+<ul>
+<li><strong>Result Counts</strong>: 500-1000+ businesses for comprehensive searches</li>
+<li><strong>Search Quality</strong>: Highly relevant businesses matching your criteria</li>
+<li><strong>Contact Coverage</strong>: 60-80% of businesses with contact information</li>
+<li><strong>Processing Time</strong>: 15-30 minutes for multi-industry comprehensive searches</li>
+</ul>
+<h3>Measuring Success</h3>
+<ul>
+<li><strong>Relevance</strong>: Percentage of results that match your target criteria</li>
+<li><strong>Completeness</strong>: Contact information coverage in results</li>
+<li><strong>Efficiency</strong>: Results per minute of search time</li>
+<li><strong>Uniqueness</strong>: Percentage of new businesses vs. duplicates</li>
+</ul>
+<p>This updated user guide reflects the new unlimited results capability and precision industry targeting, helping users maximize the value they get from the Business Scraper application.</p>
+
+        </main>
+
+        <footer class="text-center mt-5 pt-4 border-top">
+            <p class="text-muted">
+                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
+            </p>
+            <p class="text-muted">
+                <a href="readme.html">Documentation Hub</a> | 
+                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+            </p>
+            <p class="text-muted small">Last updated: 8/24/2025</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
