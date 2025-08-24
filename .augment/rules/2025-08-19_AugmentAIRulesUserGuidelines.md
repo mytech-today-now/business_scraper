@@ -231,7 +231,28 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ---
 
-### 15. Branch Management  
+### 15. Errors Logged as "Issues" in GitHub
+**RULE: All Errors, Bugs, or Unexpected Behaviors Must Be Tracked in GitHub Issues**  
+
+Errors or anomalies discovered during development, testing, or production must be logged as **Issues** in GitHub to ensure visibility, traceability, and accountability.  
+
+**Guidelines:**  
+- **Title:** Short, descriptive summary (e.g., `"Login API returns 500 on empty payload"`).  
+- **Description:** Include detailed context, reproduction steps, expected vs. actual behavior, and screenshots/logs if applicable.  
+- **Labels:** Tag appropriately (`bug`, `security`, `performance`, `docs`, etc.).  
+- **Priority:** Assign severity (`critical`, `high`, `medium`, `low`).  
+- **Assignees:** Assign responsible developer/team.  
+- **Linkage:** Connect issues to related commits, PRs, or discussions.  
+- **Lifecycle:** Issues must be tracked from creation → triage → assignment → resolution → closure.  
+
+**ENFORCE:**  
+- No error should remain undocumented.  
+- Verbal or private reports are insufficient; GitHub Issue tracking is mandatory.  
+- Closed issues should reference the resolving commit or PR.  
+
+---
+
+### 16. Branch Management  
 **RULE: Follow a Structured Branching Strategy**  
 
 - `main`: Production-ready branch.  
@@ -242,7 +263,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ---
 
-### 16. Pre-commit Validation  
+### 17. Pre-commit Validation  
 **RULE: Require Automated Quality Checks**  
 
 - Linting for code quality and style consistency.  
@@ -254,7 +275,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ## DEVELOPMENT WORKFLOW
 
-### 17. Feature Development Process  
+### 18. Feature Development Process  
 **WORKFLOW:**  
 1. Create a feature branch from `develop`.  
 2. Implement the feature and write appropriate tests.  
@@ -268,7 +289,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ---
 
-### 18. Code Review Requirements  
+### 19. Code Review Requirements  
 **RULE: Code Reviews Are Mandatory for All Merges**  
 
 Reviewers must check for:  
@@ -282,7 +303,7 @@ Reviewers must check for:
 
 ## ENVIRONMENT & DEPENDENCIES
 
-### 19. Environment Configuration  
+### 20. Environment Configuration  
 **RULE: Environments Must Be Isolated and Clearly Defined**  
 
 - Provide separate configurations for development, testing, and production.  
@@ -291,7 +312,7 @@ Reviewers must check for:
 
 ---
 
-### 20. Dependency Management  
+### 21. Dependency Management  
 **RULE: Secure and Maintainable Dependency Practices**  
 
 - Audit dependencies regularly.  
@@ -303,7 +324,7 @@ Reviewers must check for:
 
 ## MONITORING & MAINTENANCE
 
-### 21. Health Monitoring  
+### 22. Health Monitoring  
 **RULE: Implement Automated Monitoring**  
 
 - Provide application health endpoints.  
@@ -313,7 +334,7 @@ Reviewers must check for:
 
 ---
 
-### 22. Logging Standards  
+### 23. Logging Standards  
 **RULE: Use Structured Logging Across the Application**  
 
 - Log with appropriate levels (`error`, `warn`, `info`, `debug`).  
@@ -325,7 +346,7 @@ Reviewers must check for:
 
 ## DEPLOYMENT & PRODUCTION
 
-### 23. Production Readiness  
+### 24. Production Readiness  
 **RULE: All Code Must Pass a Deployment Checklist**  
 
 - All tests passing.  
@@ -336,7 +357,7 @@ Reviewers must check for:
 
 ---
 
-### 24. Rollback Procedures  
+### 25. Rollback Procedures  
 **RULE: Always Deploy Safely and Prepare for Rollback**  
 
 - Maintain rollback mechanisms.  

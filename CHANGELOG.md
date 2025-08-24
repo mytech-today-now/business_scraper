@@ -5,6 +5,86 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-01-24
+
+### Added - Export & Integration Framework
+- **Advanced Export Templates System**
+  - Field mapping engine with flexible data transformation (5+ transformation types)
+  - Comprehensive validation system with business rules and quality control
+  - CRM platform templates: Salesforce (leads), HubSpot (companies), Pipedrive (organizations)
+  - Email marketing templates: Mailchimp (contacts), Constant Contact (contacts)
+  - Platform-specific field mappings with automatic data quality assessment
+  - Industry normalization, address parsing, phone formatting, email validation
+
+- **RESTful API Framework (v1)**
+  - Complete API infrastructure with OAuth 2.0 and API Key authentication
+  - Scope-based permissions system (read/write businesses, exports, templates)
+  - Configurable rate limiting (per-client and global limits)
+  - Comprehensive input validation and structured error handling
+  - CORS support with configurable origins and methods
+  - API endpoints: `/api/v1/exports`, `/api/v1/templates`, `/api/v1/oauth`
+  - Multi-platform export support and export preview generation
+
+- **OAuth 2.0 Authentication System**
+  - Complete OAuth 2.0 implementation with Authorization Code Flow
+  - PKCE (Proof Key for Code Exchange) support for enhanced security
+  - Token management with access tokens, refresh tokens, and automatic cleanup
+  - Dynamic client registration and configuration
+  - Secure token generation with crypto-random values
+
+- **Webhook System**
+  - Real-time event delivery for export.completed, export.failed, data.scraped, data.validated
+  - Retry mechanisms with exponential backoff and configurable policies
+  - HMAC signature verification for payload integrity
+  - Delivery tracking, history, and failure analysis
+  - Webhook status management and timeout handling
+
+### Technical Implementation
+- **New Type Definitions**: Comprehensive TypeScript types for export templates, field mapping, and integrations
+- **Architecture**: Modular design with field mapping engine, export templates, API framework, OAuth service, and webhook service
+- **Security**: Enhanced security with OAuth 2.0, HMAC signatures, and secure token management
+- **Testing**: Template validation, API testing, OAuth flow validation, and webhook delivery verification
+
+### Files Added
+- `src/types/export-templates.ts` - Export template type definitions
+- `src/types/field-mapping.ts` - Field mapping system types
+- `src/types/integrations.ts` - Integration system types
+- `src/lib/field-mapping/mapping-engine.ts` - Core field mapping engine
+- `src/lib/field-mapping/transformations.ts` - Business data transformations
+- `src/lib/field-mapping/validators.ts` - Field validation utilities
+- `src/lib/export-templates/base-template.ts` - Base export template class
+- `src/lib/export-templates/crm/salesforce.ts` - Salesforce export template
+- `src/lib/export-templates/crm/hubspot.ts` - HubSpot export template
+- `src/lib/export-templates/crm/pipedrive.ts` - Pipedrive export template
+- `src/lib/export-templates/email-marketing/mailchimp.ts` - Mailchimp export template
+- `src/lib/export-templates/email-marketing/constant-contact.ts` - Constant Contact export template
+- `src/lib/enhanced-export-service.ts` - Enhanced export service with template support
+- `src/lib/integrations/api-framework.ts` - RESTful API framework
+- `src/lib/integrations/oauth2-service.ts` - OAuth 2.0 service implementation
+- `src/lib/integrations/webhook-service.ts` - Webhook system implementation
+- `src/lib/integrations/scheduling-service.ts` - Automated export scheduling service
+- `src/lib/analytics/usage-analytics.ts` - Comprehensive usage analytics service
+- `src/lib/analytics/api-metrics.ts` - Enhanced API metrics and rate limiting
+- `src/app/api/v1/exports/route.ts` - Export API endpoints
+- `src/app/api/v1/templates/route.ts` - Template management API
+- `src/app/api/v1/schedules/route.ts` - Export scheduling API
+- `src/app/api/v1/analytics/route.ts` - Analytics and metrics API
+- `src/app/api/v1/oauth/authorize/route.ts` - OAuth authorization endpoint
+- `src/app/api/v1/oauth/token/route.ts` - OAuth token endpoint
+- `docs/API-Documentation.md` - Comprehensive API documentation
+- `docs/Testing-Guide.md` - Complete testing strategy and guide
+- `src/__tests__/lib/field-mapping/mapping-engine.test.ts` - Field mapping engine tests
+- `src/__tests__/lib/export-templates/salesforce.test.ts` - Salesforce template tests
+- `src/__tests__/lib/integrations/api-framework.test.ts` - API framework tests
+- `src/__tests__/integration/api-endpoints.test.ts` - Integration tests
+
+### Changed
+- Updated MVP2.md to reflect completed Phase 1 features and accelerated timeline
+- Enhanced project architecture with enterprise-grade integration capabilities
+- Improved export functionality with professional CRM and email marketing platform support
+- Integrated enhanced analytics and monitoring throughout API framework
+- Added comprehensive test coverage with unit, integration, and performance tests
+
 ## [2.1.0] - 2024-08-24
 
 ### Added - Data Quality & Enrichment MVP2 Implementation
