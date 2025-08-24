@@ -774,7 +774,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Configuration Guide](CONFIGURATION.md)** - Comprehensive configuration options and best practices
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference and integration guide
 
-### Recent Major Updates (v1.7.0)
+### Recent Major Updates (v1.10.1)
+- 🏢 **Industry Categories Expansion**: Added 5 new comprehensive industry categories with 146 SEO-optimized keywords
+  - **Cybersecurity & IT Security**: Penetration testing, security audits, compliance consulting, incident response
+  - **Renewable Energy & Sustainability**: Solar installation, wind energy, energy efficiency, green building
+  - **Digital Marketing & Advertising Agencies**: SEO services, social media marketing, PPC advertising, content marketing
+  - **FinTech & Financial Services**: Digital banking, payment processing, cryptocurrency, blockchain, robo advisors
+  - **Healthcare Technology & MedTech**: Telemedicine, medical devices, health information systems, medical AI
+- 🚫 **Enhanced Domain Filtering**: 107 new blacklisted domains across major industry platforms and competitors
+- 📊 **Expanded Coverage**: Total of 25 industry categories with comprehensive B2B and B2C targeting
+
+### Previous Updates (v1.7.0)
 - 🎯 **B2C Industry Expansion**: Added 3 new industry categories optimized for consumer services
   - **Home & Lifestyle Services**: House cleaning, lawn care, handyman, plumber, electrician, HVAC, etc.
   - **Personal Health & Wellness**: Personal trainer, yoga studio, massage therapist, hair salon, fitness gym, etc.

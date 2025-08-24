@@ -5,6 +5,29 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2025-08-24 - Industry Categories Expansion
+
+### 🏢 Added - New Industry Categories
+- **Cybersecurity & IT Security**: 25 SEO-optimized keywords including penetration testing, security audits, compliance consulting, incident response, and vulnerability assessment
+- **Renewable Energy & Sustainability**: 28 keywords covering solar installation, wind energy, energy efficiency, green building, and sustainability consulting
+- **Digital Marketing & Advertising Agencies**: 30 keywords for SEO services, social media marketing, PPC advertising, content marketing, and growth marketing
+- **FinTech & Financial Services**: 30 keywords including digital banking, payment processing, cryptocurrency, blockchain, robo advisors, and regtech solutions
+- **Healthcare Technology & MedTech**: 33 keywords covering telemedicine, medical devices, health information systems, medical AI, and digital health solutions
+
+### 🚫 Enhanced - Domain Blacklists
+- Added comprehensive blacklists for each new industry to filter out major platforms and competitors
+- Cybersecurity: 18 major security vendors (CrowdStrike, Palo Alto, Fortinet, etc.)
+- Renewable Energy: 18 major manufacturers and platforms (Tesla, SunPower, GE, etc.)
+- Digital Marketing: 23 major platforms and tools (Google, Facebook, HubSpot, SEMrush, etc.)
+- FinTech: 24 major financial platforms (PayPal, Stripe, Coinbase, Robinhood, etc.)
+- Healthcare Tech: 24 major healthcare and pharma companies (Epic, Cerner, Medtronic, etc.)
+
+### 📊 Impact
+- **Total Industries**: Expanded from 20 to 25 categories
+- **Total Keywords**: Added 146 new SEO-optimized keywords and keyphrases
+- **Enhanced Targeting**: Improved B2B and B2C business discovery capabilities
+- **Better Filtering**: 107 new blacklisted domains to improve result quality
+
 ## [1.10.0] - 2025-08-24
 
 ### Added - AI & Automation Enhancement (Phase 2)
