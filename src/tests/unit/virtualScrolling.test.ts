@@ -86,6 +86,7 @@ describe('Virtual Scrolling Implementation', () => {
     it('should render without crashing', () => {
       render(
         <VirtualizedResultsTable
+          data={mockBusinesses}
           onEdit={jest.fn()}
           onDelete={jest.fn()}
           onExport={jest.fn()}
@@ -100,6 +101,7 @@ describe('Virtual Scrolling Implementation', () => {
     it('should display loading state correctly', () => {
       render(
         <VirtualizedResultsTable
+          data={mockBusinesses}
           onEdit={jest.fn()}
           onDelete={jest.fn()}
           onExport={jest.fn()}
@@ -113,9 +115,10 @@ describe('Virtual Scrolling Implementation', () => {
 
     it('should handle export functionality', async () => {
       const mockOnExport = jest.fn()
-      
+
       render(
         <VirtualizedResultsTable
+          data={mockBusinesses}
           onEdit={jest.fn()}
           onDelete={jest.fn()}
           onExport={mockOnExport}
@@ -146,6 +149,7 @@ describe('Virtual Scrolling Implementation', () => {
       
       render(
         <VirtualizedResultsTable
+          data={mockBusinesses}
           onEdit={jest.fn()}
           onDelete={jest.fn()}
           onExport={jest.fn()}
@@ -291,6 +295,7 @@ describe('Virtual Scrolling Implementation', () => {
       
       render(
         <VirtualizedResultsTable
+          data={mockBusinesses}
           onEdit={jest.fn()}
           onDelete={jest.fn()}
           onExport={jest.fn()}
