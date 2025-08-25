@@ -6,6 +6,7 @@ import { withValidation, commonSchemas } from '@/lib/validation-middleware'
 import { getClientIP } from '@/lib/security'
 import { validationService } from '@/utils/validation'
 import { bbbScrapingService } from '@/lib/bbbScrapingService'
+import { metrics } from '@/lib/metrics'
 import type { Page } from 'puppeteer'
 
 /**

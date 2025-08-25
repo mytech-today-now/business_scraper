@@ -1,13 +1,57 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-3.1.4-blue.svg)
+![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
 A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Intelligent Search Engine Management**, **Enhanced Error Handling**, **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v3.1.4)** - Intelligent Search Engine Management & Enhanced Reliability
+## 🆕 **Latest Update (v3.3.0)** - Comprehensive Performance Monitoring & Optimization
+
+**📊 Production-Ready Performance Monitoring**: Implemented enterprise-grade performance monitoring and optimization system with Prometheus metrics collection, Grafana dashboards, database optimization, and intelligent caching strategies. This major enhancement provides comprehensive production monitoring, performance optimization, and proactive alerting for optimal application performance and reliability.
+
+### 🚀 **Performance Monitoring Features**
+
+#### 📈 **Prometheus Metrics Collection**
+- **HTTP Request Monitoring**: Request duration, rate, and error tracking with route-specific labels
+- **Database Performance**: Query execution time, connection pool monitoring, and error tracking
+- **Scraping Operations**: Operation duration, success rates, and business discovery metrics
+- **Cache Performance**: Hit/miss rates, operation duration, and cache type monitoring
+- **System Metrics**: Memory usage, CPU utilization, and active connection tracking
+- **Custom Metrics Endpoint**: `/api/metrics` for Prometheus scraping with comprehensive data
+
+#### 🗄️ **Database Performance Optimization**
+- **Comprehensive Indexing**: 25+ performance indexes for frequently queried fields
+- **Composite Indexes**: Optimized indexes for common query patterns (status+industry, campaign+scraped_at)
+- **Specialized Indexes**: GIN indexes for JSONB and array searches, trigram indexes for text search
+- **Performance Views**: Optimized views for campaign statistics and business search operations
+- **Query Monitoring**: Performance logging table for tracking and optimizing slow queries
+- **Connection Pool Optimization**: Enhanced PostgreSQL connection pooling with configurable settings
+
+#### 🚀 **Enhanced Caching Strategy**
+- **Multi-Layer Caching**: Redis primary cache with memory fallback and comprehensive monitoring
+- **Browser Caching Headers**: Intelligent cache headers for static assets and API responses
+- **Configurable Cache Policies**: Different TTL and policies for various resource types
+- **Cache Performance Monitoring**: Real-time hit/miss rate tracking and optimization
+- **ETag Support**: Automatic ETag generation and validation for efficient caching
+- **Cache Type Classification**: Automatic cache policy application based on request patterns
+
+#### 📊 **Grafana Dashboard Suite**
+- **Application Overview Dashboard**: HTTP metrics, memory usage, error rates, and system health
+- **Database Performance Dashboard**: Query metrics, connection monitoring, and performance analysis
+- **Real-Time Monitoring**: 30-second refresh intervals with comprehensive metric visualization
+- **Template Variables**: Dynamic filtering by table, operation, and other dimensions
+
+#### 🚨 **Intelligent Alerting System**
+- **15+ Alert Rules**: Comprehensive coverage of critical performance thresholds
+- **Multi-Level Alerts**: Warning and critical thresholds for proactive monitoring
+- **Performance Alerts**: HTTP error rates, response times, memory usage, and CPU monitoring
+- **Database Alerts**: Connection pool usage, query errors, and slow query detection
+- **Business Logic Alerts**: Scraping failure rates and business discovery monitoring
+- **System Health Alerts**: Service availability, connection limits, and resource monitoring
+
+## 🆕 **Previous Update (v3.1.4)** - Intelligent Search Engine Management & Enhanced Reliability
 
 **🧠 Intelligent Search Engine Management**: Implemented comprehensive search engine management system with automatic duplicate detection, session-based engine disabling, and enhanced error handling. This major enhancement provides intelligent automation while maintaining user control over search engine preferences through an intuitive management interface.
 

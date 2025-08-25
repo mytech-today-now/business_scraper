@@ -8,6 +8,7 @@ import { Pool, PoolClient } from 'pg'
 import { DatabaseInterface, DatabaseConfig } from './database'
 import { logger } from '@/utils/logger'
 import { SecureDatabase } from './secureDatabase'
+import { metrics } from '@/lib/metrics'
 
 
 export class PostgreSQLDatabase implements DatabaseInterface {
@@ -34,12 +35,78 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   }
 
   private async query(text: string, params?: any[]): Promise<any> {
-    // Use secure database wrapper with SQL injection protection
-    const result = await this.secureDb.query(text, params, {
-      validateQuery: true,
-      logQuery: process.env.NODE_ENV === 'development'
-    })
-    return result
+    const startTime = Date.now()
+    const operation = this.extractOperationType(text)
+    const table = this.extractTableName(text)
+
+    try {
+      // Initialize metrics
+      await metrics.initialize()
+
+      // Use secure database wrapper with SQL injection protection
+      const result = await this.secureDb.query(text, params, {
+        validateQuery: true,
+        logQuery: process.env.NODE_ENV === 'development'
+      })
+
+      const duration = (Date.now() - startTime) / 1000
+
+      // Record successful query metrics
+      metrics.dbQueryDuration.observe(
+        { operation, table, status: 'success' },
+        duration
+      )
+      metrics.dbQueryTotal.inc({ operation, table, status: 'success' })
+
+      return result
+    } catch (error) {
+      const duration = (Date.now() - startTime) / 1000
+
+      // Record error metrics
+      metrics.dbQueryDuration.observe(
+        { operation, table, status: 'error' },
+        duration
+      )
+      metrics.dbQueryTotal.inc({ operation, table, status: 'error' })
+      metrics.dbQueryErrors.inc({
+        operation,
+        table,
+        error_type: error instanceof Error ? error.name : 'unknown'
+      })
+
+      throw error
+    }
+  }
+
+  private extractOperationType(query: string): string {
+    const normalizedQuery = query.trim().toUpperCase()
+    if (normalizedQuery.startsWith('SELECT')) return 'SELECT'
+    if (normalizedQuery.startsWith('INSERT')) return 'INSERT'
+    if (normalizedQuery.startsWith('UPDATE')) return 'UPDATE'
+    if (normalizedQuery.startsWith('DELETE')) return 'DELETE'
+    if (normalizedQuery.startsWith('CREATE')) return 'CREATE'
+    if (normalizedQuery.startsWith('DROP')) return 'DROP'
+    if (normalizedQuery.startsWith('ALTER')) return 'ALTER'
+    return 'OTHER'
+  }
+
+  private extractTableName(query: string): string {
+    const normalizedQuery = query.trim().toUpperCase()
+
+    // Extract table name from different query types
+    let match = normalizedQuery.match(/FROM\s+(\w+)/i)
+    if (match) return match[1].toLowerCase()
+
+    match = normalizedQuery.match(/INTO\s+(\w+)/i)
+    if (match) return match[1].toLowerCase()
+
+    match = normalizedQuery.match(/UPDATE\s+(\w+)/i)
+    if (match) return match[1].toLowerCase()
+
+    match = normalizedQuery.match(/TABLE\s+(\w+)/i)
+    if (match) return match[1].toLowerCase()
+
+    return 'unknown'
   }
 
   // Campaign operations

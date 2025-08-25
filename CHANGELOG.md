@@ -5,6 +5,90 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2025-08-25
+
+### Added
+- **MAJOR**: Comprehensive Performance Monitoring & Optimization System
+  - **Prometheus Metrics Collection**: Complete metrics infrastructure for production monitoring
+    - HTTP request metrics (duration, rate, errors) with route and method labels
+    - Database query performance metrics (duration, rate, errors) with operation and table labels
+    - Scraping operation metrics (duration, success rate, businesses found) with strategy labels
+    - Cache performance metrics (hits, misses, operation duration) with cache type labels
+    - System metrics (memory usage, CPU usage, active connections)
+    - Business logic metrics (search operations, export operations, validation errors)
+    - Custom metrics endpoint at `/api/metrics` for Prometheus scraping
+
+  - **Database Performance Optimization**: Enhanced database performance with comprehensive indexing
+    - Added 25+ performance indexes for frequently queried fields (campaigns, businesses, sessions)
+    - Composite indexes for common query patterns (status+industry, campaign+scraped_at)
+    - GIN indexes for JSONB and array searches (address, email arrays)
+    - Text search optimization with trigram indexes for business names
+    - Performance monitoring views and functions for campaign statistics
+    - Query performance logging table for tracking slow queries
+    - Connection pool optimization with configurable settings
+
+  - **Enhanced Caching Strategy**: Multi-layer caching with comprehensive monitoring
+    - Enhanced Redis caching implementation with metrics collection
+    - Memory cache fallback with LRU eviction and metrics tracking
+    - Browser caching headers middleware for static assets and API responses
+    - Configurable cache policies for different resource types (static, API, business data)
+    - Cache hit/miss rate monitoring and performance optimization
+    - ETag generation and validation for better cache efficiency
+    - Automatic cache header application based on request patterns
+
+  - **Grafana Dashboard Configuration**: Professional monitoring dashboards
+    - Application overview dashboard with HTTP metrics, memory usage, and error rates
+    - Database performance dashboard with query metrics and connection monitoring
+    - Comprehensive visualization of all performance metrics
+    - Real-time monitoring with 30-second refresh intervals
+    - Template variables for filtering by table, operation, and other dimensions
+
+  - **Performance Alerting System**: Proactive monitoring with intelligent alerts
+    - 15+ alert rules covering critical performance thresholds
+    - HTTP error rate alerts (warning >5%, critical >15%)
+    - Response time alerts (warning >5s for 95th percentile)
+    - Memory usage alerts (warning >85%, critical >95%)
+    - Database performance alerts (connection pool, query errors, slow queries)
+    - Scraping failure rate and business discovery alerts
+    - Cache performance alerts (low hit rate <70%)
+    - System alerts (CPU usage, service availability, connection limits)
+
+### Enhanced
+- **Database Layer**: Added comprehensive performance monitoring to PostgreSQL operations
+  - Query execution time tracking with operation and table labels
+  - Connection pool monitoring with active connection metrics
+  - Error tracking with detailed error type classification
+  - Automatic table and operation extraction from SQL queries
+
+- **Cache Layer**: Enhanced existing cache implementation with metrics
+  - Added performance monitoring to both Redis and memory cache operations
+  - Cache operation duration tracking for get/set operations
+  - Hit/miss rate calculation with key prefix categorization
+  - Fallback behavior monitoring and error handling
+
+- **API Layer**: Integrated performance monitoring into existing API routes
+  - Request duration tracking for all HTTP endpoints
+  - Error rate monitoring with detailed error classification
+  - Response time percentile tracking (50th, 95th percentiles)
+  - Route-specific performance metrics collection
+
+### Infrastructure
+- **Monitoring Stack**: Complete Docker-based monitoring infrastructure
+  - Prometheus server with 30-day retention and 10GB storage limit
+  - Grafana with pre-configured dashboards and data sources
+  - Node Exporter for system metrics collection
+  - PostgreSQL Exporter for database metrics
+  - Redis Exporter for cache metrics monitoring
+  - Alertmanager for alert handling and notification routing
+  - cAdvisor for container metrics monitoring
+
+- **Performance Testing**: Comprehensive test suite for monitoring validation
+  - Unit tests for all Prometheus metrics collection
+  - Integration tests for database performance monitoring
+  - Cache performance validation tests
+  - HTTP metrics collection verification tests
+  - System metrics monitoring tests
+
 ## [3.2.0] - 2025-08-25
 
 ### Added

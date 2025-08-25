@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { scraperService } from '@/model/scraperService'
 import { sanitizeInput, validateInput, getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
+import { metrics } from '@/lib/metrics'
 
 
 /**
@@ -23,8 +24,12 @@ interface ScrapeRequestData {
 // Temporarily simplified handler to debug validation issues
 const scrapeHandler = async (request: NextRequest) => {
   const ip = getClientIP(request)
+  const startTime = Date.now()
 
   try {
+    // Initialize metrics
+    await metrics.initialize()
+
     const body = await request.json()
     const { action, ...params } = body
 
@@ -121,11 +126,38 @@ const scrapeHandler = async (request: NextRequest) => {
 
         logger.info('Scrape API', `Starting scrape for ${sanitizedUrl} with depth ${numDepth}, maxPages ${numMaxPages}`)
 
+        const scrapeStartTime = Date.now()
         try {
           const businesses = await scraperService.scrapeWebsite(sanitizedUrl, numDepth, numMaxPages)
+          const scrapeDuration = (Date.now() - scrapeStartTime) / 1000
+
+          // Record scraping metrics
+          metrics.scrapingDuration.observe(
+            { url: sanitizedUrl, strategy: 'website', status: 'success' },
+            scrapeDuration
+          )
+          metrics.scrapingTotal.inc({ strategy: 'website', status: 'success' })
+          metrics.businessesFound.inc(
+            { strategy: 'website', industry: 'unknown' },
+            businesses.length
+          )
+
           logger.info('Scrape API', `Scrape completed for ${sanitizedUrl}, found ${businesses.length} businesses`)
           return NextResponse.json({ businesses })
         } catch (scrapeError) {
+          const scrapeDuration = (Date.now() - scrapeStartTime) / 1000
+
+          // Record error metrics
+          metrics.scrapingDuration.observe(
+            { url: sanitizedUrl, strategy: 'website', status: 'error' },
+            scrapeDuration
+          )
+          metrics.scrapingTotal.inc({ strategy: 'website', status: 'error' })
+          metrics.scrapingErrors.inc({
+            strategy: 'website',
+            error_type: scrapeError instanceof Error ? scrapeError.name : 'unknown'
+          })
+
           logger.error('Scrape API', `Scraping failed for ${sanitizedUrl}`, scrapeError)
           return NextResponse.json({
             error: 'Scraping failed',
@@ -142,6 +174,20 @@ const scrapeHandler = async (request: NextRequest) => {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
         }
       } catch (error) {
+        const duration = (Date.now() - startTime) / 1000
+
+        // Record error metrics
+        metrics.httpRequestDuration.observe(
+          { method: 'POST', route: '/api/scrape', status_code: '500' },
+          duration
+        )
+        metrics.httpRequestTotal.inc({ method: 'POST', route: '/api/scrape', status_code: '500' })
+        metrics.httpRequestErrors.inc({
+          method: 'POST',
+          route: '/api/scrape',
+          error_type: 'server_error'
+        })
+
         logger.error('Scrape API', `Error processing request from IP: ${ip}`, error)
         return NextResponse.json(
           { error: 'Internal server error' },
@@ -149,11 +195,33 @@ const scrapeHandler = async (request: NextRequest) => {
         )
       }
     } catch (parseError) {
+      const duration = (Date.now() - startTime) / 1000
+
+      // Record parsing error metrics
+      metrics.httpRequestDuration.observe(
+        { method: 'POST', route: '/api/scrape', status_code: '400' },
+        duration
+      )
+      metrics.httpRequestTotal.inc({ method: 'POST', route: '/api/scrape', status_code: '400' })
+      metrics.httpRequestErrors.inc({
+        method: 'POST',
+        route: '/api/scrape',
+        error_type: 'client_error'
+      })
+
       logger.error('Scrape API', `JSON parsing error from IP: ${ip}`, parseError)
       return NextResponse.json(
         { error: 'Invalid JSON in request body' },
         { status: 400 }
       )
+    } finally {
+      // Record successful request metrics
+      const duration = (Date.now() - startTime) / 1000
+      metrics.httpRequestDuration.observe(
+        { method: 'POST', route: '/api/scrape', status_code: '200' },
+        duration
+      )
+      metrics.httpRequestTotal.inc({ method: 'POST', route: '/api/scrape', status_code: '200' })
     }
 }
 

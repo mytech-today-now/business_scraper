@@ -1,0 +1,173 @@
+# Alert rules for Business Scraper application
+groups:
+  - name: business_scraper_alerts
+    rules:
+      # High error rate alert
+      - alert: HighErrorRate
+        expr: rate(http_request_errors_total[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 2m
+        labels:
+          severity: warning
+          service: business-scraper
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }}% for the last 5 minutes"
+
+      # Critical error rate alert
+      - alert: CriticalErrorRate
+        expr: rate(http_request_errors_total[5m]) / rate(http_requests_total[5m]) * 100 > 15
+        for: 1m
+        labels:
+          severity: critical
+          service: business-scraper
+        annotations:
+          summary: "Critical error rate detected"
+          description: "Error rate is {{ $value }}% for the last 5 minutes"
+
+      # High response time alert
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 5
+        for: 3m
+        labels:
+          severity: warning
+          service: business-scraper
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s"
+
+      # Memory usage alert
+      - alert: HighMemoryUsage
+        expr: memory_usage_bytes{type="heapUsed"} / memory_usage_bytes{type="heapTotal"} * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: business-scraper
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}% of heap"
+
+      # Critical memory usage alert
+      - alert: CriticalMemoryUsage
+        expr: memory_usage_bytes{type="heapUsed"} / memory_usage_bytes{type="heapTotal"} * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+          service: business-scraper
+        annotations:
+          summary: "Critical memory usage detected"
+          description: "Memory usage is {{ $value }}% of heap"
+
+  - name: database_alerts
+    rules:
+      # Database connection pool exhaustion
+      - alert: DatabaseConnectionPoolHigh
+        expr: db_connections_active > 8
+        for: 2m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: database
+        annotations:
+          summary: "Database connection pool usage high"
+          description: "Active connections: {{ $value }}/10"
+
+      # Database query errors
+      - alert: DatabaseErrorRate
+        expr: rate(db_query_errors_total[5m]) / rate(db_queries_total[5m]) * 100 > 2
+        for: 2m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: database
+        annotations:
+          summary: "High database error rate"
+          description: "Database error rate is {{ $value }}%"
+
+      # Slow database queries
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.95, rate(db_query_duration_seconds_bucket[5m])) > 2
+        for: 3m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "95th percentile query time is {{ $value }}s"
+
+  - name: scraping_alerts
+    rules:
+      # Scraping failure rate
+      - alert: HighScrapingFailureRate
+        expr: rate(scraping_errors_total[5m]) / rate(scraping_operations_total[5m]) * 100 > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: scraper
+        annotations:
+          summary: "High scraping failure rate"
+          description: "Scraping failure rate is {{ $value }}%"
+
+      # No businesses found
+      - alert: NoBusinessesFound
+        expr: increase(businesses_found_total[30m]) == 0
+        for: 30m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: scraper
+        annotations:
+          summary: "No businesses found in last 30 minutes"
+          description: "Scraping operations are not finding any businesses"
+
+  - name: cache_alerts
+    rules:
+      # Low cache hit rate
+      - alert: LowCacheHitRate
+        expr: rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) * 100 < 70
+        for: 10m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: cache
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value }}%"
+
+  - name: system_alerts
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: cpu_usage_percent > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: system
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}%"
+
+      # Service down
+      - alert: ServiceDown
+        expr: up{job="business-scraper"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: business-scraper
+        annotations:
+          summary: "Business Scraper service is down"
+          description: "The Business Scraper application is not responding"
+
+      # Too many active connections
+      - alert: TooManyActiveConnections
+        expr: active_connections > 100
+        for: 5m
+        labels:
+          severity: warning
+          service: business-scraper
+          component: network
+        annotations:
+          summary: "Too many active connections"
+          description: "Active connections: {{ $value }}"

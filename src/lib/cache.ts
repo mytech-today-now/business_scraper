@@ -5,6 +5,7 @@
 import { getCacheConfig } from './config'
 import { Features } from './feature-flags'
 import { logger } from '@/utils/logger'
+import { metrics } from '@/lib/metrics'
 
 // Redis client interface (simplified for our use case)
 interface RedisClient {
@@ -68,31 +69,87 @@ class MemoryCache implements CacheInterface {
   }
 
   async get<T>(key: string): Promise<T | null> {
-    const entry = this.cache.get(key)
+    const startTime = Date.now()
+    const keyPrefix = key.split(':')[0] || 'unknown'
 
-    if (!entry) {
-      return null
+    try {
+      await metrics.initialize()
+
+      const entry = this.cache.get(key)
+
+      if (!entry) {
+        // Record cache miss
+        metrics.cacheMisses.inc({ cache_type: 'memory', key_prefix: keyPrefix })
+        const duration = (Date.now() - startTime) / 1000
+        metrics.cacheOperationDuration.observe(
+          { operation: 'get', cache_type: 'memory' },
+          duration
+        )
+        return null
+      }
+
+      // Check if expired
+      if (Date.now() > entry.expiry) {
+        this.cache.delete(key)
+        // Record cache miss for expired entry
+        metrics.cacheMisses.inc({ cache_type: 'memory', key_prefix: keyPrefix })
+        const duration = (Date.now() - startTime) / 1000
+        metrics.cacheOperationDuration.observe(
+          { operation: 'get', cache_type: 'memory' },
+          duration
+        )
+        return null
+      }
+
+      // Record cache hit
+      metrics.cacheHits.inc({ cache_type: 'memory', key_prefix: keyPrefix })
+      const duration = (Date.now() - startTime) / 1000
+      metrics.cacheOperationDuration.observe(
+        { operation: 'get', cache_type: 'memory' },
+        duration
+      )
+
+      return entry.value as T
+    } catch (error) {
+      const duration = (Date.now() - startTime) / 1000
+      metrics.cacheOperationDuration.observe(
+        { operation: 'get', cache_type: 'memory' },
+        duration
+      )
+      throw error
     }
-
-    // Check if expired
-    if (Date.now() > entry.expiry) {
-      this.cache.delete(key)
-      return null
-    }
-
-    return entry.value as T
   }
 
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
-    const actualTtl = ttl || this.defaultTtl
-    const expiry = Date.now() + actualTtl
+    const startTime = Date.now()
 
-    // Check if we need to evict entries
-    if (this.cache.size >= this.maxSize) {
-      this.evictOldest()
+    try {
+      await metrics.initialize()
+
+      const actualTtl = ttl || this.defaultTtl
+      const expiry = Date.now() + actualTtl
+
+      // Check if we need to evict entries
+      if (this.cache.size >= this.maxSize) {
+        this.evictOldest()
+      }
+
+      this.cache.set(key, { value, expiry })
+
+      // Record cache operation metrics
+      const duration = (Date.now() - startTime) / 1000
+      metrics.cacheOperationDuration.observe(
+        { operation: 'set', cache_type: 'memory' },
+        duration
+      )
+    } catch (error) {
+      const duration = (Date.now() - startTime) / 1000
+      metrics.cacheOperationDuration.observe(
+        { operation: 'set', cache_type: 'memory' },
+        duration
+      )
+      throw error
     }
-
-    this.cache.set(key, { value, expiry })
   }
 
   async delete(key: string): Promise<void> {
@@ -301,20 +358,48 @@ class RedisCache implements CacheInterface {
   }
 
   async get<T>(key: string): Promise<T | null> {
+    const startTime = Date.now()
+    const keyPrefix = key.split(':')[0] || 'unknown'
+
     try {
+      await metrics.initialize()
       await this.ensureConnected()
       if (!this.client) {
         throw new Error('Redis client not available')
       }
 
       const value = await this.client.get(key)
+      const duration = (Date.now() - startTime) / 1000
 
       if (value === null) {
+        // Record cache miss
+        metrics.cacheMisses.inc({ cache_type: 'redis', key_prefix: keyPrefix })
+        metrics.cacheOperationDuration.observe(
+          { operation: 'get', cache_type: 'redis' },
+          duration
+        )
         return null
       }
 
+      // Record cache hit
+      metrics.cacheHits.inc({ cache_type: 'redis', key_prefix: keyPrefix })
+      metrics.cacheOperationDuration.observe(
+        { operation: 'get', cache_type: 'redis' },
+        duration
+      )
+
       return JSON.parse(value) as T
     } catch (error) {
+      const duration = (Date.now() - startTime) / 1000
+      const keyPrefix = key.split(':')[0] || 'unknown'
+
+      // Record cache miss on error
+      metrics.cacheMisses.inc({ cache_type: 'redis', key_prefix: keyPrefix })
+      metrics.cacheOperationDuration.observe(
+        { operation: 'get', cache_type: 'redis' },
+        duration
+      )
+
       logger.error('Cache', `Failed to get key ${key} from Redis`, error)
       return null
     }
