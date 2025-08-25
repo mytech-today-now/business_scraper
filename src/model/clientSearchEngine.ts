@@ -5,6 +5,7 @@ import { logger } from '@/utils/logger'
 import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
 import { makeApiCall } from '@/utils/apiErrorHandling'
+import { searchEngineManager } from '@/lib/searchEngineManager'
 
 // API Response Interfaces
 
@@ -215,6 +216,22 @@ export class ClientSearchEngine {
   }
 
   /**
+   * Start a new search session
+   */
+  startSession(sessionId: string): void {
+    searchEngineManager.startSession(sessionId)
+    logger.info('ClientSearchEngine', `Started search session: ${sessionId}`)
+  }
+
+  /**
+   * End the current search session
+   */
+  endSession(): void {
+    searchEngineManager.endSession()
+    logger.info('ClientSearchEngine', 'Ended search session')
+  }
+
+  /**
    * Initialize the search engine with stored credentials
    */
   async initialize(): Promise<void> {
@@ -324,6 +341,12 @@ export class ClientSearchEngine {
       await this.initialize()
     }
 
+    // Check if any search engines are available
+    if (!searchEngineManager.hasAvailableEngines()) {
+      logger.error('ClientSearchEngine', 'No search engines available for searching')
+      throw new Error('No search engines are available. Please enable at least one search engine in the API settings.')
+    }
+
     // Check if this is an industry category that should be expanded
     const expandedCriteria = this.expandIndustryCategories(query)
 
@@ -335,29 +358,59 @@ export class ClientSearchEngine {
     // Extract keywords from query for industry-specific blacklist filtering
     const queryKeywords = query.toLowerCase().split(/\s+/).filter(Boolean)
 
-    const searchMethods = [
-      () => this.searchWithGoogle(query, location, maxResults),
-      () => this.searchWithAzure(query, location, maxResults),
-      () => this.searchWithDuckDuckGo(query, location, maxResults)
-    ]
+    // Get available engines and create search methods
+    const availableEngines = searchEngineManager.getAvailableEngines()
+    const searchMethods: Array<{ engineId: string, method: () => Promise<SearchResult[]> }> = []
 
-    for (const searchMethod of searchMethods) {
+    // Add search methods for available engines
+    availableEngines.forEach(engine => {
+      switch (engine.id) {
+        case 'google':
+          searchMethods.push({
+            engineId: 'google',
+            method: () => this.searchWithGoogle(query, location, maxResults)
+          })
+          break
+        case 'azure':
+          searchMethods.push({
+            engineId: 'azure',
+            method: () => this.searchWithAzure(query, location, maxResults)
+          })
+          break
+        case 'duckduckgo':
+          searchMethods.push({
+            engineId: 'duckduckgo',
+            method: () => this.searchWithDuckDuckGo(query, location, maxResults)
+          })
+          break
+      }
+    })
+
+    for (const { engineId, method } of searchMethods) {
       try {
-        const results = await searchMethod()
+        const results = await method()
         if (results.length > 0) {
-          // Apply domain blacklist filtering with industry keywords
-          const filteredResults = this.applyDomainBlacklist(results, queryKeywords)
-          if (filteredResults.length > 0) {
-            return filteredResults
+          // Check for duplicates and update engine state
+          const engineStillAvailable = searchEngineManager.checkAndUpdateResults(engineId, results)
+
+          if (engineStillAvailable) {
+            // Apply domain blacklist filtering with industry keywords
+            const filteredResults = this.applyDomainBlacklist(results, queryKeywords)
+            if (filteredResults.length > 0) {
+              return filteredResults
+            }
+          } else {
+            logger.warn('ClientSearchEngine', `${engineId} was disabled due to duplicate results, trying next engine`)
+            continue
           }
         }
       } catch (error) {
-        logger.warn('ClientSearchEngine', 'Search method failed, trying next', error)
+        logger.warn('ClientSearchEngine', `Search method failed for ${engineId}, trying next`, error)
         continue
       }
     }
 
-    logger.warn('ClientSearchEngine', 'All search methods failed')
+    logger.warn('ClientSearchEngine', 'All available search methods failed or were disabled')
     return []
   }
 
