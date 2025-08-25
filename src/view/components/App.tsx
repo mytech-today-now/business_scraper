@@ -917,7 +917,7 @@ export function App(): JSX.Element {
       <footer className="border-t bg-card mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>Business Scraper App v3.0.1 - Security Enhanced Multi-User Platform</p>
+            <p>Business Scraper App v3.3.1 - Performance Monitoring & Documentation Accuracy</p>
             <p>Built with Next.js, React, and TypeScript</p>
           </div>
         </div>
