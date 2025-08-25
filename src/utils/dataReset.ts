@@ -8,6 +8,7 @@
 import { storage } from '@/model/storage'
 import { clearApiCredentials } from '@/utils/secureStorage'
 import { logger } from '@/utils/logger'
+import { searchEngineManager } from '@/lib/searchEngineManager'
 
 export interface DataResetResult {
   success: boolean
@@ -77,7 +78,10 @@ export class DataResetService {
         await this.clearLocalStorageData(result, includeApiCredentials)
       }
 
-      // Step 3: Clear any cached data in memory
+      // Step 3: Reset search engines to enabled state
+      await this.resetSearchEngines(result)
+
+      // Step 4: Clear any cached data in memory
       await this.clearMemoryCache(result)
 
       // Determine overall success
@@ -209,13 +213,28 @@ export class DataResetService {
   }
 
   /**
+   * Reset search engines to enabled state
+   */
+  private static async resetSearchEngines(result: DataResetResult): Promise<void> {
+    try {
+      searchEngineManager.resetAllEngines()
+      result.clearedLocalStorage.push('search-engine-state')
+      logger.info('DataReset', 'Search engines reset to enabled state')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      result.errors.push(`Search engine reset failed: ${errorMessage}`)
+      logger.error('DataReset', 'Failed to reset search engines', error)
+    }
+  }
+
+  /**
    * Clear any cached data in memory
    */
   private static async clearMemoryCache(result: DataResetResult): Promise<void> {
     try {
       // Clear any global caches or memory stores
       // This is where you would clear any in-memory caches, service worker caches, etc.
-      
+
       // For now, we'll just log that memory cache clearing was attempted
       logger.info('DataReset', 'Memory cache clearing completed')
     } catch (error) {
