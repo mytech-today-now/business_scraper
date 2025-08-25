@@ -114,17 +114,19 @@ export function ProcessingWindow({
         // Call original console method
         originalConsole[level](...args)
 
-        // Capture for our display
+        // Capture for our display - use setTimeout to avoid setState during render
         const message = args.map(arg =>
           typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
         ).join(' ')
 
-        setConsoleLogs(prev => [...prev.slice(-999), { // Keep last 1000 logs
-          timestamp: new Date(),
-          level,
-          message,
-          args
-        }])
+        setTimeout(() => {
+          setConsoleLogs(prev => [...prev.slice(-999), { // Keep last 1000 logs
+            timestamp: new Date(),
+            level,
+            message,
+            args
+          }])
+        }, 0)
       }
     }
 
