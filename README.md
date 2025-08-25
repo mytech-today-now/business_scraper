@@ -1,13 +1,55 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.1.3-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
 A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **AI-powered lead scoring**, **predictive analytics**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v3.0.0)** - Multi-User Collaboration & Team Management
+## 🆕 **Latest Update (v3.1.3)** - Enhanced Results Display & Export Availability
+
+**🎯 Results Table & Export Enhancement**: Fixed critical UI/UX issue where preview table and export options were not available after scraping completion when 0 businesses were found. This enhancement ensures users always have access to results interface and export functionality regardless of result count, providing clear feedback about scraping completion status.
+
+### 🔧 **Results Display Improvements**
+
+#### ✅ **Always Available Results Interface**
+- **Post-Completion Display**: Preview table now appears after scraping completion regardless of result count
+- **Export Access**: Export options available even when 0 businesses are found
+- **Completion Feedback**: Clear visual confirmation that scraping process completed successfully
+- **Statistics Display**: Business summary statistics always shown to provide completion status
+
+#### 🎨 **Enhanced User Experience**
+- **Empty State Handling**: Improved handling of scenarios with no results found
+- **Visual Feedback**: Users receive clear indication of scraping completion
+- **Export Functionality**: Full export capabilities maintained for empty datasets
+- **Seamless Interface**: Consistent UI behavior regardless of result count
+
+## 🆕 **Previous Update (v3.1.0)** - Intelligent Search Engine Management
+
+**🔍 Smart Search Engine Management**: Implemented comprehensive search engine management system with intelligent duplicate detection, automatic engine disabling, and user-controlled engine preferences. This enhancement ensures optimal search performance by automatically detecting and disabling search engines that return duplicate results, while providing users full control over search engine preferences through an intuitive management interface.
+
+### 🎯 **Search Engine Intelligence Features**
+
+#### 🤖 **Automatic Duplicate Detection**
+- **Smart Result Analysis**: Automatically detects when search engines return duplicate results with 80% similarity threshold
+- **Session-Based Disabling**: Temporarily disables engines that return duplicates twice in a session
+- **Intelligent Fallback**: Seamlessly switches to next available engine when one is disabled
+- **Performance Optimization**: Prevents wasted API calls and improves scraping efficiency
+
+#### ⚙️ **User-Controlled Engine Management**
+- **Manual Engine Controls**: Enable/disable individual search engines (Google, Azure AI Search, DuckDuckGo)
+- **Real-Time Status Display**: Visual indicators showing engine status (Active, Disabled, Session Disabled)
+- **Smart Validation**: Warns users when no engines are available and prevents scraping failures
+- **Reset Functionality**: One-click reset of all engines to enabled state
+
+#### 🔔 **Intelligent Notifications**
+- **Toast Alerts**: Real-time notifications when engines are automatically disabled
+- **Status Indicators**: Color-coded visual feedback for engine health
+- **User Guidance**: Clear explanations of engine management behavior
+- **Error Prevention**: Proactive warnings before scraping attempts with no available engines
+
+## 🆕 **Previous Update (v3.0.1)** - Security Enhanced Multi-User Collaboration Platform
 
 **👥 Revolutionary Collaboration Platform**: Implemented comprehensive multi-user collaboration system with role-based access control, team workspaces, shared projects, and advanced analytics dashboard. This major enhancement transforms the application from single-user to enterprise-ready with granular permissions, real-time collaboration, and comprehensive audit trails.
 
