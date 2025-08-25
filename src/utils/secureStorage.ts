@@ -193,19 +193,30 @@ export async function retrieveApiCredentials(): Promise<ApiCredentials | null> {
         const deviceKey = generateDeviceKey()
         const encryptedData: EncryptedData = JSON.parse(encryptedDataStr)
         const decryptedData = await decryptData(encryptedData, deviceKey)
-        return JSON.parse(decryptedData) as ApiCredentials
+        const credentials = JSON.parse(decryptedData) as ApiCredentials
+        console.log('Successfully retrieved encrypted credentials')
+        return credentials
       } catch (decryptError) {
         console.warn('Failed to decrypt credentials, trying fallback:', decryptError)
+        // Clear corrupted encrypted data
+        localStorage.removeItem('encrypted_api_credentials')
       }
     }
 
     // Fallback to plain text storage
     const plainDataStr = localStorage.getItem('api_credentials_plain')
     if (plainDataStr) {
-      console.warn('Using plain text credentials (development fallback)')
-      return JSON.parse(plainDataStr) as ApiCredentials
+      try {
+        const credentials = JSON.parse(plainDataStr) as ApiCredentials
+        console.warn('Using plain text credentials (development fallback)')
+        return credentials
+      } catch (parseError) {
+        console.warn('Failed to parse plain text credentials, clearing corrupted data:', parseError)
+        localStorage.removeItem('api_credentials_plain')
+      }
     }
 
+    console.info('No API credentials found in storage')
     return null
   } catch (error) {
     console.error('Failed to retrieve API credentials:', error)
