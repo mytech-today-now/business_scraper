@@ -11,6 +11,7 @@ import { logger } from '@/utils/logger'
 import { useConfig } from './ConfigContext'
 import toast from 'react-hot-toast'
 import type { ProcessingStep } from '@/view/components/ProcessingWindow'
+import { searchEngineManager } from '@/lib/searchEngineManager'
 
 /**
  * Scraping statistics interface
@@ -43,6 +44,7 @@ export interface ScrapingState {
   sessionId: string
   isStreamingEnabled: boolean
   canStopEarly: boolean
+  hasCompletedScraping: boolean
 }
 
 /**
@@ -64,6 +66,7 @@ export function useScraperController(): {
   canStartScraping: boolean
   hasResults: boolean
   hasErrors: boolean
+  shouldShowResults: boolean
 } {
   const { state: configState, getSelectedIndustryNames, isConfigValid } = useConfig()
 
@@ -79,6 +82,7 @@ export function useScraperController(): {
     sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     isStreamingEnabled: true,
     canStopEarly: false,
+    hasCompletedScraping: false,
   })
   
   // Refs for managing scraping process
@@ -300,6 +304,12 @@ export function useScraperController(): {
     }
 
     try {
+      // Check if search engines are available
+      if (!searchEngineManager.hasAvailableEngines()) {
+        toast.error('No search engines are available. Please enable at least one search engine in the API settings.')
+        return
+      }
+
       // Initialize scraping state
       const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       setScrapingState(prev => ({
@@ -314,6 +324,9 @@ export function useScraperController(): {
         sessionId: newSessionId,
         canStopEarly: false,
       }))
+
+      // Start search engine session
+      searchEngineManager.startSession(newSessionId)
 
       // Create abort controller
       abortControllerRef.current = new AbortController()
@@ -662,12 +675,16 @@ export function useScraperController(): {
       toast.error(errorMsg)
       logger.error('ScraperController', 'Scraping process failed', error)
     } finally {
+      // End search engine session
+      searchEngineManager.endSession()
+
       // Cleanup
       await scraperService.cleanup()
       setScrapingState(prev => ({
         ...prev,
         isScrapingActive: false,
         currentUrl: '',
+        hasCompletedScraping: true,
       }))
       abortControllerRef.current = null
     }
@@ -763,6 +780,7 @@ export function useScraperController(): {
       stats: null,
       progress: { current: 0, total: 0, percentage: 0 },
       processingSteps: [],
+      hasCompletedScraping: false,
     }))
     logger.info('ScraperController', 'Results cleared')
   }, [])
@@ -857,6 +875,7 @@ export function useScraperController(): {
     canStartScraping: !scrapingState.isScrapingActive && isConfigValid(),
     hasResults: scrapingState.results.length > 0,
     hasErrors: scrapingState.errors.length > 0,
+    shouldShowResults: scrapingState.hasCompletedScraping || scrapingState.results.length > 0,
   }
 }
 
