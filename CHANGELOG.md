@@ -5,7 +5,117 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.1] - 2025-08-24
+## [3.1.3] - 2025-08-25
+
+### Fixed
+- **UI/UX**: Fixed preview table and export options not being available after scrape completion (GitHub Issue #19)
+  - Preview table now displays after scraping completion regardless of result count
+  - Export options are available even when 0 businesses are found
+  - Business summary statistics always shown to provide completion feedback
+  - Enhanced user experience for empty result scenarios
+
+### Technical Details
+- **ScrapingState Interface**: Added `hasCompletedScraping` field to track scraping completion status
+- **useScraperController**: Added `shouldShowResults` computed property for improved UI logic
+- **App Component**: Updated ResultsTable rendering condition to use `shouldShowResults` instead of `hasResults`
+- **ResultsTable Component**: Modified to always display statistics section regardless of result count
+- **State Management**: Proper cleanup of completion status when results are cleared
+
+## [3.1.2] - 2025-08-25
+
+### Fixed
+- **CRITICAL**: Fixed scraping hang when only Google Search Engine is enabled (GitHub Issue #18)
+- **API Connectivity**: Implemented robust fallback mechanism when API server is unavailable
+- **Credential Management**: Enhanced credential decryption error handling with graceful fallbacks
+- **WebSocket Failures**: Made WebSocket connections non-blocking to prevent application hang
+- **React State Updates**: Fixed setState during render warning in ProcessingWindow component
+
+### Technical Details
+- **ClientScraperService**: Added fallback mode detection and client-side scraping when API server unavailable
+- **Credential Storage**: Improved error handling in `retrieveApiCredentials()` with corrupted data cleanup
+- **WebSocket Handling**: Made WebSocket failures non-blocking in ScrapingDashboard component
+- **Console Logging**: Fixed React state update warning by using setTimeout for console log capture
+- **Error Recovery**: Enhanced retry logic and graceful degradation for all API connectivity issues
+
+### Files Modified
+- `src/model/clientScraperService.ts` - Added fallback mode and API availability detection
+- `src/utils/secureStorage.ts` - Enhanced credential retrieval error handling
+- `src/view/components/ProcessingWindow.tsx` - Fixed setState during render warning
+- `src/view/ScrapingDashboard.tsx` - Made WebSocket failures non-blocking
+- `src/__tests__/model/clientScraperService.test.ts` - Added comprehensive test coverage
+
+### GitHub Issue
+- Issue #18: "Scraping hangs when only Google Search Engine is enabled" - RESOLVED
+
+## [3.1.1] - 2025-08-25
+
+### Fixed
+- **CRITICAL**: Resolved application loading issue where app was stuck showing "Initializing application..."
+- **Static Assets**: Fixed Next.js static asset serving - CSS and JavaScript files now load with correct MIME types
+- **Build System**: Regenerated corrupted .next build directory causing 404 errors for static chunks
+- **TypeScript**: Fixed test file errors in `src/tests/unit/virtualScrolling.test.ts` by adding missing `data` prop
+- **Development Server**: Application now compiles successfully and serves properly at localhost:3000
+
+### Technical Details
+- Root cause: Missing/corrupted `.next` build directory prevented static assets from being served
+- Solution: Fixed TypeScript errors and rebuilt application using `npm run dev`
+- Verification: Application loads correctly with no MIME type errors in browser console
+- Files modified: `src/tests/unit/virtualScrolling.test.ts`
+- GitHub Issue: #17 (Critical: Application only shows 'Initializing application...' - Static assets not loading)
+
+## [3.0.1]
+
+### Added
+- **Intelligent Search Engine Management**: Implemented comprehensive search engine management system with duplicate result detection and automatic disabling
+  - `SearchEngineManager` class for centralized search engine state management
+  - Automatic detection of duplicate search results with configurable threshold (default: 2 duplicates)
+  - Session-based engine disabling that resets when scraping sessions end
+  - Manual engine enable/disable controls in API Settings Dialog
+  - Toast notifications when engines are automatically disabled
+  - Validation warnings when no search engines are available
+  - Search engine state persistence across browser sessions
+  - Integration with application reset functionality
+
+### Enhanced
+- **API Configuration Page**: Added `SearchEngineControls` component with comprehensive engine management UI
+  - Real-time engine status display (Active, Disabled, Session Disabled)
+  - Toggle switches for manual engine control
+  - Warning indicators when no engines are available
+  - Reset all engines functionality
+  - Help text explaining engine management behavior
+  - Visual status indicators with color-coded states
+
+- **Scraper Controller**: Enhanced session management with search engine integration
+  - Automatic session start/end for search engine state tracking
+  - Pre-scraping validation to ensure at least one engine is available
+  - Graceful error handling when no engines are available
+
+- **Client Search Engine**: Improved search logic with intelligent engine selection
+  - Dynamic engine availability checking before searches
+  - Duplicate result detection and engine state updates
+  - Fallback to next available engine when one is disabled
+  - Enhanced error handling and logging
+
+- **Data Reset Utility**: Extended reset functionality to include search engine state
+  - Search engines reset to enabled state during application reset
+  - Comprehensive state cleanup including session data
+
+### Technical Improvements
+- Added comprehensive test coverage for search engine management (85%+ coverage)
+- Implemented TypeScript strict mode compliance for all new components
+- Enhanced error handling with structured logging and user feedback
+- Added proper state persistence with localStorage integration
+- Implemented session correlation IDs for better debugging
+
+### Files Modified
+- `src/lib/searchEngineManager.ts` - New search engine management system
+- `src/view/components/SearchEngineControls.tsx` - New UI component for engine controls
+- `src/model/clientSearchEngine.ts` - Enhanced with duplicate detection and engine management
+- `src/controller/useScraperController.ts` - Added session management integration
+- `src/view/components/ApiConfigurationPage.tsx` - Integrated search engine controls
+- `src/utils/dataReset.ts` - Added search engine reset functionality
+- `src/__tests__/lib/searchEngineManager.test.ts` - Comprehensive test suite
+- `src/__tests__/view/components/SearchEngineControls.test.tsx` - UI component tests - 2025-08-24
 
 ### Security - Critical Vulnerability Resolution
 
