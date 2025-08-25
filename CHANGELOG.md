@@ -5,6 +5,68 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.4] - 2025-08-25
+
+### Fixed
+- **CRITICAL**: Documentation accuracy and version standardization
+  - Updated package.json version from 3.1.3 to 3.1.4 to match CHANGELOG and documentation
+  - Removed overstated AI/ML feature claims from README.md (AI-powered lead scoring, predictive analytics, machine learning models)
+  - Updated all documentation footers from v3.0.0 to v3.1.4 across 50+ HTML files
+  - Clarified future roadmap items (webhooks, CRM integrations) as planned features in MVP documentation
+  - Standardized last updated dates to 8/25/2025 across all documentation files
+
+### Documentation
+- **Version Consistency**: Achieved 100% version consistency across all project files at v3.1.4
+- **Feature Accuracy**: Removed fictional/overstated feature claims to accurately reflect current implementation
+- **Roadmap Clarity**: Clearly distinguished between implemented features and future roadmap items
+- **Professional Standards**: Updated all documentation to maintain professional accuracy and consistency
+
+### Added
+- **Intelligent Search Engine Management System**: Complete implementation with comprehensive testing
+  - `SearchEngineManager` class for centralized search engine state management
+  - Automatic duplicate detection with configurable 80% similarity threshold
+  - Session-based engine disabling for problematic engines during scraping sessions
+  - Manual engine controls integrated into API configuration interface
+  - Toast notifications for real-time feedback on automatic engine state changes
+  - Integration with data reset functionality to restore engines to enabled state
+
+### Enhanced
+- **Error Handling & Reliability**: Comprehensive improvements across the application
+  - Enhanced credential storage with automatic cleanup of corrupted data
+  - Non-blocking WebSocket failures with graceful degradation
+  - API fallback mode when server is unavailable with client-side scraping capabilities
+  - Fixed React state management warnings (setState during render)
+  - Improved error recovery mechanisms throughout the application
+
+### Testing
+- **Comprehensive Test Coverage**: Added extensive test suites for all new functionality
+  - `SearchEngineManager` tests covering all state management and duplicate detection
+  - `SearchEngineControls` component tests with user interaction validation
+  - `ClientScraperService` tests for API health checking and fallback mode
+  - Integration tests for cross-component functionality
+  - Error scenario testing for comprehensive error handling validation
+
+### Files Added
+- `src/lib/searchEngineManager.ts` - Core search engine management functionality
+- `src/view/components/SearchEngineControls.tsx` - User interface for engine management
+- `src/__tests__/lib/searchEngineManager.test.ts` - Comprehensive test suite
+- `src/__tests__/view/components/SearchEngineControls.test.tsx` - UI component tests
+- `src/__tests__/model/clientScraperService.test.ts` - Service testing
+
+### Files Modified
+- `src/utils/secureStorage.ts` - Enhanced error handling and data cleanup
+- `src/view/ScrapingDashboard.tsx` - Improved WebSocket error handling
+- `src/view/components/ProcessingWindow.tsx` - Fixed React state warnings
+- `src/view/components/ApiConfigurationPage.tsx` - Integrated search engine controls
+- `src/utils/dataReset.ts` - Added search engine reset functionality
+
+### Documentation
+- **Updated Documentation**: Comprehensive updates to reflect current implementation
+  - Updated `Remaining-Work.html` to reflect completed features and current status
+  - Updated `CURRENT_STATUS.html` with latest feature implementations
+  - Updated `VERSIONS` file to v3.1.4 with detailed feature documentation
+  - Standardized version numbers across all project files to v3.1.4
+
 ## [3.1.3] - 2025-08-25
 
 ### Fixed

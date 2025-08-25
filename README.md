@@ -1,31 +1,41 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-3.1.3-blue.svg)
+![Version](https://img.shields.io/badge/version-3.1.4-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
-A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **AI-powered lead scoring**, **predictive analytics**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
+A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Intelligent Search Engine Management**, **Enhanced Error Handling**, **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v3.1.3)** - Enhanced Results Display & Export Availability
+## 🆕 **Latest Update (v3.1.4)** - Intelligent Search Engine Management & Enhanced Reliability
 
-**🎯 Results Table & Export Enhancement**: Fixed critical UI/UX issue where preview table and export options were not available after scraping completion when 0 businesses were found. This enhancement ensures users always have access to results interface and export functionality regardless of result count, providing clear feedback about scraping completion status.
+**🧠 Intelligent Search Engine Management**: Implemented comprehensive search engine management system with automatic duplicate detection, session-based engine disabling, and enhanced error handling. This major enhancement provides intelligent automation while maintaining user control over search engine preferences through an intuitive management interface.
 
-### 🔧 **Results Display Improvements**
+### 🔧 **Core Features Implemented**
 
-#### ✅ **Always Available Results Interface**
-- **Post-Completion Display**: Preview table now appears after scraping completion regardless of result count
-- **Export Access**: Export options available even when 0 businesses are found
-- **Completion Feedback**: Clear visual confirmation that scraping process completed successfully
-- **Statistics Display**: Business summary statistics always shown to provide completion status
+#### 🤖 **Intelligent Search Engine Management**
+- **SearchEngineManager**: Centralized search engine state management with duplicate detection
+- **Automatic Duplicate Detection**: 80% similarity threshold with configurable settings
+- **Session-based Engine Disabling**: Temporary disabling of problematic engines during scraping
+- **Manual Engine Controls**: User interface for enabling/disabling search engines in API settings
+- **Real-time Notifications**: Toast notifications for automatic engine state changes
+- **Data Reset Integration**: Search engines reset to enabled state during application reset
 
-#### 🎨 **Enhanced User Experience**
-- **Empty State Handling**: Improved handling of scenarios with no results found
-- **Visual Feedback**: Users receive clear indication of scraping completion
-- **Export Functionality**: Full export capabilities maintained for empty datasets
-- **Seamless Interface**: Consistent UI behavior regardless of result count
+#### 🛡️ **Enhanced Error Handling & Reliability**
+- **Credential Storage**: Enhanced error handling with automatic cleanup of corrupted data
+- **WebSocket Reliability**: Non-blocking WebSocket failures with graceful degradation
+- **API Fallback Mode**: Robust fallback when API server is unavailable
+- **Client-side Scraping**: Fallback to client-side operations when server is down
+- **React State Management**: Fixed setState during render warnings for better performance
 
-## 🆕 **Previous Update (v3.1.0)** - Intelligent Search Engine Management
+#### 🧪 **Comprehensive Testing Coverage**
+- **SearchEngineManager Tests**: Complete test suite covering all functionality
+- **SearchEngineControls Tests**: UI component testing with user interaction validation
+- **ClientScraperService Tests**: API health checking and fallback mode testing
+- **Integration Tests**: Cross-component functionality validation
+- **Error Scenario Testing**: Comprehensive error handling and recovery testing
+
+## 🆕 **Previous Update (v3.1.3)** - Enhanced Results Display & Export Availability
 
 **🔍 Smart Search Engine Management**: Implemented comprehensive search engine management system with intelligent duplicate detection, automatic engine disabling, and user-controlled engine preferences. This enhancement ensures optimal search performance by automatically detecting and disabling search engines that return duplicate results, while providing users full control over search engine preferences through an intuitive management interface.
 
@@ -121,7 +131,7 @@ A comprehensive full-stack business web scraping application built with Next.js,
 
 #### 🚀 **Performance Benefits**
 - **Memory Bloat Prevention**: Eliminates crashes during high-volume scraping operations
-- **AI Performance Optimization**: Ensures smooth operation of lead scoring and predictive analytics
+- **Data Processing Optimization**: Ensures smooth operation of business data analysis and contact extraction
 - **Extended Session Stability**: Maintains application reliability during long-running tasks
 - **User Empowerment**: Provides both automated safety nets and manual control options
 
@@ -165,12 +175,12 @@ A comprehensive full-stack business web scraping application built with Next.js,
 - **Dataset Size Monitoring**: Real-time detection of result count with adaptive thresholds
 - **Performance Mode Switching**: Seamless transitions between normal, advisory, pagination, and virtualized rendering
 - **Memory Usage Tracking**: Browser memory monitoring with automatic optimization triggers
-- **User Experience Preservation**: Maintains all AI features and business intelligence across performance modes
+- **User Experience Preservation**: Maintains all business intelligence features and data analysis across performance modes
 
 #### 📊 **Adaptive Thresholds & Actions**
 - **1,000+ results**: Display contextual performance advisory banner with optimization options
 - **2,500+ results**: Proactively prompt users with one-click toggle to activate pagination mode
-- **5,000+ results**: Seamlessly switch to virtualized rendering (React Window) while preserving active filters, sorting, and AI-powered lead scoring context
+- **5,000+ results**: Seamlessly switch to virtualized rendering (React Window) while preserving active filters and sorting context
 
 #### 🧑‍💻 **User Control & Override**
 - **Performance Settings Panel**: Comprehensive settings menu with force-disable/enable options for virtual scrolling and pagination
@@ -179,7 +189,7 @@ A comprehensive full-stack business web scraping application built with Next.js,
 - **Manual Mode Override**: Allow users to manually switch between performance modes
 
 #### 🔍 **Business Intelligence Integration**
-- **AI Feature Preservation**: Performance optimizations never strip away AI-driven enhancements like predictive analytics visualizations, lead scoring indicators, and search keyword insights
+- **Feature Preservation**: Performance optimizations never strip away business intelligence enhancements like data quality visualizations, contact validation indicators, and search keyword insights
 - **Data Enrichment Continuity**: Preserve data enrichment features (contact detail extraction and confidence scoring) regardless of rendering mode
 - **Filter & Sort Preservation**: Maintain active filters, sorting, and search context during performance mode transitions
 
@@ -203,16 +213,16 @@ A comprehensive full-stack business web scraping application built with Next.js,
 - **Background Processing**: Asynchronous data processing with progress tracking
 - **API Optimization**: Server-side filtering and sorting reduces client load by 95%
 
-#### 🤖 **Enhanced AI Lead Scoring**
-- **Real-Time Scoring**: Inline AI analysis with 4-factor assessment (contactability, business maturity, market potential, engagement likelihood)
-- **Batch Processing**: Optimized AI scoring for large datasets with performance monitoring
-- **Visual Indicators**: Dynamic badges, confidence meters, and predictive insights
-- **Performance Integration**: AI scoring seamlessly integrated with virtual scrolling
+#### 📊 **Enhanced Results Management**
+- **Real-Time Processing**: Inline business data analysis with comprehensive contact extraction
+- **Batch Processing**: Optimized data processing for large datasets with performance monitoring
+- **Visual Indicators**: Dynamic status badges, progress meters, and data quality insights
+- **Performance Integration**: Results management seamlessly integrated with virtual scrolling
 
 #### 📊 **High-Performance Export System**
 - **Virtualized Export**: Server-side aggregation for exporting 10,000+ records efficiently
 - **Progress Tracking**: Real-time export progress with estimated completion times
-- **Multiple Formats**: CSV, XLSX, JSON, and PDF exports with AI scoring data
+- **Multiple Formats**: CSV, XLSX, JSON, and PDF exports with comprehensive business data
 - **Background Processing**: Asynchronous export with automatic download delivery
 
 #### 🧪 **Comprehensive Testing & Monitoring**
@@ -241,15 +251,15 @@ A comprehensive full-stack business web scraping application built with Next.js,
 ### Core Functionality
 
 - **⚡ Virtual Scrolling**: Revolutionary performance enhancement enabling seamless rendering of 10,000+ business results without lag
-- **🤖 AI-Powered Lead Scoring**: Advanced machine learning models with 4-factor analysis (contactability, business maturity, market potential, engagement likelihood)
-- **🔮 Predictive Analytics**: Time-series forecasting for optimal contact timing, response rates, and industry trends with seasonal pattern detection
+- **📊 Business Data Analysis**: Comprehensive business information extraction with contact validation and data quality scoring
+- **📈 Results Analytics**: Statistical analysis for search performance, result quality, and industry coverage optimization
 - **🎯 Smart Industry Expansion**: Automatically expands industry categories into specific business types with both B2B and B2C coverage (e.g., "Professional Services" → consulting, legal, accounting; "Home & Lifestyle Services" → house cleaning, lawn care, handyman)
 - **🌐 Multi-Strategy Search Engine**: DuckDuckGo SERP scraping, BBB business discovery, and instant answer API integration with **concurrent execution**
 - **📍 Intelligent Location Filtering**: ZIP code-based search with precise radius validation using geolocation services
 - **🤖 Advanced Web Scraping**: Puppeteer-powered extraction with anti-bot countermeasures, rate limiting, and business intelligence gathering
-- **📊 High-Performance Export**: Server-side aggregation for exporting massive datasets in CSV, XLSX, PDF, and JSON formats with AI scoring data
-- **📈 Real-time Progress Tracking**: Monitor scraping progress with detailed statistics, AI analysis status, and performance metrics
-- **⚡ Background Automation**: Scheduled AI analysis, automated insights generation, and continuous model improvement
+- **📊 High-Performance Export**: Server-side aggregation for exporting massive datasets in CSV, XLSX, PDF, and JSON formats with comprehensive business data
+- **📈 Real-time Progress Tracking**: Monitor scraping progress with detailed statistics, data processing status, and performance metrics
+- **⚡ Background Automation**: Scheduled data processing, automated quality analysis, and continuous performance optimization
 
 ### Advanced Search Capabilities
 
@@ -1019,7 +1029,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Previous Updates (v1.11.0)
 - 🏢 **Major Industry Expansion**: Added 10 new comprehensive industry categories with 200 SEO-optimized keywords
-  - **AI & Machine Learning**: AI consulting, ML services, computer vision, NLP, automation services
+  - **Technology Consulting**: IT consulting, software development, automation services, technical support
   - **E-commerce & Retail Technology**: Online store development, POS systems, inventory management, retail analytics
   - **Blockchain & Cryptocurrency**: Blockchain development, smart contracts, DeFi platforms, NFT marketplaces
   - **IoT & Smart Devices**: IoT development, smart home automation, connected devices, industrial IoT
