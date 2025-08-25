@@ -153,7 +153,7 @@ interface ValidationRule {
 const configSchema: Record<string, ValidationRule> = {
   // Application
   'NEXT_PUBLIC_APP_NAME': { type: 'string', default: 'Business Scraper App' },
-  'NEXT_PUBLIC_APP_VERSION': { type: 'string', default: '1.0.0' },
+  'NEXT_PUBLIC_APP_VERSION': { type: 'string', default: '3.0.1' },
   'NODE_ENV': { type: 'string', choices: ['development', 'production', 'test'], default: 'development' },
   'NEXT_PUBLIC_DEBUG': { type: 'boolean', default: false },
   'PORT': { type: 'port', default: 3000 },
