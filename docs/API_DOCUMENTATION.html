@@ -87,9 +87,14 @@
 
         <main class="documentation-content">
             <h1>Business Scraper App - API Documentation</h1>
-<p>This document provides comprehensive documentation for the Business Scraper App&#39;s internal APIs, services, and components.</p>
+<p>This document provides comprehensive documentation for the Business Scraper App's REST API endpoints, internal services, and components.</p>
+<div class="alert alert-info">
+    <strong>Version:</strong> 3.3.0 | <strong>Last Updated:</strong> August 25, 2025
+</div>
 <h2>Table of Contents</h2>
 <ol>
+<li><a href="#rest-api-endpoints">REST API Endpoints</a></li>
+<li><a href="#authentication">Authentication</a></li>
 <li><a href="#architecture-overview">Architecture Overview</a></li>
 <li><a href="#model-layer-apis">Model Layer APIs</a></li>
 <li><a href="#controller-layer-apis">Controller Layer APIs</a></li>
@@ -99,6 +104,137 @@
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#error-handling">Error Handling</a></li>
 </ol>
+
+<h2 id="rest-api-endpoints">REST API Endpoints</h2>
+<p>The application provides the following REST API endpoints for external integration:</p>
+
+<h3>/api/config</h3>
+<p><strong>Methods:</strong> GET</p>
+<p><strong>Description:</strong> Configuration management and health checks</p>
+<h4>Query Parameters</h4>
+<ul>
+<li><code>section</code>: Configuration section (health, validation, features, report)</li>
+<li><code>format</code>: Response format (json, markdown)</li>
+</ul>
+<h4>Examples</h4>
+<pre><code class="language-bash"># Get public configuration
+GET /api/config
+
+# Health check
+GET /api/config?section=health
+
+# Configuration validation
+GET /api/config?section=validation
+
+# Feature flags
+GET /api/config?section=features
+
+# Configuration report
+GET /api/config?section=report&format=markdown
+</code></pre>
+
+<h3>/api/auth</h3>
+<p><strong>Methods:</strong> GET, POST, DELETE</p>
+<p><strong>Description:</strong> Authentication and session management</p>
+<h4>POST - Login</h4>
+<pre><code class="language-json">{
+  "username": "admin",
+  "password": "admin123"
+}
+</code></pre>
+<h4>GET - Check Session</h4>
+<p>Returns current authentication status</p>
+<h4>DELETE - Logout</h4>
+<p>Invalidates current session</p>
+
+<h3>/api/search</h3>
+<p><strong>Methods:</strong> GET, POST</p>
+<p><strong>Description:</strong> Business search functionality with multi-strategy search engines</p>
+<h4>POST - Execute Search</h4>
+<pre><code class="language-json">{
+  "action": "search",
+  "industries": ["restaurants", "retail"],
+  "zipCode": "90210",
+  "radius": 25,
+  "maxResults": 50,
+  "searchEngines": ["duckduckgo", "bbb", "google"]
+}
+</code></pre>
+<h4>GET - Search Suggestions</h4>
+<pre><code class="language-bash">GET /api/search?q=restaurant&location=90210&industry=food
+</code></pre>
+
+<h3>/api/scrape</h3>
+<p><strong>Methods:</strong> GET, POST</p>
+<p><strong>Description:</strong> Web scraping operations</p>
+<h4>POST - Scraping Actions</h4>
+<pre><code class="language-json">{
+  "action": "scrape",
+  "url": "https://example.com",
+  "depth": 2,
+  "maxPages": 5
+}
+</code></pre>
+<h4>Available Actions</h4>
+<ul>
+<li><code>initialize</code>: Initialize scraping engine</li>
+<li><code>search</code>: Search for business websites</li>
+<li><code>scrape</code>: Scrape specific website</li>
+<li><code>cleanup</code>: Clean up resources</li>
+</ul>
+
+<h3>/api/enhanced-scrape</h3>
+<p><strong>Methods:</strong> GET, POST</p>
+<p><strong>Description:</strong> Enhanced scraping with job queue management</p>
+<h4>POST - Job Management</h4>
+<pre><code class="language-json">{
+  "action": "add-job",
+  "url": "https://example.com",
+  "depth": 2,
+  "priority": 1,
+  "maxPages": 5
+}
+</code></pre>
+<h4>Available Actions</h4>
+<ul>
+<li><code>add-job</code>: Add scraping job to queue</li>
+<li><code>get-status</code>: Get job status</li>
+<li><code>process-queue</code>: Process job queue</li>
+<li><code>clear-queue</code>: Clear job queue</li>
+<li><code>scrape-website-enhanced</code>: Enhanced website scraping</li>
+</ul>
+
+<h3>/api/data-management</h3>
+<p><strong>Methods:</strong> GET, POST</p>
+<p><strong>Description:</strong> Data validation, duplicate detection, and retention management</p>
+<h4>POST - Data Operations</h4>
+<pre><code class="language-json">{
+  "action": "validate-business",
+  "business": {
+    "name": "Example Business",
+    "address": "123 Main St",
+    "phone": "555-123-4567"
+  }
+}
+</code></pre>
+<h4>Available Actions</h4>
+<ul>
+<li><code>validate-business</code>: Validate single business record</li>
+<li><code>validate-batch</code>: Validate multiple business records</li>
+<li><code>quality-score</code>: Calculate data quality score</li>
+<li><code>detect-duplicates</code>: Find duplicate records</li>
+<li><code>export-data</code>: Export data in various formats</li>
+<li><code>cleanup-database</code>: Clean up database</li>
+</ul>
+
+<h2 id="authentication">Authentication</h2>
+<p>The application uses session-based authentication with the following features:</p>
+<ul>
+<li><strong>Session Management:</strong> Secure session cookies with CSRF protection</li>
+<li><strong>Rate Limiting:</strong> Login attempt throttling and account lockout</li>
+<li><strong>Security Headers:</strong> CSP, HSTS, and other security configurations</li>
+<li><strong>Default Credentials:</strong> Username: <code>admin</code>, Password: <code>admin123</code></li>
+</ul>
 <h2>Architecture Overview</h2>
 <p>The application follows an <strong>Adapted MVC (Model-View-Controller)</strong> pattern:</p>
 <pre><code>src/
