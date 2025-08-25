@@ -39,6 +39,7 @@ import {
   type ApiTestResult
 } from '@/utils/secureStorage'
 import { logger } from '@/utils/logger'
+import SearchEngineControls from './SearchEngineControls'
 import { storage } from '@/model/storage'
 
 export interface ApiConfigurationPageProps {
@@ -1022,7 +1023,8 @@ export function ApiConfigurationPage({
             </CardContent>
           </Card>
 
-
+          {/* Search Engine Management */}
+          <SearchEngineControls />
 
           {/* Status Messages - Moved to bottom above action buttons */}
           {/* Status */}
