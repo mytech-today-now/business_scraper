@@ -14,6 +14,8 @@ export class ClientScraperService {
   private maxRetries = 3
   private retryDelay = 250 // 250ms base delay for faster recovery
   private sessionId: string = 'default'
+  private apiServerAvailable: boolean | null = null // Cache API server availability
+  private fallbackMode = false // Track if we're in fallback mode
 
   /**
    * Set session ID for WebSocket streaming
@@ -30,22 +32,39 @@ export class ClientScraperService {
   }
 
   /**
+   * Check if we're in fallback mode (client-side only)
+   */
+  isFallbackMode(): boolean {
+    return this.fallbackMode
+  }
+
+  /**
    * Check if the scraping API is available
    */
   async checkApiHealth(): Promise<boolean> {
+    // Return cached result if available and recent
+    if (this.apiServerAvailable !== null) {
+      return this.apiServerAvailable
+    }
+
     try {
-      const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
+      const response = await this.fetchWithRetry(`${this.baseUrl}/health`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-      })
+      }, 1) // Only 1 retry for health check
 
       if (response.ok) {
         const result = await response.json()
-        return result.status === 'Scrape API is working'
+        this.apiServerAvailable = result.status === 'healthy' || result.status === 'warning'
+        logger.info('ClientScraper', `API server health check: ${this.apiServerAvailable ? 'available' : 'unavailable'}`)
+        return this.apiServerAvailable
       }
+
+      this.apiServerAvailable = false
       return false
     } catch (error) {
-      logger.error('ClientScraper', 'API health check failed', error)
+      logger.warn('ClientScraper', 'API health check failed, will use fallback mode', error)
+      this.apiServerAvailable = false
       return false
     }
   }
@@ -90,41 +109,58 @@ export class ClientScraperService {
    * Initialize the scraper service
    */
   async initialize(): Promise<void> {
-    // Initialize the client search engine with stored credentials
-    await clientSearchEngine.initialize()
-
-    // Check if we have stored API credentials
-    const credentials = await retrieveApiCredentials()
-    const hasApiCredentials = !!(credentials && credentials.googleSearchApiKey)
-
-    logger.info('ClientScraper', `Initializing scraper - Has API credentials: ${hasApiCredentials}`)
-
-    // Check API health before attempting initialization
-    const isApiHealthy = await this.checkApiHealth()
-    if (!isApiHealthy) {
-      throw new Error('Scraping API is not available. Please check server connection.')
-    }
-
     try {
-      const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'initialize', sessionId: this.sessionId }),
-      })
+      // Initialize the client search engine with stored credentials
+      await clientSearchEngine.initialize()
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      // Check if we have stored API credentials
+      const credentials = await retrieveApiCredentials()
+      const hasApiCredentials = !!(credentials && credentials.googleSearchApiKey)
+
+      logger.info('ClientScraper', `Initializing scraper - Has API credentials: ${hasApiCredentials}`)
+
+      // Check API health before attempting initialization
+      const isApiHealthy = await this.checkApiHealth()
+      if (!isApiHealthy) {
+        logger.warn('ClientScraper', 'API server not available, enabling fallback mode for client-side scraping')
+        this.fallbackMode = true
+
+        // Ensure we have working search engines for fallback
+        if (!hasApiCredentials && !clientSearchEngine.hasApiCredentials()) {
+          logger.info('ClientScraper', 'No API credentials available, will use DuckDuckGo SERP scraping as fallback')
+        }
+
+        logger.info('ClientScraper', 'Scraper initialized in fallback mode (client-side only)')
+        return // Skip server-side initialization
       }
 
-      const result = await response.json()
-      if (!result.success) {
-        throw new Error('Failed to initialize scraper')
-      }
+      // Try to initialize server-side scraper
+      try {
+        const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'initialize', sessionId: this.sessionId }),
+        })
 
-      logger.info('ClientScraper', 'Scraper initialized successfully')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const result = await response.json()
+        if (!result.success) {
+          throw new Error('Failed to initialize scraper')
+        }
+
+        this.fallbackMode = false
+        logger.info('ClientScraper', 'Scraper initialized successfully with server-side support')
+      } catch (serverError) {
+        logger.warn('ClientScraper', 'Server-side initialization failed, falling back to client-side mode', serverError)
+        this.fallbackMode = true
+        this.apiServerAvailable = false
+      }
     } catch (error) {
-      logger.error('ClientScraper', 'Failed to initialize scraper', error)
-      throw error
+      logger.error('ClientScraper', 'Failed to initialize scraper, enabling fallback mode', error)
+      this.fallbackMode = true
     }
   }
 
@@ -137,12 +173,17 @@ export class ClientScraperService {
     maxResults: number = 50
   ): Promise<string[]> {
     try {
-      // Use stored API credentials with client search engine (includes DuckDuckGo SERP scraping)
+      // Always use client search engine for website discovery
+      // This works regardless of API server availability
       const searchResults = await clientSearchEngine.searchBusinesses(query, zipCode, maxResults)
       const urls = searchResults.map(result => result.url)
 
       if (urls.length > 0) {
-        const source = clientSearchEngine.hasApiCredentials() ? 'API credentials' : 'DuckDuckGo SERP scraping'
+        const source = this.fallbackMode
+          ? 'client-side fallback mode'
+          : clientSearchEngine.hasApiCredentials()
+            ? 'API credentials'
+            : 'DuckDuckGo SERP scraping'
         logger.info('ClientScraper', `Found ${urls.length} URLs using ${source} for query: ${query}`)
         return urls
       }
@@ -159,6 +200,12 @@ export class ClientScraperService {
    * Scrape a website for business information
    */
   async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
+    // In fallback mode, return empty array since we don't have server-side scraping
+    if (this.fallbackMode) {
+      logger.info('ClientScraper', `Skipping website scraping in fallback mode: ${url}`)
+      return []
+    }
+
     try {
       const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
         method: 'POST',
@@ -189,6 +236,12 @@ export class ClientScraperService {
    * Cleanup scraper resources
    */
   async cleanup(): Promise<void> {
+    // In fallback mode, no server-side cleanup needed
+    if (this.fallbackMode) {
+      logger.info('ClientScraper', 'Cleanup completed (fallback mode - no server resources to clean)')
+      return
+    }
+
     try {
       const response = await this.fetchWithRetry(`${this.baseUrl}/scrape`, {
         method: 'POST',
