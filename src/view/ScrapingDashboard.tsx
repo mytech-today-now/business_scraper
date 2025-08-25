@@ -108,17 +108,19 @@ export function ScrapingDashboard() {
 
       wsRef.current.onclose = () => {
         logger.info('ScrapingDashboard', 'WebSocket disconnected')
-        // Attempt to reconnect after 5 seconds
+        // Attempt to reconnect after 5 seconds, but only if auto-refresh is enabled
         if (autoRefresh) {
           setTimeout(connectWebSocket, 5000)
         }
       }
 
       wsRef.current.onerror = (error) => {
-        logger.error('ScrapingDashboard', 'WebSocket error', error)
+        logger.warn('ScrapingDashboard', 'WebSocket connection failed - real-time updates disabled', error)
+        // Don't attempt to reconnect immediately on error to avoid spam
       }
     } catch (error) {
-      logger.error('ScrapingDashboard', 'Failed to connect WebSocket', error)
+      logger.warn('ScrapingDashboard', 'Failed to connect WebSocket - real-time updates disabled', error)
+      // WebSocket failure should not block the application
     }
   }
 
