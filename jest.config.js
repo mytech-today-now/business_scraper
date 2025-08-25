@@ -34,10 +34,41 @@ const customJestConfig = {
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 95,
+      functions: 95,
+      lines: 95,
+      statements: 95,
+    },
+    // Per-directory thresholds for granular control
+    './src/model/': {
+      branches: 95,
+      functions: 95,
+      lines: 95,
+      statements: 95,
+    },
+    './src/controller/': {
+      branches: 95,
+      functions: 95,
+      lines: 95,
+      statements: 95,
+    },
+    './src/view/': {
+      branches: 90, // Slightly lower for UI components
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+    './src/utils/': {
+      branches: 98,
+      functions: 98,
+      lines: 98,
+      statements: 98,
+    },
+    './src/lib/': {
+      branches: 95,
+      functions: 95,
+      lines: 95,
+      statements: 95,
     },
   },
   testTimeout: 30000,
