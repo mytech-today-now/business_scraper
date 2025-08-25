@@ -171,10 +171,16 @@ export const POST = withRBAC(
 
       // Apply sorting and limiting if specified
       if (Array.isArray(reportData) && sortBy) {
-        reportData.sort((a: any, b: any) => {
+        // Validate sortBy field to prevent object injection
+        const allowedSortFields = ['name', 'industry', 'location', 'phone', 'email', 'website', 'confidence_score', 'created_at']
+        if (!allowedSortFields.includes(sortBy)) {
+          return NextResponse.json({ error: 'Invalid sort field' }, { status: 400 })
+        }
+
+        reportData.sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
           const aVal = a[sortBy]
           const bVal = b[sortBy]
-          return typeof aVal === 'number' ? bVal - aVal : String(bVal).localeCompare(String(aVal))
+          return typeof aVal === 'number' ? (bVal as number) - (aVal as number) : String(bVal).localeCompare(String(aVal))
         })
       }
 
@@ -223,14 +229,20 @@ export const POST = withRBAC(
 /**
  * Filter metrics based on requested fields
  */
-function filterMetrics(fullMetrics: any, requestedMetrics: string[]): any {
-  const filtered: any = {}
-  
+function filterMetrics(fullMetrics: Record<string, unknown>, requestedMetrics: string[]): Record<string, unknown> {
+  const filtered: Record<string, unknown> = {}
+
+  // Define allowed metrics to prevent object injection
+  const allowedMetrics = [
+    'totalBusinesses', 'totalSearches', 'successRate', 'averageResponseTime',
+    'topIndustries', 'topLocations', 'searchVolume', 'errorRate'
+  ]
+
   requestedMetrics.forEach(metric => {
-    if (fullMetrics.hasOwnProperty(metric)) {
+    if (allowedMetrics.includes(metric) && Object.prototype.hasOwnProperty.call(fullMetrics, metric)) {
       filtered[metric] = fullMetrics[metric]
     }
   })
-  
+
   return filtered
 }

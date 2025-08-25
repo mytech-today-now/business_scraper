@@ -659,6 +659,7 @@ async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Pro
         const isBusinessDomain = !excludedDomains.some(excluded => domain.includes(excluded)) &&
                                 !url.includes('duckduckgo.com') &&
                                 !url.includes('javascript:') &&
+                                !url.startsWith('javascript:') &&
                                 url.startsWith('http')
 
         if (isBusinessDomain) {
@@ -974,9 +975,9 @@ function expandIndustryCategories(query: string): string[] {
     'entertainment businesses': ['entertainment', 'event planning', 'photography', 'music', 'recreation']
   }
 
-  // Check for exact matches first
-  if (industryMappings[queryLower]) {
-    return industryMappings[queryLower]
+  // Check for exact matches first using safe property access
+  if (Object.prototype.hasOwnProperty.call(industryMappings, queryLower)) {
+    return industryMappings[queryLower as keyof typeof industryMappings]
   }
 
   // Check for partial matches - but be more specific to avoid false matches

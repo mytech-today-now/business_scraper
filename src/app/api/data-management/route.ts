@@ -145,7 +145,10 @@ const dataManagementHandler = withApiSecurity(
               before: beforeStats,
               after: afterStats,
               removed: Object.keys(beforeStats).reduce((acc, key) => {
-                acc[key] = beforeStats[key] - afterStats[key]
+                // Validate key to prevent object injection
+                if (typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+                  acc[key] = beforeStats[key] - afterStats[key]
+                }
                 return acc
               }, {} as Record<string, number>)
             }
@@ -261,11 +264,16 @@ async function getCleanupStats() {
   const stats: Record<string, number> = {}
   for (const { name, query } of queries) {
     try {
-      const result = await database.executeQuery(query)
-      stats[name] = parseInt(result.rows[0].count)
+      // Validate name to prevent object injection
+      if (typeof name === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name)) {
+        const result = await database.executeQuery(query)
+        stats[name] = parseInt(result.rows[0].count)
+      }
     } catch (error) {
       logger.error('DataManagementAPI', `Failed to get ${name} stats`, error)
-      stats[name] = 0
+      if (typeof name === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name)) {
+        stats[name] = 0
+      }
     }
   }
   return stats

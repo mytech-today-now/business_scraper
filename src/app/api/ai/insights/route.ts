@@ -229,7 +229,7 @@ export async function GET(request: NextRequest) {
  * POST /api/ai/insights
  * Generate new AI insights summary
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     logger.info('AI API', 'Generating new AI insights summary')
 

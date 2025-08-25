@@ -15,7 +15,7 @@ import { AIProcessingJob } from '@/types/ai'
  * POST /api/ai/batch-process
  * Start batch processing of businesses for AI analysis
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json()
     const { businessIds, analysisType = 'lead-scoring' } = body
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
  * GET /api/ai/batch-process?jobId=xxx or ?status=xxx
  * Get batch processing job status
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url)
     const jobId = searchParams.get('jobId')
@@ -208,7 +208,7 @@ async function processBusinessJob(job: AIProcessingJob): Promise<void> {
  * DELETE /api/ai/batch-process?jobId=xxx
  * Cancel or delete a batch processing job
  */
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url)
     const jobId = searchParams.get('jobId')

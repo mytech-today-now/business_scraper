@@ -241,7 +241,10 @@ export const PUT = withRBAC(
       // Validate conversion data structure
       const requiredFields = ['leadsContacted', 'responseRate', 'conversionRate', 'avgDealValue']
       for (const field of requiredFields) {
-        if (conversionData[field] === undefined || conversionData[field] === null) {
+        // Use safe property access to prevent object injection
+        if (!Object.prototype.hasOwnProperty.call(conversionData, field) ||
+            conversionData[field as keyof typeof conversionData] === undefined ||
+            conversionData[field as keyof typeof conversionData] === null) {
           return NextResponse.json(
             { error: `Conversion data must include ${field}` },
             { status: 400 }

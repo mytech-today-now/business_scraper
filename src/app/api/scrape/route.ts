@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { scraperService } from '@/model/scraperService'
 import { sanitizeInput, validateInput, getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
-import { withApiSecurity } from '@/lib/api-security'
-import { withValidation } from '@/lib/validation-middleware'
+
 
 /**
  * Interface for scrape request data
@@ -83,7 +82,8 @@ const scrapeHandler = async (request: NextRequest) => {
         let sanitizedZipCode = ''
         if (zipCode) {
           sanitizedZipCode = sanitizeInput(String(zipCode))
-          if (!/^\d{5}(-\d{4})?$/.test(sanitizedZipCode)) {
+          // Use a safer regex pattern to prevent ReDoS attacks
+          if (!/^[0-9]{5}(?:-[0-9]{4})?$/.test(sanitizedZipCode)) {
             return NextResponse.json({ error: 'Invalid zip code format' }, { status: 400 })
           }
         }

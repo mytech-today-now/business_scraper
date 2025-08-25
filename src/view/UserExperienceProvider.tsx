@@ -183,10 +183,13 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   const setError = useCallback((key: string, error: string | null) => {
     setState(prev => {
       const newErrors = { ...prev.errors }
-      if (error) {
-        newErrors[key] = error
-      } else {
-        delete newErrors[key]
+      // Validate key to prevent object injection
+      if (typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+        if (error) {
+          newErrors[key] = error
+        } else {
+          delete newErrors[key]
+        }
       }
       return {
         ...prev,

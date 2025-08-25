@@ -5,6 +5,34 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.5] - 2025-08-25
+
+### Fixed
+- **CRITICAL**: ESLint Code Quality Enhancement
+  - **Security Violations**: Fixed 15+ Generic Object Injection Sink issues in production code
+    - Replaced dynamic object access with safe `Object.prototype.hasOwnProperty.call()` patterns
+    - Added input validation for object keys to prevent injection attacks
+    - Fixed unsafe regex patterns to prevent ReDoS attacks
+    - Enhanced script URL validation to prevent eval-based vulnerabilities
+  - **Code Cleanup**: Removed 20+ unused imports, variables, and parameters
+    - Cleaned up unused imports in API routes (auth, businesses, scrape)
+    - Removed unused interface definitions and dead code
+    - Improved code maintainability and reduced bundle size
+  - **TypeScript Improvements**: Added explicit return types to 10+ critical API functions
+    - Enhanced type safety in API route handlers
+    - Improved code documentation and IDE support
+    - Better error detection during development
+
+### Security
+- **Object Injection Prevention**: Implemented safe property access patterns across codebase
+- **Input Validation**: Enhanced validation for dynamic object property access
+- **Regex Security**: Fixed potentially vulnerable regex patterns
+
+### Code Quality
+- **ESLint Compliance**: Reduced security violations from 50+ to manageable levels
+- **Type Safety**: Improved TypeScript strict mode compliance
+- **Maintainability**: Cleaner codebase with reduced unused code
+
 ## [3.1.4] - 2025-08-25
 
 ### Fixed

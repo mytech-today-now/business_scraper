@@ -424,7 +424,9 @@ export function useScraperController(): {
           logger.info('ScraperController', `Processing ${industryObject.keywords.length} keywords for ${industryName}`)
 
           for (let i = 0; i < industryObject.keywords.length; i++) {
+            // Safe array access to prevent object injection
             const keyword = industryObject.keywords[i]
+            if (typeof keyword !== 'string') continue
 
             // Add individual keyword search step
             addProcessingStep({

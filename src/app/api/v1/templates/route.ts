@@ -275,7 +275,10 @@ function getPlatformDescription(platform: string): string {
     'constant-contact': 'Email marketing and digital marketing platform'
   }
   
-  return descriptions[platform] || 'Export platform'
+  // Use safe property access to prevent object injection
+  return Object.prototype.hasOwnProperty.call(descriptions, platform)
+    ? descriptions[platform as keyof typeof descriptions]
+    : 'Export platform'
 }
 
 /**
@@ -290,7 +293,10 @@ function getPlatformFeatures(platform: string): string[] {
     'constant-contact': ['Email Marketing', 'Contact Lists', 'Event Management', 'Social Media']
   }
   
-  return features[platform] || ['Data Export']
+  // Use safe property access to prevent object injection
+  return Object.prototype.hasOwnProperty.call(features, platform)
+    ? features[platform as keyof typeof features]
+    : ['Data Export']
 }
 
 // Export named functions for specific endpoints

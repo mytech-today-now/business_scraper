@@ -15,8 +15,7 @@ import {
   validateInput,
   defaultSecurityConfig
 } from '@/lib/security'
-import { UserManagementService } from '@/lib/user-management'
-import { AuditService } from '@/lib/audit-service'
+
 import { logger } from '@/utils/logger'
 
 // Legacy single user credentials (for backward compatibility)
