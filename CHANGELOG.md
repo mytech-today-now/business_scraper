@@ -5,6 +5,82 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2025-08-25
+
+### Added
+- **MAJOR**: OAuth 2.0 Authentication System Implementation
+  - **Complete OAuth 2.0 Server Framework**: Implemented full OAuth 2.0 authorization server with all core endpoints
+    - `/api/oauth/authorize` - Authorization endpoint with PKCE support
+    - `/api/oauth/token` - Token endpoint supporting authorization_code, refresh_token, and client_credentials grants
+    - `/api/oauth/userinfo` - UserInfo endpoint for profile information
+    - `/api/oauth/introspect` - Token introspection endpoint (RFC 7662)
+    - `/api/oauth/revoke` - Token revocation endpoint (RFC 7009)
+    - `/api/oauth/.well-known/openid-configuration` - Discovery endpoint
+    - `/api/oauth/register` - Dynamic client registration endpoint (RFC 7591)
+
+  - **PKCE (Proof Key for Code Exchange) Support**: Enhanced security for mobile and SPA clients
+    - Full RFC 7636 implementation with S256 and plain code challenge methods
+    - Automatic PKCE enforcement for public clients
+    - Secure code verifier generation and validation
+    - Challenge storage and retrieval with expiration
+
+  - **JWT-Based Token Management**: Comprehensive token lifecycle management
+    - JWT access tokens with configurable expiration (default 1 hour)
+    - Refresh token rotation and revocation strategies
+    - Token blacklisting and introspection capabilities
+    - Secure token validation and scope verification
+
+  - **Client Registration & Management**: Self-service client registration portal
+    - Support for public (mobile/SPA) and confidential (server-side) clients
+    - Dynamic client registration with validation
+    - Client credential generation and management
+    - Redirect URI validation and security checks
+
+  - **OAuth Management Dashboard**: Comprehensive UI for OAuth administration
+    - Real-time client and token statistics
+    - Client registration form with validation
+    - Token management and monitoring interface
+    - Security settings and activity monitoring
+
+  - **Security Enhancements**: Enterprise-grade security features
+    - TLS/HTTPS enforcement in production
+    - Rate limiting and brute-force protection
+    - Comprehensive input validation and sanitization
+    - Secure credential storage and handling
+
+### Enhanced
+- **Authentication System**: Upgraded from session-based to OAuth 2.0 token-based authentication
+  - Backward compatibility with existing session authentication
+  - OAuth middleware for API endpoint protection
+  - Scope-based authorization and access control
+  - Multi-client support for web, mobile, and API consumers
+
+### Technical Implementation
+- **New Dependencies**: Added JWT, PKCE, and cryptographic libraries
+  - `jsonwebtoken` for JWT token handling
+  - `crypto-js` for cryptographic operations
+  - `pkce-challenge` for PKCE implementation
+  - `uuid` for unique identifier generation
+
+- **Architecture**: Implemented service-oriented OAuth architecture
+  - `TokenService` - JWT token creation, validation, and management
+  - `PKCEService` - PKCE challenge generation and verification
+  - `ClientService` - OAuth client registration and management
+  - `AuthorizationService` - Authorization code handling
+  - `OAuthMiddleware` - API endpoint protection
+
+- **Type Safety**: Comprehensive TypeScript interfaces and types
+  - Complete OAuth 2.0 type definitions
+  - Strong typing for all OAuth flows and responses
+  - Interface definitions for client registration and token management
+
+### Developer Benefits
+- **Standards Compliance**: Full OAuth 2.0 and OpenID Connect compatibility
+- **Scalability**: Token-based authentication scales across multiple services
+- **Security**: Industry-standard security with PKCE and JWT
+- **Integration**: Easy integration with mobile apps and third-party services
+- **Management**: Self-service client registration and management tools
+
 ## [3.1.5] - 2025-08-25
 
 ### Fixed

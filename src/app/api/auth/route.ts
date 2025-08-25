@@ -15,7 +15,7 @@ import {
   validateInput,
   defaultSecurityConfig
 } from '@/lib/security'
-
+import { getOAuthContext } from '@/lib/oauth/oauth-middleware'
 import { logger } from '@/utils/logger'
 
 // Legacy single user credentials (for backward compatibility)
