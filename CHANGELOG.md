@@ -5,6 +5,39 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.1] - 2025-08-25
+
+### Fixed
+- **Documentation Accuracy & Maintenance Enhancement**
+  - **Version Consistency**: Fixed version inconsistencies across all documentation files
+    - Updated VERSION file from 3.2.0 to 3.3.0 to match package.json
+    - Updated VERSIONS file to reflect current version and status
+    - Updated application footer version display from v3.0.1 to v3.3.0
+    - Standardized version references across all documentation files
+
+  - **API Documentation Updates**: Comprehensive API documentation refresh
+    - Updated API documentation to reflect current endpoints (/api/config, /api/data-management, /api/scrape, /api/search, /api/auth, /api/enhanced-scrape)
+    - Added detailed endpoint descriptions, parameters, and examples
+    - Documented authentication and security features
+    - Added version information and last updated timestamps
+
+  - **Documentation Format Standardization**: Consistent documentation structure
+    - Standardized documentation format across HTML and markdown files
+    - Updated documentation hub (docs/README.md and docs/readme.html) with current version information
+    - Enhanced navigation and cross-referencing between documentation files
+    - Updated feature documentation to reflect actual implementation
+
+  - **Deployment Documentation Updates**: Current infrastructure documentation
+    - Updated Docker deployment documentation to reflect production-ready configuration
+    - Documented comprehensive production environment with PostgreSQL, Redis, Elasticsearch, Prometheus, and Grafana
+    - Added environment configuration examples and deployment instructions
+    - Updated deployment guides for current infrastructure and monitoring setup
+
+  - **Performance Monitoring Documentation**: Enhanced monitoring documentation
+    - Updated performance monitoring documentation to reflect v3.3.0 features
+    - Documented Prometheus metrics, Grafana dashboards, and monitoring infrastructure
+    - Added comprehensive monitoring setup and configuration guides
+
 ## [3.3.0] - 2025-08-25
 
 ### Added
