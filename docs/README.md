@@ -11,7 +11,7 @@
         <h1>📚 Business Scraper Documentation Hub</h1>
         
         <div class="alert alert-info">
-            <strong>Welcome!</strong> This comprehensive documentation hub contains detailed guides, API references, and implementation notes for the Business Scraper Application v1.10.0 with AI Enhancement.
+            <strong>Welcome!</strong> This comprehensive documentation hub contains detailed guides, API references, and implementation notes for the Business Scraper Application v3.3.0 with Performance Monitoring & Optimization.
         </div>
 
         <nav class="nav">
@@ -31,7 +31,7 @@
             <p>The Business Scraper Application is a comprehensive full-stack solution built with Next.js, React, TypeScript, and Puppeteer. Version 1.10.0 introduces advanced AI capabilities including intelligent lead scoring, predictive analytics, and automated business intelligence.</p>
 
             <div class="alert alert-success">
-                <strong>Latest Update (v1.10.0):</strong> AI & Automation Enhancement with machine learning models, predictive analytics, and automated insights generation.
+                <strong>Latest Update (v3.3.0):</strong> Performance Monitoring & Optimization with Prometheus metrics, Grafana dashboards, database optimization, and intelligent caching strategies.
             </div>
         </section>
 
@@ -456,9 +456,9 @@
         </section>
 
         <footer class="text-center mt-3">
-            <p><strong>Business Scraper Application v1.10.0</strong> - AI Enhanced</p>
-            <p>For the main project documentation, see the root <strong>README.html</strong> file.</p>
-            <p class="text-muted">Last updated: August 2025</p>
+            <p><strong>Business Scraper Application v3.3.0</strong> - Performance Monitoring & Optimization</p>
+            <p>For the main project documentation, see the root <strong>README.md</strong> file.</p>
+            <p class="text-muted">Last updated: August 25, 2025</p>
         </footer>
     </div>
 </body>
