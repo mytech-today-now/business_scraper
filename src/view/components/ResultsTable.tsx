@@ -689,8 +689,7 @@ export function ResultsTable({
 
       <CardContent className="space-y-4">
         {/* Business Summary Statistics */}
-        {businesses.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">{businesses.length}</div>
               <div className="text-xs text-muted-foreground">Total Businesses</div>
@@ -714,7 +713,6 @@ export function ResultsTable({
               <div className="text-xs text-muted-foreground">Industries</div>
             </div>
           </div>
-        )}
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
