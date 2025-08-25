@@ -316,67 +316,82 @@ npx netlify deploy --prod --dir=out
 </code></pre>
 </li>
 </ol>
-<h3>Docker Deployment</h3>
-<p><strong>Dockerfile</strong>:</p>
-<pre><code class="language-dockerfile">FROM node:18-alpine AS base
+<h3>Docker Deployment (Production Ready)</h3>
+<div class="alert alert-info">
+    <strong>Current Version:</strong> The application includes comprehensive Docker configurations for production deployment with PostgreSQL, Redis, Elasticsearch, and monitoring.
+</div>
 
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
+<h4>Production Docker Compose</h4>
+<p>The application provides a complete production environment with the following services:</p>
+<ul>
+<li><strong>Application Server:</strong> Next.js application with production optimizations</li>
+<li><strong>PostgreSQL Database:</strong> Persistent data storage with encryption</li>
+<li><strong>Redis Cache:</strong> Session management and performance optimization</li>
+<li><strong>Elasticsearch:</strong> Advanced search capabilities</li>
+<li><strong>Prometheus:</strong> Metrics collection and monitoring</li>
+<li><strong>Grafana:</strong> Performance dashboards and visualization</li>
+<li><strong>Nginx:</strong> Reverse proxy with SSL termination</li>
+</ul>
 
-COPY package.json package-lock.json ./
-RUN npm ci --only=production
+<h4>Quick Production Deployment</h4>
+<pre><code class="language-bash"># Clone repository
+git clone &lt;repository-url&gt;
+cd business-scraper-app
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+# Start production environment
+docker-compose -f docker-compose.production.yml up -d
 
-ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
+# Monitor deployment
+docker-compose -f docker-compose.production.yml logs -f
 
-# Production image, copy all the files and run next
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 3000
-
-ENV PORT 3000
-ENV HOSTNAME &quot;0.0.0.0&quot;
-
-CMD [&quot;node&quot;, &quot;server.js&quot;]
+# Access application
+# Application: http://localhost:3000
+# Grafana: http://localhost:3001
+# Prometheus: http://localhost:9090
 </code></pre>
-<p><strong>Docker Compose</strong> (<code>docker-compose.yml</code>):</p>
-<pre><code class="language-yaml">version: &#39;3.8&#39;
-services:
-  app:
-    build: .
-    ports:
-      - &quot;3000:3000&quot;
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_APP_NAME=Business Scraper App
-    restart: unless-stopped
-    healthcheck:
-      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:3000/api/health&quot;]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+
+<h4>Environment Configuration</h4>
+<p>Create a <code>.env.production</code> file with the following variables:</p>
+<pre><code class="language-bash"># Database Configuration
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_DB=business_scraper
+
+# Redis Configuration
+REDIS_PASSWORD=your_redis_password
+
+# Security Keys (generate with: node scripts/generate-secrets.js)
+ENCRYPTION_KEY=your_encryption_key
+JWT_SECRET=your_jwt_secret
+SESSION_SECRET=your_session_secret
+
+# Admin Credentials
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_admin_password
+
+# API Keys for Enhanced Functionality
+GOOGLE_MAPS_API_KEY=your_google_maps_key
+GOOGLE_CUSTOM_SEARCH_API_KEY=your_google_search_key
+GOOGLE_SEARCH_ENGINE_ID=your_search_engine_id
+AZURE_AI_FOUNDRY_API_KEY=your_azure_ai_key
+AZURE_AI_FOUNDRY_ENDPOINT=your_azure_endpoint
+AZURE_AI_FOUNDRY_REGION=eastus
+
+# Production Settings
+ENABLE_REAL_SCRAPING=true
+LOG_LEVEL=info
+MONITORING_ENABLED=true
 </code></pre>
+
+<h4>Production Services</h4>
+<p>The production deployment includes:</p>
+<ul>
+<li><strong>PostgreSQL:</strong> Primary database with persistent volumes</li>
+<li><strong>Redis:</strong> Caching and session storage</li>
+<li><strong>Elasticsearch:</strong> Search indexing and analytics</li>
+<li><strong>Prometheus:</strong> Metrics collection from application</li>
+<li><strong>Grafana:</strong> Monitoring dashboards and alerting</li>
+<li><strong>Nginx:</strong> Load balancing and SSL termination</li>
+</ul>
 <h3>AWS Deployment</h3>
 <p><strong>Using AWS Amplify:</strong></p>
 <ol>
