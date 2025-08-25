@@ -327,7 +327,8 @@ function ScrapingPanel(): JSX.Element {
     canStartScraping,
     hasResults,
     hasErrors,
-    clearProcessingSteps
+    clearProcessingSteps,
+    shouldShowResults
   } = useScraperController()
 
   const [showExportOptions, setShowExportOptions] = useState(false)
@@ -681,7 +682,7 @@ function ScrapingPanel(): JSX.Element {
       />
 
       {/* Results Table */}
-      {hasResults && (
+      {shouldShowResults && (
         <div className="space-y-4">
           {/* Table Mode Toggle */}
           <div className="flex items-center justify-between">
@@ -916,7 +917,7 @@ export function App(): JSX.Element {
       <footer className="border-t bg-card mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>Business Scraper App v1.10.0 - AI Enhanced</p>
+            <p>Business Scraper App v3.0.1 - Security Enhanced Multi-User Platform</p>
             <p>Built with Next.js, React, and TypeScript</p>
           </div>
         </div>
