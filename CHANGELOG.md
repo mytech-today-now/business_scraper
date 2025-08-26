@@ -5,6 +5,76 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.0] - 2025-08-25
+
+### Added
+- **MAJOR**: 🔗 CRM Export Templates Enhancement
+  - **Platform-Specific Export Templates**: Added support for major CRM platforms
+    - Salesforce integration with Lead and Account/Contact templates
+    - HubSpot integration with Contact and Company/Contact templates
+    - Pipedrive integration with Organization/Person and Deals templates
+    - Field mapping rules with CRM-specific transformations
+    - Built-in handling of required vs. optional fields per platform
+
+  - **Advanced Transformation Engine**: Dynamic field mapping and data transformation
+    - Comprehensive field validation with type checking and custom rules
+    - Support for dot notation field paths (e.g., 'address.street')
+    - Built-in transformers for common data formats (phone, email, currency, dates)
+    - Error handling with graceful degradation and detailed reporting
+    - Batch processing with performance metrics and progress tracking
+
+  - **CRM-Specific Adapters**: Dedicated adapters for each CRM platform
+    - Salesforce adapter with picklist values, record types, and owner ID handling
+    - HubSpot adapter with lifecycle stages, custom properties, and JSON structure support
+    - Pipedrive adapter with currency normalization and pipeline stage mapping
+    - Platform-specific field transformations and validation rules
+    - Custom template creation and modification capabilities
+
+  - **Enhanced UI Components**: Centralized template management interface
+    - CRMExportTemplateManager with platform selection and template browsing
+    - Real-time preview functionality with sample data transformation
+    - Validation checks with error and warning reporting
+    - Template compatibility scoring based on available fields
+    - Integration with existing export workflow in ResultsTable component
+
+  - **Template Management System**: Comprehensive template lifecycle management
+    - Built-in templates for common CRM use cases
+    - Custom template creation, modification, and cloning
+    - Template import/export functionality with JSON configuration
+    - Local storage persistence for custom templates
+    - Template validation with detailed error reporting
+
+### Enhanced
+- **Export Service Integration**: Seamless integration with existing export functionality
+  - Enhanced ExportService to support CRM templates alongside existing formats
+  - Automatic detection and routing of CRM template exports
+  - Progress tracking and error handling for large datasets
+  - Multiple export formats (CSV, JSON, XML) with platform-specific optimizations
+
+- **User Experience Improvements**: Streamlined CRM export workflow
+  - Intuitive platform selection with template recommendations
+  - Real-time validation and preview capabilities
+  - Comprehensive error reporting with actionable recommendations
+  - Performance optimization for large dataset exports
+
+### Technical Improvements
+- **Comprehensive Testing**: Full test coverage for CRM functionality
+  - Unit tests for transformation engine and CRM adapters
+  - Integration tests for export service and template management
+  - Performance tests for large dataset handling
+  - Error handling and edge case validation
+
+- **Type Safety**: Complete TypeScript integration
+  - Comprehensive type definitions for all CRM functionality
+  - Strict type checking for field mappings and transformations
+  - Generic interfaces for extensible CRM adapter development
+
+- **Performance Optimization**: Efficient processing for production use
+  - Streaming export capabilities for large datasets
+  - Memory-efficient batch processing
+  - Progress tracking with estimated completion times
+  - Error recovery and graceful degradation
+
 ## [3.5.0] - 2025-08-25
 
 ### Added

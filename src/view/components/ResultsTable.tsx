@@ -31,7 +31,9 @@ import {
 import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
 import { ExportTemplateManager } from './ExportTemplateManager'
+import { CRMExportTemplateManager } from './CRMExportTemplateManager'
 import { ExportTemplate } from '@/utils/exportService'
+import { CRMTemplate } from '@/utils/crm'
 import { usePerformance } from '@/controller/PerformanceContext'
 import { PerformanceAdvisoryBanner, PerformanceModePrompt } from './PerformanceAdvisoryBanner'
 
@@ -75,7 +77,7 @@ export interface ResultsTableProps {
   businesses: BusinessRecord[]
   onEdit?: (businessId: string, updates: Partial<BusinessRecord>) => void
   onDelete?: (businessId: string) => void
-  onExport?: (format: string, selectedIds?: string[], template?: ExportTemplate) => void
+  onExport?: (format: string, selectedIds?: string[], template?: ExportTemplate | CRMTemplate) => void
   isLoading?: boolean
   isExporting?: boolean
 }
@@ -125,6 +127,7 @@ export function ResultsTable({
     hasPhone: null,
   })
   const [showTemplateManager, setShowTemplateManager] = useState(false)
+  const [showCRMTemplateManager, setShowCRMTemplateManager] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const [editingCell, setEditingCell] = useState<{ businessId: string; field: string } | null>(null)
   const [showColumnSettings, setShowColumnSettings] = useState(false)
@@ -637,6 +640,17 @@ export function ResultsTable({
                         <button
                           type="button"
                           className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm flex items-center gap-2"
+                          onClick={() => setShowCRMTemplateManager(true)}
+                        >
+                          <FileText className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span>🚀 CRM Templates</span>
+                            <span className="text-xs text-muted-foreground">Salesforce, HubSpot, Pipedrive</span>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-sm flex items-center gap-2"
                           onClick={() => setShowTemplateManager(true)}
                         >
                           <FileText className="h-4 w-4" />
@@ -935,6 +949,20 @@ export function ResultsTable({
             }
           }}
           onClose={() => setShowTemplateManager(false)}
+        />
+      )}
+
+      {/* CRM Export Template Manager */}
+      {showCRMTemplateManager && (
+        <CRMExportTemplateManager
+          onTemplateSelect={(template) => {
+            setShowCRMTemplateManager(false)
+            if (onExport) {
+              onExport('csv', undefined, template)
+            }
+          }}
+          onClose={() => setShowCRMTemplateManager(false)}
+          businessRecords={businesses}
         />
       )}
     </>
