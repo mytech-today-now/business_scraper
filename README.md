@@ -1,15 +1,65 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-3.7.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
 A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Intelligent Search Engine Management**, **Enhanced Error Handling**, **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v3.7.0)** - 📚 Documentation Accuracy & Maintenance Enhancement
+## 🆕 **Latest Update (v3.10.1)** - 🧭 Navigation Enhancement
 
-**📖 Documentation Excellence**: Implemented comprehensive documentation accuracy and maintenance system with automated validation, quality assurance, and continuous maintenance practices. This major enhancement includes documentation standards, contribution guidelines, automated validation scripts, CI/CD integration, and comprehensive user guides. Ensures documentation remains accurate, consistent, and up-to-date as a "living artifact" that evolves with the codebase.
+**🧭 Breadcrumb Navigation Implementation**: Added comprehensive breadcrumb navigation system for improved user orientation and navigation flow. The new breadcrumb component provides context-aware navigation with accessibility features, responsive design, and seamless integration into the application header.
+
+### 🧭 **Navigation Enhancement Features**
+
+#### ✨ **Breadcrumb Navigation Component**
+- **Context-Aware Navigation**: Dynamic breadcrumb generation based on current application state and user location
+- **Accessibility First**: Full ARIA support, semantic HTML structure, and comprehensive keyboard navigation
+- **Responsive Design**: Tailwind CSS styling with intelligent item collapsing for long navigation trails
+- **Icon Support**: Optional icons with home icon for first breadcrumb item and custom separator support
+- **Smart Navigation Logic**: Breadcrumb items adapt to current tab (Configuration/Scraping) and results state
+
+#### 🎯 **Navigation Flow Implementation**
+- **Multi-Level Navigation**: `Home → Configuration → Scraping → Results` with proper state management
+- **Click Navigation**: Functional breadcrumb navigation with validation and error handling
+- **Visual Integration**: Seamlessly integrated into header section with consistent design system
+- **State Synchronization**: Connected to existing navigation state and scraping results
+
+#### 🧪 **Comprehensive Testing**
+- **20 Test Cases**: Complete test coverage including rendering, navigation, accessibility, and integration tests
+- **Accessibility Testing**: ARIA attributes, semantic HTML, and screen reader compatibility validation
+- **Navigation Testing**: Click handlers, keyboard navigation, and state management verification
+
+## 🚀 **Previous Update (v3.10.0)** - Performance & Optimization Enhancements
+
+**⚡ Advanced Performance Optimization**: Implemented comprehensive performance enhancements including advanced virtual scrolling for 10,000+ results, real-time result streaming with WebSocket infrastructure, performance monitoring service with detailed metrics tracking, and enhanced error handling with connection health monitoring. This major update delivers significant performance improvements for large datasets and real-time data processing.
+
+### 🚀 **Performance & Optimization Features**
+
+#### ⚡ **Advanced Virtual Scrolling**
+- **10,000+ Results Support**: Enhanced VirtualizedResultsTable handles massive datasets efficiently using react-window
+- **Performance Monitoring**: Real-time tracking of render times, memory usage, frame rates, and scroll performance
+- **Dynamic Optimization**: Automatic performance adjustments based on dataset size and device capabilities
+- **Mobile Responsive**: Optimized virtual scrolling that maintains performance across all device types
+
+#### 📡 **Real-time Result Streaming**
+- **WebSocket Infrastructure**: Bi-directional streaming with automatic reconnection and session management
+- **Live Progress Tracking**: Real-time statistics including results/second, ETA calculations, and success rates
+- **Streaming Controls**: Start, pause, resume, and stop functionality with graceful error handling
+- **Connection Health**: Heartbeat monitoring, latency tracking, and connection stability indicators
+
+#### 📊 **Performance Monitoring Dashboard**
+- **Real-time Metrics**: Component-specific performance tracking with detailed analytics
+- **Performance Scoring**: 0-100 performance score calculation with optimization recommendations
+- **Memory Management**: Automatic memory usage monitoring with leak detection and prevention
+- **Development Tools**: Enhanced debugging panel with performance visualization in development mode
+
+#### 🛡️ **Enhanced Error Handling**
+- **Connection Management**: Automatic reconnection with exponential backoff and graceful degradation
+- **Error Categorization**: Structured error handling with severity levels and detailed history tracking
+- **Fallback Strategies**: Seamless fallback to batch loading when streaming is unavailable
+- **Health Monitoring**: Comprehensive connection health tracking with diagnostic information
 
 ### 🔗 **CRM Export Templates Features**
 
@@ -343,22 +393,31 @@ A comprehensive full-stack business web scraping application built with Next.js,
 
 ### 🎯 **Performance Specifications**
 
-#### **Virtual Scrolling Capabilities**
-- **Dataset Size**: Handles up to 100,000 business records with consistent performance
-- **Render Performance**: <100ms initial render time, <50ms scroll response time
-- **Memory Efficiency**: <50MB memory footprint regardless of dataset size
-- **Scroll Smoothness**: Maintains 60fps scrolling performance across all devices
-- **Export Capacity**: Full dataset export with background processing and progress tracking
+#### **Advanced Virtual Scrolling (v3.10.0)**
+- **Dataset Size**: Handles 10,000+ business records with enhanced performance monitoring
+- **Render Performance**: <8ms render time for 60fps, <16.67ms acceptable threshold
+- **Memory Efficiency**: Automatic memory monitoring with 100MB warning, 200MB critical thresholds
+- **Frame Rate Monitoring**: Real-time FPS tracking with performance score calculation (0-100)
+- **Scroll Performance**: Enhanced scroll velocity tracking with direction monitoring
+- **Performance Metrics**: Component-specific tracking with detailed analytics and alerts
+
+#### **Real-time Streaming Performance (v3.10.0)**
+- **WebSocket Streaming**: Bi-directional real-time result delivery with automatic reconnection
+- **Connection Health**: Heartbeat monitoring, latency tracking, and stability indicators
+- **Streaming Speed**: Real-time results/second calculation with ETA estimation
+- **Error Recovery**: Graceful fallback to batch loading with comprehensive error tracking
+- **Session Management**: Pause/resume functionality with connection state persistence
 
 #### **Cross-Platform Performance**
-- **Desktop**: Optimized for 1920x1080+ displays with full feature set
-- **Laptop**: Efficient performance on 1366x768+ displays
-- **Tablet**: Touch-optimized interface with responsive design
-- **Mobile**: Streamlined UI for 375px+ width devices
+- **Desktop**: Optimized for 1920x1080+ displays with full feature set and performance monitoring
+- **Laptop**: Efficient performance on 1366x768+ displays with adaptive optimization
+- **Tablet**: Touch-optimized interface with responsive design and performance scaling
+- **Mobile**: Streamlined UI for 375px+ width devices with memory-conscious rendering
 
 ### Core Functionality
 
-- **⚡ Virtual Scrolling**: Revolutionary performance enhancement enabling seamless rendering of 10,000+ business results without lag
+- **⚡ Advanced Virtual Scrolling (v3.10.0)**: Enhanced performance optimization with real-time monitoring, handling 10,000+ results with <8ms render times and comprehensive performance analytics
+- **📡 Real-time Result Streaming (v3.10.0)**: WebSocket-based live streaming with connection health monitoring, automatic reconnection, and graceful fallback strategies
 - **📊 Business Data Analysis**: Comprehensive business information extraction with contact validation and data quality scoring
 - **📈 Results Analytics**: Statistical analysis for search performance, result quality, and industry coverage optimization
 - **🎯 Smart Industry Expansion**: Automatically expands industry categories into specific business types with both B2B and B2C coverage (e.g., "Professional Services" → consulting, legal, accounting; "Home & Lifestyle Services" → house cleaning, lawn care, handyman)
@@ -520,7 +579,8 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 - **ApiConfigurationPage.tsx**: Comprehensive API and BBB configuration interface
 - **CategorySelector.tsx**: Industry category selection with smart expansion
 - **ResultsTable.tsx**: Interactive data table with sorting and filtering
-- **UI Components**: Reusable UI components (Button, Input, Card, etc.)
+- **UI Components**: Reusable UI components (Button, Input, Card, Breadcrumb, etc.)
+  - **Breadcrumb.tsx**: Context-aware breadcrumb navigation with accessibility features
 
 ### Controller Layer (`src/controller/`)
 
