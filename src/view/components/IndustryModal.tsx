@@ -8,6 +8,7 @@ import { IndustryCategory } from '@/types/business'
 import { useConfig } from '@/controller/ConfigContext'
 import { useResponsive } from '@/hooks/useResponsive'
 import toast from 'react-hot-toast'
+import { clsx } from 'clsx'
 
 interface IndustryModalProps {
   isOpen: boolean
