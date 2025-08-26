@@ -1,15 +1,15 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.7.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
 A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Intelligent Search Engine Management**, **Enhanced Error Handling**, **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v3.6.0)** - 🔗 CRM Export Templates Enhancement
+## 🆕 **Latest Update (v3.7.0)** - 📚 Documentation Accuracy & Maintenance Enhancement
 
-**🚀 CRM Integration Revolution**: Implemented comprehensive CRM export templates with platform-specific support for Salesforce, HubSpot, and Pipedrive. This major enhancement includes intelligent field mapping, data transformation engine, real-time validation, template management system, and seamless integration with existing export functionality. Simplifies CRM data imports with ready-to-use templates, reduces manual cleanup, and increases adoption across major CRM ecosystems.
+**📖 Documentation Excellence**: Implemented comprehensive documentation accuracy and maintenance system with automated validation, quality assurance, and continuous maintenance practices. This major enhancement includes documentation standards, contribution guidelines, automated validation scripts, CI/CD integration, and comprehensive user guides. Ensures documentation remains accurate, consistent, and up-to-date as a "living artifact" that evolves with the codebase.
 
 ### 🔗 **CRM Export Templates Features**
 
