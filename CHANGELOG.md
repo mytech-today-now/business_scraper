@@ -5,6 +5,58 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.0] - 2025-08-26
+
+### Major Security & Compliance Enhancement
+
+#### 🔒 Enterprise Security Implementation
+- **NextAuth.js Integration**: Implemented enterprise-grade authentication with TypeScript typings
+- **Role-Based Access Control (RBAC)**: Fine-grained permissions system with 5 user roles (Admin, Operator, Viewer, Compliance Officer, Security Analyst)
+- **Security Audit System**: Continuous monitoring with encrypted audit logs for SOC 2 Type II compliance
+- **Multi-Factor Authentication**: TOTP-based MFA support for enhanced security
+
+#### 🌍 GDPR Compliance Framework
+- **Automated DSAR Workflows**: Complete Data Subject Access Request processing system
+- **Consent Management**: React-based consent banners with granular opt-in toggles
+- **Geolocation Compliance**: Legal restrictions in Puppeteer sessions based on user location
+- **Data Portability**: Automated data export in structured formats for GDPR Article 20
+
+#### 🏛️ CCPA Compliance Tools
+- **"Do Not Sell My Info" Portal**: California-resident opt-out system with verification
+- **Automated Data Purging**: TypeScript cron jobs for time-bound deletion rules
+- **Privacy Dashboards**: Comprehensive privacy management for California users
+- **Consumer Rights Management**: Full CCPA request processing workflow
+
+#### 🔐 Data Encryption Implementation
+- **TLS 1.3 Support**: Enhanced HTTPS connections with modern cipher suites
+- **Database Field Encryption**: AES-256-GCM encryption for sensitive data at rest
+- **Ephemeral Key Management**: Session-based encryption for Puppeteer caches
+- **Key Rotation System**: Automated encryption key lifecycle management
+
+#### 📋 Compliance Management System
+- **Do Not Call (DNC) Registry**: Integration with official DNC databases
+- **CAN-SPAM Compliance**: Email classification and opt-out management
+- **Data Retention Policies**: Configurable lifecycle rules with legal basis tracking
+- **Compliance Monitoring**: Automated checks and violation reporting
+
+### Database Schema Updates
+- Added comprehensive security audit tables
+- Implemented GDPR/CCPA request tracking
+- Created consent management system
+- Added data retention scheduling
+
+### API Enhancements
+- `/api/compliance/consent` - Consent management endpoints
+- `/api/compliance/gdpr` - GDPR request processing
+- `/api/compliance/ccpa` - CCPA compliance tools
+- Enhanced security middleware with audit logging
+
+### Technical Improvements
+- Enterprise-grade encryption service
+- Automated data purging system
+- Geolocation-based compliance restrictions
+- Security monitoring and alerting
+
 ## [3.7.1] - 2025-08-26
 
 ### Added

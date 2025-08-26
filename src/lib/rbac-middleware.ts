@@ -1,71 +1,62 @@
 /**
- * RBAC Middleware for API Routes
- * Provides role-based access control for Next.js API endpoints
+ * Enhanced RBAC Middleware for API Routes
+ * Provides role-based access control with NextAuth.js integration and SOC 2 compliance
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { RBACService } from './rbac'
-import { Permission, User } from '@/types/multi-user'
-import { getSession, getClientIP } from './security'
+import { getServerSession } from 'next-auth/next'
+import { authOptions, ExtendedSession, Permission, hasPermission, hasAnyPermission } from '@/lib/auth'
 import { logger } from '@/utils/logger'
 
 export interface RBACConfig {
   permissions?: Permission[]
   requireAll?: boolean // If true, user must have ALL permissions; if false, ANY permission
-  workspaceRequired?: boolean
-  teamRequired?: boolean
   allowSelfAccess?: boolean // Allow users to access their own resources
-  customCheck?: (user: User, context: RBACContext) => boolean
+  customCheck?: (session: ExtendedSession, context: RBACContext) => boolean
+  auditLog?: boolean // Enable audit logging for this endpoint
+  complianceCheck?: boolean // Enable compliance validation
 }
 
 export interface RBACContext {
-  user: User
-  workspaceId?: string
-  teamId?: string
+  session: ExtendedSession
   resourceId?: string
   resourceType?: string
   action?: string
   request: NextRequest
+  clientIP: string
+  userAgent: string
 }
 
 /**
- * RBAC middleware wrapper for API routes
+ * Enhanced RBAC middleware wrapper for API routes with NextAuth.js integration
  */
 export function withRBAC(
   handler: (request: NextRequest, context: RBACContext) => Promise<NextResponse>,
   config: RBACConfig = {}
 ) {
   return async (request: NextRequest): Promise<NextResponse> => {
-    const ip = getClientIP(request)
+    const clientIP = getClientIP(request)
     const pathname = request.nextUrl.pathname
-    
+    const userAgent = request.headers.get('user-agent') || 'Unknown'
+
     try {
-      // Get session and user
-      const sessionId = request.cookies.get('session-id')?.value
-      if (!sessionId) {
-        logger.warn('RBAC Middleware', `No session for ${pathname} from IP: ${ip}`)
+      // Get NextAuth session
+      const session = await getServerSession(authOptions) as ExtendedSession
+
+      if (!session || !session.user) {
+        logger.warn('RBAC Middleware', `No session for ${pathname} from IP: ${clientIP}`)
         return NextResponse.json(
           { error: 'Authentication required' },
           { status: 401 }
         )
       }
 
-      const session = getSession(sessionId)
-      if (!session || !session.isValid) {
-        logger.warn('RBAC Middleware', `Invalid session for ${pathname} from IP: ${ip}`)
+      // Check if user is active
+      if (!session.user.isActive) {
+        logger.warn('RBAC Middleware', `Inactive user ${session.user.email} attempted access to ${pathname}`)
         return NextResponse.json(
-          { error: 'Invalid session' },
-          { status: 401 }
-        )
-      }
-
-      // Get user from session (in a real implementation, this would fetch from database)
-      const user = await getUserFromSession(session.id)
-      if (!user) {
-        logger.warn('RBAC Middleware', `User not found for session ${session.id}`)
-        return NextResponse.json(
-          { error: 'User not found' },
-          { status: 401 }
+          { error: 'Account is inactive' },
+          { status: 403 }
         )
       }
 
