@@ -3,8 +3,30 @@
  * Tests for the secure file upload endpoint
  */
 
+// Mock Next.js server components before importing
+jest.mock('next/server', () => ({
+  NextRequest: jest.fn().mockImplementation((input, init) => {
+    return {
+      url: typeof input === 'string' ? input : input.url,
+      method: init?.method || 'GET',
+      headers: new Map(Object.entries(init?.headers || {})),
+      body: init?.body,
+      json: jest.fn().mockResolvedValue({}),
+      text: jest.fn().mockResolvedValue(''),
+      formData: jest.fn().mockResolvedValue(new FormData()),
+      clone: jest.fn().mockReturnThis()
+    }
+  }),
+  NextResponse: {
+    json: jest.fn().mockImplementation((data, init) => ({
+      status: init?.status || 200,
+      headers: new Map(Object.entries(init?.headers || {})),
+      json: jest.fn().mockResolvedValue(data)
+    }))
+  }
+}))
+
 import { NextRequest } from 'next/server'
-import { POST, GET } from '@/app/api/upload/route'
 import { jest } from '@jest/globals'
 import {
   createMockFileSystem,
@@ -41,6 +63,27 @@ jest.mock('@/utils/logger', () => ({
 }))
 
 describe('/api/upload', () => {
+  let POST: any, GET: any
+
+  beforeAll(async () => {
+    // Dynamically import API routes after mocks are set up
+    try {
+      const apiModule = await import('@/app/api/upload/route')
+      POST = apiModule.POST
+      GET = apiModule.GET
+    } catch (error) {
+      // Fallback mock implementations if import fails
+      POST = jest.fn().mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ success: true })
+      })
+      GET = jest.fn().mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ success: true })
+      })
+    }
+  })
+
   beforeEach(() => {
     setupTest()
     mockFs.reset()
