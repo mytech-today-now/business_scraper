@@ -106,6 +106,20 @@ export function generateSecureToken(length: number = 32): string {
 }
 
 /**
+ * Generate a secure random salt for password hashing
+ */
+export function generateSalt(length: number = 16): string {
+  return crypto.randomBytes(length).toString('hex')
+}
+
+/**
+ * Generate a unique ID
+ */
+export function generateId(length: number = 16): string {
+  return crypto.randomBytes(length).toString('hex')
+}
+
+/**
  * Hash a password using PBKDF2
  */
 export function hashPassword(password: string, salt?: string): { hash: string; salt: string } {

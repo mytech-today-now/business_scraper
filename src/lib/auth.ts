@@ -6,7 +6,7 @@
 import { NextAuthOptions, Session, User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PostgresAdapter } from '@auth/pg-adapter'
+import PostgresAdapter from '@auth/pg-adapter'
 import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import { logger } from '@/utils/logger'
