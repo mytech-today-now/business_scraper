@@ -1,7 +1,7 @@
 'use strict'
 
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
-import { BusinessRecord, ScrapingConfig, IndustryCategory } from '@/types/business'
+import { BusinessRecord, ScrapingConfig, IndustryCategory, IndustrySubCategory } from '@/types/business'
 import { PredictiveAnalytics, AIProcessingJob, AIInsightsSummary } from '@/types/ai'
 import { logger } from '@/utils/logger'
 import { DataCompression, CompressedData } from '@/lib/data-compression'
@@ -28,7 +28,12 @@ interface BusinessScraperDB extends DBSchema {
     value: IndustryCategory
     indexes: {
       'by-custom': string
+      'by-subcategory': string
     }
+  }
+  subCategories: {
+    key: string
+    value: IndustrySubCategory
   }
   sessions: {
     key: string
@@ -81,7 +86,7 @@ interface BusinessScraperDB extends DBSchema {
 export class StorageService {
   private db: IDBPDatabase<BusinessScraperDB> | null = null
   private readonly dbName = 'business-scraper-db'
-  private readonly dbVersion = 3
+  private readonly dbVersion = 4
 
   /**
    * Check if we're running in a browser environment
@@ -129,6 +134,7 @@ export class StorageService {
               keyPath: 'id',
             })
             industryStore.createIndex('by-custom', 'isCustom')
+            industryStore.createIndex('by-subcategory', 'subCategoryId')
 
             // Create sessions store
             db.createObjectStore('sessions', {
@@ -165,6 +171,22 @@ export class StorageService {
               keyPath: 'generatedAt',
             })
             aiInsightsStore.createIndex('by-generated-date', 'generatedAt')
+          }
+
+          // Add sub-categories store (version 4)
+          if (oldVersion < 4) {
+            // Sub-categories store
+            db.createObjectStore('subCategories', {
+              keyPath: 'id',
+            })
+
+            // Add sub-category index to existing industries store if it doesn't exist
+            if (oldVersion >= 1) {
+              const industryStore = transaction.objectStore('industries')
+              if (!industryStore.indexNames.contains('by-subcategory')) {
+                industryStore.createIndex('by-subcategory', 'subCategoryId')
+              }
+            }
           }
         },
       })
@@ -480,6 +502,96 @@ export class StorageService {
       logger.info('Storage', 'Cleared all industries')
     } catch (error) {
       logger.error('Storage', 'Failed to clear industries', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get industries by sub-category
+   * @param subCategoryId - Sub-category ID to filter by
+   * @returns Promise resolving to array of industry categories
+   */
+  async getIndustriesBySubCategory(subCategoryId: string): Promise<IndustryCategory[]> {
+    await this.ensureInitialized()
+    try {
+      return await this.db!.getAllFromIndex('industries', 'by-subcategory', subCategoryId)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get industries by sub-category', error)
+      return []
+    }
+  }
+
+  // Sub-Category Operations
+
+  /**
+   * Save sub-category
+   * @param subCategory - Sub-category to save
+   */
+  async saveSubCategory(subCategory: IndustrySubCategory): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.put('subCategories', subCategory)
+      logger.info('Storage', `Saved sub-category: ${subCategory.name}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save sub-category', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get all sub-categories
+   * @returns Promise resolving to array of sub-categories
+   */
+  async getAllSubCategories(): Promise<IndustrySubCategory[]> {
+    await this.ensureInitialized()
+    try {
+      return await this.db!.getAll('subCategories')
+    } catch (error) {
+      logger.error('Storage', 'Failed to get sub-categories', error)
+      return []
+    }
+  }
+
+  /**
+   * Get sub-category by ID
+   * @param id - Sub-category ID
+   * @returns Promise resolving to sub-category or null
+   */
+  async getSubCategory(id: string): Promise<IndustrySubCategory | null> {
+    await this.ensureInitialized()
+    try {
+      return await this.db!.get('subCategories', id)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get sub-category', error)
+      return null
+    }
+  }
+
+  /**
+   * Delete sub-category
+   * @param id - Sub-category ID to delete
+   */
+  async deleteSubCategory(id: string): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.delete('subCategories', id)
+      logger.info('Storage', `Deleted sub-category: ${id}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to delete sub-category', error)
+      throw error
+    }
+  }
+
+  /**
+   * Clear all sub-categories
+   */
+  async clearSubCategories(): Promise<void> {
+    await this.ensureInitialized()
+    try {
+      await this.db!.clear('subCategories')
+      logger.info('Storage', 'Cleared all sub-categories')
+    } catch (error) {
+      logger.error('Storage', 'Failed to clear sub-categories', error)
       throw error
     }
   }

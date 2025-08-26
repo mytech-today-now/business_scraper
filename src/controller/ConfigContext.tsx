@@ -1,8 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, ReactNode } from 'react'
-import { ScrapingConfig, IndustryCategory } from '@/types/business'
-import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
+import { ScrapingConfig, IndustryCategory, IndustrySubCategory } from '@/types/business'
+import { DEFAULT_INDUSTRIES, DEFAULT_SUB_CATEGORIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
 import { logger } from '@/utils/logger'
 import { AddressInputHandler } from '@/utils/addressInputHandler'
@@ -19,6 +19,9 @@ export interface ConfigState {
   // Industry categories
   industries: IndustryCategory[]
   selectedIndustries: string[]
+
+  // Sub-categories
+  subCategories: IndustrySubCategory[]
 
   // UI state
   isDarkMode: boolean
@@ -44,6 +47,10 @@ export type ConfigAction =
   | { type: 'TOGGLE_INDUSTRY'; payload: string }
   | { type: 'SELECT_ALL_INDUSTRIES' }
   | { type: 'DESELECT_ALL_INDUSTRIES' }
+  | { type: 'SET_SUB_CATEGORIES'; payload: IndustrySubCategory[] }
+  | { type: 'ADD_SUB_CATEGORY'; payload: IndustrySubCategory }
+  | { type: 'UPDATE_SUB_CATEGORY'; payload: IndustrySubCategory }
+  | { type: 'REMOVE_SUB_CATEGORY'; payload: string }
   | { type: 'SET_DARK_MODE'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_INITIALIZED'; payload: boolean }
@@ -71,6 +78,7 @@ const defaultState: ConfigState = {
   },
   industries: DEFAULT_INDUSTRIES,
   selectedIndustries: [],
+  subCategories: DEFAULT_SUB_CATEGORIES,
   isDarkMode: false,
   isLoading: false,
   isInitialized: false,
@@ -161,6 +169,38 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         },
       }
 
+    case 'SET_SUB_CATEGORIES':
+      return {
+        ...state,
+        subCategories: action.payload,
+      }
+
+    case 'ADD_SUB_CATEGORY':
+      return {
+        ...state,
+        subCategories: [...state.subCategories, action.payload],
+      }
+
+    case 'UPDATE_SUB_CATEGORY':
+      return {
+        ...state,
+        subCategories: state.subCategories.map(subCategory =>
+          subCategory.id === action.payload.id ? action.payload : subCategory
+        ),
+      }
+
+    case 'REMOVE_SUB_CATEGORY':
+      return {
+        ...state,
+        subCategories: state.subCategories.filter(subCategory => subCategory.id !== action.payload),
+        // Also remove sub-category reference from industries
+        industries: state.industries.map(industry =>
+          industry.subCategoryId === action.payload
+            ? { ...industry, subCategoryId: undefined }
+            : industry
+        ),
+      }
+
     case 'SET_DARK_MODE':
       return {
         ...state,
@@ -238,6 +278,13 @@ export interface ConfigContextType {
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
+
+  // Sub-category methods
+  addSubCategory: (subCategory: Omit<IndustrySubCategory, 'id'>) => Promise<void>
+  updateSubCategory: (subCategory: IndustrySubCategory) => Promise<void>
+  removeSubCategory: (id: string) => Promise<void>
+  setAllSubCategories: (subCategories: IndustrySubCategory[]) => Promise<void>
+  moveIndustryToSubCategory: (industryId: string, subCategoryId: string) => Promise<void>
 
   // Edit state methods
   startIndustryEdit: (id: string) => void
@@ -400,6 +447,19 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
             }
           }
 
+          // Load sub-categories
+          const savedSubCategories = await storage.getAllSubCategories()
+          if (savedSubCategories.length > 0) {
+            dispatch({ type: 'SET_SUB_CATEGORIES', payload: savedSubCategories })
+          } else {
+            // Save default sub-categories to storage
+            for (const subCategory of DEFAULT_SUB_CATEGORIES) {
+              await storage.saveSubCategory(subCategory)
+            }
+            dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
+            logger.info('ConfigProvider', 'Default sub-categories saved to storage')
+          }
+
           // Load theme preference
           const savedTheme = localStorage.getItem('darkMode')
           if (savedTheme) {
@@ -412,15 +472,17 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
           localStorage.removeItem('demoMode')
           logger.info('ConfigProvider', 'Real scraping mode enabled')
           } catch (storageError) {
-            // Storage initialization failed, use default industries
+            // Storage initialization failed, use default industries and sub-categories
             logger.warn('ConfigProvider', 'Storage initialization failed, using defaults', storageError)
             dispatch({ type: 'SET_INDUSTRIES', payload: DEFAULT_INDUSTRIES })
+            dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
             toast.warn('Storage unavailable - using default settings')
           }
         } else {
-          // Server-side initialization - use default industries
+          // Server-side initialization - use default industries and sub-categories
           dispatch({ type: 'SET_INDUSTRIES', payload: DEFAULT_INDUSTRIES })
-          logger.info('ConfigProvider', 'Server-side initialization with default industries')
+          dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
+          logger.info('ConfigProvider', 'Server-side initialization with default industries and sub-categories')
         }
 
         dispatch({ type: 'SET_INITIALIZED', payload: true })
@@ -784,6 +846,101 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     dispatch({ type: 'CLEAR_ALL_EDITS' })
   }
 
+  /**
+   * Add custom sub-category
+   */
+  const addSubCategory = async (subCategoryData: Omit<IndustrySubCategory, 'id'>) => {
+    try {
+      const subCategory: IndustrySubCategory = {
+        ...subCategoryData,
+        id: `subcategory-${Date.now()}`,
+      }
+
+      await storage.saveSubCategory(subCategory)
+      dispatch({ type: 'ADD_SUB_CATEGORY', payload: subCategory })
+      toast.success(`Added sub-category: ${subCategory.name}`)
+      logger.info('ConfigProvider', 'Sub-category added', subCategory)
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to add sub-category', error)
+      toast.error('Failed to add sub-category')
+    }
+  }
+
+  /**
+   * Update existing sub-category
+   */
+  const updateSubCategory = async (subCategory: IndustrySubCategory) => {
+    try {
+      await storage.saveSubCategory(subCategory)
+      dispatch({ type: 'UPDATE_SUB_CATEGORY', payload: subCategory })
+      toast.success(`Updated sub-category: ${subCategory.name}`)
+      logger.info('ConfigProvider', 'Sub-category updated', subCategory)
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to update sub-category', error)
+      toast.error('Failed to update sub-category')
+    }
+  }
+
+  /**
+   * Remove sub-category
+   */
+  const removeSubCategory = async (id: string) => {
+    try {
+      await storage.deleteSubCategory(id)
+      dispatch({ type: 'REMOVE_SUB_CATEGORY', payload: id })
+      toast.success('Sub-category removed')
+      logger.info('ConfigProvider', 'Sub-category removed', { id })
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to remove sub-category', error)
+      toast.error('Failed to remove sub-category')
+    }
+  }
+
+  /**
+   * Set all sub-categories (overwrites current sub-categories)
+   */
+  const setAllSubCategories = async (subCategories: IndustrySubCategory[]) => {
+    try {
+      // Clear existing sub-categories from storage
+      await storage.clearSubCategories()
+
+      // Save all new sub-categories
+      for (const subCategory of subCategories) {
+        await storage.saveSubCategory(subCategory)
+      }
+
+      dispatch({ type: 'SET_SUB_CATEGORIES', payload: subCategories })
+      logger.info('ConfigProvider', `Set ${subCategories.length} sub-categories`)
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to set sub-categories', error)
+      toast.error('Failed to update sub-categories')
+    }
+  }
+
+  /**
+   * Move industry to a different sub-category
+   */
+  const moveIndustryToSubCategory = async (industryId: string, subCategoryId: string) => {
+    try {
+      const industry = state.industries.find(i => i.id === industryId)
+      if (!industry) {
+        throw new Error(`Industry not found: ${industryId}`)
+      }
+
+      const updatedIndustry: IndustryCategory = {
+        ...industry,
+        subCategoryId,
+      }
+
+      await storage.saveIndustry(updatedIndustry)
+      dispatch({ type: 'UPDATE_INDUSTRY', payload: updatedIndustry })
+      logger.info('ConfigProvider', 'Industry moved to sub-category', { industryId, subCategoryId })
+    } catch (error) {
+      logger.error('ConfigProvider', 'Failed to move industry to sub-category', error)
+      toast.error('Failed to move industry')
+    }
+  }
+
   const contextValue: ConfigContextType = {
     state,
     dispatch,
@@ -801,6 +958,11 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,
+    addSubCategory,
+    updateSubCategory,
+    removeSubCategory,
+    setAllSubCategories,
+    moveIndustryToSubCategory,
     startIndustryEdit,
     endIndustryEdit,
     clearAllEdits,

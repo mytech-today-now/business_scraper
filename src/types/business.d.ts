@@ -172,10 +172,44 @@ export interface ScrapingConfig {
   zipRadius?: number;
 }
 
+/**
+ * Industry Sub-Category Interface
+ */
+export interface IndustrySubCategory {
+  id: string;
+  name: string;
+  description?: string;
+  isExpanded?: boolean; // UI state for expand/collapse
+}
+
+/**
+ * Industry Category with Sub-Category Support
+ */
 export interface IndustryCategory {
   id: string;
   name: string;
   keywords: string[];
   isCustom: boolean;
   domainBlacklist?: string[];
+  subCategoryId?: string; // Reference to sub-category
+}
+
+/**
+ * Grouped Industries by Sub-Category for UI Display
+ */
+export interface IndustryGroup {
+  subCategory: IndustrySubCategory;
+  industries: IndustryCategory[];
+  isSelected: boolean; // All industries in group selected
+  isPartiallySelected: boolean; // Some industries in group selected
+}
+
+/**
+ * Sub-Category Management Operations
+ */
+export interface SubCategoryOperations {
+  createSubCategory: (name: string, description?: string) => Promise<IndustrySubCategory>;
+  updateSubCategory: (subCategory: IndustrySubCategory) => Promise<void>;
+  deleteSubCategory: (id: string) => Promise<void>;
+  moveIndustryToSubCategory: (industryId: string, subCategoryId: string) => Promise<void>;
 }

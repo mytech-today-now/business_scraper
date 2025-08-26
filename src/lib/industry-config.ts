@@ -1,7 +1,61 @@
-import { IndustryCategory } from '@/types/business';
+import { IndustryCategory, IndustrySubCategory } from '@/types/business';
 
 /**
- * Default industry categories with associated search keywords
+ * Default sub-categories for organizing industries
+ */
+export const DEFAULT_SUB_CATEGORIES: IndustrySubCategory[] = [
+  {
+    id: 'it-services',
+    name: 'IT Services',
+    description: 'Technology companies and IT service providers',
+    isExpanded: false
+  },
+  {
+    id: 'professional-services',
+    name: 'Professional Services',
+    description: 'Legal, accounting, consulting, and other professional services',
+    isExpanded: true // Default expanded as per requirements
+  },
+  {
+    id: 'healthcare-medical',
+    name: 'Healthcare & Medical',
+    description: 'Medical practices, clinics, and healthcare technology',
+    isExpanded: false
+  },
+  {
+    id: 'commercial-trade-construction',
+    name: 'Commercial Trade & Construction (B2B)',
+    description: 'Manufacturing, logistics, and commercial construction services',
+    isExpanded: false
+  },
+  {
+    id: 'food-service-dining',
+    name: 'Food Service & Dining (B2C)',
+    description: 'Restaurants, cafes, and food service establishments',
+    isExpanded: false
+  },
+  {
+    id: 'retail-consumer-services',
+    name: 'Retail & Consumer Services (B2C)',
+    description: 'Retail stores, personal services, and consumer-facing businesses',
+    isExpanded: false
+  },
+  {
+    id: 'real-estate-property',
+    name: 'Real Estate & Property',
+    description: 'Real estate agencies and property technology services',
+    isExpanded: false
+  },
+  {
+    id: 'financial-services',
+    name: 'Financial Services',
+    description: 'Insurance, financial advisory, and FinTech companies',
+    isExpanded: false
+  }
+];
+
+/**
+ * Default industry categories with associated search keywords and sub-category assignments
  * Each entry includes search terms you can use in Google, LinkedIn, Yelp, Clutch, or other directories
  * to find businesses that may need IT support.
  */
@@ -28,6 +82,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'bankruptcy attorney'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.justia.*',
       '*.findlaw.*',
@@ -56,6 +111,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'financial auditing firm'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.hrblock.*',
       '*.intuit.*',
@@ -82,6 +138,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'urban design studio'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.archdaily.*',
       '*.houzz.*'
@@ -106,6 +163,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'medical practice'
     ],
     isCustom: false,
+    subCategoryId: 'healthcare-medical',
     domainBlacklist: [
       '*.zocdoc.*',
       '*.healthgrades.*',
@@ -132,6 +190,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'general dentistry'
     ],
     isCustom: false,
+    subCategoryId: 'healthcare-medical',
     domainBlacklist: [
       '*.1-800-dentist.*',
       '*.zocdoc.*',
@@ -152,6 +211,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'luxury real estate agent'
     ],
     isCustom: false,
+    subCategoryId: 'real-estate-property',
     domainBlacklist: [
       '*.zillow.*',
       '*.realtor.*',
@@ -173,6 +233,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'business insurance consultant'
     ],
     isCustom: false,
+    subCategoryId: 'financial-services',
     domainBlacklist: [
       '*.statefarm.*',
       '*.progressive.*',
@@ -198,6 +259,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'financial consulting firm'
     ],
     isCustom: false,
+    subCategoryId: 'financial-services',
     domainBlacklist: [
       '*.fidelity.*',
       '*.vanguard.*',
@@ -218,6 +280,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'grant-funded organization'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.guidestar.*',
       '*.charitynavigator.*'
@@ -237,6 +300,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'staff augmentation company'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.indeed.*',
       '*.ziprecruiter.*',
@@ -258,6 +322,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'nonprofit event organizer'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.theknot.*',
       '*.weddingwire.*',
@@ -277,6 +342,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'meeting and convention services'
     ],
     isCustom: false,
+    subCategoryId: 'retail-consumer-services',
     domainBlacklist: [
       '*.tripadvisor.*',
       '*.booking.*',
@@ -298,6 +364,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'engineering project consultants'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: []
   },
   {
@@ -314,6 +381,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'private academy'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.greatschools.*',
       '*.niche.*',
@@ -353,6 +421,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'marketing consultants'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.fiverr.*',
       '*.upwork.*',
@@ -391,6 +460,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'digital products store'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.amazon.*',
       '*.etsy.*',
@@ -415,6 +485,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'industrial equipment manufacturers'
     ],
     isCustom: false,
+    subCategoryId: 'commercial-trade-construction',
     domainBlacklist: []
   },
   {
@@ -430,6 +501,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'freight forwarding firm'
     ],
     isCustom: false,
+    subCategoryId: 'commercial-trade-construction',
     domainBlacklist: [
       '*.ups.*',
       '*.fedex.*',
@@ -467,6 +539,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'legal practice automation'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.clio.*',
       '*.mycase.*',
@@ -501,6 +574,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'veterinarian near me'
     ],
     isCustom: false,
+    subCategoryId: 'retail-consumer-services',
     domainBlacklist: [
       '*.petco.*',
       '*.petsmart.*',
@@ -535,6 +609,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'pressure washing service'
     ],
     isCustom: false,
+    subCategoryId: 'retail-consumer-services',
     domainBlacklist: [
       '*.angi.*',
       '*.homeadvisor.*',
@@ -583,6 +658,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'fitness center'
     ],
     isCustom: false,
+    subCategoryId: 'healthcare-medical',
     domainBlacklist: [
       '*.classpass.*',
       '*.mindbody.*',
@@ -636,6 +712,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'entertainment center'
     ],
     isCustom: false,
+    subCategoryId: 'retail-consumer-services',
     domainBlacklist: [
       '*.fandango.*',
       '*.movietickets.*',
@@ -685,6 +762,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'cyber insurance consulting'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.crowdstrike.*',
       '*.paloaltonetworks.*',
@@ -740,6 +818,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'energy policy consulting'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.tesla.*',
       '*.sunpower.*',
@@ -797,6 +876,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'retention marketing services'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.google.*',
       '*.facebook.*',
@@ -859,6 +939,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'financial API services'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.paypal.*',
       '*.stripe.*',
@@ -925,6 +1006,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'fitness tracking technology'
     ],
     isCustom: false,
+    subCategoryId: 'healthcare-medical',
     domainBlacklist: [
       '*.epic.*',
       '*.cerner.*',
@@ -978,6 +1060,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'AI training services'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.openai.*',
       '*.anthropic.*',
@@ -1025,6 +1108,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'e-commerce SEO services'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.shopify.*',
       '*.woocommerce.*',
@@ -1072,6 +1156,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'blockchain as a service'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.coinbase.*',
       '*.binance.*',
@@ -1119,6 +1204,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'wireless sensor networks'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.amazon.*',
       '*.google.*',
@@ -1166,6 +1252,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'remote learning solutions'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.coursera.*',
       '*.udemy.*',
@@ -1213,6 +1300,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'property crowdfunding platform'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.zillow.*',
       '*.realtor.*',
@@ -1260,6 +1348,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'agricultural marketplace platform'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.johndeere.*',
       '*.monsanto.*',
@@ -1307,6 +1396,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'digital entertainment platform'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.unity.*',
       '*.unreal.*',
@@ -1354,6 +1444,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'supply chain blockchain'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.sap.*',
       '*.oracle.*',
@@ -1401,6 +1492,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'green building technology'
     ],
     isCustom: false,
+    subCategoryId: 'it-services',
     domainBlacklist: [
       '*.veolia.*',
       '*.suez.*',
@@ -1458,6 +1550,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'bike shops nearby'
     ],
     isCustom: false,
+    subCategoryId: 'retail-consumer-services',
     domainBlacklist: [
       '*.amazon.*',
       '*.walmart.*',
@@ -1522,6 +1615,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'juice bars nearby'
     ],
     isCustom: false,
+    subCategoryId: 'food-service-dining',
     domainBlacklist: [
       '*.mcdonalds.*',
       '*.subway.*',
@@ -1586,6 +1680,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'daycare centers local'
     ],
     isCustom: false,
+    subCategoryId: 'retail-consumer-services',
     domainBlacklist: [
       '*.supercuts.*',
       '*.greatclips.*',
@@ -1651,6 +1746,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'commercial real estate'
     ],
     isCustom: false,
+    subCategoryId: 'professional-services',
     domainBlacklist: [
       '*.deloitte.*',
       '*.pwc.*',
@@ -1716,6 +1812,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'industrial automation'
     ],
     isCustom: false,
+    subCategoryId: 'commercial-trade-construction',
     domainBlacklist: [
       '*.ge.*',
       '*.boeing.*',
@@ -1780,6 +1877,7 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       'equipment rental companies'
     ],
     isCustom: false,
+    subCategoryId: 'commercial-trade-construction',
     domainBlacklist: [
       '*.homedepot.*',
       '*.lowes.*',
@@ -1808,6 +1906,296 @@ export const DEFAULT_INDUSTRIES: IndustryCategory[] = [
       '*.hertz.*',
       '*.avis.*',
       '*.ryder.*'
+    ]
+  },
+  // New B2C Industries
+  {
+    id: 'fitness-wellness',
+    name: 'Fitness & Wellness',
+    keywords: [
+      'fitness center near me',
+      'gym membership',
+      'personal trainer',
+      'yoga studio',
+      'pilates classes',
+      'crossfit gym',
+      'martial arts studio',
+      'dance studio',
+      'wellness center',
+      'spa services',
+      'massage therapy',
+      'physical therapy clinic',
+      'chiropractic office',
+      'acupuncture clinic',
+      'nutrition counseling',
+      'weight loss center',
+      'meditation center',
+      'fitness bootcamp',
+      'swimming pool fitness',
+      'rock climbing gym'
+    ],
+    isCustom: false,
+    subCategoryId: 'retail-consumer-services',
+    domainBlacklist: [
+      '*.planetfitness.*',
+      '*.anytimefitness.*',
+      '*.24hourfitness.*',
+      '*.lafitness.*',
+      '*.goldsgym.*',
+      '*.ymca.*'
+    ]
+  },
+  {
+    id: 'beauty-personal-care',
+    name: 'Beauty & Personal Care',
+    keywords: [
+      'hair salon near me',
+      'beauty salon',
+      'nail salon',
+      'barbershop',
+      'spa services',
+      'facial treatments',
+      'eyebrow threading',
+      'waxing salon',
+      'massage therapy',
+      'skincare clinic',
+      'cosmetic services',
+      'makeup artist',
+      'permanent makeup',
+      'laser hair removal',
+      'botox clinic',
+      'dermatology clinic',
+      'tattoo parlor',
+      'piercing studio',
+      'tanning salon',
+      'beauty supply store'
+    ],
+    isCustom: false,
+    subCategoryId: 'retail-consumer-services',
+    domainBlacklist: [
+      '*.sephora.*',
+      '*.ulta.*',
+      '*.sallybeauty.*',
+      '*.supercuts.*',
+      '*.greatclips.*',
+      '*.sportclips.*'
+    ]
+  },
+  {
+    id: 'home-improvement-repair',
+    name: 'Home Improvement & Repair',
+    keywords: [
+      'handyman services',
+      'home repair near me',
+      'plumber near me',
+      'electrician services',
+      'HVAC repair',
+      'roofing contractor',
+      'painting services',
+      'flooring installation',
+      'kitchen remodeling',
+      'bathroom renovation',
+      'landscaping services',
+      'tree service',
+      'lawn care',
+      'pest control',
+      'cleaning services',
+      'carpet cleaning',
+      'window cleaning',
+      'gutter cleaning',
+      'pressure washing',
+      'appliance repair'
+    ],
+    isCustom: false,
+    subCategoryId: 'retail-consumer-services',
+    domainBlacklist: [
+      '*.homedepot.*',
+      '*.lowes.*',
+      '*.menards.*',
+      '*.angieslist.*',
+      '*.homeadvisor.*',
+      '*.thumbtack.*'
+    ]
+  },
+  {
+    id: 'travel-tourism',
+    name: 'Travel & Tourism',
+    keywords: [
+      'travel agency near me',
+      'vacation planning',
+      'cruise booking',
+      'hotel reservations',
+      'flight booking',
+      'tour operator',
+      'travel consultant',
+      'honeymoon planning',
+      'group travel',
+      'corporate travel',
+      'adventure tours',
+      'guided tours',
+      'travel insurance',
+      'visa services',
+      'passport services',
+      'car rental',
+      'vacation rentals',
+      'bed and breakfast',
+      'resort booking',
+      'destination wedding planning'
+    ],
+    isCustom: false,
+    subCategoryId: 'retail-consumer-services',
+    domainBlacklist: [
+      '*.expedia.*',
+      '*.booking.*',
+      '*.priceline.*',
+      '*.kayak.*',
+      '*.orbitz.*',
+      '*.travelocity.*'
+    ]
+  },
+  {
+    id: 'childcare-early-education',
+    name: 'Childcare & Early Education',
+    keywords: [
+      'daycare near me',
+      'preschool',
+      'childcare center',
+      'nursery school',
+      'kindergarten',
+      'after school program',
+      'summer camp',
+      'babysitting services',
+      'nanny services',
+      'tutoring services',
+      'music lessons',
+      'art classes for kids',
+      'swimming lessons',
+      'dance classes kids',
+      'martial arts kids',
+      'sports programs kids',
+      'educational toys',
+      'learning center',
+      'montessori school',
+      'waldorf school'
+    ],
+    isCustom: false,
+    subCategoryId: 'retail-consumer-services',
+    domainBlacklist: [
+      '*.kindercare.*',
+      '*.brightbeginnings.*',
+      '*.childtime.*',
+      '*.lapetiteacademy.*',
+      '*.primroseschools.*',
+      '*.goddardschool.*'
+    ]
+  },
+  {
+    id: 'pet-services-enhanced',
+    name: 'Pet Services & Veterinary Care',
+    keywords: [
+      'veterinarian near me',
+      'animal hospital',
+      'pet grooming',
+      'dog grooming',
+      'cat grooming',
+      'pet boarding',
+      'dog daycare',
+      'pet sitting',
+      'dog walking',
+      'pet training',
+      'dog training',
+      'pet store',
+      'pet supplies',
+      'animal clinic',
+      'emergency vet',
+      'pet insurance',
+      'pet photography',
+      'pet cremation',
+      'dog park',
+      'pet adoption center'
+    ],
+    isCustom: false,
+    subCategoryId: 'retail-consumer-services',
+    domainBlacklist: [
+      '*.petco.*',
+      '*.petsmart.*',
+      '*.chewy.*',
+      '*.petfinder.*',
+      '*.rover.*',
+      '*.wag.*'
+    ]
+  },
+  // New B2B Industries
+  {
+    id: 'manufacturing-supply-chain',
+    name: 'Manufacturing Supply Chain',
+    keywords: [
+      'manufacturing suppliers',
+      'industrial suppliers',
+      'raw materials supplier',
+      'component manufacturing',
+      'parts supplier',
+      'industrial equipment',
+      'machinery supplier',
+      'tool and die',
+      'metal fabrication',
+      'plastic manufacturing',
+      'chemical supplier',
+      'packaging supplier',
+      'logistics provider',
+      'freight forwarder',
+      'warehouse services',
+      'distribution center',
+      'supply chain management',
+      'procurement services',
+      'vendor management',
+      'quality control services'
+    ],
+    isCustom: false,
+    subCategoryId: 'commercial-trade-construction',
+    domainBlacklist: [
+      '*.alibaba.*',
+      '*.thomasnet.*',
+      '*.globalspec.*',
+      '*.grainger.*',
+      '*.mcmaster.*',
+      '*.fastenal.*'
+    ]
+  },
+  {
+    id: 'business-consulting',
+    name: 'Business Consulting',
+    keywords: [
+      'business consultant',
+      'management consulting',
+      'strategy consulting',
+      'operations consulting',
+      'process improvement',
+      'business analysis',
+      'organizational development',
+      'change management',
+      'project management',
+      'business planning',
+      'market research',
+      'competitive analysis',
+      'business intelligence',
+      'performance optimization',
+      'efficiency consulting',
+      'lean consulting',
+      'six sigma consulting',
+      'digital transformation',
+      'technology consulting',
+      'IT consulting'
+    ],
+    isCustom: false,
+    subCategoryId: 'professional-services',
+    domainBlacklist: [
+      '*.mckinsey.*',
+      '*.bcg.*',
+      '*.bain.*',
+      '*.deloitte.*',
+      '*.pwc.*',
+      '*.ey.*'
     ]
   },
 ];
