@@ -218,7 +218,7 @@ The **12 primary categories of testing** that must be considered are:
 
 - Implement configurable rate limits.  
 - Use retries with exponential backoff.  
-- Respect published usage policies such as API quotas or robots.txt.  
+- Respect published API quotas usage policies.  
 
 ---
 
@@ -235,7 +235,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 ### 15. Errors Logged as "Issues" in GitHub
 **RULE: All Errors, Bugs, or Unexpected Behaviors Must Be Tracked in GitHub Issues**  
 
-Errors or anomalies discovered during development, testing, or production must be logged as **Issues** in GitHub to ensure visibility, traceability, and accountability.  
+Errors or anomalies discovered during development, testing, or production must be logged as **Issues** in GitHub to ensure visibility, traceability, and accountability.  Test Case failures must first be logged as GitHub Issues with appropriate documentation.
 
 **Guidelines:**  
 - **Title:** Short, descriptive summary (e.g., `"Login API returns 500 on empty payload"`).  
