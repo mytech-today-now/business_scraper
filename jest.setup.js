@@ -172,6 +172,8 @@ global.WebSocket = jest.fn().mockImplementation(() => ({
   CLOSED: 3,
 }))
 
+// clsx is now mocked via moduleNameMapper in jest.config.js
+
 // Clean up after each test
 afterEach(() => {
   jest.clearAllMocks()

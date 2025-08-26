@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-  // setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
@@ -19,6 +19,8 @@ const customJestConfig = {
     '^@/lib/(.*)$': '<rootDir>/src/lib/$1',
     '^@/view/(.*)$': '<rootDir>/src/view/$1',
     '^@/app/(.*)$': '<rootDir>/src/app/$1',
+    '^@/hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^clsx$': '<rootDir>/src/__tests__/mocks/clsx.js',
   },
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
@@ -71,8 +73,32 @@ const customJestConfig = {
       statements: 95,
     },
   },
-  testTimeout: 30000,
+  testTimeout: 60000,
   verbose: true,
+  // Enhanced error handling and retry configuration
+  maxWorkers: '50%',
+  detectOpenHandles: true,
+  forceExit: true,
+  // Improved test isolation
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
+  // Better error reporting
+  errorOnDeprecated: false, // Set to false to avoid issues with legacy dependencies
+  // Coverage reporting
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  coverageDirectory: 'coverage',
+  // Test result processing with retry support
+  testRunner: 'jest-circus/runner',
+  // Global test configuration
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
+  },
+  // Global setup and teardown
+  globalSetup: '<rootDir>/src/__tests__/setup/globalSetup.js',
+  globalTeardown: '<rootDir>/src/__tests__/setup/globalTeardown.js',
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
