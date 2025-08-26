@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
@@ -19,6 +19,12 @@
     "test:e2e:search-engine": "playwright test src/tests/e2e/searchEngineManagement.test.ts",
     "test:e2e:error-handling": "playwright test src/tests/e2e/errorHandlingScenarios.test.ts",
     "test:security": "jest --testPathPattern=security",
+    "docs:validate": "node scripts/validate-docs.js",
+    "docs:lint": "markdownlint docs/**/*.md *.md",
+    "docs:links": "find . -name '*.md' -not -path './node_modules/*' -exec markdown-link-check {} \\;",
+    "docs:spell": "cspell 'docs/**/*.md' '*.md'",
+    "docs:check": "npm run docs:validate && npm run docs:lint && npm run docs:links && npm run docs:spell",
+    "docs:fix": "markdownlint --fix docs/**/*.md *.md",
     "test:security:vulnerability": "jest --testPathPattern=vulnerabilityScanning",
     "test:security:penetration": "jest --testPathPattern=penetrationTesting",
     "test:performance": "jest --testPathPattern=performance",
