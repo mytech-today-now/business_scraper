@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
-import { Plus, Trash2, Check, X, Download, Upload, RefreshCw } from 'lucide-react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { Plus, Trash2, Check, X, Download, Upload, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
@@ -9,7 +9,8 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { IndustryModal } from './IndustryModal'
 import { IndustryItemEditor } from './IndustryItemEditor'
 import { clsx } from 'clsx'
-import { IndustryCategory } from '@/types/business'
+import { IndustryCategory, IndustrySubCategory, IndustryGroup } from '@/types/business'
+import { DEFAULT_SUB_CATEGORIES } from '@/lib/industry-config'
 import toast from 'react-hot-toast'
 
 /**
@@ -33,6 +34,7 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
     updateIndustry,
     addCustomIndustry,
     setAllIndustries,
+    setAllSubCategories,
     refreshDefaultIndustries,
     startIndustryEdit,
     endIndustryEdit,
@@ -43,6 +45,9 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
   const [expandedEditingId, setExpandedEditingId] = useState<string | null>(null)
   const [inlineEditingId, setInlineEditingId] = useState<string | null>(null)
   const [editingKeywords, setEditingKeywords] = useState<string>('')
+  const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(
+    new Set(['professional-services']) // Professional Services expanded by default
+  )
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -173,17 +178,24 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
         return
       }
 
-      // Create export data with standardized Business Scraper format
+      // Create export data with standardized Business Scraper format including sub-categories
       const exportData = {
         name: "Business Scraper",
         url: "https://github.com/mytech-today-now/business_scraper",
-        version: "1.0.0",
+        version: "2.0.0", // Updated version for sub-category support
         exportDate: new Date().toISOString(),
+        subCategories: state.subCategories.map(subCategory => ({
+          id: subCategory.id,
+          name: subCategory.name,
+          description: subCategory.description,
+          isExpanded: subCategory.isExpanded
+        })),
         industries: allIndustries.map(industry => ({
           id: industry.id,
           name: industry.name,
           keywords: industry.keywords,
           isCustom: industry.isCustom,
+          subCategoryId: industry.subCategoryId,
           domainBlacklist: industry.domainBlacklist || []
         }))
       }
@@ -235,12 +247,18 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
         throw new Error('Invalid file format: Missing required Business Scraper metadata')
       }
 
-      // Support both old format (customIndustries) and new format (industries)
+      // Support multiple formats: old (customIndustries), new (industries), and latest (with sub-categories)
       let industriesToImport: any[] = []
+      let subCategoriesToImport: any[] = []
 
       if (importData.industries && Array.isArray(importData.industries)) {
         // New format - includes all industries with their settings
         industriesToImport = importData.industries
+
+        // Check for sub-categories (version 2.0.0+)
+        if (importData.subCategories && Array.isArray(importData.subCategories)) {
+          subCategoriesToImport = importData.subCategories
+        }
       } else if (importData.customIndustries && Array.isArray(importData.customIndustries)) {
         // Legacy format - only custom industries
         industriesToImport = importData.customIndustries.map((industry: any) => ({
@@ -269,12 +287,13 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
           continue
         }
 
-        // Create industry object
+        // Create industry object with sub-category support
         const industry: IndustryCategory = {
           id: industryData.id || `imported-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           name: industryData.name,
           keywords: industryData.keywords.filter(Boolean), // Remove empty keywords
           isCustom: industryData.isCustom !== undefined ? industryData.isCustom : true,
+          subCategoryId: industryData.subCategoryId || undefined,
           domainBlacklist: industryData.domainBlacklist && Array.isArray(industryData.domainBlacklist)
             ? industryData.domainBlacklist.filter(Boolean)
             : undefined
@@ -288,11 +307,35 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
         return
       }
 
+      // Import sub-categories if available
+      let importedSubCategories = 0
+      if (subCategoriesToImport.length > 0) {
+        const validSubCategories: IndustrySubCategory[] = []
+
+        for (const subCategoryData of subCategoriesToImport) {
+          if (subCategoryData.id && subCategoryData.name) {
+            const subCategory: IndustrySubCategory = {
+              id: subCategoryData.id,
+              name: subCategoryData.name,
+              description: subCategoryData.description || undefined,
+              isExpanded: subCategoryData.isExpanded || false
+            }
+            validSubCategories.push(subCategory)
+          }
+        }
+
+        if (validSubCategories.length > 0) {
+          await setAllSubCategories(validSubCategories)
+          importedSubCategories = validSubCategories.length
+        }
+      }
+
       // Replace all industries with imported ones
       await setAllIndustries(validIndustries)
 
       // Show results
-      toast.success(`Imported ${validIndustries.length} industries${skippedCount > 0 ? ` (${skippedCount} skipped)` : ''}. All previous industry settings have been replaced.`)
+      const subCategoryMessage = importedSubCategories > 0 ? ` and ${importedSubCategories} sub-categories` : ''
+      toast.success(`Imported ${validIndustries.length} industries${subCategoryMessage}${skippedCount > 0 ? ` (${skippedCount} skipped)` : ''}. All previous settings have been replaced.`)
 
     } catch (error) {
       console.error('Import failed:', error)
@@ -321,6 +364,87 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
 
   const allSelected = state.selectedIndustries.length === state.industries.length
   const noneSelected = state.selectedIndustries.length === 0
+
+  /**
+   * Group industries by sub-categories
+   */
+  const industryGroups = useMemo((): IndustryGroup[] => {
+    // Create a map of sub-category ID to sub-category
+    const subCategoryMap = new Map(DEFAULT_SUB_CATEGORIES.map(sc => [sc.id, sc]))
+
+    // Group industries by sub-category
+    const groupMap = new Map<string, IndustryCategory[]>()
+
+    // Initialize groups for all sub-categories
+    DEFAULT_SUB_CATEGORIES.forEach(subCategory => {
+      groupMap.set(subCategory.id, [])
+    })
+
+    // Add industries to their respective groups
+    state.industries.forEach(industry => {
+      const subCategoryId = industry.subCategoryId || 'professional-services' // Default fallback
+      if (!groupMap.has(subCategoryId)) {
+        groupMap.set(subCategoryId, [])
+      }
+      groupMap.get(subCategoryId)!.push(industry)
+    })
+
+    // Convert to IndustryGroup array
+    return Array.from(groupMap.entries())
+      .map(([subCategoryId, industries]) => {
+        const subCategory = subCategoryMap.get(subCategoryId)
+        if (!subCategory) return null
+
+        const selectedIndustries = industries.filter(industry =>
+          state.selectedIndustries.includes(industry.id)
+        )
+
+        return {
+          subCategory,
+          industries,
+          isSelected: industries.length > 0 && selectedIndustries.length === industries.length,
+          isPartiallySelected: selectedIndustries.length > 0 && selectedIndustries.length < industries.length
+        }
+      })
+      .filter((group): group is IndustryGroup => group !== null)
+      .filter(group => group.industries.length > 0) // Only show groups with industries
+  }, [state.industries, state.selectedIndustries])
+
+  /**
+   * Toggle sub-category expansion
+   */
+  const toggleSubCategory = (subCategoryId: string): void => {
+    setExpandedSubCategories(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(subCategoryId)) {
+        newSet.delete(subCategoryId)
+      } else {
+        newSet.add(subCategoryId)
+      }
+      return newSet
+    })
+  }
+
+  /**
+   * Select/deselect all industries in a sub-category
+   */
+  const toggleSubCategorySelection = (group: IndustryGroup): void => {
+    if (group.isSelected) {
+      // Deselect all industries in this group
+      group.industries.forEach(industry => {
+        if (state.selectedIndustries.includes(industry.id)) {
+          toggleIndustry(industry.id)
+        }
+      })
+    } else {
+      // Select all industries in this group
+      group.industries.forEach(industry => {
+        if (!state.selectedIndustries.includes(industry.id)) {
+          toggleIndustry(industry.id)
+        }
+      })
+    }
+  }
 
   return (
     <Card>
@@ -432,12 +556,93 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
 
 
 
-        {/* Industry Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-          {state.industries
-            .slice()
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((industry) => {
+        {/* Industry Groups by Sub-Category */}
+        <div className="space-y-4">
+          {industryGroups.map((group) => {
+            const isExpanded = expandedSubCategories.has(group.subCategory.id)
+
+            return (
+              <div key={group.subCategory.id} className="border rounded-lg overflow-hidden">
+                {/* Sub-Category Header */}
+                <div
+                  className={clsx(
+                    'flex items-center justify-between p-3 cursor-pointer transition-all',
+                    'hover:bg-accent/50 border-b',
+                    group.isSelected && 'bg-primary/5 border-primary/20',
+                    group.isPartiallySelected && !group.isSelected && 'bg-orange-50 border-orange-200'
+                  )}
+                  onClick={() => toggleSubCategory(group.subCategory.id)}
+                >
+                  <div className="flex items-center space-x-3">
+                    {/* Expand/Collapse Icon */}
+                    {isExpanded ? (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    )}
+
+                    {/* Sub-Category Info */}
+                    <div>
+                      <h3 className="font-medium text-sm">{group.subCategory.name}</h3>
+                      {group.subCategory.description && (
+                        <p className="text-xs text-muted-foreground">{group.subCategory.description}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    {/* Selection Count */}
+                    <span className="text-xs text-muted-foreground">
+                      {group.industries.filter(i => state.selectedIndustries.includes(i.id)).length} / {group.industries.length}
+                    </span>
+
+                    {/* Select/Deselect All Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleSubCategorySelection(group)
+                      }}
+                      className={clsx(
+                        'h-6 px-2 text-xs',
+                        group.isSelected && 'text-primary',
+                        group.isPartiallySelected && !group.isSelected && 'text-orange-600'
+                      )}
+                      disabled={disabled}
+                    >
+                      {group.isSelected ? 'Deselect All' : 'Select All'}
+                    </Button>
+
+                    {/* Selection Indicator */}
+                    <div
+                      className={clsx(
+                        'w-4 h-4 rounded border-2 transition-all',
+                        group.isSelected
+                          ? 'bg-primary border-primary'
+                          : group.isPartiallySelected
+                          ? 'bg-orange-200 border-orange-400'
+                          : 'border-muted-foreground'
+                      )}
+                    >
+                      {group.isSelected && (
+                        <Check className="w-3 h-3 text-primary-foreground" />
+                      )}
+                      {group.isPartiallySelected && !group.isSelected && (
+                        <div className="w-2 h-2 bg-orange-600 rounded-full mx-auto mt-0.5" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Industries Grid (when expanded) */}
+                {isExpanded && (
+                  <div className="p-3 bg-accent/20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                      {group.industries
+                        .slice()
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((industry) => {
             const isSelected = state.selectedIndustries.includes(industry.id)
             const isInlineEditing = inlineEditingId === industry.id
             const isExpandedEditing = expandedEditingId === industry.id
@@ -578,6 +783,12 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
                     </div>
                   )}
                 </div>
+              </div>
+            )
+                        })}
+                    </div>
+                  </div>
+                )}
               </div>
             )
           })}

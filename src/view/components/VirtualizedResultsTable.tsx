@@ -18,7 +18,9 @@ import {
   Star,
   Award,
   Shield,
-  Globe
+  Globe,
+  Activity,
+  Monitor
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
@@ -43,6 +45,12 @@ import {
   AILeadScore,
   AIBadge
 } from '@/lib/aiLeadScoringService'
+import { logger } from '@/utils/logger'
+import {
+  performanceMonitoringService,
+  PerformanceMetrics,
+  ScrollMetrics
+} from '@/lib/performanceMonitoringService'
 
 interface VirtualizedResultsTableProps {
   onEdit?: (business: BusinessRecord) => void
@@ -107,14 +115,76 @@ export function VirtualizedResultsTable({
     actions: true
   })
 
+  // Performance monitoring state
+  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetrics[]>([])
+  const [scrollMetrics, setScrollMetrics] = useState<ScrollMetrics>({
+    position: 0,
+    velocity: 0,
+    direction: 'none',
+    timestamp: Date.now()
+  })
+  const [showPerformancePanel, setShowPerformancePanel] = useState(process.env.NODE_ENV === 'development')
+  const [scrollPosition, setScrollPosition] = useState(0)
+
   // Refs
   const listRef = useRef<List>(null)
   const infiniteLoaderRef = useRef<InfiniteLoader>(null)
+  const performanceStartTime = useRef<number>(0)
+  const lastScrollTime = useRef<number>(0)
+  const lastScrollPosition = useRef<number>(0)
+  const frameRateCounter = useRef<number>(0)
+  const frameRateTimer = useRef<number>(0)
+
+  /**
+   * Performance monitoring setup
+   */
+  useEffect(() => {
+    const componentName = 'VirtualizedResultsTable'
+
+    // Start frame rate monitoring using the service
+    performanceMonitoringService.startFrameRateMonitoring(componentName)
+
+    return () => {
+      // Cleanup frame rate monitoring
+      performanceMonitoringService.stopFrameRateMonitoring(componentName)
+    }
+  }, [])
+
+  /**
+   * Record performance metrics using the monitoring service
+   */
+  const recordPerformanceMetric = useCallback((operation: string = 'render', additionalData: Partial<PerformanceMetrics> = {}) => {
+    const renderTime = performance.now() - performanceStartTime.current
+    const memoryInfo = (performance as any).memory
+    const componentName = 'VirtualizedResultsTable'
+
+    const metric: PerformanceMetrics = {
+      renderTime,
+      scrollPosition,
+      visibleItemsCount: Math.min(items.length, Math.ceil(height / ROW_HEIGHT)),
+      totalItemsCount: totalCount,
+      memoryUsage: memoryInfo?.usedJSHeapSize,
+      timestamp: Date.now(),
+      componentName,
+      operation,
+      ...additionalData
+    }
+
+    // Record metric using the service
+    performanceMonitoringService.recordMetric(metric)
+
+    // Update local state for UI display
+    setPerformanceMetrics(prev => {
+      const newMetrics = [...prev, metric]
+      return newMetrics.slice(-100)
+    })
+  }, [scrollPosition, items.length, height, totalCount])
 
   /**
    * Load initial data
    */
   useEffect(() => {
+    performanceStartTime.current = performance.now()
     loadInitialData()
   }, [filters, sortConfig])
 
@@ -129,7 +199,7 @@ export function VirtualizedResultsTable({
       setHasNextPage(true)
 
       const result = await fetchBusinesses(undefined, 100, sortConfig, filters)
-      
+
       const itemsWithAI = result.data.map(business => ({
         business,
         aiScore: calculateAILeadScore(business)
@@ -139,6 +209,11 @@ export function VirtualizedResultsTable({
       setNextCursor(result.pagination.nextCursor)
       setHasNextPage(result.pagination.hasMore)
       setTotalCount(result.pagination.totalCount)
+
+      // Record performance metrics
+      recordPerformanceMetric('loadInitialData', {
+        scrollVelocity: 0
+      })
 
       // Prefetch next page
       if (result.pagination.nextCursor) {
@@ -151,7 +226,7 @@ export function VirtualizedResultsTable({
     } finally {
       setIsLoadingMore(false)
     }
-  }, [fetchBusinesses, prefetchNextPage, sortConfig, filters])
+  }, [fetchBusinesses, prefetchNextPage, sortConfig, filters, recordPerformanceMetric])
 
   /**
    * Load more items for infinite scrolling
@@ -161,9 +236,10 @@ export function VirtualizedResultsTable({
 
     try {
       setIsLoadingMore(true)
+      performanceStartTime.current = performance.now()
 
       const result = await fetchBusinesses(nextCursor, 100, sortConfig, filters)
-      
+
       const newItemsWithAI = result.data.map(business => ({
         business,
         aiScore: calculateAILeadScore(business)
@@ -172,6 +248,11 @@ export function VirtualizedResultsTable({
       setItems(prev => [...prev, ...newItemsWithAI])
       setNextCursor(result.pagination.nextCursor)
       setHasNextPage(result.pagination.hasMore)
+
+      // Record performance metrics for loading more items
+      recordPerformanceMetric('loadMoreItems', {
+        scrollVelocity: scrollMetrics.velocity
+      })
 
       // Prefetch next page
       if (result.pagination.nextCursor) {
@@ -184,7 +265,7 @@ export function VirtualizedResultsTable({
     } finally {
       setIsLoadingMore(false)
     }
-  }, [fetchBusinesses, prefetchNextPage, hasNextPage, isLoadingMore, nextCursor, sortConfig, filters])
+  }, [fetchBusinesses, prefetchNextPage, hasNextPage, isLoadingMore, nextCursor, sortConfig, filters, recordPerformanceMetric, scrollMetrics.velocity])
 
   /**
    * Check if item is loaded
@@ -194,9 +275,39 @@ export function VirtualizedResultsTable({
   }, [items])
 
   /**
+   * Enhanced scroll handling with performance monitoring
+   */
+  const handleScroll = useCallback(({ scrollTop }: { scrollTop: number }) => {
+    // Increment frame counter using the service
+    performanceMonitoringService.incrementFrameCount('VirtualizedResultsTable')
+
+    const now = Date.now()
+    const timeDelta = now - lastScrollTime.current
+    const positionDelta = scrollTop - lastScrollPosition.current
+
+    if (timeDelta > 0) {
+      const velocity = Math.abs(positionDelta) / timeDelta
+      const direction = positionDelta > 0 ? 'down' : positionDelta < 0 ? 'up' : 'none'
+
+      setScrollMetrics({
+        position: scrollTop,
+        velocity,
+        direction,
+        timestamp: now
+      })
+
+      setScrollPosition(scrollTop)
+    }
+
+    lastScrollTime.current = now
+    lastScrollPosition.current = scrollTop
+  }, [])
+
+  /**
    * Handle search
    */
   const handleSearch = useCallback((query: string) => {
+    performanceStartTime.current = performance.now()
     setSearchQuery(query)
     setFilters(prev => ({ ...prev, search: query || undefined }))
   }, [])
@@ -239,10 +350,12 @@ export function VirtualizedResultsTable({
   }, [items])
 
   /**
-   * Export selected or all businesses using virtualized export
+   * Export selected or all businesses using virtualized export with performance tracking
    */
   const handleExport = useCallback(async () => {
     try {
+      performanceStartTime.current = performance.now()
+
       // Start virtualized export
       const exportOptions = {
         format: 'csv' as const,
@@ -266,6 +379,11 @@ export function VirtualizedResultsTable({
       }
 
       const result = await response.json()
+
+      // Record export performance
+      recordPerformanceMetric('export', {
+        scrollVelocity: 0
+      })
 
       if (result.success) {
         toast.success(`Export started! Estimated completion: ${result.estimatedDuration}s`)
@@ -493,6 +611,17 @@ export function VirtualizedResultsTable({
         <div className="flex items-center justify-between">
           <CardTitle>Business Results ({totalCount.toLocaleString()})</CardTitle>
           <div className="flex items-center gap-2">
+            {process.env.NODE_ENV === 'development' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPerformancePanel(!showPerformancePanel)}
+                icon={Monitor}
+                className={showPerformancePanel ? 'bg-blue-100' : ''}
+              >
+                Performance
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -610,6 +739,7 @@ export function VirtualizedResultsTable({
                     itemCount={itemCount}
                     itemSize={ROW_HEIGHT}
                     onItemsRendered={onItemsRendered}
+                    onScroll={handleScroll}
                   >
                     {Row}
                   </List>
@@ -624,6 +754,146 @@ export function VirtualizedResultsTable({
           <div className="flex items-center justify-center p-4 border-t">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             <span className="ml-2 text-sm text-muted-foreground">Loading more results...</span>
+          </div>
+        )}
+
+        {/* Performance Monitoring Panel */}
+        {showPerformancePanel && performanceMetrics.length > 0 && (
+          <div className="border-t bg-gray-50 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-medium text-sm flex items-center gap-2">
+                <Activity className="w-4 h-4" />
+                Performance Metrics
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPerformanceMetrics([])}
+                className="text-xs"
+              >
+                Clear
+              </Button>
+            </div>
+
+            {(() => {
+              const latest = performanceMetrics[performanceMetrics.length - 1]
+              const avgRenderTime = performanceMetrics.reduce((sum, m) => sum + m.renderTime, 0) / performanceMetrics.length
+              const maxRenderTime = Math.max(...performanceMetrics.map(m => m.renderTime))
+
+              return (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-xs">
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Latest Render</div>
+                    <div className={clsx(
+                      "font-mono",
+                      latest.renderTime > 16.67 ? "text-red-600" : latest.renderTime > 8 ? "text-yellow-600" : "text-green-600"
+                    )}>
+                      {latest.renderTime.toFixed(2)}ms
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Avg Render</div>
+                    <div className={clsx(
+                      "font-mono",
+                      avgRenderTime > 16.67 ? "text-red-600" : avgRenderTime > 8 ? "text-yellow-600" : "text-green-600"
+                    )}>
+                      {avgRenderTime.toFixed(2)}ms
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Max Render</div>
+                    <div className={clsx(
+                      "font-mono",
+                      maxRenderTime > 16.67 ? "text-red-600" : maxRenderTime > 8 ? "text-yellow-600" : "text-green-600"
+                    )}>
+                      {maxRenderTime.toFixed(2)}ms
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Memory Usage</div>
+                    <div className="font-mono text-blue-600">
+                      {latest.memoryUsage ? `${Math.round(latest.memoryUsage / 1024 / 1024)}MB` : 'N/A'}
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Scroll Velocity</div>
+                    <div className="font-mono text-purple-600">
+                      {scrollMetrics.velocity.toFixed(1)}px/ms
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Frame Rate</div>
+                    <div className={clsx(
+                      "font-mono",
+                      (latest.frameRate || 0) < 30 ? "text-red-600" : (latest.frameRate || 0) < 50 ? "text-yellow-600" : "text-green-600"
+                    )}>
+                      {latest.frameRate || 0} fps
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Total Items</div>
+                    <div className="font-mono text-gray-800">
+                      {latest.totalItemsCount.toLocaleString()}
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Visible Items</div>
+                    <div className="font-mono text-gray-800">
+                      {latest.visibleItemsCount}
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Scroll Position</div>
+                    <div className="font-mono text-gray-800">
+                      {scrollPosition.toFixed(0)}px
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Scroll Direction</div>
+                    <div className={clsx(
+                      "font-mono",
+                      scrollMetrics.direction === 'down' ? "text-blue-600" :
+                      scrollMetrics.direction === 'up' ? "text-green-600" : "text-gray-600"
+                    )}>
+                      {scrollMetrics.direction}
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Metrics Count</div>
+                    <div className="font-mono text-gray-800">
+                      {performanceMetrics.length}
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-2 rounded border">
+                    <div className="font-medium text-gray-600">Performance Score</div>
+                    <div className={clsx(
+                      "font-mono font-bold",
+                      avgRenderTime < 8 && (latest.frameRate || 0) > 50 ? "text-green-600" :
+                      avgRenderTime < 16.67 && (latest.frameRate || 0) > 30 ? "text-yellow-600" : "text-red-600"
+                    )}>
+                      {avgRenderTime < 8 && (latest.frameRate || 0) > 50 ? "Excellent" :
+                       avgRenderTime < 16.67 && (latest.frameRate || 0) > 30 ? "Good" : "Poor"}
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
+
+            <div className="mt-3 text-xs text-gray-500">
+              Performance monitoring is enabled in development mode.
+              Green = Good (&lt;8ms), Yellow = Acceptable (&lt;16.67ms), Red = Slow (&gt;16.67ms)
+            </div>
           </div>
         )}
       </CardContent>

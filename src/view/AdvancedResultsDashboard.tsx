@@ -34,6 +34,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/C
 import { Button } from '@/view/components/ui/Button'
 import { Input } from '@/view/components/ui/Input'
 import { VirtualizedResultsTable } from '@/view/components/VirtualizedResultsTable'
+import { StreamingResultsDisplay } from '@/view/components/StreamingResultsDisplay'
 import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
 
@@ -76,10 +77,11 @@ export function AdvancedResultsDashboard() {
   const [businesses, setBusinesses] = useState<BusinessRecord[]>([])
   const [filteredBusinesses, setFilteredBusinesses] = useState<BusinessRecord[]>([])
   const [selectedBusinesses, setSelectedBusinesses] = useState<Set<string>>(new Set())
-  const [viewMode, setViewMode] = useState<'table' | 'grid' | 'map'>('table')
+  const [viewMode, setViewMode] = useState<'table' | 'grid' | 'map' | 'streaming'>('table')
   const [useVirtualScrolling, setUseVirtualScrolling] = useState(true)
   const [showVisualization, setShowVisualization] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [streamingStatus, setStreamingStatus] = useState<string>('idle')
   
   // Advanced filtering and search
   const [searchQuery, setSearchQuery] = useState('')
@@ -528,6 +530,7 @@ export function AdvancedResultsDashboard() {
               variant={viewMode === 'table' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('table')}
+              title="Table View"
             >
               <List className="h-4 w-4" />
             </Button>
@@ -535,6 +538,7 @@ export function AdvancedResultsDashboard() {
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('grid')}
+              title="Grid View"
             >
               <Grid className="h-4 w-4" />
             </Button>
@@ -542,8 +546,18 @@ export function AdvancedResultsDashboard() {
               variant={viewMode === 'map' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('map')}
+              title="Map View"
             >
               <Map className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'streaming' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('streaming')}
+              title="Real-time Streaming View"
+              className={streamingStatus === 'streaming' ? 'animate-pulse' : ''}
+            >
+              <Activity className="h-4 w-4" />
             </Button>
           </div>
 
@@ -671,13 +685,28 @@ export function AdvancedResultsDashboard() {
           onToggleSelection={toggleBusinessSelection}
           annotations={annotations}
         />
-      ) : (
+      ) : viewMode === 'map' ? (
         <ResultsMap
           businesses={paginatedBusinesses}
           selectedBusinesses={selectedBusinesses}
           onToggleSelection={toggleBusinessSelection}
         />
-      )}
+      ) : viewMode === 'streaming' ? (
+        <StreamingResultsDisplay
+          searchParams={{
+            query: searchQuery || 'business',
+            location: 'United States',
+            industry: '',
+            maxResults: 1000
+          }}
+          onResultsUpdate={(streamingResults) => {
+            setBusinesses(streamingResults)
+            setFilteredBusinesses(streamingResults)
+          }}
+          onStatusChange={setStreamingStatus}
+          autoStart={false}
+        />
+      ) : null}
 
       {/* Pagination */}
       {totalPages > 1 && (
