@@ -5,6 +5,18 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.11.1] - 2025-08-26
+
+### Fixed
+- **CategorySelector Component Tests**: Fixed 7 failing tests, achieving 100% test success rate (18/18 passing)
+  - Resolved multiple "Select All" button detection issues
+  - Updated tests to work with enhanced sub-category structure
+  - Improved test selectors and element targeting
+  - Fixed async operation handling and user event setup
+  - Enhanced test robustness and error handling
+  - Files affected: `src/__tests__/view/components/CategorySelector.test.tsx`
+  - GitHub Issue: #27 (resolved)
+
 ## [3.11.0] - 2025-08-26
 
 ### Added
