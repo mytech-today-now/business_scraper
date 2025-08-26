@@ -5,6 +5,41 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.12.0] - 2025-08-26
+
+### Added
+- **Comprehensive Test Infrastructure Enhancement**
+  - Advanced TestLogger utility with metadata and error categorization
+  - TestCoverageChecker for automated coverage validation and reporting
+  - useAutoRetry hook with exponential backoff and circuit breaker patterns
+  - Enhanced Jest configuration with 95% coverage thresholds
+  - Comprehensive test utilities and infrastructure improvements
+
+### Enhanced
+- **Test Suite Reliability and Coverage**
+  - Enhanced integration and system test coverage across all components
+  - Improved performance and load testing with detailed metrics
+  - Enhanced API test coverage with comprehensive validation
+  - Better test isolation and parallel execution support
+  - Comprehensive mock implementations for external dependencies
+
+### Fixed
+- **CategorySelector Component Tests**: Fixed 7 failing tests, achieving 100% test success rate (18/18 passing)
+  - Resolved multiple "Select All" button detection issues
+  - Updated tests to work with enhanced sub-category structure
+  - Improved test selectors and element targeting
+  - Fixed async operation handling and user event setup
+  - Enhanced test robustness and error handling
+  - Files affected: `src/__tests__/view/components/CategorySelector.test.tsx`
+  - GitHub Issue: #27 (resolved)
+- **IndustryModal Component**: Minor improvements for better reliability and user experience
+
+### Documentation
+- **Comprehensive Test Documentation**: Added detailed test execution logs and reports
+  - Complete audit trail of test enhancement process from 61.1% to 100% success rate
+  - Performance metrics and timing data for all test runs
+  - Quality assurance validation and compliance documentation
+
 ## [3.11.1] - 2025-08-26
 
 ### Fixed
