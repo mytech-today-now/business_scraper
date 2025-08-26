@@ -7,6 +7,7 @@ import autoTable from 'jspdf-autotable'
 import { BusinessRecord } from '@/types/business'
 import { formatBusinessForExport, formatCsvCell } from './formatters'
 import { logger } from './logger'
+import { CRMTemplate, crmExportService } from './crm'
 import { prioritizedDataProcessor, PrioritizedBusinessRecord } from '@/lib/prioritizedDataProcessor'
 import { prioritizedExportFormatter } from './prioritizedExportFormatter'
 
@@ -221,6 +222,10 @@ export class ExportService {
     format: ExportFormat,
     options: ExportOptions = {}
   ): Promise<{ blob: Blob; filename: string }> {
+    // Check if this is a CRM template export
+    if (options.template && 'platform' in options.template) {
+      return this.exportWithCRMTemplate(businesses, options.template as CRMTemplate, options)
+    }
     // Filter businesses if selectedBusinesses is provided
     let businessesToExport = businesses
     if (options.selectedBusinesses) {
@@ -1046,6 +1051,58 @@ export class ExportService {
   private escapeSql(str: string): string {
     if (!str) return ''
     return str.replace(/'/g, "''")
+  }
+
+  /**
+   * Export businesses using CRM template
+   * @param businesses - Array of business records
+   * @param template - CRM template
+   * @param options - Export options
+   * @returns Promise resolving to download blob and filename
+   */
+  private async exportWithCRMTemplate(
+    businesses: BusinessRecord[],
+    template: CRMTemplate,
+    options: ExportOptions
+  ): Promise<{ blob: Blob; filename: string }> {
+    logger.info('ExportService', `Exporting ${businesses.length} businesses using CRM template: ${template.name}`)
+
+    try {
+      const crmOptions = {
+        template,
+        includeHeaders: options.includeHeaders,
+        dateFormat: options.dateFormat,
+        validateData: true,
+        skipInvalidRecords: true,
+        metadata: {
+          exportedBy: 'Business Scraper',
+          exportPurpose: 'CRM Import',
+          notes: `Exported using ${template.name} template`
+        }
+      }
+
+      const result = await crmExportService.exportWithCRMTemplate(
+        businesses,
+        template,
+        crmOptions
+      )
+
+      logger.info('ExportService', 'CRM export completed', {
+        totalRecords: result.statistics.totalRecords,
+        exportedRecords: result.statistics.exportedRecords,
+        skippedRecords: result.statistics.skippedRecords,
+        processingTime: result.statistics.processingTime
+      })
+
+      return {
+        blob: result.blob,
+        filename: result.filename
+      }
+
+    } catch (error) {
+      logger.error('ExportService', 'CRM export failed', error)
+      throw new Error(`CRM export failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 }
 
