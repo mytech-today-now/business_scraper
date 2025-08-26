@@ -1,6 +1,6 @@
 # Documentation Maintenance Workflow
 
-![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![Maintenance](https://img.shields.io/badge/maintenance-automated-green.svg)
 
 ## 📋 Overview

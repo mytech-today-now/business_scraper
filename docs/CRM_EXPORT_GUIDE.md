@@ -1,6 +1,6 @@
 # CRM Export Templates Guide
 
-![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![Feature](https://img.shields.io/badge/feature-CRM%20Export-green.svg)
 
 ## 📋 Overview

@@ -1,12 +1,12 @@
 # Documentation Validation Report
 
-Generated: 2025-08-26T02:08:03.772Z
-Version: 3.7.0
+Generated: 2025-08-26T19:50:53.747Z
+Version: 3.10.1
 
 ## Summary
 
-- **Errors**: 31
-- **Warnings**: 99
+- **Errors**: 30
+- **Warnings**: 82
 - **Status**: ❌ FAILED
 
 ## Errors
@@ -36,7 +36,6 @@ Version: 3.7.0
 - ❌ README.md: Broken link "API Documentation" -> API_DOCUMENTATION.md
 - ❌ README.md: Broken link "SECURITY_SENSITIVE_FILES.md" -> SECURITY_SENSITIVE_FILES.md
 - ❌ README.md: Broken link "REAL_SCRAPING_GUIDE.example.md" -> REAL_SCRAPING_GUIDE.example.md
-- ❌ docs\API_DOCUMENTATION.md: Invalid JSON in code block: Expected property name or '}' in JSON at position 33 (line 3 column 13)
 - ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 94 (line 4 column 30)
 - ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 89 (line 4 column 30)
 - ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 124 (line 5 column 37)
@@ -97,35 +96,22 @@ Version: 3.7.0
 - ⚠️ public\docs\README.md: No H1 title found
 - ⚠️ public\docs\README.md: Contains trailing whitespace
 - ⚠️ README.md: Multiple H1 titles found (49)
-- ⚠️ README.md:826: Heading level skipped (H1 to H3)
-- ⚠️ README.md:995: Heading level skipped (H1 to H4)
-- ⚠️ README.md:1002: Heading level skipped (H1 to H3)
-- ⚠️ README.md:1029: Heading level skipped (H1 to H4)
-- ⚠️ README.md:1037: Heading level skipped (H1 to H4)
-- ⚠️ README.md:1049: Heading level skipped (H1 to H4)
-- ⚠️ README.md:1065: Heading level skipped (H1 to H3)
-- ⚠️ README.md:1088: Heading level skipped (H1 to H4)
-- ⚠️ README.md:1104: Heading level skipped (H1 to H4)
+- ⚠️ README.md:886: Heading level skipped (H1 to H3)
+- ⚠️ README.md:1055: Heading level skipped (H1 to H4)
+- ⚠️ README.md:1062: Heading level skipped (H1 to H3)
+- ⚠️ README.md:1089: Heading level skipped (H1 to H4)
+- ⚠️ README.md:1097: Heading level skipped (H1 to H4)
+- ⚠️ README.md:1109: Heading level skipped (H1 to H4)
 - ⚠️ README.md:1125: Heading level skipped (H1 to H3)
+- ⚠️ README.md:1148: Heading level skipped (H1 to H4)
+- ⚠️ README.md:1164: Heading level skipped (H1 to H4)
+- ⚠️ README.md:1185: Heading level skipped (H1 to H3)
 - ⚠️ README.md: Contains trailing whitespace
 - ⚠️ SECURITY.md: Multiple H1 titles found (11)
 - ⚠️ SECURITY.md:40: Heading level skipped (H1 to H4)
 - ⚠️ SECURITY.md:150: Heading level skipped (H1 to H3)
 - ⚠️ SECURITY.md:244: Heading level skipped (H1 to H3)
 - ⚠️ test-results-summary.md: Contains trailing whitespace
-- ⚠️ docs\API_DOCUMENTATION.md: Code block without language specification
-- ⚠️ docs\API_DOCUMENTATION.md: Code block without language specification
-- ⚠️ docs\CONTRIBUTING_DOCUMENTATION.md: Code block without language specification
-- ⚠️ docs\CONTRIBUTING_DOCUMENTATION.md: Code block without language specification
-- ⚠️ docs\CONTRIBUTING_DOCUMENTATION.md: Code block without language specification
-- ⚠️ docs\CRM_EXPORT_GUIDE.md: Code block without language specification
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Code block without language specification
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Code block without language specification
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Code block without language specification
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Code block without language specification
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Empty code block
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Code block without language specification
-- ⚠️ docs\DOCUMENTATION_STANDARDS.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
@@ -135,10 +121,6 @@ Version: 3.7.0
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
-- ⚠️ docs\TROUBLESHOOTING.md: Code block without language specification
-- ⚠️ docs\TROUBLESHOOTING.md: Code block without language specification
-- ⚠️ docs\TROUBLESHOOTING.md: Code block without language specification
-- ⚠️ docs\TROUBLESHOOTING.md: Code block without language specification
 - ⚠️ DOMAIN_BLACKLIST_PERSISTENCE_SOLUTION.md: Code block without language specification
 - ⚠️ SECURITY.md: Code block without language specification
 - ⚠️ test-results-summary.md: Code block without language specification

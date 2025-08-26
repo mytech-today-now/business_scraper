@@ -94,7 +94,7 @@ interface BusinessRecord {
 > ❌ **Error**: Error or problem description
 
 ### Version Information
-- Include version badges: ![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
+- Include version badges: ![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 - Reference specific versions when documenting features
 - Maintain version compatibility information
 

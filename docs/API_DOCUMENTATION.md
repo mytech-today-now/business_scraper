@@ -1,6 +1,6 @@
 # API Documentation
 
-![Version](https://img.shields.io/badge/version-3.7.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![API](https://img.shields.io/badge/API-REST-blue.svg)
 ![Last Updated](https://img.shields.io/badge/updated-2025--08--25-green.svg)
 

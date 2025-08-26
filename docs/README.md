@@ -1,6 +1,6 @@
 # 📚 Business Scraper Documentation Hub
 
-![Version](https://img.shields.io/badge/version-3.7.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![Documentation](https://img.shields.io/badge/docs-comprehensive-green.svg)
 ![Last Updated](https://img.shields.io/badge/updated-2025--08--25-blue.svg)
 

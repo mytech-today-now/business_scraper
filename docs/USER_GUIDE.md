@@ -1,6 +1,6 @@
 # User Guide
 
-![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![User Guide](https://img.shields.io/badge/guide-comprehensive-green.svg)
 
 ## 📋 Overview

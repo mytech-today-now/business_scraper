@@ -5,6 +5,34 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.10.1] - 2025-08-26
+
+### 🔧 Documentation Quality Fix - Version Consistency Resolution
+
+#### 🐛 Bug Fixes
+- **Documentation Quality Check Workflow**: Fixed failing GitHub Actions workflow due to version mismatches
+  - **Root Cause**: Version badges in documentation files were outdated (3.6.0, 3.7.0) while current version is 3.10.1
+  - **Files Updated**: Updated version badges in 7 documentation files to maintain consistency
+    - `docs/README.md`: 3.7.0 → 3.10.1
+    - `docs/API_DOCUMENTATION.md`: 3.7.0 → 3.10.1
+    - `docs/CRM_EXPORT_GUIDE.md`: 3.6.0 → 3.10.1
+    - `docs/DOCUMENTATION_MAINTENANCE.md`: 3.6.0 → 3.10.1
+    - `docs/DOCUMENTATION_STANDARDS.md`: 3.6.0 → 3.10.1
+    - `docs/TROUBLESHOOTING.md`: 3.6.0 → 3.10.1
+    - `docs/USER_GUIDE.md`: 3.6.0 → 3.10.1
+  - **Workflow Status**: Documentation Quality Check workflow now passes version consistency validation
+  - **GitHub Issue**: Created and resolved issue #21 documenting the problem and solution
+
+#### 📚 Documentation Improvements
+- **Version Synchronization**: All documentation files now reference the correct current version (3.10.1)
+- **CI/CD Pipeline Integrity**: Restored automated documentation quality checks
+- **Version Badge Consistency**: Unified version display across all documentation files
+
+#### 🧪 Testing & Validation
+- **Local Validation**: Confirmed version consistency checks pass locally using `scripts/validate-docs.js`
+- **GitHub Actions**: Documentation Quality Check workflow ready for successful execution
+- **Version Verification**: Validated VERSION file, package.json, and all documentation files are synchronized
+
 ## [3.9.2] - 2025-08-26
 
 ### 🧭 Navigation Enhancement - Breadcrumb Navigation Implementation

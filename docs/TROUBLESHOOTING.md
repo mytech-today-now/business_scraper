@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 ![Support](https://img.shields.io/badge/support-comprehensive-green.svg)
 
 ## 📋 Overview
