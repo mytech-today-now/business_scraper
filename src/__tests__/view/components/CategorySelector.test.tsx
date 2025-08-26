@@ -1,7 +1,7 @@
 import React from 'react'
 import { screen, waitFor } from '@testing-library/react'
 import { CategorySelector } from '@/view/components/CategorySelector'
-import { DEFAULT_INDUSTRIES } from '@/lib/industry-config'
+import { DEFAULT_INDUSTRIES, DEFAULT_SUB_CATEGORIES } from '@/lib/industry-config'
 import {
   renderWithProvider,
   setupUserEvent,
@@ -19,8 +19,12 @@ jest.mock('@/model/storage', () => ({
   storage: {
     initialize: jest.fn(),
     getAllIndustries: jest.fn().mockResolvedValue([]),
+    getAllSubCategories: jest.fn().mockResolvedValue([]),
     saveIndustry: jest.fn(),
+    saveSubCategory: jest.fn(),
     deleteIndustry: jest.fn(),
+    deleteSubCategory: jest.fn(),
+    clearSubCategories: jest.fn(),
     getConfig: jest.fn().mockResolvedValue(null),
     saveConfig: jest.fn(),
   },
