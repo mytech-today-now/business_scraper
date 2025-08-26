@@ -1,39 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Scraper Documentation</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>📚 Business Scraper Documentation Hub</h1>
-        
-        <div class="alert alert-info">
-            <strong>Welcome!</strong> This comprehensive documentation hub contains detailed guides, API references, and implementation notes for the Business Scraper Application v3.3.0 with Performance Monitoring & Optimization.
-        </div>
+# 📚 Business Scraper Documentation Hub
 
-        <nav class="nav">
-            <ul>
-                <li><a href="#api-docs">API Documentation</a></li>
-                <li><a href="#setup-config">Setup & Configuration</a></li>
-                <li><a href="#feature-guides">Feature Guides</a></li>
-                <li><a href="#ai-features">AI Features</a></li>
-                <li><a href="#technical-guides">Technical Guides</a></li>
-                <li><a href="#security">Security</a></li>
-                <li><a href="#development">Development</a></li>
-            </ul>
-        </nav>
+![Version](https://img.shields.io/badge/version-3.7.0-blue.svg)
+![Documentation](https://img.shields.io/badge/docs-comprehensive-green.svg)
+![Last Updated](https://img.shields.io/badge/updated-2025--08--25-blue.svg)
 
-        <section id="overview">
-            <h2>🎯 Overview</h2>
-            <p>The Business Scraper Application is a comprehensive full-stack solution built with Next.js, React, TypeScript, and Puppeteer. Version 1.10.0 introduces advanced AI capabilities including intelligent lead scoring, predictive analytics, and automated business intelligence.</p>
+> **Welcome!** This comprehensive documentation hub contains detailed guides, API references, and implementation notes for the Business Scraper Application v3.7.0 with Documentation Accuracy & Maintenance, CRM Export Templates, Performance Monitoring & Optimization, and 95%+ Testing Coverage.
 
-            <div class="alert alert-success">
-                <strong>Latest Update (v3.3.0):</strong> Performance Monitoring & Optimization with Prometheus metrics, Grafana dashboards, database optimization, and intelligent caching strategies.
-            </div>
-        </section>
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Latest Features](#latest-features)
+- [API Documentation](#api-documentation)
+- [Setup & Configuration](#setup--configuration)
+- [Feature Guides](#feature-guides)
+- [CRM Export Templates](#crm-export-templates)
+- [AI Features](#ai-features)
+- [Technical Guides](#technical-guides)
+- [Security Documentation](#security-documentation)
+- [Development Documentation](#development-documentation)
+- [Getting Started](#getting-started)
+
+## 🎯 Overview
+
+The Business Scraper Application is a comprehensive full-stack solution built with Next.js, React, TypeScript, and Puppeteer. The application provides intelligent business discovery, multi-strategy search engines, industry expansion capabilities, and advanced CRM integration features.
+
+## 🆕 Latest Features
+
+### **v3.7.0 - Documentation Accuracy & Maintenance Enhancement**
+> 📚 **Documentation Excellence**: Comprehensive documentation accuracy and maintenance system with automated validation, quality assurance, and continuous maintenance practices. Ensures documentation remains accurate, consistent, and up-to-date as a "living artifact."
+
+### **v3.6.0 - CRM Export Templates Enhancement**
+> 🔗 **CRM Integration Revolution**: Comprehensive CRM export templates with platform-specific support for Salesforce, HubSpot, and Pipedrive. Includes intelligent field mapping, data transformation engine, real-time validation, and template management system.
+
+### **v3.5.0 - 95%+ Testing Coverage Achievement**
+> 🧪 **Enterprise-Grade Testing**: Achieved 95%+ test coverage across all 12 testing categories with comprehensive unit testing, integration testing, and automated quality gates.
+
+### **v3.4.0 - Performance Monitoring & Optimization**
+> 📊 **Performance Excellence**: Prometheus metrics, Grafana dashboards, database optimization, and intelligent caching strategies for optimal application performance.
 
         <section id="intended-use">
             <h2>💼 Intended Use & Applications</h2>
@@ -75,22 +78,33 @@
             </div>
         </section>
 
-        <section id="ai-features">
-            <h2>🤖 AI Features Documentation</h2>
-            <div class="file-list">
-                <div class="file-item">
-                    <div class="file-title">
-                        <a href="AI_FEATURES.html" target="_blank">AI_FEATURES.html</a>
-                    </div>
-                    <div class="file-category">
-                        <span class="badge badge-primary">New</span>
-                    </div>
-                    <div class="file-description">
-                        Comprehensive documentation for all AI and machine learning features including intelligent lead scoring, predictive analytics, website quality analysis, business maturity indicators, and background automation. Contains API references, configuration guides, and troubleshooting information.
-                    </div>
-                </div>
-            </div>
-        </section>
+## 🔗 CRM Export Templates
+
+### **Platform-Specific Templates**
+- **[Salesforce Integration](CRM_SALESFORCE_GUIDE.md)**: Lead and Account/Contact templates with picklist values and field transformations
+- **[HubSpot Integration](CRM_HUBSPOT_GUIDE.md)**: Contact and Company templates with lifecycle stages and custom properties
+- **[Pipedrive Integration](CRM_PIPEDRIVE_GUIDE.md)**: Organization/Person and Deals templates with currency normalization
+
+### **Core Features**
+- **Field Mapping Engine**: Intelligent mapping between business data and CRM-specific requirements
+- **Data Transformation**: Built-in transformers for phone, email, currency, and date formatting
+- **Template Management**: Create, modify, and share custom export templates
+- **Real-Time Validation**: Pre-export validation with error and warning reporting
+- **Progress Tracking**: Real-time progress updates for large dataset exports
+
+### **Documentation Files**
+- **[CRM_EXPORT_GUIDE.md](CRM_EXPORT_GUIDE.md)**: Complete guide to CRM export functionality
+- **[CRM_TEMPLATE_CREATION.md](CRM_TEMPLATE_CREATION.md)**: How to create and customize export templates
+- **[CRM_TROUBLESHOOTING.md](CRM_TROUBLESHOOTING.md)**: Common issues and solutions
+
+## 🤖 AI Features
+
+### **Core AI Capabilities**
+- **[AI_FEATURES.html](AI_FEATURES.html)**: Comprehensive AI and machine learning features documentation
+  - Intelligent lead scoring and predictive analytics
+  - Website quality analysis and business maturity indicators
+  - Background automation and intelligent data processing
+  - API references, configuration guides, and troubleshooting
 
         <section id="api-docs">
             <h2>🔌 API Documentation</h2>
