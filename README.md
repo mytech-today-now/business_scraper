@@ -1,15 +1,45 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-3.5.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.6.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
 
 A comprehensive full-stack business web scraping application built with Next.js, React, TypeScript, and Puppeteer. This application enables intelligent business discovery and contact information extraction through **Intelligent Search Engine Management**, **Enhanced Error Handling**, **Multi-User Collaboration**, **Role-Based Access Control**, **Team Workspaces**, **Memory Management Optimization**, **Real-Time Result Streaming**, **advanced individual keyword search strategies**, **Smart Performance Mode Auto-Detection**, and **comprehensive business intelligence**.
 
-## 🆕 **Latest Update (v3.5.0)** - 95%+ Comprehensive Testing Coverage Achievement
+## 🆕 **Latest Update (v3.6.0)** - 🔗 CRM Export Templates Enhancement
 
-**🧪 95%+ Enterprise-Grade Testing Infrastructure**: Achieved comprehensive testing coverage and quality assurance system with 95%+ test coverage across all 12 testing categories. This major enhancement includes comprehensive unit testing, advanced integration testing, complete system testing, regression validation, user acceptance testing, browser compatibility testing, and exploratory edge case discovery with automated quality gates and continuous monitoring for optimal application reliability and security.
+**🚀 CRM Integration Revolution**: Implemented comprehensive CRM export templates with platform-specific support for Salesforce, HubSpot, and Pipedrive. This major enhancement includes intelligent field mapping, data transformation engine, real-time validation, template management system, and seamless integration with existing export functionality. Simplifies CRM data imports with ready-to-use templates, reduces manual cleanup, and increases adoption across major CRM ecosystems.
+
+### 🔗 **CRM Export Templates Features**
+
+#### 🎯 **Platform-Specific Templates**
+- **Salesforce Integration**: Lead and Account/Contact templates with picklist values, record types, and owner ID handling
+- **HubSpot Integration**: Contact and Company/Contact templates with lifecycle stages and custom properties
+- **Pipedrive Integration**: Organization/Person and Deals templates with currency normalization and pipeline stages
+- **Field Mapping Rules**: Intelligent mapping between business data and CRM-specific field requirements
+- **Built-in Transformations**: Automatic data formatting for phone numbers, emails, dates, and currency values
+
+#### 🔧 **Advanced Transformation Engine**
+- **Dynamic Field Mapping**: Support for dot notation field paths and nested data structures
+- **Comprehensive Validation**: Type checking, length validation, pattern matching, and custom validation rules
+- **Error Handling**: Graceful degradation with detailed error reporting and warning systems
+- **Batch Processing**: Efficient processing of large datasets with performance metrics and progress tracking
+- **Custom Transformers**: Extensible transformation system with built-in and user-defined transformers
+
+#### 🎨 **Template Management System**
+- **Built-in Templates**: Ready-to-use templates for common CRM use cases and workflows
+- **Custom Template Creation**: User-friendly interface for creating and modifying export templates
+- **Template Cloning**: Easy duplication and customization of existing templates
+- **Import/Export**: JSON-based template configuration sharing and backup
+- **Validation System**: Comprehensive template validation with detailed error reporting
+
+#### 🚀 **Enhanced User Experience**
+- **Real-Time Preview**: Live preview of transformed data with sample records
+- **Validation Checks**: Pre-export validation with error and warning reporting
+- **Progress Tracking**: Real-time progress updates for large dataset exports
+- **Platform Selection**: Intuitive CRM platform selection with template recommendations
+- **Seamless Integration**: Integrated into existing export workflow with one-click access
 
 ### 🧪 **Testing Coverage & Quality Assurance Features**
 
