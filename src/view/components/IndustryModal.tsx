@@ -6,6 +6,7 @@ import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { IndustryCategory } from '@/types/business'
 import { useConfig } from '@/controller/ConfigContext'
+import { useResponsive } from '@/hooks/useResponsive'
 import toast from 'react-hot-toast'
 
 interface IndustryModalProps {
@@ -16,6 +17,7 @@ interface IndustryModalProps {
 
 export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps): JSX.Element {
   const { addCustomIndustry, updateIndustry } = useConfig()
+  const { isMobile, isTouchDevice } = useResponsive()
   const [name, setName] = useState('')
   const [keywordsText, setKeywordsText] = useState('')
   const [isSaving, setIsSaving] = useState(false)
@@ -139,9 +141,17 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+      <div className={clsx(
+        'bg-white dark:bg-gray-800 shadow-xl w-full overflow-hidden',
+        isMobile
+          ? 'fixed inset-0 rounded-none max-h-screen-safe'
+          : 'rounded-lg max-w-2xl max-h-[90vh]'
+      )}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className={clsx(
+          'flex items-center justify-between border-b border-gray-200 dark:border-gray-700',
+          isMobile ? 'p-4 pt-safe-top' : 'p-6'
+        )}>
           <div className="flex items-center space-x-2">
             {isEditing ? (
               <Edit3 className="h-5 w-5 text-blue-600" />
@@ -164,9 +174,12 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
             variant="ghost"
             size="icon"
             onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className={clsx(
+              'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300',
+              isMobile && 'min-h-touch min-w-touch'
+            )}
           >
-            <X className="h-5 w-5" />
+            <X className={isMobile ? "h-6 w-6" : "h-5 w-5"} />
           </Button>
         </div>
 

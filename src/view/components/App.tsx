@@ -25,6 +25,7 @@ import { ResultsTable } from './ResultsTable'
 import { VirtualizedResultsTable } from './VirtualizedResultsTable'
 import { ProcessingWindow } from './ProcessingWindow'
 import { ApiConfigurationPage } from './ApiConfigurationPage'
+import { MobileNavigation } from './MobileNavigation'
 import { AIInsightsPanel } from './AIInsightsPanel'
 import { MemoryDashboard } from './MemoryDashboard'
 import { Button } from './ui/Button'
@@ -38,6 +39,7 @@ import { clsx } from 'clsx'
 import { clientScraperService } from '@/model/clientScraperService'
 import { ErrorBoundary } from '../../components/ErrorBoundary'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
+import { useResponsive } from '@/hooks/useResponsive'
 import ResetDataDialog from './ui/ResetDataDialog'
 import { DataResetResult } from '@/utils/dataReset'
 import toast from 'react-hot-toast'
@@ -763,8 +765,9 @@ function BreadcrumbNavigation({ activeTab, hasResults, onNavigate }: BreadcrumbN
  * Orchestrates the entire application interface
  */
 export function App(): JSX.Element {
-  const { state, resetApplicationData } = useConfig()
+  const { state, resetApplicationData, toggleDarkMode } = useConfig()
   const { scrapingState, hasResults } = useScraperController()
+  const { isMobile } = useResponsive()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping' | 'ai-insights'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
@@ -811,123 +814,144 @@ export function App(): JSX.Element {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b bg-card sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="flex items-center gap-2 md:gap-3">
                 <Image
                   src="/favicon.ico"
                   alt="Business Scraper Logo"
-                  width={32}
-                  height={32}
+                  width={isMobile ? 24 : 32}
+                  height={isMobile ? 24 : 32}
                   className="object-contain"
                   priority
-                  sizes="32px"
+                  sizes={isMobile ? "24px" : "32px"}
                   quality={90}
                 />
-                <h1 className="text-2xl font-bold">Business Scraper</h1>
+                <h1 className="text-lg md:text-2xl font-bold truncate">
+                  {isMobile ? "Scraper" : "Business Scraper"}
+                </h1>
               </div>
-              <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-                <Button
-                  variant={activeTab === 'config' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => {
+              {/* Desktop Navigation - Hidden on mobile */}
+              {!isMobile && (
+                <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                  <Button
+                    variant={activeTab === 'config' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => {
+                      if (scrapingState.isScrapingActive) {
+                        toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
+                        return
+                      }
+                      setActiveTab('config')
+                    }}
+                    disabled={scrapingState.isScrapingActive}
+                    title={scrapingState.isScrapingActive
+                      ? 'Configuration cannot be changed while scraping is active. Please stop scraping first.'
+                      : undefined
+                    }
+                    className={clsx(
+                      'min-h-touch',
+                      scrapingState.isScrapingActive && 'opacity-50 cursor-not-allowed'
+                    )}
+                  >
+                    Configuration
+                    {scrapingState.isScrapingActive && (
+                      <span className="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
+                        🔒
+                      </span>
+                    )}
+                  </Button>
+                  <Button
+                    variant={activeTab === 'scraping' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setActiveTab('scraping')}
+                    disabled={state.industriesInEditMode.length > 0}
+                    title={state.industriesInEditMode.length > 0
+                      ? `Please save or cancel edits for: ${state.industriesInEditMode
+                          .map(id => state.industries.find(industry => industry.id === id)?.name)
+                          .filter(Boolean)
+                          .join(', ')}`
+                      : undefined
+                    }
+                    className={clsx(
+                      'min-h-touch',
+                      state.industriesInEditMode.length > 0 && 'opacity-50 cursor-not-allowed'
+                    )}
+                  >
+                    Scraping
+                    {state.industriesInEditMode.length > 0 && (
+                      <span className="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-yellow-500 rounded-full">
+                        !
+                      </span>
+                    )}
+                  </Button>
+                  <Button
+                    variant={activeTab === 'ai-insights' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setActiveTab('ai-insights')}
+                    className="min-h-touch"
+                  >
+                    AI Insights
+                  </Button>
+                  <Button
+                    variant={activeTab === 'memory' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setActiveTab('memory')}
+                    className="min-h-touch"
+                  >
+                    Memory
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowResetDialog(true)}
+                    disabled={scrapingState.isScrapingActive || isResetting}
+                    title={scrapingState.isScrapingActive
+                      ? 'Cannot reset data while scraping is active. Please stop scraping first.'
+                      : 'Reset all application data to start fresh'
+                    }
+                    className={clsx(
+                      'ml-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 min-h-touch',
+                      (scrapingState.isScrapingActive || isResetting) && 'opacity-50 cursor-not-allowed'
+                    )}
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    Reset Data
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 md:gap-4">
+              <MemoryDashboard compact className="hidden lg:flex" />
+
+              {/* Mobile Navigation */}
+              <MobileNavigation
+                activeTab={activeTab as 'config' | 'scraping'}
+                onTabChange={(tab) => {
+                  if (tab === 'config') {
                     if (scrapingState.isScrapingActive) {
                       toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
                       return
                     }
                     setActiveTab('config')
-                  }}
-                  disabled={scrapingState.isScrapingActive}
-                  title={scrapingState.isScrapingActive
-                    ? 'Configuration cannot be changed while scraping is active. Please stop scraping first.'
-                    : undefined
-                  }
-                  className={scrapingState.isScrapingActive ? 'opacity-50 cursor-not-allowed' : ''}
-                >
-                  Configuration
-                  {scrapingState.isScrapingActive && (
-                    <span className="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
-                      🔒
-                    </span>
-                  )}
-                </Button>
-                <Button
-                  variant={activeTab === 'scraping' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setActiveTab('scraping')}
-                  disabled={state.industriesInEditMode.length > 0}
-                  title={state.industriesInEditMode.length > 0
-                    ? `Please save or cancel edits for: ${state.industriesInEditMode
+                  } else if (tab === 'scraping') {
+                    if (state.industriesInEditMode.length > 0) {
+                      toast.error(`Please save or cancel edits for: ${state.industriesInEditMode
                         .map(id => state.industries.find(industry => industry.id === id)?.name)
                         .filter(Boolean)
-                        .join(', ')}`
-                    : undefined
+                        .join(', ')}`)
+                      return
+                    }
+                    setActiveTab('scraping')
                   }
-                  className={state.industriesInEditMode.length > 0 ? 'opacity-50 cursor-not-allowed' : ''}
-                >
-                  Scraping
-                  {state.industriesInEditMode.length > 0 && (
-                    <span className="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-yellow-500 rounded-full">
-                      !
-                    </span>
-                  )}
-                </Button>
-                <Button
-                  variant={activeTab === 'ai-insights' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setActiveTab('ai-insights')}
-                >
-                  AI Insights
-                </Button>
-                <Button
-                  variant={activeTab === 'memory' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setActiveTab('memory')}
-                >
-                  Memory
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowResetDialog(true)}
-                  disabled={scrapingState.isScrapingActive || isResetting}
-                  title={scrapingState.isScrapingActive
-                    ? 'Cannot reset data while scraping is active. Please stop scraping first.'
-                    : 'Reset all application data to start fresh'
-                  }
-                  className={clsx(
-                    'ml-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300',
-                    (scrapingState.isScrapingActive || isResetting) && 'opacity-50 cursor-not-allowed'
-                  )}
-                >
-                  <RotateCcw className="h-4 w-4 mr-1" />
-                  Reset Data
-                </Button>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <MemoryDashboard compact className="hidden md:flex" />
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => window.open('/docs/readme.html', '_blank')}
-                  title="Documentation"
-                >
-                  <FileText className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowApiConfig(true)}
-                  title="API Configuration"
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </div>
+                }}
+                onApiConfigOpen={() => setShowApiConfig(true)}
+                isDarkMode={state.isDarkMode}
+                onToggleDarkMode={toggleDarkMode}
+              />
             </div>
           </div>
         </div>
@@ -962,7 +986,7 @@ export function App(): JSX.Element {
       </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-4 md:py-8 pb-safe-bottom">
         <ErrorBoundary level="section" showDetails={process.env.NODE_ENV === 'development'}>
           {activeTab === 'config' ? (
             <ConfigurationPanel />

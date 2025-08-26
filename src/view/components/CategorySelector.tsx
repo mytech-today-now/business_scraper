@@ -11,6 +11,7 @@ import { IndustryItemEditor } from './IndustryItemEditor'
 import { clsx } from 'clsx'
 import { IndustryCategory, IndustrySubCategory, IndustryGroup } from '@/types/business'
 import { DEFAULT_SUB_CATEGORIES } from '@/lib/industry-config'
+import { useResponsive } from '@/hooks/useResponsive'
 import toast from 'react-hot-toast'
 
 /**
@@ -25,6 +26,7 @@ interface CategorySelectorProps {
  * Allows users to select, add, and remove industry categories
  */
 export function CategorySelector({ disabled = false }: CategorySelectorProps): JSX.Element {
+  const { isMobile, isTouchDevice } = useResponsive()
   const {
     state,
     toggleIndustry,
@@ -638,7 +640,12 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
                 {/* Industries Grid (when expanded) */}
                 {isExpanded && (
                   <div className="p-3 bg-accent/20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                    <div className={clsx(
+                      'grid gap-2',
+                      isMobile
+                        ? 'grid-cols-1'
+                        : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                    )}>
                       {group.industries
                         .slice()
                         .sort((a, b) => a.name.localeCompare(b.name))
@@ -666,46 +673,60 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
               <div
                 key={industry.id}
                 className={clsx(
-                  'relative p-2 border rounded-md transition-all group',
+                  'relative border rounded-md transition-all group',
                   'hover:border-primary/50 hover:bg-accent/50',
                   isSelected && 'border-primary bg-primary/5',
                   !isSelected && 'border-border',
                   !isInlineEditing && !disabled && 'cursor-pointer',
                   isInlineEditing && 'border-primary bg-primary/10',
-                  disabled && 'opacity-50 cursor-not-allowed'
+                  disabled && 'opacity-50 cursor-not-allowed',
+                  // Mobile-first padding with touch-friendly targets
+                  isMobile ? 'p-3 min-h-touch' : 'p-2'
                 )}
                 onClick={() => !isInlineEditing && !disabled && toggleIndustry(industry.id)}
               >
                 {/* Action buttons and Selection Indicator */}
                 {!isInlineEditing && (
-                  <div className="absolute top-2 right-2 flex items-center space-x-1">
+                  <div className={clsx(
+                    'absolute flex items-center',
+                    isMobile ? 'top-3 right-3 space-x-2' : 'top-2 right-2 space-x-1'
+                  )}>
                     {/* Delete button for custom industries */}
                     {industry.isCustom && !disabled && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                        className={clsx(
+                          'text-destructive hover:text-destructive hover:bg-destructive/10 transition-opacity',
+                          isMobile
+                            ? 'h-6 w-6 min-h-touch min-w-touch opacity-100'
+                            : 'h-4 w-4 opacity-0 group-hover:opacity-100'
+                        )}
                         onClick={(e) => {
                           e.stopPropagation()
                           removeIndustry(industry.id)
                         }}
                         title="Delete custom industry"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className={isMobile ? "h-4 w-4" : "h-3 w-3"} />
                       </Button>
                     )}
 
                     {/* Selection checkbox */}
                     <div
                       className={clsx(
-                        'w-4 h-4 rounded border-2 transition-all',
+                        'rounded border-2 transition-all',
+                        isMobile ? 'w-5 h-5' : 'w-4 h-4',
                         isSelected
                           ? 'bg-primary border-primary'
                           : 'border-muted-foreground'
                       )}
                     >
                       {isSelected && (
-                        <Check className="w-3 h-3 text-primary-foreground" />
+                        <Check className={clsx(
+                          'text-primary-foreground',
+                          isMobile ? 'w-4 h-4' : 'w-3 h-3'
+                        )} />
                       )}
                     </div>
                   </div>

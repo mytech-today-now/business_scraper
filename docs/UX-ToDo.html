@@ -112,8 +112,8 @@
 </head>
 <body>
     <header class="header">
-        <h1>🎨 UX/UI ToDo List</h1>
-        <p>Business Scraper Application - Missing UX/UI Features & Improvements</p>
+        <h1>🎨 UX/UI Enhancement Roadmap</h1>
+        <p>Business Scraper Application v3.10.1 - Structured Augment AI Prompts for UX/UI Improvements</p>
         <p><strong>Generated:</strong> <span id="current-date"></span></p>
     </header>
 
@@ -153,8 +153,24 @@
                 <span class="meta-item">Labels: Navigation, UX</span>
             </div>
             <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Create a breadcrumb navigation component for the Business Scraper application. Add a Breadcrumb component in `src/view/components/ui/Breadcrumb.tsx` with TypeScript support. Integrate it into the main App.tsx header section to show the current navigation path (Configuration → Industry Selection, Scraping → Results, etc.). Style it using Tailwind CSS to match the existing design system. Include hover states and click handlers for navigation. Update the routing logic in App.tsx to track and display the current path.</div>
+                <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
+                <div class="prompt-text">PROMPT: "Create a comprehensive breadcrumb navigation system for the Business Scraper application.
+
+Implementation requirements:
+1. Create Breadcrumb component in src/view/components/ui/Breadcrumb.tsx
+2. Add TypeScript interfaces for breadcrumb items and navigation state
+3. Integrate breadcrumb into App.tsx header with current path tracking
+4. Implement navigation history in ConfigContext.tsx
+5. Add breadcrumb styling with Tailwind CSS matching existing design
+6. Include hover states, click handlers, and keyboard navigation
+7. Add ARIA labels for accessibility compliance
+
+Technical specifications:
+- Use React Context for navigation state management
+- Implement breadcrumb item interface with label, path, and active state
+- Add separator styling and responsive behavior for mobile
+- Include unit tests for breadcrumb functionality
+- Ensure WCAG 2.1 AA compliance for screen readers"</div>
             </div>
         </article>
 
@@ -170,8 +186,31 @@
                 <span class="meta-item">Labels: Navigation, UX</span>
             </div>
             <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement back button functionality in the Business Scraper application. Add navigation history tracking to the ConfigContext in `src/controller/ConfigContext.tsx`. Create a BackButton component in `src/view/components/ui/BackButton.tsx` that appears when users can navigate backwards. Integrate the back button into relevant pages (scraping panel, results view) with proper state management. Ensure the back button preserves user data and doesn't cause data loss. Style consistently with the existing button design system.</div>
+                <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
+                <div class="prompt-text">PROMPT: "Implement comprehensive back button functionality with navigation history for the Business Scraper application.
+
+Implementation steps:
+1. Enhance ConfigContext.tsx with navigation history tracking
+2. Create BackButton component in src/view/components/ui/BackButton.tsx
+3. Add navigation state management with history stack
+4. Implement data preservation during navigation
+5. Add back button to relevant pages (scraping panel, results view)
+6. Style consistently with existing button design system
+
+Features to include:
+- Navigation history stack with state preservation
+- Conditional back button visibility based on navigation depth
+- Data loss prevention with confirmation dialogs
+- Keyboard shortcut support (Alt+Left Arrow)
+- Loading states during navigation transitions
+- Accessibility features with proper ARIA labels
+
+Technical requirements:
+- Use React Context for navigation state
+- Implement history stack with maximum depth limit
+- Add TypeScript interfaces for navigation state
+- Include unit tests for navigation functionality
+- Ensure mobile-friendly touch targets"</div>
             </div>
         </article>
     </section>
@@ -193,8 +232,37 @@
                 <span class="meta-item">Labels: Forms, Validation, UX</span>
             </div>
             <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement real-time form validation for the Business Scraper application. Enhance the Input component in `src/view/components/ui/Input.tsx` to support real-time validation with visual feedback (error states, success states, warning states). Create validation hooks in `src/utils/validation.ts` for common patterns (email, URL, required fields). Update ApiConfigurationPage.tsx and IndustryModal.tsx to use real-time validation. Add proper error messaging, field highlighting, and success indicators. Ensure accessibility with ARIA attributes for screen readers.</div>
+                <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
+                <div class="prompt-text">PROMPT: "Implement comprehensive real-time form validation system for the Business Scraper application.
+
+Core validation system:
+1. Enhance Input component in src/view/components/ui/Input.tsx
+2. Create validation hooks in src/utils/validation.ts
+3. Add visual feedback states (error, success, warning, loading)
+4. Implement field-level and form-level validation
+5. Add debounced validation for performance optimization
+
+Validation features:
+- Real-time validation with immediate feedback
+- Custom validation rules and patterns
+- Async validation for API-dependent checks
+- Field dependency validation (conditional fields)
+- Form submission validation with error aggregation
+- Validation state persistence across navigation
+
+Components to update:
+- ApiConfigurationPage.tsx with API key validation
+- IndustryModal.tsx with industry creation validation
+- All form inputs throughout the application
+- Add ValidationMessage component for consistent error display
+
+Technical specifications:
+- Use React Hook Form or similar for form state management
+- Implement Zod schemas for validation rules
+- Add TypeScript interfaces for validation states
+- Include accessibility features (ARIA attributes, screen reader support)
+- Add unit tests for all validation scenarios
+- Ensure mobile-friendly error message display"</div>
             </div>
         </article>
     </section>
@@ -423,20 +491,28 @@
     </section>
 
     <footer style="margin-top: 40px; padding: 20px; background: white; border-radius: 8px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h3>📋 Implementation Guidelines</h3>
+        <h3>📋 Implementation Guidelines for Augment AI in VS Code</h3>
         <p><strong>Priority Order:</strong> Address Critical and High severity issues first, focusing on accessibility and core UX problems.</p>
-        <p><strong>Testing:</strong> Each fix should include corresponding tests and accessibility validation.</p>
+        <p><strong>Augment AI Usage:</strong> Copy the structured prompts directly into Augment AI in VS Code for guided implementation.</p>
+        <p><strong>Testing:</strong> Each fix should include corresponding tests and accessibility validation using @axe-core/playwright.</p>
         <p><strong>Documentation:</strong> Update relevant documentation and style guides after implementing fixes.</p>
         <p><strong>Review Process:</strong> All UX/UI changes require design review and user testing validation.</p>
 
         <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px;">
-            <p><strong>🎯 Success Metrics:</strong></p>
+            <p><strong>🎯 Success Metrics for v3.10.1+:</strong></p>
             <ul style="list-style: none; padding: 0;">
-                <li>✅ WCAG 2.1 AA compliance achieved</li>
-                <li>✅ Mobile usability score > 90</li>
-                <li>✅ Page load performance < 3 seconds</li>
-                <li>✅ User task completion rate > 95%</li>
+                <li>✅ WCAG 2.1 AA compliance achieved (100% accessibility)</li>
+                <li>✅ Mobile usability score > 90 (responsive design)</li>
+                <li>✅ Page load performance < 3 seconds (optimization)</li>
+                <li>✅ User task completion rate > 95% (usability)</li>
+                <li>✅ 85%+ test coverage for all UX components</li>
+                <li>✅ Zero critical UX/UI issues in production</li>
             </ul>
+        </div>
+
+        <div style="margin-top: 15px; padding: 15px; background: #e8f5e8; border-radius: 6px;">
+            <p><strong>🤖 Augment AI Integration Notes:</strong></p>
+            <p>All prompts in this document are optimized for Augment AI in VS Code. Each prompt includes specific file paths, technical requirements, and implementation steps for efficient AI-assisted development.</p>
         </div>
     </footer>
 

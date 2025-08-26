@@ -21,6 +21,8 @@ import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { LeadScoreBadge } from './LeadScoreBadge'
+import { useResponsive } from '@/hooks/useResponsive'
+import { useVirtualScroll } from '@/hooks/useVirtualScroll'
 import {
   formatBusinessName,
   formatAddress,
@@ -116,6 +118,9 @@ export function ResultsTable({
 }: ResultsTableProps): JSX.Element {
   // Performance context
   const { mode, showAdvisoryBanner, showPaginationPrompt } = usePerformance()
+
+  // Responsive hooks
+  const { isMobile, isTablet, isTouchDevice } = useResponsive()
 
   // State management
   const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS)
@@ -826,29 +831,47 @@ export function ResultsTable({
 
         {/* Enhanced Table with Better Organization */}
         <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-900">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[1200px]">
+          <div className={clsx(
+            'overflow-x-auto',
+            isMobile && 'scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
+          )}>
+            <table className={clsx(
+              'w-full',
+              isMobile ? 'min-w-[800px]' : 'min-w-[1200px]'
+            )}>
               <thead className="bg-muted/50 border-b">
                 <tr>
-                  <th className="w-12 p-3 text-left">
+                  <th className={clsx(
+                    'text-left',
+                    isMobile ? 'w-10 p-2' : 'w-12 p-3'
+                  )}>
                     <input
                       type="checkbox"
                       checked={allSelected}
                       onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="rounded"
+                      className={clsx(
+                        'rounded',
+                        isMobile && 'min-h-touch min-w-touch'
+                      )}
                       title="Select all businesses"
                     />
                   </th>
                   {visibleColumns.map(column => (
                     <th
                       key={column.key}
-                      className="text-left p-3 font-medium text-sm border-r border-muted/30 last:border-r-0"
-                      style={{ width: column.width }}
+                      className={clsx(
+                        'text-left font-medium border-r border-muted/30 last:border-r-0',
+                        isMobile ? 'p-2 text-xs' : 'p-3 text-sm'
+                      )}
+                      style={{ width: isMobile ? 'auto' : column.width }}
                     >
                       {column.sortable ? (
                         <button
                           type="button"
-                          className="flex items-center gap-1 hover:text-primary transition-colors"
+                          className={clsx(
+                            'flex items-center gap-1 hover:text-primary transition-colors',
+                            isMobile && 'min-h-touch'
+                          )}
                           onClick={() => handleSort(column.key as keyof BusinessRecord)}
                         >
                           {column.label}
