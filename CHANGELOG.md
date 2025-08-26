@@ -5,6 +5,18 @@ All notable changes to the Business Scraper App will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.1] - 2025-08-26
+
+### Added
+- **MAJOR**: 🎨 Documentation CSS Refactoring & Theming Enhancement
+  - **Consolidated External CSS**: Refactored all documentation HTML files to use a single external stylesheet (/docs/style.css)
+  - **CSS Variables Color Palette**: Implemented structured CSS variables with 3 primary colors, 1 accent color, and comprehensive semantic color system
+  - **Removed Embedded Styles**: Extracted and consolidated all inline <style> blocks and embedded CSS from 56 HTML documentation files
+  - **Consistent Visual Hierarchy**: Standardized typography, layout, and UI elements across all documentation pages
+  - **Enhanced Responsive Design**: Maintained and improved responsive behavior with mobile-first approach
+  - **Print-Friendly Styles**: Optimized print styles using CSS variables for better documentation printing
+  - **Automated Refactoring**: Created and executed automated script to process all HTML files systematically
+
 ## [3.7.0] - 2025-08-25
 
 ### Added
