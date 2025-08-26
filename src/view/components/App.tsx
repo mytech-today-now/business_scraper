@@ -31,6 +31,7 @@ import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { Breadcrumb, useBreadcrumbItems } from './ui/Breadcrumb'
 import { ExportService, ExportFormat, ExportTemplate } from '@/utils/exportService'
 import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
@@ -724,12 +725,46 @@ function ScrapingPanel(): JSX.Element {
 }
 
 /**
+ * Breadcrumb Navigation component
+ * Provides contextual navigation breadcrumbs
+ */
+interface BreadcrumbNavigationProps {
+  activeTab: 'config' | 'scraping' | 'ai-insights'
+  hasResults: boolean
+  onNavigate: (path: string) => void
+}
+
+function BreadcrumbNavigation({ activeTab, hasResults, onNavigate }: BreadcrumbNavigationProps): JSX.Element {
+  // Generate breadcrumb items based on current state
+  const breadcrumbItems = useBreadcrumbItems(
+    activeTab === 'ai-insights' ? 'scraping' : activeTab, // Treat AI insights as part of scraping flow
+    hasResults
+  )
+
+  const handleBreadcrumbClick = (item: any, index: number) => {
+    if (item.path && item.clickable !== false) {
+      onNavigate(item.path)
+    }
+  }
+
+  return (
+    <Breadcrumb
+      items={breadcrumbItems}
+      onItemClick={handleBreadcrumbClick}
+      showHomeIcon={true}
+      maxItems={5}
+      className="text-sm"
+    />
+  )
+}
+
+/**
  * Main App component
  * Orchestrates the entire application interface
  */
 export function App(): JSX.Element {
   const { state, resetApplicationData } = useConfig()
-  const { scrapingState } = useScraperController()
+  const { scrapingState, hasResults } = useScraperController()
   const [activeTab, setActiveTab] = useState<'config' | 'scraping' | 'ai-insights'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
@@ -898,6 +933,34 @@ export function App(): JSX.Element {
         </div>
       </header>
 
+      {/* Breadcrumb Navigation */}
+      <div className="border-b bg-muted/30">
+        <div className="container mx-auto px-4 py-3">
+          <BreadcrumbNavigation
+            activeTab={activeTab}
+            hasResults={hasResults}
+            onNavigate={(path) => {
+              if (path === 'config') {
+                if (scrapingState.isScrapingActive) {
+                  toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
+                  return
+                }
+                setActiveTab('config')
+              } else if (path === 'scraping') {
+                if (state.industriesInEditMode.length > 0) {
+                  toast.error(`Please save or cancel edits for: ${state.industriesInEditMode
+                    .map(id => state.industries.find(industry => industry.id === id)?.name)
+                    .filter(Boolean)
+                    .join(', ')}`)
+                  return
+                }
+                setActiveTab('scraping')
+              }
+            }}
+          />
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <ErrorBoundary level="section" showDetails={process.env.NODE_ENV === 'development'}>
@@ -917,7 +980,7 @@ export function App(): JSX.Element {
       <footer className="border-t bg-card mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>Business Scraper App v3.3.1 - Performance Monitoring & Documentation Accuracy</p>
+            <p>Business Scraper App v3.10.1 - Navigation Enhancement & Breadcrumb Implementation</p>
             <p>Built with Next.js, React, and TypeScript</p>
           </div>
         </div>
