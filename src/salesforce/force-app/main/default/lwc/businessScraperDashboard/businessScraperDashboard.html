@@ -1,0 +1,202 @@
+<!--
+Business Scraper Dashboard LWC Template
+Real-time dashboard for Business Scraper integration
+-->
+<template>
+    <lightning-card title="Business Scraper Dashboard" icon-name="custom:custom63">
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-button 
+                    label="Refresh" 
+                    icon-name="utility:refresh" 
+                    onclick={handleRefresh}
+                    disabled={isLoading}>
+                </lightning-button>
+                <lightning-button 
+                    label="Sync Now" 
+                    icon-name="utility:sync" 
+                    variant="brand"
+                    onclick={handleSyncNow}
+                    disabled={isLoading}>
+                </lightning-button>
+            </lightning-button-group>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-is-relative slds-p-around_medium">
+                <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+        
+        <!-- Error Message -->
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>Error loading dashboard data: {error.body.message}</h2>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Dashboard Content -->
+        <template if:false={isLoading}>
+            <div class="slds-p-around_medium">
+                
+                <!-- Statistics Cards -->
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <!-- Today's Leads -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                        <div class="slds-box slds-theme_default">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="standard:lead" size="medium" variant="inverse"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h3 class="slds-text-heading_small">Today's Leads</h3>
+                                    <p class="slds-text-heading_large">{totalLeadsToday}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- This Week's Leads -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                        <div class="slds-box slds-theme_default">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="standard:opportunity" size="medium" variant="inverse"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h3 class="slds-text-heading_small">This Week</h3>
+                                    <p class="slds-text-heading_large">{totalLeadsThisWeek}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- This Month's Leads -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                        <div class="slds-box slds-theme_default">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="standard:account" size="medium" variant="inverse"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h3 class="slds-text-heading_small">This Month</h3>
+                                    <p class="slds-text-heading_large">{totalLeadsThisMonth}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Conversion Rate -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                        <div class="slds-box slds-theme_default">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="standard:performance" size="medium" variant="inverse"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h3 class="slds-text-heading_small">Conversion Rate</h3>
+                                    <p class="slds-text-heading_large">{conversionRate}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sync Status -->
+                <div class="slds-m-top_large">
+                    <div class="slds-box">
+                        <h3 class="slds-text-heading_medium slds-m-bottom_small">Sync Status</h3>
+                        <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-2">
+                                <p><strong>Last Sync:</strong> {lastSyncTime}</p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-badge label={syncStatus} variant={syncStatusVariant}></lightning-badge>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Leads -->
+                <div class="slds-m-top_large">
+                    <lightning-card title="Recent Leads" icon-name="standard:lead">
+                        <template if:true={hasRecentLeads}>
+                            <div class="slds-scrollable_y" style="height: 300px;">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th class="slds-text-title_caps" scope="col">
+                                                <div class="slds-truncate" title="Company">Company</div>
+                                            </th>
+                                            <th class="slds-text-title_caps" scope="col">
+                                                <div class="slds-truncate" title="Contact">Contact</div>
+                                            </th>
+                                            <th class="slds-text-title_caps" scope="col">
+                                                <div class="slds-truncate" title="Email">Email</div>
+                                            </th>
+                                            <th class="slds-text-title_caps" scope="col">
+                                                <div class="slds-truncate" title="Status">Status</div>
+                                            </th>
+                                            <th class="slds-text-title_caps" scope="col">
+                                                <div class="slds-truncate" title="Priority">Priority</div>
+                                            </th>
+                                            <th class="slds-text-title_caps" scope="col">
+                                                <div class="slds-truncate" title="Created">Created</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={recentLeads} for:item="lead">
+                                            <tr key={lead.Id} class="slds-hint-parent" data-lead-id={lead.Id} onclick={handleLeadClick}>
+                                                <td data-label="Company">
+                                                    <div class="slds-truncate" title={lead.Company}>
+                                                        <a href="#" onclick={handleLeadClick}>{lead.Company}</a>
+                                                    </div>
+                                                </td>
+                                                <td data-label="Contact">
+                                                    <div class="slds-truncate" title={lead.Name}>{lead.Name}</div>
+                                                </td>
+                                                <td data-label="Email">
+                                                    <div class="slds-truncate" title={lead.Email}>{lead.Email}</div>
+                                                </td>
+                                                <td data-label="Status">
+                                                    <lightning-badge label={lead.Status} variant={getStatusVariant}></lightning-badge>
+                                                </td>
+                                                <td data-label="Priority">
+                                                    <template if:true={lead.Priority__c}>
+                                                        <lightning-badge label={lead.Priority__c} variant={getLeadPriorityVariant}></lightning-badge>
+                                                    </template>
+                                                    <template if:false={lead.Priority__c}>
+                                                        <span class="slds-text-color_weak">-</span>
+                                                    </template>
+                                                </td>
+                                                <td data-label="Created">
+                                                    <div class="slds-truncate" title={lead.CreatedDate}>
+                                                        <lightning-formatted-date-time value={lead.CreatedDate}></lightning-formatted-date-time>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        
+                        <template if:false={hasRecentLeads}>
+                            <div class="slds-align_absolute-center slds-p-around_large">
+                                <div class="slds-text-color_weak">
+                                    <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                    No recent leads found
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-card>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

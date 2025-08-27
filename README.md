@@ -593,6 +593,10 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 - **data-management/route.ts**: Data validation and management operations
 - **config/route.ts**: Configuration management and health checks
 - **auth/route.ts**: Session management and authentication
+- **crm/route.ts**: **NEW** CRM provider management and configuration
+- **crm/sync/route.ts**: **NEW** Business record synchronization with CRM systems
+- **crm/webhook/route.ts**: **NEW** Real-time webhook handling for CRM updates
+- **crm/hubspot/oauth/route.ts**: **NEW** HubSpot OAuth2 authentication flow
 
 ### View Layer (`src/view/`)
 
@@ -600,6 +604,7 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 - **ApiConfigurationPage.tsx**: Comprehensive API and BBB configuration interface
 - **CategorySelector.tsx**: Industry category selection with smart expansion
 - **ResultsTable.tsx**: Interactive data table with sorting and filtering
+- **HubSpotDashboard.tsx**: **NEW** React dashboard for HubSpot CRM integration
 - **UI Components**: Reusable UI components (Button, Input, Card, Breadcrumb, etc.)
   - **Breadcrumb.tsx**: Context-aware breadcrumb navigation with accessibility features
 
@@ -619,6 +624,16 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 - **rateLimitingService.ts**: Provider-specific intelligent rate limiting
 - **antiBotBypass.ts**: Enhanced anti-bot countermeasures
 - **browserPool.ts**: Browser instance management with spoofing integration
+
+### CRM Integration Layer (`src/lib/crm/`)
+
+- **baseCRMService.ts**: **NEW** Abstract base class for all CRM integrations
+- **crmServiceRegistry.ts**: **NEW** Central registry for managing CRM service instances
+- **salesforceService.ts**: **NEW** Salesforce CRM integration with managed package support
+- **hubspotService.ts**: **NEW** HubSpot CRM integration with OAuth2 and marketplace connector
+- **pipedriveService.ts**: **NEW** Pipedrive CRM integration with TypeScript connector
+- **customCRMService.ts**: **NEW** Custom CRM adapter for REST/GraphQL endpoints
+- **hubspotOAuth.ts**: **NEW** HubSpot OAuth2 authentication handler
 
 ### Database & Cache Layer
 
@@ -645,6 +660,26 @@ The application follows an **Adapted MVC (Model-View-Controller)** pattern with 
 - **exportService.ts**: Multi-format data export (CSV, XLSX, PDF, JSON)
 - **validation.ts**: Input validation and sanitization
 - **secureStorage.ts**: Encrypted credential storage
+
+### Enterprise CRM Integration
+
+#### 🔗 **Multi-CRM Support**
+- **Salesforce**: Native managed package with Apex triggers and LWC components
+- **HubSpot**: OAuth2 marketplace connector with bi-directional sync
+- **Pipedrive**: TypeScript connector with automated profile updates
+- **Custom CRMs**: Modular adapters for REST/GraphQL endpoints
+
+#### 🔄 **Real-Time Synchronization**
+- **Bi-directional Sync**: Automatic data synchronization between systems
+- **Webhook Support**: Real-time updates via webhook subscriptions
+- **Conflict Resolution**: Intelligent handling of data conflicts
+- **Deduplication**: Advanced duplicate detection and prevention
+
+#### 📊 **CRM Analytics & Monitoring**
+- **Sync Metrics**: Real-time tracking of sync performance and success rates
+- **Data Quality Scoring**: Automated assessment of record quality
+- **Dashboard Integration**: Native dashboards in each CRM platform
+- **Error Tracking**: Comprehensive error logging and retry mechanisms
 
 ## 📋 Prerequisites
 
