@@ -28,6 +28,8 @@ import { ApiConfigurationPage } from './ApiConfigurationPage'
 import { MobileNavigation } from './MobileNavigation'
 import { AIInsightsPanel } from './AIInsightsPanel'
 import { MemoryDashboard } from './MemoryDashboard'
+import { ProgressIndicator } from './ProgressIndicator'
+import { StreamingResultsDisplay } from './StreamingResultsDisplay'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
@@ -40,6 +42,7 @@ import { clientScraperService } from '@/model/clientScraperService'
 import { ErrorBoundary } from '../../components/ErrorBoundary'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { useResponsive } from '@/hooks/useResponsive'
+import { useSearchStreaming } from '@/hooks/useSearchStreaming'
 import ResetDataDialog from './ui/ResetDataDialog'
 import { DataResetResult } from '@/utils/dataReset'
 import toast from 'react-hot-toast'
@@ -337,9 +340,24 @@ function ScrapingPanel(): JSX.Element {
   const [showExportOptions, setShowExportOptions] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [showProcessingWindow, setShowProcessingWindow] = useState(true)
+  const [useStreamingSearch, setUseStreamingSearch] = useState(true)
 
   // Virtual scrolling toggle
   const [useVirtualScrolling, setUseVirtualScrolling] = useState(true)
+
+  // Streaming search hook
+  const {
+    results: streamingResults,
+    progress: streamingProgress,
+    isStreaming,
+    isPaused,
+    error: streamingError,
+    startStreaming,
+    pauseStreaming,
+    resumeStreaming,
+    stopStreaming,
+    clearResults: clearStreamingResults
+  } = useSearchStreaming()
 
   // Error handling for the scraping panel
   const exportErrorHandling = useErrorHandling({
@@ -445,6 +463,38 @@ function ScrapingPanel(): JSX.Element {
         </div>
       </div>
 
+      {/* Search Mode Toggle */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Search Mode</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="searchMode"
+                checked={useStreamingSearch}
+                onChange={() => setUseStreamingSearch(true)}
+                className="rounded"
+              />
+              <span className="text-sm font-medium">Real-time Streaming</span>
+              <span className="text-xs text-muted-foreground">(Recommended)</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="searchMode"
+                checked={!useStreamingSearch}
+                onChange={() => setUseStreamingSearch(false)}
+                className="rounded"
+              />
+              <span className="text-sm font-medium">Traditional Batch</span>
+            </label>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Scraping Controls */}
       <Card>
         <CardHeader>
@@ -452,64 +502,156 @@ function ScrapingPanel(): JSX.Element {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
-            {scrapingState.isScrapingActive ? (
+            {useStreamingSearch ? (
+              // Streaming controls
               <>
-                <Button
-                  variant="destructive"
-                  icon={Square}
-                  onClick={stopScraping}
-                  className="animate-pulse"
-                >
-                  Stop Scraping
-                </Button>
-                {scrapingState.canStopEarly && (
+                {!isStreaming ? (
                   <Button
-                    variant="outline"
-                    icon={StopCircle}
-                    onClick={stopEarly}
-                    className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                    icon={Play}
+                    onClick={async () => {
+                      const selectedIndustryNames = configState.selectedIndustries.map(industryId => {
+                        const industry = configState.industries.find(ind => ind.id === industryId)
+                        return industry?.name || industryId
+                      }).join(', ')
+
+                      await startStreaming(
+                        selectedIndustryNames || 'business',
+                        configState.config.zipCode,
+                        {
+                          maxResults: 1000,
+                          enableFallback: true
+                        }
+                      )
+                    }}
+                    disabled={!canStartScraping}
                   >
-                    Stop Early ({scrapingState.results.length} found)
+                    Start Streaming Search
                   </Button>
+                ) : (
+                  <>
+                    {!isPaused ? (
+                      <Button
+                        variant="outline"
+                        icon={Pause}
+                        onClick={pauseStreaming}
+                      >
+                        Pause
+                      </Button>
+                    ) : (
+                      <Button
+                        icon={Play}
+                        onClick={resumeStreaming}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Resume
+                      </Button>
+                    )}
+                    <Button
+                      variant="destructive"
+                      icon={Square}
+                      onClick={stopStreaming}
+                      className="animate-pulse"
+                    >
+                      Stop Streaming
+                    </Button>
+                  </>
                 )}
               </>
-            ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
-              <Button
-                variant="outline"
-                icon={Square}
-                disabled
-                className="opacity-75"
-              >
-                Stopping...
-              </Button>
             ) : (
+              // Traditional scraping controls
               <>
-                <Button
-                  icon={Play}
-                  onClick={startScraping}
-                  disabled={!canStartScraping}
-                >
-                  Start Scraping
-                </Button>
+                {scrapingState.isScrapingActive ? (
+                  <>
+                    <Button
+                      variant="destructive"
+                      icon={Square}
+                      onClick={stopScraping}
+                      className="animate-pulse"
+                    >
+                      Stop Scraping
+                    </Button>
+                    {scrapingState.canStopEarly && (
+                      <Button
+                        variant="outline"
+                        icon={StopCircle}
+                        onClick={stopEarly}
+                        className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                      >
+                        Stop Early ({scrapingState.results.length} found)
+                      </Button>
+                    )}
+                  </>
+                ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
+                  <Button
+                    variant="outline"
+                    icon={Square}
+                    disabled
+                    className="opacity-75"
+                  >
+                    Stopping...
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      icon={Play}
+                      onClick={startScraping}
+                      disabled={!canStartScraping}
+                    >
+                      Start Scraping
+                    </Button>
+                  </>
+                )}
               </>
             )}
 
             {/* Status Indicator */}
             <div className="flex items-center gap-2 text-sm">
-              {scrapingState.isScrapingActive ? (
+              {useStreamingSearch ? (
+                // Streaming status
                 <>
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-green-600 font-medium">Active</span>
-                </>
-              ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
-                <>
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                  <span className="text-yellow-600 font-medium">Stopping</span>
+                  {isStreaming ? (
+                    <>
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span className="text-blue-600 font-medium">
+                        {isPaused ? 'Paused' : 'Streaming'}
+                      </span>
+                    </>
+                  ) : streamingProgress.status === 'completed' ? (
+                    <>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-green-600 font-medium">Completed</span>
+                    </>
+                  ) : streamingError ? (
+                    <>
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span className="text-red-600 font-medium">Error</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <span className="text-gray-500">Ready</span>
+                    </>
+                  )}
                 </>
               ) : (
+                // Traditional scraping status
                 <>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <span className="text-gray-500">Idle</span>
+                  {scrapingState.isScrapingActive ? (
+                    <>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-green-600 font-medium">Active</span>
+                    </>
+                  ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
+                    <>
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                      <span className="text-yellow-600 font-medium">Stopping</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <span className="text-gray-500">Idle</span>
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -618,6 +760,19 @@ function ScrapingPanel(): JSX.Element {
         </CardContent>
       </Card>
 
+      {/* Streaming Progress Indicator */}
+      {useStreamingSearch && (isStreaming || streamingResults.length > 0 || streamingError) && (
+        <ProgressIndicator
+          progress={streamingProgress}
+          isStreaming={isStreaming}
+          isPaused={isPaused}
+          error={streamingError}
+          onPause={pauseStreaming}
+          onResume={resumeStreaming}
+          onStop={stopStreaming}
+        />
+      )}
+
       {/* Error Display */}
       {hasErrors && (
         <Card>
@@ -685,11 +840,17 @@ function ScrapingPanel(): JSX.Element {
       />
 
       {/* Results Table */}
-      {shouldShowResults && (
+      {(shouldShowResults || (useStreamingSearch && streamingResults.length > 0)) && (
         <div className="space-y-4">
           {/* Table Mode Toggle */}
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Business Results ({scrapingState.results.length.toLocaleString()})</h3>
+            <h3 className="text-lg font-semibold">
+              Business Results ({
+                useStreamingSearch
+                  ? streamingResults.length.toLocaleString()
+                  : scrapingState.results.length.toLocaleString()
+              })
+            </h3>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Table Mode:</span>
               <Button
@@ -710,13 +871,15 @@ function ScrapingPanel(): JSX.Element {
           </div>
 
           {/* Smart Performance Mode Table Rendering */}
-          <PerformanceProvider datasetSize={scrapingState.results.length}>
+          <PerformanceProvider datasetSize={
+            useStreamingSearch ? streamingResults.length : scrapingState.results.length
+          }>
             <ResultsTable
-              businesses={scrapingState.results}
+              businesses={useStreamingSearch ? streamingResults : scrapingState.results}
               onEdit={updateBusiness}
               onDelete={removeBusiness}
               onExport={handleExport}
-              isLoading={scrapingState.isScrapingActive}
+              isLoading={useStreamingSearch ? isStreaming : scrapingState.isScrapingActive}
               isExporting={isExporting}
             />
           </PerformanceProvider>

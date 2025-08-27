@@ -5,7 +5,13 @@ process.env.NODE_ENV = 'test'
 process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db'
 process.env.REDIS_URL = 'redis://localhost:6379'
 process.env.ENCRYPTION_KEY = 'test-encryption-key-32-characters'
+process.env.ENCRYPTION_MASTER_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 process.env.JWT_SECRET = 'test-jwt-secret'
+
+// Add TextEncoder and TextDecoder polyfills for Node.js
+const { TextEncoder, TextDecoder } = require('util')
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder
 
 // Mock IndexedDB
 global.indexedDB = require('fake-indexeddb')

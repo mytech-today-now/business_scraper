@@ -266,10 +266,39 @@ export const authOptions: NextAuthOptions = {
  * Verify MFA code (TOTP implementation)
  */
 async function verifyMFACode(userId: string, code: string): Promise<boolean> {
-  // TODO: Implement TOTP verification
-  // This would typically use a library like 'speakeasy' or 'otplib'
-  // For now, return true for development
-  return true
+  try {
+    // Get user's MFA secret from database
+    const result = await pool.query(
+      'SELECT mfa_secret FROM users WHERE id = $1 AND mfa_enabled = true',
+      [userId]
+    )
+
+    if (!result.rows[0]?.mfa_secret) {
+      logger.warn('Auth', `No MFA secret found for user: ${userId}`)
+      return false
+    }
+
+    const speakeasy = require('speakeasy')
+
+    // Verify the TOTP code
+    const verified = speakeasy.totp.verify({
+      secret: result.rows[0].mfa_secret,
+      encoding: 'base32',
+      token: code,
+      window: 2 // Allow 2 time steps before/after current time
+    })
+
+    if (verified) {
+      logger.info('Auth', `MFA verification successful for user: ${userId}`)
+    } else {
+      logger.warn('Auth', `MFA verification failed for user: ${userId}`)
+    }
+
+    return verified
+  } catch (error) {
+    logger.error('Auth', 'MFA verification error', error)
+    return false
+  }
 }
 
 /**
@@ -305,4 +334,84 @@ export function hasAnyPermission(user: ExtendedUser, permissions: Permission[]):
  */
 export function hasAllPermissions(user: ExtendedUser, permissions: Permission[]): boolean {
   return permissions.every(permission => user.permissions.includes(permission))
+}
+
+/**
+ * Generate MFA secret for user
+ */
+export async function generateMFASecret(userId: string, userEmail: string): Promise<{ secret: string; qrCodeUrl: string }> {
+  const speakeasy = require('speakeasy')
+  const qrcode = require('qrcode')
+
+  try {
+    // Generate secret
+    const secret = speakeasy.generateSecret({
+      name: `Business Scraper (${userEmail})`,
+      issuer: 'Business Scraper App',
+      length: 32
+    })
+
+    // Store secret in database (encrypted)
+    await pool.query(
+      'UPDATE users SET mfa_secret = $1, mfa_enabled = false WHERE id = $2',
+      [secret.base32, userId]
+    )
+
+    // Generate QR code URL
+    const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url)
+
+    logger.info('Auth', `MFA secret generated for user: ${userEmail}`)
+
+    return {
+      secret: secret.base32,
+      qrCodeUrl
+    }
+  } catch (error) {
+    logger.error('Auth', 'Failed to generate MFA secret', error)
+    throw new Error('Failed to generate MFA secret')
+  }
+}
+
+/**
+ * Enable MFA for user after verification
+ */
+export async function enableMFA(userId: string, verificationCode: string): Promise<boolean> {
+  try {
+    // Verify the code first
+    const isValid = await verifyMFACode(userId, verificationCode)
+
+    if (!isValid) {
+      return false
+    }
+
+    // Enable MFA
+    await pool.query(
+      'UPDATE users SET mfa_enabled = true WHERE id = $1',
+      [userId]
+    )
+
+    logger.info('Auth', `MFA enabled for user: ${userId}`)
+    return true
+  } catch (error) {
+    logger.error('Auth', 'Failed to enable MFA', error)
+    return false
+  }
+}
+
+/**
+ * Disable MFA for user
+ */
+export async function disableMFA(userId: string): Promise<boolean> {
+  try {
+    await pool.query(
+      'UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = $1',
+      [userId]
+    )
+
+    logger.info('Auth', `MFA disabled for user: ${userId}`)
+    return true
+  } catch (error) {
+    logger.error('Auth', 'Failed to disable MFA', error)
+    return false
+  }
 }

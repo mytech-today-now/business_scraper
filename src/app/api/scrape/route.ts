@@ -3,6 +3,7 @@ import { scraperService } from '@/model/scraperService'
 import { sanitizeInput, validateInput, getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
 import { metrics } from '@/lib/metrics'
+import { ScrapingComplianceMiddleware, ScrapingOperation, ScrapingComplianceUtils } from '@/lib/compliance/scraper-middleware'
 
 
 /**
@@ -38,6 +39,9 @@ const scrapeHandler = async (request: NextRequest) => {
       try {
         logger.info('Scrape API', `Request body: ${JSON.stringify({ action, ...Object.keys(params) })}`)
 
+        // Track start time for compliance logging
+        const startTime = Date.now()
+
         // Validate action parameter
         if (!action || typeof action !== 'string') {
           logger.warn('Scrape API', `Invalid action parameter from IP: ${ip}`)
@@ -60,6 +64,34 @@ const scrapeHandler = async (request: NextRequest) => {
         const { sessionId } = params
         if (sessionId && typeof sessionId === 'string') {
           scraperService.setSessionId(sessionId)
+        }
+
+        // Create compliance context
+        const complianceContext = ScrapingComplianceUtils.createContext(
+          sanitizedAction as ScrapingOperation,
+          request,
+          {
+            sessionId,
+            query: params.query,
+            url: params.url,
+            zipCode: params.zipCode
+          }
+        )
+
+        // Validate consent for scraping operations
+        if (['search', 'scrape'].includes(sanitizedAction)) {
+          const consentValidation = await ScrapingComplianceMiddleware.validateConsent(complianceContext)
+          if (!consentValidation.allowed) {
+            logger.warn('Scrape API', `Consent validation failed for ${sanitizedAction}`, {
+              missingConsents: consentValidation.missingConsents,
+              sessionId
+            })
+            return NextResponse.json({
+              error: 'Consent required',
+              missingConsents: consentValidation.missingConsents,
+              message: consentValidation.message
+            }, { status: 403 })
+          }
         }
 
         switch (sanitizedAction) {
@@ -96,8 +128,26 @@ const scrapeHandler = async (request: NextRequest) => {
         // Parse maxResults (no upper limit - gather as many as possible)
         const numMaxResults = Math.max(parseInt(maxResults) || 1000, 1)
 
-        const urls = await scraperService.searchForWebsites(sanitizedQuery, sanitizedZipCode, numMaxResults)
-        return NextResponse.json({ urls: urls || [] })
+        try {
+          const urls = await scraperService.searchForWebsites(sanitizedQuery, sanitizedZipCode, numMaxResults)
+
+          // Log successful search operation
+          await ScrapingComplianceMiddleware.logScrapingOperation(complianceContext, {
+            success: true,
+            recordsFound: urls?.length || 0,
+            duration: Date.now() - startTime
+          })
+
+          return NextResponse.json({ urls: urls || [] })
+        } catch (searchError) {
+          // Log failed search operation
+          await ScrapingComplianceMiddleware.logScrapingOperation(complianceContext, {
+            success: false,
+            error: searchError.message,
+            duration: Date.now() - startTime
+          })
+          throw searchError
+        }
 
       case 'scrape':
         const { url, depth, maxPages } = params
@@ -124,6 +174,16 @@ const scrapeHandler = async (request: NextRequest) => {
         const numDepth = Math.min(Math.max(parseInt(depth) || 1, 1), 5)
         const numMaxPages = Math.min(Math.max(parseInt(maxPages) || 5, 1), 20)
 
+        // Check scraping permissions
+        const permissionCheck = await ScrapingComplianceMiddleware.checkScrapingPermissions(sanitizedUrl, complianceContext)
+        if (!permissionCheck.allowed) {
+          logger.warn('Scrape API', `Scraping not allowed for ${sanitizedUrl}: ${permissionCheck.reason}`)
+          return NextResponse.json({
+            error: 'Scraping not allowed',
+            reason: permissionCheck.reason
+          }, { status: 403 })
+        }
+
         logger.info('Scrape API', `Starting scrape for ${sanitizedUrl} with depth ${numDepth}, maxPages ${numMaxPages}`)
 
         const scrapeStartTime = Date.now()
@@ -142,6 +202,13 @@ const scrapeHandler = async (request: NextRequest) => {
             businesses.length
           )
 
+          // Log successful scrape operation
+          await ScrapingComplianceMiddleware.logScrapingOperation(complianceContext, {
+            success: true,
+            recordsFound: businesses.length,
+            duration: Date.now() - startTime
+          })
+
           logger.info('Scrape API', `Scrape completed for ${sanitizedUrl}, found ${businesses.length} businesses`)
           return NextResponse.json({ businesses })
         } catch (scrapeError) {
@@ -156,6 +223,13 @@ const scrapeHandler = async (request: NextRequest) => {
           metrics.scrapingErrors.inc({
             strategy: 'website',
             error_type: scrapeError instanceof Error ? scrapeError.name : 'unknown'
+          })
+
+          // Log failed scrape operation
+          await ScrapingComplianceMiddleware.logScrapingOperation(complianceContext, {
+            success: false,
+            error: scrapeError instanceof Error ? scrapeError.message : 'Unknown scraping error',
+            duration: Date.now() - startTime
           })
 
           logger.error('Scrape API', `Scraping failed for ${sanitizedUrl}`, scrapeError)
