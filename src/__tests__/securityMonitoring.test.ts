@@ -3,12 +3,12 @@
  * Business Scraper Application - Security Event Tracking Tests
  */
 
-import { 
-  SecurityLogger, 
-  SecurityEventType, 
+import {
+  SecurityLogger,
+  SecurityEventType,
   SecuritySeverity,
   sanitizeLogData,
-  validateLogData
+  validateLogData,
 } from '@/lib/securityLogger'
 import { AuthenticationMonitor } from '@/lib/authenticationMonitor'
 import { SecurityAlertManager } from '@/lib/securityAlerts'
@@ -19,8 +19,8 @@ jest.mock('@/utils/logger', () => ({
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }))
 
 describe('Security Logger', () => {
@@ -98,14 +98,12 @@ describe('Security Logger', () => {
         nextUrl: { pathname: '/login' },
         method: 'POST',
         headers: new Map([['user-agent', 'test-browser']]),
-        cookies: new Map()
+        cookies: new Map(),
       } as any
 
-      const event = securityLogger.logAuthEvent(
-        SecurityEventType.LOGIN_SUCCESS,
-        mockRequest,
-        { username: 'testuser' }
-      )
+      const event = securityLogger.logAuthEvent(SecurityEventType.LOGIN_SUCCESS, mockRequest, {
+        username: 'testuser',
+      })
 
       expect(event.type).toBe(SecurityEventType.LOGIN_SUCCESS)
       expect(event.severity).toBe(SecuritySeverity.LOW)
@@ -117,14 +115,10 @@ describe('Security Logger', () => {
         nextUrl: { pathname: '/login' },
         method: 'POST',
         headers: new Map([['user-agent', 'test-browser']]),
-        cookies: new Map()
+        cookies: new Map(),
       } as any
 
-      const event = securityLogger.logFailedAuth(
-        mockRequest,
-        'testuser',
-        'invalid_password'
-      )
+      const event = securityLogger.logFailedAuth(mockRequest, 'testuser', 'invalid_password')
 
       expect(event.type).toBe(SecurityEventType.LOGIN_FAILURE)
       expect(event.details.username).toBe('testuser')
@@ -136,8 +130,16 @@ describe('Security Logger', () => {
     it('should generate comprehensive security metrics', () => {
       // Generate some test events
       securityLogger.logSecurityEvent(SecurityEventType.LOGIN_SUCCESS, SecuritySeverity.LOW, 'auth')
-      securityLogger.logSecurityEvent(SecurityEventType.LOGIN_FAILURE, SecuritySeverity.MEDIUM, 'auth')
-      securityLogger.logSecurityEvent(SecurityEventType.SQL_INJECTION_ATTEMPT, SecuritySeverity.HIGH, 'input')
+      securityLogger.logSecurityEvent(
+        SecurityEventType.LOGIN_FAILURE,
+        SecuritySeverity.MEDIUM,
+        'auth'
+      )
+      securityLogger.logSecurityEvent(
+        SecurityEventType.SQL_INJECTION_ATTEMPT,
+        SecuritySeverity.HIGH,
+        'input'
+      )
 
       const metrics = securityLogger.getSecurityMetrics(24)
 
@@ -152,7 +154,11 @@ describe('Security Logger', () => {
 
     it('should calculate average risk score correctly', () => {
       securityLogger.logSecurityEvent(SecurityEventType.LOGIN_SUCCESS, SecuritySeverity.LOW, 'auth') // ~1
-      securityLogger.logSecurityEvent(SecurityEventType.SQL_INJECTION_ATTEMPT, SecuritySeverity.CRITICAL, 'input') // ~20
+      securityLogger.logSecurityEvent(
+        SecurityEventType.SQL_INJECTION_ATTEMPT,
+        SecuritySeverity.CRITICAL,
+        'input'
+      ) // ~20
 
       const metrics = securityLogger.getSecurityMetrics(24)
       expect(metrics.averageRiskScore).toBeGreaterThan(5)
@@ -163,7 +169,7 @@ describe('Security Logger', () => {
   describe('Data Export', () => {
     it('should export events as JSON', () => {
       securityLogger.logSecurityEvent(SecurityEventType.LOGIN_SUCCESS, SecuritySeverity.LOW, 'auth')
-      
+
       const exported = securityLogger.exportEvents(24)
       const data = JSON.parse(exported)
 
@@ -184,7 +190,7 @@ describe('Log Data Sanitization', () => {
         password: 'secret123',
         email: 'test@example.com',
         apiKey: 'abc123',
-        normalField: 'normal_value'
+        normalField: 'normal_value',
       }
 
       const sanitized = sanitizeLogData(data)
@@ -203,9 +209,9 @@ describe('Log Data Sanitization', () => {
           password: 'secret123',
           profile: {
             email: 'test@example.com',
-            phone: '555-1234'
-          }
-        }
+            phone: '555-1234',
+          },
+        },
       }
 
       const sanitized = sanitizeLogData(data)
@@ -220,8 +226,8 @@ describe('Log Data Sanitization', () => {
       const data = {
         users: [
           { name: 'user1', password: 'secret1' },
-          { name: 'user2', token: 'token123' }
-        ]
+          { name: 'user2', token: 'token123' },
+        ],
       }
 
       const sanitized = sanitizeLogData(data)
@@ -234,7 +240,7 @@ describe('Log Data Sanitization', () => {
 
     it('should mask sensitive patterns in strings', () => {
       const data = {
-        message: 'User test@example.com called 555-123-4567 with card 4111-1111-1111-1111'
+        message: 'User test@example.com called 555-123-4567 with card 4111-1111-1111-1111',
       }
 
       const sanitized = sanitizeLogData(data)
@@ -263,7 +269,7 @@ describe('Log Data Sanitization', () => {
       const data = {
         username: 'testuser',
         password: 'secret123',
-        message: 'Login attempt for test@example.com'
+        message: 'Login attempt for test@example.com',
       }
 
       const validation = validateLogData(data)
@@ -278,7 +284,7 @@ describe('Log Data Sanitization', () => {
       const data = {
         username: 'testuser',
         action: 'login',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
 
       const validation = validateLogData(data)
@@ -300,7 +306,7 @@ describe('Authentication Monitor', () => {
     it('should record successful authentication', () => {
       const mockRequest = {
         headers: new Map([['user-agent', 'test-browser']]),
-        nextUrl: { pathname: '/login' }
+        nextUrl: { pathname: '/login' },
       } as any
 
       const attempt = authMonitor.recordAuthAttempt(
@@ -319,7 +325,7 @@ describe('Authentication Monitor', () => {
     it('should record failed authentication', () => {
       const mockRequest = {
         headers: new Map([['user-agent', 'test-browser']]),
-        nextUrl: { pathname: '/login' }
+        nextUrl: { pathname: '/login' },
       } as any
 
       const attempt = authMonitor.recordAuthAttempt(
@@ -336,17 +342,12 @@ describe('Authentication Monitor', () => {
     it('should block IP after multiple failed attempts', () => {
       const mockRequest = {
         headers: new Map([['user-agent', 'test-browser']]),
-        nextUrl: { pathname: '/login' }
+        nextUrl: { pathname: '/login' },
       } as any
 
       // Simulate multiple failed attempts
       for (let i = 0; i < 6; i++) {
-        authMonitor.recordAuthAttempt(
-          mockRequest,
-          `user${i}`,
-          false,
-          'invalid_password'
-        )
+        authMonitor.recordAuthAttempt(mockRequest, `user${i}`, false, 'invalid_password')
       }
 
       // IP should be blocked after 5 failed attempts
@@ -358,7 +359,7 @@ describe('Authentication Monitor', () => {
     it('should generate authentication statistics', () => {
       const mockRequest = {
         headers: new Map([['user-agent', 'test-browser']]),
-        nextUrl: { pathname: '/login' }
+        nextUrl: { pathname: '/login' },
       } as any
 
       // Record some attempts
@@ -458,8 +459,16 @@ describe('Security Alert Manager', () => {
   describe('Alert Statistics', () => {
     it('should generate alert statistics', () => {
       // Generate some test alerts
-      alertManager.processSecurityEvent(SecurityEventType.LOGIN_FAILURE, SecuritySeverity.MEDIUM, {})
-      alertManager.processSecurityEvent(SecurityEventType.SQL_INJECTION_ATTEMPT, SecuritySeverity.CRITICAL, {})
+      alertManager.processSecurityEvent(
+        SecurityEventType.LOGIN_FAILURE,
+        SecuritySeverity.MEDIUM,
+        {}
+      )
+      alertManager.processSecurityEvent(
+        SecurityEventType.SQL_INJECTION_ATTEMPT,
+        SecuritySeverity.CRITICAL,
+        {}
+      )
 
       const stats = alertManager.getAlertStats(24)
 

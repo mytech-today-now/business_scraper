@@ -17,7 +17,7 @@ export enum DSARType {
   ERASURE = 'erasure',
   PORTABILITY = 'portability',
   RESTRICTION = 'restriction',
-  OBJECTION = 'objection'
+  OBJECTION = 'objection',
 }
 
 // DSAR status
@@ -26,7 +26,7 @@ export enum DSARStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   REJECTED = 'rejected',
-  EXPIRED = 'expired'
+  EXPIRED = 'expired',
 }
 
 // DSAR request interface
@@ -62,14 +62,19 @@ const pool = new Pool({
 async function submitDSARRequest(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json()
-    const { requestType, subjectEmail, subjectName, description, requestedData, verificationMethod, verificationData } = body
+    const {
+      requestType,
+      subjectEmail,
+      subjectName,
+      description,
+      requestedData,
+      verificationMethod,
+      verificationData,
+    } = body
 
     // Validate required fields
     if (!requestType || !subjectEmail || !description || !verificationMethod) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Calculate legal deadline (30 days for GDPR)
@@ -87,29 +92,32 @@ async function submitDSARRequest(request: NextRequest): Promise<NextResponse> {
       status: DSARStatus.PENDING,
       submittedAt: new Date(),
       priority: 'medium',
-      legalDeadline
+      legalDeadline,
     }
 
     // Insert into database
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       INSERT INTO dsar_requests (
         request_type, subject_email, subject_name, description, requested_data,
         verification_method, verification_data, status, submitted_at, legal_deadline, priority
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING id
-    `, [
-      dsarRequest.requestType,
-      dsarRequest.subjectEmail,
-      dsarRequest.subjectName,
-      dsarRequest.description,
-      JSON.stringify(dsarRequest.requestedData),
-      dsarRequest.verificationMethod,
-      JSON.stringify(dsarRequest.verificationData),
-      dsarRequest.status,
-      dsarRequest.submittedAt,
-      dsarRequest.legalDeadline,
-      dsarRequest.priority
-    ])
+    `,
+      [
+        dsarRequest.requestType,
+        dsarRequest.subjectEmail,
+        dsarRequest.subjectName,
+        dsarRequest.description,
+        JSON.stringify(dsarRequest.requestedData),
+        dsarRequest.verificationMethod,
+        JSON.stringify(dsarRequest.verificationData),
+        dsarRequest.status,
+        dsarRequest.submittedAt,
+        dsarRequest.legalDeadline,
+        dsarRequest.priority,
+      ]
+    )
 
     const requestId = result.rows[0].id
 
@@ -121,14 +129,14 @@ async function submitDSARRequest(request: NextRequest): Promise<NextResponse> {
         requestId,
         requestType,
         subjectEmail,
-        verificationMethod
+        verificationMethod,
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: false,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     // Send confirmation email (implementation would depend on email service)
@@ -137,7 +145,7 @@ async function submitDSARRequest(request: NextRequest): Promise<NextResponse> {
     logger.info('DSAR', `DSAR request submitted: ${requestType}`, {
       requestId,
       subjectEmail,
-      legalDeadline: legalDeadline.toISOString()
+      legalDeadline: legalDeadline.toISOString(),
     })
 
     return NextResponse.json({
@@ -145,15 +153,12 @@ async function submitDSARRequest(request: NextRequest): Promise<NextResponse> {
       requestId,
       status: DSARStatus.PENDING,
       legalDeadline: legalDeadline.toISOString(),
-      message: 'DSAR request submitted successfully. You will receive a confirmation email shortly.'
+      message:
+        'DSAR request submitted successfully. You will receive a confirmation email shortly.',
     })
-
   } catch (error) {
     logger.error('DSAR', 'Failed to submit DSAR request', error)
-    return NextResponse.json(
-      { error: 'Failed to submit DSAR request' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to submit DSAR request' }, { status: 500 })
   }
 }
 
@@ -206,22 +211,20 @@ async function getDSARRequests(request: NextRequest): Promise<NextResponse> {
       assignedTo: row.assigned_to,
       priority: row.priority,
       legalDeadline: row.legal_deadline,
-      daysRemaining: Math.ceil((new Date(row.legal_deadline).getTime() - Date.now()) / (24 * 60 * 60 * 1000))
+      daysRemaining: Math.ceil(
+        (new Date(row.legal_deadline).getTime() - Date.now()) / (24 * 60 * 60 * 1000)
+      ),
     }))
 
     return NextResponse.json({
       requests,
       total: result.rowCount,
       limit,
-      offset
+      offset,
     })
-
   } catch (error) {
     logger.error('DSAR', 'Failed to get DSAR requests', error)
-    return NextResponse.json(
-      { error: 'Failed to retrieve DSAR requests' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to retrieve DSAR requests' }, { status: 500 })
   }
 }
 
@@ -234,23 +237,16 @@ async function processDSARRequest(request: NextRequest): Promise<NextResponse> {
     const { requestId, action, responseData, rejectionReason, processingNotes } = body
 
     if (!requestId || !action) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Get current request
-    const currentRequest = await pool.query(
-      'SELECT * FROM dsar_requests WHERE id = $1',
-      [requestId]
-    )
+    const currentRequest = await pool.query('SELECT * FROM dsar_requests WHERE id = $1', [
+      requestId,
+    ])
 
     if (currentRequest.rows.length === 0) {
-      return NextResponse.json(
-        { error: 'DSAR request not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'DSAR request not found' }, { status: 404 })
     }
 
     const dsarRequest = currentRequest.rows[0]
@@ -262,7 +258,7 @@ async function processDSARRequest(request: NextRequest): Promise<NextResponse> {
       case 'approve':
         newStatus = DSARStatus.COMPLETED
         completedAt = new Date()
-        
+
         // Execute the actual data operation based on request type
         await executeDSAROperation(dsarRequest, responseData)
         break
@@ -277,26 +273,26 @@ async function processDSARRequest(request: NextRequest): Promise<NextResponse> {
         break
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
 
     // Update request status
-    await pool.query(`
+    await pool.query(
+      `
       UPDATE dsar_requests 
       SET status = $1, completed_at = $2, rejection_reason = $3, 
           processing_notes = $4, response_data = $5
       WHERE id = $6
-    `, [
-      newStatus,
-      completedAt,
-      rejectionReason,
-      processingNotes,
-      responseData ? JSON.stringify(responseData) : null,
-      requestId
-    ])
+    `,
+      [
+        newStatus,
+        completedAt,
+        rejectionReason,
+        processingNotes,
+        responseData ? JSON.stringify(responseData) : null,
+        requestId,
+      ]
+    )
 
     // Log audit event
     await auditService.logEvent({
@@ -307,38 +303,39 @@ async function processDSARRequest(request: NextRequest): Promise<NextResponse> {
         action,
         requestType: dsarRequest.request_type,
         subjectEmail: dsarRequest.subject_email,
-        newStatus
+        newStatus,
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: false,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     // Send notification email to data subject
-    await sendDSARStatusUpdateEmail(dsarRequest.subject_email, requestId, newStatus, rejectionReason)
+    await sendDSARStatusUpdateEmail(
+      dsarRequest.subject_email,
+      requestId,
+      newStatus,
+      rejectionReason
+    )
 
     logger.info('DSAR', `DSAR request processed: ${action}`, {
       requestId,
       newStatus,
-      subjectEmail: dsarRequest.subject_email
+      subjectEmail: dsarRequest.subject_email,
     })
 
     return NextResponse.json({
       success: true,
       requestId,
       status: newStatus,
-      message: `DSAR request ${action}ed successfully`
+      message: `DSAR request ${action}ed successfully`,
     })
-
   } catch (error) {
     logger.error('DSAR', 'Failed to process DSAR request', error)
-    return NextResponse.json(
-      { error: 'Failed to process DSAR request' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to process DSAR request' }, { status: 500 })
   }
 }
 
@@ -380,10 +377,9 @@ async function executeDSAROperation(dsarRequest: any, responseData: any): Promis
 async function collectSubjectData(subjectEmail: string): Promise<any> {
   // Implementation would collect data from all relevant tables
   // This is a simplified version
-  const userData = await pool.query(
-    'SELECT * FROM businesses WHERE email ILIKE $1',
-    [`%${subjectEmail}%`]
-  )
+  const userData = await pool.query('SELECT * FROM businesses WHERE email ILIKE $1', [
+    `%${subjectEmail}%`,
+  ])
 
   return userData.rows
 }
@@ -394,10 +390,7 @@ async function collectSubjectData(subjectEmail: string): Promise<any> {
 async function eraseSubjectData(subjectEmail: string): Promise<void> {
   // Implementation would delete data from all relevant tables
   // This is a simplified version
-  await pool.query(
-    'DELETE FROM businesses WHERE email ILIKE $1',
-    [`%${subjectEmail}%`]
-  )
+  await pool.query('DELETE FROM businesses WHERE email ILIKE $1', [`%${subjectEmail}%`])
 }
 
 /**
@@ -419,17 +412,33 @@ async function exportSubjectData(subjectEmail: string): Promise<void> {
 /**
  * Send DSAR confirmation email
  */
-async function sendDSARConfirmationEmail(email: string, requestId: string, requestType: string): Promise<void> {
+async function sendDSARConfirmationEmail(
+  email: string,
+  requestId: string,
+  requestType: string
+): Promise<void> {
   // Implementation would depend on email service
-  logger.info('DSAR', `Confirmation email sent for DSAR request: ${requestId}`, { email, requestType })
+  logger.info('DSAR', `Confirmation email sent for DSAR request: ${requestId}`, {
+    email,
+    requestType,
+  })
 }
 
 /**
  * Send DSAR status update email
  */
-async function sendDSARStatusUpdateEmail(email: string, requestId: string, status: DSARStatus, reason?: string): Promise<void> {
+async function sendDSARStatusUpdateEmail(
+  email: string,
+  requestId: string,
+  status: DSARStatus,
+  reason?: string
+): Promise<void> {
   // Implementation would depend on email service
-  logger.info('DSAR', `Status update email sent for DSAR request: ${requestId}`, { email, status, reason })
+  logger.info('DSAR', `Status update email sent for DSAR request: ${requestId}`, {
+    email,
+    status,
+    reason,
+  })
 }
 
 // Route handlers
@@ -437,5 +446,11 @@ export async function POST(request: NextRequest) {
   return submitDSARRequest(request)
 }
 
-export const GET = withAuth(getDSARRequests, { required: true, roles: ['admin', 'compliance_officer'] })
-export const PUT = withAuth(processDSARRequest, { required: true, roles: ['admin', 'compliance_officer'] })
+export const GET = withAuth(getDSARRequests, {
+  required: true,
+  roles: ['admin', 'compliance_officer'],
+})
+export const PUT = withAuth(processDSARRequest, {
+  required: true,
+  roles: ['admin', 'compliance_officer'],
+})

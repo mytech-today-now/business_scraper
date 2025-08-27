@@ -78,7 +78,7 @@ export class DataRetentionService {
         autoDelete: true,
         archiveBeforeDelete: true,
         notificationDays: [30, 7, 1],
-        isActive: true
+        isActive: true,
       },
       {
         name: 'User Session Data',
@@ -89,7 +89,7 @@ export class DataRetentionService {
         autoDelete: true,
         archiveBeforeDelete: false,
         notificationDays: [7, 1],
-        isActive: true
+        isActive: true,
       },
       {
         name: 'Audit Logs',
@@ -100,7 +100,7 @@ export class DataRetentionService {
         autoDelete: false, // Manual review required
         archiveBeforeDelete: true,
         notificationDays: [90, 30, 7],
-        isActive: true
+        isActive: true,
       },
       {
         name: 'Consent Records',
@@ -111,7 +111,7 @@ export class DataRetentionService {
         autoDelete: false,
         archiveBeforeDelete: true,
         notificationDays: [90, 30, 7],
-        isActive: true
+        isActive: true,
       },
       {
         name: 'Scraping Cache',
@@ -122,8 +122,8 @@ export class DataRetentionService {
         autoDelete: true,
         archiveBeforeDelete: false,
         notificationDays: [7, 1],
-        isActive: true
-      }
+        isActive: true,
+      },
     ]
 
     try {
@@ -139,9 +139,12 @@ export class DataRetentionService {
   /**
    * Create or update retention policy
    */
-  async createOrUpdatePolicy(policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  async createOrUpdatePolicy(
+    policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<string> {
     try {
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         INSERT INTO retention_policies (
           name, description, data_type, retention_period_days, legal_basis,
           auto_delete, archive_before_delete, notification_days, is_active
@@ -157,17 +160,19 @@ export class DataRetentionService {
           is_active = EXCLUDED.is_active,
           updated_at = NOW()
         RETURNING id
-      `, [
-        policy.name,
-        policy.description,
-        policy.dataType,
-        policy.retentionPeriodDays,
-        policy.legalBasis,
-        policy.autoDelete,
-        policy.archiveBeforeDelete,
-        JSON.stringify(policy.notificationDays),
-        policy.isActive
-      ])
+      `,
+        [
+          policy.name,
+          policy.description,
+          policy.dataType,
+          policy.retentionPeriodDays,
+          policy.legalBasis,
+          policy.autoDelete,
+          policy.archiveBeforeDelete,
+          JSON.stringify(policy.notificationDays),
+          policy.isActive,
+        ]
+      )
 
       const policyId = result.rows[0].id
 
@@ -176,7 +181,6 @@ export class DataRetentionService {
 
       logger.info('Retention', `Retention policy created/updated: ${policy.name}`, { policyId })
       return policyId
-
     } catch (error) {
       logger.error('Retention', 'Failed to create/update retention policy', error)
       throw new Error('Failed to create retention policy')
@@ -188,15 +192,17 @@ export class DataRetentionService {
    */
   private async createRetentionSchedule(policyId: string, cronExpression: string): Promise<void> {
     try {
-      await pool.query(`
+      await pool.query(
+        `
         INSERT INTO retention_schedules (policy_id, cron_expression, next_run_date, is_active)
         VALUES ($1, $2, NOW() + INTERVAL '1 day', true)
         ON CONFLICT (policy_id) DO UPDATE SET
           cron_expression = EXCLUDED.cron_expression,
           is_active = EXCLUDED.is_active,
           updated_at = NOW()
-      `, [policyId, cronExpression])
-
+      `,
+        [policyId, cronExpression]
+      )
     } catch (error) {
       logger.error('Retention', 'Failed to create retention schedule', error)
       throw new Error('Failed to create retention schedule')
@@ -220,7 +226,6 @@ export class DataRetentionService {
       }
 
       logger.info('Retention', `Loaded ${result.rows.length} retention schedules`)
-
     } catch (error) {
       logger.error('Retention', 'Failed to load retention schedules', error)
     }
@@ -231,20 +236,23 @@ export class DataRetentionService {
    */
   private scheduleRetentionJob(schedule: any): void {
     try {
-      const task = cron.schedule(schedule.cron_expression, async () => {
-        await this.executeRetentionPolicy(schedule.policy_id)
-      }, {
-        scheduled: true,
-        timezone: 'UTC'
-      })
+      const task = cron.schedule(
+        schedule.cron_expression,
+        async () => {
+          await this.executeRetentionPolicy(schedule.policy_id)
+        },
+        {
+          scheduled: true,
+          timezone: 'UTC',
+        }
+      )
 
       this.scheduledJobs.set(schedule.policy_id, task)
 
       logger.info('Retention', `Scheduled retention job for policy: ${schedule.policy_id}`, {
         cronExpression: schedule.cron_expression,
-        dataType: schedule.data_type
+        dataType: schedule.data_type,
       })
-
     } catch (error) {
       logger.error('Retention', 'Failed to schedule retention job', error)
     }
@@ -271,7 +279,7 @@ export class DataRetentionService {
       logger.info('Retention', `Executing retention policy: ${policy.name}`, {
         policyId,
         dataType: policy.data_type,
-        cutoffDate: cutoffDate.toISOString()
+        cutoffDate: cutoffDate.toISOString(),
       })
 
       // Check for records to purge
@@ -286,7 +294,7 @@ export class DataRetentionService {
           purgeDate: new Date(),
           reason: 'No records found for deletion',
           status: 'completed',
-          details: { cutoffDate: cutoffDate.toISOString() }
+          details: { cutoffDate: cutoffDate.toISOString() },
         }
       }
 
@@ -313,8 +321,8 @@ export class DataRetentionService {
           cutoffDate: cutoffDate.toISOString(),
           archived: policy.archive_before_delete,
           autoDeleted: policy.auto_delete,
-          recordIds: recordsToDelete.slice(0, 100) // Store first 100 IDs for audit
-        }
+          recordIds: recordsToDelete.slice(0, 100), // Store first 100 IDs for audit
+        },
       }
 
       await this.recordPurgeActivity(purgeRecord)
@@ -327,27 +335,26 @@ export class DataRetentionService {
           policyId,
           dataType: policy.data_type,
           recordsAffected: deletedCount,
-          archived: policy.archive_before_delete
+          archived: policy.archive_before_delete,
         },
         timestamp: new Date(),
         complianceFlags: {
           gdprRelevant: true,
           ccpaRelevant: true,
-          soc2Relevant: true
-        }
+          soc2Relevant: true,
+        },
       })
 
       logger.info('Retention', `Retention policy executed successfully`, {
         policyId,
         recordsAffected: deletedCount,
-        archived: policy.archive_before_delete
+        archived: policy.archive_before_delete,
       })
 
       return purgeRecord
-
     } catch (error) {
       logger.error('Retention', 'Failed to execute retention policy', error)
-      
+
       const errorRecord: PurgeRecord = {
         policyId,
         dataType: 'unknown',
@@ -355,7 +362,7 @@ export class DataRetentionService {
         purgeDate: new Date(),
         reason: `Execution failed: ${error.message}`,
         status: 'failed',
-        details: { error: error.message }
+        details: { error: error.message },
       }
 
       await this.recordPurgeActivity(errorRecord)
@@ -371,8 +378,9 @@ export class DataRetentionService {
       business_contacts: 'SELECT id FROM businesses WHERE created_at < $1',
       user_sessions: 'SELECT id FROM user_sessions WHERE created_at < $1',
       audit_logs: 'SELECT id FROM audit_log WHERE timestamp < $1',
-      consent_records: 'SELECT id FROM consent_records WHERE timestamp < $1 AND status = \'withdrawn\'',
-      scraping_cache: 'SELECT id FROM scraping_cache WHERE created_at < $1'
+      consent_records:
+        "SELECT id FROM consent_records WHERE timestamp < $1 AND status = 'withdrawn'",
+      scraping_cache: 'SELECT id FROM scraping_cache WHERE created_at < $1',
     }
 
     const query = queries[dataType]
@@ -398,27 +406,23 @@ export class DataRetentionService {
         dataType,
         recordIds,
         archivedAt: new Date().toISOString(),
-        archiveId: encryptionService.generateSecureToken(16)
+        archiveId: encryptionService.generateSecureToken(16),
       }
 
       // In a real implementation, this would export to secure archive storage
       // For now, we'll log the archive operation
       logger.info('Retention', `Archived ${recordIds.length} records of type: ${dataType}`, {
-        archiveId: archiveData.archiveId
+        archiveId: archiveData.archiveId,
       })
 
       // Store archive metadata
-      await pool.query(`
+      await pool.query(
+        `
         INSERT INTO data_archives (archive_id, data_type, record_count, archived_at, metadata)
         VALUES ($1, $2, $3, $4, $5)
-      `, [
-        archiveData.archiveId,
-        dataType,
-        recordIds.length,
-        new Date(),
-        JSON.stringify(archiveData)
-      ])
-
+      `,
+        [archiveData.archiveId, dataType, recordIds.length, new Date(), JSON.stringify(archiveData)]
+      )
     } catch (error) {
       logger.error('Retention', 'Failed to archive records', error)
       throw error
@@ -434,7 +438,7 @@ export class DataRetentionService {
       user_sessions: 'DELETE FROM user_sessions WHERE id = ANY($1)',
       audit_logs: 'DELETE FROM audit_log WHERE id = ANY($1)',
       consent_records: 'DELETE FROM consent_records WHERE id = ANY($1)',
-      scraping_cache: 'DELETE FROM scraping_cache WHERE id = ANY($1)'
+      scraping_cache: 'DELETE FROM scraping_cache WHERE id = ANY($1)',
     }
 
     const query = deleteQueries[dataType]
@@ -456,21 +460,24 @@ export class DataRetentionService {
    */
   private async recordPurgeActivity(purgeRecord: PurgeRecord): Promise<void> {
     try {
-      await pool.query(`
+      await pool.query(
+        `
         INSERT INTO purge_records (
           policy_id, data_type, records_affected, purge_date, reason,
           initiated_by, status, details
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      `, [
-        purgeRecord.policyId,
-        purgeRecord.dataType,
-        purgeRecord.recordsAffected,
-        purgeRecord.purgeDate,
-        purgeRecord.reason,
-        purgeRecord.initiatedBy,
-        purgeRecord.status,
-        JSON.stringify(purgeRecord.details)
-      ])
+      `,
+        [
+          purgeRecord.policyId,
+          purgeRecord.dataType,
+          purgeRecord.recordsAffected,
+          purgeRecord.purgeDate,
+          purgeRecord.reason,
+          purgeRecord.initiatedBy,
+          purgeRecord.status,
+          JSON.stringify(purgeRecord.details),
+        ]
+      )
     } catch (error) {
       logger.error('Retention', 'Failed to record purge activity', error)
     }
@@ -482,7 +489,7 @@ export class DataRetentionService {
   async getRetentionPolicies(): Promise<RetentionPolicy[]> {
     try {
       const result = await pool.query('SELECT * FROM retention_policies ORDER BY data_type')
-      
+
       return result.rows.map(row => ({
         id: row.id,
         name: row.name,
@@ -495,9 +502,8 @@ export class DataRetentionService {
         notificationDays: JSON.parse(row.notification_days || '[]'),
         isActive: row.is_active,
         createdAt: row.created_at,
-        updatedAt: row.updated_at
+        updatedAt: row.updated_at,
       }))
-
     } catch (error) {
       logger.error('Retention', 'Failed to get retention policies', error)
       throw new Error('Failed to retrieve retention policies')

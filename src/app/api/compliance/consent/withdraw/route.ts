@@ -19,21 +19,16 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!consentType) {
-      return NextResponse.json(
-        { error: 'Missing required field: consentType' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required field: consentType' }, { status: 400 })
     }
 
     // Validate consent type
     if (!Object.values(ConsentType).includes(consentType)) {
-      return NextResponse.json(
-        { error: 'Invalid consent type' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid consent type' }, { status: 400 })
     }
 
-    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const clientIP =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
     // Withdraw consent
@@ -55,33 +50,29 @@ export async function POST(request: NextRequest) {
       details: {
         consentType,
         reason: reason || 'User requested withdrawal',
-        withdrawnAt: new Date().toISOString()
+        withdrawnAt: new Date().toISOString(),
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Consent Withdrawal API', `Consent withdrawn: ${consentType}`, {
       userId,
       sessionId,
-      reason
+      reason,
     })
 
     return NextResponse.json({
       success: true,
       consentType,
-      message: 'Consent withdrawn successfully'
+      message: 'Consent withdrawn successfully',
     })
-
   } catch (error) {
     logger.error('Consent Withdrawal API', 'Failed to withdraw consent', error)
-    return NextResponse.json(
-      { error: 'Failed to withdraw consent' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to withdraw consent' }, { status: 500 })
   }
 }

@@ -30,22 +30,17 @@ describe('RBAC Service', () => {
           displayName: 'Contributor',
           description: 'Can contribute to campaigns and data',
           isSystemRole: false,
-          permissions: [
-            'campaigns.view',
-            'campaigns.create',
-            'data.view',
-            'data.validate'
-          ],
+          permissions: ['campaigns.view', 'campaigns.create', 'data.view', 'data.validate'],
           createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      }
+          updatedAt: new Date(),
+        },
+      },
     ],
     teams: [],
     workspaces: [],
     preferences: {},
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   }
 
   const mockAdminUser: User = {
@@ -75,13 +70,13 @@ describe('RBAC Service', () => {
             'data.manage',
             'scraping.manage',
             'analytics.manage',
-            'audit.manage'
+            'audit.manage',
           ],
           createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      }
-    ]
+          updatedAt: new Date(),
+        },
+      },
+    ],
   }
 
   describe('checkPermission', () => {
@@ -112,9 +107,9 @@ describe('RBAC Service', () => {
         roles: [
           {
             ...mockUser.roles![0],
-            isActive: false
-          }
-        ]
+            isActive: false,
+          },
+        ],
       }
       const result = checkPermission(userWithInactiveRole, 'campaigns.view')
       expect(result).toBe(false)
@@ -181,7 +176,7 @@ describe('RBAC Service', () => {
           isSystemRole: true,
           permissions: ['system.manage'],
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
         {
           id: 'role-2',
@@ -191,16 +186,16 @@ describe('RBAC Service', () => {
           isSystemRole: false,
           permissions: ['campaigns.view'],
           createdAt: new Date(),
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       ]
 
       // Mock the database query
       const mockDatabase = { query: jest.fn().mockResolvedValue({ rows: mockRoles }) }
-      
+
       // This would need to be properly mocked in the actual implementation
       const roles = mockRoles // Simulating the service call
-      
+
       expect(roles).toHaveLength(2)
       expect(roles[0].name).toBe('admin')
       expect(roles[1].name).toBe('contributor')
@@ -210,7 +205,7 @@ describe('RBAC Service', () => {
   describe('RBACService.getAllPermissions', () => {
     it('should return all available permissions', () => {
       const permissions = RBACService.getAllPermissions()
-      
+
       expect(permissions).toContain('system.manage')
       expect(permissions).toContain('users.manage')
       expect(permissions).toContain('campaigns.view')
@@ -220,12 +215,12 @@ describe('RBAC Service', () => {
 
     it('should group permissions by category', () => {
       const groupedPermissions = RBACService.getPermissionsByCategory()
-      
+
       expect(groupedPermissions).toHaveProperty('system')
       expect(groupedPermissions).toHaveProperty('users')
       expect(groupedPermissions).toHaveProperty('campaigns')
       expect(groupedPermissions).toHaveProperty('data')
-      
+
       expect(groupedPermissions.system).toContain('system.manage')
       expect(groupedPermissions.users).toContain('users.manage')
       expect(groupedPermissions.campaigns).toContain('campaigns.view')
@@ -259,11 +254,11 @@ describe('RBAC Service', () => {
                 'data.validate',
                 'data.export',
                 'analytics.view',
-                'users.invite'
-              ]
-            }
-          }
-        ]
+                'users.invite',
+              ],
+            },
+          },
+        ],
       }
 
       expect(checkPermission(managerUser, 'analytics.view')).toBe(true)
@@ -314,9 +309,9 @@ describe('RBAC Service', () => {
             isSystemRole: false,
             permissions: [`test${i}.view`, `test${i}.edit`],
             createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        }))
+            updatedAt: new Date(),
+          },
+        })),
       }
 
       const startTime = Date.now()

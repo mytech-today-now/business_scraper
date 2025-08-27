@@ -29,28 +29,22 @@ export function withAuth(
     try {
       // If public access is allowed and no session is provided, proceed
       const sessionId = request.cookies.get('session-id')?.value
-      
+
       if (!sessionId) {
         if (allowPublic || !required) {
           return handler(request, { authenticated: false })
         }
-        
+
         logger.warn('Auth Middleware', `Authentication required for ${pathname} from IP: ${ip}`)
-        return NextResponse.json(
-          { error: 'Authentication required' },
-          { status: 401 }
-        )
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
       }
 
       // Validate session
       const session = getSession(sessionId)
-      
+
       if (!session || !session.isValid) {
         logger.warn('Auth Middleware', `Invalid session for ${pathname} from IP: ${ip}`)
-        const response = NextResponse.json(
-          { error: 'Invalid session' },
-          { status: 401 }
-        )
+        const response = NextResponse.json({ error: 'Invalid session' }, { status: 401 })
         response.cookies.delete('session-id')
         return response
       }
@@ -60,18 +54,14 @@ export function withAuth(
         authenticated: true,
         sessionId: session.id,
         userId: 'admin', // Single user system
-        csrfToken: session.csrfToken
+        csrfToken: session.csrfToken,
       }
 
       // Call handler with auth context
       return handler(request, authContext)
-
     } catch (error) {
       logger.error('Auth Middleware', `Authentication error for ${pathname}`, error)
-      return NextResponse.json(
-        { error: 'Authentication error' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Authentication error' }, { status: 500 })
     }
   }
 }
@@ -111,7 +101,7 @@ export function getAuthContext(request: NextRequest): AuthContext | null {
     authenticated: true,
     sessionId: session.id,
     userId: 'admin',
-    csrfToken: session.csrfToken
+    csrfToken: session.csrfToken,
   }
 }
 
@@ -124,19 +114,13 @@ export function requireAuth(request: NextRequest): NextResponse | null {
 
   if (!sessionId) {
     logger.warn('Auth Check', `No session provided from IP: ${ip}`)
-    return NextResponse.json(
-      { error: 'Authentication required' },
-      { status: 401 }
-    )
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
   }
 
   const session = getSession(sessionId)
   if (!session || !session.isValid) {
     logger.warn('Auth Check', `Invalid session from IP: ${ip}`)
-    const response = NextResponse.json(
-      { error: 'Invalid session' },
-      { status: 401 }
-    )
+    const response = NextResponse.json({ error: 'Invalid session' }, { status: 401 })
     response.cookies.delete('session-id')
     return response
   }
@@ -162,7 +146,7 @@ export function optionalAuth(request: NextRequest): AuthContext {
     authenticated: true,
     sessionId: session.id,
     userId: 'admin',
-    csrfToken: session.csrfToken
+    csrfToken: session.csrfToken,
   }
 }
 
@@ -173,9 +157,9 @@ export function addAuthHeaders(response: NextResponse, authContext: AuthContext)
   if (authContext.authenticated && authContext.csrfToken) {
     response.headers.set('X-CSRF-Token', authContext.csrfToken)
   }
-  
+
   response.headers.set('X-Authenticated', authContext.authenticated ? 'true' : 'false')
-  
+
   return response
 }
 
@@ -204,18 +188,15 @@ export function validateAndRefreshSession(request: NextRequest): {
   authContext?: AuthContext
 } {
   const sessionId = request.cookies.get('session-id')?.value
-  
+
   if (!sessionId) {
     return { valid: false }
   }
 
   const session = getSession(sessionId)
-  
+
   if (!session || !session.isValid) {
-    const response = NextResponse.json(
-      { error: 'Session expired' },
-      { status: 401 }
-    )
+    const response = NextResponse.json({ error: 'Session expired' }, { status: 401 })
     response.cookies.delete('session-id')
     return { valid: false, response }
   }
@@ -225,7 +206,7 @@ export function validateAndRefreshSession(request: NextRequest): {
     authenticated: true,
     sessionId: session.id,
     userId: 'admin',
-    csrfToken: session.csrfToken
+    csrfToken: session.csrfToken,
   }
 
   return { valid: true, authContext }

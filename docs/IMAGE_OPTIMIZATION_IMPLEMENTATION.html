@@ -1,50 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Optimization Implementation - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Image Optimization Implementation</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Image Optimization Implementation</h1>
-<p><strong>Date</strong>: 2025-08-14<br><strong>Commit</strong>: b56ebf1<br><strong>Task</strong>: Replace <code>&lt;img&gt;</code> elements with Next.js <code>&lt;Image&gt;</code> components for better performance</p>
-<h2>Overview</h2>
-<p>Successfully implemented comprehensive image optimization across the Business Scraper application by replacing traditional <code>&lt;img&gt;</code> elements with Next.js <code>&lt;Image&gt;</code> components and configuring advanced optimization settings.</p>
-<h2>Changes Made</h2>
-<h3>1. Component Updates</h3>
-<h4><code>src/view/components/App.tsx</code></h4>
-<p><strong>Before:</strong></p>
-<pre><code class="language-jsx">&lt;img
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Image Optimization Implementation
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Image Optimization Implementation</h1>
+        <p>
+          <strong>Date</strong>: 2025-08-14<br /><strong>Commit</strong>: b56ebf1<br /><strong
+            >Task</strong
+          >: Replace <code>&lt;img&gt;</code> elements with Next.js
+          <code>&lt;Image&gt;</code> components for better performance
+        </p>
+        <h2>Overview</h2>
+        <p>
+          Successfully implemented comprehensive image optimization across the Business Scraper
+          application by replacing traditional <code>&lt;img&gt;</code> elements with Next.js
+          <code>&lt;Image&gt;</code> components and configuring advanced optimization settings.
+        </p>
+        <h2>Changes Made</h2>
+        <h3>1. Component Updates</h3>
+        <h4><code>src/view/components/App.tsx</code></h4>
+        <p><strong>Before:</strong></p>
+        <pre><code class="language-jsx">&lt;img
   src=&quot;/favicon.ico&quot;
   alt=&quot;Business Scraper Logo&quot;
   className=&quot;h-8 w-8 object-contain&quot;
 /&gt;
 </code></pre>
-<p><strong>After:</strong></p>
-<pre><code class="language-jsx">&lt;Image
+        <p><strong>After:</strong></p>
+        <pre><code class="language-jsx">&lt;Image
   src=&quot;/favicon.ico&quot;
   alt=&quot;Business Scraper Logo&quot;
   width={32}
@@ -55,26 +69,26 @@
   quality={90}
 /&gt;
 </code></pre>
-<p><strong>Changes:</strong></p>
-<ul>
-<li>Added <code>import Image from &#39;next/image&#39;</code></li>
-<li>Replaced <code>&lt;img&gt;</code> with <code>&lt;Image&gt;</code> component</li>
-<li>Added explicit <code>width={32}</code> and <code>height={32}</code> dimensions</li>
-<li>Added <code>priority</code> loading for above-the-fold image</li>
-<li>Added <code>sizes=&quot;32px&quot;</code> for responsive optimization</li>
-<li>Added <code>quality={90}</code> for high-quality display</li>
-<li>Removed Tailwind size classes (h-8 w-8) in favor of explicit dimensions</li>
-</ul>
-<h4><code>src/app/login/page.tsx</code></h4>
-<p><strong>Before:</strong></p>
-<pre><code class="language-jsx">&lt;img
+        <p><strong>Changes:</strong></p>
+        <ul>
+          <li>Added <code>import Image from &#39;next/image&#39;</code></li>
+          <li>Replaced <code>&lt;img&gt;</code> with <code>&lt;Image&gt;</code> component</li>
+          <li>Added explicit <code>width={32}</code> and <code>height={32}</code> dimensions</li>
+          <li>Added <code>priority</code> loading for above-the-fold image</li>
+          <li>Added <code>sizes=&quot;32px&quot;</code> for responsive optimization</li>
+          <li>Added <code>quality={90}</code> for high-quality display</li>
+          <li>Removed Tailwind size classes (h-8 w-8) in favor of explicit dimensions</li>
+        </ul>
+        <h4><code>src/app/login/page.tsx</code></h4>
+        <p><strong>Before:</strong></p>
+        <pre><code class="language-jsx">&lt;img
   src=&quot;/favicon.ico&quot;
   alt=&quot;Business Scraper Logo&quot;
   className=&quot;h-10 w-10 object-contain&quot;
 /&gt;
 </code></pre>
-<p><strong>After:</strong></p>
-<pre><code class="language-jsx">&lt;Image
+        <p><strong>After:</strong></p>
+        <pre><code class="language-jsx">&lt;Image
   src=&quot;/favicon.ico&quot;
   alt=&quot;Business Scraper Logo&quot;
   width={40}
@@ -85,20 +99,20 @@
   quality={90}
 /&gt;
 </code></pre>
-<p><strong>Changes:</strong></p>
-<ul>
-<li>Added <code>import Image from &#39;next/image&#39;</code></li>
-<li>Replaced <code>&lt;img&gt;</code> with <code>&lt;Image&gt;</code> component</li>
-<li>Added explicit <code>width={40}</code> and <code>height={40}</code> dimensions</li>
-<li>Added <code>priority</code> loading for above-the-fold image</li>
-<li>Added <code>sizes=&quot;40px&quot;</code> for responsive optimization</li>
-<li>Added <code>quality={90}</code> for high-quality display</li>
-<li>Removed Tailwind size classes (h-10 w-10) in favor of explicit dimensions</li>
-</ul>
-<h3>2. Configuration Updates</h3>
-<h4><code>next.config.js</code></h4>
-<p><strong>Added comprehensive image optimization configuration:</strong></p>
-<pre><code class="language-javascript">// Image optimization configuration
+        <p><strong>Changes:</strong></p>
+        <ul>
+          <li>Added <code>import Image from &#39;next/image&#39;</code></li>
+          <li>Replaced <code>&lt;img&gt;</code> with <code>&lt;Image&gt;</code> component</li>
+          <li>Added explicit <code>width={40}</code> and <code>height={40}</code> dimensions</li>
+          <li>Added <code>priority</code> loading for above-the-fold image</li>
+          <li>Added <code>sizes=&quot;40px&quot;</code> for responsive optimization</li>
+          <li>Added <code>quality={90}</code> for high-quality display</li>
+          <li>Removed Tailwind size classes (h-10 w-10) in favor of explicit dimensions</li>
+        </ul>
+        <h3>2. Configuration Updates</h3>
+        <h4><code>next.config.js</code></h4>
+        <p><strong>Added comprehensive image optimization configuration:</strong></p>
+        <pre><code class="language-javascript">// Image optimization configuration
 images: {
   formats: [&#39;image/webp&#39;, &#39;image/avif&#39;],
   deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -113,21 +127,21 @@ images: {
   unoptimized: false,
 },
 </code></pre>
-<p><strong>Updated CSP header:</strong></p>
-<pre><code class="language-javascript">&quot;img-src &#39;self&#39; data: blob: https: /_next/image* /_next/static/*&quot;
+        <p><strong>Updated CSP header:</strong></p>
+        <pre><code class="language-javascript">&quot;img-src &#39;self&#39; data: blob: https: /_next/image* /_next/static/*&quot;
 </code></pre>
-<p><strong>Features:</strong></p>
-<ul>
-<li><strong>Modern formats</strong>: WebP and AVIF support for smaller file sizes</li>
-<li><strong>Responsive breakpoints</strong>: Device-specific image sizes</li>
-<li><strong>External domains</strong>: Configured for geocoding services</li>
-<li><strong>Security</strong>: Disabled dangerous SVG handling with CSP</li>
-<li><strong>Caching</strong>: 60-second minimum cache TTL</li>
-<li><strong>CSP compatibility</strong>: Added Next.js image optimization endpoints</li>
-</ul>
-<h4><code>src/lib/cspConfig.ts</code></h4>
-<p><strong>Updated production CSP configuration:</strong></p>
-<pre><code class="language-javascript">imgSrc: [
+        <p><strong>Features:</strong></p>
+        <ul>
+          <li><strong>Modern formats</strong>: WebP and AVIF support for smaller file sizes</li>
+          <li><strong>Responsive breakpoints</strong>: Device-specific image sizes</li>
+          <li><strong>External domains</strong>: Configured for geocoding services</li>
+          <li><strong>Security</strong>: Disabled dangerous SVG handling with CSP</li>
+          <li><strong>Caching</strong>: 60-second minimum cache TTL</li>
+          <li><strong>CSP compatibility</strong>: Added Next.js image optimization endpoints</li>
+        </ul>
+        <h4><code>src/lib/cspConfig.ts</code></h4>
+        <p><strong>Updated production CSP configuration:</strong></p>
+        <pre><code class="language-javascript">imgSrc: [
   &quot;&#39;self&#39;&quot;,
   &quot;data:&quot;,
   &quot;blob:&quot;,
@@ -138,23 +152,23 @@ images: {
   &quot;/_next/static/*&quot; // Next.js static assets
 ],
 </code></pre>
-<p><strong>Purpose:</strong></p>
-<ul>
-<li>Ensures Next.js image optimization works with strict CSP</li>
-<li>Allows optimized image delivery through Next.js endpoints</li>
-<li>Maintains security while enabling performance features</li>
-</ul>
-<h3>3. Asset Structure</h3>
-<h4>Created <code>public/</code> Directory</h4>
-<p><strong>New files:</strong></p>
-<ul>
-<li><code>public/favicon.ico</code> - Moved from <code>src/app/favicon.ico</code></li>
-<li><code>public/favicon.png</code> - Moved from <code>src/app/favicon.png</code></li>
-<li><code>public/manifest.json</code> - New PWA manifest</li>
-</ul>
-<h4><code>public/manifest.json</code></h4>
-<p><strong>New PWA manifest for enhanced mobile experience:</strong></p>
-<pre><code class="language-json">{
+        <p><strong>Purpose:</strong></p>
+        <ul>
+          <li>Ensures Next.js image optimization works with strict CSP</li>
+          <li>Allows optimized image delivery through Next.js endpoints</li>
+          <li>Maintains security while enabling performance features</li>
+        </ul>
+        <h3>3. Asset Structure</h3>
+        <h4>Created <code>public/</code> Directory</h4>
+        <p><strong>New files:</strong></p>
+        <ul>
+          <li><code>public/favicon.ico</code> - Moved from <code>src/app/favicon.ico</code></li>
+          <li><code>public/favicon.png</code> - Moved from <code>src/app/favicon.png</code></li>
+          <li><code>public/manifest.json</code> - New PWA manifest</li>
+        </ul>
+        <h4><code>public/manifest.json</code></h4>
+        <p><strong>New PWA manifest for enhanced mobile experience:</strong></p>
+        <pre><code class="language-json">{
   &quot;name&quot;: &quot;Business Scraper App&quot;,
   &quot;short_name&quot;: &quot;Business Scraper&quot;,
   &quot;description&quot;: &quot;A comprehensive business web scraping application for contact data collection&quot;,
@@ -176,118 +190,142 @@ images: {
   ]
 }
 </code></pre>
-<h3>4. Test Implementation</h3>
-<h4><code>src/__tests__/image-optimization.test.tsx</code></h4>
-<p><strong>New test suite for App component image optimization:</strong></p>
-<ul>
-<li>Tests Next.js Image component rendering</li>
-<li>Validates optimization attributes (priority, sizes, quality)</li>
-<li>Ensures proper alt text for accessibility</li>
-<li>Mocks Next.js Image component for testing</li>
-</ul>
-<h4><code>src/__tests__/login-image-optimization.test.tsx</code></h4>
-<p><strong>New test suite for login page image optimization:</strong></p>
-<ul>
-<li>Tests login page Image component rendering</li>
-<li>Validates optimization settings</li>
-<li>Ensures accessibility compliance</li>
-<li>Mocks required dependencies (router, CSRF protection)</li>
-</ul>
-<h2>Performance Benefits</h2>
-<h3>1. <strong>Improved Core Web Vitals</strong></h3>
-<ul>
-<li><strong>LCP (Largest Contentful Paint)</strong>: Faster image loading with optimized formats</li>
-<li><strong>CLS (Cumulative Layout Shift)</strong>: Prevented with explicit dimensions</li>
-<li><strong>FCP (First Contentful Paint)</strong>: Priority loading for above-the-fold images</li>
-</ul>
-<h3>2. <strong>Bandwidth Optimization</strong></h3>
-<ul>
-<li><strong>Modern formats</strong>: WebP/AVIF reduce file sizes by 25-50%</li>
-<li><strong>Responsive delivery</strong>: Right-sized images for each device</li>
-<li><strong>Lazy loading</strong>: Non-critical images load on demand</li>
-</ul>
-<h3>3. <strong>User Experience</strong></h3>
-<ul>
-<li><strong>No layout shift</strong>: Explicit width/height prevent reflow</li>
-<li><strong>Faster perceived loading</strong>: Priority loading for critical images</li>
-<li><strong>Progressive enhancement</strong>: Fallback to standard formats when needed</li>
-</ul>
-<h3>4. <strong>SEO Benefits</strong></h3>
-<ul>
-<li><strong>Better Core Web Vitals scores</strong>: Improved search rankings</li>
-<li><strong>Accessibility maintained</strong>: Proper alt text and semantic markup</li>
-<li><strong>Mobile optimization</strong>: Responsive images for all devices</li>
-</ul>
-<h2>Technical Implementation Details</h2>
-<h3>Image Component Features Used</h3>
-<ul>
-<li><strong><code>priority</code></strong>: Preloads above-the-fold images</li>
-<li><strong><code>sizes</code></strong>: Responsive image sizing hints</li>
-<li><strong><code>quality</code></strong>: High-quality rendering (90%)</li>
-<li><strong>Explicit dimensions</strong>: Prevents layout shift</li>
-<li><strong>Modern formats</strong>: Automatic WebP/AVIF conversion</li>
-</ul>
-<h3>CSP Compatibility</h3>
-<ul>
-<li>Added <code>/_next/image*</code> for optimization endpoint</li>
-<li>Added <code>/_next/static/*</code> for static assets</li>
-<li>Maintained security while enabling optimization</li>
-</ul>
-<h3>Asset Organization</h3>
-<ul>
-<li>Moved favicons to standard <code>public/</code> directory</li>
-<li>Added PWA manifest for mobile experience</li>
-<li>Maintained backward compatibility</li>
-</ul>
-<h2>Testing and Validation</h2>
-<h3>Development Server</h3>
-<ul>
-<li>✅ Successfully starts with new configuration</li>
-<li>✅ Images load correctly with optimization</li>
-<li>✅ No TypeScript or build errors</li>
-<li>✅ CSP headers work with image optimization</li>
-</ul>
-<h3>Image Optimization Verification</h3>
-<ul>
-<li>✅ Next.js Image components render properly</li>
-<li>✅ Optimization attributes applied correctly</li>
-<li>✅ Accessibility maintained with alt text</li>
-<li>✅ Responsive sizing works as expected</li>
-</ul>
-<h2>Future Considerations</h2>
-<h3>Additional Optimizations</h3>
-<ol>
-<li><strong>Dynamic imports</strong>: Consider lazy loading for large image galleries</li>
-<li><strong>Blur placeholders</strong>: Add blur-up effect for better UX</li>
-<li><strong>Art direction</strong>: Use different images for different screen sizes</li>
-<li><strong>WebP/AVIF fallbacks</strong>: Ensure compatibility with older browsers</li>
-</ol>
-<h3>Monitoring</h3>
-<ol>
-<li><strong>Core Web Vitals</strong>: Monitor LCP improvements</li>
-<li><strong>Bundle analysis</strong>: Track image optimization impact</li>
-<li><strong>Performance metrics</strong>: Measure bandwidth savings</li>
-<li><strong>User experience</strong>: Monitor loading performance</li>
-</ol>
-<h2>Conclusion</h2>
-<p>The image optimization implementation successfully modernizes the application&#39;s image handling, providing significant performance benefits while maintaining full accessibility and security compliance. The changes are backward-compatible and follow Next.js best practices for optimal image delivery.</p>
+        <h3>4. Test Implementation</h3>
+        <h4><code>src/__tests__/image-optimization.test.tsx</code></h4>
+        <p><strong>New test suite for App component image optimization:</strong></p>
+        <ul>
+          <li>Tests Next.js Image component rendering</li>
+          <li>Validates optimization attributes (priority, sizes, quality)</li>
+          <li>Ensures proper alt text for accessibility</li>
+          <li>Mocks Next.js Image component for testing</li>
+        </ul>
+        <h4><code>src/__tests__/login-image-optimization.test.tsx</code></h4>
+        <p><strong>New test suite for login page image optimization:</strong></p>
+        <ul>
+          <li>Tests login page Image component rendering</li>
+          <li>Validates optimization settings</li>
+          <li>Ensures accessibility compliance</li>
+          <li>Mocks required dependencies (router, CSRF protection)</li>
+        </ul>
+        <h2>Performance Benefits</h2>
+        <h3>1. <strong>Improved Core Web Vitals</strong></h3>
+        <ul>
+          <li>
+            <strong>LCP (Largest Contentful Paint)</strong>: Faster image loading with optimized
+            formats
+          </li>
+          <li>
+            <strong>CLS (Cumulative Layout Shift)</strong>: Prevented with explicit dimensions
+          </li>
+          <li>
+            <strong>FCP (First Contentful Paint)</strong>: Priority loading for above-the-fold
+            images
+          </li>
+        </ul>
+        <h3>2. <strong>Bandwidth Optimization</strong></h3>
+        <ul>
+          <li><strong>Modern formats</strong>: WebP/AVIF reduce file sizes by 25-50%</li>
+          <li><strong>Responsive delivery</strong>: Right-sized images for each device</li>
+          <li><strong>Lazy loading</strong>: Non-critical images load on demand</li>
+        </ul>
+        <h3>3. <strong>User Experience</strong></h3>
+        <ul>
+          <li><strong>No layout shift</strong>: Explicit width/height prevent reflow</li>
+          <li><strong>Faster perceived loading</strong>: Priority loading for critical images</li>
+          <li>
+            <strong>Progressive enhancement</strong>: Fallback to standard formats when needed
+          </li>
+        </ul>
+        <h3>4. <strong>SEO Benefits</strong></h3>
+        <ul>
+          <li><strong>Better Core Web Vitals scores</strong>: Improved search rankings</li>
+          <li><strong>Accessibility maintained</strong>: Proper alt text and semantic markup</li>
+          <li><strong>Mobile optimization</strong>: Responsive images for all devices</li>
+        </ul>
+        <h2>Technical Implementation Details</h2>
+        <h3>Image Component Features Used</h3>
+        <ul>
+          <li>
+            <strong><code>priority</code></strong
+            >: Preloads above-the-fold images
+          </li>
+          <li>
+            <strong><code>sizes</code></strong
+            >: Responsive image sizing hints
+          </li>
+          <li>
+            <strong><code>quality</code></strong
+            >: High-quality rendering (90%)
+          </li>
+          <li><strong>Explicit dimensions</strong>: Prevents layout shift</li>
+          <li><strong>Modern formats</strong>: Automatic WebP/AVIF conversion</li>
+        </ul>
+        <h3>CSP Compatibility</h3>
+        <ul>
+          <li>Added <code>/_next/image*</code> for optimization endpoint</li>
+          <li>Added <code>/_next/static/*</code> for static assets</li>
+          <li>Maintained security while enabling optimization</li>
+        </ul>
+        <h3>Asset Organization</h3>
+        <ul>
+          <li>Moved favicons to standard <code>public/</code> directory</li>
+          <li>Added PWA manifest for mobile experience</li>
+          <li>Maintained backward compatibility</li>
+        </ul>
+        <h2>Testing and Validation</h2>
+        <h3>Development Server</h3>
+        <ul>
+          <li>✅ Successfully starts with new configuration</li>
+          <li>✅ Images load correctly with optimization</li>
+          <li>✅ No TypeScript or build errors</li>
+          <li>✅ CSP headers work with image optimization</li>
+        </ul>
+        <h3>Image Optimization Verification</h3>
+        <ul>
+          <li>✅ Next.js Image components render properly</li>
+          <li>✅ Optimization attributes applied correctly</li>
+          <li>✅ Accessibility maintained with alt text</li>
+          <li>✅ Responsive sizing works as expected</li>
+        </ul>
+        <h2>Future Considerations</h2>
+        <h3>Additional Optimizations</h3>
+        <ol>
+          <li><strong>Dynamic imports</strong>: Consider lazy loading for large image galleries</li>
+          <li><strong>Blur placeholders</strong>: Add blur-up effect for better UX</li>
+          <li><strong>Art direction</strong>: Use different images for different screen sizes</li>
+          <li><strong>WebP/AVIF fallbacks</strong>: Ensure compatibility with older browsers</li>
+        </ol>
+        <h3>Monitoring</h3>
+        <ol>
+          <li><strong>Core Web Vitals</strong>: Monitor LCP improvements</li>
+          <li><strong>Bundle analysis</strong>: Track image optimization impact</li>
+          <li><strong>Performance metrics</strong>: Measure bandwidth savings</li>
+          <li><strong>User experience</strong>: Monitor loading performance</li>
+        </ol>
+        <h2>Conclusion</h2>
+        <p>
+          The image optimization implementation successfully modernizes the application&#39;s image
+          handling, providing significant performance benefits while maintaining full accessibility
+          and security compliance. The changes are backward-compatible and follow Next.js best
+          practices for optimal image delivery.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

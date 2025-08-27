@@ -16,15 +16,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Check if dynamic registration is enabled
     if (!clientRegistrationConfig.allowDynamicRegistration) {
-      return createErrorResponse({
-        error: 'invalid_request',
-        errorDescription: 'Dynamic client registration is not enabled',
-      }, 403)
+      return createErrorResponse(
+        {
+          error: 'invalid_request',
+          errorDescription: 'Dynamic client registration is not enabled',
+        },
+        403
+      )
     }
 
     // Parse registration request
     const body = await request.json()
-    
+
     const registrationRequest: ClientRegistrationRequest = {
       clientName: body.client_name,
       clientType: body.client_type || 'public',
@@ -50,7 +53,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!registrationRequest.redirectUris || registrationRequest.redirectUris.length === 0) {
       // Allow empty redirect URIs only for client_credentials grant
-      const grantTypes = registrationRequest.grantTypes || clientRegistrationConfig.defaultGrantTypes
+      const grantTypes =
+        registrationRequest.grantTypes || clientRegistrationConfig.defaultGrantTypes
       if (!grantTypes.includes('client_credentials')) {
         return createErrorResponse({
           error: 'invalid_request',
@@ -95,12 +99,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const registrationResponse = clientService.registerClient(registrationRequest)
 
     logger.info('OAuth', `New client registered: ${registrationResponse.clientId}`)
-    
-    return NextResponse.json(registrationResponse, { status: 201 })
 
+    return NextResponse.json(registrationResponse, { status: 201 })
   } catch (error) {
     logger.error('OAuth', 'Client registration error', error)
-    
+
     if (error instanceof Error) {
       return createErrorResponse({
         error: 'invalid_request',
@@ -120,10 +123,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  */
 export async function GET(): Promise<NextResponse> {
   if (!clientRegistrationConfig.allowDynamicRegistration) {
-    return createErrorResponse({
-      error: 'invalid_request',
-      errorDescription: 'Dynamic client registration is not enabled',
-    }, 403)
+    return createErrorResponse(
+      {
+        error: 'invalid_request',
+        errorDescription: 'Dynamic client registration is not enabled',
+      },
+      403
+    )
   }
 
   const registrationInfo = {
@@ -147,9 +153,13 @@ export async function GET(): Promise<NextResponse> {
 function isValidRedirectUri(uri: string): boolean {
   try {
     const url = new URL(uri)
-    
+
     // Allow HTTP only for localhost in development
-    if (url.protocol === 'http:' && url.hostname !== 'localhost' && process.env.NODE_ENV === 'production') {
+    if (
+      url.protocol === 'http:' &&
+      url.hostname !== 'localhost' &&
+      process.env.NODE_ENV === 'production'
+    ) {
       return false
     }
 

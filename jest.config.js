@@ -93,8 +93,8 @@ const customJestConfig = {
   // Global test configuration
   globals: {
     'ts-jest': {
-      useESM: true
-    }
+      useESM: true,
+    },
   },
   // Global setup and teardown
   globalSetup: '<rootDir>/src/__tests__/setup/globalSetup.js',

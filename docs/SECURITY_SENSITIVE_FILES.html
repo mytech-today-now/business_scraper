@@ -1,188 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🔐 Security Guide: Handling Sensitive Files - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">🔐 Security Guide: Handling Sensitive Files</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>🔐 Security Guide: Handling Sensitive Files</h1>
-<h2>🚨 Critical Security Notice</h2>
-<p>This repository is configured to <strong>automatically exclude sensitive files</strong> containing API keys, credentials, and other confidential information from version control.</p>
-<h2>📋 Protected File Patterns</h2>
-<p>The <code>.gitignore</code> file automatically excludes:</p>
-<h3>🔑 API Keys &amp; Credentials</h3>
-<ul>
-<li><code>REAL_SCRAPING_GUIDE.md</code> - Contains actual API keys</li>
-<li><code>*api-credentials*.txt</code> - API credential backup files</li>
-<li><code>*-with-keys.md</code> - Documentation with real keys</li>
-<li><code>*production-config*.md</code> - Production configuration files</li>
-</ul>
-<h3>🗂️ Sensitive Documentation</h3>
-<ul>
-<li><code>*SECRET*.md</code> - Secret documentation</li>
-<li><code>*PRIVATE*.md</code> - Private documentation</li>
-<li><code>*CREDENTIAL*.md</code> - Credential files</li>
-<li><code>*-sensitive.md</code> - Sensitive configuration files</li>
-</ul>
-<h3>💾 Backup &amp; Temporary Files</h3>
-<ul>
-<li><code>*.backup</code> - Backup files</li>
-<li><code>*-backup.*</code> - Backup files with extensions</li>
-<li><code>*.tmp</code> - Temporary files</li>
-<li><code>/tmp/</code> - Temporary directories</li>
-</ul>
-<h3>🚀 Deployment &amp; Infrastructure</h3>
-<ul>
-<li><code>deploy-*.sh</code> - Deployment scripts with credentials</li>
-<li><code>terraform.tfvars</code> - Terraform variables with secrets</li>
-<li><code>*-secret.yaml</code> - Kubernetes secrets</li>
-</ul>
-<h2>✅ Safe Practices</h2>
-<h3>1. Use Example Templates</h3>
-<p>Instead of committing sensitive files, create <code>.example</code> versions:</p>
-<pre><code>REAL_SCRAPING_GUIDE.md          ❌ (contains real API keys)
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              🔐 Security Guide: Handling Sensitive Files
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>🔐 Security Guide: Handling Sensitive Files</h1>
+        <h2>🚨 Critical Security Notice</h2>
+        <p>
+          This repository is configured to
+          <strong>automatically exclude sensitive files</strong> containing API keys, credentials,
+          and other confidential information from version control.
+        </p>
+        <h2>📋 Protected File Patterns</h2>
+        <p>The <code>.gitignore</code> file automatically excludes:</p>
+        <h3>🔑 API Keys &amp; Credentials</h3>
+        <ul>
+          <li><code>REAL_SCRAPING_GUIDE.md</code> - Contains actual API keys</li>
+          <li><code>*api-credentials*.txt</code> - API credential backup files</li>
+          <li><code>*-with-keys.md</code> - Documentation with real keys</li>
+          <li><code>*production-config*.md</code> - Production configuration files</li>
+        </ul>
+        <h3>🗂️ Sensitive Documentation</h3>
+        <ul>
+          <li><code>*SECRET*.md</code> - Secret documentation</li>
+          <li><code>*PRIVATE*.md</code> - Private documentation</li>
+          <li><code>*CREDENTIAL*.md</code> - Credential files</li>
+          <li><code>*-sensitive.md</code> - Sensitive configuration files</li>
+        </ul>
+        <h3>💾 Backup &amp; Temporary Files</h3>
+        <ul>
+          <li><code>*.backup</code> - Backup files</li>
+          <li><code>*-backup.*</code> - Backup files with extensions</li>
+          <li><code>*.tmp</code> - Temporary files</li>
+          <li><code>/tmp/</code> - Temporary directories</li>
+        </ul>
+        <h3>🚀 Deployment &amp; Infrastructure</h3>
+        <ul>
+          <li><code>deploy-*.sh</code> - Deployment scripts with credentials</li>
+          <li><code>terraform.tfvars</code> - Terraform variables with secrets</li>
+          <li><code>*-secret.yaml</code> - Kubernetes secrets</li>
+        </ul>
+        <h2>✅ Safe Practices</h2>
+        <h3>1. Use Example Templates</h3>
+        <p>Instead of committing sensitive files, create <code>.example</code> versions:</p>
+        <pre><code>REAL_SCRAPING_GUIDE.md          ❌ (contains real API keys)
 REAL_SCRAPING_GUIDE.example.md  ✅ (safe template)
 
 api-credentials.txt             ❌ (contains real credentials)
 api-credentials.example.txt     ✅ (safe template)
 </code></pre>
-<h3>2. Environment Variables</h3>
-<p>Store sensitive data in environment variables:</p>
-<pre><code class="language-bash"># .env (excluded from git)
+        <h3>2. Environment Variables</h3>
+        <p>Store sensitive data in environment variables:</p>
+        <pre><code class="language-bash"># .env (excluded from git)
 GOOGLE_MAPS_API_KEY=your_real_key_here
 GOOGLE_SEARCH_API_KEY=your_real_key_here
 AZURE_AI_KEY=your_real_key_here
 </code></pre>
-<h3>3. Configuration Files</h3>
-<p>Use separate configuration files for different environments:</p>
-<pre><code>config/
+        <h3>3. Configuration Files</h3>
+        <p>Use separate configuration files for different environments:</p>
+        <pre><code>config/
 ├── development.env.example     ✅ (safe template)
 ├── production.env.example      ✅ (safe template)
 ├── development.env             ❌ (excluded from git)
 └── production.env              ❌ (excluded from git)
 </code></pre>
-<h2>🛠️ Developer Workflow</h2>
-<h3>Setting Up Local Development</h3>
-<ol>
-<li><p><strong>Copy example files:</strong></p>
-<pre><code class="language-bash">cp REAL_SCRAPING_GUIDE.example.md REAL_SCRAPING_GUIDE.md
+        <h2>🛠️ Developer Workflow</h2>
+        <h3>Setting Up Local Development</h3>
+        <ol>
+          <li>
+            <p><strong>Copy example files:</strong></p>
+            <pre><code class="language-bash">cp REAL_SCRAPING_GUIDE.example.md REAL_SCRAPING_GUIDE.md
 cp config/development.env.example config/development.env
 </code></pre>
-</li>
-<li><p><strong>Add your real API keys:</strong></p>
-<pre><code class="language-bash"># Edit the copied files with your actual credentials
+          </li>
+          <li>
+            <p><strong>Add your real API keys:</strong></p>
+            <pre><code class="language-bash"># Edit the copied files with your actual credentials
 nano REAL_SCRAPING_GUIDE.md
 nano config/development.env
 </code></pre>
-</li>
-<li><p><strong>Verify files are ignored:</strong></p>
-<pre><code class="language-bash">git status
+          </li>
+          <li>
+            <p><strong>Verify files are ignored:</strong></p>
+            <pre><code class="language-bash">git status
 # Should not show your sensitive files
 </code></pre>
-</li>
-</ol>
-<h3>Before Committing</h3>
-<p>Always check that sensitive files are not being committed:</p>
-<pre><code class="language-bash"># Check what files will be committed
+          </li>
+        </ol>
+        <h3>Before Committing</h3>
+        <p>Always check that sensitive files are not being committed:</p>
+        <pre><code class="language-bash"># Check what files will be committed
 git status
 
 # Verify no sensitive patterns are included
 git ls-files | grep -E &quot;(key|secret|credential|production)&quot;
 </code></pre>
-<h2>🚨 Emergency Response</h2>
-<h3>If Sensitive Data is Accidentally Committed</h3>
-<ol>
-<li><strong>Immediately rotate all exposed credentials</strong></li>
-<li><strong>Remove from git history:</strong><pre><code class="language-bash">git filter-branch --force --index-filter \
+        <h2>🚨 Emergency Response</h2>
+        <h3>If Sensitive Data is Accidentally Committed</h3>
+        <ol>
+          <li><strong>Immediately rotate all exposed credentials</strong></li>
+          <li>
+            <strong>Remove from git history:</strong>
+            <pre><code class="language-bash">git filter-branch --force --index-filter \
   &#39;git rm --cached --ignore-unmatch SENSITIVE_FILE.md&#39; \
   --prune-empty --tag-name-filter cat -- --all
 </code></pre>
-</li>
-<li><strong>Force push to remote:</strong><pre><code class="language-bash">git push origin --force --all
+          </li>
+          <li>
+            <strong>Force push to remote:</strong>
+            <pre><code class="language-bash">git push origin --force --all
 </code></pre>
-</li>
-<li><strong>Update .gitignore to prevent future incidents</strong></li>
-</ol>
-<h2>📚 File Categories</h2>
-<h3>✅ Safe to Commit</h3>
-<ul>
-<li><code>*.example.*</code> - Example/template files</li>
-<li><code>README.md</code> - Documentation without secrets</li>
-<li><code>SECURITY.md</code> - Security documentation</li>
-<li>Source code without hardcoded secrets</li>
-</ul>
-<h3>❌ Never Commit</h3>
-<ul>
-<li>Files with real API keys</li>
-<li>Production configuration files</li>
-<li>Database connection strings with passwords</li>
-<li>Private keys and certificates</li>
-<li>User credentials or authentication tokens</li>
-</ul>
-<h2>🔍 Monitoring</h2>
-<h3>Regular Security Audits</h3>
-<ol>
-<li>Review <code>.gitignore</code> patterns monthly</li>
-<li>Scan repository for accidentally committed secrets</li>
-<li>Verify all team members follow security practices</li>
-<li>Update patterns as new sensitive file types are identified</li>
-</ol>
-<h3>Tools for Secret Detection</h3>
-<ul>
-<li><code>git-secrets</code> - Prevents committing secrets</li>
-<li><code>truffleHog</code> - Searches for secrets in git history</li>
-<li><code>detect-secrets</code> - Baseline secret detection</li>
-</ul>
-<h2>📞 Contact</h2>
-<p>If you discover sensitive information in the repository:</p>
-<ol>
-<li><strong>Do not</strong> create a public issue</li>
-<li>Contact the security team immediately</li>
-<li>Follow the emergency response procedures above</li>
-</ol>
-<hr>
-<p><strong>Remember</strong>: Security is everyone&#39;s responsibility. When in doubt, don&#39;t commit!</p>
+          </li>
+          <li><strong>Update .gitignore to prevent future incidents</strong></li>
+        </ol>
+        <h2>📚 File Categories</h2>
+        <h3>✅ Safe to Commit</h3>
+        <ul>
+          <li><code>*.example.*</code> - Example/template files</li>
+          <li><code>README.md</code> - Documentation without secrets</li>
+          <li><code>SECURITY.md</code> - Security documentation</li>
+          <li>Source code without hardcoded secrets</li>
+        </ul>
+        <h3>❌ Never Commit</h3>
+        <ul>
+          <li>Files with real API keys</li>
+          <li>Production configuration files</li>
+          <li>Database connection strings with passwords</li>
+          <li>Private keys and certificates</li>
+          <li>User credentials or authentication tokens</li>
+        </ul>
+        <h2>🔍 Monitoring</h2>
+        <h3>Regular Security Audits</h3>
+        <ol>
+          <li>Review <code>.gitignore</code> patterns monthly</li>
+          <li>Scan repository for accidentally committed secrets</li>
+          <li>Verify all team members follow security practices</li>
+          <li>Update patterns as new sensitive file types are identified</li>
+        </ol>
+        <h3>Tools for Secret Detection</h3>
+        <ul>
+          <li><code>git-secrets</code> - Prevents committing secrets</li>
+          <li><code>truffleHog</code> - Searches for secrets in git history</li>
+          <li><code>detect-secrets</code> - Baseline secret detection</li>
+        </ul>
+        <h2>📞 Contact</h2>
+        <p>If you discover sensitive information in the repository:</p>
+        <ol>
+          <li><strong>Do not</strong> create a public issue</li>
+          <li>Contact the security team immediately</li>
+          <li>Follow the emergency response procedures above</li>
+        </ol>
+        <hr />
+        <p>
+          <strong>Remember</strong>: Security is everyone&#39;s responsibility. When in doubt,
+          don&#39;t commit!
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

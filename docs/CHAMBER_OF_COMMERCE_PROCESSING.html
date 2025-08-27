@@ -1,72 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chamber of Commerce Processing (COCP) - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Chamber of Commerce Processing (COCP)</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Chamber of Commerce Processing (COCP)</h1>
-<h2>Overview</h2>
-<p>The Chamber of Commerce Processing (COCP) system automatically detects and processes <code>chamberofcommerce.com</code> URLs to extract business listings and their actual business websites. This provides comprehensive business contact information by navigating through Chamber of Commerce directory pages to find real business websites.</p>
-<h2>Key Features</h2>
-<h3>🔍 <strong>Automatic Detection</strong></h3>
-<ul>
-<li>Detects <code>chamberofcommerce.com</code> URLs in search results</li>
-<li>Automatically triggers specialized processing</li>
-<li>Seamlessly integrated into the main search flow</li>
-</ul>
-<h3>🎯 <strong>Business Listing Extraction</strong></h3>
-<ul>
-<li>Identifies business entries using specific CSS patterns:<pre><code class="language-html">&lt;a href=&quot;/business-directory/illinois/barrington/tax-preparation-service/2024858709-g3-accounting-tax&quot; 
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Chamber of Commerce Processing (COCP)
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Chamber of Commerce Processing (COCP)</h1>
+        <h2>Overview</h2>
+        <p>
+          The Chamber of Commerce Processing (COCP) system automatically detects and processes
+          <code>chamberofcommerce.com</code> URLs to extract business listings and their actual
+          business websites. This provides comprehensive business contact information by navigating
+          through Chamber of Commerce directory pages to find real business websites.
+        </p>
+        <h2>Key Features</h2>
+        <h3>🔍 <strong>Automatic Detection</strong></h3>
+        <ul>
+          <li>Detects <code>chamberofcommerce.com</code> URLs in search results</li>
+          <li>Automatically triggers specialized processing</li>
+          <li>Seamlessly integrated into the main search flow</li>
+        </ul>
+        <h3>🎯 <strong>Business Listing Extraction</strong></h3>
+        <ul>
+          <li>
+            Identifies business entries using specific CSS patterns:
+            <pre><code class="language-html">&lt;a href=&quot;/business-directory/illinois/barrington/tax-preparation-service/2024858709-g3-accounting-tax&quot; 
    placeid=&quot;2024858709&quot; 
    class=&quot;card white-card card-hover-shadow mb-2 p-3 p-lg-4 FeaturedPlacePreview&quot;&gt;
 </code></pre>
-</li>
-<li>Extracts business profile URLs from Chamber directory pages</li>
-<li>Processes multiple businesses per Chamber page</li>
-</ul>
-<h3>🌐 <strong>Business Website Discovery</strong></h3>
-<ul>
-<li>Navigates to individual Chamber business profile pages</li>
-<li>Searches for external website links (non-chamberofcommerce.com domains)</li>
-<li>Extracts actual business website URLs</li>
-<li>Filters out social media and directory links</li>
-</ul>
-<h3>🔍 <strong>Deep Website Scraping</strong></h3>
-<ul>
-<li>Scrapes up to <strong>20 pages per business website</strong> (configurable)</li>
-<li>Extracts comprehensive contact information</li>
-<li>Uses enhanced scraping engine with anti-bot detection</li>
-<li>Collects detailed business records with full contact details</li>
-</ul>
-<h2>Technical Implementation</h2>
-<h3>Automatic URL Detection</h3>
-<p>The system automatically detects Chamber of Commerce URLs during the search filtering process:</p>
-<pre><code class="language-typescript">// In filterValidBusinessResults()
+          </li>
+          <li>Extracts business profile URLs from Chamber directory pages</li>
+          <li>Processes multiple businesses per Chamber page</li>
+        </ul>
+        <h3>🌐 <strong>Business Website Discovery</strong></h3>
+        <ul>
+          <li>Navigates to individual Chamber business profile pages</li>
+          <li>Searches for external website links (non-chamberofcommerce.com domains)</li>
+          <li>Extracts actual business website URLs</li>
+          <li>Filters out social media and directory links</li>
+        </ul>
+        <h3>🔍 <strong>Deep Website Scraping</strong></h3>
+        <ul>
+          <li>Scrapes up to <strong>20 pages per business website</strong> (configurable)</li>
+          <li>Extracts comprehensive contact information</li>
+          <li>Uses enhanced scraping engine with anti-bot detection</li>
+          <li>Collects detailed business records with full contact details</li>
+        </ul>
+        <h2>Technical Implementation</h2>
+        <h3>Automatic URL Detection</h3>
+        <p>
+          The system automatically detects Chamber of Commerce URLs during the search filtering
+          process:
+        </p>
+        <pre><code class="language-typescript">// In filterValidBusinessResults()
 if (domain.includes(&#39;chamberofcommerce.com&#39;)) {
   logger.info(&#39;ClientSearchEngine&#39;, `Detected Chamber of Commerce URL: ${result.url}`)
   const chamberResults = await this.processChamberOfCommerceUrl(result.url, 5)
@@ -74,8 +89,8 @@ if (domain.includes(&#39;chamberofcommerce.com&#39;)) {
   continue
 }
 </code></pre>
-<h3>Business Listing Extraction</h3>
-<pre><code class="language-typescript">// Primary selectors for business entries
+        <h3>Business Listing Extraction</h3>
+        <pre><code class="language-typescript">// Primary selectors for business entries
 const businessSelectors = [
   &#39;a[placeid][href*=&quot;/business-directory/&quot;]&#39;,
   &#39;a.card[href*=&quot;/business-directory/&quot;]&#39;,
@@ -83,8 +98,8 @@ const businessSelectors = [
   &#39;a[href*=&quot;/business-directory/&quot;]&#39;
 ]
 </code></pre>
-<h3>Website URL Extraction</h3>
-<pre><code class="language-typescript">// Extract external business websites (not chamberofcommerce.com)
+        <h3>Website URL Extraction</h3>
+        <pre><code class="language-typescript">// Extract external business websites (not chamberofcommerce.com)
 const websiteSelectors = [
   &#39;a[href*=&quot;http&quot;]:not([href*=&quot;chamberofcommerce.com&quot;]):not([href*=&quot;mailto:&quot;]):not([href*=&quot;tel:&quot;])&#39;,
   &#39;.website a&#39;,
@@ -92,28 +107,28 @@ const websiteSelectors = [
   &#39;.contact-info a[href*=&quot;http&quot;]&#39;
 ]
 </code></pre>
-<h2>Data Flow</h2>
-<h3>1. <strong>URL Detection</strong></h3>
-<pre><code>Search Results → Filter → Detect chamberofcommerce.com URL
+        <h2>Data Flow</h2>
+        <h3>1. <strong>URL Detection</strong></h3>
+        <pre><code>Search Results → Filter → Detect chamberofcommerce.com URL
 ↓
 Trigger Chamber of Commerce Processing
 </code></pre>
-<h3>2. <strong>Business Discovery</strong></h3>
-<pre><code>Chamber Directory Page → Extract business listings using CSS selectors
+        <h3>2. <strong>Business Discovery</strong></h3>
+        <pre><code>Chamber Directory Page → Extract business listings using CSS selectors
 ↓
 For each business: Extract Chamber profile URL
 ↓
 Navigate to business profile page
 </code></pre>
-<h3>3. <strong>Website Extraction</strong></h3>
-<pre><code>Business Profile Page → Find external website links
+        <h3>3. <strong>Website Extraction</strong></h3>
+        <pre><code>Business Profile Page → Find external website links
 ↓
 Extract business website URL (non-chamberofcommerce.com)
 ↓
 Validate and clean website URL
 </code></pre>
-<h3>4. <strong>Deep Scraping</strong></h3>
-<pre><code>Business Website → Enhanced scraping engine
+        <h3>4. <strong>Deep Scraping</strong></h3>
+        <pre><code>Business Website → Enhanced scraping engine
 ↓
 Scrape up to 20 pages per site
 ↓
@@ -121,47 +136,49 @@ Extract contact information and business details
 ↓
 Return comprehensive business records
 </code></pre>
-<h2>Configuration Options</h2>
-<h3>Processing Parameters</h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>url</code></td>
-<td>string</td>
-<td>-</td>
-<td>Chamber of Commerce URL to process</td>
-</tr>
-<tr>
-<td><code>maxBusinesses</code></td>
-<td>number</td>
-<td>10</td>
-<td>Maximum businesses to extract from Chamber page</td>
-</tr>
-<tr>
-<td><code>maxPagesPerSite</code></td>
-<td>number</td>
-<td>20</td>
-<td>Maximum pages to scrape per business website</td>
-</tr>
-</tbody></table>
-<h3>API Request Format</h3>
-<pre><code class="language-json">{
+        <h2>Configuration Options</h2>
+        <h3>Processing Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>url</code></td>
+              <td>string</td>
+              <td>-</td>
+              <td>Chamber of Commerce URL to process</td>
+            </tr>
+            <tr>
+              <td><code>maxBusinesses</code></td>
+              <td>number</td>
+              <td>10</td>
+              <td>Maximum businesses to extract from Chamber page</td>
+            </tr>
+            <tr>
+              <td><code>maxPagesPerSite</code></td>
+              <td>number</td>
+              <td>20</td>
+              <td>Maximum pages to scrape per business website</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>API Request Format</h3>
+        <pre><code class="language-json">{
   &quot;provider&quot;: &quot;chamber-of-commerce&quot;,
   &quot;url&quot;: &quot;https://www.chamberofcommerce.com/business-directory/illinois/barrington/&quot;,
   &quot;maxResults&quot;: 10,
   &quot;maxPagesPerSite&quot;: 20
 }
 </code></pre>
-<h2>Response Format</h2>
-<h3>ChamberOfCommerceBusinessResult</h3>
-<pre><code class="language-typescript">interface ChamberOfCommerceBusinessResult {
+        <h2>Response Format</h2>
+        <h3>ChamberOfCommerceBusinessResult</h3>
+        <pre><code class="language-typescript">interface ChamberOfCommerceBusinessResult {
   url: string                           // Business website URL
   title: string                         // Business name from Chamber
   snippet: string                       // Business description
@@ -172,8 +189,8 @@ Return comprehensive business records
   businessRecords?: BusinessRecord[]    // Deep scraped data
 }
 </code></pre>
-<h3>BusinessRecord (from Deep Scraping)</h3>
-<pre><code class="language-typescript">interface BusinessRecord {
+        <h3>BusinessRecord (from Deep Scraping)</h3>
+        <pre><code class="language-typescript">interface BusinessRecord {
   id: string
   businessName: string
   email: string[]                       // All found email addresses
@@ -195,76 +212,78 @@ Return comprehensive business records
   scrapedAt: Date
 }
 </code></pre>
-<h2>Example Processing Flow</h2>
-<h3>Input URL</h3>
-<pre><code>https://www.chamberofcommerce.com/business-directory/illinois/barrington/
+        <h2>Example Processing Flow</h2>
+        <h3>Input URL</h3>
+        <pre><code>https://www.chamberofcommerce.com/business-directory/illinois/barrington/
 </code></pre>
-<h3>Step 1: Business Listing Extraction</h3>
-<pre><code>Found business entries:
+        <h3>Step 1: Business Listing Extraction</h3>
+        <pre><code>Found business entries:
 - G3 Accounting Tax (placeid: 2024858709)
 - ABC Consulting (placeid: 2024858710)
 - XYZ Services (placeid: 2024858711)
 </code></pre>
-<h3>Step 2: Profile URL Construction</h3>
-<pre><code>https://www.chamberofcommerce.com/business-directory/illinois/barrington/tax-preparation-service/2024858709-g3-accounting-tax
+        <h3>Step 2: Profile URL Construction</h3>
+        <pre><code>https://www.chamberofcommerce.com/business-directory/illinois/barrington/tax-preparation-service/2024858709-g3-accounting-tax
 https://www.chamberofcommerce.com/business-directory/illinois/barrington/consulting/2024858710-abc-consulting
 https://www.chamberofcommerce.com/business-directory/illinois/barrington/services/2024858711-xyz-services
 </code></pre>
-<h3>Step 3: Website Extraction</h3>
-<pre><code>G3 Accounting Tax → www.g3accounting.com
+        <h3>Step 3: Website Extraction</h3>
+        <pre><code>G3 Accounting Tax → www.g3accounting.com
 ABC Consulting → www.abcconsulting.net
 XYZ Services → www.xyzservices.org
 </code></pre>
-<h3>Step 4: Deep Scraping Results</h3>
-<pre><code>www.g3accounting.com → 3 business records with contact info
+        <h3>Step 4: Deep Scraping Results</h3>
+        <pre><code>www.g3accounting.com → 3 business records with contact info
 www.abcconsulting.net → 2 business records with contact info
 www.xyzservices.org → 4 business records with contact info
 </code></pre>
-<h2>Error Handling</h2>
-<h3>Robust Fallback System</h3>
-<ol>
-<li><strong>Business Listing Fails</strong>: Tries multiple CSS selectors</li>
-<li><strong>Profile Navigation Fails</strong>: Continues with next business</li>
-<li><strong>Website Extraction Fails</strong>: Keeps basic Chamber info</li>
-<li><strong>Deep Scraping Fails</strong>: Returns business info without detailed records</li>
-<li><strong>Rate Limiting</strong>: Implements delays and retry mechanisms</li>
-</ol>
-<h3>Logging and Monitoring</h3>
-<ul>
-<li>Detailed logging at each step of the process</li>
-<li>Performance metrics for deep scraping</li>
-<li>Success/failure rates for website extraction</li>
-<li>Processing time monitoring</li>
-</ul>
-<h2>Performance Optimizations</h2>
-<h3>1. <strong>Concurrent Processing</strong></h3>
-<ul>
-<li>Browser pool management for multiple simultaneous scrapes</li>
-<li>Parallel processing of business websites</li>
-<li>Resource cleanup and memory management</li>
-</ul>
-<h3>2. <strong>Smart Rate Limiting</strong></h3>
-<ul>
-<li>Respects Chamber of Commerce rate limits</li>
-<li>Implements delays between requests</li>
-<li>Uses multiple user agents and viewports</li>
-</ul>
-<h3>3. <strong>Efficient Scraping</strong></h3>
-<ul>
-<li>Stops scraping when sufficient contact info is found</li>
-<li>Prioritizes contact pages and about pages</li>
-<li>Skips irrelevant pages (images, downloads, etc.)</li>
-</ul>
-<h2>Integration Points</h2>
-<h3>Automatic Integration</h3>
-<p>The COCP system is automatically triggered when:</p>
-<ol>
-<li>Search results contain <code>chamberofcommerce.com</code> URLs</li>
-<li>URLs are detected during the <code>filterValidBusinessResults</code> process</li>
-<li>No manual configuration required</li>
-</ol>
-<h3>Manual API Usage</h3>
-<pre><code class="language-typescript">// Direct API call
+        <h2>Error Handling</h2>
+        <h3>Robust Fallback System</h3>
+        <ol>
+          <li><strong>Business Listing Fails</strong>: Tries multiple CSS selectors</li>
+          <li><strong>Profile Navigation Fails</strong>: Continues with next business</li>
+          <li><strong>Website Extraction Fails</strong>: Keeps basic Chamber info</li>
+          <li>
+            <strong>Deep Scraping Fails</strong>: Returns business info without detailed records
+          </li>
+          <li><strong>Rate Limiting</strong>: Implements delays and retry mechanisms</li>
+        </ol>
+        <h3>Logging and Monitoring</h3>
+        <ul>
+          <li>Detailed logging at each step of the process</li>
+          <li>Performance metrics for deep scraping</li>
+          <li>Success/failure rates for website extraction</li>
+          <li>Processing time monitoring</li>
+        </ul>
+        <h2>Performance Optimizations</h2>
+        <h3>1. <strong>Concurrent Processing</strong></h3>
+        <ul>
+          <li>Browser pool management for multiple simultaneous scrapes</li>
+          <li>Parallel processing of business websites</li>
+          <li>Resource cleanup and memory management</li>
+        </ul>
+        <h3>2. <strong>Smart Rate Limiting</strong></h3>
+        <ul>
+          <li>Respects Chamber of Commerce rate limits</li>
+          <li>Implements delays between requests</li>
+          <li>Uses multiple user agents and viewports</li>
+        </ul>
+        <h3>3. <strong>Efficient Scraping</strong></h3>
+        <ul>
+          <li>Stops scraping when sufficient contact info is found</li>
+          <li>Prioritizes contact pages and about pages</li>
+          <li>Skips irrelevant pages (images, downloads, etc.)</li>
+        </ul>
+        <h2>Integration Points</h2>
+        <h3>Automatic Integration</h3>
+        <p>The COCP system is automatically triggered when:</p>
+        <ol>
+          <li>Search results contain <code>chamberofcommerce.com</code> URLs</li>
+          <li>URLs are detected during the <code>filterValidBusinessResults</code> process</li>
+          <li>No manual configuration required</li>
+        </ol>
+        <h3>Manual API Usage</h3>
+        <pre><code class="language-typescript">// Direct API call
 const response = await fetch(&#39;/api/search&#39;, {
   method: &#39;POST&#39;,
   headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },
@@ -276,34 +295,34 @@ const response = await fetch(&#39;/api/search&#39;, {
   })
 })
 </code></pre>
-<h2>Benefits</h2>
-<h3>🎯 <strong>Comprehensive Coverage</strong></h3>
-<ul>
-<li>Extracts multiple businesses from single Chamber directory page</li>
-<li>Finds actual business websites, not just directory listings</li>
-<li>Provides deep contact information through website scraping</li>
-</ul>
-<h3>📊 <strong>High-Quality Data</strong></h3>
-<ul>
-<li>Real business websites with comprehensive contact information</li>
-<li>Multiple email addresses and phone numbers per business</li>
-<li>Complete address and contact person details</li>
-</ul>
-<h3>⚡ <strong>Efficient Processing</strong></h3>
-<ul>
-<li>Automatic detection and processing</li>
-<li>Concurrent scraping of multiple business websites</li>
-<li>Smart rate limiting prevents blocking</li>
-</ul>
-<h3>🔧 <strong>Seamless Integration</strong></h3>
-<ul>
-<li>No manual configuration required</li>
-<li>Automatically triggered during normal search operations</li>
-<li>Transparent to end users</li>
-</ul>
-<h2>Usage Examples</h2>
-<h3>Automatic Processing (Recommended)</h3>
-<pre><code class="language-typescript">// Chamber URLs are automatically detected and processed during normal searches
+        <h2>Benefits</h2>
+        <h3>🎯 <strong>Comprehensive Coverage</strong></h3>
+        <ul>
+          <li>Extracts multiple businesses from single Chamber directory page</li>
+          <li>Finds actual business websites, not just directory listings</li>
+          <li>Provides deep contact information through website scraping</li>
+        </ul>
+        <h3>📊 <strong>High-Quality Data</strong></h3>
+        <ul>
+          <li>Real business websites with comprehensive contact information</li>
+          <li>Multiple email addresses and phone numbers per business</li>
+          <li>Complete address and contact person details</li>
+        </ul>
+        <h3>⚡ <strong>Efficient Processing</strong></h3>
+        <ul>
+          <li>Automatic detection and processing</li>
+          <li>Concurrent scraping of multiple business websites</li>
+          <li>Smart rate limiting prevents blocking</li>
+        </ul>
+        <h3>🔧 <strong>Seamless Integration</strong></h3>
+        <ul>
+          <li>No manual configuration required</li>
+          <li>Automatically triggered during normal search operations</li>
+          <li>Transparent to end users</li>
+        </ul>
+        <h2>Usage Examples</h2>
+        <h3>Automatic Processing (Recommended)</h3>
+        <pre><code class="language-typescript">// Chamber URLs are automatically detected and processed during normal searches
 const results = await clientSearchEngine.searchBusinesses(
   &quot;tax preparation services&quot;,
   &quot;Barrington, IL&quot;,
@@ -311,48 +330,54 @@ const results = await clientSearchEngine.searchBusinesses(
 )
 // If results include chamberofcommerce.com URLs, they are automatically processed
 </code></pre>
-<h3>Manual Processing</h3>
-<pre><code class="language-typescript">const results = await chamberOfCommerceScrapingService.processChamberOfCommercePage({
+        <h3>Manual Processing</h3>
+        <pre><code class="language-typescript">const results = await chamberOfCommerceScrapingService.processChamberOfCommercePage({
   url: &quot;https://www.chamberofcommerce.com/business-directory/illinois/barrington/&quot;,
   maxBusinesses: 10,
   maxPagesPerSite: 20
 })
 </code></pre>
-<h2>Related Components</h2>
-<h3><strong>New Files:</strong></h3>
-<ul>
-<li><code>src/lib/chamberOfCommerceScrapingService.ts</code> - Main COCP service</li>
-<li><code>CHAMBER_OF_COMMERCE_PROCESSING.md</code> - This documentation</li>
-</ul>
-<h3><strong>Updated Files:</strong></h3>
-<ul>
-<li><code>src/app/api/search/route.ts</code> - Added COCP API endpoint</li>
-<li><code>src/model/clientSearchEngine.ts</code> - Added automatic detection and processing</li>
-</ul>
-<h3><strong>Dependencies:</strong></h3>
-<ul>
-<li>Enhanced scraping engine for deep website analysis</li>
-<li>Browser pool for concurrent processing</li>
-<li>Anti-bot detection bypass for reliable scraping</li>
-</ul>
-<p>The Chamber of Commerce Processing system provides a powerful, automated way to extract comprehensive business information from Chamber of Commerce directory pages, seamlessly integrated into the main search workflow.</p>
+        <h2>Related Components</h2>
+        <h3><strong>New Files:</strong></h3>
+        <ul>
+          <li><code>src/lib/chamberOfCommerceScrapingService.ts</code> - Main COCP service</li>
+          <li><code>CHAMBER_OF_COMMERCE_PROCESSING.md</code> - This documentation</li>
+        </ul>
+        <h3><strong>Updated Files:</strong></h3>
+        <ul>
+          <li><code>src/app/api/search/route.ts</code> - Added COCP API endpoint</li>
+          <li>
+            <code>src/model/clientSearchEngine.ts</code> - Added automatic detection and processing
+          </li>
+        </ul>
+        <h3><strong>Dependencies:</strong></h3>
+        <ul>
+          <li>Enhanced scraping engine for deep website analysis</li>
+          <li>Browser pool for concurrent processing</li>
+          <li>Anti-bot detection bypass for reliable scraping</li>
+        </ul>
+        <p>
+          The Chamber of Commerce Processing system provides a powerful, automated way to extract
+          comprehensive business information from Chamber of Commerce directory pages, seamlessly
+          integrated into the main search workflow.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

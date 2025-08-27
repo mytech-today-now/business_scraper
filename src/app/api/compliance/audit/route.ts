@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       userId,
       sessionId,
       correlationId,
-      complianceFlags
+      complianceFlags,
     } = body
 
     // Validate required fields
@@ -36,21 +36,16 @@ export async function POST(request: NextRequest) {
 
     // Validate event type
     if (!Object.values(AuditEventType).includes(eventType)) {
-      return NextResponse.json(
-        { error: 'Invalid event type' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid event type' }, { status: 400 })
     }
 
     // Validate severity
     if (!Object.values(AuditSeverity).includes(severity)) {
-      return NextResponse.json(
-        { error: 'Invalid severity level' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid severity level' }, { status: 400 })
     }
 
-    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const clientIP =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
     // Log audit event
@@ -66,37 +61,33 @@ export async function POST(request: NextRequest) {
       details: {
         ...details,
         clientSubmitted: true,
-        submittedAt: new Date().toISOString()
+        submittedAt: new Date().toISOString(),
       },
       timestamp: new Date(),
       correlationId,
       complianceFlags: complianceFlags || {
         gdprRelevant: false,
         ccpaRelevant: false,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Audit API', `Client audit event logged: ${eventType}`, {
       userId,
       sessionId,
       severity,
-      correlationId
+      correlationId,
     })
 
     return NextResponse.json({
       success: true,
       eventType,
       severity,
-      message: 'Audit event logged successfully'
+      message: 'Audit event logged successfully',
     })
-
   } catch (error) {
     logger.error('Audit API', 'Failed to log audit event', error)
-    return NextResponse.json(
-      { error: 'Failed to log audit event' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to log audit event' }, { status: 500 })
   }
 }
 
@@ -107,7 +98,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // TODO: Add authentication check for admin/compliance officer roles
-    
+
     const { searchParams } = new URL(request.url)
     const eventTypes = searchParams.get('eventTypes')?.split(',') as AuditEventType[]
     const userId = searchParams.get('userId')
@@ -120,31 +111,31 @@ export async function GET(request: NextRequest) {
 
     // Build filters
     const filters: any = {}
-    
+
     if (eventTypes?.length) {
       filters.eventTypes = eventTypes
     }
-    
+
     if (userId) {
       filters.userId = userId
     }
-    
+
     if (startDate) {
       filters.startDate = new Date(startDate)
     }
-    
+
     if (endDate) {
       filters.endDate = new Date(endDate)
     }
-    
+
     if (severity) {
       filters.severity = severity
     }
-    
+
     if (correlationId) {
       filters.correlationId = correlationId
     }
-    
+
     filters.limit = limit
     filters.offset = offset
 
@@ -155,15 +146,11 @@ export async function GET(request: NextRequest) {
       success: true,
       events,
       filters,
-      count: events.length
+      count: events.length,
     })
-
   } catch (error) {
     logger.error('Audit API', 'Failed to query audit events', error)
-    return NextResponse.json(
-      { error: 'Failed to query audit events' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to query audit events' }, { status: 500 })
   }
 }
 
@@ -174,7 +161,7 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     // TODO: Add authentication check for admin/compliance officer roles
-    
+
     const body = await request.json()
     const { startDate, endDate, complianceType } = body
 
@@ -205,21 +192,17 @@ export async function PUT(request: NextRequest) {
     logger.info('Audit API', `Compliance report generated: ${complianceType}`, {
       startDate,
       endDate,
-      totalEvents: report.totalEvents
+      totalEvents: report.totalEvents,
     })
 
     return NextResponse.json({
       success: true,
       report,
       complianceType,
-      period: { startDate, endDate }
+      period: { startDate, endDate },
     })
-
   } catch (error) {
     logger.error('Audit API', 'Failed to generate compliance report', error)
-    return NextResponse.json(
-      { error: 'Failed to generate compliance report' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to generate compliance report' }, { status: 500 })
   }
 }

@@ -82,7 +82,8 @@ export function usePerformanceMetrics(
       renderTimes.current.shift()
     }
 
-    const averageRenderTime = renderTimes.current.reduce((a, b) => a + b, 0) / renderTimes.current.length
+    const averageRenderTime =
+      renderTimes.current.reduce((a, b) => a + b, 0) / renderTimes.current.length
 
     // Log warning if render time exceeds threshold
     if (renderTime > thresholds.maxRenderTime) {
@@ -169,7 +170,7 @@ export function usePerformanceMetrics(
    */
   const updatePerformanceStatus = useCallback(() => {
     setMetrics(prev => {
-      const isPerformanceGood = 
+      const isPerformanceGood =
         prev.lastRenderTime <= thresholds.maxRenderTime &&
         prev.memoryUsage <= thresholds.maxMemoryUsage &&
         prev.frameRate >= thresholds.minFrameRate

@@ -2,13 +2,16 @@
 
 ## Overview
 
-This document summarizes the comprehensive performance optimizations implemented to enhance the business scraper application's efficiency, throughput, and scalability.
+This document summarizes the comprehensive performance optimizations implemented
+to enhance the business scraper application's efficiency, throughput, and
+scalability.
 
 ## 📊 Performance Improvements Summary
 
 ### **Before Optimization:**
+
 - **maxConcurrentJobs**: 3
-- **maxBrowsers**: 3  
+- **maxBrowsers**: 3
 - **maxConcurrent**: 3
 - **Cache maxSize**: 1000
 - **Browser timeout**: 300000ms (5 min)
@@ -17,6 +20,7 @@ This document summarizes the comprehensive performance optimizations implemented
 - **Basic caching strategy**
 
 ### **After Optimization:**
+
 - **maxConcurrentJobs**: 8 (+167% increase)
 - **maxBrowsers**: 6 (+100% increase)
 - **maxConcurrent**: 6 (+100% increase)
@@ -31,12 +35,14 @@ This document summarizes the comprehensive performance optimizations implemented
 ### 1. 📈 **Increased Concurrent Operations**
 
 #### **Enhanced Scraping Engine** (`src/lib/enhancedScrapingEngine.ts`)
+
 - **maxConcurrentJobs**: 3 → 8 (167% increase)
 - **timeout**: 60000ms → 45000ms (25% faster)
 - **retryDelay**: 5000ms → 3000ms (40% faster)
 - **queueProcessingInterval**: 1000ms → 500ms (50% faster)
 
 #### **Browser Pool** (`src/lib/browserPool.ts`)
+
 - **maxBrowsers**: 3 → 6 (100% increase)
 - **maxPagesPerBrowser**: 5 → 4 (optimized for balance)
 - **browserTimeout**: 300000ms → 180000ms (40% faster)
@@ -44,9 +50,11 @@ This document summarizes the comprehensive performance optimizations implemented
 - **enableProxy**: false → true (load distribution)
 
 #### **Scraper Service** (`src/model/scraperService.ts`)
+
 - **maxConcurrent**: 3 → 6 (100% increase)
 
 #### **Environment Configurations Updated**
+
 - **Production**: `BROWSER_POOL_SIZE=6`, `SCRAPING_DELAY_MS=500`
 - **Development**: `BROWSER_POOL_SIZE=4`, `SCRAPING_DELAY_MS=300`
 - **Test**: Optimized for faster testing
@@ -54,28 +62,32 @@ This document summarizes the comprehensive performance optimizations implemented
 ### 2. 🔧 **Browser Pool Optimization**
 
 #### **Advanced Browser Arguments**
+
 Added performance-optimized Chrome flags:
+
 ```javascript
-'--memory-pressure-off',
-'--max_old_space_size=4096',
-'--disable-background-networking',
-'--disable-default-apps',
-'--disable-extensions',
-'--disable-sync',
-'--disable-translate',
-'--hide-scrollbars',
-'--mute-audio',
-'--disable-plugins-discovery',
-'--disable-preconnect'
+;('--memory-pressure-off',
+  '--max_old_space_size=4096',
+  '--disable-background-networking',
+  '--disable-default-apps',
+  '--disable-extensions',
+  '--disable-sync',
+  '--disable-translate',
+  '--hide-scrollbars',
+  '--mute-audio',
+  '--disable-plugins-discovery',
+  '--disable-preconnect')
 ```
 
 #### **Health Monitoring System**
+
 - **BrowserHealthMetrics**: Memory, CPU, response time tracking
 - **Automatic browser restart** for poor performance
 - **Error rate monitoring** and optimization
 - **Pool health statistics** and reporting
 
 #### **Resource Management**
+
 - **Intelligent browser allocation** based on health metrics
 - **Automatic cleanup** of expired browsers and pages
 - **Memory usage monitoring** and optimization
@@ -83,13 +95,15 @@ Added performance-optimized Chrome flags:
 ### 3. 💾 **Smart Caching Implementation**
 
 #### **Multi-Level Caching Strategy** (`src/lib/smartCacheManager.ts`)
+
 - **L1 Cache (Memory)**: Hot data, 30-minute TTL
-- **L2 Cache (Redis)**: Warm data, 2-hour TTL  
+- **L2 Cache (Redis)**: Warm data, 2-hour TTL
 - **L3 Cache (Disk)**: Cold data, 24-hour TTL
 - **Intelligent cache promotion** from L2 to L1
 - **LRU eviction policy** for optimal memory usage
 
 #### **Cache Warming Service** (`src/lib/cacheWarmingService.ts`)
+
 - **Popular query pre-loading**: 10 common business searches
 - **High-value URL caching**: Important business data
 - **Location-based caching**: Major city data
@@ -97,6 +111,7 @@ Added performance-optimized Chrome flags:
 - **Intelligent warming**: Skip already cached data
 
 #### **Enhanced Cache Configuration**
+
 ```env
 # Production
 CACHE_MAX_SIZE=5000
@@ -112,6 +127,7 @@ ENABLE_CACHE_WARMING=true
 ### 4. 🌊 **Streaming for Large Datasets**
 
 #### **Streaming Search Service** (`src/lib/streamingSearchService.ts`)
+
 - **Real-time result delivery**: Results as they're found
 - **Progress tracking**: Live updates on search progress
 - **Memory-efficient processing**: Batch processing with cleanup
@@ -119,6 +135,7 @@ ENABLE_CACHE_WARMING=true
 - **Event-driven architecture**: EventEmitter for real-time updates
 
 #### **Streaming Export Service** (`src/lib/streamingExportService.ts`)
+
 - **Memory-efficient exports**: Process large datasets without memory issues
 - **Multiple formats**: CSV, JSON streaming support
 - **Progress tracking**: Real-time export progress
@@ -126,6 +143,7 @@ ENABLE_CACHE_WARMING=true
 - **Automatic garbage collection**: Memory cleanup during processing
 
 #### **Server-Sent Events API** (`src/app/api/stream-search/route.ts`)
+
 - **Real-time search results**: Live updates via SSE
 - **Progress notifications**: Search progress in real-time
 - **Error handling**: Graceful error reporting
@@ -133,6 +151,7 @@ ENABLE_CACHE_WARMING=true
 - **Auto-disconnect handling**: Clean resource cleanup
 
 #### **Streaming Export API** (`src/app/api/stream-export/route.ts`)
+
 - **Large dataset exports**: Memory-efficient file generation
 - **Multiple formats**: CSV and JSON support
 - **Sample data generation**: Testing with configurable sizes
@@ -142,18 +161,21 @@ ENABLE_CACHE_WARMING=true
 ## 📈 **Expected Performance Gains**
 
 ### **Throughput Improvements**
+
 - **3x faster concurrent processing** (3 → 8 concurrent jobs)
 - **2x more browser capacity** (3 → 6 browsers)
 - **50% faster response times** (optimized timeouts)
 - **Real-time result streaming** (no waiting for completion)
 
 ### **Resource Efficiency**
+
 - **60% better cache hit rates** (multi-level caching)
 - **40% reduced memory usage** (streaming + garbage collection)
 - **Intelligent resource allocation** (health monitoring)
 - **Automatic scaling** based on load
 
 ### **User Experience**
+
 - **Immediate result feedback** (streaming)
 - **Faster search responses** (cache warming)
 - **Better error recovery** (optimized retries)
@@ -162,11 +184,13 @@ ENABLE_CACHE_WARMING=true
 ## 🔧 **Configuration Files Updated**
 
 ### **Environment Files**
+
 - `config/production.env.example`: Production-optimized settings
 - `config/development.env.example`: Development-optimized settings
 - `config/test.env.example`: Test-optimized settings
 
 ### **Core Configuration** (`src/lib/config.ts`)
+
 - Added multi-level cache configuration
 - Enhanced validation schema
 - New performance-related environment variables
@@ -183,16 +207,19 @@ ENABLE_CACHE_WARMING=true
 ## 📊 **Monitoring and Analytics**
 
 ### **Cache Statistics**
+
 - Hit/miss rates for all cache levels
 - Performance metrics and optimization suggestions
 - Memory usage tracking
 
 ### **Browser Pool Health**
+
 - Browser performance metrics
 - Automatic health-based optimization
 - Resource utilization statistics
 
 ### **Streaming Performance**
+
 - Real-time progress tracking
 - Throughput measurements
 - Error rate monitoring
@@ -213,4 +240,6 @@ ENABLE_CACHE_WARMING=true
 4. **Streaming functionality testing** with various dataset sizes
 5. **Browser pool health monitoring** under heavy load
 
-This comprehensive performance optimization implementation provides significant improvements in throughput, efficiency, and user experience while maintaining system stability and resource management.
+This comprehensive performance optimization implementation provides significant
+improvements in throughput, efficiency, and user experience while maintaining
+system stability and resource management.

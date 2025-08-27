@@ -6,17 +6,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { 
-  Activity, 
-  AlertTriangle, 
-  Trash2, 
-  Settings, 
-  X, 
-  Play, 
+import {
+  Activity,
+  AlertTriangle,
+  Trash2,
+  Settings,
+  X,
+  Play,
   Square,
   Zap,
   HardDrive,
-  Clock
+  Clock,
 } from 'lucide-react'
 import { useMemoryMonitor, useMemoryFormatter } from '@/hooks/useMemoryMonitor'
 import { Button } from './ui/Button'
@@ -29,7 +29,10 @@ interface MemoryDashboardProps {
   compact?: boolean
 }
 
-export function MemoryDashboard({ className = '', compact = false }: MemoryDashboardProps): JSX.Element {
+export function MemoryDashboard({
+  className = '',
+  compact = false,
+}: MemoryDashboardProps): JSX.Element {
   const {
     isMonitoring,
     currentStats,
@@ -42,7 +45,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
     clearAlerts,
     performCleanup,
     performEmergencyCleanup,
-    dismissAlert
+    dismissAlert,
   } = useMemoryMonitor()
 
   const {
@@ -51,7 +54,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
     getMemoryStatusColor,
     getMemoryStatusBgColor,
     getAlertIcon,
-    getAlertColor
+    getAlertColor,
   } = useMemoryFormatter()
 
   const [showSettings, setShowSettings] = useState(false)
@@ -61,7 +64,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
     clearErrorLogs: false,
     clearCachedData: true,
     forceGarbageCollection: false,
-    retainLastSessions: 3
+    retainLastSessions: 3,
   })
 
   const handleStartMonitoring = () => {
@@ -78,7 +81,9 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
     try {
       const result = await performCleanup(cleanupOptions)
       if (result.success) {
-        toast.success(`Cleanup completed! Cleared ${result.itemsCleared} items, freed ${formatBytes(result.memoryFreed)}`)
+        toast.success(
+          `Cleanup completed! Cleared ${result.itemsCleared} items, freed ${formatBytes(result.memoryFreed)}`
+        )
       } else {
         toast.error(`Cleanup failed: ${result.errors.join(', ')}`)
       }
@@ -119,9 +124,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
             </div>
           </>
         )}
-        {alerts.length > 0 && (
-          <AlertTriangle className="h-4 w-4 text-orange-500 animate-pulse" />
-        )}
+        {alerts.length > 0 && <AlertTriangle className="h-4 w-4 text-orange-500 animate-pulse" />}
       </div>
     )
   }
@@ -144,21 +147,11 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
               Settings
             </Button>
             {isMonitoring ? (
-              <Button
-                variant="outline"
-                size="sm"
-                icon={Square}
-                onClick={handleStopMonitoring}
-              >
+              <Button variant="outline" size="sm" icon={Square} onClick={handleStopMonitoring}>
                 Stop
               </Button>
             ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                icon={Play}
-                onClick={handleStartMonitoring}
-              >
+              <Button variant="outline" size="sm" icon={Play} onClick={handleStartMonitoring}>
                 Start
               </Button>
             )}
@@ -171,18 +164,20 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Memory Usage</span>
-              <span className={`text-sm font-mono ${getMemoryStatusColor(currentStats.percentage, thresholds)}`}>
+              <span
+                className={`text-sm font-mono ${getMemoryStatusColor(currentStats.percentage, thresholds)}`}
+              >
                 {formatBytes(currentStats.used)} / {formatBytes(currentStats.total)}
               </span>
             </div>
-            
+
             <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-500 ${getMemoryStatusBgColor(currentStats.percentage, thresholds)}`}
                 style={{ width: `${Math.min(currentStats.percentage, 100)}%` }}
               />
             </div>
-            
+
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>0%</span>
               <span className={getMemoryStatusColor(currentStats.percentage, thresholds)}>
@@ -198,12 +193,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Alerts</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearAlerts}
-                className="text-xs"
-              >
+              <Button variant="ghost" size="sm" onClick={clearAlerts} className="text-xs">
                 Clear All
               </Button>
             </div>
@@ -234,7 +224,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
         {/* Cleanup Controls */}
         <div className="space-y-3">
           <span className="text-sm font-medium">Memory Cleanup</span>
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -246,7 +236,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
             >
               {isCleanupInProgress ? 'Cleaning...' : 'Clean Memory'}
             </Button>
-            
+
             <Button
               variant="destructive"
               size="sm"
@@ -262,7 +252,7 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
             <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                Last cleanup: {lastCleanupResult.itemsCleared} items cleared, 
+                Last cleanup: {lastCleanupResult.itemsCleared} items cleared,
                 {formatBytes(lastCleanupResult.memoryFreed)} freed
               </div>
             </div>
@@ -273,44 +263,50 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
         {showSettings && (
           <div className="space-y-3 p-3 border rounded-md bg-muted/50">
             <span className="text-sm font-medium">Cleanup Options</span>
-            
+
             <div className="space-y-2 text-xs">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={cleanupOptions.clearSearchResults}
-                  onChange={(e) => setCleanupOptions(prev => ({
-                    ...prev,
-                    clearSearchResults: e.target.checked
-                  }))}
+                  onChange={e =>
+                    setCleanupOptions(prev => ({
+                      ...prev,
+                      clearSearchResults: e.target.checked,
+                    }))
+                  }
                 />
                 Clear search results
               </label>
-              
+
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={cleanupOptions.clearCachedData}
-                  onChange={(e) => setCleanupOptions(prev => ({
-                    ...prev,
-                    clearCachedData: e.target.checked
-                  }))}
+                  onChange={e =>
+                    setCleanupOptions(prev => ({
+                      ...prev,
+                      clearCachedData: e.target.checked,
+                    }))
+                  }
                 />
                 Clear cached data
               </label>
-              
+
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={cleanupOptions.forceGarbageCollection}
-                  onChange={(e) => setCleanupOptions(prev => ({
-                    ...prev,
-                    forceGarbageCollection: e.target.checked
-                  }))}
+                  onChange={e =>
+                    setCleanupOptions(prev => ({
+                      ...prev,
+                      forceGarbageCollection: e.target.checked,
+                    }))
+                  }
                 />
                 Force garbage collection
               </label>
-              
+
               <div className="flex items-center gap-2">
                 <label>Retain last</label>
                 <input
@@ -318,10 +314,12 @@ export function MemoryDashboard({ className = '', compact = false }: MemoryDashb
                   min="1"
                   max="10"
                   value={cleanupOptions.retainLastSessions || 3}
-                  onChange={(e) => setCleanupOptions(prev => ({
-                    ...prev,
-                    retainLastSessions: parseInt(e.target.value) || 3
-                  }))}
+                  onChange={e =>
+                    setCleanupOptions(prev => ({
+                      ...prev,
+                      retainLastSessions: parseInt(e.target.value) || 3,
+                    }))
+                  }
                   className="w-12 px-1 py-0.5 text-xs border rounded"
                 />
                 <label>sessions</label>

@@ -25,55 +25,55 @@ const CACHE_CONFIGS: Record<string, CacheConfig> = {
   static: {
     maxAge: 31536000, // 1 year
     public: true,
-    immutable: true
+    immutable: true,
   },
-  
+
   // JavaScript and CSS files
   assets: {
     maxAge: 86400, // 1 day
     staleWhileRevalidate: 3600, // 1 hour
-    public: true
+    public: true,
   },
-  
+
   // API responses with business data
   businessData: {
     maxAge: 300, // 5 minutes
     staleWhileRevalidate: 60, // 1 minute
     public: false,
-    private: true
+    private: true,
   },
-  
+
   // Search results
   searchResults: {
     maxAge: 600, // 10 minutes
     staleWhileRevalidate: 120, // 2 minutes
     public: false,
-    private: true
+    private: true,
   },
-  
+
   // Industry data (rarely changes)
   industryData: {
     maxAge: 3600, // 1 hour
     staleWhileRevalidate: 600, // 10 minutes
-    public: true
+    public: true,
   },
-  
+
   // Configuration data
   configData: {
     maxAge: 1800, // 30 minutes
     staleWhileRevalidate: 300, // 5 minutes
     public: false,
-    private: true
+    private: true,
   },
-  
+
   // No cache for sensitive operations
   noCache: {
     maxAge: 0,
     noCache: true,
     noStore: true,
     mustRevalidate: true,
-    private: true
-  }
+    private: true,
+  },
 }
 
 /**
@@ -194,7 +194,7 @@ export function withCacheHeaders(handler: (request: NextRequest) => Promise<Next
   return async (request: NextRequest): Promise<NextResponse> => {
     const response = await handler(request)
     const cacheType = determineCacheType(request)
-    
+
     return addCacheHeaders(response, cacheType)
   }
 }
@@ -214,7 +214,7 @@ function generateETag(response: NextResponse): string | null {
     let hash = 0
     for (let i = 0; i < content.length; i++) {
       const char = content.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash = hash & hash // Convert to 32-bit integer
     }
 
@@ -242,8 +242,8 @@ export function hasValidCache(request: NextRequest, etag?: string): boolean {
     const modifiedSince = new Date(ifModifiedSince)
     const now = new Date()
     const oneHour = 60 * 60 * 1000
-    
-    return (now.getTime() - modifiedSince.getTime()) < oneHour
+
+    return now.getTime() - modifiedSince.getTime() < oneHour
   }
 
   return false
@@ -257,8 +257,8 @@ export function createNotModifiedResponse(): NextResponse {
     status: 304,
     headers: {
       'Cache-Control': 'public, max-age=300',
-      'Last-Modified': new Date().toUTCString()
-    }
+      'Last-Modified': new Date().toUTCString(),
+    },
   })
 }
 
@@ -292,7 +292,7 @@ export const CacheUtils = {
    */
   buildHeader(config: CacheConfig): string {
     return buildCacheControlHeader(config)
-  }
+  },
 }
 
 export { CACHE_CONFIGS, type CacheConfig }

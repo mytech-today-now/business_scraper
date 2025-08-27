@@ -31,7 +31,7 @@ export class DataCompression {
    */
   static compress<T>(data: T): CompressedData<T> | T {
     const startTime = Date.now()
-    
+
     try {
       // Convert data to JSON string
       const jsonString = JSON.stringify(data)
@@ -39,7 +39,10 @@ export class DataCompression {
 
       // Only compress if data is larger than threshold
       if (originalSize < this.COMPRESSION_THRESHOLD) {
-        logger.debug('DataCompression', `Data size ${originalSize} bytes below compression threshold`)
+        logger.debug(
+          'DataCompression',
+          `Data size ${originalSize} bytes below compression threshold`
+        )
         return data
       }
 
@@ -49,7 +52,10 @@ export class DataCompression {
 
       // Check if compression took too long
       if (compressionTime > this.MAX_COMPRESSION_TIME) {
-        logger.warn('DataCompression', `Compression took ${compressionTime}ms, returning original data`)
+        logger.warn(
+          'DataCompression',
+          `Compression took ${compressionTime}ms, returning original data`
+        )
         return data
       }
 
@@ -65,17 +71,20 @@ export class DataCompression {
         originalSize,
         compressedSize,
         compressionRatio,
-        compressionTime
+        compressionTime,
       }
 
-      logger.debug('DataCompression', `Compressed data: ${originalSize} -> ${compressedSize} bytes (${compressionRatio.toFixed(1)}% reduction)`)
+      logger.debug(
+        'DataCompression',
+        `Compressed data: ${originalSize} -> ${compressedSize} bytes (${compressionRatio.toFixed(1)}% reduction)`
+      )
 
       return {
         data: compressed,
         compressed: true,
         originalType: typeof data,
         timestamp: Date.now(),
-        stats
+        stats,
       }
     } catch (error) {
       logger.error('DataCompression', 'Compression failed', error)
@@ -103,9 +112,9 @@ export class DataCompression {
       }
 
       const result = JSON.parse(decompressed) as T
-      
+
       logger.debug('DataCompression', `Decompressed data in ${decompressionTime}ms`)
-      
+
       return result
     } catch (error) {
       logger.error('DataCompression', 'Decompression failed', error)
@@ -130,14 +139,18 @@ export class DataCompression {
   /**
    * Compress business records array
    */
-  static compressBusinessRecords(records: BusinessRecord[]): CompressedData<BusinessRecord[]> | BusinessRecord[] {
+  static compressBusinessRecords(
+    records: BusinessRecord[]
+  ): CompressedData<BusinessRecord[]> | BusinessRecord[] {
     return this.compress(records)
   }
 
   /**
    * Decompress business records array
    */
-  static decompressBusinessRecords(data: CompressedData<BusinessRecord[]> | BusinessRecord[]): BusinessRecord[] {
+  static decompressBusinessRecords(
+    data: CompressedData<BusinessRecord[]> | BusinessRecord[]
+  ): BusinessRecord[] {
     return this.decompress(data)
   }
 
@@ -169,16 +182,16 @@ export class DataCompression {
     try {
       const jsonString = JSON.stringify(data)
       const originalSize = new Blob([jsonString]).size
-      
+
       // Quick compression test with a sample
       const sample = jsonString.substring(0, Math.min(1000, jsonString.length))
       const compressedSample = LZString.compress(sample)
-      
+
       if (!compressedSample) return 0
-      
+
       const sampleOriginalSize = new Blob([sample]).size
       const sampleCompressedSize = new Blob([compressedSample]).size
-      
+
       return (1 - sampleCompressedSize / sampleOriginalSize) * 100
     } catch (error) {
       logger.error('DataCompression', 'Failed to estimate compression ratio', error)
@@ -214,11 +227,11 @@ export class DataCompression {
     const {
       threshold = this.COMPRESSION_THRESHOLD,
       maxTime = this.MAX_COMPRESSION_TIME,
-      forceCompress = false
+      forceCompress = false,
     } = options
 
     const startTime = Date.now()
-    
+
     try {
       const jsonString = JSON.stringify(data)
       const originalSize = new Blob([jsonString]).size
@@ -248,7 +261,7 @@ export class DataCompression {
         originalSize,
         compressedSize,
         compressionRatio,
-        compressionTime
+        compressionTime,
       }
 
       return {
@@ -256,7 +269,7 @@ export class DataCompression {
         compressed: true,
         originalType: typeof data,
         timestamp: Date.now(),
-        stats
+        stats,
       }
     } catch (error) {
       logger.error('DataCompression', 'Custom compression failed', error)
@@ -294,7 +307,7 @@ export class DataCompression {
       originalTotalSize,
       compressedTotalSize,
       totalSavings,
-      savingsPercentage
+      savingsPercentage,
     }
   }
 }
@@ -312,5 +325,5 @@ export const {
   batchCompress,
   batchDecompress,
   compressWithOptions,
-  calculateStorageSavings
+  calculateStorageSavings,
 } = DataCompression

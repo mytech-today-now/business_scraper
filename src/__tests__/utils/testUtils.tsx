@@ -12,11 +12,7 @@ import { ConfigProvider } from '@/controller/ConfigContext'
  * Enhanced render function with ConfigProvider
  */
 export const renderWithProvider = (component: React.ReactElement): RenderResult => {
-  return render(
-    <ConfigProvider>
-      {component}
-    </ConfigProvider>
-  )
+  return render(<ConfigProvider>{component}</ConfigProvider>)
 }
 
 /**
@@ -72,7 +68,7 @@ export const waitForElement = async (
   options: { timeout?: number; interval?: number } = {}
 ): Promise<HTMLElement> => {
   const { timeout = 5000, interval = 50 } = options
-  
+
   return waitFor(
     () => {
       const element = selector()
@@ -102,24 +98,30 @@ export const findButtonByIcon = (iconName: string): HTMLElement | null => {
 
   // Try to find by SVG content patterns
   const buttons = Array.from(document.querySelectorAll('button'))
-  return buttons.find(button => {
-    const svg = button.querySelector('svg')
-    if (!svg) return false
-    
-    const svgContent = svg.innerHTML.toLowerCase()
-    
-    // Check for common icon patterns
-    switch (iconName.toLowerCase()) {
-      case 'check':
-        return svgContent.includes('polyline') && svgContent.includes('points="20 6 9 17 4 12"')
-      case 'x':
-        return svgContent.includes('line') && svgContent.includes('x1="18"') && svgContent.includes('y1="6"')
-      case 'plus':
-        return svgContent.includes('path') && svgContent.includes('d="M5 12h14"')
-      default:
-        return false
-    }
-  }) || null
+  return (
+    buttons.find(button => {
+      const svg = button.querySelector('svg')
+      if (!svg) return false
+
+      const svgContent = svg.innerHTML.toLowerCase()
+
+      // Check for common icon patterns
+      switch (iconName.toLowerCase()) {
+        case 'check':
+          return svgContent.includes('polyline') && svgContent.includes('points="20 6 9 17 4 12"')
+        case 'x':
+          return (
+            svgContent.includes('line') &&
+            svgContent.includes('x1="18"') &&
+            svgContent.includes('y1="6"')
+          )
+        case 'plus':
+          return svgContent.includes('path') && svgContent.includes('d="M5 12h14"')
+        default:
+          return false
+      }
+    }) || null
+  )
 }
 
 /**
@@ -131,23 +133,24 @@ export const clickButton = async (
 ): Promise<void> => {
   await userInteraction(async () => {
     let element: HTMLElement | null = null
-    
+
     if (typeof selector === 'string') {
       // Try different selection strategies
-      element = screen.queryByRole('button', { name: selector }) ||
-                screen.queryByText(selector) ||
-                screen.queryByLabelText(selector) ||
-                screen.queryByTitle(selector)
+      element =
+        screen.queryByRole('button', { name: selector }) ||
+        screen.queryByText(selector) ||
+        screen.queryByLabelText(selector) ||
+        screen.queryByTitle(selector)
     } else if (typeof selector === 'function') {
       element = selector()
     } else {
       element = selector
     }
-    
+
     if (!element) {
       throw new Error(`Button not found: ${selector}`)
     }
-    
+
     await user.click(element)
   })
 }
@@ -177,12 +180,10 @@ export const waitForText = async (
   options: { timeout?: number } = {}
 ): Promise<HTMLElement> => {
   const { timeout = 5000 } = options
-  
+
   return waitFor(
     () => {
-      const element = typeof text === 'string' 
-        ? screen.getByText(text)
-        : screen.getByText(text)
+      const element = typeof text === 'string' ? screen.getByText(text) : screen.getByText(text)
       return element
     },
     { timeout }
@@ -197,12 +198,10 @@ export const waitForTextToDisappear = async (
   options: { timeout?: number } = {}
 ): Promise<void> => {
   const { timeout = 5000 } = options
-  
+
   await waitFor(
     () => {
-      const element = typeof text === 'string'
-        ? screen.queryByText(text)
-        : screen.queryByText(text)
+      const element = typeof text === 'string' ? screen.queryByText(text) : screen.queryByText(text)
       if (element) {
         throw new Error('Element still present')
       }
@@ -227,11 +226,11 @@ export const getByDisplayValue = (value: string | RegExp): HTMLElement => {
         return value.test(input.value)
       }
     })
-    
+
     if (!element) {
       throw new Error(`Element with display value not found: ${value}`)
     }
-    
+
     return element
   }
 }
@@ -243,23 +242,29 @@ export const debugDOM = (message?: string): void => {
   if (message) {
     console.log(`\n=== DEBUG: ${message} ===`)
   }
-  
+
   // Log all buttons
   const buttons = Array.from(document.querySelectorAll('button'))
-  console.log('Buttons found:', buttons.map(btn => ({
-    text: btn.textContent?.trim(),
-    title: btn.title,
-    className: btn.className,
-    hasIcon: !!btn.querySelector('svg')
-  })))
-  
+  console.log(
+    'Buttons found:',
+    buttons.map(btn => ({
+      text: btn.textContent?.trim(),
+      title: btn.title,
+      className: btn.className,
+      hasIcon: !!btn.querySelector('svg'),
+    }))
+  )
+
   // Log all inputs/textareas
   const inputs = Array.from(document.querySelectorAll('input, textarea'))
-  console.log('Inputs found:', inputs.map(input => ({
-    type: input.tagName.toLowerCase(),
-    value: (input as HTMLInputElement).value,
-    placeholder: (input as HTMLInputElement).placeholder
-  })))
+  console.log(
+    'Inputs found:',
+    inputs.map(input => ({
+      type: input.tagName.toLowerCase(),
+      value: (input as HTMLInputElement).value,
+      placeholder: (input as HTMLInputElement).placeholder,
+    }))
+  )
 }
 
 /**
@@ -301,9 +306,5 @@ export const mockDependencies = (): void => {
  * Test wrapper component that suppresses act warnings
  */
 export const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <ConfigProvider>
-      {children}
-    </ConfigProvider>
-  )
+  return <ConfigProvider>{children}</ConfigProvider>
 }

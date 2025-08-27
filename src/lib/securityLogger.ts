@@ -19,34 +19,34 @@ export enum SecurityEventType {
   SESSION_CREATED = 'SESSION_CREATED',
   SESSION_EXPIRED = 'SESSION_EXPIRED',
   SESSION_HIJACK_ATTEMPT = 'SESSION_HIJACK_ATTEMPT',
-  
+
   // Authorization Events
   UNAUTHORIZED_ACCESS = 'UNAUTHORIZED_ACCESS',
   PRIVILEGE_ESCALATION = 'PRIVILEGE_ESCALATION',
   FORBIDDEN_RESOURCE = 'FORBIDDEN_RESOURCE',
-  
+
   // Input Validation Events
   SQL_INJECTION_ATTEMPT = 'SQL_INJECTION_ATTEMPT',
   XSS_ATTEMPT = 'XSS_ATTEMPT',
   CSRF_VIOLATION = 'CSRF_VIOLATION',
   MALICIOUS_INPUT = 'MALICIOUS_INPUT',
-  
+
   // Rate Limiting Events
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
   SUSPICIOUS_ACTIVITY = 'SUSPICIOUS_ACTIVITY',
   BRUTE_FORCE_ATTEMPT = 'BRUTE_FORCE_ATTEMPT',
-  
+
   // Data Access Events
   SENSITIVE_DATA_ACCESS = 'SENSITIVE_DATA_ACCESS',
   DATA_EXPORT = 'DATA_EXPORT',
   BULK_DATA_ACCESS = 'BULK_DATA_ACCESS',
   UNAUTHORIZED_DATA_ACCESS = 'UNAUTHORIZED_DATA_ACCESS',
-  
+
   // System Events
   CONFIGURATION_CHANGE = 'CONFIGURATION_CHANGE',
   SECURITY_POLICY_VIOLATION = 'SECURITY_POLICY_VIOLATION',
   ANOMALOUS_BEHAVIOR = 'ANOMALOUS_BEHAVIOR',
-  SYSTEM_COMPROMISE_INDICATOR = 'SYSTEM_COMPROMISE_INDICATOR'
+  SYSTEM_COMPROMISE_INDICATOR = 'SYSTEM_COMPROMISE_INDICATOR',
 }
 
 /**
@@ -56,7 +56,7 @@ export enum SecuritySeverity {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
+  CRITICAL = 'CRITICAL',
 }
 
 /**
@@ -115,19 +115,19 @@ export class SecurityLogger {
   private blockedIPs = new Set<string>()
   private maxEvents = 10000
   private maxAlerts = 1000
-  
+
   private alertConfig: AlertConfig = {
     enabled: true,
     thresholds: {
       [SecuritySeverity.LOW]: 50,
       [SecuritySeverity.MEDIUM]: 20,
       [SecuritySeverity.HIGH]: 10,
-      [SecuritySeverity.CRITICAL]: 3
+      [SecuritySeverity.CRITICAL]: 3,
     },
     timeWindow: 60, // 1 hour
-    cooldown: 15 // 15 minutes
+    cooldown: 15, // 15 minutes
   }
-  
+
   private lastAlertTime = new Map<string, Date>()
 
   /**
@@ -155,7 +155,7 @@ export class SecurityLogger {
       method: request?.method || details.method,
       details,
       blocked,
-      riskScore: this.calculateRiskScore(type, severity, details)
+      riskScore: this.calculateRiskScore(type, severity, details),
     }
 
     // Store event
@@ -183,7 +183,7 @@ export class SecurityLogger {
       severity,
       blocked,
       riskScore: event.riskScore,
-      details: this.sanitizeDetails(details)
+      details: this.sanitizeDetails(details),
     })
 
     // Check for alerts
@@ -196,15 +196,19 @@ export class SecurityLogger {
    * Log authentication events
    */
   logAuthEvent(
-    type: SecurityEventType.LOGIN_SUCCESS | SecurityEventType.LOGIN_FAILURE | SecurityEventType.LOGIN_BLOCKED,
+    type:
+      | SecurityEventType.LOGIN_SUCCESS
+      | SecurityEventType.LOGIN_FAILURE
+      | SecurityEventType.LOGIN_BLOCKED,
     request: NextRequest,
     details: { username?: string; reason?: string } = {}
   ): SecurityEvent {
-    const severity = type === SecurityEventType.LOGIN_SUCCESS 
-      ? SecuritySeverity.LOW 
-      : type === SecurityEventType.LOGIN_BLOCKED 
-        ? SecuritySeverity.HIGH 
-        : SecuritySeverity.MEDIUM
+    const severity =
+      type === SecurityEventType.LOGIN_SUCCESS
+        ? SecuritySeverity.LOW
+        : type === SecurityEventType.LOGIN_BLOCKED
+          ? SecuritySeverity.HIGH
+          : SecuritySeverity.MEDIUM
 
     return this.logSecurityEvent(
       type,
@@ -212,7 +216,7 @@ export class SecurityLogger {
       'authentication',
       {
         ...details,
-        message: `Authentication ${type.toLowerCase().replace('_', ' ')}`
+        message: `Authentication ${type.toLowerCase().replace('_', ' ')}`,
       },
       request,
       type === SecurityEventType.LOGIN_BLOCKED
@@ -225,12 +229,13 @@ export class SecurityLogger {
   logFailedAuth(request: NextRequest, username: string, reason: string): SecurityEvent {
     const ip = getClientIP(request)
     const recentFailures = this.getRecentEventsByIP(ip, SecurityEventType.LOGIN_FAILURE, 15) // Last 15 minutes
-    
-    const severity = recentFailures.length >= 5 
-      ? SecuritySeverity.CRITICAL 
-      : recentFailures.length >= 3 
-        ? SecuritySeverity.HIGH 
-        : SecuritySeverity.MEDIUM
+
+    const severity =
+      recentFailures.length >= 5
+        ? SecuritySeverity.CRITICAL
+        : recentFailures.length >= 3
+          ? SecuritySeverity.HIGH
+          : SecuritySeverity.MEDIUM
 
     return this.logSecurityEvent(
       SecurityEventType.LOGIN_FAILURE,
@@ -240,7 +245,7 @@ export class SecurityLogger {
         username,
         reason,
         failureCount: recentFailures.length + 1,
-        message: `Failed login attempt for user: ${username}`
+        message: `Failed login attempt for user: ${username}`,
       },
       request
     )
@@ -256,12 +261,13 @@ export class SecurityLogger {
   ): SecurityEvent {
     const ip = getClientIP(request)
     const recentEvents = this.getRecentEventsByIP(ip, type, 60) // Last hour
-    
-    const severity = recentEvents.length >= 10 
-      ? SecuritySeverity.CRITICAL 
-      : recentEvents.length >= 5 
-        ? SecuritySeverity.HIGH 
-        : SecuritySeverity.MEDIUM
+
+    const severity =
+      recentEvents.length >= 10
+        ? SecuritySeverity.CRITICAL
+        : recentEvents.length >= 5
+          ? SecuritySeverity.HIGH
+          : SecuritySeverity.MEDIUM
 
     return this.logSecurityEvent(
       type,
@@ -270,7 +276,7 @@ export class SecurityLogger {
       {
         ...details,
         eventCount: recentEvents.length + 1,
-        message: `Suspicious activity detected: ${type}`
+        message: `Suspicious activity detected: ${type}`,
       },
       request,
       severity === SecuritySeverity.CRITICAL
@@ -281,15 +287,19 @@ export class SecurityLogger {
    * Log data access events
    */
   logDataAccess(
-    type: SecurityEventType.SENSITIVE_DATA_ACCESS | SecurityEventType.DATA_EXPORT | SecurityEventType.BULK_DATA_ACCESS,
+    type:
+      | SecurityEventType.SENSITIVE_DATA_ACCESS
+      | SecurityEventType.DATA_EXPORT
+      | SecurityEventType.BULK_DATA_ACCESS,
     request: NextRequest,
     details: { dataType?: string; recordCount?: number; query?: string } = {}
   ): SecurityEvent {
-    const severity = type === SecurityEventType.BULK_DATA_ACCESS && (details.recordCount || 0) > 1000
-      ? SecuritySeverity.HIGH
-      : type === SecurityEventType.SENSITIVE_DATA_ACCESS
-        ? SecuritySeverity.MEDIUM
-        : SecuritySeverity.LOW
+    const severity =
+      type === SecurityEventType.BULK_DATA_ACCESS && (details.recordCount || 0) > 1000
+        ? SecuritySeverity.HIGH
+        : type === SecurityEventType.SENSITIVE_DATA_ACCESS
+          ? SecuritySeverity.MEDIUM
+          : SecuritySeverity.LOW
 
     return this.logSecurityEvent(
       type,
@@ -297,7 +307,7 @@ export class SecurityLogger {
       'data_access',
       {
         ...details,
-        message: `Data access: ${type.toLowerCase().replace('_', ' ')}`
+        message: `Data access: ${type.toLowerCase().replace('_', ' ')}`,
       },
       request
     )
@@ -315,10 +325,18 @@ export class SecurityLogger {
 
     // Base score by severity
     switch (severity) {
-      case SecuritySeverity.LOW: baseScore = 1; break
-      case SecuritySeverity.MEDIUM: baseScore = 3; break
-      case SecuritySeverity.HIGH: baseScore = 7; break
-      case SecuritySeverity.CRITICAL: baseScore = 10; break
+      case SecuritySeverity.LOW:
+        baseScore = 1
+        break
+      case SecuritySeverity.MEDIUM:
+        baseScore = 3
+        break
+      case SecuritySeverity.HIGH:
+        baseScore = 7
+        break
+      case SecuritySeverity.CRITICAL:
+        baseScore = 10
+        break
     }
 
     // Adjust by event type
@@ -328,7 +346,7 @@ export class SecurityLogger {
       [SecurityEventType.PRIVILEGE_ESCALATION]: 1.8,
       [SecurityEventType.SESSION_HIJACK_ATTEMPT]: 1.8,
       [SecurityEventType.BRUTE_FORCE_ATTEMPT]: 1.5,
-      [SecurityEventType.UNAUTHORIZED_DATA_ACCESS]: 1.5
+      [SecurityEventType.UNAUTHORIZED_DATA_ACCESS]: 1.5,
     }
 
     const multiplier = typeMultipliers[type] || 1.0
@@ -345,12 +363,14 @@ export class SecurityLogger {
   /**
    * Get recent events by IP address
    */
-  private getRecentEventsByIP(ip: string, type?: SecurityEventType, minutes: number = 60): SecurityEvent[] {
+  private getRecentEventsByIP(
+    ip: string,
+    type?: SecurityEventType,
+    minutes: number = 60
+  ): SecurityEvent[] {
     const cutoff = new Date(Date.now() - minutes * 60 * 1000)
-    return this.events.filter(event => 
-      event.ip === ip && 
-      event.timestamp >= cutoff &&
-      (!type || event.type === type)
+    return this.events.filter(
+      event => event.ip === ip && event.timestamp >= cutoff && (!type || event.type === type)
     )
   }
 
@@ -362,24 +382,30 @@ export class SecurityLogger {
 
     const now = new Date()
     const windowStart = new Date(now.getTime() - this.alertConfig.timeWindow * 60 * 1000)
-    
+
     // Count recent events by severity
     const recentEvents = this.events.filter(e => e.timestamp >= windowStart)
-    const eventsBySeverity = recentEvents.reduce((acc, e) => {
-      acc[e.severity] = (acc[e.severity] || 0) + 1
-      return acc
-    }, {} as Record<SecuritySeverity, number>)
+    const eventsBySeverity = recentEvents.reduce(
+      (acc, e) => {
+        acc[e.severity] = (acc[e.severity] || 0) + 1
+        return acc
+      },
+      {} as Record<SecuritySeverity, number>
+    )
 
     // Check thresholds
     for (const [severity, threshold] of Object.entries(this.alertConfig.thresholds)) {
       const count = eventsBySeverity[severity as SecuritySeverity] || 0
-      
+
       if (count >= threshold) {
         const alertKey = `${severity}_threshold`
         const lastAlert = this.lastAlertTime.get(alertKey)
-        
+
         // Check cooldown
-        if (!lastAlert || now.getTime() - lastAlert.getTime() > this.alertConfig.cooldown * 60 * 1000) {
+        if (
+          !lastAlert ||
+          now.getTime() - lastAlert.getTime() > this.alertConfig.cooldown * 60 * 1000
+        ) {
           this.triggerAlert(
             `High volume of ${severity} security events: ${count} in ${this.alertConfig.timeWindow} minutes`,
             severity as SecuritySeverity
@@ -405,7 +431,7 @@ export class SecurityLogger {
     const alert = {
       timestamp: new Date(),
       message,
-      severity
+      severity,
     }
 
     this.alerts.push(alert)
@@ -428,11 +454,16 @@ export class SecurityLogger {
    */
   private getLogLevel(severity: SecuritySeverity): 'debug' | 'info' | 'warn' | 'error' {
     switch (severity) {
-      case SecuritySeverity.LOW: return 'info'
-      case SecuritySeverity.MEDIUM: return 'warn'
-      case SecuritySeverity.HIGH: return 'error'
-      case SecuritySeverity.CRITICAL: return 'error'
-      default: return 'info'
+      case SecuritySeverity.LOW:
+        return 'info'
+      case SecuritySeverity.MEDIUM:
+        return 'warn'
+      case SecuritySeverity.HIGH:
+        return 'error'
+      case SecuritySeverity.CRITICAL:
+        return 'error'
+      default:
+        return 'info'
     }
   }
 
@@ -450,25 +481,32 @@ export class SecurityLogger {
     const cutoff = new Date(Date.now() - timeWindow * 60 * 60 * 1000)
     const recentEvents = this.events.filter(e => e.timestamp >= cutoff)
 
-    const eventsByType = recentEvents.reduce((acc, e) => {
-      acc[e.type] = (acc[e.type] || 0) + 1
-      return acc
-    }, {} as Record<SecurityEventType, number>)
+    const eventsByType = recentEvents.reduce(
+      (acc, e) => {
+        acc[e.type] = (acc[e.type] || 0) + 1
+        return acc
+      },
+      {} as Record<SecurityEventType, number>
+    )
 
-    const eventsBySeverity = recentEvents.reduce((acc, e) => {
-      acc[e.severity] = (acc[e.severity] || 0) + 1
-      return acc
-    }, {} as Record<SecuritySeverity, number>)
+    const eventsBySeverity = recentEvents.reduce(
+      (acc, e) => {
+        acc[e.severity] = (acc[e.severity] || 0) + 1
+        return acc
+      },
+      {} as Record<SecuritySeverity, number>
+    )
 
     const topThreats = Object.entries(eventsByType)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([type, count]) => ({ type: type as SecurityEventType, count }))
 
     const uniqueIPs = new Set(recentEvents.map(e => e.ip)).size
-    const averageRiskScore = recentEvents.length > 0 
-      ? recentEvents.reduce((sum, e) => sum + e.riskScore, 0) / recentEvents.length 
-      : 0
+    const averageRiskScore =
+      recentEvents.length > 0
+        ? recentEvents.reduce((sum, e) => sum + e.riskScore, 0) / recentEvents.length
+        : 0
 
     const recentAlerts = this.alerts.filter(a => a.timestamp >= cutoff).length
 
@@ -480,7 +518,7 @@ export class SecurityLogger {
       uniqueIPs,
       averageRiskScore: Math.round(averageRiskScore * 10) / 10,
       topThreats,
-      recentAlerts
+      recentAlerts,
     }
   }
 
@@ -489,18 +527,20 @@ export class SecurityLogger {
    */
   getRecentEvents(limit: number = 100, severity?: SecuritySeverity): SecurityEvent[] {
     let events = [...this.events].reverse()
-    
+
     if (severity) {
       events = events.filter(e => e.severity === severity)
     }
-    
+
     return events.slice(0, limit)
   }
 
   /**
    * Get recent alerts
    */
-  getRecentAlerts(limit: number = 50): Array<{ timestamp: Date; message: string; severity: SecuritySeverity }> {
+  getRecentAlerts(
+    limit: number = 50
+  ): Array<{ timestamp: Date; message: string; severity: SecuritySeverity }> {
     return [...this.alerts].reverse().slice(0, limit)
   }
 
@@ -523,11 +563,14 @@ export class SecurityLogger {
    */
   cleanup(retentionDays: number = 30): void {
     const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000)
-    
+
     this.events = this.events.filter(e => e.timestamp >= cutoff)
     this.alerts = this.alerts.filter(a => a.timestamp >= cutoff)
-    
-    logger.info('SecurityLogger', `Cleanup completed. Retained ${this.events.length} events and ${this.alerts.length} alerts`)
+
+    logger.info(
+      'SecurityLogger',
+      `Cleanup completed. Retained ${this.events.length} events and ${this.alerts.length} alerts`
+    )
   }
 
   /**
@@ -536,16 +579,20 @@ export class SecurityLogger {
   exportEvents(timeWindow: number = 24): string {
     const cutoff = new Date(Date.now() - timeWindow * 60 * 60 * 1000)
     const events = this.events.filter(e => e.timestamp >= cutoff)
-    
-    return JSON.stringify({
-      exportTimestamp: new Date().toISOString(),
-      timeWindow: `${timeWindow} hours`,
-      eventCount: events.length,
-      events: events.map(e => ({
-        ...e,
-        timestamp: e.timestamp.toISOString()
-      }))
-    }, null, 2)
+
+    return JSON.stringify(
+      {
+        exportTimestamp: new Date().toISOString(),
+        timeWindow: `${timeWindow} hours`,
+        eventCount: events.length,
+        events: events.map(e => ({
+          ...e,
+          timestamp: e.timestamp.toISOString(),
+        })),
+      },
+      null,
+      2
+    )
   }
 }
 
@@ -616,7 +663,7 @@ function isSensitiveField(fieldName: string): boolean {
     /phone/i,
     /address/i,
     /zip/i,
-    /postal/i
+    /postal/i,
   ]
 
   return sensitivePatterns.some(pattern => pattern.test(fieldName))
@@ -635,7 +682,10 @@ function sanitizeString(str: string): string {
   let sanitized = str
 
   // Mask email addresses
-  sanitized = sanitized.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]')
+  sanitized = sanitized.replace(
+    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+    '[EMAIL_REDACTED]'
+  )
 
   // Mask phone numbers
   sanitized = sanitized.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE_REDACTED]')
@@ -650,7 +700,10 @@ function sanitizeString(str: string): string {
   sanitized = sanitized.replace(/\b[A-Za-z0-9]{32,}\b/g, '[KEY_REDACTED]')
 
   // Mask JWT tokens
-  sanitized = sanitized.replace(/\beyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\b/g, '[JWT_REDACTED]')
+  sanitized = sanitized.replace(
+    /\beyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\b/g,
+    '[JWT_REDACTED]'
+  )
 
   return sanitized
 }
@@ -697,7 +750,7 @@ export function validateLogData(data: any): {
   return {
     isValid: issues.length === 0,
     issues,
-    sanitizedData
+    sanitizedData,
   }
 }
 

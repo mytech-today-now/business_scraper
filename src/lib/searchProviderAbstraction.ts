@@ -51,20 +51,20 @@ export class SearchOrchestrator {
 
   constructor(config?: Partial<SearchOrchestratorConfig>) {
     // Initialize business discovery providers
-    this.businessDiscoveryProviders = [
-      new BBBDiscoveryProvider(),
-      new YelpDiscoveryProvider()
-    ]
+    this.businessDiscoveryProviders = [new BBBDiscoveryProvider(), new YelpDiscoveryProvider()]
 
     // Set default configuration
     this.config = {
       enableConcurrentSearches: true,
       maxConcurrentProviders: 6, // Total concurrent providers (SERP + Business)
       searchTimeout: 120000, // 2 minutes timeout per provider
-      ...config
+      ...config,
     }
 
-    logger.info('SearchOrchestrator', `Initialized with concurrent searches: ${this.config.enableConcurrentSearches}`)
+    logger.info(
+      'SearchOrchestrator',
+      `Initialized with concurrent searches: ${this.config.enableConcurrentSearches}`
+    )
   }
 
   /**
@@ -95,10 +95,15 @@ export class SearchOrchestrator {
    */
   async searchBusinesses(options: SearchOptions): Promise<BusinessResult[]> {
     const allResults: BusinessResult[] = []
-    const resultsPerMethod = Math.ceil(options.maxResults / (this.searchProviders.length + this.businessDiscoveryProviders.length))
+    const resultsPerMethod = Math.ceil(
+      options.maxResults / (this.searchProviders.length + this.businessDiscoveryProviders.length)
+    )
 
     const searchMode = this.config.enableConcurrentSearches ? 'concurrent' : 'sequential'
-    logger.info('SearchOrchestrator', `Starting ${searchMode} search for: ${options.query} in ${options.location}`)
+    logger.info(
+      'SearchOrchestrator',
+      `Starting ${searchMode} search for: ${options.query} in ${options.location}`
+    )
 
     if (this.config.enableConcurrentSearches) {
       return this.searchConcurrently(options, resultsPerMethod, allResults)
@@ -118,10 +123,15 @@ export class SearchOrchestrator {
     // 1. Search using SERP providers concurrently (Google, Bing, DuckDuckGo)
     const serpSearchPromises = this.searchProviders.map(provider =>
       this.searchWithTimeout(
-        () => this.searchWithProvider(provider, {
-          ...options,
-          maxResults: resultsPerMethod
-        }, 'SERP'),
+        () =>
+          this.searchWithProvider(
+            provider,
+            {
+              ...options,
+              maxResults: resultsPerMethod,
+            },
+            'SERP'
+          ),
         this.config.searchTimeout,
         `${provider.name} SERP search`
       )
@@ -130,10 +140,11 @@ export class SearchOrchestrator {
     // 2. Search using business discovery providers concurrently (BBB, Yelp)
     const businessSearchPromises = this.businessDiscoveryProviders.map(provider =>
       this.searchWithTimeout(
-        () => this.searchWithBusinessProvider(provider, {
-          ...options,
-          maxResults: resultsPerMethod
-        }),
+        () =>
+          this.searchWithBusinessProvider(provider, {
+            ...options,
+            maxResults: resultsPerMethod,
+          }),
         this.config.searchTimeout,
         `${provider.name} business search`
       )
@@ -142,7 +153,7 @@ export class SearchOrchestrator {
     // 3. Execute all searches concurrently with timeout protection
     const [serpResults, businessResults] = await Promise.all([
       Promise.all(serpSearchPromises),
-      Promise.all(businessSearchPromises)
+      Promise.all(businessSearchPromises),
     ])
 
     // 4. Flatten and combine all results
@@ -162,10 +173,14 @@ export class SearchOrchestrator {
   ): Promise<BusinessResult[]> {
     // 1. Search using SERP providers sequentially
     for (const provider of this.searchProviders) {
-      const results = await this.searchWithProvider(provider, {
-        ...options,
-        maxResults: resultsPerMethod
-      }, 'SERP')
+      const results = await this.searchWithProvider(
+        provider,
+        {
+          ...options,
+          maxResults: resultsPerMethod,
+        },
+        'SERP'
+      )
       allResults.push(...results)
     }
 
@@ -173,7 +188,7 @@ export class SearchOrchestrator {
     for (const provider of this.businessDiscoveryProviders) {
       const results = await this.searchWithBusinessProvider(provider, {
         ...options,
-        maxResults: resultsPerMethod
+        maxResults: resultsPerMethod,
       })
       allResults.push(...results)
     }
@@ -193,7 +208,8 @@ export class SearchOrchestrator {
     const uniqueResults = this.deduplicateResults(allResults)
     const rankedResults = this.rankResults(uniqueResults, options)
 
-    logger.info('SearchOrchestrator',
+    logger.info(
+      'SearchOrchestrator',
       `${mode} search completed: ${allResults.length} total → ${uniqueResults.length} unique → ${rankedResults.length} final results`
     )
 
@@ -211,8 +227,11 @@ export class SearchOrchestrator {
     return Promise.race([
       searchFn(),
       new Promise<T>((_, reject) =>
-        setTimeout(() => reject(new Error(`${operationName} timed out after ${timeoutMs}ms`)), timeoutMs)
-      )
+        setTimeout(
+          () => reject(new Error(`${operationName} timed out after ${timeoutMs}ms`)),
+          timeoutMs
+        )
+      ),
     ]).catch(error => {
       logger.warn('SearchOrchestrator', `${operationName} failed or timed out`, error)
       return [] as T // Return empty array on timeout/failure
@@ -234,7 +253,8 @@ export class SearchOrchestrator {
       const results = await provider.searchSERP(options)
 
       const duration = Date.now() - startTime
-      logger.info('SearchOrchestrator',
+      logger.info(
+        'SearchOrchestrator',
         `${provider.name} ${type} search completed in ${duration}ms with ${results.length} results`
       )
 
@@ -259,7 +279,8 @@ export class SearchOrchestrator {
       const results = await provider.searchBusinesses(options)
 
       const duration = Date.now() - startTime
-      logger.info('SearchOrchestrator',
+      logger.info(
+        'SearchOrchestrator',
         `${provider.name} business discovery completed in ${duration}ms with ${results.length} results`
       )
 
@@ -309,7 +330,7 @@ export class SearchOrchestrator {
     // Prefer results with more complete information
     const existingScore = this.getResultQualityScore(existing)
     const newScore = this.getResultQualityScore(newResult)
-    
+
     return newScore > existingScore
   }
 
@@ -318,30 +339,40 @@ export class SearchOrchestrator {
    */
   private getResultQualityScore(result: BusinessResult): number {
     let score = 0
-    
+
     // Source preference: direct business websites > BBB > Yelp > SERP
     switch (result.source) {
-      case 'direct': score += 40; break
-      case 'bbb': score += 30; break
-      case 'yelp': score += 20; break
-      case 'serp': score += 10; break
+      case 'direct':
+        score += 40
+        break
+      case 'bbb':
+        score += 30
+        break
+      case 'yelp':
+        score += 20
+        break
+      case 'serp':
+        score += 10
+        break
     }
-    
+
     // Bonus for having contact information
     if (result.phone) score += 15
     if (result.address) score += 10
-    
+
     // Bonus for longer, more descriptive snippets
     if (result.snippet && result.snippet.length > 50) score += 5
-    
+
     // Bonus for business domains (not social media, directories)
-    if (!result.domain.includes('facebook.com') && 
-        !result.domain.includes('linkedin.com') &&
-        !result.domain.includes('yelp.com') &&
-        !result.domain.includes('yellowpages.com')) {
+    if (
+      !result.domain.includes('facebook.com') &&
+      !result.domain.includes('linkedin.com') &&
+      !result.domain.includes('yelp.com') &&
+      !result.domain.includes('yellowpages.com')
+    ) {
       score += 10
     }
-    
+
     return score
   }
 
@@ -352,17 +383,17 @@ export class SearchOrchestrator {
     return results.sort((a, b) => {
       const scoreA = this.getResultQualityScore(a)
       const scoreB = this.getResultQualityScore(b)
-      
+
       // Primary sort by quality score
       if (scoreA !== scoreB) {
         return scoreB - scoreA
       }
-      
+
       // Secondary sort by title relevance to query
       const queryLower = options.query.toLowerCase()
       const titleRelevanceA = a.title.toLowerCase().includes(queryLower) ? 1 : 0
       const titleRelevanceB = b.title.toLowerCase().includes(queryLower) ? 1 : 0
-      
+
       return titleRelevanceB - titleRelevanceA
     })
   }
@@ -374,7 +405,7 @@ export class SearchOrchestrator {
     return {
       searchProviders: this.searchProviders.map(p => p.name),
       businessDiscoveryProviders: this.businessDiscoveryProviders.map(p => p.name),
-      totalProviders: this.searchProviders.length + this.businessDiscoveryProviders.length
+      totalProviders: this.searchProviders.length + this.businessDiscoveryProviders.length,
     }
   }
 }
@@ -392,7 +423,7 @@ class BBBDiscoveryProvider implements BusinessDiscoveryProvider {
         location: options.location,
         accreditedOnly: options.accreditedOnly || false,
         zipRadius: options.zipRadius || 25,
-        maxResults: options.maxResults
+        maxResults: options.maxResults,
       })
 
       return results.map(result => ({
@@ -403,7 +434,7 @@ class BBBDiscoveryProvider implements BusinessDiscoveryProvider {
         address: result.address,
         phone: result.phone,
         source: 'bbb' as const,
-        sourceUrl: result.bbbProfileUrl
+        sourceUrl: result.bbbProfileUrl,
       }))
     } catch (error) {
       logger.error('BBBDiscoveryProvider', 'Search failed', error)
@@ -424,7 +455,7 @@ class YelpDiscoveryProvider implements BusinessDiscoveryProvider {
         query: options.query,
         location: options.location,
         zipRadius: options.zipRadius || 25,
-        maxResults: options.maxResults
+        maxResults: options.maxResults,
       })
 
       return results.map(result => ({
@@ -435,7 +466,7 @@ class YelpDiscoveryProvider implements BusinessDiscoveryProvider {
         address: result.address,
         phone: result.phone,
         source: 'yelp' as const,
-        sourceUrl: result.yelpProfileUrl
+        sourceUrl: result.yelpProfileUrl,
       }))
     } catch (error) {
       logger.error('YelpDiscoveryProvider', 'Search failed', error)
@@ -459,8 +490,8 @@ export class DuckDuckGoProvider implements SearchProvider {
           provider: 'duckduckgo-serp',
           query: `${options.query} ${options.location}`,
           page: 0,
-          maxResults: options.maxResults
-        })
+          maxResults: options.maxResults,
+        }),
       })
 
       if (!response.ok) {
@@ -477,7 +508,7 @@ export class DuckDuckGoProvider implements SearchProvider {
         title: result.title,
         snippet: result.snippet || '',
         domain: result.domain,
-        source: 'serp' as const
+        source: 'serp' as const,
       }))
     } catch (error) {
       logger.error('DuckDuckGoProvider', 'Search failed', error)

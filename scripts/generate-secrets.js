@@ -12,14 +12,17 @@ const path = require('path')
 /**
  * Generate a cryptographically secure random string
  */
-function generateSecureRandom(length = 32, charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
+function generateSecureRandom(
+  length = 32,
+  charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+) {
   let result = ''
   const bytes = crypto.randomBytes(length * 2) // Generate extra bytes for better randomness
-  
+
   for (let i = 0; i < length; i++) {
     result += charset.charAt(bytes[i] % charset.length)
   }
-  
+
   return result
 }
 
@@ -31,22 +34,25 @@ function generateSecurePassword(length = 24) {
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   const numbers = '0123456789'
   const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?'
-  
+
   // Ensure at least one character from each type
   let password = ''
   password += lowercase[crypto.randomInt(lowercase.length)]
   password += uppercase[crypto.randomInt(uppercase.length)]
   password += numbers[crypto.randomInt(numbers.length)]
   password += symbols[crypto.randomInt(symbols.length)]
-  
+
   // Fill the rest with random characters from all sets
   const allChars = lowercase + uppercase + numbers + symbols
   for (let i = 4; i < length; i++) {
     password += allChars[crypto.randomInt(allChars.length)]
   }
-  
+
   // Shuffle the password
-  return password.split('').sort(() => crypto.randomInt(3) - 1).join('')
+  return password
+    .split('')
+    .sort(() => crypto.randomInt(3) - 1)
+    .join('')
 }
 
 /**
@@ -77,33 +83,33 @@ function hashPassword(password, salt) {
  */
 function generateAllSecrets(environment = 'production') {
   console.log(`🔐 Generating secrets for ${environment} environment...`)
-  
+
   const secrets = {
     // Database credentials
     dbPassword: generateSecurePassword(32),
     postgresPassword: generateSecurePassword(32),
     redisPassword: generateSecurePassword(24),
-    
+
     // Application secrets
     encryptionKey: generateEncryptionKey(32),
     jwtSecret: generateJWTSecret(64),
     sessionSecret: generateSecureRandom(64),
-    
+
     // Admin credentials
     adminPassword: generateSecurePassword(20),
-    
+
     // Monitoring
     grafanaPassword: generateSecurePassword(16),
-    
+
     // CSP Nonce (for development, production should use dynamic generation)
-    cspNonce: generateSecureRandom(16)
+    cspNonce: generateSecureRandom(16),
   }
-  
+
   // Hash the admin password
   const adminHash = hashPassword(secrets.adminPassword)
   secrets.adminPasswordHash = adminHash.hash
   secrets.adminPasswordSalt = adminHash.salt
-  
+
   return secrets
 }
 
@@ -113,25 +119,25 @@ function generateAllSecrets(environment = 'production') {
 function displaySecrets(secrets, environment) {
   console.log(`\n📋 Environment Variables for ${environment.toUpperCase()}:`)
   console.log('='.repeat(50))
-  
+
   console.log('\n# Database Configuration')
   console.log(`DB_PASSWORD=${secrets.dbPassword}`)
   console.log(`POSTGRES_PASSWORD=${secrets.postgresPassword}`)
   console.log(`REDIS_PASSWORD=${secrets.redisPassword}`)
-  
+
   console.log('\n# Security Configuration')
   console.log(`ENCRYPTION_KEY=${secrets.encryptionKey}`)
   console.log(`JWT_SECRET=${secrets.jwtSecret}`)
   console.log(`SESSION_SECRET=${secrets.sessionSecret}`)
-  
+
   console.log('\n# Authentication (Use hashed password for production)')
   console.log(`ADMIN_PASSWORD=${secrets.adminPassword}`)
   console.log(`ADMIN_PASSWORD_HASH=${secrets.adminPasswordHash}`)
   console.log(`ADMIN_PASSWORD_SALT=${secrets.adminPasswordSalt}`)
-  
+
   console.log('\n# Monitoring')
   console.log(`GRAFANA_PASSWORD=${secrets.grafanaPassword}`)
-  
+
   console.log('\n# Security Headers')
   console.log(`NEXT_PUBLIC_CSP_NONCE=${secrets.cspNonce}`)
 }
@@ -191,7 +197,7 @@ SCRAPING_RATE_LIMIT=10
  */
 function main() {
   const args = process.argv.slice(2)
-  
+
   if (args.includes('--help') || args.includes('-h')) {
     console.log('Business Scraper Secrets Generator')
     console.log('')
@@ -201,7 +207,7 @@ function main() {
     console.log('Options:')
     console.log('  --env <environment>    Environment (development, production, test)')
     console.log('  --output <file>        Output file path')
-    console.log('  --display-only         Only display secrets, don\'t save to file')
+    console.log("  --display-only         Only display secrets, don't save to file")
     console.log('  --help, -h             Show this help message')
     console.log('')
     console.log('Examples:')
@@ -210,25 +216,25 @@ function main() {
     console.log('  node scripts/generate-secrets.js --display-only')
     return
   }
-  
+
   const envIndex = args.indexOf('--env')
   const environment = envIndex !== -1 ? args[envIndex + 1] : 'production'
-  
+
   const outputIndex = args.indexOf('--output')
   const outputFile = outputIndex !== -1 ? args[outputIndex + 1] : `.env.${environment}.secrets`
-  
+
   const displayOnly = args.includes('--display-only')
-  
+
   console.log('🔐 Business Scraper Secrets Generator')
   console.log('=====================================')
-  
+
   const secrets = generateAllSecrets(environment)
   displaySecrets(secrets, environment)
-  
+
   if (!displayOnly) {
     saveSecretsToFile(secrets, environment, outputFile)
   }
-  
+
   console.log('\n✅ Secret generation complete!')
 }
 

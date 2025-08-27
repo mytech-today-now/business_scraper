@@ -9,7 +9,7 @@ import { NextRequest } from 'next/server'
 // Mock the RBAC middleware
 const mockWithRBAC = jest.fn()
 jest.mock('@/lib/rbac-middleware', () => ({
-  withRBAC: mockWithRBAC
+  withRBAC: mockWithRBAC,
 }))
 
 // Mock the audit service
@@ -19,11 +19,11 @@ const mockAuditService = {
   logUserManagement: jest.fn(),
   extractContextFromRequest: jest.fn().mockReturnValue({
     ipAddress: '127.0.0.1',
-    userAgent: 'test-agent'
-  })
+    userAgent: 'test-agent',
+  }),
 }
 jest.mock('@/lib/audit-service', () => ({
-  AuditService: mockAuditService
+  AuditService: mockAuditService,
 }))
 
 // Mock the user management service
@@ -35,10 +35,10 @@ const mockUserManagementService = {
   deleteUser: jest.fn(),
   authenticateUser: jest.fn(),
   assignRole: jest.fn(),
-  revokeRole: jest.fn()
+  revokeRole: jest.fn(),
 }
 jest.mock('@/lib/user-management', () => ({
-  UserManagementService: mockUserManagementService
+  UserManagementService: mockUserManagementService,
 }))
 
 describe('Multi-User API Endpoints', () => {
@@ -54,17 +54,17 @@ describe('Multi-User API Endpoints', () => {
           role: {
             id: 'role-123',
             name: 'admin',
-            permissions: ['users.manage', 'teams.manage']
-          }
-        }
-      ]
+            permissions: ['users.manage', 'teams.manage'],
+          },
+        },
+      ],
     },
     sessionId: 'session-123',
     workspaceId: 'workspace-123',
     teamId: 'team-123',
     database: {
-      query: jest.fn()
-    }
+      query: jest.fn(),
+    },
   }
 
   beforeEach(() => {
@@ -85,22 +85,22 @@ describe('Multi-User API Endpoints', () => {
             username: 'user1',
             email: 'user1@example.com',
             firstName: 'User',
-            lastName: 'One'
+            lastName: 'One',
           },
           {
             id: 'user-2',
             username: 'user2',
             email: 'user2@example.com',
             firstName: 'User',
-            lastName: 'Two'
-          }
+            lastName: 'Two',
+          },
         ]
 
         mockUserManagementService.getUsers.mockResolvedValue({
           users: mockUsers,
           total: 2,
           page: 1,
-          totalPages: 1
+          totalPages: 1,
         })
 
         // Import and test the actual API handler
@@ -118,7 +118,7 @@ describe('Multi-User API Endpoints', () => {
           limit: 10,
           search: '',
           role: '',
-          isActive: undefined
+          isActive: undefined,
         })
       })
 
@@ -127,11 +127,13 @@ describe('Multi-User API Endpoints', () => {
           users: [],
           total: 0,
           page: 1,
-          totalPages: 0
+          totalPages: 0,
         })
 
         const { GET } = await import('@/app/api/users/route')
-        const request = new NextRequest('http://localhost/api/users?search=test&role=admin&isActive=true')
+        const request = new NextRequest(
+          'http://localhost/api/users?search=test&role=admin&isActive=true'
+        )
         const response = await GET(request)
 
         expect(mockUserManagementService.getUsers).toHaveBeenCalledWith({
@@ -139,7 +141,7 @@ describe('Multi-User API Endpoints', () => {
           limit: 20,
           search: 'test',
           role: 'admin',
-          isActive: true
+          isActive: true,
         })
       })
     })
@@ -151,25 +153,25 @@ describe('Multi-User API Endpoints', () => {
           email: 'newuser@example.com',
           password: 'password123',
           firstName: 'New',
-          lastName: 'User'
+          lastName: 'User',
         }
 
         const mockCreatedUser = {
           id: 'user-new',
           ...userData,
           isActive: true,
-          createdAt: new Date()
+          createdAt: new Date(),
         }
 
         mockUserManagementService.createUser.mockResolvedValue({
-          user: mockCreatedUser
+          user: mockCreatedUser,
         })
 
         const { POST } = await import('@/app/api/users/route')
         const request = new NextRequest('http://localhost/api/users', {
           method: 'POST',
           body: JSON.stringify(userData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await POST(request)
         const data = await response.json()
@@ -190,14 +192,14 @@ describe('Multi-User API Endpoints', () => {
       it('should validate required fields', async () => {
         const invalidUserData = {
           username: '',
-          email: 'test@example.com'
+          email: 'test@example.com',
         }
 
         const { POST } = await import('@/app/api/users/route')
         const request = new NextRequest('http://localhost/api/users', {
           method: 'POST',
           body: JSON.stringify(invalidUserData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await POST(request)
         const data = await response.json()
@@ -212,8 +214,8 @@ describe('Multi-User API Endpoints', () => {
         const updateData = {
           userIds: ['user-1', 'user-2'],
           updateData: {
-            isActive: false
-          }
+            isActive: false,
+          },
         }
 
         mockUserManagementService.updateUser
@@ -224,7 +226,7 @@ describe('Multi-User API Endpoints', () => {
         const request = new NextRequest('http://localhost/api/users', {
           method: 'PUT',
           body: JSON.stringify(updateData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await PUT(request)
         const data = await response.json()
@@ -240,7 +242,7 @@ describe('Multi-User API Endpoints', () => {
       it('should delete multiple users', async () => {
         const deleteData = {
           userIds: ['user-1', 'user-2'],
-          permanent: false
+          permanent: false,
         }
 
         mockUserManagementService.deleteUser
@@ -251,7 +253,7 @@ describe('Multi-User API Endpoints', () => {
         const request = new NextRequest('http://localhost/api/users', {
           method: 'DELETE',
           body: JSON.stringify(deleteData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await DELETE(request)
         const data = await response.json()
@@ -270,7 +272,7 @@ describe('Multi-User API Endpoints', () => {
         const loginData = {
           action: 'login',
           username: 'testuser',
-          password: 'password123'
+          password: 'password123',
         }
 
         const mockAuthResult = {
@@ -279,8 +281,8 @@ describe('Multi-User API Endpoints', () => {
             id: 'session-123',
             sessionToken: 'token-123',
             csrfToken: 'csrf-123',
-            expiresAt: new Date(Date.now() + 3600000)
-          }
+            expiresAt: new Date(Date.now() + 3600000),
+          },
         }
 
         mockUserManagementService.authenticateUser.mockResolvedValue(mockAuthResult)
@@ -289,7 +291,7 @@ describe('Multi-User API Endpoints', () => {
         const request = new NextRequest('http://localhost/api/auth/multi-user', {
           method: 'POST',
           body: JSON.stringify(loginData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await POST(request)
         const data = await response.json()
@@ -310,7 +312,7 @@ describe('Multi-User API Endpoints', () => {
         const loginData = {
           action: 'login',
           username: 'testuser',
-          password: 'wrongpassword'
+          password: 'wrongpassword',
         }
 
         mockUserManagementService.authenticateUser.mockResolvedValue(null)
@@ -319,7 +321,7 @@ describe('Multi-User API Endpoints', () => {
         const request = new NextRequest('http://localhost/api/auth/multi-user', {
           method: 'POST',
           body: JSON.stringify(loginData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await POST(request)
         const data = await response.json()
@@ -343,7 +345,7 @@ describe('Multi-User API Endpoints', () => {
           email: 'newuser@example.com',
           password: 'password123',
           firstName: 'New',
-          lastName: 'User'
+          lastName: 'User',
         }
 
         const mockCreatedUser = {
@@ -351,18 +353,18 @@ describe('Multi-User API Endpoints', () => {
           username: 'newuser',
           email: 'newuser@example.com',
           firstName: 'New',
-          lastName: 'User'
+          lastName: 'User',
         }
 
         mockUserManagementService.createUser.mockResolvedValue({
-          user: mockCreatedUser
+          user: mockCreatedUser,
         })
 
         const { POST } = await import('@/app/api/auth/multi-user/route')
         const request = new NextRequest('http://localhost/api/auth/multi-user', {
           method: 'POST',
           body: JSON.stringify(registerData),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
         const response = await POST(request)
         const data = await response.json()
@@ -385,23 +387,25 @@ describe('Multi-User API Endpoints', () => {
     it('should create a new team', async () => {
       const teamData = {
         name: 'Test Team',
-        description: 'A test team'
+        description: 'A test team',
       }
 
       mockContext.database.query.mockResolvedValue({
-        rows: [{
-          id: 'team-123',
-          name: 'Test Team',
-          description: 'A test team',
-          owner_id: 'user-123'
-        }]
+        rows: [
+          {
+            id: 'team-123',
+            name: 'Test Team',
+            description: 'A test team',
+            owner_id: 'user-123',
+          },
+        ],
       })
 
       const { POST } = await import('@/app/api/teams/route')
       const request = new NextRequest('http://localhost/api/teams', {
         method: 'POST',
         body: JSON.stringify(teamData),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
       const response = await POST(request)
       const data = await response.json()
@@ -419,20 +423,20 @@ describe('Multi-User API Endpoints', () => {
           totalUsers: 10,
           activeUsers: 8,
           totalCampaigns: 5,
-          totalBusinesses: 100
+          totalBusinesses: 100,
         },
         performance: {
           avgScrapingTime: 2.5,
           successRate: 95.0,
-          errorRate: 5.0
-        }
+          errorRate: 5.0,
+        },
       }
 
       // Mock the analytics service
       jest.doMock('@/lib/analytics-service', () => ({
         AnalyticsService: {
-          getDashboardMetrics: jest.fn().mockResolvedValue(mockMetrics)
-        }
+          getDashboardMetrics: jest.fn().mockResolvedValue(mockMetrics),
+        },
       }))
 
       const { GET } = await import('@/app/api/analytics/route')
@@ -464,7 +468,7 @@ describe('Multi-User API Endpoints', () => {
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
         body: 'invalid json',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
       const response = await POST(request)
 
@@ -477,7 +481,7 @@ describe('Multi-User API Endpoints', () => {
         return async (request: NextRequest) => {
           return new Response(JSON.stringify({ error: 'Insufficient permissions' }), {
             status: 403,
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           })
         }
       })
@@ -486,7 +490,7 @@ describe('Multi-User API Endpoints', () => {
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
         body: JSON.stringify({}),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
       const response = await POST(request)
       const data = await response.json()

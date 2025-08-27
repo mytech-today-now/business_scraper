@@ -19,7 +19,7 @@ export function IndustryItemEditor({
   isSelected,
   onToggle,
   onUpdate,
-  onCancel
+  onCancel,
 }: IndustryItemEditorProps): JSX.Element {
   const [keywordsText, setKeywordsText] = useState('')
   const [blacklistText, setBlacklistText] = useState('')
@@ -30,7 +30,7 @@ export function IndustryItemEditor({
   useEffect(() => {
     setKeywordsText(industry.keywords.join('\n'))
     setBlacklistText((industry.domainBlacklist || []).join('\n'))
-    
+
     // Focus on keywords textarea
     setTimeout(() => {
       keywordsRef.current?.focus()
@@ -57,7 +57,7 @@ export function IndustryItemEditor({
       const updatedIndustry: IndustryCategory = {
         ...industry,
         keywords,
-        domainBlacklist: domainBlacklist.length > 0 ? domainBlacklist : undefined
+        domainBlacklist: domainBlacklist.length > 0 ? domainBlacklist : undefined,
       }
       await onUpdate(updatedIndustry)
     } catch (error) {
@@ -74,13 +74,15 @@ export function IndustryItemEditor({
   }
 
   return (
-    <div className={clsx(
-      'group relative border rounded-lg p-4 transition-all duration-200',
-      'bg-card text-card-foreground shadow-sm',
-      isSelected 
-        ? 'border-primary bg-primary/5 shadow-md' 
-        : 'border-border hover:border-primary/50 hover:shadow-md'
-    )}>
+    <div
+      className={clsx(
+        'group relative border rounded-lg p-4 transition-all duration-200',
+        'bg-card text-card-foreground shadow-sm',
+        isSelected
+          ? 'border-primary bg-primary/5 shadow-md'
+          : 'border-border hover:border-primary/50 hover:shadow-md'
+      )}
+    >
       {/* Header with industry name and actions */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
@@ -97,7 +99,7 @@ export function IndustryItemEditor({
             </span>
           )}
         </div>
-        
+
         <div className="flex items-center space-x-1">
           <Button
             variant="ghost"
@@ -127,7 +129,7 @@ export function IndustryItemEditor({
         <textarea
           ref={keywordsRef}
           value={keywordsText}
-          onChange={(e) => setKeywordsText(e.target.value)}
+          onChange={e => setKeywordsText(e.target.value)}
           className="w-full min-h-24 max-h-80 px-3 py-2 text-sm border border-input rounded-md resize-vertical overflow-auto focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
           placeholder="Enter search keywords, one per line..."
         />
@@ -140,12 +142,13 @@ export function IndustryItemEditor({
         </label>
         <textarea
           value={blacklistText}
-          onChange={(e) => setBlacklistText(e.target.value)}
+          onChange={e => setBlacklistText(e.target.value)}
           className="w-full min-h-20 max-h-60 px-3 py-2 text-sm border border-input rounded-md resize-vertical overflow-auto focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
           placeholder="Enter domains to exclude, one per line:&#10;*.statefarm.*&#10;*insurance*"
         />
         <p className="text-xs text-muted-foreground">
-          Supports wildcards: *.domain.com blocks subdomains, *keyword* blocks any domain containing keyword
+          Supports wildcards: *.domain.com blocks subdomains, *keyword* blocks any domain containing
+          keyword
         </p>
       </div>
     </div>

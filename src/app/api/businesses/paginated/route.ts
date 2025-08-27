@@ -10,7 +10,11 @@ import { logger } from '@/utils/logger'
 import { BusinessRecord } from '@/types/business'
 
 import { getClientIP } from '@/lib/security'
-import { enhancedFilteringService, AdvancedFilterOptions, SortOptions } from '@/lib/enhancedFilteringService'
+import {
+  enhancedFilteringService,
+  AdvancedFilterOptions,
+  SortOptions,
+} from '@/lib/enhancedFilteringService'
 import { z } from 'zod'
 
 /**
@@ -19,74 +23,99 @@ import { z } from 'zod'
 const PaginatedBusinessRequestSchema = z.object({
   cursor: z.string().optional(), // Cursor for pagination
   limit: z.number().min(1).max(1000).default(100), // Page size
-  sortBy: z.enum(['name', 'industry', 'scraped_at', 'confidence_score', 'data_completeness', 'relevance_score']).default('scraped_at'),
+  sortBy: z
+    .enum([
+      'name',
+      'industry',
+      'scraped_at',
+      'confidence_score',
+      'data_completeness',
+      'relevance_score',
+    ])
+    .default('scraped_at'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 
   // Enhanced filters
-  filters: z.object({
-    // Text search
-    fullTextSearch: z.string().optional(),
-    businessNameSearch: z.string().optional(),
-    industrySearch: z.string().optional(),
-    locationSearch: z.string().optional(),
+  filters: z
+    .object({
+      // Text search
+      fullTextSearch: z.string().optional(),
+      businessNameSearch: z.string().optional(),
+      industrySearch: z.string().optional(),
+      locationSearch: z.string().optional(),
 
-    // Contact filters
-    hasEmail: z.boolean().optional(),
-    hasPhone: z.boolean().optional(),
-    hasWebsite: z.boolean().optional(),
-    emailDomain: z.string().optional(),
-    phoneAreaCode: z.string().optional(),
+      // Contact filters
+      hasEmail: z.boolean().optional(),
+      hasPhone: z.boolean().optional(),
+      hasWebsite: z.boolean().optional(),
+      emailDomain: z.string().optional(),
+      phoneAreaCode: z.string().optional(),
 
-    // Quality filters
-    confidenceScore: z.object({
-      min: z.number().min(0).max(1).optional(),
-      max: z.number().min(0).max(1).optional()
-    }).optional(),
-    dataCompleteness: z.object({
-      min: z.number().min(0).max(1).optional(),
-      max: z.number().min(0).max(1).optional()
-    }).optional(),
+      // Quality filters
+      confidenceScore: z
+        .object({
+          min: z.number().min(0).max(1).optional(),
+          max: z.number().min(0).max(1).optional(),
+        })
+        .optional(),
+      dataCompleteness: z
+        .object({
+          min: z.number().min(0).max(1).optional(),
+          max: z.number().min(0).max(1).optional(),
+        })
+        .optional(),
 
-    // Date filters
-    scrapedDateRange: z.object({
-      start: z.string().optional(),
-      end: z.string().optional()
-    }).optional(),
+      // Date filters
+      scrapedDateRange: z
+        .object({
+          start: z.string().optional(),
+          end: z.string().optional(),
+        })
+        .optional(),
 
-    // Location filters
-    coordinates: z.object({
-      lat: z.number(),
-      lng: z.number(),
-      radiusMiles: z.number()
-    }).optional(),
-    zipCodes: z.array(z.string()).optional(),
-    states: z.array(z.string()).optional(),
-    cities: z.array(z.string()).optional(),
+      // Location filters
+      coordinates: z
+        .object({
+          lat: z.number(),
+          lng: z.number(),
+          radiusMiles: z.number(),
+        })
+        .optional(),
+      zipCodes: z.array(z.string()).optional(),
+      states: z.array(z.string()).optional(),
+      cities: z.array(z.string()).optional(),
 
-    // Business characteristics
-    employeeCountRange: z.object({
-      min: z.number().optional(),
-      max: z.number().optional()
-    }).optional(),
-    revenueRange: z.object({
-      min: z.number().optional(),
-      max: z.number().optional()
-    }).optional(),
-    foundedYearRange: z.object({
-      start: z.number().optional(),
-      end: z.number().optional()
-    }).optional(),
+      // Business characteristics
+      employeeCountRange: z
+        .object({
+          min: z.number().optional(),
+          max: z.number().optional(),
+        })
+        .optional(),
+      revenueRange: z
+        .object({
+          min: z.number().optional(),
+          max: z.number().optional(),
+        })
+        .optional(),
+      foundedYearRange: z
+        .object({
+          start: z.number().optional(),
+          end: z.number().optional(),
+        })
+        .optional(),
 
-    // Advanced filters
-    hasSocialMedia: z.boolean().optional(),
-    hasBusinessHours: z.boolean().optional(),
-    isEstablishedBusiness: z.boolean().optional(),
+      // Advanced filters
+      hasSocialMedia: z.boolean().optional(),
+      hasBusinessHours: z.boolean().optional(),
+      isEstablishedBusiness: z.boolean().optional(),
 
-    // Exclusion filters
-    excludeIndustries: z.array(z.string()).optional(),
-    excludeDomains: z.array(z.string()).optional(),
-    excludeBusinessNames: z.array(z.string()).optional()
-  }).optional()
+      // Exclusion filters
+      excludeIndustries: z.array(z.string()).optional(),
+      excludeDomains: z.array(z.string()).optional(),
+      excludeBusinessNames: z.array(z.string()).optional(),
+    })
+    .optional(),
 })
 
 /**
@@ -133,17 +162,25 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       filters: {
         search: url.searchParams.get('search') || undefined,
         industry: url.searchParams.get('industry') || undefined,
-        hasEmail: url.searchParams.get('hasEmail') ? url.searchParams.get('hasEmail') === 'true' : undefined,
-        hasPhone: url.searchParams.get('hasPhone') ? url.searchParams.get('hasPhone') === 'true' : undefined,
+        hasEmail: url.searchParams.get('hasEmail')
+          ? url.searchParams.get('hasEmail') === 'true'
+          : undefined,
+        hasPhone: url.searchParams.get('hasPhone')
+          ? url.searchParams.get('hasPhone') === 'true'
+          : undefined,
         qualityScore: {
-          min: url.searchParams.get('qualityScoreMin') ? parseFloat(url.searchParams.get('qualityScoreMin')!) : undefined,
-          max: url.searchParams.get('qualityScoreMax') ? parseFloat(url.searchParams.get('qualityScoreMax')!) : undefined
+          min: url.searchParams.get('qualityScoreMin')
+            ? parseFloat(url.searchParams.get('qualityScoreMin')!)
+            : undefined,
+          max: url.searchParams.get('qualityScoreMax')
+            ? parseFloat(url.searchParams.get('qualityScoreMax')!)
+            : undefined,
         },
         dateRange: {
           start: url.searchParams.get('dateStart') || undefined,
-          end: url.searchParams.get('dateEnd') || undefined
-        }
-      }
+          end: url.searchParams.get('dateEnd') || undefined,
+        },
+      },
     }
 
     // Validate request parameters
@@ -180,16 +217,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         isEstablishedBusiness: validatedParams.filters?.isEstablishedBusiness,
         excludeIndustries: validatedParams.filters?.excludeIndustries,
         excludeDomains: validatedParams.filters?.excludeDomains,
-        excludeBusinessNames: validatedParams.filters?.excludeBusinessNames
+        excludeBusinessNames: validatedParams.filters?.excludeBusinessNames,
       }
 
       const sortOptions: SortOptions = {
         field: validatedParams.sortBy as any,
-        order: validatedParams.sortOrder
+        order: validatedParams.sortOrder,
       }
 
       // Calculate offset from cursor (simplified for now)
-      const offset = validatedParams.cursor ? parseInt(Buffer.from(validatedParams.cursor, 'base64').toString()) : 0
+      const offset = validatedParams.cursor
+        ? parseInt(Buffer.from(validatedParams.cursor, 'base64').toString())
+        : 0
 
       const enhancedResult = await enhancedFilteringService.filterBusinesses(
         enhancedFilters,
@@ -203,13 +242,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         success: true,
         data: enhancedResult.businesses,
         pagination: {
-          nextCursor: enhancedResult.businesses.length === validatedParams.limit
-            ? Buffer.from((offset + validatedParams.limit).toString()).toString('base64')
-            : null,
+          nextCursor:
+            enhancedResult.businesses.length === validatedParams.limit
+              ? Buffer.from((offset + validatedParams.limit).toString()).toString('base64')
+              : null,
           hasMore: enhancedResult.businesses.length === validatedParams.limit,
           totalCount: enhancedResult.totalCount,
           currentPage: Math.floor(offset / validatedParams.limit) + 1,
-          pageSize: validatedParams.limit
+          pageSize: validatedParams.limit,
         },
         metadata: {
           processingTime: enhancedResult.queryPerformance.executionTimeMs,
@@ -217,13 +257,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           appliedFilters: validatedParams.filters || {},
           sortConfig: {
             field: validatedParams.sortBy,
-            order: validatedParams.sortOrder
-          }
-        }
+            order: validatedParams.sortOrder,
+          },
+        },
       }
-
     } catch (postgresError) {
-      logger.warn('PaginatedBusinessAPI', 'Enhanced filtering failed, falling back to IndexedDB', postgresError)
+      logger.warn(
+        'PaginatedBusinessAPI',
+        'Enhanced filtering failed, falling back to IndexedDB',
+        postgresError
+      )
       source = 'indexeddb'
       result = await getPaginatedBusinessesFromIndexedDB(validatedParams)
       result.metadata.source = source
@@ -233,22 +276,26 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     logger.info('PaginatedBusinessAPI', `Returned ${result.data.length} businesses from ${source}`)
 
     return NextResponse.json(result)
-
   } catch (error) {
     logger.error('PaginatedBusinessAPI', 'Request failed', error)
-    
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to fetch paginated business data',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to fetch paginated business data',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * Get paginated businesses from PostgreSQL
  */
-async function getPaginatedBusinessesFromPostgreSQL(params: z.infer<typeof PaginatedBusinessRequestSchema>): Promise<PaginatedBusinessResponse> {
+async function getPaginatedBusinessesFromPostgreSQL(
+  params: z.infer<typeof PaginatedBusinessRequestSchema>
+): Promise<PaginatedBusinessResponse> {
   const { cursor, limit, sortBy, sortOrder, filters } = params
 
   // Build WHERE clause for filtering
@@ -304,7 +351,9 @@ async function getPaginatedBusinessesFromPostgreSQL(params: z.infer<typeof Pagin
   // Handle cursor-based pagination
   if (cursor) {
     const decodedCursor = JSON.parse(Buffer.from(cursor, 'base64').toString())
-    whereConditions.push(`(${sortBy}, id) ${sortOrder === 'asc' ? '>' : '<'} ($${paramIndex}, $${paramIndex + 1})`)
+    whereConditions.push(
+      `(${sortBy}, id) ${sortOrder === 'asc' ? '>' : '<'} ($${paramIndex}, $${paramIndex + 1})`
+    )
     queryParams.push(decodedCursor.sortValue, decodedCursor.id)
     paramIndex += 2
   }
@@ -333,7 +382,7 @@ async function getPaginatedBusinessesFromPostgreSQL(params: z.infer<typeof Pagin
 
   const [countResult, dataResult] = await Promise.all([
     database.query(countQuery, countParams),
-    database.query(dataQuery, queryParams)
+    database.query(dataQuery, queryParams),
   ])
 
   const totalCount = parseInt(countResult.rows[0].total)
@@ -346,7 +395,7 @@ async function getPaginatedBusinessesFromPostgreSQL(params: z.infer<typeof Pagin
     const lastBusiness = businesses[businesses.length - 1]
     const cursorData = {
       sortValue: lastBusiness[sortBy],
-      id: lastBusiness.id
+      id: lastBusiness.id,
     }
     nextCursor = Buffer.from(JSON.stringify(cursorData)).toString('base64')
   }
@@ -359,7 +408,7 @@ async function getPaginatedBusinessesFromPostgreSQL(params: z.infer<typeof Pagin
       hasMore,
       totalCount,
       currentPage: cursor ? -1 : 1, // Page numbers don't apply to cursor pagination
-      pageSize: limit
+      pageSize: limit,
     },
     metadata: {
       processingTime: 0, // Will be set by caller
@@ -367,16 +416,18 @@ async function getPaginatedBusinessesFromPostgreSQL(params: z.infer<typeof Pagin
       appliedFilters: filters || {},
       sortConfig: {
         field: sortBy,
-        order: sortOrder
-      }
-    }
+        order: sortOrder,
+      },
+    },
   }
 }
 
 /**
  * Get paginated businesses from IndexedDB (fallback)
  */
-async function getPaginatedBusinessesFromIndexedDB(params: z.infer<typeof PaginatedBusinessRequestSchema>): Promise<PaginatedBusinessResponse> {
+async function getPaginatedBusinessesFromIndexedDB(
+  params: z.infer<typeof PaginatedBusinessRequestSchema>
+): Promise<PaginatedBusinessResponse> {
   const { cursor, limit, sortBy, sortOrder, filters } = params
 
   // Get all businesses from IndexedDB
@@ -387,26 +438,31 @@ async function getPaginatedBusinessesFromIndexedDB(params: z.infer<typeof Pagina
 
   if (filters?.search) {
     const searchLower = filters.search.toLowerCase()
-    filteredBusinesses = filteredBusinesses.filter(business =>
-      business.businessName.toLowerCase().includes(searchLower) ||
-      business.email.some(email => email.toLowerCase().includes(searchLower)) ||
-      business.websiteUrl.toLowerCase().includes(searchLower) ||
-      `${business.address.street} ${business.address.city} ${business.address.state}`.toLowerCase().includes(searchLower)
+    filteredBusinesses = filteredBusinesses.filter(
+      business =>
+        business.businessName.toLowerCase().includes(searchLower) ||
+        business.email.some(email => email.toLowerCase().includes(searchLower)) ||
+        business.websiteUrl.toLowerCase().includes(searchLower) ||
+        `${business.address.street} ${business.address.city} ${business.address.state}`
+          .toLowerCase()
+          .includes(searchLower)
     )
   }
 
   if (filters?.industry) {
-    filteredBusinesses = filteredBusinesses.filter(business => business.industry === filters.industry)
+    filteredBusinesses = filteredBusinesses.filter(
+      business => business.industry === filters.industry
+    )
   }
 
   if (filters?.hasEmail !== undefined) {
-    filteredBusinesses = filteredBusinesses.filter(business => 
+    filteredBusinesses = filteredBusinesses.filter(business =>
       filters.hasEmail ? business.email.length > 0 : business.email.length === 0
     )
   }
 
   if (filters?.hasPhone !== undefined) {
-    filteredBusinesses = filteredBusinesses.filter(business => 
+    filteredBusinesses = filteredBusinesses.filter(business =>
       filters.hasPhone ? !!business.phone : !business.phone
     )
   }
@@ -425,11 +481,11 @@ async function getPaginatedBusinessesFromIndexedDB(params: z.infer<typeof Pagina
   filteredBusinesses.sort((a, b) => {
     const aValue = a[sortBy as keyof BusinessRecord]
     const bValue = b[sortBy as keyof BusinessRecord]
-    
+
     let comparison = 0
     if (aValue < bValue) comparison = -1
     else if (aValue > bValue) comparison = 1
-    
+
     return sortOrder === 'desc' ? -comparison : comparison
   })
 
@@ -449,7 +505,7 @@ async function getPaginatedBusinessesFromIndexedDB(params: z.infer<typeof Pagina
     const lastBusiness = paginatedBusinesses[paginatedBusinesses.length - 1]
     const cursorData = {
       sortValue: lastBusiness[sortBy as keyof BusinessRecord],
-      id: lastBusiness.id
+      id: lastBusiness.id,
     }
     nextCursor = Buffer.from(JSON.stringify(cursorData)).toString('base64')
   }
@@ -462,7 +518,7 @@ async function getPaginatedBusinessesFromIndexedDB(params: z.infer<typeof Pagina
       hasMore,
       totalCount: filteredBusinesses.length,
       currentPage: Math.floor(startIndex / limit) + 1,
-      pageSize: limit
+      pageSize: limit,
     },
     metadata: {
       processingTime: 0, // Will be set by caller
@@ -470,9 +526,9 @@ async function getPaginatedBusinessesFromIndexedDB(params: z.infer<typeof Pagina
       appliedFilters: filters || {},
       sortConfig: {
         field: sortBy,
-        order: sortOrder
-      }
-    }
+        order: sortOrder,
+      },
+    },
   }
 }
 
@@ -490,6 +546,6 @@ function transformPostgreSQLToBusiness(row: any): BusinessRecord {
     contactPerson: row.contact_person,
     coordinates: row.coordinates,
     industry: row.industry,
-    scrapedAt: new Date(row.scraped_at)
+    scrapedAt: new Date(row.scraped_at),
   }
 }

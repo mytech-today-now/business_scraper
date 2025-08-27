@@ -27,8 +27,8 @@ jest.mock('next/router', () => ({
     pathname: '/test',
     query: {},
     asPath: '/test',
-    route: '/test'
-  })
+    route: '/test',
+  }),
 }))
 
 // Mock Next.js navigation
@@ -39,10 +39,10 @@ jest.mock('next/navigation', () => ({
     prefetch: jest.fn(),
     back: jest.fn(),
     forward: jest.fn(),
-    refresh: jest.fn()
+    refresh: jest.fn(),
   }),
   usePathname: () => '/test',
-  useSearchParams: () => new URLSearchParams()
+  useSearchParams: () => new URLSearchParams(),
 }))
 
 // Mock WebSocket
@@ -55,24 +55,24 @@ global.WebSocket = jest.fn().mockImplementation(() => ({
   CONNECTING: 0,
   OPEN: 1,
   CLOSING: 2,
-  CLOSED: 3
+  CLOSED: 3,
 }))
 
 // Mock Notification API
 global.Notification = jest.fn().mockImplementation((title, options) => ({
   title,
   ...options,
-  close: jest.fn()
+  close: jest.fn(),
 }))
 
 Object.defineProperty(global.Notification, 'permission', {
   value: 'granted',
-  writable: true
+  writable: true,
 })
 
 Object.defineProperty(global.Notification, 'requestPermission', {
   value: jest.fn().mockResolvedValue('granted'),
-  writable: true
+  writable: true,
 })
 
 // Mock fetch
@@ -85,11 +85,11 @@ const localStorageMock = {
   removeItem: jest.fn(),
   clear: jest.fn(),
   length: 0,
-  key: jest.fn()
+  key: jest.fn(),
 }
 
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
+  value: localStorageMock,
 })
 
 // Mock sessionStorage
@@ -99,24 +99,24 @@ const sessionStorageMock = {
   removeItem: jest.fn(),
   clear: jest.fn(),
   length: 0,
-  key: jest.fn()
+  key: jest.fn(),
 }
 
 Object.defineProperty(window, 'sessionStorage', {
-  value: sessionStorageMock
+  value: sessionStorageMock,
 })
 
 // Mock crypto for UUID generation
 Object.defineProperty(global, 'crypto', {
   value: {
     randomUUID: jest.fn(() => 'test-uuid-' + Math.random().toString(36).substr(2, 9)),
-    getRandomValues: jest.fn((arr) => {
+    getRandomValues: jest.fn(arr => {
       for (let i = 0; i < arr.length; i++) {
         arr[i] = Math.floor(Math.random() * 256)
       }
       return arr
-    })
-  }
+    }),
+  },
 })
 
 // Mock console methods to reduce noise in tests
@@ -125,21 +125,21 @@ const originalConsole = { ...console }
 beforeEach(() => {
   // Reset all mocks before each test
   jest.clearAllMocks()
-  
+
   // Reset localStorage and sessionStorage
   localStorageMock.getItem.mockClear()
   localStorageMock.setItem.mockClear()
   localStorageMock.removeItem.mockClear()
   localStorageMock.clear.mockClear()
-  
+
   sessionStorageMock.getItem.mockClear()
   sessionStorageMock.setItem.mockClear()
   sessionStorageMock.removeItem.mockClear()
   sessionStorageMock.clear.mockClear()
-  
+
   // Reset fetch mock
   ;(global.fetch as jest.Mock).mockClear()
-  
+
   // Suppress console output during tests unless explicitly needed
   console.log = jest.fn()
   console.info = jest.fn()
@@ -153,7 +153,7 @@ afterEach(() => {
   console.info = originalConsole.info
   console.warn = originalConsole.warn
   console.error = originalConsole.error
-  
+
   // Clean up any timers
   jest.clearAllTimers()
   jest.useRealTimers()
@@ -176,9 +176,9 @@ global.testUtils = {
     preferences: {},
     createdAt: new Date(),
     updatedAt: new Date(),
-    ...overrides
+    ...overrides,
   }),
-  
+
   // Create mock role
   createMockRole: (overrides = {}) => ({
     id: 'test-role-' + Math.random().toString(36).substr(2, 9),
@@ -189,9 +189,9 @@ global.testUtils = {
     permissions: ['test.permission'],
     createdAt: new Date(),
     updatedAt: new Date(),
-    ...overrides
+    ...overrides,
   }),
-  
+
   // Create mock team
   createMockTeam: (overrides = {}) => ({
     id: 'test-team-' + Math.random().toString(36).substr(2, 9),
@@ -204,9 +204,9 @@ global.testUtils = {
     workspaceCount: 0,
     createdAt: new Date(),
     updatedAt: new Date(),
-    ...overrides
+    ...overrides,
   }),
-  
+
   // Create mock workspace
   createMockWorkspace: (overrides = {}) => ({
     id: 'test-workspace-' + Math.random().toString(36).substr(2, 9),
@@ -224,9 +224,9 @@ global.testUtils = {
     businessCount: 0,
     createdAt: new Date(),
     updatedAt: new Date(),
-    ...overrides
+    ...overrides,
   }),
-  
+
   // Create mock API response
   createMockApiResponse: (data = {}, success = true, status = 200) => ({
     ok: status >= 200 && status < 300,
@@ -234,53 +234,52 @@ global.testUtils = {
     json: jest.fn().mockResolvedValue({
       success,
       data,
-      ...(success ? {} : { error: 'Test error' })
+      ...(success ? {} : { error: 'Test error' }),
     }),
-    text: jest.fn().mockResolvedValue(JSON.stringify({
-      success,
-      data,
-      ...(success ? {} : { error: 'Test error' })
-    }))
+    text: jest.fn().mockResolvedValue(
+      JSON.stringify({
+        success,
+        data,
+        ...(success ? {} : { error: 'Test error' }),
+      })
+    ),
   }),
-  
+
   // Wait for async operations
   waitFor: (ms = 0) => new Promise(resolve => setTimeout(resolve, ms)),
-  
+
   // Mock database query result
   createMockQueryResult: (rows = [], rowCount = null) => ({
     rows,
     rowCount: rowCount !== null ? rowCount : rows.length,
     command: 'SELECT',
     oid: 0,
-    fields: []
-  })
+    fields: [],
+  }),
 }
 
 // Extend Jest matchers
 expect.extend({
   toHavePermission(user, permission) {
-    const hasPermission = user.roles?.some((userRole: any) =>
-      userRole.role.permissions.includes(permission)
-    ) || false
-    
+    const hasPermission =
+      user.roles?.some((userRole: any) => userRole.role.permissions.includes(permission)) || false
+
     return {
       message: () =>
         `expected user ${user.username} ${hasPermission ? 'not ' : ''}to have permission ${permission}`,
-      pass: hasPermission
+      pass: hasPermission,
     }
   },
-  
+
   toHaveRole(user, roleName) {
-    const hasRole = user.roles?.some((userRole: any) =>
-      userRole.role.name === roleName
-    ) || false
-    
+    const hasRole = user.roles?.some((userRole: any) => userRole.role.name === roleName) || false
+
     return {
       message: () =>
         `expected user ${user.username} ${hasRole ? 'not ' : ''}to have role ${roleName}`,
-      pass: hasRole
+      pass: hasRole,
     }
-  }
+  },
 })
 
 // Declare global types for TypeScript
@@ -291,7 +290,7 @@ declare global {
       toHaveRole(roleName: string): R
     }
   }
-  
+
   var testUtils: {
     createMockUser: (overrides?: any) => any
     createMockRole: (overrides?: any) => any

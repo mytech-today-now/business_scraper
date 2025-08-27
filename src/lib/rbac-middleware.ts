@@ -5,7 +5,13 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import { authOptions, ExtendedSession, Permission, hasPermission, hasAnyPermission } from '@/lib/auth'
+import {
+  authOptions,
+  ExtendedSession,
+  Permission,
+  hasPermission,
+  hasAnyPermission,
+} from '@/lib/auth'
 import { logger } from '@/utils/logger'
 
 export interface RBACConfig {
@@ -41,23 +47,20 @@ export function withRBAC(
 
     try {
       // Get NextAuth session
-      const session = await getServerSession(authOptions) as ExtendedSession
+      const session = (await getServerSession(authOptions)) as ExtendedSession
 
       if (!session || !session.user) {
         logger.warn('RBAC Middleware', `No session for ${pathname} from IP: ${clientIP}`)
-        return NextResponse.json(
-          { error: 'Authentication required' },
-          { status: 401 }
-        )
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
       }
 
       // Check if user is active
       if (!session.user.isActive) {
-        logger.warn('RBAC Middleware', `Inactive user ${session.user.email} attempted access to ${pathname}`)
-        return NextResponse.json(
-          { error: 'Account is inactive' },
-          { status: 403 }
+        logger.warn(
+          'RBAC Middleware',
+          `Inactive user ${session.user.email} attempted access to ${pathname}`
         )
+        return NextResponse.json({ error: 'Account is inactive' }, { status: 403 })
       }
 
       // Extract context from request
@@ -66,19 +69,13 @@ export function withRBAC(
       // Check workspace requirement
       if (config.workspaceRequired && !context.workspaceId) {
         logger.warn('RBAC Middleware', `Workspace required for ${pathname}`)
-        return NextResponse.json(
-          { error: 'Workspace context required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Workspace context required' }, { status: 400 })
       }
 
       // Check team requirement
       if (config.teamRequired && !context.teamId) {
         logger.warn('RBAC Middleware', `Team required for ${pathname}`)
-        return NextResponse.json(
-          { error: 'Team context required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Team context required' }, { status: 400 })
       }
 
       // Check permissions
@@ -87,12 +84,12 @@ export function withRBAC(
           ? RBACService.hasAllPermissions(user, config.permissions, {
               workspaceId: context.workspaceId,
               teamId: context.teamId,
-              resourceId: context.resourceId
+              resourceId: context.resourceId,
             })
           : RBACService.hasAnyPermission(user, config.permissions, {
               workspaceId: context.workspaceId,
               teamId: context.teamId,
-              resourceId: context.resourceId
+              resourceId: context.resourceId,
             })
 
         if (!hasPermission) {
@@ -104,12 +101,9 @@ export function withRBAC(
               userId: user.id,
               permissions: config.permissions,
               workspaceId: context.workspaceId,
-              teamId: context.teamId
+              teamId: context.teamId,
             })
-            return NextResponse.json(
-              { error: 'Insufficient permissions' },
-              { status: 403 }
-            )
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
           }
         }
       }
@@ -119,12 +113,9 @@ export function withRBAC(
         logger.warn('RBAC Middleware', `Custom check failed for ${pathname}`, {
           userId: user.id,
           workspaceId: context.workspaceId,
-          teamId: context.teamId
+          teamId: context.teamId,
         })
-        return NextResponse.json(
-          { error: 'Access denied' },
-          { status: 403 }
-        )
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 })
       }
 
       // Log successful access
@@ -132,18 +123,14 @@ export function withRBAC(
         userId: user.id,
         permissions: config.permissions,
         workspaceId: context.workspaceId,
-        teamId: context.teamId
+        teamId: context.teamId,
       })
 
       // Call handler with context
       return handler(request, context)
-
     } catch (error) {
       logger.error('RBAC Middleware', `Error in RBAC check for ${pathname}`, error)
-      return NextResponse.json(
-        { error: 'Authorization error' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Authorization error' }, { status: 500 })
     }
   }
 }
@@ -158,23 +145,26 @@ async function extractRBACContext(request: NextRequest, user: User): Promise<RBA
 
   // Extract IDs from URL path
   const pathSegments = pathname.split('/').filter(Boolean)
-  
+
   // Extract context from query parameters
-  const workspaceId = searchParams.get('workspaceId') || 
-                     searchParams.get('workspace_id') ||
-                     extractFromPath(pathSegments, 'workspaces')
+  const workspaceId =
+    searchParams.get('workspaceId') ||
+    searchParams.get('workspace_id') ||
+    extractFromPath(pathSegments, 'workspaces')
 
-  const teamId = searchParams.get('teamId') || 
-                searchParams.get('team_id') ||
-                extractFromPath(pathSegments, 'teams')
+  const teamId =
+    searchParams.get('teamId') ||
+    searchParams.get('team_id') ||
+    extractFromPath(pathSegments, 'teams')
 
-  const resourceId = searchParams.get('resourceId') || 
-                    searchParams.get('id') ||
-                    pathSegments[pathSegments.length - 1]
+  const resourceId =
+    searchParams.get('resourceId') ||
+    searchParams.get('id') ||
+    pathSegments[pathSegments.length - 1]
 
   // Determine resource type from path
   const resourceType = determineResourceType(pathname)
-  
+
   // Determine action from HTTP method and path
   const action = determineAction(request.method, pathname)
 
@@ -185,7 +175,7 @@ async function extractRBACContext(request: NextRequest, user: User): Promise<RBA
     resourceId: resourceId || undefined,
     resourceType,
     action,
-    request
+    request,
   }
 }
 
@@ -238,7 +228,7 @@ function determineAction(method: string, pathname: string): string | undefined {
 async function getUserFromSession(sessionId: string): Promise<User | null> {
   // TODO: Implement user retrieval from database
   // This is a placeholder that should be replaced with actual database query
-  
+
   try {
     // In a real implementation, this would query the database
     // For now, return a mock admin user for development
@@ -263,56 +253,58 @@ async function getUserFromSession(sessionId: string): Promise<User | null> {
           scrapingComplete: true,
           teamInvites: true,
           dataValidation: true,
-          systemAlerts: true
+          systemAlerts: true,
         },
         dashboard: {
           defaultView: 'campaigns',
           chartsVisible: true,
           refreshInterval: 30000,
-          compactMode: false
+          compactMode: false,
         },
         scraping: {
           defaultSearchRadius: 25,
           defaultSearchDepth: 3,
           defaultPagesPerSite: 5,
-          autoValidation: false
-        }
+          autoValidation: false,
+        },
       },
       twoFactorEnabled: false,
       failedLoginAttempts: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
-      roles: [{
-        id: 'admin-role-assignment',
-        userId: 'admin-user-id',
-        roleId: 'admin-role-id',
-        role: {
-          id: 'admin-role-id',
-          name: 'admin',
-          displayName: 'Administrator',
-          description: 'Full system access',
-          isSystemRole: true,
-          permissions: [
-            'system.manage',
-            'users.manage',
-            'teams.manage',
-            'workspaces.manage',
-            'campaigns.manage',
-            'data.manage',
-            'scraping.manage',
-            'analytics.manage',
-            'audit.manage'
-          ],
+      roles: [
+        {
+          id: 'admin-role-assignment',
+          userId: 'admin-user-id',
+          roleId: 'admin-role-id',
+          role: {
+            id: 'admin-role-id',
+            name: 'admin',
+            displayName: 'Administrator',
+            description: 'Full system access',
+            isSystemRole: true,
+            permissions: [
+              'system.manage',
+              'users.manage',
+              'teams.manage',
+              'workspaces.manage',
+              'campaigns.manage',
+              'data.manage',
+              'scraping.manage',
+              'analytics.manage',
+              'audit.manage',
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          assignedAt: new Date(),
+          isActive: true,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
-        assignedAt: new Date(),
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }],
+      ],
       teams: [],
-      workspaces: []
+      workspaces: [],
     }
   } catch (error) {
     logger.error('RBAC Middleware', 'Error fetching user from session', error)
@@ -324,22 +316,34 @@ async function getUserFromSession(sessionId: string): Promise<User | null> {
  * Permission checking decorators for common use cases
  */
 export const requirePermissions = (permissions: Permission[], requireAll = false) =>
-  withRBAC(async (request, context) => {
-    // This is handled by the middleware itself
-    return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
-  }, { permissions, requireAll })
+  withRBAC(
+    async (request, context) => {
+      // This is handled by the middleware itself
+      return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
+    },
+    { permissions, requireAll }
+  )
 
 export const requireWorkspaceAccess = (permissions: Permission[]) =>
-  withRBAC(async (request, context) => {
-    return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
-  }, { permissions, workspaceRequired: true })
+  withRBAC(
+    async (request, context) => {
+      return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
+    },
+    { permissions, workspaceRequired: true }
+  )
 
 export const requireTeamAccess = (permissions: Permission[]) =>
-  withRBAC(async (request, context) => {
-    return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
-  }, { permissions, teamRequired: true })
+  withRBAC(
+    async (request, context) => {
+      return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
+    },
+    { permissions, teamRequired: true }
+  )
 
 export const requireSelfOrPermissions = (permissions: Permission[]) =>
-  withRBAC(async (request, context) => {
-    return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
-  }, { permissions, allowSelfAccess: true })
+  withRBAC(
+    async (request, context) => {
+      return NextResponse.json({ error: 'Handler not implemented' }, { status: 500 })
+    },
+    { permissions, allowSelfAccess: true }
+  )

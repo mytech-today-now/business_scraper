@@ -3,12 +3,12 @@
  * Provides real-time analytics, performance metrics, and business intelligence
  */
 
-import { 
-  PerformanceMetrics, 
-  DataQualityMetrics, 
+import {
+  PerformanceMetrics,
+  DataQualityMetrics,
   UserActivitySummary,
   TeamPerformance,
-  WorkspaceAnalytics
+  WorkspaceAnalytics,
 } from '@/types/multi-user'
 import { database } from './postgresql-database'
 import { logger } from '@/utils/logger'
@@ -57,7 +57,7 @@ export class AnalyticsService {
         userActivity,
         teamPerformance,
         workspaceAnalytics,
-        trends
+        trends,
       ] = await Promise.all([
         this.getOverviewMetrics(filters),
         this.getPerformanceMetrics(filters),
@@ -65,7 +65,7 @@ export class AnalyticsService {
         this.getUserActivitySummary(filters),
         this.getTeamPerformance(filters),
         this.getWorkspaceAnalytics(filters),
-        this.getTrendMetrics(filters)
+        this.getTrendMetrics(filters),
       ])
 
       return {
@@ -75,7 +75,7 @@ export class AnalyticsService {
         userActivity,
         teamPerformance,
         workspaceAnalytics,
-        trends
+        trends,
       }
     } catch (error) {
       logger.error('Analytics Service', 'Error getting dashboard metrics', error)
@@ -86,7 +86,9 @@ export class AnalyticsService {
   /**
    * Get overview metrics
    */
-  static async getOverviewMetrics(filters: AnalyticsFilters): Promise<DashboardMetrics['overview']> {
+  static async getOverviewMetrics(
+    filters: AnalyticsFilters
+  ): Promise<DashboardMetrics['overview']> {
     try {
       const conditions = this.buildWhereConditions(filters)
       const { whereClause, values } = conditions
@@ -113,7 +115,7 @@ export class AnalyticsService {
         totalWorkspaces: parseInt(row.total_workspaces),
         totalCampaigns: parseInt(row.total_campaigns),
         totalBusinesses: parseInt(row.total_businesses),
-        totalSessions: parseInt(row.total_sessions)
+        totalSessions: parseInt(row.total_sessions),
       }
     } catch (error) {
       logger.error('Analytics Service', 'Error getting overview metrics', error)
@@ -146,8 +148,10 @@ export class AnalyticsService {
       const row = result.rows[0]
 
       // Calculate additional metrics
-      const totalRequests = (parseInt(row.total_successful) || 0) + (parseInt(row.total_failed) || 0)
-      const requestThroughput = totalRequests > 0 ? totalRequests / Math.max(1, parseInt(row.total_sessions)) : 0
+      const totalRequests =
+        (parseInt(row.total_successful) || 0) + (parseInt(row.total_failed) || 0)
+      const requestThroughput =
+        totalRequests > 0 ? totalRequests / Math.max(1, parseInt(row.total_sessions)) : 0
 
       return {
         workspaceId: filters.workspaceId || '',
@@ -162,7 +166,7 @@ export class AnalyticsService {
         cpuUsage: 0, // Would need to be tracked separately
         activeUsers: 0, // Would need to be calculated separately
         concurrentSessions: 0, // Would need to be tracked separately
-        totalActions: parseInt(row.total_sessions) || 0
+        totalActions: parseInt(row.total_sessions) || 0,
       }
     } catch (error) {
       logger.error('Analytics Service', 'Error getting performance metrics', error)
@@ -216,7 +220,7 @@ export class AnalyticsService {
         enrichmentAccuracy: 0, // Would need to be tracked separately
         validationRate: totalRecords > 0 ? (validRecords / totalRecords) * 100 : 0,
         validationAccuracy: 0, // Would need to be tracked separately
-        avgValidationTime: 0 // Would need to be tracked separately
+        avgValidationTime: 0, // Would need to be tracked separately
       }
     } catch (error) {
       logger.error('Analytics Service', 'Error getting data quality metrics', error)
@@ -268,7 +272,7 @@ export class AnalyticsService {
         businessesValidated: parseInt(row.businesses_validated) || 0,
         scrapingSessionsRun: parseInt(row.scraping_sessions_run) || 0,
         totalActions: parseInt(row.total_actions) || 0,
-        avgValidationScore: parseFloat(row.avg_validation_score) || undefined
+        avgValidationScore: parseFloat(row.avg_validation_score) || undefined,
       }))
     } catch (error) {
       logger.error('Analytics Service', 'Error getting user activity summary', error)
@@ -316,7 +320,7 @@ export class AnalyticsService {
         totalCampaigns: parseInt(row.total_campaigns) || 0,
         totalBusinesses: parseInt(row.total_businesses) || 0,
         avgConfidenceScore: parseFloat(row.avg_confidence_score) || undefined,
-        completedCampaigns: parseInt(row.completed_campaigns) || 0
+        completedCampaigns: parseInt(row.completed_campaigns) || 0,
       }))
     } catch (error) {
       logger.error('Analytics Service', 'Error getting team performance', error)
@@ -371,7 +375,7 @@ export class AnalyticsService {
         avgConfidenceScore: parseFloat(row.avg_confidence_score) || undefined,
         validatedBusinesses: parseInt(row.validated_businesses) || 0,
         completedCampaigns: parseInt(row.completed_campaigns) || 0,
-        lastScrapingActivity: row.last_scraping_activity
+        lastScrapingActivity: row.last_scraping_activity,
       }))
     } catch (error) {
       logger.error('Analytics Service', 'Error getting workspace analytics', error)
@@ -385,7 +389,7 @@ export class AnalyticsService {
   static async getTrendMetrics(filters: AnalyticsFilters): Promise<DashboardMetrics['trends']> {
     try {
       const dateRange = this.getDateRange(filters)
-      
+
       // User growth trend
       const userGrowthQuery = `
         SELECT 
@@ -396,7 +400,10 @@ export class AnalyticsService {
         GROUP BY DATE(created_at)
         ORDER BY date
       `
-      const userGrowthResult = await database.query(userGrowthQuery, [dateRange.start, dateRange.end])
+      const userGrowthResult = await database.query(userGrowthQuery, [
+        dateRange.start,
+        dateRange.end,
+      ])
 
       // Campaign activity trend
       const campaignActivityQuery = `
@@ -408,7 +415,10 @@ export class AnalyticsService {
         GROUP BY DATE(created_at)
         ORDER BY date
       `
-      const campaignActivityResult = await database.query(campaignActivityQuery, [dateRange.start, dateRange.end])
+      const campaignActivityResult = await database.query(campaignActivityQuery, [
+        dateRange.start,
+        dateRange.end,
+      ])
 
       // Data quality trend
       const dataQualityQuery = `
@@ -420,21 +430,24 @@ export class AnalyticsService {
         GROUP BY DATE(scraped_at)
         ORDER BY date
       `
-      const dataQualityResult = await database.query(dataQualityQuery, [dateRange.start, dateRange.end])
+      const dataQualityResult = await database.query(dataQualityQuery, [
+        dateRange.start,
+        dateRange.end,
+      ])
 
       return {
         userGrowth: userGrowthResult.rows.map(row => ({
           date: row.date,
-          count: parseInt(row.count)
+          count: parseInt(row.count),
         })),
         campaignActivity: campaignActivityResult.rows.map(row => ({
           date: row.date,
-          count: parseInt(row.count)
+          count: parseInt(row.count),
         })),
         dataQualityTrend: dataQualityResult.rows.map(row => ({
           date: row.date,
-          score: parseFloat(row.score)
-        }))
+          score: parseFloat(row.score),
+        })),
       }
     } catch (error) {
       logger.error('Analytics Service', 'Error getting trend metrics', error)
@@ -445,7 +458,10 @@ export class AnalyticsService {
   /**
    * Build WHERE conditions for queries
    */
-  private static buildWhereConditions(filters: AnalyticsFilters, tableAlias?: string): {
+  private static buildWhereConditions(
+    filters: AnalyticsFilters,
+    tableAlias?: string
+  ): {
     whereClause: string
     values: any[]
   } {
@@ -482,7 +498,7 @@ export class AnalyticsService {
 
     return {
       whereClause: conditions.length > 1 ? `WHERE ${conditions.join(' AND ')}` : '',
-      values
+      values,
     }
   }
 
@@ -495,10 +511,14 @@ export class AnalyticsService {
 
     if (!start) {
       // Default to appropriate range based on period
-      const daysBack = filters.period === 'hour' ? 1 :
-                      filters.period === 'day' ? 30 :
-                      filters.period === 'week' ? 90 :
-                      365 // month or default
+      const daysBack =
+        filters.period === 'hour'
+          ? 1
+          : filters.period === 'day'
+            ? 30
+            : filters.period === 'week'
+              ? 90
+              : 365 // month or default
 
       start = new Date(end.getTime() - daysBack * 24 * 60 * 60 * 1000)
     }
@@ -524,7 +544,7 @@ export class AnalyticsService {
         ${workspaceId ? 'AND workspace_id = $1' : ''}
       `
       const activeUsersResult = await database.query(
-        activeUsersQuery, 
+        activeUsersQuery,
         workspaceId ? [workspaceId] : []
       )
 
@@ -563,8 +583,8 @@ export class AnalyticsService {
         recentActivity: recentActivityResult.rows.map(row => ({
           action: row.action,
           timestamp: row.timestamp,
-          user: row.username || 'Unknown'
-        }))
+          user: row.username || 'Unknown',
+        })),
       }
     } catch (error) {
       logger.error('Analytics Service', 'Error getting realtime metrics', error)

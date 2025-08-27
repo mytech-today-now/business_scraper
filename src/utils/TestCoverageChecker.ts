@@ -41,10 +41,7 @@ export class TestCoverageChecker {
   private thresholds: CoverageThresholds
   private testCategories: TestCategoryConfig[]
 
-  constructor(
-    projectRoot: string = process.cwd(),
-    thresholds: Partial<CoverageThresholds> = {}
-  ) {
+  constructor(projectRoot: string = process.cwd(), thresholds: Partial<CoverageThresholds> = {}) {
     this.projectRoot = projectRoot
     this.coverageDir = join(projectRoot, 'coverage')
     this.thresholds = {
@@ -52,7 +49,7 @@ export class TestCoverageChecker {
       branches: 80,
       functions: 85,
       lines: 85,
-      ...thresholds
+      ...thresholds,
     }
 
     // Define the 12 test categories as per requirements
@@ -62,85 +59,85 @@ export class TestCoverageChecker {
         pattern: 'src/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 90,
         timeout: 30000,
-        retries: 1
+        retries: 1,
       },
       {
         name: 'integration',
         pattern: 'src/tests/integration/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 85,
         timeout: 60000,
-        retries: 2
+        retries: 2,
       },
       {
         name: 'e2e',
         pattern: 'src/tests/e2e/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 75,
         timeout: 120000,
-        retries: 3
+        retries: 3,
       },
       {
         name: 'system',
         pattern: 'src/tests/system/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 80,
         timeout: 180000,
-        retries: 2
+        retries: 2,
       },
       {
         name: 'regression',
         pattern: 'src/tests/regression/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 85,
         timeout: 90000,
-        retries: 2
+        retries: 2,
       },
       {
         name: 'acceptance',
         pattern: 'src/tests/acceptance/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 80,
         timeout: 120000,
-        retries: 2
+        retries: 2,
       },
       {
         name: 'performance',
         pattern: 'src/tests/performance/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 70,
         timeout: 300000,
-        retries: 3
+        retries: 3,
       },
       {
         name: 'load',
         pattern: 'src/tests/load/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 70,
         timeout: 300000,
-        retries: 3
+        retries: 3,
       },
       {
         name: 'security',
         pattern: 'src/**/*security*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 95,
         timeout: 60000,
-        retries: 1
+        retries: 1,
       },
       {
         name: 'compatibility',
         pattern: 'src/tests/compatibility/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 75,
         timeout: 90000,
-        retries: 2
+        retries: 2,
       },
       {
         name: 'accessibility',
         pattern: 'src/tests/accessibility/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 85,
         timeout: 60000,
-        retries: 2
+        retries: 2,
       },
       {
         name: 'exploratory',
         pattern: 'src/tests/exploratory/**/*.{test,spec}.{js,ts,tsx}',
         requiredCoverage: 60,
         timeout: 120000,
-        retries: 3
-      }
+        retries: 3,
+      },
     ]
   }
 
@@ -157,7 +154,7 @@ export class TestCoverageChecker {
 
     // Run overall coverage
     const overallCoverage = await this.runCoverageForPattern('src/**/*.{test,spec}.{js,ts,tsx}')
-    
+
     // Run coverage for each category
     for (const category of this.testCategories) {
       try {
@@ -168,21 +165,16 @@ export class TestCoverageChecker {
         if (categoryResult.summary.overallCoverage < category.requiredCoverage) {
           recommendations.push(
             `${category.name} tests: Coverage ${categoryResult.summary.overallCoverage.toFixed(1)}% ` +
-            `is below required ${category.requiredCoverage}%`
+              `is below required ${category.requiredCoverage}%`
           )
         }
       } catch (error) {
-        testLogger.logError(
-          'coverage-checker',
-          `${category.name}-coverage`,
-          error as Error,
-          {
-            category: 'dependency',
-            severity: 'high',
-            file: 'TestCoverageChecker.ts'
-          }
-        )
-        
+        testLogger.logError('coverage-checker', `${category.name}-coverage`, error as Error, {
+          category: 'dependency',
+          severity: 'high',
+          file: 'TestCoverageChecker.ts',
+        })
+
         recommendations.push(`${category.name} tests: Failed to run coverage analysis`)
       }
     }
@@ -197,20 +189,23 @@ export class TestCoverageChecker {
     return {
       overall: overallCoverage,
       categories: results,
-      recommendations
+      recommendations,
     }
   }
 
   /**
    * Run Jest coverage for a specific pattern
    */
-  private async runCoverageForPattern(pattern: string, categoryName?: string): Promise<CoverageReport> {
+  private async runCoverageForPattern(
+    pattern: string,
+    categoryName?: string
+  ): Promise<CoverageReport> {
     try {
       const command = `npx jest --coverage --testPathPattern="${pattern}" --coverageReporters=json-summary --coverageReporters=json --silent`
-      
+
       execSync(command, {
         cwd: this.projectRoot,
-        stdio: 'pipe'
+        stdio: 'pipe',
       })
 
       return this.parseCoverageReport(categoryName)
@@ -233,9 +228,7 @@ export class TestCoverageChecker {
 
     try {
       const summary = JSON.parse(readFileSync(summaryPath, 'utf8'))
-      const details = existsSync(detailPath) 
-        ? JSON.parse(readFileSync(detailPath, 'utf8'))
-        : {}
+      const details = existsSync(detailPath) ? JSON.parse(readFileSync(detailPath, 'utf8')) : {}
 
       const total = summary.total || {}
       const files: Record<string, CoverageThresholds> = {}
@@ -249,7 +242,7 @@ export class TestCoverageChecker {
             statements: this.calculateCoverage(fileData.s),
             branches: this.calculateCoverage(fileData.b),
             functions: this.calculateCoverage(fileData.f),
-            lines: this.calculateCoverage(fileData.s) // Approximation
+            lines: this.calculateCoverage(fileData.s), // Approximation
           }
 
           // Find uncovered lines
@@ -257,43 +250,38 @@ export class TestCoverageChecker {
         }
       })
 
-      const overallCoverage = (
-        (total.statements?.pct || 0) +
-        (total.branches?.pct || 0) +
-        (total.functions?.pct || 0) +
-        (total.lines?.pct || 0)
-      ) / 4
+      const overallCoverage =
+        ((total.statements?.pct || 0) +
+          (total.branches?.pct || 0) +
+          (total.functions?.pct || 0) +
+          (total.lines?.pct || 0)) /
+        4
 
       return {
         total: {
           statements: total.statements?.pct || 0,
           branches: total.branches?.pct || 0,
           functions: total.functions?.pct || 0,
-          lines: total.lines?.pct || 0
+          lines: total.lines?.pct || 0,
         },
         files,
         uncoveredLines,
         summary: {
           totalFiles: Object.keys(files).length,
-          coveredFiles: Object.keys(files).filter(f => 
-            files[f].statements >= this.thresholds.statements
+          coveredFiles: Object.keys(files).filter(
+            f => files[f].statements >= this.thresholds.statements
           ).length,
           overallCoverage,
-          meetingThreshold: overallCoverage >= 85
-        }
+          meetingThreshold: overallCoverage >= 85,
+        },
       }
     } catch (error) {
-      testLogger.logError(
-        'coverage-checker',
-        'parse-coverage',
-        error as Error,
-        {
-          category: 'dependency',
-          severity: 'medium',
-          file: 'TestCoverageChecker.ts'
-        }
-      )
-      
+      testLogger.logError('coverage-checker', 'parse-coverage', error as Error, {
+        category: 'dependency',
+        severity: 'medium',
+        file: 'TestCoverageChecker.ts',
+      })
+
       return this.createEmptyReport()
     }
   }
@@ -304,7 +292,7 @@ export class TestCoverageChecker {
   private calculateCoverage(coverageData: Record<string, number>): number {
     const values = Object.values(coverageData)
     if (values.length === 0) return 0
-    
+
     const covered = values.filter(v => v > 0).length
     return (covered / values.length) * 100
   }
@@ -314,7 +302,7 @@ export class TestCoverageChecker {
    */
   private findUncoveredLines(fileData: any): number[] {
     const uncovered: number[] = []
-    
+
     if (fileData.statementMap && fileData.s) {
       Object.keys(fileData.s).forEach(statementId => {
         if (fileData.s[statementId] === 0) {
@@ -341,8 +329,8 @@ export class TestCoverageChecker {
         totalFiles: 0,
         coveredFiles: 0,
         overallCoverage: 0,
-        meetingThreshold: false
-      }
+        meetingThreshold: false,
+      },
     }
   }
 
@@ -351,16 +339,16 @@ export class TestCoverageChecker {
    */
   async generateMissingTests(): Promise<string[]> {
     const generatedFiles: string[] = []
-    
+
     try {
       const coverageResult = await this.checkAllCoverage()
-      
+
       Object.keys(coverageResult.overall.uncoveredLines).forEach(filePath => {
         const uncoveredLines = coverageResult.overall.uncoveredLines[filePath]
-        
+
         if (uncoveredLines.length > 0) {
           const testFilePath = this.generateTestFilePath(filePath)
-          
+
           if (!existsSync(testFilePath)) {
             this.createBasicTestFile(filePath, testFilePath, uncoveredLines)
             generatedFiles.push(testFilePath)
@@ -368,16 +356,11 @@ export class TestCoverageChecker {
         }
       })
     } catch (error) {
-      testLogger.logError(
-        'coverage-checker',
-        'generate-missing-tests',
-        error as Error,
-        {
-          category: 'dependency',
-          severity: 'medium',
-          file: 'TestCoverageChecker.ts'
-        }
-      )
+      testLogger.logError('coverage-checker', 'generate-missing-tests', error as Error, {
+        category: 'dependency',
+        severity: 'medium',
+        file: 'TestCoverageChecker.ts',
+      })
     }
 
     return generatedFiles
@@ -395,9 +378,17 @@ export class TestCoverageChecker {
   /**
    * Create basic test file for uncovered code
    */
-  private createBasicTestFile(sourcePath: string, testPath: string, uncoveredLines: number[]): void {
-    const fileName = sourcePath.split('/').pop()?.replace(/\.(ts|tsx|js|jsx)$/, '') || 'unknown'
-    
+  private createBasicTestFile(
+    sourcePath: string,
+    testPath: string,
+    uncoveredLines: number[]
+  ): void {
+    const fileName =
+      sourcePath
+        .split('/')
+        .pop()
+        ?.replace(/\.(ts|tsx|js|jsx)$/, '') || 'unknown'
+
     const testContent = `/**
  * Generated test file for ${fileName}
  * Covers previously uncovered lines: ${uncoveredLines.join(', ')}
@@ -418,7 +409,7 @@ describe('${fileName}', () => {
     // Ensure directory exists
     const testDir = testPath.substring(0, testPath.lastIndexOf('/'))
     execSync(`mkdir -p "${testDir}"`, { stdio: 'ignore' })
-    
+
     writeFileSync(testPath, testContent)
   }
 
@@ -432,12 +423,14 @@ describe('${fileName}', () => {
   }> {
     const issues: string[] = []
     const recommendations: string[] = []
-    
+
     const coverageResult = await this.checkAllCoverage()
-    
+
     // Check overall success rate requirement (≥95%)
     if (coverageResult.overall.summary.overallCoverage < 95) {
-      issues.push(`Overall test success rate ${coverageResult.overall.summary.overallCoverage.toFixed(1)}% is below 95% requirement`)
+      issues.push(
+        `Overall test success rate ${coverageResult.overall.summary.overallCoverage.toFixed(1)}% is below 95% requirement`
+      )
       recommendations.push('Focus on fixing critical and high-priority test failures first')
     }
 
@@ -445,15 +438,18 @@ describe('${fileName}', () => {
     this.testCategories.forEach(category => {
       const categoryResult = coverageResult.categories[category.name]
       if (categoryResult && categoryResult.summary.overallCoverage < category.requiredCoverage) {
-        issues.push(`${category.name} tests coverage ${categoryResult.summary.overallCoverage.toFixed(1)}% below required ${category.requiredCoverage}%`)
+        issues.push(
+          `${category.name} tests coverage ${categoryResult.summary.overallCoverage.toFixed(1)}% below required ${category.requiredCoverage}%`
+        )
         recommendations.push(`Add more ${category.name} tests or fix existing failures`)
       }
     })
 
     // Check for missing test categories
-    const missingCategories = this.testCategories.filter(cat => 
-      !coverageResult.categories[cat.name] || 
-      coverageResult.categories[cat.name].summary.totalFiles === 0
+    const missingCategories = this.testCategories.filter(
+      cat =>
+        !coverageResult.categories[cat.name] ||
+        coverageResult.categories[cat.name].summary.totalFiles === 0
     )
 
     missingCategories.forEach(category => {
@@ -464,7 +460,7 @@ describe('${fileName}', () => {
     return {
       valid: issues.length === 0,
       issues,
-      recommendations: [...recommendations, ...coverageResult.recommendations]
+      recommendations: [...recommendations, ...coverageResult.recommendations],
     }
   }
 }

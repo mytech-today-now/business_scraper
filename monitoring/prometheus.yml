@@ -5,15 +5,15 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    cluster: 'business-scraper'
-    environment: 'production'
+    cluster: "business-scraper"
+    environment: "production"
 
 # Alertmanager configuration
 alerting:
   alertmanagers:
     - static_configs:
         - targets:
-          - alertmanager:9093
+            - alertmanager:9093
 
 # Load alerting rules
 rule_files:
@@ -23,65 +23,65 @@ rule_files:
 # Scrape configurations
 scrape_configs:
   # Prometheus itself
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
 
   # Application metrics
-  - job_name: 'business-scraper-app'
+  - job_name: "business-scraper-app"
     static_configs:
-      - targets: ['app:3000']
-    metrics_path: '/api/metrics'
+      - targets: ["app:3000"]
+    metrics_path: "/api/metrics"
     scrape_interval: 10s
     scrape_timeout: 5s
 
   # Node exporter for system metrics
-  - job_name: 'node-exporter'
+  - job_name: "node-exporter"
     static_configs:
-      - targets: ['node-exporter:9100']
+      - targets: ["node-exporter:9100"]
     scrape_interval: 15s
 
   # PostgreSQL metrics
-  - job_name: 'postgres-exporter'
+  - job_name: "postgres-exporter"
     static_configs:
-      - targets: ['postgres-exporter:9187']
+      - targets: ["postgres-exporter:9187"]
     scrape_interval: 15s
 
   # Redis metrics
-  - job_name: 'redis-exporter'
+  - job_name: "redis-exporter"
     static_configs:
-      - targets: ['redis-exporter:9121']
+      - targets: ["redis-exporter:9121"]
     scrape_interval: 15s
 
   # Nginx metrics
-  - job_name: 'nginx-exporter'
+  - job_name: "nginx-exporter"
     static_configs:
-      - targets: ['nginx-exporter:9113']
+      - targets: ["nginx-exporter:9113"]
     scrape_interval: 15s
 
   # Elasticsearch metrics
-  - job_name: 'elasticsearch-exporter'
+  - job_name: "elasticsearch-exporter"
     static_configs:
-      - targets: ['elasticsearch-exporter:9114']
+      - targets: ["elasticsearch-exporter:9114"]
     scrape_interval: 30s
 
   # Custom scraping metrics
-  - job_name: 'scraping-metrics'
+  - job_name: "scraping-metrics"
     static_configs:
-      - targets: ['app:3000']
-    metrics_path: '/api/scraping/metrics'
+      - targets: ["app:3000"]
+    metrics_path: "/api/scraping/metrics"
     scrape_interval: 30s
 
   # Blackbox exporter for endpoint monitoring
-  - job_name: 'blackbox'
+  - job_name: "blackbox"
     metrics_path: /probe
     params:
       module: [http_2xx]
     static_configs:
       - targets:
-        - https://business-scraper.com
-        - https://business-scraper.com/api/health
-        - https://business-scraper.com/api/campaigns
+          - https://business-scraper.com
+          - https://business-scraper.com/api/health
+          - https://business-scraper.com/api/campaigns
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -97,5 +97,4 @@ remote_write:
       max_samples_per_send: 1000
       max_shards: 200
       capacity: 2500
-
 # Storage configuration is handled via command line arguments in docker-compose

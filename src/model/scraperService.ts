@@ -53,9 +53,10 @@ const DEFAULT_SCRAPER_CONFIG: ScraperConfig = {
   timeout: 30000,
   maxRetries: 3,
   retryDelay: 1000,
-  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+  userAgent:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
   headless: true,
-  maxConcurrent: 6,              // Increased from 3 to 6 for better throughput
+  maxConcurrent: 6, // Increased from 3 to 6 for better throughput
 }
 
 /**
@@ -130,7 +131,6 @@ export class ScraperService {
 
       // Start auto cleanup
       memoryCleanup.startAutoCleanup()
-
     } catch (error) {
       logger.error('Scraper', 'Failed to initialize browser', error)
       throw error
@@ -188,8 +188,6 @@ export class ScraperService {
     }
   }
 
-
-
   /**
    * Scrape a website for business information
    * @param url - Website URL to scrape
@@ -197,7 +195,11 @@ export class ScraperService {
    * @param maxPages - Maximum number of pages to scrape per site
    * @returns Promise resolving to array of business records
    */
-  async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
+  async scrapeWebsite(
+    url: string,
+    depth: number = 2,
+    maxPages: number = 5
+  ): Promise<BusinessRecord[]> {
     if (!this.browser) {
       await this.initialize()
     }
@@ -219,7 +221,7 @@ export class ScraperService {
         // Navigate to the main page
         await page.goto(url, {
           waitUntil: 'networkidle2',
-          timeout: this.config.timeout
+          timeout: this.config.timeout,
         })
       } catch (navigationError) {
         logger.warn('Scraper', `Failed to navigate to ${url}`, navigationError)
@@ -227,7 +229,7 @@ export class ScraperService {
         try {
           await page.goto(url, {
             waitUntil: 'domcontentloaded',
-            timeout: 15000
+            timeout: 15000,
           })
         } catch (retryError) {
           logger.error('Scraper', `Navigation failed completely for ${url}`, retryError)
@@ -245,7 +247,10 @@ export class ScraperService {
       // Scrape business data from limited set of pages
       const businessData = await this.extractBusinessData(page, limitedUrls)
 
-      logger.info('Scraper', `Successfully scraped ${url}, processed ${limitedUrls.length}/${allUrls.length} pages (maxPages: ${maxPages}), found ${businessData.length} business records`)
+      logger.info(
+        'Scraper',
+        `Successfully scraped ${url}, processed ${limitedUrls.length}/${allUrls.length} pages (maxPages: ${maxPages}), found ${businessData.length} business records`
+      )
       return businessData
     } catch (error) {
       logger.error('Scraper', `Failed to scrape ${url}`, error)
@@ -268,17 +273,16 @@ export class ScraperService {
 
     try {
       // Look for contact-related links
-      const links = await page.evaluate((keywords) => {
+      const links = await page.evaluate(keywords => {
         const allLinks = Array.from(document.querySelectorAll('a[href]'))
         return allLinks
           .map(link => ({
             href: (link as HTMLAnchorElement).href,
             text: link.textContent?.toLowerCase() || '',
           }))
-          .filter(link => 
-            keywords.some(keyword => 
-              link.text.includes(keyword) || 
-              link.href.toLowerCase().includes(keyword)
+          .filter(link =>
+            keywords.some(
+              keyword => link.text.includes(keyword) || link.href.toLowerCase().includes(keyword)
             )
           )
           .map(link => link.href)
@@ -315,31 +319,35 @@ export class ScraperService {
 
     for (const url of urls) {
       try {
-        await page.goto(url, { 
-          waitUntil: 'networkidle2', 
-          timeout: this.config.timeout 
+        await page.goto(url, {
+          waitUntil: 'networkidle2',
+          timeout: this.config.timeout,
         })
 
         const businessData = await page.evaluate(() => {
           // Extract business name
-          const businessName = 
+          const businessName =
             document.querySelector('h1')?.textContent?.trim() ||
             document.querySelector('title')?.textContent?.trim() ||
-            document.querySelector('[class*="company"], [class*="business"]')?.textContent?.trim() ||
+            document
+              .querySelector('[class*="company"], [class*="business"]')
+              ?.textContent?.trim() ||
             'Unknown Business'
 
           // Extract emails
           const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g
           const pageText = document.body.textContent || ''
-          const emails = Array.from(new Set(pageText.match(emailRegex) || []))
-            .filter(email => !email.includes('example.com') && !email.includes('placeholder'))
+          const emails = Array.from(new Set(pageText.match(emailRegex) || [])).filter(
+            email => !email.includes('example.com') && !email.includes('placeholder')
+          )
 
           // Extract phone numbers
           const phoneRegex = /(\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/g
           const phones = Array.from(new Set(pageText.match(phoneRegex) || []))
 
           // Extract address (simplified)
-          const addressRegex = /\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)[,\s]+[A-Za-z\s]+[,\s]+[A-Z]{2}[,\s]+\d{5}(?:-\d{4})?/g
+          const addressRegex =
+            /\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)[,\s]+[A-Za-z\s]+[,\s]+[A-Z]{2}[,\s]+\d{5}(?:-\d{4})?/g
           const addresses = pageText.match(addressRegex) || []
 
           return {
@@ -398,7 +406,7 @@ export class ScraperService {
   private parseAddress(addressString: string): BusinessRecord['address'] {
     // Simplified address parsing
     const parts = addressString.split(',').map(part => part.trim())
-    
+
     return {
       street: parts[0] || '',
       city: parts[1] || '',
@@ -416,14 +424,22 @@ export class ScraperService {
     try {
       const urlObj = new URL(url)
       const hostname = urlObj.hostname.toLowerCase()
-      
+
       // Exclude social media, directories, etc.
       const excludedDomains = [
-        'facebook.com', 'twitter.com', 'linkedin.com', 'instagram.com',
-        'yelp.com', 'yellowpages.com', 'google.com', 'youtube.com',
-        'wikipedia.org', 'amazon.com', 'ebay.com'
+        'facebook.com',
+        'twitter.com',
+        'linkedin.com',
+        'instagram.com',
+        'yelp.com',
+        'yellowpages.com',
+        'google.com',
+        'youtube.com',
+        'wikipedia.org',
+        'amazon.com',
+        'ebay.com',
       ]
-      
+
       return !excludedDomains.some(domain => hostname.includes(domain))
     } catch {
       return false
@@ -515,10 +531,7 @@ export class ScraperService {
    * @param timeout - Timeout in milliseconds
    * @returns Promise resolving to completed jobs
    */
-  async waitForEnhancedJobs(
-    jobIds: string[],
-    timeout: number = 300000
-  ): Promise<ScrapingJob[]> {
+  async waitForEnhancedJobs(jobIds: string[], timeout: number = 300000): Promise<ScrapingJob[]> {
     const startTime = Date.now()
     const completedJobs: ScrapingJob[] = []
 
@@ -547,7 +560,11 @@ export class ScraperService {
    * @param maxPages - Maximum number of pages to scrape per site
    * @returns Promise resolving to array of business records
    */
-  async scrapeWebsiteEnhanced(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
+  async scrapeWebsiteEnhanced(
+    url: string,
+    depth: number = 2,
+    maxPages: number = 5
+  ): Promise<BusinessRecord[]> {
     logger.info('ScraperService', `Starting enhanced scraping for: ${url}`)
 
     try {
@@ -562,7 +579,10 @@ export class ScraperService {
 
       const firstJob = completedJobs[0]
       if (completedJobs.length > 0 && firstJob?.result) {
-        logger.info('ScraperService', `Enhanced scraping completed for ${url}: ${firstJob.result.length} businesses`)
+        logger.info(
+          'ScraperService',
+          `Enhanced scraping completed for ${url}: ${firstJob.result.length} businesses`
+        )
         return firstJob.result
       } else {
         logger.warn('ScraperService', `Enhanced scraping failed or timed out for ${url}`)

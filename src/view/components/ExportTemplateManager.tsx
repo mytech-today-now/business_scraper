@@ -26,7 +26,7 @@ const AVAILABLE_FIELDS = [
   { key: 'industry', label: 'Industry', type: 'string' },
   { key: 'coordinates.lat', label: 'Latitude', type: 'number' },
   { key: 'coordinates.lng', label: 'Longitude', type: 'number' },
-  { key: 'scrapedAt', label: 'Scraped Date', type: 'date' }
+  { key: 'scrapedAt', label: 'Scraped Date', type: 'date' },
 ]
 
 /**
@@ -40,12 +40,22 @@ const DEFAULT_TEMPLATES: ExportTemplate[] = [
       businessName: 'Company Name',
       email: 'Email Address',
       phone: 'Phone Number',
-      websiteUrl: 'Website'
-    }
+      websiteUrl: 'Website',
+    },
   },
   {
     name: 'Full Business Profile',
-    fields: ['businessName', 'email', 'phone', 'websiteUrl', 'address.street', 'address.city', 'address.state', 'address.zipCode', 'industry'],
+    fields: [
+      'businessName',
+      'email',
+      'phone',
+      'websiteUrl',
+      'address.street',
+      'address.city',
+      'address.state',
+      'address.zipCode',
+      'industry',
+    ],
     customHeaders: {
       businessName: 'Business Name',
       email: 'Email',
@@ -55,12 +65,20 @@ const DEFAULT_TEMPLATES: ExportTemplate[] = [
       'address.city': 'City',
       'address.state': 'State',
       'address.zipCode': 'ZIP',
-      industry: 'Industry'
-    }
+      industry: 'Industry',
+    },
   },
   {
     name: 'Location Data',
-    fields: ['businessName', 'address.street', 'address.city', 'address.state', 'address.zipCode', 'coordinates.lat', 'coordinates.lng'],
+    fields: [
+      'businessName',
+      'address.street',
+      'address.city',
+      'address.state',
+      'address.zipCode',
+      'coordinates.lat',
+      'coordinates.lng',
+    ],
     customHeaders: {
       businessName: 'Business Name',
       'address.street': 'Address',
@@ -68,9 +86,9 @@ const DEFAULT_TEMPLATES: ExportTemplate[] = [
       'address.state': 'State',
       'address.zipCode': 'ZIP Code',
       'coordinates.lat': 'Latitude',
-      'coordinates.lng': 'Longitude'
-    }
-  }
+      'coordinates.lng': 'Longitude',
+    },
+  },
 ]
 
 export interface ExportTemplateManagerProps {
@@ -78,7 +96,10 @@ export interface ExportTemplateManagerProps {
   onClose: () => void
 }
 
-export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTemplateManagerProps): JSX.Element {
+export function ExportTemplateManager({
+  onTemplateSelect,
+  onClose,
+}: ExportTemplateManagerProps): JSX.Element {
   const [templates, setTemplates] = useState<ExportTemplate[]>(DEFAULT_TEMPLATES)
   const [editingTemplate, setEditingTemplate] = useState<ExportTemplate | null>(null)
   const [isCreating, setIsCreating] = useState(false)
@@ -107,8 +128,9 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
   const saveTemplates = (newTemplates: ExportTemplate[]) => {
     try {
       // Only save custom templates (not default ones)
-      const customTemplates = newTemplates.filter(template => 
-        !DEFAULT_TEMPLATES.some(defaultTemplate => defaultTemplate.name === template.name)
+      const customTemplates = newTemplates.filter(
+        template =>
+          !DEFAULT_TEMPLATES.some(defaultTemplate => defaultTemplate.name === template.name)
       )
       localStorage.setItem('exportTemplates', JSON.stringify(customTemplates))
       setTemplates(newTemplates)
@@ -157,14 +179,14 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
     const newTemplate: ExportTemplate = {
       name: newTemplateName.trim(),
       fields: selectedFields,
-      customHeaders: customHeaders
+      customHeaders: customHeaders,
     }
 
     let updatedTemplates: ExportTemplate[]
-    
+
     if (editingTemplate) {
       // Update existing template
-      updatedTemplates = templates.map(template => 
+      updatedTemplates = templates.map(template =>
         template.name === editingTemplate.name ? newTemplate : template
       )
     } else {
@@ -211,10 +233,8 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
    * Toggle field selection
    */
   const toggleField = (fieldKey: string) => {
-    setSelectedFields(prev => 
-      prev.includes(fieldKey) 
-        ? prev.filter(key => key !== fieldKey)
-        : [...prev, fieldKey]
+    setSelectedFields(prev =>
+      prev.includes(fieldKey) ? prev.filter(key => key !== fieldKey) : [...prev, fieldKey]
     )
   }
 
@@ -224,7 +244,7 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
   const updateCustomHeader = (fieldKey: string, header: string) => {
     setCustomHeaders(prev => ({
       ...prev,
-      [fieldKey]: header
+      [fieldKey]: header,
     }))
   }
 
@@ -240,7 +260,7 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
-        
+
         <CardContent className="overflow-y-auto max-h-[calc(90vh-120px)]">
           <div className="space-y-6">
             {/* Template List */}
@@ -251,10 +271,13 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
                   Create Template
                 </Button>
               </div>
-              
+
               <div className="grid gap-3">
                 {templates.map(template => (
-                  <div key={template.name} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={template.name}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div>
                       <h4 className="font-medium">{template.name}</h4>
                       <p className="text-sm text-muted-foreground">
@@ -270,14 +293,12 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
                       >
                         Use Template
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => startEditing(template)}
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => startEditing(template)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      {!DEFAULT_TEMPLATES.some(defaultTemplate => defaultTemplate.name === template.name) && (
+                      {!DEFAULT_TEMPLATES.some(
+                        defaultTemplate => defaultTemplate.name === template.name
+                      ) && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -298,14 +319,14 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
                 <h3 className="text-lg font-medium mb-4">
                   {editingTemplate ? 'Edit Template' : 'Create New Template'}
                 </h3>
-                
+
                 <div className="space-y-4">
                   {/* Template Name */}
                   <div>
                     <label className="block text-sm font-medium mb-2">Template Name</label>
                     <Input
                       value={newTemplateName}
-                      onChange={(e) => setNewTemplateName(e.target.value)}
+                      onChange={e => setNewTemplateName(e.target.value)}
                       placeholder="Enter template name"
                     />
                   </div>
@@ -331,7 +352,9 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
                   {/* Custom Headers */}
                   {selectedFields.length > 0 && (
                     <div>
-                      <label className="block text-sm font-medium mb-2">Custom Headers (Optional)</label>
+                      <label className="block text-sm font-medium mb-2">
+                        Custom Headers (Optional)
+                      </label>
                       <div className="space-y-2 max-h-40 overflow-y-auto">
                         {selectedFields.map(fieldKey => {
                           const field = AVAILABLE_FIELDS.find(f => f.key === fieldKey)
@@ -340,7 +363,7 @@ export function ExportTemplateManager({ onTemplateSelect, onClose }: ExportTempl
                               <span className="text-sm w-32 truncate">{field?.label}:</span>
                               <Input
                                 value={customHeaders[fieldKey] || ''}
-                                onChange={(e) => updateCustomHeader(fieldKey, e.target.value)}
+                                onChange={e => updateCustomHeader(fieldKey, e.target.value)}
                                 placeholder={field?.label}
                                 size="sm"
                               />

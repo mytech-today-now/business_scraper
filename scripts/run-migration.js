@@ -16,7 +16,7 @@ const dbConfig = {
   database: process.env.DB_NAME || 'business_scraper',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 }
 
 const pool = new Pool(dbConfig)
@@ -26,26 +26,26 @@ const migrations = {
   '001': {
     name: '001_initial_schema',
     file: 'database/schema/001_initial_schema.sql',
-    description: 'Initial database schema'
+    description: 'Initial database schema',
   },
   '002': {
     name: '002_multi_user_collaboration',
     file: 'database/schema/002_multi_user_collaboration.sql',
-    description: 'Multi-user collaboration schema'
+    description: 'Multi-user collaboration schema',
   },
   '003': {
     name: '003_multi_user_data_migration',
     file: 'database/migrations/003_multi_user_data_migration.sql',
-    description: 'Multi-user data migration'
-  }
+    description: 'Multi-user data migration',
+  },
 }
 
 const rollbacks = {
   '003': {
     name: 'rollback_003_multi_user_data_migration',
     file: 'database/migrations/rollback_003_multi_user_data_migration.sql',
-    description: 'Rollback multi-user data migration'
-  }
+    description: 'Rollback multi-user data migration',
+  },
 }
 
 /**
@@ -88,17 +88,17 @@ Environment Variables:
 async function executeSqlFile(filePath) {
   try {
     const fullPath = path.resolve(filePath)
-    
+
     if (!fs.existsSync(fullPath)) {
       throw new Error(`Migration file not found: ${fullPath}`)
     }
 
     const sql = fs.readFileSync(fullPath, 'utf8')
     console.log(`Executing: ${filePath}`)
-    
+
     const result = await pool.query(sql)
     console.log(`✓ Successfully executed: ${filePath}`)
-    
+
     return result
   } catch (error) {
     console.error(`✗ Error executing ${filePath}:`, error.message)
@@ -134,7 +134,7 @@ async function ensureMigrationLogsTable() {
 async function getMigrationStatus() {
   try {
     await ensureMigrationLogsTable()
-    
+
     const result = await pool.query(`
       SELECT 
         migration_name,
@@ -146,7 +146,7 @@ async function getMigrationStatus() {
       FROM migration_logs 
       ORDER BY started_at DESC
     `)
-    
+
     return result.rows
   } catch (error) {
     console.error('Error getting migration status:', error.message)
@@ -159,16 +159,16 @@ async function getMigrationStatus() {
  */
 async function runMigration(version) {
   const migration = migrations[version]
-  
+
   if (!migration) {
     throw new Error(`Migration ${version} not found`)
   }
 
   console.log(`\nRunning migration ${version}: ${migration.description}`)
   console.log(`File: ${migration.file}`)
-  
+
   await executeSqlFile(migration.file)
-  
+
   console.log(`✓ Migration ${version} completed successfully`)
 }
 
@@ -177,13 +177,13 @@ async function runMigration(version) {
  */
 async function runAllMigrations() {
   console.log('\nRunning all migrations...')
-  
+
   const versions = Object.keys(migrations).sort()
-  
+
   for (const version of versions) {
     await runMigration(version)
   }
-  
+
   console.log('\n✓ All migrations completed successfully')
 }
 
@@ -192,25 +192,24 @@ async function runAllMigrations() {
  */
 async function rollbackMigration(version) {
   const rollback = rollbacks[version]
-  
+
   if (!rollback) {
     throw new Error(`Rollback for migration ${version} not found`)
   }
 
   console.log(`\nRolling back migration ${version}`)
   console.log(`File: ${rollback.file}`)
-  
-  const confirm = process.env.FORCE_ROLLBACK === 'true' || 
-                 process.argv.includes('--force')
-  
+
+  const confirm = process.env.FORCE_ROLLBACK === 'true' || process.argv.includes('--force')
+
   if (!confirm) {
     console.log('\n⚠️  WARNING: This will rollback the migration and may result in data loss!')
     console.log('To proceed, run with --force flag or set FORCE_ROLLBACK=true')
     return
   }
-  
+
   await executeSqlFile(rollback.file)
-  
+
   console.log(`✓ Migration ${version} rolled back successfully`)
 }
 
@@ -218,9 +217,8 @@ async function rollbackMigration(version) {
  * Reset database
  */
 async function resetDatabase() {
-  const confirm = process.env.FORCE_RESET === 'true' || 
-                 process.argv.includes('--force')
-  
+  const confirm = process.env.FORCE_RESET === 'true' || process.argv.includes('--force')
+
   if (!confirm) {
     console.log('\n⚠️  WARNING: This will destroy ALL data in the database!')
     console.log('To proceed, run with --force flag or set FORCE_RESET=true')
@@ -228,7 +226,7 @@ async function resetDatabase() {
   }
 
   console.log('\nResetting database...')
-  
+
   try {
     // Drop all tables
     await pool.query(`
@@ -237,7 +235,7 @@ async function resetDatabase() {
       GRANT ALL ON SCHEMA public TO postgres;
       GRANT ALL ON SCHEMA public TO public;
     `)
-    
+
     console.log('✓ Database reset successfully')
   } catch (error) {
     console.error('✗ Error resetting database:', error.message)
@@ -251,19 +249,20 @@ async function resetDatabase() {
 async function showStatus() {
   console.log('\nMigration Status:')
   console.log('================')
-  
+
   const status = await getMigrationStatus()
-  
+
   if (status.length === 0) {
     console.log('No migrations have been run yet.')
     return
   }
-  
+
   status.forEach(migration => {
-    const duration = migration.completed_at && migration.started_at
-      ? `${Math.round((new Date(migration.completed_at) - new Date(migration.started_at)) / 1000)}s`
-      : 'N/A'
-    
+    const duration =
+      migration.completed_at && migration.started_at
+        ? `${Math.round((new Date(migration.completed_at) - new Date(migration.started_at)) / 1000)}s`
+        : 'N/A'
+
     console.log(`
 Migration: ${migration.migration_name}
 Status: ${migration.status}
@@ -282,7 +281,7 @@ ${'─'.repeat(50)}`)
 async function main() {
   const command = process.argv[2]
   const version = process.argv[3]
-  
+
   if (!command || command === 'help') {
     showUsage()
     return
@@ -292,7 +291,7 @@ async function main() {
     console.log('Database Migration Runner')
     console.log('========================')
     console.log(`Database: ${dbConfig.database}@${dbConfig.host}:${dbConfig.port}`)
-    
+
     switch (command) {
       case 'migrate':
         if (version) {
@@ -301,26 +300,25 @@ async function main() {
           await runAllMigrations()
         }
         break
-        
+
       case 'rollback':
         if (!version) {
           throw new Error('Version is required for rollback command')
         }
         await rollbackMigration(version)
         break
-        
+
       case 'status':
         await showStatus()
         break
-        
+
       case 'reset':
         await resetDatabase()
         break
-        
+
       default:
         throw new Error(`Unknown command: ${command}`)
     }
-    
   } catch (error) {
     console.error('\n✗ Migration failed:', error.message)
     process.exit(1)
@@ -339,5 +337,5 @@ module.exports = {
   runAllMigrations,
   rollbackMigration,
   resetDatabase,
-  getMigrationStatus
+  getMigrationStatus,
 }

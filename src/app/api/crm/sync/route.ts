@@ -14,20 +14,23 @@ import { database } from '@/lib/database'
 /**
  * POST /api/crm/sync - Sync business records to CRM systems
  */
-export async function POST(request: NextRequest): Promise<NextResponse> {
+async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
     logger.info('CRM_SYNC_API', `Sync request from IP: ${ip}`)
 
     const body = await request.json()
-    
+
     // Validate request body
     if (!body.records || !Array.isArray(body.records)) {
-      return NextResponse.json({
-        success: false,
-        error: 'Records array is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Records array is required',
+        },
+        { status: 400 }
+      )
     }
 
     const { records, providerIds, syncMode = 'push' } = body
@@ -35,21 +38,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Get target CRM services
     let targetServices = crmServiceRegistry.getActiveServices()
-    
+
     if (providerIds && Array.isArray(providerIds)) {
-      targetServices = targetServices.filter(service => 
+      targetServices = targetServices.filter(service =>
         providerIds.includes(service.getProvider().id)
       )
     }
 
     if (targetServices.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'No active CRM services found'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'No active CRM services found',
+        },
+        { status: 400 }
+      )
     }
 
-    logger.info('CRM_SYNC_API', `Starting sync of ${businessRecords.length} records to ${targetServices.length} CRM systems`)
+    logger.info(
+      'CRM_SYNC_API',
+      `Starting sync of ${businessRecords.length} records to ${targetServices.length} CRM systems`
+    )
 
     const syncResults = []
 
@@ -67,7 +76,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             providerId: provider.id,
             providerName: provider.name,
             type: 'single',
-            result: syncResult
+            result: syncResult,
           })
         } else {
           // Batch sync
@@ -76,7 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             providerId: provider.id,
             providerName: provider.name,
             type: 'batch',
-            result: batchResult
+            result: batchResult,
           })
         }
 
@@ -87,7 +96,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           providerId: service.getProvider().id,
           providerName: service.getProvider().name,
           type: 'error',
-          error: error.message
+          error: error.message,
         })
       }
     }
@@ -124,24 +133,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           totalProviders: targetServices.length,
           totalSynced,
           totalFailed,
-          syncMode
-        }
+          syncMode,
+        },
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('CRM_SYNC_API', 'Sync operation failed', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Sync operation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Sync operation failed',
+      },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * GET /api/crm/sync - Get sync status and history
  */
-export async function GET(request: NextRequest): Promise<NextResponse> {
+async function GET(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
@@ -155,7 +167,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Get sync history from database
     // This would typically query a sync_records table
     const syncHistory = await getSyncHistory(providerId, limit, offset)
-    
+
     // Get current sync statistics
     const statistics = crmServiceRegistry.getStatistics()
 
@@ -167,24 +179,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         pagination: {
           limit,
           offset,
-          total: syncHistory.length
-        }
+          total: syncHistory.length,
+        },
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('CRM_SYNC_API', 'Failed to get sync status', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to retrieve sync status'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to retrieve sync status',
+      },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * PUT /api/crm/sync - Retry failed sync operations
  */
-export async function PUT(request: NextRequest): Promise<NextResponse> {
+async function PUT(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
@@ -194,29 +209,38 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     const { syncRecordIds, providerId } = body
 
     if (!syncRecordIds || !Array.isArray(syncRecordIds)) {
-      return NextResponse.json({
-        success: false,
-        error: 'Sync record IDs array is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Sync record IDs array is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Get the CRM service
     const service = providerId ? crmServiceRegistry.getService(providerId) : null
     if (!service) {
-      return NextResponse.json({
-        success: false,
-        error: 'CRM service not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'CRM service not found',
+        },
+        { status: 404 }
+      )
     }
 
     // Get failed sync records from database
     const failedRecords = await getFailedSyncRecords(syncRecordIds)
-    
+
     if (failedRecords.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'No failed sync records found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'No failed sync records found',
+        },
+        { status: 404 }
+      )
     }
 
     logger.info('CRM_SYNC_API', `Retrying ${failedRecords.length} failed sync records`)
@@ -228,13 +252,13 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
         const result = await service.syncBusinessRecord(syncRecord.businessRecord)
         retryResults.push({
           originalSyncId: syncRecord.id,
-          newResult: result
+          newResult: result,
         })
       } catch (error) {
         logger.error('CRM_SYNC_API', `Retry failed for sync record: ${syncRecord.id}`, error)
         retryResults.push({
           originalSyncId: syncRecord.id,
-          error: error.message
+          error: error.message,
         })
       }
     }
@@ -242,7 +266,10 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     const successfulRetries = retryResults.filter(r => r.newResult?.syncStatus === 'synced').length
     const failedRetries = retryResults.length - successfulRetries
 
-    logger.info('CRM_SYNC_API', `Retry completed: ${successfulRetries} successful, ${failedRetries} failed`)
+    logger.info(
+      'CRM_SYNC_API',
+      `Retry completed: ${successfulRetries} successful, ${failedRetries} failed`
+    )
 
     return NextResponse.json({
       success: true,
@@ -251,17 +278,20 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
         summary: {
           totalRetried: retryResults.length,
           successfulRetries,
-          failedRetries
-        }
+          failedRetries,
+        },
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('CRM_SYNC_API', 'Retry operation failed', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Retry operation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Retry operation failed',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -293,21 +323,21 @@ const securedPOST = withApiSecurity(POST, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 const securedGET = withApiSecurity(GET, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 const securedPUT = withApiSecurity(PUT, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 export { securedPOST as POST, securedGET as GET, securedPUT as PUT }

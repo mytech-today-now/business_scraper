@@ -16,11 +16,11 @@ const pool = new Pool({
 // Consent types
 const CONSENT_TYPES = [
   'necessary',
-  'scraping', 
+  'scraping',
   'storage',
   'enrichment',
   'analytics',
-  'marketing'
+  'marketing',
 ] as const
 
 /**
@@ -53,19 +53,22 @@ export async function GET(request: NextRequest) {
     let hasDbConsent = false
 
     if (userEmail || clientIP) {
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         SELECT DISTINCT ON (consent_type) 
           consent_type, consent_given, consent_date
         FROM consent_records 
         WHERE (email = $1 OR ip_address = $2)
           AND consent_date > NOW() - INTERVAL '1 year'
         ORDER BY consent_type, consent_date DESC
-      `, [userEmail, clientIP])
+      `,
+        [userEmail, clientIP]
+      )
 
       if (result.rows.length > 0) {
         hasDbConsent = true
         dbPreferences = {}
-        
+
         // Set defaults
         CONSENT_TYPES.forEach(type => {
           dbPreferences[type] = type === 'necessary' // Necessary is always true by default
@@ -102,16 +105,15 @@ export async function GET(request: NextRequest) {
       timestamp,
       source,
       isValid,
-      requiresRefresh: !isValid && hasConsent
+      requiresRefresh: !isValid && hasConsent,
     })
-
   } catch (error) {
     logger.error('Consent Status API', 'Failed to get consent status', error)
     return NextResponse.json(
-      { 
+      {
         hasConsent: false,
         preferences: null,
-        error: 'Failed to check consent status'
+        error: 'Failed to check consent status',
       },
       { status: 500 }
     )
@@ -122,9 +124,7 @@ export async function GET(request: NextRequest) {
  * Get client IP address
  */
 function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-forwarded-for') ||
-         request.headers.get('x-real-ip') ||
-         'unknown'
+  return request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
 }
 
 /**
@@ -133,7 +133,7 @@ function getClientIP(request: NextRequest): string {
 function getUserEmailFromQuery(request: NextRequest): string | null {
   const url = new URL(request.url)
   const email = url.searchParams.get('email')
-  
+
   if (email && isValidEmail(email)) {
     return email
   }

@@ -17,7 +17,7 @@ export enum ConsentType {
   DATA_COLLECTION = 'data_collection',
   DATA_PROCESSING = 'data_processing',
   DATA_SHARING = 'data_sharing',
-  THIRD_PARTY = 'third_party'
+  THIRD_PARTY = 'third_party',
 }
 
 // Consent status
@@ -25,7 +25,7 @@ export enum ConsentStatus {
   GRANTED = 'granted',
   DENIED = 'denied',
   WITHDRAWN = 'withdrawn',
-  PENDING = 'pending'
+  PENDING = 'pending',
 }
 
 // Consent preferences interface
@@ -78,13 +78,13 @@ export function useConsent(): ConsentContext {
 
       // Fetch from server for authoritative data
       const response = await fetch('/api/compliance/consent/status')
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
 
       const data = await response.json()
-      
+
       if (data.success && data.preferences) {
         setPreferences(data.preferences)
         localStorage.setItem('consent-preferences', JSON.stringify(data.preferences))
@@ -92,7 +92,6 @@ export function useConsent(): ConsentContext {
         // No consent given yet
         setPreferences(null)
       }
-
     } catch (error) {
       logger.error('Consent Hook', 'Failed to load consent preferences', error)
       setError('Failed to load consent preferences')
@@ -107,90 +106,102 @@ export function useConsent(): ConsentContext {
   }, [loadConsentPreferences])
 
   // Check if specific consent is granted
-  const hasConsent = useCallback((type: ConsentType): boolean => {
-    if (!preferences) return false
-    
-    const consent = preferences[type]
-    return consent?.status === ConsentStatus.GRANTED
-  }, [preferences])
+  const hasConsent = useCallback(
+    (type: ConsentType): boolean => {
+      if (!preferences) return false
+
+      const consent = preferences[type]
+      return consent?.status === ConsentStatus.GRANTED
+    },
+    [preferences]
+  )
 
   // Grant consent for specific type
-  const grantConsent = useCallback(async (type: ConsentType, purpose?: string): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/consent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          consentType: type,
-          status: ConsentStatus.GRANTED,
-          purpose: purpose || `User granted consent for ${type}`,
-          timestamp: new Date().toISOString()
+  const grantConsent = useCallback(
+    async (type: ConsentType, purpose?: string): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/consent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            consentType: type,
+            status: ConsentStatus.GRANTED,
+            purpose: purpose || `User granted consent for ${type}`,
+            timestamp: new Date().toISOString(),
+          }),
         })
-      })
 
-      if (response.ok) {
-        await loadConsentPreferences() // Refresh from server
-        return true
-      } else {
-        throw new Error('Failed to grant consent')
+        if (response.ok) {
+          await loadConsentPreferences() // Refresh from server
+          return true
+        } else {
+          throw new Error('Failed to grant consent')
+        }
+      } catch (error) {
+        logger.error('Consent Hook', 'Failed to grant consent', error)
+        setError('Failed to grant consent')
+        return false
       }
-    } catch (error) {
-      logger.error('Consent Hook', 'Failed to grant consent', error)
-      setError('Failed to grant consent')
-      return false
-    }
-  }, [loadConsentPreferences])
+    },
+    [loadConsentPreferences]
+  )
 
   // Withdraw consent for specific type
-  const withdrawConsent = useCallback(async (type: ConsentType, reason?: string): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/consent/withdraw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          consentType: type,
-          reason: reason || `User withdrew consent for ${type}`,
-          timestamp: new Date().toISOString()
+  const withdrawConsent = useCallback(
+    async (type: ConsentType, reason?: string): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/consent/withdraw', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            consentType: type,
+            reason: reason || `User withdrew consent for ${type}`,
+            timestamp: new Date().toISOString(),
+          }),
         })
-      })
 
-      if (response.ok) {
-        await loadConsentPreferences() // Refresh from server
-        return true
-      } else {
-        throw new Error('Failed to withdraw consent')
+        if (response.ok) {
+          await loadConsentPreferences() // Refresh from server
+          return true
+        } else {
+          throw new Error('Failed to withdraw consent')
+        }
+      } catch (error) {
+        logger.error('Consent Hook', 'Failed to withdraw consent', error)
+        setError('Failed to withdraw consent')
+        return false
       }
-    } catch (error) {
-      logger.error('Consent Hook', 'Failed to withdraw consent', error)
-      setError('Failed to withdraw consent')
-      return false
-    }
-  }, [loadConsentPreferences])
+    },
+    [loadConsentPreferences]
+  )
 
   // Update multiple consent preferences
-  const updatePreferences = useCallback(async (newPreferences: Record<ConsentType, ConsentStatus>): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/consent/batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          preferences: newPreferences,
-          timestamp: new Date().toISOString()
+  const updatePreferences = useCallback(
+    async (newPreferences: Record<ConsentType, ConsentStatus>): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/consent/batch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            preferences: newPreferences,
+            timestamp: new Date().toISOString(),
+          }),
         })
-      })
 
-      if (response.ok) {
-        await loadConsentPreferences() // Refresh from server
-        return true
-      } else {
-        throw new Error('Failed to update preferences')
+        if (response.ok) {
+          await loadConsentPreferences() // Refresh from server
+          return true
+        } else {
+          throw new Error('Failed to update preferences')
+        }
+      } catch (error) {
+        logger.error('Consent Hook', 'Failed to update preferences', error)
+        setError('Failed to update preferences')
+        return false
       }
-    } catch (error) {
-      logger.error('Consent Hook', 'Failed to update preferences', error)
-      setError('Failed to update preferences')
-      return false
-    }
-  }, [loadConsentPreferences])
+    },
+    [loadConsentPreferences]
+  )
 
   // Refresh consent from server
   const refreshConsent = useCallback(async (): Promise<void> => {
@@ -200,28 +211,31 @@ export function useConsent(): ConsentContext {
   // Get required consents for operation
   const isConsentRequired = useCallback((operation: string): ConsentType[] => {
     const operationConsents: Record<string, ConsentType[]> = {
-      'scraping': [ConsentType.DATA_COLLECTION, ConsentType.SCRAPING, ConsentType.STORAGE],
-      'export': [ConsentType.DATA_PROCESSING, ConsentType.DATA_SHARING],
-      'storage': [ConsentType.STORAGE, ConsentType.DATA_PROCESSING],
-      'sharing': [ConsentType.DATA_SHARING, ConsentType.THIRD_PARTY],
-      'analytics': [ConsentType.ANALYTICS, ConsentType.DATA_PROCESSING],
-      'marketing': [ConsentType.MARKETING, ConsentType.DATA_SHARING],
-      'enrichment': [ConsentType.ENRICHMENT, ConsentType.THIRD_PARTY]
+      scraping: [ConsentType.DATA_COLLECTION, ConsentType.SCRAPING, ConsentType.STORAGE],
+      export: [ConsentType.DATA_PROCESSING, ConsentType.DATA_SHARING],
+      storage: [ConsentType.STORAGE, ConsentType.DATA_PROCESSING],
+      sharing: [ConsentType.DATA_SHARING, ConsentType.THIRD_PARTY],
+      analytics: [ConsentType.ANALYTICS, ConsentType.DATA_PROCESSING],
+      marketing: [ConsentType.MARKETING, ConsentType.DATA_SHARING],
+      enrichment: [ConsentType.ENRICHMENT, ConsentType.THIRD_PARTY],
     }
 
     return operationConsents[operation] || []
   }, [])
 
   // Check if user can perform operation
-  const canPerformOperation = useCallback((operation: string): boolean => {
-    const requiredConsents = isConsentRequired(operation)
-    
-    if (requiredConsents.length === 0) {
-      return true // No consent required
-    }
+  const canPerformOperation = useCallback(
+    (operation: string): boolean => {
+      const requiredConsents = isConsentRequired(operation)
 
-    return requiredConsents.every(consentType => hasConsent(consentType))
-  }, [isConsentRequired, hasConsent])
+      if (requiredConsents.length === 0) {
+        return true // No consent required
+      }
+
+      return requiredConsents.every(consentType => hasConsent(consentType))
+    },
+    [isConsentRequired, hasConsent]
+  )
 
   return {
     preferences,
@@ -233,7 +247,7 @@ export function useConsent(): ConsentContext {
     updatePreferences,
     refreshConsent,
     isConsentRequired,
-    canPerformOperation
+    canPerformOperation,
   }
 }
 
@@ -242,10 +256,10 @@ export function useConsent(): ConsentContext {
  */
 export function useConsentCheck(type: ConsentType) {
   const { hasConsent, loading } = useConsent()
-  
+
   return {
     hasConsent: hasConsent(type),
-    loading
+    loading,
   }
 }
 
@@ -254,11 +268,11 @@ export function useConsentCheck(type: ConsentType) {
  */
 export function useOperationConsent(operation: string) {
   const { canPerformOperation, isConsentRequired, loading } = useConsent()
-  
+
   return {
     canPerform: canPerformOperation(operation),
     requiredConsents: isConsentRequired(operation),
-    loading
+    loading,
   }
 }
 
@@ -281,15 +295,15 @@ export function withConsentCheck<T extends (...args: any[]) => any>(
 
       const preferences = JSON.parse(stored)
       const operationConsents: Record<string, ConsentType[]> = {
-        'scraping': [ConsentType.DATA_COLLECTION, ConsentType.SCRAPING, ConsentType.STORAGE],
-        'export': [ConsentType.DATA_PROCESSING, ConsentType.DATA_SHARING],
-        'storage': [ConsentType.STORAGE, ConsentType.DATA_PROCESSING],
-        'sharing': [ConsentType.DATA_SHARING, ConsentType.THIRD_PARTY]
+        scraping: [ConsentType.DATA_COLLECTION, ConsentType.SCRAPING, ConsentType.STORAGE],
+        export: [ConsentType.DATA_PROCESSING, ConsentType.DATA_SHARING],
+        storage: [ConsentType.STORAGE, ConsentType.DATA_PROCESSING],
+        sharing: [ConsentType.DATA_SHARING, ConsentType.THIRD_PARTY],
       }
 
       const requiredConsents = operationConsents[operation] || []
-      const hasAllConsents = requiredConsents.every(type => 
-        preferences[type]?.status === ConsentStatus.GRANTED
+      const hasAllConsents = requiredConsents.every(
+        type => preferences[type]?.status === ConsentStatus.GRANTED
       )
 
       if (!hasAllConsents) {
@@ -348,15 +362,15 @@ export const ConsentUtils = {
    */
   getRequiredNotice: (operation: string): string => {
     const operationNames: Record<string, string> = {
-      'scraping': 'data scraping',
-      'export': 'data export',
-      'storage': 'data storage',
-      'sharing': 'data sharing',
-      'analytics': 'analytics',
-      'marketing': 'marketing communications'
+      scraping: 'data scraping',
+      export: 'data export',
+      storage: 'data storage',
+      sharing: 'data sharing',
+      analytics: 'analytics',
+      marketing: 'marketing communications',
     }
 
     const operationName = operationNames[operation] || operation
     return `This action requires your consent for ${operationName}. Please review and accept the necessary permissions.`
-  }
+  },
 }

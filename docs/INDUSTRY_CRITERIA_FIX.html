@@ -1,64 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industry Criteria Fix - Search Using Correct Keywords - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Industry Criteria Fix - Search Using Correct Keywords - Business Scraper Documentation
+    </title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Industry Criteria Fix - Search Using Correct Keywords</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Industry Criteria Fix - Search Using Correct Keywords</h1>
-<h2>Problem Description</h2>
-<p>When creating a custom industry called &quot;test&quot; with criteria &quot;CPA firm&quot;, the scraper was incorrectly including search criteria from other industries instead of using only the specified &quot;CPA firm&quot; criteria.</p>
-<h2>Root Cause Analysis</h2>
-<p>The issue was in the scraper controller (<code>src/controller/useScraperController.ts</code>) where the system was:</p>
-<ol>
-<li><p><strong>Using Industry Names as Search Queries</strong>: The scraper was passing the industry <strong>name</strong> (&quot;test&quot;) as the search query instead of the industry <strong>keywords</strong> (&quot;CPA firm&quot;)</p>
-</li>
-<li><p><strong>Incorrect Query Processing</strong>: When &quot;test&quot; was passed to the search engine, it would fall back to hardcoded industry mappings and expansion logic, causing it to include unrelated criteria</p>
-</li>
-<li><p><strong>Wrong Data Flow</strong>: The flow was:</p>
-<pre><code>Selected Industry: &quot;test&quot; 
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Industry Criteria Fix - Search Using Correct Keywords
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Industry Criteria Fix - Search Using Correct Keywords</h1>
+        <h2>Problem Description</h2>
+        <p>
+          When creating a custom industry called &quot;test&quot; with criteria &quot;CPA
+          firm&quot;, the scraper was incorrectly including search criteria from other industries
+          instead of using only the specified &quot;CPA firm&quot; criteria.
+        </p>
+        <h2>Root Cause Analysis</h2>
+        <p>
+          The issue was in the scraper controller
+          (<code>src/controller/useScraperController.ts</code>) where the system was:
+        </p>
+        <ol>
+          <li>
+            <p>
+              <strong>Using Industry Names as Search Queries</strong>: The scraper was passing the
+              industry <strong>name</strong> (&quot;test&quot;) as the search query instead of the
+              industry <strong>keywords</strong> (&quot;CPA firm&quot;)
+            </p>
+          </li>
+          <li>
+            <p>
+              <strong>Incorrect Query Processing</strong>: When &quot;test&quot; was passed to the
+              search engine, it would fall back to hardcoded industry mappings and expansion logic,
+              causing it to include unrelated criteria
+            </p>
+          </li>
+          <li>
+            <p><strong>Wrong Data Flow</strong>: The flow was:</p>
+            <pre><code>Selected Industry: &quot;test&quot; 
 → Search Query: &quot;test&quot; 
 → Industry Expansion: Falls back to hardcoded mappings
 → Result: Searches for unrelated criteria
 </code></pre>
-</li>
-</ol>
-<h2>Solution Implementation</h2>
-<h3>✅ Fixed Data Flow</h3>
-<p><strong>File Modified:</strong> <code>src/controller/useScraperController.ts</code></p>
-<p><strong>Before (Incorrect):</strong></p>
-<pre><code class="language-typescript">const industryNames = getSelectedIndustryNames() // [&quot;test&quot;]
+          </li>
+        </ol>
+        <h2>Solution Implementation</h2>
+        <h3>✅ Fixed Data Flow</h3>
+        <p><strong>File Modified:</strong> <code>src/controller/useScraperController.ts</code></p>
+        <p><strong>Before (Incorrect):</strong></p>
+        <pre><code class="language-typescript">const industryNames = getSelectedIndustryNames() // [&quot;test&quot;]
 for (const industry of industryNames) {
   const query: string = industry // &quot;test&quot;
   await scraperService.searchForWebsites(query, zipCode, maxResults)
 }
 </code></pre>
-<p><strong>After (Correct):</strong></p>
-<pre><code class="language-typescript">const selectedIndustryObjects = selectedIndustries
+        <p><strong>After (Correct):</strong></p>
+        <pre><code class="language-typescript">const selectedIndustryObjects = selectedIndustries
   .map(id =&gt; configState.industries.find(industry =&gt; industry.id === id))
   .filter(Boolean)
 
@@ -67,116 +92,190 @@ for (const industryObject of selectedIndustryObjects) {
   await scraperService.searchForWebsites(query, zipCode, maxResults)
 }
 </code></pre>
-<h3>🔧 Key Changes Made</h3>
-<ol>
-<li><strong>Industry Object Retrieval</strong>: Get full industry objects with keywords instead of just names</li>
-<li><strong>Keyword-Based Queries</strong>: Use <code>industryObject.keywords.join(&#39;, &#39;)</code> as search query</li>
-<li><strong>Improved Logging</strong>: Show which keywords are being used in processing steps</li>
-<li><strong>Consistent Variable Names</strong>: Updated all references from <code>industry</code> to <code>industryName</code> for clarity</li>
-</ol>
-<h3>📊 Detailed Changes</h3>
-<p><strong>Lines 214-217</strong>: Added industry object retrieval</p>
-<pre><code class="language-typescript">const selectedIndustryObjects = selectedIndustries
+        <h3>🔧 Key Changes Made</h3>
+        <ol>
+          <li>
+            <strong>Industry Object Retrieval</strong>: Get full industry objects with keywords
+            instead of just names
+          </li>
+          <li>
+            <strong>Keyword-Based Queries</strong>: Use
+            <code>industryObject.keywords.join(&#39;, &#39;)</code> as search query
+          </li>
+          <li>
+            <strong>Improved Logging</strong>: Show which keywords are being used in processing
+            steps
+          </li>
+          <li>
+            <strong>Consistent Variable Names</strong>: Updated all references from
+            <code>industry</code> to <code>industryName</code> for clarity
+          </li>
+        </ol>
+        <h3>📊 Detailed Changes</h3>
+        <p><strong>Lines 214-217</strong>: Added industry object retrieval</p>
+        <pre><code class="language-typescript">const selectedIndustryObjects = selectedIndustries
   .map(id =&gt; configState.industries.find(industry =&gt; industry.id === id))
   .filter(Boolean)
 </code></pre>
-<p><strong>Lines 228-232</strong>: Updated loop to use industry objects</p>
-<pre><code class="language-typescript">for (let industryIndex = 0; industryIndex &lt; selectedIndustryObjects.length; industryIndex++) {
+        <p><strong>Lines 228-232</strong>: Updated loop to use industry objects</p>
+        <pre><code class="language-typescript">for (let industryIndex = 0; industryIndex &lt; selectedIndustryObjects.length; industryIndex++) {
   const industryObject = selectedIndustryObjects[industryIndex]!
   const industryName = industryObject.name
 </code></pre>
-<p><strong>Lines 243-250</strong>: Updated search query to use keywords</p>
-<pre><code class="language-typescript">details: `Using keywords: &quot;${industryObject.keywords.join(&#39;, &#39;)}&quot; in ${config.zipCode}`
+        <p><strong>Lines 243-250</strong>: Updated search query to use keywords</p>
+        <pre><code class="language-typescript">details: `Using keywords: &quot;${industryObject.keywords.join(&#39;, &#39;)}&quot; in ${config.zipCode}`
 
 const query: string = industryObject.keywords.join(&#39;, &#39;)
 </code></pre>
-<h2>Impact and Benefits</h2>
-<h3>✅ Correct Behavior Now</h3>
-<p><strong>Custom Industry Example:</strong></p>
-<ul>
-<li><strong>Industry Name</strong>: &quot;test&quot;</li>
-<li><strong>Keywords</strong>: [&quot;CPA firm&quot;]</li>
-<li><strong>Search Query</strong>: &quot;CPA firm&quot; ✅</li>
-<li><strong>Results</strong>: Only CPA firms, no unrelated businesses</li>
-</ul>
-<p><strong>Default Industry Example:</strong></p>
-<ul>
-<li><strong>Industry Name</strong>: &quot;Accounting &amp; Tax Services&quot;</li>
-<li><strong>Keywords</strong>: [&quot;CPA firm&quot;, &quot;accounting services&quot;, &quot;tax preparation&quot;, ...]</li>
-<li><strong>Search Query</strong>: &quot;CPA firm, accounting services, tax preparation, ...&quot; ✅</li>
-<li><strong>Results</strong>: All relevant accounting businesses</li>
-</ul>
-<h3>🎯 Problem Solved</h3>
-<ol>
-<li><strong>Precise Targeting</strong>: Custom industries now search using their exact specified criteria</li>
-<li><strong>No Cross-Contamination</strong>: No more unrelated criteria from other industries</li>
-<li><strong>Predictable Results</strong>: Users get exactly what they specify in their custom industry keywords</li>
-<li><strong>Better Logging</strong>: Clear visibility into which keywords are being used for each search</li>
-</ol>
-<h3>🔍 Verification Steps</h3>
-<p>To verify the fix works:</p>
-<ol>
-<li><strong>Create Custom Industry</strong>: Add industry &quot;test&quot; with criteria &quot;CPA firm&quot;</li>
-<li><strong>Start Scraping</strong>: Select only the &quot;test&quot; industry</li>
-<li><strong>Check Console Logs</strong>: Should show &quot;Using keywords: &#39;CPA firm&#39; in [zipcode]&quot;</li>
-<li><strong>Verify Results</strong>: Should only find CPA firms, no other business types</li>
-</ol>
-<h2>Technical Details</h2>
-<h3>Search Engine Flow (Fixed)</h3>
-<pre><code>1. User selects &quot;test&quot; industry
+        <h2>Impact and Benefits</h2>
+        <h3>✅ Correct Behavior Now</h3>
+        <p><strong>Custom Industry Example:</strong></p>
+        <ul>
+          <li><strong>Industry Name</strong>: &quot;test&quot;</li>
+          <li><strong>Keywords</strong>: [&quot;CPA firm&quot;]</li>
+          <li><strong>Search Query</strong>: &quot;CPA firm&quot; ✅</li>
+          <li><strong>Results</strong>: Only CPA firms, no unrelated businesses</li>
+        </ul>
+        <p><strong>Default Industry Example:</strong></p>
+        <ul>
+          <li><strong>Industry Name</strong>: &quot;Accounting &amp; Tax Services&quot;</li>
+          <li>
+            <strong>Keywords</strong>: [&quot;CPA firm&quot;, &quot;accounting services&quot;,
+            &quot;tax preparation&quot;, ...]
+          </li>
+          <li>
+            <strong>Search Query</strong>: &quot;CPA firm, accounting services, tax preparation,
+            ...&quot; ✅
+          </li>
+          <li><strong>Results</strong>: All relevant accounting businesses</li>
+        </ul>
+        <h3>🎯 Problem Solved</h3>
+        <ol>
+          <li>
+            <strong>Precise Targeting</strong>: Custom industries now search using their exact
+            specified criteria
+          </li>
+          <li>
+            <strong>No Cross-Contamination</strong>: No more unrelated criteria from other
+            industries
+          </li>
+          <li>
+            <strong>Predictable Results</strong>: Users get exactly what they specify in their
+            custom industry keywords
+          </li>
+          <li>
+            <strong>Better Logging</strong>: Clear visibility into which keywords are being used for
+            each search
+          </li>
+        </ol>
+        <h3>🔍 Verification Steps</h3>
+        <p>To verify the fix works:</p>
+        <ol>
+          <li>
+            <strong>Create Custom Industry</strong>: Add industry &quot;test&quot; with criteria
+            &quot;CPA firm&quot;
+          </li>
+          <li><strong>Start Scraping</strong>: Select only the &quot;test&quot; industry</li>
+          <li>
+            <strong>Check Console Logs</strong>: Should show &quot;Using keywords: &#39;CPA
+            firm&#39; in [zipcode]&quot;
+          </li>
+          <li>
+            <strong>Verify Results</strong>: Should only find CPA firms, no other business types
+          </li>
+        </ol>
+        <h2>Technical Details</h2>
+        <h3>Search Engine Flow (Fixed)</h3>
+        <pre><code>1. User selects &quot;test&quot; industry
 2. System retrieves industry object: { name: &quot;test&quot;, keywords: [&quot;CPA firm&quot;] }
 3. Search query becomes: &quot;CPA firm&quot;
 4. ClientSearchEngine processes: &quot;CPA firm&quot;
 5. DuckDuckGo searches for: &quot;CPA firm [location]&quot;
 6. Results: Only CPA firms ✅
 </code></pre>
-<h3>Previous Problematic Flow</h3>
-<pre><code>1. User selects &quot;test&quot; industry
+        <h3>Previous Problematic Flow</h3>
+        <pre><code>1. User selects &quot;test&quot; industry
 2. System uses industry name: &quot;test&quot;
 3. Search query becomes: &quot;test&quot;
 4. ClientSearchEngine tries to expand &quot;test&quot;
 5. Falls back to hardcoded mappings
 6. Results: Random unrelated businesses ❌
 </code></pre>
-<h2>Related Files</h2>
-<ul>
-<li><strong>Primary Fix</strong>: <code>src/controller/useScraperController.ts</code></li>
-<li><strong>Search Engine</strong>: <code>src/model/clientSearchEngine.ts</code> (expansion logic - no changes needed)</li>
-<li><strong>Industry Config</strong>: <code>src/lib/industry-config.ts</code> (default industries)</li>
-<li><strong>Config Context</strong>: <code>src/controller/ConfigContext.tsx</code> (industry management)</li>
-</ul>
-<h2>Testing Recommendations</h2>
-<ol>
-<li><strong>Test Custom Industries</strong>: Create industries with specific, unique keywords</li>
-<li><strong>Test Default Industries</strong>: Verify existing industries still work correctly</li>
-<li><strong>Test Multiple Industries</strong>: Select multiple industries and verify each uses its own keywords</li>
-<li><strong>Check Logs</strong>: Monitor console output to confirm correct keyword usage</li>
-</ol>
-<h2>Future Improvements</h2>
-<ol>
-<li><strong>Keyword Validation</strong>: Add validation to ensure keywords are meaningful search terms</li>
-<li><strong>Keyword Suggestions</strong>: Provide suggestions when users create custom industries</li>
-<li><strong>Search Preview</strong>: Show users what search queries will be generated from their keywords</li>
-<li><strong>Performance Optimization</strong>: Cache industry objects to avoid repeated lookups</li>
-</ol>
-<p>This fix ensures that the Business Scraper application now correctly uses the specified industry keywords for searching, providing users with precise control over their business discovery criteria.</p>
+        <h2>Related Files</h2>
+        <ul>
+          <li><strong>Primary Fix</strong>: <code>src/controller/useScraperController.ts</code></li>
+          <li>
+            <strong>Search Engine</strong>: <code>src/model/clientSearchEngine.ts</code> (expansion
+            logic - no changes needed)
+          </li>
+          <li>
+            <strong>Industry Config</strong>: <code>src/lib/industry-config.ts</code> (default
+            industries)
+          </li>
+          <li>
+            <strong>Config Context</strong>: <code>src/controller/ConfigContext.tsx</code> (industry
+            management)
+          </li>
+        </ul>
+        <h2>Testing Recommendations</h2>
+        <ol>
+          <li>
+            <strong>Test Custom Industries</strong>: Create industries with specific, unique
+            keywords
+          </li>
+          <li>
+            <strong>Test Default Industries</strong>: Verify existing industries still work
+            correctly
+          </li>
+          <li>
+            <strong>Test Multiple Industries</strong>: Select multiple industries and verify each
+            uses its own keywords
+          </li>
+          <li>
+            <strong>Check Logs</strong>: Monitor console output to confirm correct keyword usage
+          </li>
+        </ol>
+        <h2>Future Improvements</h2>
+        <ol>
+          <li>
+            <strong>Keyword Validation</strong>: Add validation to ensure keywords are meaningful
+            search terms
+          </li>
+          <li>
+            <strong>Keyword Suggestions</strong>: Provide suggestions when users create custom
+            industries
+          </li>
+          <li>
+            <strong>Search Preview</strong>: Show users what search queries will be generated from
+            their keywords
+          </li>
+          <li>
+            <strong>Performance Optimization</strong>: Cache industry objects to avoid repeated
+            lookups
+          </li>
+        </ol>
+        <p>
+          This fix ensures that the Business Scraper application now correctly uses the specified
+          industry keywords for searching, providing users with precise control over their business
+          discovery criteria.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

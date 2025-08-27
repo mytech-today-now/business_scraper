@@ -2,11 +2,15 @@
 
 ## Overview
 
-The Business Scraper application now includes a comprehensive OAuth 2.0 authentication and authorization system that provides secure, standards-compliant authentication for web applications, mobile apps, and API consumers.
+The Business Scraper application now includes a comprehensive OAuth 2.0
+authentication and authorization system that provides secure,
+standards-compliant authentication for web applications, mobile apps, and API
+consumers.
 
 ## Features
 
 ### Core OAuth 2.0 Capabilities
+
 - **Authorization Code Flow** with PKCE support
 - **Refresh Token Flow** with token rotation
 - **Client Credentials Flow** for server-to-server authentication
@@ -16,6 +20,7 @@ The Business Scraper application now includes a comprehensive OAuth 2.0 authenti
 - **Dynamic Client Registration** (RFC 7591) for self-service
 
 ### Security Features
+
 - **PKCE (Proof Key for Code Exchange)** for enhanced mobile/SPA security
 - **TLS/HTTPS enforcement** in production environments
 - **Rate limiting** and brute-force protection
@@ -24,6 +29,7 @@ The Business Scraper application now includes a comprehensive OAuth 2.0 authenti
 - **Secure credential storage** and validation
 
 ### Client Support
+
 - **Public Clients** (Mobile apps, SPAs) with PKCE enforcement
 - **Confidential Clients** (Server-side applications) with client secrets
 - **API Clients** for machine-to-machine communication
@@ -32,11 +38,13 @@ The Business Scraper application now includes a comprehensive OAuth 2.0 authenti
 ## API Endpoints
 
 ### Authorization Endpoint
+
 ```
 GET /api/oauth/authorize
 ```
 
 **Parameters:**
+
 - `response_type=code` (required)
 - `client_id` (required)
 - `redirect_uri` (required)
@@ -46,16 +54,19 @@ GET /api/oauth/authorize
 - `code_challenge_method` (S256 or plain)
 
 **Example:**
+
 ```
 GET /api/oauth/authorize?response_type=code&client_id=my-app&redirect_uri=https://myapp.com/callback&scope=openid%20profile&state=xyz&code_challenge=abc123&code_challenge_method=S256
 ```
 
 ### Token Endpoint
+
 ```
 POST /api/oauth/token
 ```
 
 **Authorization Code Grant:**
+
 ```json
 {
   "grant_type": "authorization_code",
@@ -68,6 +79,7 @@ POST /api/oauth/token
 ```
 
 **Refresh Token Grant:**
+
 ```json
 {
   "grant_type": "refresh_token",
@@ -78,6 +90,7 @@ POST /api/oauth/token
 ```
 
 **Client Credentials Grant:**
+
 ```json
 {
   "grant_type": "client_credentials",
@@ -88,6 +101,7 @@ POST /api/oauth/token
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "jwt_access_token",
@@ -99,12 +113,14 @@ POST /api/oauth/token
 ```
 
 ### UserInfo Endpoint
+
 ```
 GET /api/oauth/userinfo
 Authorization: Bearer <access_token>
 ```
 
 **Response:**
+
 ```json
 {
   "sub": "user_id",
@@ -116,11 +132,13 @@ Authorization: Bearer <access_token>
 ```
 
 ### Token Introspection Endpoint
+
 ```
 POST /api/oauth/introspect
 ```
 
 **Request:**
+
 ```json
 {
   "token": "access_token_to_introspect",
@@ -130,6 +148,7 @@ POST /api/oauth/introspect
 ```
 
 **Response:**
+
 ```json
 {
   "active": true,
@@ -146,11 +165,13 @@ POST /api/oauth/introspect
 ```
 
 ### Token Revocation Endpoint
+
 ```
 POST /api/oauth/revoke
 ```
 
 **Request:**
+
 ```json
 {
   "token": "token_to_revoke",
@@ -160,11 +181,13 @@ POST /api/oauth/revoke
 ```
 
 ### Discovery Endpoint
+
 ```
 GET /api/oauth/.well-known/openid-configuration
 ```
 
 **Response:**
+
 ```json
 {
   "issuer": "https://api.businessscraper.com",
@@ -175,18 +198,24 @@ GET /api/oauth/.well-known/openid-configuration
   "revocation_endpoint": "https://api.businessscraper.com/api/oauth/revoke",
   "registration_endpoint": "https://api.businessscraper.com/api/oauth/register",
   "response_types_supported": ["code"],
-  "grant_types_supported": ["authorization_code", "refresh_token", "client_credentials"],
+  "grant_types_supported": [
+    "authorization_code",
+    "refresh_token",
+    "client_credentials"
+  ],
   "code_challenge_methods_supported": ["S256", "plain"],
   "scopes_supported": ["openid", "profile", "email", "read", "write", "admin"]
 }
 ```
 
 ### Client Registration Endpoint
+
 ```
 POST /api/oauth/register
 ```
 
 **Request:**
+
 ```json
 {
   "client_name": "My Application",
@@ -199,6 +228,7 @@ POST /api/oauth/register
 ```
 
 **Response:**
+
 ```json
 {
   "client_id": "generated_client_id",
@@ -215,6 +245,7 @@ POST /api/oauth/register
 ## Scopes
 
 ### Available Scopes
+
 - `openid` - OpenID Connect authentication
 - `profile` - Access to basic profile information
 - `email` - Access to email address
@@ -223,11 +254,15 @@ POST /api/oauth/register
 - `admin` - Administrative access to all resources
 
 ### Scope Usage
-Scopes define the permissions granted to access tokens. Clients must be configured with allowed scopes, and users may need to consent to requested scopes.
+
+Scopes define the permissions granted to access tokens. Clients must be
+configured with allowed scopes, and users may need to consent to requested
+scopes.
 
 ## PKCE Implementation
 
 ### Code Challenge Generation
+
 ```javascript
 // Generate code verifier
 const codeVerifier = crypto.randomBytes(32).toString('base64url')
@@ -240,11 +275,13 @@ const codeChallenge = crypto
 ```
 
 ### Authorization Request with PKCE
+
 ```
 GET /api/oauth/authorize?response_type=code&client_id=my-app&redirect_uri=https://myapp.com/callback&code_challenge=abc123&code_challenge_method=S256
 ```
 
 ### Token Request with PKCE
+
 ```json
 {
   "grant_type": "authorization_code",
@@ -258,16 +295,19 @@ GET /api/oauth/authorize?response_type=code&client_id=my-app&redirect_uri=https:
 ## Client Types
 
 ### Public Clients
+
 - **Use Case:** Mobile apps, Single Page Applications (SPAs)
 - **Security:** PKCE required, no client secret
 - **Example:** React SPA, mobile app
 
 ### Confidential Clients
+
 - **Use Case:** Server-side web applications
 - **Security:** Client secret required, PKCE optional
 - **Example:** Next.js application, traditional web app
 
 ### API Clients
+
 - **Use Case:** Server-to-server communication
 - **Security:** Client credentials grant, client secret required
 - **Example:** Microservice authentication, scheduled jobs
@@ -275,9 +315,13 @@ GET /api/oauth/authorize?response_type=code&client_id=my-app&redirect_uri=https:
 ## Integration Examples
 
 ### Web Application (Authorization Code Flow)
+
 ```javascript
 // 1. Redirect to authorization endpoint
-const authUrl = new URL('/api/oauth/authorize', 'https://api.businessscraper.com')
+const authUrl = new URL(
+  '/api/oauth/authorize',
+  'https://api.businessscraper.com'
+)
 authUrl.searchParams.set('response_type', 'code')
 authUrl.searchParams.set('client_id', 'my-web-app')
 authUrl.searchParams.set('redirect_uri', 'https://myapp.com/callback')
@@ -295,21 +339,25 @@ const tokenResponse = await fetch('/api/oauth/token', {
     client_id: 'my-web-app',
     client_secret: 'my-secret',
     code: authorizationCode,
-    redirect_uri: 'https://myapp.com/callback'
-  })
+    redirect_uri: 'https://myapp.com/callback',
+  }),
 })
 
 const tokens = await tokenResponse.json()
 ```
 
 ### Mobile App (Authorization Code Flow with PKCE)
+
 ```javascript
 // 1. Generate PKCE challenge
 const codeVerifier = generateCodeVerifier()
 const codeChallenge = generateCodeChallenge(codeVerifier)
 
 // 2. Redirect to authorization endpoint
-const authUrl = new URL('/api/oauth/authorize', 'https://api.businessscraper.com')
+const authUrl = new URL(
+  '/api/oauth/authorize',
+  'https://api.businessscraper.com'
+)
 authUrl.searchParams.set('response_type', 'code')
 authUrl.searchParams.set('client_id', 'my-mobile-app')
 authUrl.searchParams.set('redirect_uri', 'com.myapp://callback')
@@ -326,12 +374,13 @@ const tokenResponse = await fetch('/api/oauth/token', {
     client_id: 'my-mobile-app',
     code: authorizationCode,
     redirect_uri: 'com.myapp://callback',
-    code_verifier: codeVerifier
-  })
+    code_verifier: codeVerifier,
+  }),
 })
 ```
 
 ### API Client (Client Credentials Flow)
+
 ```javascript
 // Server-to-server authentication
 const tokenResponse = await fetch('/api/oauth/token', {
@@ -341,8 +390,8 @@ const tokenResponse = await fetch('/api/oauth/token', {
     grant_type: 'client_credentials',
     client_id: 'my-api-client',
     client_secret: 'api-secret',
-    scope: 'read write'
-  })
+    scope: 'read write',
+  }),
 })
 
 const { access_token } = await tokenResponse.json()
@@ -350,14 +399,15 @@ const { access_token } = await tokenResponse.json()
 // Use access token for API requests
 const apiResponse = await fetch('/api/businesses', {
   headers: {
-    'Authorization': `Bearer ${access_token}`
-  }
+    Authorization: `Bearer ${access_token}`,
+  },
 })
 ```
 
 ## Configuration
 
 ### Environment Variables
+
 ```bash
 # OAuth Configuration
 OAUTH_ISSUER=https://api.businessscraper.com
@@ -377,6 +427,7 @@ NODE_ENV=production
 ```
 
 ### Default Clients
+
 The system includes three pre-configured clients:
 
 1. **business-scraper-web** (Confidential)
@@ -394,6 +445,7 @@ The system includes three pre-configured clients:
 ## Security Considerations
 
 ### Production Deployment
+
 1. **Use HTTPS** - OAuth 2.0 requires TLS in production
 2. **Secure JWT Secret** - Use a strong, random JWT signing key
 3. **Rate Limiting** - Configure appropriate rate limits
@@ -402,6 +454,7 @@ The system includes three pre-configured clients:
 6. **Client Validation** - Validate redirect URIs and client credentials
 
 ### Best Practices
+
 1. **PKCE for Public Clients** - Always use PKCE for mobile/SPA clients
 2. **State Parameter** - Use state parameter for CSRF protection
 3. **Token Storage** - Store tokens securely (secure cookies, keychain)
@@ -414,33 +467,44 @@ The system includes three pre-configured clients:
 ### Common Issues
 
 **Invalid Client Error**
+
 - Verify client ID and secret
 - Check client is active and not revoked
 - Ensure client supports the requested grant type
 
 **Invalid Grant Error**
+
 - Check authorization code hasn't expired
 - Verify redirect URI matches exactly
 - Ensure PKCE code verifier is correct
 
 **Invalid Scope Error**
+
 - Verify requested scopes are allowed for the client
 - Check scope format (space-separated)
 - Ensure user has consented to scopes
 
 **PKCE Verification Failed**
+
 - Verify code verifier matches the challenge
 - Check code challenge method (S256 vs plain)
 - Ensure code verifier format is correct
 
 ### Debugging
-Enable debug logging by setting the log level to debug in your environment configuration. This will provide detailed information about OAuth flows, token validation, and error conditions.
+
+Enable debug logging by setting the log level to debug in your environment
+configuration. This will provide detailed information about OAuth flows, token
+validation, and error conditions.
 
 ## Migration from Session-Based Auth
 
-The OAuth 2.0 system is designed to work alongside the existing session-based authentication for backward compatibility. Existing endpoints will continue to work with session authentication while new integrations can use OAuth 2.0 tokens.
+The OAuth 2.0 system is designed to work alongside the existing session-based
+authentication for backward compatibility. Existing endpoints will continue to
+work with session authentication while new integrations can use OAuth 2.0
+tokens.
 
 ### Gradual Migration
+
 1. **Phase 1:** Deploy OAuth 2.0 system alongside existing auth
 2. **Phase 2:** Update client applications to use OAuth 2.0
 3. **Phase 3:** Migrate API endpoints to OAuth middleware
@@ -449,6 +513,7 @@ The OAuth 2.0 system is designed to work alongside the existing session-based au
 ## Support
 
 For additional support or questions about the OAuth 2.0 implementation:
+
 1. Check the troubleshooting section above
 2. Review the API documentation
 3. Examine the example integrations

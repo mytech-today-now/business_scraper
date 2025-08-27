@@ -19,17 +19,20 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       headers: {
         'Content-Type': 'text/plain; version=0.0.4; charset=utf-8',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
     })
   } catch (error) {
     logger.error('Metrics API', 'Failed to get metrics', error)
-    
-    return NextResponse.json({
-      error: 'Failed to retrieve metrics',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        error: 'Failed to retrieve metrics',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -44,25 +47,31 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (action === 'reset') {
       metrics.clear()
       await metrics.initialize()
-      
+
       logger.info('Metrics API', 'Metrics reset successfully')
-      
+
       return NextResponse.json({
         success: true,
-        message: 'Metrics reset successfully'
+        message: 'Metrics reset successfully',
       })
     }
 
-    return NextResponse.json({
-      error: 'Invalid action',
-      message: 'Only "reset" action is supported'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        error: 'Invalid action',
+        message: 'Only "reset" action is supported',
+      },
+      { status: 400 }
+    )
   } catch (error) {
     logger.error('Metrics API', 'Failed to reset metrics', error)
-    
-    return NextResponse.json({
-      error: 'Failed to reset metrics',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        error: 'Failed to reset metrics',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }

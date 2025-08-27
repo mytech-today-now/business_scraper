@@ -16,7 +16,7 @@ export enum ConsentType {
   STORAGE = 'storage',
   ENRICHMENT = 'enrichment',
   ANALYTICS = 'analytics',
-  MARKETING = 'marketing'
+  MARKETING = 'marketing',
 }
 
 // Consent preferences interface
@@ -44,7 +44,7 @@ const defaultPreferences: ConsentPreferences = {
   storage: false,
   enrichment: false,
   analytics: false,
-  marketing: false
+  marketing: false,
 }
 
 // Consent descriptions
@@ -53,45 +53,45 @@ const consentDescriptions = {
     title: 'Necessary Cookies',
     description: 'Essential for the website to function properly. These cannot be disabled.',
     icon: Shield,
-    required: true
+    required: true,
   },
   [ConsentType.SCRAPING]: {
     title: 'Data Scraping',
     description: 'Allow us to scrape business data from public sources for your searches.',
     icon: Search,
-    required: false
+    required: false,
   },
   [ConsentType.STORAGE]: {
     title: 'Data Storage',
     description: 'Store your scraped data and search history for future access.',
     icon: Database,
-    required: false
+    required: false,
   },
   [ConsentType.ENRICHMENT]: {
     title: 'Data Enrichment',
     description: 'Enhance scraped data with additional information from third-party sources.',
     icon: BarChart3,
-    required: false
+    required: false,
   },
   [ConsentType.ANALYTICS]: {
     title: 'Analytics',
     description: 'Help us improve our service by analyzing usage patterns.',
     icon: Cookie,
-    required: false
+    required: false,
   },
   [ConsentType.MARKETING]: {
     title: 'Marketing',
     description: 'Receive updates about new features and business insights.',
     icon: Mail,
-    required: false
-  }
+    required: false,
+  },
 }
 
 export default function ConsentBanner({
   onConsentChange,
   showDetailedView = false,
   position = 'bottom',
-  theme = 'light'
+  theme = 'light',
 }: ConsentBannerProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [showDetails, setShowDetails] = useState(showDetailedView)
@@ -104,7 +104,7 @@ export default function ConsentBanner({
       try {
         const response = await fetch('/api/compliance/consent/status')
         const data = await response.json()
-        
+
         if (!data.hasConsent) {
           setIsVisible(true)
         } else {
@@ -125,7 +125,7 @@ export default function ConsentBanner({
 
     const newPreferences = {
       ...preferences,
-      [type]: value
+      [type]: value,
     }
     setPreferences(newPreferences)
   }
@@ -138,9 +138,9 @@ export default function ConsentBanner({
       storage: true,
       enrichment: true,
       analytics: true,
-      marketing: true
+      marketing: true,
     }
-    
+
     await saveConsent(allAccepted)
   }
 
@@ -157,27 +157,27 @@ export default function ConsentBanner({
   // Save consent preferences
   const saveConsent = async (consentPreferences: ConsentPreferences) => {
     setIsLoading(true)
-    
+
     try {
       const response = await fetch('/api/compliance/consent', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           preferences: consentPreferences,
           timestamp: new Date().toISOString(),
-          method: 'banner'
-        })
+          method: 'banner',
+        }),
       })
 
       if (response.ok) {
         setIsVisible(false)
         onConsentChange?.(consentPreferences)
-        
+
         // Store in localStorage for immediate use
         localStorage.setItem('consent-preferences', JSON.stringify(consentPreferences))
-        
+
         logger.info('Consent Banner', 'Consent preferences saved', consentPreferences)
       } else {
         throw new Error('Failed to save consent')
@@ -192,16 +192,17 @@ export default function ConsentBanner({
 
   if (!isVisible) return null
 
-  const themeClasses = theme === 'dark' 
-    ? 'bg-gray-900 text-white border-gray-700' 
-    : 'bg-white text-gray-900 border-gray-200'
+  const themeClasses =
+    theme === 'dark'
+      ? 'bg-gray-900 text-white border-gray-700'
+      : 'bg-white text-gray-900 border-gray-200'
 
-  const positionClasses = position === 'top' 
-    ? 'top-0' 
-    : 'bottom-0'
+  const positionClasses = position === 'top' ? 'top-0' : 'bottom-0'
 
   return (
-    <div className={`fixed ${positionClasses} left-0 right-0 z-50 border-t ${themeClasses} shadow-lg`}>
+    <div
+      className={`fixed ${positionClasses} left-0 right-0 z-50 border-t ${themeClasses} shadow-lg`}
+    >
       <div className="max-w-7xl mx-auto p-4">
         {!showDetails ? (
           // Simple banner view
@@ -212,11 +213,11 @@ export default function ConsentBanner({
                 <h3 className="font-semibold">Cookie & Data Processing Consent</h3>
               </div>
               <p className="text-sm opacity-90">
-                We use cookies and process data to provide our business scraping services. 
-                You can customize your preferences or accept all to continue.
+                We use cookies and process data to provide our business scraping services. You can
+                customize your preferences or accept all to continue.
               </p>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setShowDetails(true)}
@@ -258,28 +259,31 @@ export default function ConsentBanner({
             </div>
 
             <p className="text-sm opacity-90">
-              Choose which types of data processing you consent to. You can change these preferences at any time.
+              Choose which types of data processing you consent to. You can change these preferences
+              at any time.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2">
               {Object.entries(consentDescriptions).map(([type, config]) => {
                 const Icon = config.icon
                 const isEnabled = preferences[type as keyof ConsentPreferences]
-                
+
                 return (
                   <div
                     key={type}
                     className={`p-4 border rounded-lg ${
-                      config.required 
-                        ? 'border-green-200 bg-green-50' 
+                      config.required
+                        ? 'border-green-200 bg-green-50'
                         : 'border-gray-200 hover:border-gray-300'
                     } transition-colors`}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3 flex-1">
-                        <Icon className={`h-5 w-5 mt-0.5 ${
-                          config.required ? 'text-green-600' : 'text-gray-600'
-                        }`} />
+                        <Icon
+                          className={`h-5 w-5 mt-0.5 ${
+                            config.required ? 'text-green-600' : 'text-gray-600'
+                          }`}
+                        />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium text-sm">{config.title}</h4>
@@ -292,19 +296,23 @@ export default function ConsentBanner({
                           <p className="text-xs text-gray-600 mt-1">{config.description}</p>
                         </div>
                       </div>
-                      
+
                       <div className="ml-3">
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
                             checked={isEnabled}
-                            onChange={(e) => handlePreferenceChange(type as ConsentType, e.target.checked)}
+                            onChange={e =>
+                              handlePreferenceChange(type as ConsentType, e.target.checked)
+                            }
                             disabled={config.required || isLoading}
                             className="sr-only peer"
                           />
-                          <div className={`w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${
-                            isEnabled ? 'peer-checked:bg-blue-600' : ''
-                          } ${config.required ? 'opacity-50' : ''}`}></div>
+                          <div
+                            className={`w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${
+                              isEnabled ? 'peer-checked:bg-blue-600' : ''
+                            } ${config.required ? 'opacity-50' : ''}`}
+                          ></div>
                         </label>
                       </div>
                     </div>
@@ -340,10 +348,18 @@ export default function ConsentBanner({
             <div className="text-xs text-gray-500 pt-2 border-t">
               <p>
                 By continuing to use our service, you agree to our{' '}
-                <a href="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</a> and{' '}
-                <a href="/cookie-policy" className="text-blue-600 hover:underline">Cookie Policy</a>.
-                You can withdraw your consent at any time in your{' '}
-                <a href="/privacy-settings" className="text-blue-600 hover:underline">Privacy Settings</a>.
+                <a href="/privacy-policy" className="text-blue-600 hover:underline">
+                  Privacy Policy
+                </a>{' '}
+                and{' '}
+                <a href="/cookie-policy" className="text-blue-600 hover:underline">
+                  Cookie Policy
+                </a>
+                . You can withdraw your consent at any time in your{' '}
+                <a href="/privacy-settings" className="text-blue-600 hover:underline">
+                  Privacy Settings
+                </a>
+                .
               </p>
             </div>
           </div>
@@ -372,7 +388,7 @@ export function useConsentPreferences() {
         // Then fetch from server for authoritative data
         const response = await fetch('/api/compliance/consent/status')
         const data = await response.json()
-        
+
         if (data.hasConsent && data.preferences) {
           setPreferences(data.preferences)
           localStorage.setItem('consent-preferences', JSON.stringify(data.preferences))

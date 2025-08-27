@@ -22,7 +22,7 @@ export enum PurgingJobStatus {
   RUNNING = 'running',
   COMPLETED = 'completed',
   FAILED = 'failed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 // Data category for purging
@@ -34,7 +34,7 @@ export enum DataCategory {
   CONSENT_RECORDS = 'consent_records',
   SCRAPING_DATA = 'scraping_data',
   ANALYTICS_DATA = 'analytics_data',
-  TEMPORARY_FILES = 'temporary_files'
+  TEMPORARY_FILES = 'temporary_files',
 }
 
 // Purging rule interface
@@ -82,7 +82,7 @@ export class DataPurgingService {
     try {
       // Load purging rules from database
       const rules = await this.loadPurgingRules()
-      
+
       // Schedule cron jobs for each active rule
       for (const rule of rules) {
         if (rule.isActive) {
@@ -99,9 +99,8 @@ export class DataPurgingService {
       this.isInitialized = true
       logger.info('Data Purging', 'Service initialized successfully', {
         rulesLoaded: rules.length,
-        activeRules: rules.filter(r => r.isActive).length
+        activeRules: rules.filter(r => r.isActive).length,
       })
-
     } catch (error) {
       logger.error('Data Purging', 'Failed to initialize service', error)
       throw error
@@ -131,9 +130,8 @@ export class DataPurgingService {
         description: row.description,
         createdAt: row.created_at,
         lastRun: row.last_run,
-        nextRun: row.next_run
+        nextRun: row.next_run,
       }))
-
     } catch (error) {
       logger.error('Data Purging', 'Failed to load purging rules', error)
       return []
@@ -147,13 +145,17 @@ export class DataPurgingService {
     try {
       // Run daily at 2 AM
       const cronExpression = '0 2 * * *'
-      
-      const task = cron.schedule(cronExpression, async () => {
-        await this.executePurgingRule(rule)
-      }, {
-        scheduled: false,
-        timezone: 'UTC'
-      })
+
+      const task = cron.schedule(
+        cronExpression,
+        async () => {
+          await this.executePurgingRule(rule)
+        },
+        {
+          scheduled: false,
+          timezone: 'UTC',
+        }
+      )
 
       this.scheduledJobs.set(rule.id, task)
       task.start()
@@ -161,9 +163,8 @@ export class DataPurgingService {
       logger.info('Data Purging', `Scheduled purging rule: ${rule.name}`, {
         ruleId: rule.id,
         cronExpression,
-        retentionPeriod: rule.retentionPeriod
+        retentionPeriod: rule.retentionPeriod,
       })
-
     } catch (error) {
       logger.error('Data Purging', `Failed to schedule rule: ${rule.name}`, error)
     }
@@ -178,7 +179,7 @@ export class DataPurgingService {
 
     logger.info('Data Purging', `Starting purging job for rule: ${rule.name}`, {
       jobId,
-      ruleId: rule.id
+      ruleId: rule.id,
     })
 
     const result: PurgingJobResult = {
@@ -189,7 +190,7 @@ export class DataPurgingService {
       recordsDeleted: 0,
       recordsRetained: 0,
       errors: [],
-      startTime
+      startTime,
     }
 
     try {
@@ -207,7 +208,7 @@ export class DataPurgingService {
         WHERE ${rule.dateColumn} < $1
         ${rule.conditions ? this.buildConditionsClause(rule.conditions) : ''}
       `
-      
+
       const countResult = await pool.query(countQuery, [cutoffDate])
       result.recordsProcessed = parseInt(countResult.rows[0].total)
 
@@ -243,11 +244,14 @@ export class DataPurgingService {
       await pool.query('COMMIT')
 
       // Update rule last run time
-      await pool.query(`
+      await pool.query(
+        `
         UPDATE data_retention_policies 
         SET last_run = NOW(), next_run = NOW() + INTERVAL '1 day'
         WHERE id = $1
-      `, [rule.id])
+      `,
+        [rule.id]
+      )
 
       // Log audit event
       await securityAuditService.logComplianceEvent(
@@ -260,10 +264,9 @@ export class DataPurgingService {
           ruleName: rule.name,
           recordsDeleted: result.recordsDeleted,
           recordsRetained: result.recordsRetained,
-          cutoffDate: cutoffDate.toISOString()
+          cutoffDate: cutoffDate.toISOString(),
         }
       )
-
     } catch (error) {
       await pool.query('ROLLBACK')
       result.status = PurgingJobStatus.FAILED
@@ -278,7 +281,7 @@ export class DataPurgingService {
       jobId,
       status: result.status,
       recordsDeleted: result.recordsDeleted,
-      duration: result.duration
+      duration: result.duration,
     })
 
     return result
@@ -291,12 +294,15 @@ export class DataPurgingService {
     let deletedCount = 0
 
     // Check for active consent or legal holds
-    const protectedRecords = await pool.query(`
+    const protectedRecords = await pool.query(
+      `
       SELECT DISTINCT user_id FROM consent_records 
       WHERE consent_given = true 
       AND consent_date > $1
       AND consent_type IN ('storage', 'processing')
-    `, [cutoffDate])
+    `,
+      [cutoffDate]
+    )
 
     const protectedUserIds = protectedRecords.rows.map(row => row.user_id)
 
@@ -318,10 +324,13 @@ export class DataPurgingService {
    * Purge session data
    */
   private async purgeSessionData(rule: PurgingRule, cutoffDate: Date): Promise<number> {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       DELETE FROM ${rule.tableName} 
       WHERE ${rule.dateColumn} < $1
-    `, [cutoffDate])
+    `,
+      [cutoffDate]
+    )
 
     return result.rowCount || 0
   }
@@ -331,12 +340,15 @@ export class DataPurgingService {
    */
   private async purgeAuditLogs(rule: PurgingRule, cutoffDate: Date): Promise<number> {
     // Keep critical security events longer
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       DELETE FROM ${rule.tableName} 
       WHERE ${rule.dateColumn} < $1
       AND risk_level NOT IN ('HIGH', 'CRITICAL')
       AND event_type NOT IN ('USER_LOGIN_FAILED', 'SECURITY_VIOLATION', 'DATA_DELETE')
-    `, [cutoffDate])
+    `,
+      [cutoffDate]
+    )
 
     return result.rowCount || 0
   }
@@ -346,18 +358,24 @@ export class DataPurgingService {
    */
   private async purgeScrapingData(rule: PurgingRule, cutoffDate: Date): Promise<number> {
     // Archive valuable data before deletion
-    await pool.query(`
+    await pool.query(
+      `
       INSERT INTO archived_scraping_data 
       SELECT *, NOW() as archived_at 
       FROM ${rule.tableName} 
       WHERE ${rule.dateColumn} < $1
       AND business_value = 'high'
-    `, [cutoffDate])
+    `,
+      [cutoffDate]
+    )
 
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       DELETE FROM ${rule.tableName} 
       WHERE ${rule.dateColumn} < $1
-    `, [cutoffDate])
+    `,
+      [cutoffDate]
+    )
 
     return result.rowCount || 0
   }
@@ -366,10 +384,13 @@ export class DataPurgingService {
    * Purge generic data
    */
   private async purgeGenericData(rule: PurgingRule, cutoffDate: Date): Promise<number> {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       DELETE FROM ${rule.tableName} 
       WHERE ${rule.dateColumn} < $1
-    `, [cutoffDate])
+    `,
+      [cutoffDate]
+    )
 
     return result.rowCount || 0
   }
@@ -379,11 +400,15 @@ export class DataPurgingService {
    */
   private scheduleDailyCleanup(): void {
     // Run at 3 AM daily
-    cron.schedule('0 3 * * *', async () => {
-      await this.performDailyCleanup()
-    }, {
-      timezone: 'UTC'
-    })
+    cron.schedule(
+      '0 3 * * *',
+      async () => {
+        await this.performDailyCleanup()
+      },
+      {
+        timezone: 'UTC',
+      }
+    )
   }
 
   /**
@@ -391,11 +416,15 @@ export class DataPurgingService {
    */
   private scheduleWeeklyRetentionCheck(): void {
     // Run every Sunday at 1 AM
-    cron.schedule('0 1 * * 0', async () => {
-      await this.performWeeklyRetentionCheck()
-    }, {
-      timezone: 'UTC'
-    })
+    cron.schedule(
+      '0 1 * * 0',
+      async () => {
+        await this.performWeeklyRetentionCheck()
+      },
+      {
+        timezone: 'UTC',
+      }
+    )
   }
 
   /**
@@ -415,7 +444,6 @@ export class DataPurgingService {
       await this.cleanupJobLogs()
 
       logger.info('Data Purging', 'Daily cleanup completed')
-
     } catch (error) {
       logger.error('Data Purging', 'Daily cleanup failed', error)
     }
@@ -435,7 +463,6 @@ export class DataPurgingService {
       await this.validateRetentionCompliance()
 
       logger.info('Data Purging', 'Weekly retention check completed')
-
     } catch (error) {
       logger.error('Data Purging', 'Weekly retention check failed', error)
     }
@@ -453,33 +480,37 @@ export class DataPurgingService {
     const unit = match[2]
 
     switch (unit) {
-      case 'day': return value
-      case 'month': return value * 30
-      case 'year': return value * 365
-      default: return 30
+      case 'day':
+        return value
+      case 'month':
+        return value * 30
+      case 'year':
+        return value * 365
+      default:
+        return 30
     }
   }
 
   private getCategoryTableName(category: string): string {
     const tableMap = {
-      'personal_data': 'users',
-      'session_data': 'sessions',
-      'audit_logs': 'security_audit_log',
-      'consent_records': 'consent_records',
-      'scraping_data': 'scraping_sessions',
-      'analytics_data': 'analytics_events'
+      personal_data: 'users',
+      session_data: 'sessions',
+      audit_logs: 'security_audit_log',
+      consent_records: 'consent_records',
+      scraping_data: 'scraping_sessions',
+      analytics_data: 'analytics_events',
     }
     return tableMap[category] || 'data_retention_schedule'
   }
 
   private getCategoryDateColumn(category: string): string {
     const columnMap = {
-      'personal_data': 'created_at',
-      'session_data': 'created_at',
-      'audit_logs': 'timestamp',
-      'consent_records': 'consent_date',
-      'scraping_data': 'created_at',
-      'analytics_data': 'event_timestamp'
+      personal_data: 'created_at',
+      session_data: 'created_at',
+      audit_logs: 'timestamp',
+      consent_records: 'consent_date',
+      scraping_data: 'created_at',
+      analytics_data: 'event_timestamp',
     }
     return columnMap[category] || 'created_at'
   }
@@ -540,7 +571,10 @@ export class DataPurgingService {
 
     for (const row of result.rows) {
       if (row.overdue_count > 0) {
-        logger.warn('Data Purging', `Overdue data found in ${row.table_name}: ${row.overdue_count} records`)
+        logger.warn(
+          'Data Purging',
+          `Overdue data found in ${row.table_name}: ${row.overdue_count} records`
+        )
       }
     }
   }

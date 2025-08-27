@@ -18,7 +18,7 @@ describe('ValidationService', () => {
       contactPerson: 'John Doe',
       coordinates: {
         lat: 40.7128,
-        lng: -74.0060,
+        lng: -74.006,
       },
       industry: 'Technology',
       scrapedAt: new Date(),
@@ -80,9 +80,9 @@ describe('ValidationService', () => {
         phone: undefined,
       }
       const result = validationService.validateBusinessRecord(businessWithoutContact)
-      expect(result.warnings.some(warning => 
-        warning.includes('no email or phone contact')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('no email or phone contact'))).toBe(
+        true
+      )
     })
 
     it('should warn about suspicious business names', () => {
@@ -91,9 +91,9 @@ describe('ValidationService', () => {
         businessName: 'Test Company',
       }
       const result = validationService.validateBusinessRecord(suspiciousBusiness)
-      expect(result.warnings.some(warning => 
-        warning.includes('placeholder or test value')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('placeholder or test value'))).toBe(
+        true
+      )
     })
 
     it('should warn about duplicate emails', () => {
@@ -102,9 +102,7 @@ describe('ValidationService', () => {
         email: ['test@example.com', 'test@example.com'],
       }
       const result = validationService.validateBusinessRecord(businessWithDuplicates)
-      expect(result.warnings.some(warning => 
-        warning.includes('duplicate email')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('duplicate email'))).toBe(true)
     })
 
     it('should warn about suspicious coordinates', () => {
@@ -113,9 +111,7 @@ describe('ValidationService', () => {
         coordinates: { lat: 0, lng: 0 },
       }
       const result = validationService.validateBusinessRecord(businessWithBadCoords)
-      expect(result.warnings.some(warning => 
-        warning.includes('default values')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('default values'))).toBe(true)
     })
   })
 
@@ -170,9 +166,7 @@ describe('ValidationService', () => {
         searchRadius: 75,
       }
       const result = validationService.validateScrapingConfig(configWithLargeRadius)
-      expect(result.warnings.some(warning => 
-        warning.includes('Large search radius')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('Large search radius'))).toBe(true)
     })
 
     it('should warn about high search depth', () => {
@@ -181,9 +175,7 @@ describe('ValidationService', () => {
         searchDepth: 4,
       }
       const result = validationService.validateScrapingConfig(configWithHighDepth)
-      expect(result.warnings.some(warning => 
-        warning.includes('High search depth')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('High search depth'))).toBe(true)
     })
 
     it('should warn about many pages per site', () => {
@@ -192,9 +184,7 @@ describe('ValidationService', () => {
         pagesPerSite: 15,
       }
       const result = validationService.validateScrapingConfig(configWithManyPages)
-      expect(result.warnings.some(warning => 
-        warning.includes('High pages per site')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('High pages per site'))).toBe(true)
     })
 
     it('should warn about too many industries', () => {
@@ -203,9 +193,7 @@ describe('ValidationService', () => {
         industries: Array.from({ length: 15 }, (_, i) => `industry-${i}`),
       }
       const result = validationService.validateScrapingConfig(configWithManyIndustries)
-      expect(result.warnings.some(warning => 
-        warning.includes('many industries')
-      )).toBe(true)
+      expect(result.warnings.some(warning => warning.includes('many industries'))).toBe(true)
     })
   })
 
@@ -371,7 +359,9 @@ describe('ValidationService', () => {
     it('should warn about command injection patterns', () => {
       const input = 'file.txt; cat /etc/passwd'
       const result = validationService.validateInputSecurity(input)
-      expect(result.warnings).toContain('Input contains characters or commands that could be dangerous')
+      expect(result.warnings).toContain(
+        'Input contains characters or commands that could be dangerous'
+      )
     })
   })
 

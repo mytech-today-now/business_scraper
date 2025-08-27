@@ -14,7 +14,7 @@ const getStaticCSPHeader = () => {
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "upgrade-insecure-requests"
+    'upgrade-insecure-requests',
   ].join('; ')
 }
 
@@ -24,10 +24,7 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    domains: [
-      'nominatim.openstreetmap.org',
-      'api.opencagedata.com'
-    ],
+    domains: ['nominatim.openstreetmap.org', 'api.opencagedata.com'],
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     minimumCacheTTL: 60,
@@ -51,9 +48,9 @@ const nextConfig = {
         assert: false,
         os: false,
         path: false,
-      };
+      }
     }
-    return config;
+    return config
   },
 
   // Enhanced security headers with CSP
@@ -64,43 +61,43 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: getStaticCSPHeader()
+            value: getStaticCSPHeader(),
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
+            value: 'DENY',
           },
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff'
+            value: 'nosniff',
           },
           {
             key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin'
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block'
+            value: '1; mode=block',
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
+            value: 'camera=(), microphone=(), geolocation=()',
           },
           {
             key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp'
+            value: 'require-corp',
           },
           {
             key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin'
+            value: 'same-origin',
           },
           {
             key: 'Cross-Origin-Resource-Policy',
-            value: 'same-origin'
-          }
-        ]
-      }
-    ];
+            value: 'same-origin',
+          },
+        ],
+      },
+    ]
   },
 
   // Production optimizations
@@ -121,6 +118,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

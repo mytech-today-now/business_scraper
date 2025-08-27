@@ -29,8 +29,11 @@ export class RateLimitTester {
     const exponentialDelay = this.config.baseDelay * Math.pow(2, this.failures)
     const jitter = Math.random() * 0.3 * exponentialDelay // 30% jitter
     const finalDelay = Math.min(exponentialDelay + jitter, this.config.maxDelay)
-    
-    logger.debug('RateLimitTester', `Calculated delay: ${finalDelay}ms (failures: ${this.failures})`)
+
+    logger.debug(
+      'RateLimitTester',
+      `Calculated delay: ${finalDelay}ms (failures: ${this.failures})`
+    )
     return finalDelay
   }
 
@@ -41,7 +44,10 @@ export class RateLimitTester {
     if (this.failures >= this.config.maxFailures) {
       const timeSinceLastFailure = Date.now() - this.lastFailureTime
       if (timeSinceLastFailure < this.config.cooldownPeriod) {
-        logger.warn('RateLimitTester', `Skipping due to circuit breaker (${this.failures} failures)`)
+        logger.warn(
+          'RateLimitTester',
+          `Skipping due to circuit breaker (${this.failures} failures)`
+        )
         return true
       } else {
         // Reset circuit breaker after cooldown
@@ -115,7 +121,7 @@ export class RateLimitTester {
       failures: this.failures,
       lastFailureTime: this.lastFailureTime,
       lastRequestTime: this.lastRequestTime,
-      isInCooldown: this.shouldSkip()
+      isInCooldown: this.shouldSkip(),
     }
   }
 }
@@ -130,7 +136,7 @@ export async function testRateLimiting(): Promise<void> {
     baseDelay: 30000, // 30 seconds
     maxDelay: 300000, // 5 minutes
     maxFailures: 2,
-    cooldownPeriod: 10 * 60 * 1000 // 10 minutes
+    cooldownPeriod: 10 * 60 * 1000, // 10 minutes
   })
 
   // Test successful requests

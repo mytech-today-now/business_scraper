@@ -1,6 +1,6 @@
 /**
  * Data Reset Utility
- * 
+ *
  * Provides comprehensive data purging functionality to reset the application
  * to a fresh state by clearing all user data from IndexedDB and localStorage.
  */
@@ -31,21 +31,21 @@ export interface DataResetOptions {
 export class DataResetService {
   private static readonly LOCAL_STORAGE_KEYS = [
     'api_credentials_plain',
-    'encrypted_api_credentials', 
+    'encrypted_api_credentials',
     'credentials_timestamp',
     'business-scraper-config',
     'business-scraper-cache',
     'business-scraper-session',
     'business-scraper-preferences',
-    'business-scraper-temp'
+    'business-scraper-temp',
   ]
 
   private static readonly INDEXEDDB_STORES = [
     'businesses',
-    'configs', 
+    'configs',
     'industries',
     'sessions',
-    'domainBlacklist'
+    'domainBlacklist',
   ]
 
   /**
@@ -56,7 +56,7 @@ export class DataResetService {
       includeApiCredentials = true,
       includeLocalStorage = true,
       useAggressiveReset = false,
-      confirmationRequired = true
+      confirmationRequired = true,
     } = options
 
     const result: DataResetResult = {
@@ -64,7 +64,7 @@ export class DataResetService {
       clearedStores: [],
       clearedLocalStorage: [],
       errors: [],
-      fallbackUsed: false
+      fallbackUsed: false,
     }
 
     try {
@@ -88,7 +88,10 @@ export class DataResetService {
       result.success = result.errors.length === 0 || result.clearedStores.length > 0
 
       if (result.success) {
-        logger.info('DataReset', `Data reset completed successfully. Cleared ${result.clearedStores.length} stores and ${result.clearedLocalStorage.length} localStorage items`)
+        logger.info(
+          'DataReset',
+          `Data reset completed successfully. Cleared ${result.clearedStores.length} stores and ${result.clearedLocalStorage.length} localStorage items`
+        )
       } else {
         logger.error('DataReset', `Data reset failed with ${result.errors.length} errors`)
       }
@@ -105,7 +108,10 @@ export class DataResetService {
   /**
    * Clear IndexedDB data with fallback strategies
    */
-  private static async clearIndexedDBData(result: DataResetResult, useAggressiveReset: boolean): Promise<void> {
+  private static async clearIndexedDBData(
+    result: DataResetResult,
+    useAggressiveReset: boolean
+  ): Promise<void> {
     try {
       if (useAggressiveReset) {
         // Aggressive reset: Delete and recreate entire database
@@ -140,7 +146,7 @@ export class DataResetService {
       { name: 'businesses', operation: () => storage.clearBusinesses() },
       { name: 'industries', operation: () => storage.clearIndustries() },
       { name: 'sessions', operation: () => storage.clearSessions() },
-      { name: 'domainBlacklist', operation: () => storage.clearDomainBlacklist() }
+      { name: 'domainBlacklist', operation: () => storage.clearDomainBlacklist() },
     ]
 
     for (const { name, operation } of clearOperations) {
@@ -163,7 +169,10 @@ export class DataResetService {
   /**
    * Clear localStorage data
    */
-  private static async clearLocalStorageData(result: DataResetResult, includeApiCredentials: boolean): Promise<void> {
+  private static async clearLocalStorageData(
+    result: DataResetResult,
+    includeApiCredentials: boolean
+  ): Promise<void> {
     try {
       // Clear API credentials if requested
       if (includeApiCredentials) {
@@ -257,15 +266,15 @@ export class DataResetService {
   }> {
     try {
       const dbStats = await storage.getStatistics()
-      
+
       // Count localStorage items
-      const localStorageItems = this.LOCAL_STORAGE_KEYS.filter(key => 
-        localStorage.getItem(key) !== null
+      const localStorageItems = this.LOCAL_STORAGE_KEYS.filter(
+        key => localStorage.getItem(key) !== null
       ).length
 
       return {
         ...dbStats,
-        localStorageItems
+        localStorageItems,
       }
     } catch (error) {
       logger.error('DataReset', 'Failed to get data statistics', error)
@@ -275,7 +284,7 @@ export class DataResetService {
         industries: 0,
         sessions: 0,
         domainBlacklistEntries: 0,
-        localStorageItems: 0
+        localStorageItems: 0,
       }
     }
   }

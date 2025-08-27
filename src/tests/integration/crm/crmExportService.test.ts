@@ -15,7 +15,7 @@ describe('CRMExportService Integration', () => {
 
   beforeEach(() => {
     exportService = new CRMExportService()
-    
+
     mockBusinessRecords = [
       {
         id: 'test-1',
@@ -30,7 +30,7 @@ describe('CRMExportService Integration', () => {
         industry: 'technology',
         confidence: 0.95,
         source: 'web',
-        scrapedAt: '2024-01-01T00:00:00.000Z'
+        scrapedAt: '2024-01-01T00:00:00.000Z',
       },
       {
         id: 'test-2',
@@ -45,7 +45,7 @@ describe('CRMExportService Integration', () => {
         industry: 'restaurants',
         confidence: 0.88,
         source: 'directory',
-        scrapedAt: '2024-01-01T00:00:00.000Z'
+        scrapedAt: '2024-01-01T00:00:00.000Z',
       },
       {
         id: 'test-3',
@@ -60,8 +60,8 @@ describe('CRMExportService Integration', () => {
         industry: 'healthcare',
         confidence: 0.92,
         source: 'search',
-        scrapedAt: '2024-01-01T00:00:00.000Z'
-      }
+        scrapedAt: '2024-01-01T00:00:00.000Z',
+      },
     ]
 
     // Get Salesforce template for testing
@@ -87,12 +87,12 @@ describe('CRMExportService Integration', () => {
 
     it('should handle progress callbacks', async () => {
       const progressUpdates: any[] = []
-      
+
       await exportService.exportWithCRMTemplate(
         mockBusinessRecords,
         salesforceTemplate,
         { template: salesforceTemplate },
-        (progress) => {
+        progress => {
           progressUpdates.push(progress)
         }
       )
@@ -115,7 +115,7 @@ describe('CRMExportService Integration', () => {
 
       // Should have header + 3 data rows
       expect(lines.length).toBe(4)
-      
+
       // Check headers
       const headers = lines[0].split(',')
       expect(headers).toContain('Company')
@@ -140,10 +140,10 @@ describe('CRMExportService Integration', () => {
         )
 
         expect(result.blob.type).toBe('application/json')
-        
+
         const jsonText = await result.blob.text()
         const jsonData = JSON.parse(jsonText)
-        
+
         expect(jsonData.metadata).toBeDefined()
         expect(jsonData.records).toHaveLength(3)
         expect(jsonData.metadata.platform).toBe('hubspot')
@@ -166,15 +166,14 @@ describe('CRMExportService Integration', () => {
           industry: '',
           confidence: 0,
           source: 'test',
-          scrapedAt: '2024-01-01T00:00:00.000Z'
-        }
+          scrapedAt: '2024-01-01T00:00:00.000Z',
+        },
       ]
 
-      const result = await exportService.exportWithCRMTemplate(
-        invalidRecords,
-        salesforceTemplate,
-        { template: salesforceTemplate, skipInvalidRecords: true }
-      )
+      const result = await exportService.exportWithCRMTemplate(invalidRecords, salesforceTemplate, {
+        template: salesforceTemplate,
+        skipInvalidRecords: true,
+      })
 
       expect(result.statistics.totalRecords).toBe(4)
       expect(result.statistics.exportedRecords).toBe(3) // Only valid records
@@ -183,11 +182,9 @@ describe('CRMExportService Integration', () => {
     })
 
     it('should handle empty record set', async () => {
-      const result = await exportService.exportWithCRMTemplate(
-        [],
-        salesforceTemplate,
-        { template: salesforceTemplate }
-      )
+      const result = await exportService.exportWithCRMTemplate([], salesforceTemplate, {
+        template: salesforceTemplate,
+      })
 
       expect(result.statistics.totalRecords).toBe(0)
       expect(result.statistics.exportedRecords).toBe(0)
@@ -208,13 +205,13 @@ describe('CRMExportService Integration', () => {
       const result = await exportService.exportWithCRMTemplate(
         mockBusinessRecords,
         salesforceTemplate,
-        { 
+        {
           template: salesforceTemplate,
           metadata: {
             exportedBy: 'Test User',
             exportPurpose: 'Integration Test',
-            notes: 'Test export'
-          }
+            notes: 'Test export',
+          },
         }
       )
 
@@ -242,14 +239,12 @@ describe('CRMExportService Integration', () => {
 
     it('should show validation errors in preview', async () => {
       const invalidRecords = [
-        { ...mockBusinessRecords[0], businessName: '' } // Invalid
+        { ...mockBusinessRecords[0], businessName: '' }, // Invalid
       ]
 
-      const preview = await exportService.getExportPreview(
-        invalidRecords,
-        salesforceTemplate,
-        { template: salesforceTemplate }
-      )
+      const preview = await exportService.getExportPreview(invalidRecords, salesforceTemplate, {
+        template: salesforceTemplate,
+      })
 
       expect(preview.errors.length).toBeGreaterThan(0)
       expect(preview.errors.some(e => e.field === 'Company')).toBe(true)
@@ -272,13 +267,10 @@ describe('CRMExportService Integration', () => {
     it('should identify invalid records', async () => {
       const invalidRecords = [
         ...mockBusinessRecords,
-        { ...mockBusinessRecords[0], businessName: '', email: 'invalid' }
+        { ...mockBusinessRecords[0], businessName: '', email: 'invalid' },
       ]
 
-      const validation = await exportService.validateRecords(
-        invalidRecords,
-        salesforceTemplate
-      )
+      const validation = await exportService.validateRecords(invalidRecords, salesforceTemplate)
 
       expect(validation.validCount).toBe(3)
       expect(validation.invalidCount).toBe(1)
@@ -315,15 +307,13 @@ describe('CRMExportService Integration', () => {
     it('should handle invalid template platform', async () => {
       const invalidTemplate = {
         ...salesforceTemplate,
-        platform: 'invalid-platform' as any
+        platform: 'invalid-platform' as any,
       }
 
       await expect(
-        exportService.exportWithCRMTemplate(
-          mockBusinessRecords,
-          invalidTemplate,
-          { template: invalidTemplate }
-        )
+        exportService.exportWithCRMTemplate(mockBusinessRecords, invalidTemplate, {
+          template: invalidTemplate,
+        })
       ).rejects.toThrow('No adapter found for platform')
     })
 
@@ -335,17 +325,18 @@ describe('CRMExportService Integration', () => {
           {
             sourceField: 'nonexistent.field.path',
             targetField: 'TestField',
-            transformer: () => { throw new Error('Test transformation error') },
-            validation: { required: false, type: 'string' as const }
-          }
-        ]
+            transformer: () => {
+              throw new Error('Test transformation error')
+            },
+            validation: { required: false, type: 'string' as const },
+          },
+        ],
       }
 
-      const result = await exportService.exportWithCRMTemplate(
-        mockBusinessRecords,
-        errorTemplate,
-        { template: errorTemplate, skipInvalidRecords: true }
-      )
+      const result = await exportService.exportWithCRMTemplate(mockBusinessRecords, errorTemplate, {
+        template: errorTemplate,
+        skipInvalidRecords: true,
+      })
 
       expect(result.statistics.errors.length).toBeGreaterThan(0)
       expect(result.statistics.warnings.length).toBeGreaterThan(0)
@@ -359,16 +350,14 @@ describe('CRMExportService Integration', () => {
         ...mockBusinessRecords[0],
         id: `test-${i}`,
         businessName: `Business ${i}`,
-        email: `contact${i}@business.com`
+        email: `contact${i}@business.com`,
       }))
 
       const startTime = Date.now()
-      
-      const result = await exportService.exportWithCRMTemplate(
-        largeDataset,
-        salesforceTemplate,
-        { template: salesforceTemplate }
-      )
+
+      const result = await exportService.exportWithCRMTemplate(largeDataset, salesforceTemplate, {
+        template: salesforceTemplate,
+      })
 
       const processingTime = Date.now() - startTime
 
@@ -382,16 +371,16 @@ describe('CRMExportService Integration', () => {
       const largeDataset = Array.from({ length: 50 }, (_, i) => ({
         ...mockBusinessRecords[0],
         id: `test-${i}`,
-        businessName: `Business ${i}`
+        businessName: `Business ${i}`,
       }))
 
       const progressUpdates: any[] = []
-      
+
       await exportService.exportWithCRMTemplate(
         largeDataset,
         salesforceTemplate,
         { template: salesforceTemplate },
-        (progress) => {
+        progress => {
           progressUpdates.push(progress)
         }
       )
@@ -399,10 +388,12 @@ describe('CRMExportService Integration', () => {
       expect(progressUpdates.length).toBeGreaterThan(2)
       expect(progressUpdates[0].percentage).toBe(0)
       expect(progressUpdates[progressUpdates.length - 1].percentage).toBe(100)
-      
+
       // Progress should be monotonically increasing
       for (let i = 1; i < progressUpdates.length; i++) {
-        expect(progressUpdates[i].percentage).toBeGreaterThanOrEqual(progressUpdates[i - 1].percentage)
+        expect(progressUpdates[i].percentage).toBeGreaterThanOrEqual(
+          progressUpdates[i - 1].percentage
+        )
       }
     })
   })

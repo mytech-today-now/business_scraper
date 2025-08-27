@@ -22,42 +22,42 @@ export enum AuditEventType {
   USER_LOGIN_FAILED = 'USER_LOGIN_FAILED',
   USER_LOCKED = 'USER_LOCKED',
   USER_UNLOCKED = 'USER_UNLOCKED',
-  
+
   // Authorization events
   ACCESS_GRANTED = 'ACCESS_GRANTED',
   ACCESS_DENIED = 'ACCESS_DENIED',
   PERMISSION_ESCALATION = 'PERMISSION_ESCALATION',
-  
+
   // Data events
   DATA_ACCESS = 'DATA_ACCESS',
   DATA_EXPORT = 'DATA_EXPORT',
   DATA_DELETE = 'DATA_DELETE',
   DATA_MODIFY = 'DATA_MODIFY',
-  
+
   // Scraping events
   SCRAPING_STARTED = 'SCRAPING_STARTED',
   SCRAPING_COMPLETED = 'SCRAPING_COMPLETED',
   SCRAPING_FAILED = 'SCRAPING_FAILED',
   SCRAPING_BLOCKED = 'SCRAPING_BLOCKED',
-  
+
   // Compliance events
   GDPR_REQUEST = 'GDPR_REQUEST',
   CCPA_REQUEST = 'CCPA_REQUEST',
   CONSENT_GIVEN = 'CONSENT_GIVEN',
   CONSENT_WITHDRAWN = 'CONSENT_WITHDRAWN',
   DATA_RETENTION_EXPIRED = 'DATA_RETENTION_EXPIRED',
-  
+
   // Security events
   SUSPICIOUS_ACTIVITY = 'SUSPICIOUS_ACTIVITY',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
   SECURITY_VIOLATION = 'SECURITY_VIOLATION',
   CONFIGURATION_CHANGED = 'CONFIGURATION_CHANGED',
-  
+
   // System events
   SYSTEM_STARTUP = 'SYSTEM_STARTUP',
   SYSTEM_SHUTDOWN = 'SYSTEM_SHUTDOWN',
   BACKUP_CREATED = 'BACKUP_CREATED',
-  BACKUP_RESTORED = 'BACKUP_RESTORED'
+  BACKUP_RESTORED = 'BACKUP_RESTORED',
 }
 
 // Risk levels
@@ -65,7 +65,7 @@ export enum RiskLevel {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
+  CRITICAL = 'CRITICAL',
 }
 
 // Audit event interface
@@ -108,45 +108,47 @@ export class SecurityAuditService {
     try {
       // Encrypt sensitive details
       const encryptedDetails = this.encryptData(JSON.stringify(event.details))
-      
+
       // Generate correlation ID if not provided
       const correlationId = event.correlationId || crypto.randomUUID()
 
       // Insert into audit log
-      await auditPool.query(`
+      await auditPool.query(
+        `
         INSERT INTO security_audit_log (
           id, event_type, risk_level, user_id, session_id, 
           client_ip, user_agent, resource, action, 
           encrypted_details, timestamp, correlation_id
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      `, [
-        crypto.randomUUID(),
-        event.eventType,
-        event.riskLevel,
-        event.userId,
-        event.sessionId,
-        event.clientIP,
-        event.userAgent,
-        event.resource,
-        event.action,
-        encryptedDetails,
-        event.timestamp,
-        correlationId
-      ])
+      `,
+        [
+          crypto.randomUUID(),
+          event.eventType,
+          event.riskLevel,
+          event.userId,
+          event.sessionId,
+          event.clientIP,
+          event.userAgent,
+          event.resource,
+          event.action,
+          encryptedDetails,
+          event.timestamp,
+          correlationId,
+        ]
+      )
 
       // Log to application logger as well
       logger.info('Security Audit', `${event.eventType}: ${event.action || 'N/A'}`, {
         userId: event.userId,
         resource: event.resource,
         riskLevel: event.riskLevel,
-        correlationId
+        correlationId,
       })
 
       // Check for high-risk events and trigger alerts
       if (event.riskLevel === RiskLevel.HIGH || event.riskLevel === RiskLevel.CRITICAL) {
         await this.triggerSecurityAlert(event)
       }
-
     } catch (error) {
       logger.error('Security Audit', 'Failed to log audit event', error)
       // Don't throw - audit logging should not break application flow
@@ -164,7 +166,7 @@ export class SecurityAuditService {
     details: Record<string, any> = {}
   ): Promise<void> {
     const riskLevel = this.determineAuthRiskLevel(eventType, details)
-    
+
     await this.logEvent({
       eventType,
       riskLevel,
@@ -175,7 +177,7 @@ export class SecurityAuditService {
       resource: 'authentication',
       action: eventType,
       details,
-      timestamp: new Date()
+      timestamp: new Date(),
     })
   }
 
@@ -206,9 +208,9 @@ export class SecurityAuditService {
       details: {
         ...details,
         userRole: session.user.role,
-        permissions: session.user.permissions
+        permissions: session.user.permissions,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     })
   }
 
@@ -235,7 +237,7 @@ export class SecurityAuditService {
       resource,
       action: eventType,
       details,
-      timestamp: new Date()
+      timestamp: new Date(),
     })
   }
 
@@ -258,7 +260,7 @@ export class SecurityAuditService {
       resource: 'compliance',
       action: eventType,
       details,
-      timestamp: new Date()
+      timestamp: new Date(),
     })
   }
 
@@ -269,16 +271,16 @@ export class SecurityAuditService {
     try {
       const iv = crypto.randomBytes(16)
       const cipher = crypto.createCipher(this.algorithm, this.encryptionKey)
-      
+
       let encrypted = cipher.update(data, 'utf8', 'hex')
       encrypted += cipher.final('hex')
-      
+
       const authTag = cipher.getAuthTag()
-      
+
       return JSON.stringify({
         iv: iv.toString('hex'),
         data: encrypted,
-        authTag: authTag.toString('hex')
+        authTag: authTag.toString('hex'),
       })
     } catch (error) {
       logger.error('Security Audit', 'Failed to encrypt audit data', error)
@@ -292,13 +294,13 @@ export class SecurityAuditService {
   private decryptData(encryptedData: string): string {
     try {
       const { iv, data, authTag } = JSON.parse(encryptedData)
-      
+
       const decipher = crypto.createDecipher(this.algorithm, this.encryptionKey)
       decipher.setAuthTag(Buffer.from(authTag, 'hex'))
-      
+
       let decrypted = decipher.update(data, 'hex', 'utf8')
       decrypted += decipher.final('utf8')
-      
+
       return decrypted
     } catch (error) {
       logger.error('Security Audit', 'Failed to decrypt audit data', error)
@@ -309,7 +311,10 @@ export class SecurityAuditService {
   /**
    * Determine risk level for authentication events
    */
-  private determineAuthRiskLevel(eventType: AuditEventType, details: Record<string, any>): RiskLevel {
+  private determineAuthRiskLevel(
+    eventType: AuditEventType,
+    details: Record<string, any>
+  ): RiskLevel {
     switch (eventType) {
       case AuditEventType.USER_LOGIN_FAILED:
         return details.consecutiveFailures > 3 ? RiskLevel.HIGH : RiskLevel.MEDIUM
@@ -325,7 +330,10 @@ export class SecurityAuditService {
   /**
    * Determine risk level for data events
    */
-  private determineDataRiskLevel(eventType: AuditEventType, details: Record<string, any>): RiskLevel {
+  private determineDataRiskLevel(
+    eventType: AuditEventType,
+    details: Record<string, any>
+  ): RiskLevel {
     switch (eventType) {
       case AuditEventType.DATA_DELETE:
         return RiskLevel.HIGH
@@ -348,24 +356,26 @@ export class SecurityAuditService {
         userId: event.userId,
         resource: event.resource,
         riskLevel: event.riskLevel,
-        timestamp: event.timestamp
+        timestamp: event.timestamp,
       })
 
       // Store alert in database
-      await auditPool.query(`
+      await auditPool.query(
+        `
         INSERT INTO security_alerts (
           id, event_id, alert_type, severity, message, created_at, resolved_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-      `, [
-        crypto.randomUUID(),
-        event.id,
-        'SECURITY_EVENT',
-        event.riskLevel,
-        `High-risk security event: ${event.eventType}`,
-        new Date(),
-        null
-      ])
-
+      `,
+        [
+          crypto.randomUUID(),
+          event.id,
+          'SECURITY_EVENT',
+          event.riskLevel,
+          `High-risk security event: ${event.eventType}`,
+          new Date(),
+          null,
+        ]
+      )
     } catch (error) {
       logger.error('Security Audit', 'Failed to trigger security alert', error)
     }
@@ -379,9 +389,11 @@ export const securityAuditService = new SecurityAuditService()
  * Helper function to get client IP from request
  */
 function getClientIP(request: any): string {
-  return request.headers.get('x-forwarded-for') ||
-         request.headers.get('x-real-ip') ||
-         request.connection?.remoteAddress ||
-         request.socket?.remoteAddress ||
-         'unknown'
+  return (
+    request.headers.get('x-forwarded-for') ||
+    request.headers.get('x-real-ip') ||
+    request.connection?.remoteAddress ||
+    request.socket?.remoteAddress ||
+    'unknown'
+  )
 }

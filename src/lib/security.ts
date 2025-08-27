@@ -16,20 +16,20 @@ export interface SecurityConfig {
   sessionTimeout: number
   maxLoginAttempts: number
   lockoutDuration: number
-  
+
   // Rate limiting
   rateLimitWindow: number
   rateLimitMax: number
   scrapingRateLimit: number
-  
+
   // CSRF protection
   csrfTokenLength: number
   csrfTokenExpiry: number
-  
+
   // Encryption
   encryptionAlgorithm: string
   keyDerivationIterations: number
-  
+
   // Security headers
   enableSecurityHeaders: boolean
   contentSecurityPolicy: string
@@ -124,7 +124,9 @@ export function generateId(length: number = 16): string {
  */
 export function hashPassword(password: string, salt?: string): { hash: string; salt: string } {
   const actualSalt = salt || crypto.randomBytes(16).toString('hex')
-  const hash = crypto.pbkdf2Sync(password, actualSalt, defaultSecurityConfig.keyDerivationIterations, 64, 'sha512').toString('hex')
+  const hash = crypto
+    .pbkdf2Sync(password, actualSalt, defaultSecurityConfig.keyDerivationIterations, 64, 'sha512')
+    .toString('hex')
   return { hash, salt: actualSalt }
 }
 
@@ -139,7 +141,10 @@ export function verifyPassword(password: string, hash: string, salt: string): bo
 /**
  * Encrypt sensitive data
  */
-export function encryptData(data: string, key: string): { encrypted: string; iv: string; tag: string } {
+export function encryptData(
+  data: string,
+  key: string
+): { encrypted: string; iv: string; tag: string } {
   const iv = crypto.randomBytes(16)
   const keyHash = crypto.createHash('sha256').update(key).digest()
   const cipher = crypto.createCipheriv('aes-256-cbc', keyHash, iv)
@@ -179,10 +184,10 @@ export function createSession(): Session {
     isValid: true,
     csrfToken: generateSecureToken(defaultSecurityConfig.csrfTokenLength),
   }
-  
+
   sessions.set(sessionId, session)
   logger.info('Security', `Created new session: ${sessionId}`)
-  
+
   return session
 }
 
@@ -191,25 +196,25 @@ export function createSession(): Session {
  */
 export function getSession(sessionId: string): Session | null {
   const session = sessions.get(sessionId)
-  
+
   if (!session) {
     return null
   }
-  
+
   // Check if session is expired
   const now = new Date()
   const sessionAge = now.getTime() - session.lastAccessed.getTime()
-  
+
   if (sessionAge > defaultSecurityConfig.sessionTimeout) {
     sessions.delete(sessionId)
     logger.info('Security', `Session expired: ${sessionId}`)
     return null
   }
-  
+
   // Update last accessed time
   session.lastAccessed = now
   sessions.set(sessionId, session)
-  
+
   return session
 }
 
@@ -227,7 +232,7 @@ export function invalidateSession(sessionId: string): void {
 export function cleanupExpiredSessions(): void {
   const now = new Date()
   let cleanedCount = 0
-  
+
   // Convert entries to array to avoid iterator issues
   const sessionEntries = Array.from(sessions.entries())
   for (const [sessionId, session] of sessionEntries) {
@@ -237,7 +242,7 @@ export function cleanupExpiredSessions(): void {
       cleanedCount++
     }
   }
-  
+
   if (cleanedCount > 0) {
     logger.info('Security', `Cleaned up ${cleanedCount} expired sessions`)
   }
@@ -246,22 +251,25 @@ export function cleanupExpiredSessions(): void {
 /**
  * Check rate limit for an IP address
  */
-export function checkRateLimit(ip: string, limit: number = defaultSecurityConfig.rateLimitMax): boolean {
+export function checkRateLimit(
+  ip: string,
+  limit: number = defaultSecurityConfig.rateLimitMax
+): boolean {
   const now = Date.now()
 
   const record = rateLimitStore.get(ip)
-  
+
   if (!record || record.resetTime <= now) {
     // Reset or create new record
     rateLimitStore.set(ip, { count: 1, resetTime: now + defaultSecurityConfig.rateLimitWindow })
     return true
   }
-  
+
   if (record.count >= limit) {
     logger.warn('Security', `Rate limit exceeded for IP: ${ip}`)
     return false
   }
-  
+
   record.count++
   rateLimitStore.set(ip, record)
   return true
@@ -273,18 +281,18 @@ export function checkRateLimit(ip: string, limit: number = defaultSecurityConfig
 export function trackLoginAttempt(ip: string, success: boolean): boolean {
   const now = new Date()
   const record = loginAttempts.get(ip)
-  
+
   if (success) {
     // Clear failed attempts on successful login
     loginAttempts.delete(ip)
     return true
   }
-  
+
   if (!record) {
     loginAttempts.set(ip, { count: 1, lastAttempt: now })
     return true
   }
-  
+
   // Check if lockout period has expired
   const timeSinceLastAttempt = now.getTime() - record.lastAttempt.getTime()
   if (timeSinceLastAttempt > defaultSecurityConfig.lockoutDuration) {
@@ -292,16 +300,16 @@ export function trackLoginAttempt(ip: string, success: boolean): boolean {
     loginAttempts.set(ip, { count: 1, lastAttempt: now })
     return true
   }
-  
+
   record.count++
   record.lastAttempt = now
   loginAttempts.set(ip, record)
-  
+
   if (record.count >= defaultSecurityConfig.maxLoginAttempts) {
     logger.warn('Security', `Account locked due to too many failed attempts from IP: ${ip}`)
     return false
   }
-  
+
   return true
 }
 
@@ -310,20 +318,20 @@ export function trackLoginAttempt(ip: string, success: boolean): boolean {
  */
 export function isLockedOut(ip: string): boolean {
   const record = loginAttempts.get(ip)
-  
+
   if (!record || record.count < defaultSecurityConfig.maxLoginAttempts) {
     return false
   }
-  
+
   const now = new Date()
   const timeSinceLastAttempt = now.getTime() - record.lastAttempt.getTime()
-  
+
   if (timeSinceLastAttempt > defaultSecurityConfig.lockoutDuration) {
     // Lockout period expired
     loginAttempts.delete(ip)
     return false
   }
-  
+
   return true
 }
 
@@ -332,15 +340,12 @@ export function isLockedOut(ip: string): boolean {
  */
 export function validateCSRFToken(sessionId: string, token: string): boolean {
   const session = getSession(sessionId)
-  
+
   if (!session || !session.isValid) {
     return false
   }
-  
-  return crypto.timingSafeEqual(
-    Buffer.from(session.csrfToken, 'hex'),
-    Buffer.from(token, 'hex')
-  )
+
+  return crypto.timingSafeEqual(Buffer.from(session.csrfToken, 'hex'), Buffer.from(token, 'hex'))
 }
 
 /**
@@ -349,16 +354,16 @@ export function validateCSRFToken(sessionId: string, token: string): boolean {
 export function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for')
   const realIP = request.headers.get('x-real-ip')
-  
+
   if (forwarded) {
     const firstIP = forwarded.split(',')[0]
     return firstIP ? firstIP.trim() : 'unknown'
   }
-  
+
   if (realIP) {
     return realIP
   }
-  
+
   return request.ip || 'unknown'
 }
 
@@ -372,7 +377,7 @@ export function sanitizeInput(input: string): string {
     .replace(/<[^>]*>/g, '') // Remove HTML tags
     .replace(/javascript:/gi, '') // Remove javascript: URLs
     .replace(/on\w+\s*=/gi, '') // Remove event handlers
-    .replace(/[<>'"&]/g, (char) => {
+    .replace(/[<>'"&]/g, char => {
       // Escape dangerous characters
       const escapeMap: { [key: string]: string } = {
         '<': '&lt;',
@@ -390,21 +395,21 @@ export function sanitizeInput(input: string): string {
  */
 export function validateInput(input: string): { isValid: boolean; errors: string[] } {
   const errors: string[] = []
-  
+
   // Check for SQL injection patterns
   const sqlPatterns = [
     /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
     /(--|\/\*|\*\/)/,
     /(\b(OR|AND)\b.*=.*)/i,
   ]
-  
+
   for (const pattern of sqlPatterns) {
     if (pattern.test(input)) {
       errors.push('Input contains potentially dangerous SQL patterns')
       break
     }
   }
-  
+
   // Check for XSS patterns
   const xssPatterns = [
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
@@ -412,19 +417,19 @@ export function validateInput(input: string): { isValid: boolean; errors: string
     /on\w+\s*=/i,
     /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi,
   ]
-  
+
   for (const pattern of xssPatterns) {
     if (pattern.test(input)) {
       errors.push('Input contains potentially dangerous XSS patterns')
       break
     }
   }
-  
+
   // Check for path traversal
   if (/\.\.\/|\.\.\\/.test(input)) {
     errors.push('Input contains path traversal patterns')
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors,

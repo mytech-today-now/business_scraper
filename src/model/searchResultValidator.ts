@@ -12,18 +12,18 @@ export interface ValidatedSearchResult {
   snippet: string
   domain: string
   scores: {
-    relevance: number      // 0-1: How relevant to the search query
-    authority: number      // 0-1: Domain authority and trustworthiness
-    business: number       // 0-1: Likelihood of being a legitimate business
-    geographic: number     // 0-1: Geographic relevance to search location
-    overall: number        // 0-1: Combined weighted score
+    relevance: number // 0-1: How relevant to the search query
+    authority: number // 0-1: Domain authority and trustworthiness
+    business: number // 0-1: Likelihood of being a legitimate business
+    geographic: number // 0-1: Geographic relevance to search location
+    overall: number // 0-1: Combined weighted score
   }
   metadata: {
-    domainAge?: number     // Domain age in years
-    hasSSL: boolean        // Has valid SSL certificate
-    businessType?: string  // Classified business type
-    isDuplicate: boolean   // Marked as duplicate
-    confidence: number     // Overall confidence in result quality
+    domainAge?: number // Domain age in years
+    hasSSL: boolean // Has valid SSL certificate
+    businessType?: string // Classified business type
+    isDuplicate: boolean // Marked as duplicate
+    confidence: number // Overall confidence in result quality
   }
 }
 
@@ -60,8 +60,8 @@ const DEFAULT_CONFIG: ValidationConfig = {
   weights: {
     relevance: 0.35,
     authority: 0.25,
-    business: 0.30,
-    geographic: 0.10,
+    business: 0.3,
+    geographic: 0.1,
   },
 }
 
@@ -95,7 +95,7 @@ export class SearchResultValidator {
     for (const result of results) {
       try {
         const validated = await this.validateSingleResult(result, query, location)
-        
+
         // Apply minimum score thresholds
         if (this.meetsMinimumThresholds(validated)) {
           validatedResults.push(validated)
@@ -111,7 +111,10 @@ export class SearchResultValidator {
     // Sort by overall score (highest first)
     validatedResults.sort((a, b) => b.scores.overall - a.scores.overall)
 
-    logger.info('SearchValidator', `Validated ${validatedResults.length} of ${results.length} results`)
+    logger.info(
+      'SearchValidator',
+      `Validated ${validatedResults.length} of ${results.length} results`
+    )
     return validatedResults
   }
 
@@ -187,12 +190,12 @@ export class SearchResultValidator {
       if (titleText.includes(term)) {
         score += 2
       }
-      
+
       // Snippet matches
       if (snippetText.includes(term)) {
         score += 1
       }
-      
+
       // Domain matches (business name in domain)
       if (domainText.includes(term)) {
         score += 1
@@ -234,7 +237,6 @@ export class SearchResultValidator {
       if (businessIndicators.some(indicator => domain.includes(indicator))) {
         score += 0.1
       }
-
     } catch (error) {
       logger.debug('SearchValidator', `Authority check failed for ${domain}`, error)
     }
@@ -252,20 +254,41 @@ export class SearchResultValidator {
    * @param result - Search result
    * @returns Business score (0-1)
    */
-  private calculateBusinessScore(
-    result: { title: string; snippet: string; domain: string }
-  ): number {
+  private calculateBusinessScore(result: {
+    title: string
+    snippet: string
+    domain: string
+  }): number {
     let score = 0.5 // Start with neutral
 
     const businessKeywords = [
-      'services', 'company', 'business', 'inc', 'llc', 'corp',
-      'restaurant', 'shop', 'store', 'clinic', 'office', 'center',
-      'solutions', 'consulting', 'professional', 'expert'
+      'services',
+      'company',
+      'business',
+      'inc',
+      'llc',
+      'corp',
+      'restaurant',
+      'shop',
+      'store',
+      'clinic',
+      'office',
+      'center',
+      'solutions',
+      'consulting',
+      'professional',
+      'expert',
     ]
 
     const directoryKeywords = [
-      'directory', 'listing', 'reviews', 'find', 'search',
-      'yellow pages', 'white pages', 'business directory'
+      'directory',
+      'listing',
+      'reviews',
+      'find',
+      'search',
+      'yellow pages',
+      'white pages',
+      'business directory',
     ]
 
     const text = `${result.title} ${result.snippet} ${result.domain}`.toLowerCase()
@@ -279,7 +302,8 @@ export class SearchResultValidator {
     score -= Math.min(directoryMatches * 0.2, 0.4)
 
     // Domain structure indicators
-    if (result.domain.split('.').length === 2) { // e.g., business.com
+    if (result.domain.split('.').length === 2) {
+      // e.g., business.com
       score += 0.1
     }
 
@@ -323,7 +347,7 @@ export class SearchResultValidator {
     geographic: number
   }): number {
     const { weights } = this.config
-    
+
     return (
       scores.relevance * weights.relevance +
       scores.authority * weights.authority +
@@ -409,7 +433,7 @@ export class SearchResultValidator {
   private async estimateDomainAge(domain: string): Promise<number> {
     // In a production environment, this would use a WHOIS API
     // For now, return a reasonable default based on domain characteristics
-    
+
     // Shorter domains tend to be older
     if (domain.length < 10) return 5
     if (domain.length < 15) return 3
@@ -423,11 +447,11 @@ export class SearchResultValidator {
    */
   private classifyBusinessType(domain: string): string {
     const classifications = {
-      'restaurant': ['restaurant', 'cafe', 'diner', 'bistro', 'eatery'],
-      'medical': ['medical', 'clinic', 'doctor', 'health', 'dental'],
-      'retail': ['shop', 'store', 'retail', 'boutique', 'market'],
-      'services': ['services', 'consulting', 'solutions', 'professional'],
-      'technology': ['tech', 'software', 'digital', 'web', 'app'],
+      restaurant: ['restaurant', 'cafe', 'diner', 'bistro', 'eatery'],
+      medical: ['medical', 'clinic', 'doctor', 'health', 'dental'],
+      retail: ['shop', 'store', 'retail', 'boutique', 'market'],
+      services: ['services', 'consulting', 'solutions', 'professional'],
+      technology: ['tech', 'software', 'digital', 'web', 'app'],
     }
 
     for (const [type, keywords] of Object.entries(classifications)) {

@@ -25,15 +25,15 @@ describe('PrioritizedDataProcessor', () => {
             street: '123 Main St',
             city: 'Test City',
             state: 'CA',
-            zipCode: '12345'
+            zipCode: '12345',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
-        }
+          scrapedAt: new Date(),
+        },
       ]
 
       const result = await processor.processBusinessRecords(records)
-      
+
       expect(result.processedRecords).toHaveLength(1)
       expect(result.processedRecords[0].email).toBe('info@test.com') // Should prioritize info@ over others
       expect(result.processedRecords[0].additionalEmails).toContain('contact@test.com')
@@ -52,10 +52,10 @@ describe('PrioritizedDataProcessor', () => {
             street: '123 Main St',
             city: 'Test City',
             state: 'CA',
-            zipCode: '12345'
+            zipCode: '12345',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
+          scrapedAt: new Date(),
         },
         {
           id: '2',
@@ -67,15 +67,15 @@ describe('PrioritizedDataProcessor', () => {
             street: '123 Main St', // Same address
             city: 'Test City',
             state: 'CA',
-            zipCode: '12345'
+            zipCode: '12345',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
-        }
+          scrapedAt: new Date(),
+        },
       ]
 
       const result = await processor.processBusinessRecords(records)
-      
+
       expect(result.processedRecords).toHaveLength(1) // Should deduplicate
       expect(result.stats.duplicatesRemoved).toBe(1)
       expect(result.processedRecords[0].sources).toHaveLength(2) // Should merge sources
@@ -93,10 +93,10 @@ describe('PrioritizedDataProcessor', () => {
             street: '123 Main St',
             city: 'Test City',
             state: 'CA',
-            zipCode: '12345'
+            zipCode: '12345',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
+          scrapedAt: new Date(),
         },
         {
           id: '2',
@@ -108,15 +108,15 @@ describe('PrioritizedDataProcessor', () => {
             street: '', // No address
             city: '',
             state: '',
-            zipCode: ''
+            zipCode: '',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
-        }
+          scrapedAt: new Date(),
+        },
       ]
 
       const result = await processor.processBusinessRecords(records)
-      
+
       expect(result.processedRecords).toHaveLength(1) // Should filter out bad record
       expect(result.processedRecords[0].businessName).toBe('Good Company')
     })
@@ -133,11 +133,11 @@ describe('PrioritizedDataProcessor', () => {
             street: '123 Business Ave',
             city: 'Business City',
             state: 'CA',
-            zipCode: '12345'
+            zipCode: '12345',
           },
           contactPerson: 'John Doe',
           industry: 'Technology',
-          scrapedAt: new Date()
+          scrapedAt: new Date(),
         },
         {
           id: '2',
@@ -149,20 +149,22 @@ describe('PrioritizedDataProcessor', () => {
             street: '',
             city: '',
             state: '',
-            zipCode: ''
+            zipCode: '',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
-        }
+          scrapedAt: new Date(),
+        },
       ]
 
       const result = await processor.processBusinessRecords(records)
-      
+
       expect(result.processedRecords).toHaveLength(2)
-      
-      const highQuality = result.processedRecords.find(r => r.businessName === 'High Quality Company')
+
+      const highQuality = result.processedRecords.find(
+        r => r.businessName === 'High Quality Company'
+      )
       const lowQuality = result.processedRecords.find(r => r.businessName === 'Low Quality Company')
-      
+
       expect(highQuality?.confidence).toBeGreaterThan(lowQuality?.confidence || 0)
     })
 
@@ -178,18 +180,18 @@ describe('PrioritizedDataProcessor', () => {
             street: '  123   main   st  ',
             city: '  test   city  ',
             state: 'ca',
-            zipCode: '12345-6789'
+            zipCode: '12345-6789',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
-        }
+          scrapedAt: new Date(),
+        },
       ]
 
       const result = await processor.processBusinessRecords(records)
-      
+
       expect(result.processedRecords).toHaveLength(1)
       const record = result.processedRecords[0]
-      
+
       expect(record.businessName).toBe('test company llc') // Cleaned spacing
       expect(record.email).toBe('info@test.com') // Lowercase and trimmed
       expect(record.streetNumber).toBe('123') // Parsed street number
@@ -211,10 +213,10 @@ describe('PrioritizedDataProcessor', () => {
             street: '123 Main St',
             city: 'City 1',
             state: 'CA',
-            zipCode: '12345'
+            zipCode: '12345',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
+          scrapedAt: new Date(),
         },
         {
           id: '2',
@@ -226,15 +228,15 @@ describe('PrioritizedDataProcessor', () => {
             street: '',
             city: '',
             state: '',
-            zipCode: ''
+            zipCode: '',
           },
           industry: 'Technology',
-          scrapedAt: new Date()
-        }
+          scrapedAt: new Date(),
+        },
       ]
 
       const result = await processor.processBusinessRecords(records)
-      
+
       expect(result.stats.totalRecords).toBe(2)
       expect(result.stats.recordsWithEmail).toBe(1)
       expect(result.stats.recordsWithPhone).toBe(2)

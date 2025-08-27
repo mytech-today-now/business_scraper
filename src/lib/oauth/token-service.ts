@@ -265,7 +265,7 @@ export class TokenService {
     jti?: string
   } {
     const validation = this.validateToken(token)
-    
+
     if (!validation.valid || !validation.payload) {
       return { active: false }
     }
@@ -312,7 +312,10 @@ export class TokenService {
     }
 
     if (expiredAccessTokens > 0 || expiredRefreshTokens > 0) {
-      logger.info('TokenService', `Cleaned up ${expiredAccessTokens} access tokens and ${expiredRefreshTokens} refresh tokens`)
+      logger.info(
+        'TokenService',
+        `Cleaned up ${expiredAccessTokens} access tokens and ${expiredRefreshTokens} refresh tokens`
+      )
     }
 
     return { accessTokens: expiredAccessTokens, refreshTokens: expiredRefreshTokens }
@@ -329,7 +332,7 @@ export class TokenService {
     blacklistedTokens: number
   } {
     const now = new Date()
-    
+
     let activeAccessTokens = 0
     for (const token of this.accessTokens.values()) {
       if (!token.isRevoked && token.expiresAt > now) {

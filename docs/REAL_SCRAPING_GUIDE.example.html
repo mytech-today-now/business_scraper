@@ -1,99 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌐 Real Web Scraping Configuration Guide (Example) - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      🌐 Real Web Scraping Configuration Guide (Example) - Business Scraper Documentation
+    </title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">🌐 Real Web Scraping Configuration Guide (Example)</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>🌐 Real Web Scraping Configuration Guide (Example)</h1>
-<p><strong>Status:</strong> 📋 <strong>EXAMPLE TEMPLATE</strong><br><strong>Updated:</strong> August 15, 2025</p>
-<blockquote>
-<p>⚠️ <strong>SECURITY WARNING</strong>: This is an example template. Never commit files with real API keys to version control!</p>
-</blockquote>
-<h2>🎯 Configuration Summary</h2>
-<p>This guide shows how to configure your Business Scraper application for <strong>real web scraping</strong>.</p>
-<h3>✅ Required Changes</h3>
-<ol>
-<li><p><strong>Environment Configuration</strong></p>
-<ul>
-<li><code>NODE_ENV=production</code> ✅</li>
-<li><code>ENABLE_REAL_SCRAPING=true</code> ✅</li>
-</ul>
-</li>
-<li><p><strong>API Keys to Configure</strong> (Replace with your actual keys)</p>
-<ul>
-<li>✅ <strong>Google Maps API</strong>: <code>YOUR_GOOGLE_MAPS_API_KEY_HERE</code></li>
-<li>✅ <strong>Google Custom Search</strong>: <code>YOUR_GOOGLE_CUSTOM_SEARCH_API_KEY_HERE</code></li>
-<li>✅ <strong>Search Engine ID</strong>: <code>YOUR_SEARCH_ENGINE_ID_HERE</code></li>
-<li>✅ <strong>Azure AI Foundry</strong>: <code>YOUR_AZURE_AI_FOUNDRY_KEY_HERE</code></li>
-</ul>
-</li>
-<li><p><strong>Docker Configuration Updates</strong></p>
-<ul>
-<li>Environment variables passed to container ✅</li>
-<li>Production mode enforced ✅</li>
-<li>Real scraping mode enabled ✅</li>
-</ul>
-</li>
-</ol>
-<h2>🔐 Security Best Practices</h2>
-<h3>🚨 NEVER commit files containing:</h3>
-<ul>
-<li>Real API keys</li>
-<li>Production credentials</li>
-<li>Live authentication tokens</li>
-<li>Database connection strings with passwords</li>
-<li>Any sensitive configuration data</li>
-</ul>
-<h3>✅ Safe practices:</h3>
-<ul>
-<li>Use environment variables for all secrets</li>
-<li>Create <code>.example</code> versions of configuration files</li>
-<li>Add sensitive files to <code>.gitignore</code></li>
-<li>Use separate configuration files for different environments</li>
-</ul>
-<h2>🧪 How to Test Real Scraping</h2>
-<h3>Method 1: Web Interface</h3>
-<ol>
-<li>Open <a href="http://localhost/">http://localhost/</a> in your browser</li>
-<li>Log in with your configured credentials</li>
-<li>Enter a real industry (e.g., &quot;restaurants&quot;)</li>
-<li>Enter a real ZIP code (e.g., &quot;10001&quot;)</li>
-<li>Click &quot;Start Scraping&quot;</li>
-<li><strong>Real scraping indicators:</strong><ul>
-<li>Longer processing times (real web requests)</li>
-<li>Actual business websites found</li>
-<li>Real contact information extracted</li>
-<li>No &quot;demo&quot; or &quot;example&quot; URLs</li>
-</ul>
-</li>
-</ol>
-<h3>Method 2: API Testing</h3>
-<pre><code class="language-bash"># Test search functionality
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              🌐 Real Web Scraping Configuration Guide (Example)
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>🌐 Real Web Scraping Configuration Guide (Example)</h1>
+        <p>
+          <strong>Status:</strong> 📋 <strong>EXAMPLE TEMPLATE</strong><br /><strong
+            >Updated:</strong
+          >
+          August 15, 2025
+        </p>
+        <blockquote>
+          <p>
+            ⚠️ <strong>SECURITY WARNING</strong>: This is an example template. Never commit files
+            with real API keys to version control!
+          </p>
+        </blockquote>
+        <h2>🎯 Configuration Summary</h2>
+        <p>
+          This guide shows how to configure your Business Scraper application for
+          <strong>real web scraping</strong>.
+        </p>
+        <h3>✅ Required Changes</h3>
+        <ol>
+          <li>
+            <p><strong>Environment Configuration</strong></p>
+            <ul>
+              <li><code>NODE_ENV=production</code> ✅</li>
+              <li><code>ENABLE_REAL_SCRAPING=true</code> ✅</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>API Keys to Configure</strong> (Replace with your actual keys)</p>
+            <ul>
+              <li>
+                ✅ <strong>Google Maps API</strong>: <code>YOUR_GOOGLE_MAPS_API_KEY_HERE</code>
+              </li>
+              <li>
+                ✅ <strong>Google Custom Search</strong>:
+                <code>YOUR_GOOGLE_CUSTOM_SEARCH_API_KEY_HERE</code>
+              </li>
+              <li>✅ <strong>Search Engine ID</strong>: <code>YOUR_SEARCH_ENGINE_ID_HERE</code></li>
+              <li>
+                ✅ <strong>Azure AI Foundry</strong>: <code>YOUR_AZURE_AI_FOUNDRY_KEY_HERE</code>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Docker Configuration Updates</strong></p>
+            <ul>
+              <li>Environment variables passed to container ✅</li>
+              <li>Production mode enforced ✅</li>
+              <li>Real scraping mode enabled ✅</li>
+            </ul>
+          </li>
+        </ol>
+        <h2>🔐 Security Best Practices</h2>
+        <h3>🚨 NEVER commit files containing:</h3>
+        <ul>
+          <li>Real API keys</li>
+          <li>Production credentials</li>
+          <li>Live authentication tokens</li>
+          <li>Database connection strings with passwords</li>
+          <li>Any sensitive configuration data</li>
+        </ul>
+        <h3>✅ Safe practices:</h3>
+        <ul>
+          <li>Use environment variables for all secrets</li>
+          <li>Create <code>.example</code> versions of configuration files</li>
+          <li>Add sensitive files to <code>.gitignore</code></li>
+          <li>Use separate configuration files for different environments</li>
+        </ul>
+        <h2>🧪 How to Test Real Scraping</h2>
+        <h3>Method 1: Web Interface</h3>
+        <ol>
+          <li>Open <a href="http://localhost/">http://localhost/</a> in your browser</li>
+          <li>Log in with your configured credentials</li>
+          <li>Enter a real industry (e.g., &quot;restaurants&quot;)</li>
+          <li>Enter a real ZIP code (e.g., &quot;10001&quot;)</li>
+          <li>Click &quot;Start Scraping&quot;</li>
+          <li>
+            <strong>Real scraping indicators:</strong>
+            <ul>
+              <li>Longer processing times (real web requests)</li>
+              <li>Actual business websites found</li>
+              <li>Real contact information extracted</li>
+              <li>No &quot;demo&quot; or &quot;example&quot; URLs</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>Method 2: API Testing</h3>
+        <pre><code class="language-bash"># Test search functionality
 curl -X POST http://localhost/api/scrape \
   -H &quot;Content-Type: application/json&quot; \
   -d &#39;{
@@ -103,56 +133,85 @@ curl -X POST http://localhost/api/scrape \
     &quot;radius&quot;: 5
   }&#39;
 </code></pre>
-<h2>📋 Configuration Checklist</h2>
-<ul>
-<li><input disabled="" type="checkbox"> Copy this file to <code>REAL_SCRAPING_GUIDE.md</code> (add to .gitignore)</li>
-<li><input disabled="" type="checkbox"> Replace all placeholder API keys with real values</li>
-<li><input disabled="" type="checkbox"> Configure environment variables</li>
-<li><input disabled="" type="checkbox"> Test with real data</li>
-<li><input disabled="" type="checkbox"> Verify scraping results</li>
-<li><input disabled="" type="checkbox"> Document any custom configurations</li>
-</ul>
-<h2>🔧 Troubleshooting</h2>
-<h3>Common Issues:</h3>
-<ol>
-<li><strong>API Rate Limits</strong>: Implement proper delays between requests</li>
-<li><strong>Invalid API Keys</strong>: Verify keys are active and have proper permissions</li>
-<li><strong>Network Timeouts</strong>: Increase timeout values for real web requests</li>
-<li><strong>CAPTCHA Challenges</strong>: Implement CAPTCHA solving or use residential proxies</li>
-</ol>
-<h3>Performance Optimization:</h3>
-<ul>
-<li>Use connection pooling</li>
-<li>Implement request caching</li>
-<li>Add retry logic with exponential backoff</li>
-<li>Monitor API usage and costs</li>
-</ul>
-<h2>📚 Additional Resources</h2>
-<ul>
-<li><a href="https://developers.google.com/custom-search/v1/introduction">Google Custom Search API Documentation</a></li>
-<li><a href="https://developers.google.com/maps/documentation">Google Maps API Documentation</a></li>
-<li><a href="https://docs.microsoft.com/en-us/azure/cognitive-services/">Azure AI Foundry Documentation</a></li>
-<li><a href="https://scrapfly.io/web-scraping/best-practices">Web Scraping Best Practices</a></li>
-</ul>
-<hr>
-<p><strong>Remember</strong>: Always follow website terms of service and implement respectful scraping practices!</p>
+        <h2>📋 Configuration Checklist</h2>
+        <ul>
+          <li>
+            <input disabled="" type="checkbox" /> Copy this file to
+            <code>REAL_SCRAPING_GUIDE.md</code> (add to .gitignore)
+          </li>
+          <li>
+            <input disabled="" type="checkbox" /> Replace all placeholder API keys with real values
+          </li>
+          <li><input disabled="" type="checkbox" /> Configure environment variables</li>
+          <li><input disabled="" type="checkbox" /> Test with real data</li>
+          <li><input disabled="" type="checkbox" /> Verify scraping results</li>
+          <li><input disabled="" type="checkbox" /> Document any custom configurations</li>
+        </ul>
+        <h2>🔧 Troubleshooting</h2>
+        <h3>Common Issues:</h3>
+        <ol>
+          <li><strong>API Rate Limits</strong>: Implement proper delays between requests</li>
+          <li>
+            <strong>Invalid API Keys</strong>: Verify keys are active and have proper permissions
+          </li>
+          <li><strong>Network Timeouts</strong>: Increase timeout values for real web requests</li>
+          <li>
+            <strong>CAPTCHA Challenges</strong>: Implement CAPTCHA solving or use residential
+            proxies
+          </li>
+        </ol>
+        <h3>Performance Optimization:</h3>
+        <ul>
+          <li>Use connection pooling</li>
+          <li>Implement request caching</li>
+          <li>Add retry logic with exponential backoff</li>
+          <li>Monitor API usage and costs</li>
+        </ul>
+        <h2>📚 Additional Resources</h2>
+        <ul>
+          <li>
+            <a href="https://developers.google.com/custom-search/v1/introduction"
+              >Google Custom Search API Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://developers.google.com/maps/documentation"
+              >Google Maps API Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/"
+              >Azure AI Foundry Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://scrapfly.io/web-scraping/best-practices"
+              >Web Scraping Best Practices</a
+            >
+          </li>
+        </ul>
+        <hr />
+        <p>
+          <strong>Remember</strong>: Always follow website terms of service and implement respectful
+          scraping practices!
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

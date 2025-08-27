@@ -1,58 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Error Handling Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Error Handling Guide</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Error Handling Guide</h1>
-<p>This guide outlines the standardized error handling patterns implemented across the Business Scraper application.</p>
-<h2>Overview</h2>
-<p>The application uses a comprehensive error handling strategy that includes:</p>
-<ol>
-<li><strong>React Error Boundaries</strong> for component-level error catching</li>
-<li><strong>Standardized API Error Handling</strong> for consistent server-side error responses</li>
-<li><strong>Client-side Error Handling Hooks</strong> for React components</li>
-<li><strong>Structured Logging</strong> for debugging and monitoring</li>
-<li><strong>User-friendly Error Messages</strong> with recovery options</li>
-</ol>
-<h2>Components</h2>
-<h3>1. React Error Boundary (<code>src/components/ErrorBoundary.tsx</code>)</h3>
-<p>The <code>ErrorBoundary</code> component catches JavaScript errors anywhere in the component tree and displays a fallback UI.</p>
-<p><strong>Features:</strong></p>
-<ul>
-<li>Automatic error logging with unique error IDs</li>
-<li>Retry functionality with configurable limits</li>
-<li>Development vs production error details</li>
-<li>Copy error details to clipboard</li>
-<li>Different levels: page, section, component</li>
-</ul>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-tsx">import { ErrorBoundary } from &#39;@/components/ErrorBoundary&#39;
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Error Handling Guide</li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Error Handling Guide</h1>
+        <p>
+          This guide outlines the standardized error handling patterns implemented across the
+          Business Scraper application.
+        </p>
+        <h2>Overview</h2>
+        <p>The application uses a comprehensive error handling strategy that includes:</p>
+        <ol>
+          <li><strong>React Error Boundaries</strong> for component-level error catching</li>
+          <li>
+            <strong>Standardized API Error Handling</strong> for consistent server-side error
+            responses
+          </li>
+          <li><strong>Client-side Error Handling Hooks</strong> for React components</li>
+          <li><strong>Structured Logging</strong> for debugging and monitoring</li>
+          <li><strong>User-friendly Error Messages</strong> with recovery options</li>
+        </ol>
+        <h2>Components</h2>
+        <h3>1. React Error Boundary (<code>src/components/ErrorBoundary.tsx</code>)</h3>
+        <p>
+          The <code>ErrorBoundary</code> component catches JavaScript errors anywhere in the
+          component tree and displays a fallback UI.
+        </p>
+        <p><strong>Features:</strong></p>
+        <ul>
+          <li>Automatic error logging with unique error IDs</li>
+          <li>Retry functionality with configurable limits</li>
+          <li>Development vs production error details</li>
+          <li>Copy error details to clipboard</li>
+          <li>Different levels: page, section, component</li>
+        </ul>
+        <p><strong>Usage:</strong></p>
+        <pre><code class="language-tsx">import { ErrorBoundary } from &#39;@/components/ErrorBoundary&#39;
 
 // Wrap components that might throw errors
 &lt;ErrorBoundary level=&quot;component&quot; showDetails={isDevelopment}&gt;
@@ -67,12 +79,12 @@ const SafeComponent = withErrorBoundary(MyComponent, {
   }
 })
 </code></pre>
-<h3>2. Error Handling Hooks (<code>src/hooks/useErrorHandling.ts</code>)</h3>
-<p>Provides standardized error handling for React components and async operations.</p>
-<p><strong>Available Hooks:</strong></p>
-<h4><code>useErrorHandling(options)</code></h4>
-<p>Basic error handling with retry functionality:</p>
-<pre><code class="language-tsx">const { error, isError, handleError, retry, canRetry, clearError } = useErrorHandling({
+        <h3>2. Error Handling Hooks (<code>src/hooks/useErrorHandling.ts</code>)</h3>
+        <p>Provides standardized error handling for React components and async operations.</p>
+        <p><strong>Available Hooks:</strong></p>
+        <h4><code>useErrorHandling(options)</code></h4>
+        <p>Basic error handling with retry functionality:</p>
+        <pre><code class="language-tsx">const { error, isError, handleError, retry, canRetry, clearError } = useErrorHandling({
   maxRetries: 3,
   component: &#39;MyComponent&#39;,
   onError: (error, errorId) =&gt; {
@@ -80,9 +92,9 @@ const SafeComponent = withErrorBoundary(MyComponent, {
   }
 })
 </code></pre>
-<h4><code>useAsyncOperation(options)</code></h4>
-<p>Handles async operations with loading states and error handling:</p>
-<pre><code class="language-tsx">const { data, loading, error, execute, retry, reset } = useAsyncOperation({
+        <h4><code>useAsyncOperation(options)</code></h4>
+        <p>Handles async operations with loading states and error handling:</p>
+        <pre><code class="language-tsx">const { data, loading, error, execute, retry, reset } = useAsyncOperation({
   component: &#39;DataLoader&#39;,
   maxRetries: 2
 })
@@ -92,9 +104,9 @@ const result = await execute(async () =&gt; {
   return await fetchData()
 })
 </code></pre>
-<h4><code>useFormErrorHandling(options)</code></h4>
-<p>Specialized for form submissions with field-level error handling:</p>
-<pre><code class="language-tsx">const { 
+        <h4><code>useFormErrorHandling(options)</code></h4>
+        <p>Specialized for form submissions with field-level error handling:</p>
+        <pre><code class="language-tsx">const { 
   error, 
   fieldErrors, 
   handleSubmissionError, 
@@ -104,10 +116,10 @@ const result = await execute(async () =&gt; {
   component: &#39;ContactForm&#39;
 })
 </code></pre>
-<h3>3. API Error Handling (<code>src/utils/apiErrorHandling.ts</code>)</h3>
-<p>Standardized error handling for API routes and client-side API calls.</p>
-<p><strong>Server-side (API Routes):</strong></p>
-<pre><code class="language-tsx">import { withStandardErrorHandling, handleAsyncApiOperation } from &#39;@/utils/apiErrorHandling&#39;
+        <h3>3. API Error Handling (<code>src/utils/apiErrorHandling.ts</code>)</h3>
+        <p>Standardized error handling for API routes and client-side API calls.</p>
+        <p><strong>Server-side (API Routes):</strong></p>
+        <pre><code class="language-tsx">import { withStandardErrorHandling, handleAsyncApiOperation } from &#39;@/utils/apiErrorHandling&#39;
 
 async function myApiHandler(request: NextRequest): Promise&lt;NextResponse&gt; {
   const result = await handleAsyncApiOperation(
@@ -131,8 +143,8 @@ async function myApiHandler(request: NextRequest): Promise&lt;NextResponse&gt; {
 
 export const POST = withStandardErrorHandling(myApiHandler)
 </code></pre>
-<p><strong>Client-side API Calls:</strong></p>
-<pre><code class="language-tsx">import { makeApiCall } from &#39;@/utils/apiErrorHandling&#39;
+        <p><strong>Client-side API Calls:</strong></p>
+        <pre><code class="language-tsx">import { makeApiCall } from &#39;@/utils/apiErrorHandling&#39;
 
 const result = await makeApiCall(&#39;/api/data&#39;, {
   method: &#39;POST&#39;,
@@ -148,10 +160,10 @@ if (result.success) {
   console.error(&#39;Save failed:&#39;, result.error.error)
 }
 </code></pre>
-<h3>4. Logging (<code>src/utils/logger.ts</code>)</h3>
-<p>Structured logging with different levels and automatic error context.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-tsx">import { logger } from &#39;@/utils/logger&#39;
+        <h3>4. Logging (<code>src/utils/logger.ts</code>)</h3>
+        <p>Structured logging with different levels and automatic error context.</p>
+        <p><strong>Usage:</strong></p>
+        <pre><code class="language-tsx">import { logger } from &#39;@/utils/logger&#39;
 
 // Different log levels
 logger.debug(&#39;Component&#39;, &#39;Debug message&#39;, { data })
@@ -163,10 +175,10 @@ logger.error(&#39;Component&#39;, &#39;Error occurred&#39;, error)
 const componentLogger = logger.createScope(&#39;MyComponent&#39;)
 componentLogger.info(&#39;Operation completed&#39;)
 </code></pre>
-<h2>Best Practices</h2>
-<h3>1. Consistent Error Logging</h3>
-<p>Always log errors with proper context:</p>
-<pre><code class="language-tsx">try {
+        <h2>Best Practices</h2>
+        <h3>1. Consistent Error Logging</h3>
+        <p>Always log errors with proper context:</p>
+        <pre><code class="language-tsx">try {
   await riskyOperation()
 } catch (error) {
   logger.error(&#39;ComponentName&#39;, &#39;Operation failed&#39;, {
@@ -183,17 +195,17 @@ componentLogger.info(&#39;Operation completed&#39;)
   handleError(error instanceof Error ? error : new Error(String(error)))
 }
 </code></pre>
-<h3>2. User-Friendly Error Messages</h3>
-<p>Provide actionable error messages to users:</p>
-<pre><code class="language-tsx">// Bad
+        <h3>2. User-Friendly Error Messages</h3>
+        <p>Provide actionable error messages to users:</p>
+        <pre><code class="language-tsx">// Bad
 toast.error(&#39;Error: 500 Internal Server Error&#39;)
 
 // Good
 toast.error(&#39;Failed to save your changes. Please try again or contact support if the problem persists.&#39;)
 </code></pre>
-<h3>3. Error Recovery Options</h3>
-<p>Always provide ways for users to recover from errors:</p>
-<pre><code class="language-tsx">{error &amp;&amp; (
+        <h3>3. Error Recovery Options</h3>
+        <p>Always provide ways for users to recover from errors:</p>
+        <pre><code class="language-tsx">{error &amp;&amp; (
   &lt;div className=&quot;error-container&quot;&gt;
     &lt;p&gt;Something went wrong: {error.message}&lt;/p&gt;
     &lt;div className=&quot;error-actions&quot;&gt;
@@ -212,9 +224,9 @@ toast.error(&#39;Failed to save your changes. Please try again or contact suppor
   &lt;/div&gt;
 )}
 </code></pre>
-<h3>4. Error Boundaries Placement</h3>
-<p>Place error boundaries at strategic locations:</p>
-<pre><code class="language-tsx">// App level - catches all errors
+        <h3>4. Error Boundaries Placement</h3>
+        <p>Place error boundaries at strategic locations:</p>
+        <pre><code class="language-tsx">// App level - catches all errors
 &lt;ErrorBoundary level=&quot;page&quot;&gt;
   &lt;App /&gt;
 &lt;/ErrorBoundary&gt;
@@ -229,9 +241,9 @@ toast.error(&#39;Failed to save your changes. Please try again or contact suppor
   &lt;ComplexWidget /&gt;
 &lt;/ErrorBoundary&gt;
 </code></pre>
-<h3>5. Async Error Handling</h3>
-<p>Use proper async error handling patterns:</p>
-<pre><code class="language-tsx">// Using the hook
+        <h3>5. Async Error Handling</h3>
+        <p>Use proper async error handling patterns:</p>
+        <pre><code class="language-tsx">// Using the hook
 const { execute, loading, error } = useAsyncOperation({
   component: &#39;DataLoader&#39;
 })
@@ -261,28 +273,28 @@ const safeLoadData = withErrorHandling(async () =&gt; {
   }
 })
 </code></pre>
-<h2>Error Types and Status Codes</h2>
-<h3>Standard HTTP Status Codes</h3>
-<ul>
-<li><code>400</code> - Bad Request (validation errors)</li>
-<li><code>401</code> - Unauthorized (authentication required)</li>
-<li><code>403</code> - Forbidden (access denied)</li>
-<li><code>404</code> - Not Found</li>
-<li><code>429</code> - Too Many Requests (rate limiting)</li>
-<li><code>500</code> - Internal Server Error</li>
-</ul>
-<h3>Custom Error Classes</h3>
-<ul>
-<li><code>ValidationError</code> - Input validation failures</li>
-<li><code>AuthenticationError</code> - Authentication issues</li>
-<li><code>AuthorizationError</code> - Permission issues</li>
-<li><code>NotFoundError</code> - Resource not found</li>
-<li><code>RateLimitError</code> - Rate limiting</li>
-<li><code>ApiError</code> - General API errors</li>
-</ul>
-<h2>Testing Error Handling</h2>
-<h3>Unit Tests</h3>
-<pre><code class="language-tsx">import { render, screen } from &#39;@testing-library/react&#39;
+        <h2>Error Types and Status Codes</h2>
+        <h3>Standard HTTP Status Codes</h3>
+        <ul>
+          <li><code>400</code> - Bad Request (validation errors)</li>
+          <li><code>401</code> - Unauthorized (authentication required)</li>
+          <li><code>403</code> - Forbidden (access denied)</li>
+          <li><code>404</code> - Not Found</li>
+          <li><code>429</code> - Too Many Requests (rate limiting)</li>
+          <li><code>500</code> - Internal Server Error</li>
+        </ul>
+        <h3>Custom Error Classes</h3>
+        <ul>
+          <li><code>ValidationError</code> - Input validation failures</li>
+          <li><code>AuthenticationError</code> - Authentication issues</li>
+          <li><code>AuthorizationError</code> - Permission issues</li>
+          <li><code>NotFoundError</code> - Resource not found</li>
+          <li><code>RateLimitError</code> - Rate limiting</li>
+          <li><code>ApiError</code> - General API errors</li>
+        </ul>
+        <h2>Testing Error Handling</h2>
+        <h3>Unit Tests</h3>
+        <pre><code class="language-tsx">import { render, screen } from &#39;@testing-library/react&#39;
 import { ErrorBoundary } from &#39;@/components/ErrorBoundary&#39;
 
 const ThrowError = () =&gt; {
@@ -300,8 +312,8 @@ test(&#39;error boundary catches and displays error&#39;, () =&gt; {
   expect(screen.getByText(/test error/i)).toBeInTheDocument()
 })
 </code></pre>
-<h3>E2E Tests</h3>
-<pre><code class="language-tsx">test(&#39;handles network errors gracefully&#39;, async ({ page }) =&gt; {
+        <h3>E2E Tests</h3>
+        <pre><code class="language-tsx">test(&#39;handles network errors gracefully&#39;, async ({ page }) =&gt; {
   // Simulate network failure
   await page.route(&#39;**/api/**&#39;, route =&gt; route.abort())
   
@@ -313,10 +325,10 @@ test(&#39;error boundary catches and displays error&#39;, () =&gt; {
   await expect(page.locator(&#39;[data-testid=&quot;retry-btn&quot;]&#39;)).toBeVisible()
 })
 </code></pre>
-<h2>Monitoring and Alerting</h2>
-<h3>Error Tracking</h3>
-<p>In production, errors are automatically reported to monitoring services:</p>
-<pre><code class="language-tsx">// In ErrorBoundary.tsx
+        <h2>Monitoring and Alerting</h2>
+        <h3>Error Tracking</h3>
+        <p>In production, errors are automatically reported to monitoring services:</p>
+        <pre><code class="language-tsx">// In ErrorBoundary.tsx
 if (process.env.NODE_ENV === &#39;production&#39;) {
   // Report to error tracking service
   Sentry.captureException(error, { 
@@ -325,41 +337,41 @@ if (process.env.NODE_ENV === &#39;production&#39;) {
   })
 }
 </code></pre>
-<h3>Metrics</h3>
-<p>Key error metrics to monitor:</p>
-<ul>
-<li>Error rate by component/page</li>
-<li>Error recovery success rate</li>
-<li>Most common error types</li>
-<li>User impact of errors</li>
-</ul>
-<h2>Migration Guide</h2>
-<p>To update existing components to use the new error handling patterns:</p>
-<ol>
-<li><strong>Wrap components with ErrorBoundary</strong></li>
-<li><strong>Replace try-catch blocks with error handling hooks</strong></li>
-<li><strong>Update API routes to use standardized error handling</strong></li>
-<li><strong>Add proper error logging</strong></li>
-<li><strong>Implement user-friendly error messages</strong></li>
-</ol>
-<p>See the implementation examples in the codebase for detailed patterns.</p>
+        <h3>Metrics</h3>
+        <p>Key error metrics to monitor:</p>
+        <ul>
+          <li>Error rate by component/page</li>
+          <li>Error recovery success rate</li>
+          <li>Most common error types</li>
+          <li>User impact of errors</li>
+        </ul>
+        <h2>Migration Guide</h2>
+        <p>To update existing components to use the new error handling patterns:</p>
+        <ol>
+          <li><strong>Wrap components with ErrorBoundary</strong></li>
+          <li><strong>Replace try-catch blocks with error handling hooks</strong></li>
+          <li><strong>Update API routes to use standardized error handling</strong></li>
+          <li><strong>Add proper error logging</strong></li>
+          <li><strong>Implement user-friendly error messages</strong></li>
+        </ol>
+        <p>See the implementation examples in the codebase for detailed patterns.</p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

@@ -10,7 +10,7 @@ import {
   CRMExportResult,
   CRMExportProgress,
   BatchTransformationResult,
-  CRMPlatform
+  CRMPlatform,
 } from './types'
 import { crmTemplateManager } from './crmTemplateManager'
 import { logger } from '@/utils/logger'
@@ -29,11 +29,11 @@ export class CRMExportService {
     onProgress?: (progress: CRMExportProgress) => void
   ): Promise<CRMExportResult> {
     const startTime = Date.now()
-    
+
     logger.info('CRMExportService', `Starting CRM export with template: ${template.name}`, {
       recordCount: records.length,
       platform: template.platform,
-      format: template.exportFormat
+      format: template.exportFormat,
     })
 
     // Get appropriate adapter
@@ -53,7 +53,7 @@ export class CRMExportService {
           currentOperation: 'Validating records...',
           estimatedTimeRemaining: 0,
           errors: [],
-          warnings: []
+          warnings: [],
         })
       }
 
@@ -67,7 +67,7 @@ export class CRMExportService {
           currentOperation: 'Transforming records...',
           estimatedTimeRemaining: 0,
           errors: [],
-          warnings: []
+          warnings: [],
         })
       }
 
@@ -83,7 +83,7 @@ export class CRMExportService {
           currentOperation: 'Generating export file...',
           estimatedTimeRemaining: 0,
           errors: transformationResult.invalidRecords.flatMap(r => r.errors),
-          warnings: transformationResult.invalidRecords.flatMap(r => r.warnings)
+          warnings: transformationResult.invalidRecords.flatMap(r => r.warnings),
         })
       }
 
@@ -102,7 +102,7 @@ export class CRMExportService {
           currentOperation: 'Export complete',
           estimatedTimeRemaining: 0,
           errors: transformationResult.invalidRecords.flatMap(r => r.errors),
-          warnings: transformationResult.invalidRecords.flatMap(r => r.warnings)
+          warnings: transformationResult.invalidRecords.flatMap(r => r.warnings),
         })
       }
 
@@ -115,29 +115,30 @@ export class CRMExportService {
           skippedRecords: transformationResult.invalidRecords.length,
           errors: transformationResult.invalidRecords.flatMap(r => r.errors),
           warnings: transformationResult.invalidRecords.flatMap(r => r.warnings),
-          processingTime
+          processingTime,
         },
         template,
         metadata: {
           exportDate: new Date().toISOString(),
           platform: template.platform,
           format: template.exportFormat,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       }
 
       logger.info('CRMExportService', 'CRM export completed successfully', {
         totalRecords: result.statistics.totalRecords,
         exportedRecords: result.statistics.exportedRecords,
         skippedRecords: result.statistics.skippedRecords,
-        processingTime: result.statistics.processingTime
+        processingTime: result.statistics.processingTime,
       })
 
       return result
-
     } catch (error) {
       logger.error('CRMExportService', 'CRM export failed', error)
-      throw new Error(`CRM export failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `CRM export failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -154,13 +155,13 @@ export class CRMExportService {
     switch (template.exportFormat) {
       case 'csv':
         return this.generateCSVBlob(validRecords, template, options)
-      
+
       case 'json':
         return this.generateJSONBlob(validRecords, template, options)
-      
+
       case 'xml':
         return this.generateXMLBlob(validRecords, template, options)
-      
+
       default:
         throw new Error(`Unsupported export format: ${template.exportFormat}`)
     }
@@ -180,12 +181,12 @@ export class CRMExportService {
 
     const headers = Object.keys(records[0])
     const customHeaders = template.customHeaders || {}
-    
+
     // Use custom headers if available
     const csvHeaders = headers.map(header => customHeaders[header] || header)
-    
+
     let csvContent = ''
-    
+
     // Add headers
     if (options.includeHeaders !== false) {
       csvContent += csvHeaders.map(header => this.escapeCsvValue(header)).join(',') + '\n'
@@ -217,9 +218,9 @@ export class CRMExportService {
         platform: template.platform,
         template: template.name,
         totalRecords: records.length,
-        version: '1.0.0'
+        version: '1.0.0',
       },
-      records
+      records,
     }
 
     const jsonContent = JSON.stringify(exportData, null, 2)
@@ -236,7 +237,7 @@ export class CRMExportService {
   ): Blob {
     let xmlContent = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xmlContent += `<export platform="${template.platform}" template="${template.name}" date="${new Date().toISOString()}">\n`
-    
+
     for (const record of records) {
       xmlContent += '  <record>\n'
       for (const [key, value] of Object.entries(record)) {
@@ -246,7 +247,7 @@ export class CRMExportService {
       }
       xmlContent += '  </record>\n'
     }
-    
+
     xmlContent += '</export>'
     return new Blob([xmlContent], { type: 'application/xml' })
   }
@@ -272,12 +273,12 @@ export class CRMExportService {
     }
 
     const stringValue = String(value)
-    
+
     // If value contains comma, newline, or quote, wrap in quotes and escape quotes
     if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
       return `"${stringValue.replace(/"/g, '""')}"`
     }
-    
+
     return stringValue
   }
 
@@ -319,7 +320,7 @@ export class CRMExportService {
       preview: transformationResult.validRecords,
       errors: transformationResult.invalidRecords.flatMap(r => r.errors),
       warnings: transformationResult.invalidRecords.flatMap(r => r.warnings),
-      totalRecords: records.length
+      totalRecords: records.length,
     }
   }
 
@@ -346,14 +347,18 @@ export class CRMExportService {
       validCount: transformationResult.validRecords.length,
       invalidCount: transformationResult.invalidRecords.length,
       errors: transformationResult.invalidRecords.flatMap(r => r.errors),
-      warnings: transformationResult.invalidRecords.flatMap(r => r.warnings)
+      warnings: transformationResult.invalidRecords.flatMap(r => r.warnings),
     }
   }
 
   /**
    * Get available CRM platforms
    */
-  getAvailablePlatforms(): Array<{ platform: CRMPlatform; displayName: string; templateCount: number }> {
+  getAvailablePlatforms(): Array<{
+    platform: CRMPlatform
+    displayName: string
+    templateCount: number
+  }> {
     return crmTemplateManager.getAvailablePlatforms()
   }
 

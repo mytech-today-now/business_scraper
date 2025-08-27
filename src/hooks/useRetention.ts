@@ -51,25 +51,27 @@ interface RetentionContext {
   purgeHistory: PurgeRecord[]
   loading: boolean
   error: string | null
-  
+
   // Policy management
-  createPolicy: (policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>) => Promise<boolean>
+  createPolicy: (
+    policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>
+  ) => Promise<boolean>
   updatePolicy: (id: string, updates: Partial<RetentionPolicy>) => Promise<boolean>
   deletePolicy: (id: string) => Promise<boolean>
-  
+
   // Retention operations
   checkRetentionStatus: (dataType?: string) => Promise<void>
   executePurge: (policyId: string) => Promise<boolean>
   scheduleRetention: (policyId: string, cronExpression: string) => Promise<boolean>
-  
+
   // Data lifecycle
   markForRetention: (dataType: string, recordId: string, retentionDate: Date) => Promise<boolean>
   extendRetention: (dataType: string, recordId: string, extensionDays: number) => Promise<boolean>
-  
+
   // Compliance reporting
   generateRetentionReport: (startDate: Date, endDate: Date) => Promise<any>
   getUpcomingPurges: (days: number) => Promise<RetentionStatus[]>
-  
+
   // Utilities
   refreshData: () => Promise<void>
   calculateRetentionDate: (createdDate: Date, retentionDays: number) => Date
@@ -115,7 +117,6 @@ export function useRetention(): RetentionContext {
       }
       const historyData = await historyResponse.json()
       setPurgeHistory(historyData.records || [])
-
     } catch (error) {
       logger.error('Retention Hook', 'Failed to load retention data', error)
       setError('Failed to load retention data')
@@ -130,209 +131,236 @@ export function useRetention(): RetentionContext {
   }, [loadRetentionData])
 
   // Create retention policy
-  const createPolicy = useCallback(async (policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/retention/policies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(policy)
-      })
+  const createPolicy = useCallback(
+    async (policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/retention/policies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(policy),
+        })
 
-      if (response.ok) {
-        await loadRetentionData() // Refresh data
-        return true
-      } else {
-        throw new Error('Failed to create retention policy')
+        if (response.ok) {
+          await loadRetentionData() // Refresh data
+          return true
+        } else {
+          throw new Error('Failed to create retention policy')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to create policy', error)
+        setError('Failed to create retention policy')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to create policy', error)
-      setError('Failed to create retention policy')
-      return false
-    }
-  }, [loadRetentionData])
+    },
+    [loadRetentionData]
+  )
 
   // Update retention policy
-  const updatePolicy = useCallback(async (id: string, updates: Partial<RetentionPolicy>): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/compliance/retention/policies/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      })
+  const updatePolicy = useCallback(
+    async (id: string, updates: Partial<RetentionPolicy>): Promise<boolean> => {
+      try {
+        const response = await fetch(`/api/compliance/retention/policies/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates),
+        })
 
-      if (response.ok) {
-        await loadRetentionData() // Refresh data
-        return true
-      } else {
-        throw new Error('Failed to update retention policy')
+        if (response.ok) {
+          await loadRetentionData() // Refresh data
+          return true
+        } else {
+          throw new Error('Failed to update retention policy')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to update policy', error)
+        setError('Failed to update retention policy')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to update policy', error)
-      setError('Failed to update retention policy')
-      return false
-    }
-  }, [loadRetentionData])
+    },
+    [loadRetentionData]
+  )
 
   // Delete retention policy
-  const deletePolicy = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/compliance/retention/policies/${id}`, {
-        method: 'DELETE'
-      })
+  const deletePolicy = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        const response = await fetch(`/api/compliance/retention/policies/${id}`, {
+          method: 'DELETE',
+        })
 
-      if (response.ok) {
-        await loadRetentionData() // Refresh data
-        return true
-      } else {
-        throw new Error('Failed to delete retention policy')
+        if (response.ok) {
+          await loadRetentionData() // Refresh data
+          return true
+        } else {
+          throw new Error('Failed to delete retention policy')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to delete policy', error)
+        setError('Failed to delete retention policy')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to delete policy', error)
-      setError('Failed to delete retention policy')
-      return false
-    }
-  }, [loadRetentionData])
+    },
+    [loadRetentionData]
+  )
 
   // Check retention status
-  const checkRetentionStatus = useCallback(async (dataType?: string): Promise<void> => {
-    try {
-      const params = dataType ? `?dataType=${encodeURIComponent(dataType)}` : ''
-      const response = await fetch(`/api/compliance/retention/check${params}`)
-      
-      if (response.ok) {
-        await loadRetentionData() // Refresh data
-      } else {
-        throw new Error('Failed to check retention status')
+  const checkRetentionStatus = useCallback(
+    async (dataType?: string): Promise<void> => {
+      try {
+        const params = dataType ? `?dataType=${encodeURIComponent(dataType)}` : ''
+        const response = await fetch(`/api/compliance/retention/check${params}`)
+
+        if (response.ok) {
+          await loadRetentionData() // Refresh data
+        } else {
+          throw new Error('Failed to check retention status')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to check retention status', error)
+        setError('Failed to check retention status')
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to check retention status', error)
-      setError('Failed to check retention status')
-    }
-  }, [loadRetentionData])
+    },
+    [loadRetentionData]
+  )
 
   // Execute purge
-  const executePurge = useCallback(async (policyId: string): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/retention/purge', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ policyId })
-      })
+  const executePurge = useCallback(
+    async (policyId: string): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/retention/purge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ policyId }),
+        })
 
-      if (response.ok) {
-        await loadRetentionData() // Refresh data
-        return true
-      } else {
-        throw new Error('Failed to execute purge')
+        if (response.ok) {
+          await loadRetentionData() // Refresh data
+          return true
+        } else {
+          throw new Error('Failed to execute purge')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to execute purge', error)
+        setError('Failed to execute purge')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to execute purge', error)
-      setError('Failed to execute purge')
-      return false
-    }
-  }, [loadRetentionData])
+    },
+    [loadRetentionData]
+  )
 
   // Schedule retention
-  const scheduleRetention = useCallback(async (policyId: string, cronExpression: string): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/retention/schedule', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ policyId, cronExpression })
-      })
+  const scheduleRetention = useCallback(
+    async (policyId: string, cronExpression: string): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/retention/schedule', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ policyId, cronExpression }),
+        })
 
-      if (response.ok) {
-        await loadRetentionData() // Refresh data
-        return true
-      } else {
-        throw new Error('Failed to schedule retention')
+        if (response.ok) {
+          await loadRetentionData() // Refresh data
+          return true
+        } else {
+          throw new Error('Failed to schedule retention')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to schedule retention', error)
+        setError('Failed to schedule retention')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to schedule retention', error)
-      setError('Failed to schedule retention')
-      return false
-    }
-  }, [loadRetentionData])
+    },
+    [loadRetentionData]
+  )
 
   // Mark for retention
-  const markForRetention = useCallback(async (dataType: string, recordId: string, retentionDate: Date): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/retention/mark', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          dataType,
-          recordId,
-          retentionDate: retentionDate.toISOString()
+  const markForRetention = useCallback(
+    async (dataType: string, recordId: string, retentionDate: Date): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/retention/mark', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            dataType,
+            recordId,
+            retentionDate: retentionDate.toISOString(),
+          }),
         })
-      })
 
-      if (response.ok) {
-        return true
-      } else {
-        throw new Error('Failed to mark for retention')
+        if (response.ok) {
+          return true
+        } else {
+          throw new Error('Failed to mark for retention')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to mark for retention', error)
+        setError('Failed to mark for retention')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to mark for retention', error)
-      setError('Failed to mark for retention')
-      return false
-    }
-  }, [])
+    },
+    []
+  )
 
   // Extend retention
-  const extendRetention = useCallback(async (dataType: string, recordId: string, extensionDays: number): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/compliance/retention/extend', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          dataType,
-          recordId,
-          extensionDays
+  const extendRetention = useCallback(
+    async (dataType: string, recordId: string, extensionDays: number): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/compliance/retention/extend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            dataType,
+            recordId,
+            extensionDays,
+          }),
         })
-      })
 
-      if (response.ok) {
-        return true
-      } else {
-        throw new Error('Failed to extend retention')
+        if (response.ok) {
+          return true
+        } else {
+          throw new Error('Failed to extend retention')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to extend retention', error)
+        setError('Failed to extend retention')
+        return false
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to extend retention', error)
-      setError('Failed to extend retention')
-      return false
-    }
-  }, [])
+    },
+    []
+  )
 
   // Generate retention report
-  const generateRetentionReport = useCallback(async (startDate: Date, endDate: Date): Promise<any> => {
-    try {
-      const response = await fetch('/api/compliance/retention/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString()
+  const generateRetentionReport = useCallback(
+    async (startDate: Date, endDate: Date): Promise<any> => {
+      try {
+        const response = await fetch('/api/compliance/retention/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          }),
         })
-      })
 
-      if (response.ok) {
-        return await response.json()
-      } else {
-        throw new Error('Failed to generate retention report')
+        if (response.ok) {
+          return await response.json()
+        } else {
+          throw new Error('Failed to generate retention report')
+        }
+      } catch (error) {
+        logger.error('Retention Hook', 'Failed to generate retention report', error)
+        setError('Failed to generate retention report')
+        return null
       }
-    } catch (error) {
-      logger.error('Retention Hook', 'Failed to generate retention report', error)
-      setError('Failed to generate retention report')
-      return null
-    }
-  }, [])
+    },
+    []
+  )
 
   // Get upcoming purges
   const getUpcomingPurges = useCallback(async (days: number): Promise<RetentionStatus[]> => {
     try {
       const response = await fetch(`/api/compliance/retention/upcoming?days=${days}`)
-      
+
       if (response.ok) {
         const data = await response.json()
         return data.statuses || []
@@ -359,10 +387,13 @@ export function useRetention(): RetentionContext {
   }, [])
 
   // Check if retention is expired
-  const isRetentionExpired = useCallback((createdDate: Date, retentionDays: number): boolean => {
-    const retentionDate = calculateRetentionDate(createdDate, retentionDays)
-    return new Date() > retentionDate
-  }, [calculateRetentionDate])
+  const isRetentionExpired = useCallback(
+    (createdDate: Date, retentionDays: number): boolean => {
+      const retentionDate = calculateRetentionDate(createdDate, retentionDays)
+      return new Date() > retentionDate
+    },
+    [calculateRetentionDate]
+  )
 
   return {
     policies,
@@ -382,7 +413,7 @@ export function useRetention(): RetentionContext {
     getUpcomingPurges,
     refreshData,
     calculateRetentionDate,
-    isRetentionExpired
+    isRetentionExpired,
   }
 }
 
@@ -391,35 +422,42 @@ export function useRetention(): RetentionContext {
  */
 export function useDataRetention(dataType: string) {
   const { policies, statuses, isRetentionExpired } = useRetention()
-  
+
   const policy = policies.find(p => p.dataType === dataType)
   const status = statuses.find(s => s.dataType === dataType)
-  
-  const checkRecordRetention = useCallback((createdDate: Date): {
-    isExpired: boolean
-    retentionDate: Date
-    daysRemaining: number
-  } => {
-    if (!policy) {
-      return {
-        isExpired: false,
-        retentionDate: new Date(),
-        daysRemaining: 0
-      }
-    }
 
-    const retentionDate = new Date(createdDate)
-    retentionDate.setDate(retentionDate.getDate() + policy.retentionPeriodDays)
-    
-    const now = new Date()
-    const daysRemaining = Math.ceil((retentionDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    
-    return {
-      isExpired: isRetentionExpired(createdDate, policy.retentionPeriodDays),
-      retentionDate,
-      daysRemaining: Math.max(0, daysRemaining)
-    }
-  }, [policy, isRetentionExpired])
+  const checkRecordRetention = useCallback(
+    (
+      createdDate: Date
+    ): {
+      isExpired: boolean
+      retentionDate: Date
+      daysRemaining: number
+    } => {
+      if (!policy) {
+        return {
+          isExpired: false,
+          retentionDate: new Date(),
+          daysRemaining: 0,
+        }
+      }
+
+      const retentionDate = new Date(createdDate)
+      retentionDate.setDate(retentionDate.getDate() + policy.retentionPeriodDays)
+
+      const now = new Date()
+      const daysRemaining = Math.ceil(
+        (retentionDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      )
+
+      return {
+        isExpired: isRetentionExpired(createdDate, policy.retentionPeriodDays),
+        retentionDate,
+        daysRemaining: Math.max(0, daysRemaining),
+      }
+    },
+    [policy, isRetentionExpired]
+  )
 
   return {
     policy,
@@ -427,7 +465,7 @@ export function useDataRetention(dataType: string) {
     checkRecordRetention,
     hasPolicy: !!policy,
     autoDelete: policy?.autoDelete || false,
-    retentionDays: policy?.retentionPeriodDays || 0
+    retentionDays: policy?.retentionPeriodDays || 0,
   }
 }
 
@@ -468,7 +506,7 @@ export const RetentionUtils = {
       low: 'text-green-600',
       medium: 'text-yellow-600',
       high: 'text-orange-600',
-      critical: 'text-red-600'
+      critical: 'text-red-600',
     }
     return colors[urgency as keyof typeof colors] || 'text-gray-600'
   },
@@ -496,5 +534,5 @@ export const RetentionUtils = {
     }
 
     return errors
-  }
+  },
 }

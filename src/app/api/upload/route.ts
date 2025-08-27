@@ -4,7 +4,12 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { withFileUploadSecurity, fileUploadConfigs, generateSecureFilename, ProcessedFile } from '@/lib/fileUploadMiddleware'
+import {
+  withFileUploadSecurity,
+  fileUploadConfigs,
+  generateSecureFilename,
+  ProcessedFile,
+} from '@/lib/fileUploadMiddleware'
 import { withApiSecurity } from '@/lib/api-security'
 import { withValidation } from '@/lib/validation-middleware'
 import { getClientIP } from '@/lib/security'
@@ -47,7 +52,7 @@ const uploadHandler = withApiSecurity(
       logger.info('UploadAPI', `Processing ${files.length} files from IP: ${ip}`, {
         uploadType,
         saveFiles,
-        filenames: files.map(f => f.originalName)
+        filenames: files.map(f => f.originalName),
       })
 
       try {
@@ -60,12 +65,10 @@ const uploadHandler = withApiSecurity(
         const allowedBasePaths = [
           path.resolve('./uploads'),
           path.resolve('./temp'),
-          path.resolve(process.cwd(), 'uploads')
+          path.resolve(process.cwd(), 'uploads'),
         ]
 
-        const isAllowedPath = allowedBasePaths.some(basePath =>
-          uploadDir.startsWith(basePath)
-        )
+        const isAllowedPath = allowedBasePaths.some(basePath => uploadDir.startsWith(basePath))
 
         if (!isAllowedPath) {
           throw new Error('Upload directory path not allowed')
@@ -84,7 +87,7 @@ const uploadHandler = withApiSecurity(
             size: file.size,
             mimeType: file.mimeType,
             isSecure: file.isSecure,
-            processed: true
+            processed: true,
           }
 
           // Add security scan details
@@ -94,7 +97,7 @@ const uploadHandler = withApiSecurity(
               fileHash: file.securityScanResult.fileHash,
               threats: file.securityScanResult.threats,
               warnings: file.securityScanResult.warnings,
-              quarantined: file.securityScanResult.quarantined
+              quarantined: file.securityScanResult.quarantined,
             }
           }
 
@@ -113,7 +116,7 @@ const uploadHandler = withApiSecurity(
               await fs.promises.writeFile(filePath, file.buffer)
               result.savedAs = secureFilename
               result.savedPath = filePath
-              
+
               logger.info('UploadAPI', `File saved: ${file.originalName} -> ${secureFilename}`)
             } catch (saveError) {
               logger.error('UploadAPI', `Failed to save file: ${file.originalName}`, saveError)
@@ -144,16 +147,15 @@ const uploadHandler = withApiSecurity(
           uploadType,
           filesProcessed: files.length,
           results,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
-
       } catch (error) {
         logger.error('UploadAPI', 'File processing failed', error)
-        
+
         return NextResponse.json(
-          { 
+          {
             error: 'File processing failed',
-            details: error instanceof Error ? error.message : 'Unknown error'
+            details: error instanceof Error ? error.message : 'Unknown error',
           },
           { status: 500 }
         )
@@ -161,7 +163,9 @@ const uploadHandler = withApiSecurity(
     },
     {
       // Dynamic configuration based on upload type
-      ...getUploadConfig(new URL('http://localhost' + (process.env.NODE_ENV === 'test' ? '/api/upload' : '')))
+      ...getUploadConfig(
+        new URL('http://localhost' + (process.env.NODE_ENV === 'test' ? '/api/upload' : ''))
+      ),
     }
   ),
   {
@@ -169,7 +173,7 @@ const uploadHandler = withApiSecurity(
     requireCSRF: true,
     rateLimit: 'upload',
     validateInput: false, // File validation handled by upload middleware
-    logRequests: true
+    logRequests: true,
   }
 )
 
@@ -178,32 +182,32 @@ const uploadHandler = withApiSecurity(
  */
 function getUploadConfig(url: URL) {
   const uploadType = url.searchParams.get('type') || 'documents'
-  
+
   const configs: Record<string, any> = {
     backup: {
       ...fileUploadConfigs.backup,
       enableQuarantine: true,
       enableContentAnalysis: true,
-      enableHashChecking: true
+      enableHashChecking: true,
     },
     dataImport: {
       ...fileUploadConfigs.dataImport,
       enableQuarantine: true,
       enableContentAnalysis: true,
-      enableHashChecking: false
+      enableHashChecking: false,
     },
     images: {
       ...fileUploadConfigs.images,
       enableQuarantine: false,
       enableContentAnalysis: false,
-      enableHashChecking: false
+      enableHashChecking: false,
     },
     documents: {
       ...fileUploadConfigs.documents,
       enableQuarantine: true,
       enableContentAnalysis: true,
-      enableHashChecking: true
-    }
+      enableHashChecking: true,
+    },
   }
 
   return Object.prototype.hasOwnProperty.call(configs, uploadType)
@@ -217,17 +221,17 @@ function getUploadConfig(url: URL) {
 async function processBackupFile(file: ProcessedFile): Promise<boolean> {
   try {
     const content = file.buffer.toString('utf8')
-    
+
     // Validate JSON structure for backup files
     if (file.originalName.endsWith('.json')) {
       JSON.parse(content)
     }
-    
+
     // Additional backup-specific validation
     if (content.includes('apiKey') || content.includes('password')) {
       logger.warn('UploadAPI', `Backup file contains sensitive data: ${file.originalName}`)
     }
-    
+
     return true
   } catch (error) {
     logger.error('UploadAPI', `Backup file processing failed: ${file.originalName}`, error)
@@ -241,14 +245,15 @@ async function processBackupFile(file: ProcessedFile): Promise<boolean> {
 async function processDataImportFile(file: ProcessedFile): Promise<boolean> {
   try {
     const content = file.buffer.toString('utf8')
-    
+
     // Validate data structure
     if (file.originalName.endsWith('.json')) {
       const data = JSON.parse(content)
-      
+
       // Basic structure validation for industry data
       if (Array.isArray(data)) {
-        for (const item of data.slice(0, 10)) { // Check first 10 items
+        for (const item of data.slice(0, 10)) {
+          // Check first 10 items
           if (typeof item !== 'object' || !item.name) {
             throw new Error('Invalid data structure')
           }
@@ -261,7 +266,7 @@ async function processDataImportFile(file: ProcessedFile): Promise<boolean> {
         throw new Error('CSV file must have header and data rows')
       }
     }
-    
+
     return true
   } catch (error) {
     logger.error('UploadAPI', `Data import file processing failed: ${file.originalName}`, error)
@@ -276,16 +281,17 @@ async function processImageFile(file: ProcessedFile): Promise<boolean> {
   try {
     // Basic image validation (magic number already checked in security scan)
     const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']
-    
+
     if (!validImageTypes.includes(file.mimeType)) {
       throw new Error('Invalid image type')
     }
-    
+
     // Check for reasonable image size
-    if (file.size < 100) { // Less than 100 bytes is suspicious
+    if (file.size < 100) {
+      // Less than 100 bytes is suspicious
       throw new Error('Image file too small')
     }
-    
+
     return true
   } catch (error) {
     logger.error('UploadAPI', `Image file processing failed: ${file.originalName}`, error)
@@ -300,22 +306,22 @@ async function processDocumentFile(file: ProcessedFile): Promise<boolean> {
   try {
     // Basic document validation
     const validDocTypes = ['application/pdf', 'text/plain']
-    
+
     if (validDocTypes.includes(file.mimeType)) {
       // Additional PDF validation could be added here
       return true
     }
-    
+
     // For text files, check encoding
     if (file.mimeType === 'text/plain') {
       const content = file.buffer.toString('utf8')
-      
+
       // Check for binary content in text files
       if (content.includes('\0')) {
         throw new Error('Text file contains binary data')
       }
     }
-    
+
     return true
   } catch (error) {
     logger.error('UploadAPI', `Document file processing failed: ${file.originalName}`, error)
@@ -332,9 +338,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const url = new URL(request.url)
     const type = url.searchParams.get('type') || 'documents'
-    
+
     const config = getUploadConfig(url)
-    
+
     return NextResponse.json({
       success: true,
       uploadType: type,
@@ -346,21 +352,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         securityFeatures: {
           enableQuarantine: config.enableQuarantine,
           enableContentAnalysis: config.enableContentAnalysis,
-          enableHashChecking: config.enableHashChecking
-        }
+          enableHashChecking: config.enableHashChecking,
+        },
       },
       limits: {
         maxSizeFormatted: `${Math.round(config.maxSize / 1024 / 1024)}MB`,
-        maxFiles: config.maxFiles
+        maxFiles: config.maxFiles,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('UploadAPI', 'Failed to get upload configuration', error)
-    
-    return NextResponse.json(
-      { error: 'Failed to get upload configuration' },
-      { status: 500 }
-    )
+
+    return NextResponse.json({ error: 'Failed to get upload configuration' }, { status: 500 })
   }
 }

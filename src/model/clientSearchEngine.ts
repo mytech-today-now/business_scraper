@@ -156,7 +156,10 @@ export class ClientSearchEngine {
     if (this.rateLimitFailures >= this.maxRateLimitFailures) {
       const timeSinceLastFailure = Date.now() - this.lastRateLimitTime
       if (timeSinceLastFailure < this.rateLimitCooldown) {
-        logger.warn('ClientSearchEngine', `Skipping API call due to rate limit circuit breaker (${this.rateLimitFailures} failures)`)
+        logger.warn(
+          'ClientSearchEngine',
+          `Skipping API call due to rate limit circuit breaker (${this.rateLimitFailures} failures)`
+        )
         return true
       } else {
         // Reset circuit breaker after cooldown
@@ -173,7 +176,10 @@ export class ClientSearchEngine {
   private recordRateLimitFailure(): void {
     this.rateLimitFailures++
     this.lastRateLimitTime = Date.now()
-    logger.warn('ClientSearchEngine', `Rate limit failure recorded (${this.rateLimitFailures}/${this.maxRateLimitFailures})`)
+    logger.warn(
+      'ClientSearchEngine',
+      `Rate limit failure recorded (${this.rateLimitFailures}/${this.maxRateLimitFailures})`
+    )
   }
 
   /**
@@ -184,7 +190,10 @@ export class ClientSearchEngine {
     const jitter = Math.random() * 0.3 * exponentialDelay // 30% jitter
     const finalDelay = Math.min(exponentialDelay + jitter, this.maxDelay)
 
-    logger.debug('ClientSearchEngine', `Calculated delay: ${finalDelay}ms (failures: ${this.rateLimitFailures})`)
+    logger.debug(
+      'ClientSearchEngine',
+      `Calculated delay: ${finalDelay}ms (failures: ${this.rateLimitFailures})`
+    )
     return finalDelay
   }
 
@@ -249,7 +258,9 @@ export class ClientSearchEngine {
           hasGoogleSearch: !!this.credentials.googleSearchApiKey,
           hasAzureSearch: !!this.credentials.azureSearchApiKey,
           hasGoogleMaps: !!this.credentials.googleMapsApiKey,
-          hasDomainBlacklist: !!(this.credentials.domainBlacklist && this.credentials.domainBlacklist.length > 0)
+          hasDomainBlacklist: !!(
+            this.credentials.domainBlacklist && this.credentials.domainBlacklist.length > 0
+          ),
         })
       } else {
         logger.info('ClientSearchEngine', 'No stored credentials found, using fallback methods')
@@ -271,9 +282,12 @@ export class ClientSearchEngine {
         // Update credentials with persistent blacklist
         this.credentials = {
           ...this.credentials,
-          domainBlacklist: persistentBlacklist
+          domainBlacklist: persistentBlacklist,
         }
-        logger.info('ClientSearchEngine', `Loaded ${persistentBlacklist.length} domains from persistent blacklist`)
+        logger.info(
+          'ClientSearchEngine',
+          `Loaded ${persistentBlacklist.length} domains from persistent blacklist`
+        )
       }
     } catch (error) {
       logger.warn('ClientSearchEngine', 'Failed to load persistent domain blacklist', error)
@@ -288,7 +302,7 @@ export class ClientSearchEngine {
       // Start with default industries
       this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
         name: industry.name,
-        keywords: industry.keywords
+        keywords: industry.keywords,
       }))
 
       // Try to load all industries from storage (including custom ones)
@@ -299,24 +313,28 @@ export class ClientSearchEngine {
           this.cachedIndustries = allIndustries.map(industry => ({
             name: industry.name,
             keywords: industry.keywords,
-            domainBlacklist: industry.domainBlacklist
+            domainBlacklist: industry.domainBlacklist,
           }))
         } else {
           // Fallback to default industries if none stored
           this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
             name: industry.name,
             keywords: industry.keywords,
-            domainBlacklist: industry.domainBlacklist
+            domainBlacklist: industry.domainBlacklist,
           }))
         }
         logger.info('ClientSearchEngine', `Loaded ${this.cachedIndustries.length} industries`)
       } catch (error) {
-        logger.warn('ClientSearchEngine', 'Failed to load industries from storage, using defaults only', error)
+        logger.warn(
+          'ClientSearchEngine',
+          'Failed to load industries from storage, using defaults only',
+          error
+        )
         // Fallback to default industries
         this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
           name: industry.name,
           keywords: industry.keywords,
-          domainBlacklist: industry.domainBlacklist
+          domainBlacklist: industry.domainBlacklist,
         }))
       }
     } catch (error) {
@@ -324,7 +342,7 @@ export class ClientSearchEngine {
       // Fallback to default industries
       this.cachedIndustries = DEFAULT_INDUSTRIES.map(industry => ({
         name: industry.name,
-        keywords: industry.keywords
+        keywords: industry.keywords,
       }))
     }
   }
@@ -344,14 +362,19 @@ export class ClientSearchEngine {
     // Check if any search engines are available
     if (!searchEngineManager.hasAvailableEngines()) {
       logger.error('ClientSearchEngine', 'No search engines available for searching')
-      throw new Error('No search engines are available. Please enable at least one search engine in the API settings.')
+      throw new Error(
+        'No search engines are available. Please enable at least one search engine in the API settings.'
+      )
     }
 
     // Check if this is an industry category that should be expanded
     const expandedCriteria = this.expandIndustryCategories(query)
 
     if (expandedCriteria.length > 0) {
-      logger.info('ClientSearchEngine', `Expanded industry category "${query}" to ${expandedCriteria.length} keywords`)
+      logger.info(
+        'ClientSearchEngine',
+        `Expanded industry category "${query}" to ${expandedCriteria.length} keywords`
+      )
       return await this.searchWithExpandedCriteria(expandedCriteria, location, maxResults)
     }
 
@@ -360,7 +383,7 @@ export class ClientSearchEngine {
 
     // Get available engines and create search methods
     const availableEngines = searchEngineManager.getAvailableEngines()
-    const searchMethods: Array<{ engineId: string, method: () => Promise<SearchResult[]> }> = []
+    const searchMethods: Array<{ engineId: string; method: () => Promise<SearchResult[]> }> = []
 
     // Add search methods for available engines
     availableEngines.forEach(engine => {
@@ -368,19 +391,19 @@ export class ClientSearchEngine {
         case 'google':
           searchMethods.push({
             engineId: 'google',
-            method: () => this.searchWithGoogle(query, location, maxResults)
+            method: () => this.searchWithGoogle(query, location, maxResults),
           })
           break
         case 'azure':
           searchMethods.push({
             engineId: 'azure',
-            method: () => this.searchWithAzure(query, location, maxResults)
+            method: () => this.searchWithAzure(query, location, maxResults),
           })
           break
         case 'duckduckgo':
           searchMethods.push({
             engineId: 'duckduckgo',
-            method: () => this.searchWithDuckDuckGo(query, location, maxResults)
+            method: () => this.searchWithDuckDuckGo(query, location, maxResults),
           })
           break
       }
@@ -400,12 +423,19 @@ export class ClientSearchEngine {
               return filteredResults
             }
           } else {
-            logger.warn('ClientSearchEngine', `${engineId} was disabled due to duplicate results, trying next engine`)
+            logger.warn(
+              'ClientSearchEngine',
+              `${engineId} was disabled due to duplicate results, trying next engine`
+            )
             continue
           }
         }
       } catch (error) {
-        logger.warn('ClientSearchEngine', `Search method failed for ${engineId}, trying next`, error)
+        logger.warn(
+          'ClientSearchEngine',
+          `Search method failed for ${engineId}, trying next`,
+          error
+        )
         continue
       }
     }
@@ -426,7 +456,10 @@ export class ClientSearchEngine {
     const resultsPerCriteria = Math.ceil(maxResults / Math.min(criteria.length, 3)) // Limit to top 3 keywords
     const topCriteria = criteria.slice(0, 3) // Use only the most relevant keywords
 
-    logger.info('ClientSearchEngine', `Searching with ${topCriteria.length} targeted criteria, ${resultsPerCriteria} results each`)
+    logger.info(
+      'ClientSearchEngine',
+      `Searching with ${topCriteria.length} targeted criteria, ${resultsPerCriteria} results each`
+    )
 
     for (const criterion of topCriteria) {
       try {
@@ -436,7 +469,7 @@ export class ClientSearchEngine {
         const searchMethods = [
           () => this.searchWithGoogle(targetedQuery, '', resultsPerCriteria),
           () => this.searchWithAzure(targetedQuery, '', resultsPerCriteria),
-          () => this.searchWithDuckDuckGo(targetedQuery, '', resultsPerCriteria)
+          () => this.searchWithDuckDuckGo(targetedQuery, '', resultsPerCriteria),
         ]
 
         for (const searchMethod of searchMethods) {
@@ -450,7 +483,11 @@ export class ClientSearchEngine {
               break // Move to next criterion if this method succeeded
             }
           } catch (error) {
-            logger.warn('ClientSearchEngine', `Search method failed for criterion "${criterion}"`, error)
+            logger.warn(
+              'ClientSearchEngine',
+              `Search method failed for criterion "${criterion}"`,
+              error
+            )
             continue
           }
         }
@@ -467,7 +504,10 @@ export class ClientSearchEngine {
 
     // Remove duplicates and limit results
     const uniqueResults = this.removeDuplicates(allResults).slice(0, maxResults)
-    logger.info('ClientSearchEngine', `Expanded criteria search returned ${uniqueResults.length} unique results`)
+    logger.info(
+      'ClientSearchEngine',
+      `Expanded criteria search returned ${uniqueResults.length} unique results`
+    )
 
     return uniqueResults
   }
@@ -511,7 +551,7 @@ export class ClientSearchEngine {
 
     try {
       logger.info('ClientSearchEngine', `Searching Google with query: ${searchQuery}`)
-      
+
       const response = await fetch(url.toString())
       if (!response.ok) {
         throw new Error(`Google Search API error: ${response.status}`)
@@ -519,7 +559,7 @@ export class ClientSearchEngine {
 
       const data = await response.json()
       const results = this.parseGoogleResults(data, maxResults)
-      
+
       logger.info('ClientSearchEngine', `Google search returned ${results.length} results`)
       return results
     } catch (error) {
@@ -538,7 +578,10 @@ export class ClientSearchEngine {
     maxResults: number
   ): Promise<SearchResult[]> {
     if (!this.credentials?.azureSearchApiKey || !this.credentials?.azureSearchEndpoint) {
-      logger.info('ClientSearchEngine', 'Bing Grounding Custom Search credentials not configured, skipping Azure search')
+      logger.info(
+        'ClientSearchEngine',
+        'Bing Grounding Custom Search credentials not configured, skipping Azure search'
+      )
       return []
     }
 
@@ -554,7 +597,10 @@ export class ClientSearchEngine {
     const url = new URL(`${baseUrl}/v7.0/custom/search`)
 
     try {
-      logger.info('ClientSearchEngine', `Searching Bing Grounding Custom Search with query: ${searchQuery}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Searching Bing Grounding Custom Search with query: ${searchQuery}`
+      )
 
       // Add query parameters for Bing Custom Search API
       url.searchParams.append('q', searchQuery)
@@ -575,20 +621,26 @@ export class ClientSearchEngine {
         method: 'GET',
         headers: {
           'Ocp-Apim-Subscription-Key': this.credentials.azureSearchApiKey,
-          'User-Agent': 'BusinessScraperApp/1.0'
-        }
+          'User-Agent': 'BusinessScraperApp/1.0',
+        },
       })
 
       if (!response.ok) {
         const errorText = await response.text()
-        logger.error('ClientSearchEngine', `Bing Grounding Custom Search API error: ${response.status} - ${errorText}`)
+        logger.error(
+          'ClientSearchEngine',
+          `Bing Grounding Custom Search API error: ${response.status} - ${errorText}`
+        )
         throw new Error(`Bing Grounding Custom Search API error: ${response.status}`)
       }
 
       const data = await response.json()
       const results = this.parseAzureGroundingResults(data, maxResults)
 
-      logger.info('ClientSearchEngine', `Bing Grounding Custom Search returned ${results.length} results`)
+      logger.info(
+        'ClientSearchEngine',
+        `Bing Grounding Custom Search returned ${results.length} results`
+      )
       return results
     } catch (error) {
       logger.error('ClientSearchEngine', 'Bing Grounding Custom Search failed', error)
@@ -612,7 +664,10 @@ export class ClientSearchEngine {
 
       // Parse industry criteria into individual search terms
       const searchCriteria = this.parseIndustryCriteria(query)
-      logger.info('ClientSearchEngine', `Parsed ${searchCriteria.length} individual search criteria: ${searchCriteria.join(', ')}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Parsed ${searchCriteria.length} individual search criteria: ${searchCriteria.join(', ')}`
+      )
 
       // Strategy 1: Search each criteria individually using DuckDuckGo SERP
       // Get as many results as possible per criteria (no artificial limits)
@@ -623,14 +678,21 @@ export class ClientSearchEngine {
         const serpResults = await this.searchDuckDuckGoSERP(criteria, location, resultsPerCriteria)
         allResults.push(...serpResults)
 
-        logger.info('ClientSearchEngine', `Completed search for "${criteria}": ${serpResults.length} results found`)
+        logger.info(
+          'ClientSearchEngine',
+          `Completed search for "${criteria}": ${serpResults.length} results found`
+        )
       }
 
       // Strategy 2: Comprehensive business discovery for each criteria (BBB + Yelp + SERP)
       for (const criteria of searchCriteria) {
         if (allResults.length >= maxResults) break
 
-        const comprehensiveResults = await this.searchComprehensiveBusinessDiscovery(criteria, location, Math.ceil(maxResults / searchCriteria.length))
+        const comprehensiveResults = await this.searchComprehensiveBusinessDiscovery(
+          criteria,
+          location,
+          Math.ceil(maxResults / searchCriteria.length)
+        )
         allResults.push(...comprehensiveResults)
       }
 
@@ -644,21 +706,29 @@ export class ClientSearchEngine {
       const finalResults = uniqueResults.slice(0, maxResults)
 
       if (finalResults.length > 0) {
-        logger.info('ClientSearchEngine', `Comprehensive search returned ${finalResults.length} real business results`)
+        logger.info(
+          'ClientSearchEngine',
+          `Comprehensive search returned ${finalResults.length} real business results`
+        )
         return finalResults
       }
 
       // Final fallback: generate real business directory URLs
-      logger.info('ClientSearchEngine', 'All search methods returned no results, generating directory URLs')
+      logger.info(
+        'ClientSearchEngine',
+        'All search methods returned no results, generating directory URLs'
+      )
       const fallbackResults = this.generateRealBusinessDirectoryUrls(query, location, maxResults)
 
       if (fallbackResults.length > 0) {
-        logger.info('ClientSearchEngine', `Generated ${fallbackResults.length} real business directory URLs`)
+        logger.info(
+          'ClientSearchEngine',
+          `Generated ${fallbackResults.length} real business directory URLs`
+        )
         return fallbackResults
       }
 
       throw new Error('No real business websites found in comprehensive search')
-
     } catch (error) {
       logger.warn('ClientSearchEngine', 'Comprehensive search failed', error)
       throw error
@@ -669,11 +739,18 @@ export class ClientSearchEngine {
    * Search DuckDuckGo SERP pages and extract business websites
    * This is the core method that scrapes actual search results
    */
-  private async searchDuckDuckGoSERP(query: string, location: string, maxResults: number): Promise<SearchResult[]> {
+  private async searchDuckDuckGoSERP(
+    query: string,
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
     try {
       // Check if DuckDuckGo is temporarily disabled
       if (this.isDuckDuckGoTemporarilyDisabled()) {
-        logger.warn('ClientSearchEngine', 'DuckDuckGo SERP search skipped - service temporarily disabled due to rate limiting')
+        logger.warn(
+          'ClientSearchEngine',
+          'DuckDuckGo SERP search skipped - service temporarily disabled due to rate limiting'
+        )
         return []
       }
 
@@ -703,7 +780,6 @@ export class ClientSearchEngine {
       }
 
       return allResults // Return all results found
-
     } catch (error) {
       logger.warn('ClientSearchEngine', 'DuckDuckGo SERP scraping failed', error)
       return []
@@ -733,8 +809,8 @@ export class ClientSearchEngine {
             provider: 'duckduckgo-serp',
             query: query,
             page: page,
-            maxResults: 10
-          })
+            maxResults: 10,
+          }),
         },
         {
           operation: `DuckDuckGo SERP scraping page ${page + 1}`,
@@ -744,23 +820,36 @@ export class ClientSearchEngine {
           retryCondition: (error: any) => {
             // Only retry on specific rate limit errors, not on service unavailable
             return error?.status === 429 && !error?.message?.includes('temporarily disabled')
-          }
+          },
         }
       )
 
       if (!result.success) {
         // Check if DuckDuckGo is temporarily disabled
-        if (result.error?.message?.includes('temporarily disabled') || result.error?.message?.includes('Service temporarily unavailable')) {
-          logger.warn('ClientSearchEngine', 'DuckDuckGo is temporarily disabled due to rate limiting')
+        if (
+          result.error?.message?.includes('temporarily disabled') ||
+          result.error?.message?.includes('Service temporarily unavailable')
+        ) {
+          logger.warn(
+            'ClientSearchEngine',
+            'DuckDuckGo is temporarily disabled due to rate limiting'
+          )
           throw new Error('DuckDuckGo temporarily unavailable - using alternative search methods')
         }
 
         // Check if this is a rate limiting error
-        if (result.error?.message?.includes('429') || result.error?.message?.includes('Rate limit')) {
+        if (
+          result.error?.message?.includes('429') ||
+          result.error?.message?.includes('Rate limit')
+        ) {
           this.recordRateLimitFailure()
           this.recordDuckDuckGoFailure() // Also record DuckDuckGo-specific failure
         }
-        logger.warn('ClientSearchEngine', `Failed to scrape DuckDuckGo page ${page + 1}`, result.error)
+        logger.warn(
+          'ClientSearchEngine',
+          `Failed to scrape DuckDuckGo page ${page + 1}`,
+          result.error
+        )
         return []
       }
 
@@ -779,14 +868,16 @@ export class ClientSearchEngine {
         url: result.url,
         title: result.title,
         snippet: result.snippet || '',
-        domain: result.domain || new URL(result.url).hostname
+        domain: result.domain || new URL(result.url).hostname,
       }))
 
       return results
-
     } catch (error) {
       // Check if this is a rate limiting error
-      if (error instanceof Error && (error.message.includes('429') || error.message.includes('Rate limit'))) {
+      if (
+        error instanceof Error &&
+        (error.message.includes('429') || error.message.includes('Rate limit'))
+      ) {
         this.recordRateLimitFailure()
       }
       logger.warn('ClientSearchEngine', `Failed to scrape DuckDuckGo page ${page + 1}`, error)
@@ -797,13 +888,17 @@ export class ClientSearchEngine {
   /**
    * Search business directories with targeted queries
    */
-  private async searchBusinessDirectories(query: string, location: string, maxResults: number): Promise<SearchResult[]> {
+  private async searchBusinessDirectories(
+    query: string,
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
     try {
       const directoryQueries = [
         `${query} ${location} site:yelp.com`,
         `${query} ${location} site:yellowpages.com`,
         `${query} ${location} site:bbb.org`,
-        `${query} ${location} site:foursquare.com`
+        `${query} ${location} site:foursquare.com`,
       ]
 
       const allResults: SearchResult[] = []
@@ -816,14 +911,11 @@ export class ClientSearchEngine {
       }
 
       return allResults.slice(0, maxResults)
-
     } catch (error) {
       logger.warn('ClientSearchEngine', 'Business directory search failed', error)
       return []
     }
   }
-
-
 
   /**
    * Filter results to only include valid business websites and process special directories
@@ -846,28 +938,63 @@ export class ClientSearchEngine {
 
         // Include known business directory sites
         const businessDirectories = [
-          'yelp.com', 'yellowpages.com', 'whitepages.com',
-          'foursquare.com', 'tripadvisor.com', 'bbb.org', 'angieslist.com',
-          'nextdoor.com', 'citysearch.com', 'mapquest.com'
+          'yelp.com',
+          'yellowpages.com',
+          'whitepages.com',
+          'foursquare.com',
+          'tripadvisor.com',
+          'bbb.org',
+          'angieslist.com',
+          'nextdoor.com',
+          'citysearch.com',
+          'mapquest.com',
         ]
 
         // Check if it's a business directory
         const isBusinessDirectory = businessDirectories.some(dir => domain.includes(dir))
 
         // Check if it looks like a real business website
-        const hasBusinessTLD = ['.com', '.net', '.org', '.biz', '.info'].some(tld => domain.endsWith(tld))
+        const hasBusinessTLD = ['.com', '.net', '.org', '.biz', '.info'].some(tld =>
+          domain.endsWith(tld)
+        )
         const hasBusinessKeywords = [
-          'restaurant', 'cafe', 'medical', 'dental', 'law', 'legal',
-          'clinic', 'hospital', 'shop', 'store', 'service', 'repair',
-          'salon', 'spa', 'fitness', 'gym', 'auto', 'insurance'
+          'restaurant',
+          'cafe',
+          'medical',
+          'dental',
+          'law',
+          'legal',
+          'clinic',
+          'hospital',
+          'shop',
+          'store',
+          'service',
+          'repair',
+          'salon',
+          'spa',
+          'fitness',
+          'gym',
+          'auto',
+          'insurance',
         ].some(keyword => domain.includes(keyword) || result.title.toLowerCase().includes(keyword))
 
         // Exclude obvious non-business sites
         const excludeDomains = [
-          'google.com', 'bing.com', 'yahoo.com', 'duckduckgo.com',
-          'wikipedia.org', 'youtube.com', 'facebook.com', 'twitter.com',
-          'instagram.com', 'linkedin.com', 'reddit.com', 'pinterest.com',
-          'amazon.com', 'ebay.com', 'craigslist.org'
+          'google.com',
+          'bing.com',
+          'yahoo.com',
+          'duckduckgo.com',
+          'wikipedia.org',
+          'youtube.com',
+          'facebook.com',
+          'twitter.com',
+          'instagram.com',
+          'linkedin.com',
+          'reddit.com',
+          'pinterest.com',
+          'amazon.com',
+          'ebay.com',
+          'craigslist.org',
         ]
 
         const isExcluded = excludeDomains.some(excluded => domain.includes(excluded))
@@ -876,7 +1003,6 @@ export class ClientSearchEngine {
         if (!isExcluded && (isBusinessDirectory || (hasBusinessTLD && hasBusinessKeywords))) {
           validResults.push(result)
         }
-
       } catch (error) {
         logger.warn('ClientSearchEngine', `Error processing result ${result.url}:`, error)
       }
@@ -901,13 +1027,24 @@ export class ClientSearchEngine {
 
             // Focus on business directory sites and real business websites
             const businessSites = [
-              'yelp.com', 'yellowpages.com', 'whitepages.com',
-              'foursquare.com', 'tripadvisor.com', 'bbb.org', 'angieslist.com'
+              'yelp.com',
+              'yellowpages.com',
+              'whitepages.com',
+              'foursquare.com',
+              'tripadvisor.com',
+              'bbb.org',
+              'angieslist.com',
             ]
 
             const isBusinessSite = businessSites.some(site => domain.includes(site))
             const hasBusinessKeywords = [
-              'restaurant', 'medical', 'dental', 'law', 'clinic', 'shop', 'service'
+              'restaurant',
+              'medical',
+              'dental',
+              'law',
+              'clinic',
+              'shop',
+              'service',
             ].some(keyword => topic.Text.toLowerCase().includes(keyword))
 
             if (isBusinessSite || hasBusinessKeywords) {
@@ -915,7 +1052,7 @@ export class ClientSearchEngine {
                 url: topic.FirstURL,
                 title: topic.Text.split(' - ')[0] || topic.Text.substring(0, 60),
                 snippet: topic.Text,
-                domain: url.hostname
+                domain: url.hostname,
               })
             }
           } catch {
@@ -933,13 +1070,23 @@ export class ClientSearchEngine {
 
         // Only include if it's clearly business-related
         const businessKeywords = [
-          'business', 'company', 'service', 'restaurant', 'medical', 'clinic',
-          'shop', 'store', 'office', 'center', 'professional'
+          'business',
+          'company',
+          'service',
+          'restaurant',
+          'medical',
+          'clinic',
+          'shop',
+          'store',
+          'office',
+          'center',
+          'professional',
         ]
 
-        const isBusinessRelated = businessKeywords.some(keyword =>
-          data.Abstract.toLowerCase().includes(keyword) ||
-          (data.Heading && data.Heading.toLowerCase().includes(keyword))
+        const isBusinessRelated = businessKeywords.some(
+          keyword =>
+            data.Abstract.toLowerCase().includes(keyword) ||
+            (data.Heading && data.Heading.toLowerCase().includes(keyword))
         )
 
         if (isBusinessRelated) {
@@ -947,7 +1094,7 @@ export class ClientSearchEngine {
             url: data.AbstractURL,
             title: data.Heading || 'Business Information',
             snippet: data.Abstract,
-            domain: url.hostname
+            domain: url.hostname,
           })
         }
       } catch {
@@ -958,13 +1105,15 @@ export class ClientSearchEngine {
     return results
   }
 
-
-
   /**
    * Generate real business directory URLs when API searches fail
    * These are actual, scrapeable business directory pages
    */
-  private generateRealBusinessDirectoryUrls(query: string, location: string, maxResults: number): SearchResult[] {
+  private generateRealBusinessDirectoryUrls(
+    query: string,
+    location: string,
+    maxResults: number
+  ): SearchResult[] {
     const results: SearchResult[] = []
 
     // Real business directory sites with their search URL patterns
@@ -972,28 +1121,32 @@ export class ClientSearchEngine {
       {
         name: 'Yelp',
         domain: 'yelp.com',
-        searchUrl: (q: string, loc: string) => `https://www.yelp.com/search?find_desc=${encodeURIComponent(q)}&find_loc=${encodeURIComponent(loc)}`,
-        description: 'Business reviews and contact information'
+        searchUrl: (q: string, loc: string) =>
+          `https://www.yelp.com/search?find_desc=${encodeURIComponent(q)}&find_loc=${encodeURIComponent(loc)}`,
+        description: 'Business reviews and contact information',
       },
       {
         name: 'YellowPages',
         domain: 'yellowpages.com',
-        searchUrl: (q: string, loc: string) => `https://www.yellowpages.com/search?search_terms=${encodeURIComponent(q)}&geo_location_terms=${encodeURIComponent(loc)}`,
-        description: 'Local business directory and listings'
+        searchUrl: (q: string, loc: string) =>
+          `https://www.yellowpages.com/search?search_terms=${encodeURIComponent(q)}&geo_location_terms=${encodeURIComponent(loc)}`,
+        description: 'Local business directory and listings',
       },
 
       {
         name: 'Better Business Bureau',
         domain: 'bbb.org',
-        searchUrl: (q: string, loc: string) => `https://www.bbb.org/search?find_country=USA&find_text=${encodeURIComponent(q)}&find_type=accredited&find_loc=${encodeURIComponent(loc)}`,
-        description: 'Accredited business listings'
+        searchUrl: (q: string, loc: string) =>
+          `https://www.bbb.org/search?find_country=USA&find_text=${encodeURIComponent(q)}&find_type=accredited&find_loc=${encodeURIComponent(loc)}`,
+        description: 'Accredited business listings',
       },
       {
         name: 'Foursquare',
         domain: 'foursquare.com',
-        searchUrl: (q: string, loc: string) => `https://foursquare.com/explore?mode=url&near=${encodeURIComponent(loc)}&q=${encodeURIComponent(q)}`,
-        description: 'Local business discovery and reviews'
-      }
+        searchUrl: (q: string, loc: string) =>
+          `https://foursquare.com/explore?mode=url&near=${encodeURIComponent(loc)}&q=${encodeURIComponent(q)}`,
+        description: 'Local business discovery and reviews',
+      },
     ]
 
     // Generate URLs for each directory
@@ -1009,11 +1162,10 @@ export class ClientSearchEngine {
           url: searchUrl,
           title: `${query} businesses in ${location} - ${directory.name}`,
           snippet: `Find ${query} businesses in ${location} on ${directory.name}. ${directory.description}`,
-          domain: directory.domain
+          domain: directory.domain,
         })
 
         logger.info('ClientSearchEngine', `Generated real directory URL: ${searchUrl}`)
-
       } catch (error) {
         logger.warn('ClientSearchEngine', `Failed to generate URL for ${directory.name}`, error)
       }
@@ -1059,14 +1211,20 @@ export class ClientSearchEngine {
       const uniqueSet = new Set(criteria)
       const uniqueCriteria = Array.from(uniqueSet).filter((term: string) => term && term.length > 0)
 
-      logger.info('ClientSearchEngine', `Parsed criteria from "${query}": ${uniqueCriteria.join(', ')}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Parsed criteria from "${query}": ${uniqueCriteria.join(', ')}`
+      )
       return uniqueCriteria
     }
 
     // If no quoted phrases, check if this is an industry category that should be expanded
     const expandedCriteria = this.expandIndustryCategories(query)
     if (expandedCriteria.length > 0) {
-      logger.info('ClientSearchEngine', `Expanded industry category "${query}" to: ${expandedCriteria.join(', ')}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Expanded industry category "${query}" to: ${expandedCriteria.join(', ')}`
+      )
       return expandedCriteria
     }
 
@@ -1082,7 +1240,10 @@ export class ClientSearchEngine {
     const uniqueSet = new Set(criteria)
     const uniqueCriteria = Array.from(uniqueSet).filter((term: string) => term && term.length > 0)
 
-    logger.info('ClientSearchEngine', `Parsed criteria from "${query}": ${uniqueCriteria.join(', ')}`)
+    logger.info(
+      'ClientSearchEngine',
+      `Parsed criteria from "${query}": ${uniqueCriteria.join(', ')}`
+    )
 
     return uniqueCriteria.length > 0 ? uniqueCriteria : [query] // Fallback to original query if parsing fails
   }
@@ -1094,13 +1255,19 @@ export class ClientSearchEngine {
     const queryLower = query.toLowerCase().trim()
 
     // Debug logging to understand what query is being processed
-    logger.info('ClientSearchEngine', `Expanding industry categories for query: "${query}" (lowercase: "${queryLower}")`)
+    logger.info(
+      'ClientSearchEngine',
+      `Expanding industry categories for query: "${query}" (lowercase: "${queryLower}")`
+    )
 
     // First, try to find a matching industry from stored configurations
     // This handles both default and custom industries dynamically
     const matchingIndustry = this.findMatchingIndustry(queryLower)
     if (matchingIndustry) {
-      logger.info('ClientSearchEngine', `Found matching industry: "${matchingIndustry.name}" with keywords: ${matchingIndustry.keywords.join(', ')}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Found matching industry: "${matchingIndustry.name}" with keywords: ${matchingIndustry.keywords.join(', ')}`
+      )
       return matchingIndustry.keywords
     }
 
@@ -1108,66 +1275,108 @@ export class ClientSearchEngine {
     const industryMappings: Record<string, string[]> = {
       // Professional Services
       'professional services': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
-      'professional services businesses': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
-      'professional': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
+      'professional services businesses': [
+        'consulting',
+        'legal',
+        'accounting',
+        'financial',
+        'insurance',
+      ],
+      professional: ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
 
       // Healthcare & Medical
-      'healthcare': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
+      healthcare: ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
       'healthcare & medical': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
       'healthcare businesses': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
-      'medical': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
+      medical: ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
       'medical businesses': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
 
       // Restaurants & Food Service
-      'restaurants': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
+      restaurants: ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
       'restaurants & food service': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
       'restaurant businesses': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
       'food service': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
       'food businesses': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
 
       // Retail & Shopping
-      'retail': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
+      retail: ['retail', 'store', 'shop', 'boutique', 'marketplace'],
       'retail & shopping': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
       'retail businesses': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
-      'shopping': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
+      shopping: ['retail', 'store', 'shop', 'boutique', 'marketplace'],
 
       // Construction & Contractors
-      'construction': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
-      'construction & contractors': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
-      'construction businesses': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
-      'contractors': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
+      construction: ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
+      'construction & contractors': [
+        'construction',
+        'contractor',
+        'builder',
+        'renovation',
+        'plumbing',
+      ],
+      'construction businesses': [
+        'construction',
+        'contractor',
+        'builder',
+        'renovation',
+        'plumbing',
+      ],
+      contractors: ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
 
       // Automotive
-      'automotive': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
-      'automotive businesses': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
-      'auto': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
+      automotive: ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
+      'automotive businesses': [
+        'automotive',
+        'car repair',
+        'auto service',
+        'mechanic',
+        'tire service',
+      ],
+      auto: ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
       'auto businesses': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
 
       // Technology
-      'technology': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
-      'technology businesses': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
-      'tech': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
+      technology: ['technology', 'IT services', 'software', 'computer repair', 'web design'],
+      'technology businesses': [
+        'technology',
+        'IT services',
+        'software',
+        'computer repair',
+        'web design',
+      ],
+      tech: ['technology', 'IT services', 'software', 'computer repair', 'web design'],
       'tech businesses': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
 
       // Beauty & Personal Care
-      'beauty': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
+      beauty: ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
       'beauty businesses': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
       'personal care': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
       'personal care businesses': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
 
       // Home Services
       'home services': ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
-      'home services businesses': ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
-      'home': ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
+      'home services businesses': [
+        'cleaning',
+        'landscaping',
+        'pest control',
+        'home repair',
+        'HVAC',
+      ],
+      home: ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
 
       // Education
-      'education': ['school', 'tutoring', 'training', 'education', 'learning center'],
+      education: ['school', 'tutoring', 'training', 'education', 'learning center'],
       'education businesses': ['school', 'tutoring', 'training', 'education', 'learning center'],
-      'educational': ['school', 'tutoring', 'training', 'education', 'learning center'],
+      educational: ['school', 'tutoring', 'training', 'education', 'learning center'],
 
       // Entertainment
-      'entertainment': ['entertainment', 'event planning', 'photography', 'music', 'recreation'],
-      'entertainment businesses': ['entertainment', 'event planning', 'photography', 'music', 'recreation']
+      entertainment: ['entertainment', 'event planning', 'photography', 'music', 'recreation'],
+      'entertainment businesses': [
+        'entertainment',
+        'event planning',
+        'photography',
+        'music',
+        'recreation',
+      ],
     }
 
     // Check for exact matches first
@@ -1181,7 +1390,10 @@ export class ClientSearchEngine {
       // Only match if the query contains the category as a whole word or phrase
       // This prevents "construction" from matching "professional" etc.
       if (queryLower.includes(category)) {
-        logger.info('ClientSearchEngine', `Found partial match: "${queryLower}" contains "${category}"`)
+        logger.info(
+          'ClientSearchEngine',
+          `Found partial match: "${queryLower}" contains "${category}"`
+        )
         return keywords
       }
     }
@@ -1227,9 +1439,16 @@ export class ClientSearchEngine {
    * Comprehensive business discovery - uses abstracted search orchestrator
    * This method coordinates BBB, Yelp, and SERP searches regardless of search provider
    */
-  private async searchComprehensiveBusinessDiscovery(criteria: string, location: string, maxResults: number): Promise<SearchResult[]> {
+  private async searchComprehensiveBusinessDiscovery(
+    criteria: string,
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
     try {
-      logger.info('ClientSearchEngine', `Starting comprehensive business discovery for "${criteria}" in ${location}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Starting comprehensive business discovery for "${criteria}" in ${location}`
+      )
 
       // Use server-side comprehensive search orchestrator with retry logic
       const result = await makeApiCall<ComprehensiveSearchResponse>(
@@ -1243,18 +1462,22 @@ export class ClientSearchEngine {
             location: location,
             maxResults: maxResults,
             accreditedOnly: this.credentials?.bbbAccreditedOnly || false,
-            zipRadius: this.credentials?.zipRadius || 25
-          })
+            zipRadius: this.credentials?.zipRadius || 25,
+          }),
         },
         {
           operation: `Comprehensive business discovery for "${criteria}"`,
           component: 'ClientSearchEngine',
-          retries: 0
+          retries: 0,
         }
       )
 
       if (!result.success) {
-        logger.warn('ClientSearchEngine', `Comprehensive search failed for "${criteria}"`, result.error)
+        logger.warn(
+          'ClientSearchEngine',
+          `Comprehensive search failed for "${criteria}"`,
+          result.error
+        )
         return []
       }
 
@@ -1269,13 +1492,15 @@ export class ClientSearchEngine {
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via ${result.source} for ${criteria}`,
-        domain: result.domain || new URL(result.url).hostname
+        domain: result.domain || new URL(result.url).hostname,
       }))
 
-      logger.info('ClientSearchEngine', `Comprehensive search returned ${results.length} business websites for "${criteria}"`)
+      logger.info(
+        'ClientSearchEngine',
+        `Comprehensive search returned ${results.length} business websites for "${criteria}"`
+      )
       logger.info('ClientSearchEngine', `Provider stats: ${JSON.stringify(data.providerStats)}`)
       return results
-
     } catch (error) {
       logger.warn('ClientSearchEngine', `Comprehensive search failed for "${criteria}"`, error)
       return []
@@ -1285,9 +1510,16 @@ export class ClientSearchEngine {
   /**
    * BBB business discovery - uses BBB as a conduit to find real business websites
    */
-  private async searchBBBBusinessDiscovery(criteria: string, location: string, maxResults: number): Promise<SearchResult[]> {
+  private async searchBBBBusinessDiscovery(
+    criteria: string,
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
     try {
-      logger.info('ClientSearchEngine', `Starting BBB business discovery for "${criteria}" in ${location}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Starting BBB business discovery for "${criteria}" in ${location}`
+      )
 
       // Use server-side BBB scraping to avoid CORS issues with retry logic
       const result = await makeApiCall<BBBDiscoveryResponse>(
@@ -1301,13 +1533,13 @@ export class ClientSearchEngine {
             location: location,
             maxResults: maxResults,
             accreditedOnly: this.credentials?.bbbAccreditedOnly || false,
-            zipRadius: this.credentials?.zipRadius || 10
-          })
+            zipRadius: this.credentials?.zipRadius || 10,
+          }),
         },
         {
           operation: `BBB business discovery for "${criteria}"`,
           component: 'ClientSearchEngine',
-          retries: 0
+          retries: 0,
         }
       )
 
@@ -1327,12 +1559,14 @@ export class ClientSearchEngine {
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via BBB discovery for ${criteria}`,
-        domain: result.domain || new URL(result.url).hostname
+        domain: result.domain || new URL(result.url).hostname,
       }))
 
-      logger.info('ClientSearchEngine', `BBB discovery returned ${results.length} business websites for "${criteria}"`)
+      logger.info(
+        'ClientSearchEngine',
+        `BBB discovery returned ${results.length} business websites for "${criteria}"`
+      )
       return results
-
     } catch (error) {
       logger.warn('ClientSearchEngine', `BBB discovery failed for "${criteria}"`, error)
       return []
@@ -1342,7 +1576,10 @@ export class ClientSearchEngine {
   /**
    * Chamber of Commerce processing - processes chamberofcommerce.com URLs to find business websites
    */
-  private async processChamberOfCommerceUrl(url: string, maxResults: number): Promise<SearchResult[]> {
+  private async processChamberOfCommerceUrl(
+    url: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
     try {
       logger.info('ClientSearchEngine', `Starting Chamber of Commerce processing for: ${url}`)
 
@@ -1356,18 +1593,22 @@ export class ClientSearchEngine {
             provider: 'chamber-of-commerce',
             url: url,
             maxResults: maxResults,
-            maxPagesPerSite: 20
-          })
+            maxPagesPerSite: 20,
+          }),
         },
         {
           operation: `Chamber of Commerce processing for ${url}`,
           component: 'ClientSearchEngine',
-          retries: 0
+          retries: 0,
         }
       )
 
       if (!result.success) {
-        logger.warn('ClientSearchEngine', `Chamber of Commerce processing failed for "${url}"`, result.error)
+        logger.warn(
+          'ClientSearchEngine',
+          `Chamber of Commerce processing failed for "${url}"`,
+          result.error
+        )
         return []
       }
 
@@ -1382,12 +1623,14 @@ export class ClientSearchEngine {
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via Chamber of Commerce processing`,
-        domain: result.domain || new URL(result.url).hostname
+        domain: result.domain || new URL(result.url).hostname,
       }))
 
-      logger.info('ClientSearchEngine', `Chamber of Commerce processing returned ${results.length} business websites`)
+      logger.info(
+        'ClientSearchEngine',
+        `Chamber of Commerce processing returned ${results.length} business websites`
+      )
       return results
-
     } catch (error) {
       logger.warn('ClientSearchEngine', `Chamber of Commerce processing failed for "${url}"`, error)
       return []
@@ -1397,9 +1640,16 @@ export class ClientSearchEngine {
   /**
    * Yelp business discovery - uses Yelp as a conduit to find real business websites
    */
-  private async searchYelpBusinessDiscovery(criteria: string, location: string, maxResults: number): Promise<SearchResult[]> {
+  private async searchYelpBusinessDiscovery(
+    criteria: string,
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
     try {
-      logger.info('ClientSearchEngine', `Starting Yelp business discovery for "${criteria}" in ${location}`)
+      logger.info(
+        'ClientSearchEngine',
+        `Starting Yelp business discovery for "${criteria}" in ${location}`
+      )
 
       // Use server-side Yelp scraping to avoid CORS issues
       const response = await fetch('/api/search', {
@@ -1411,15 +1661,15 @@ export class ClientSearchEngine {
           location: location,
           maxResults: maxResults,
           zipRadius: this.credentials?.zipRadius || 25,
-          maxPagesPerSite: 20
-        })
+          maxPagesPerSite: 20,
+        }),
       })
 
       if (!response.ok) {
         throw new Error(`Yelp discovery API error: ${response.status}`)
       }
 
-      const data = await response.json() as YelpDiscoveryResponse
+      const data = (await response.json()) as YelpDiscoveryResponse
 
       if (!data.success) {
         throw new Error(data.error || 'Yelp discovery failed')
@@ -1430,12 +1680,14 @@ export class ClientSearchEngine {
         url: result.url,
         title: result.title,
         snippet: result.snippet || `Business found via Yelp discovery for ${criteria}`,
-        domain: result.domain || new URL(result.url).hostname
+        domain: result.domain || new URL(result.url).hostname,
       }))
 
-      logger.info('ClientSearchEngine', `Yelp discovery returned ${results.length} business websites for "${criteria}"`)
+      logger.info(
+        'ClientSearchEngine',
+        `Yelp discovery returned ${results.length} business websites for "${criteria}"`
+      )
       return results
-
     } catch (error) {
       logger.warn('ClientSearchEngine', `Yelp discovery failed for "${criteria}"`, error)
       return []
@@ -1460,8 +1712,6 @@ export class ClientSearchEngine {
     return unique
   }
 
-
-
   /**
    * Categorize business query to generate more relevant results
    */
@@ -1470,32 +1720,60 @@ export class ClientSearchEngine {
     const categories: string[] = []
 
     // Food & Dining
-    if (queryLower.includes('restaurant') || queryLower.includes('food') || queryLower.includes('dining') ||
-        queryLower.includes('cafe') || queryLower.includes('pizza') || queryLower.includes('burger')) {
+    if (
+      queryLower.includes('restaurant') ||
+      queryLower.includes('food') ||
+      queryLower.includes('dining') ||
+      queryLower.includes('cafe') ||
+      queryLower.includes('pizza') ||
+      queryLower.includes('burger')
+    ) {
       categories.push('restaurant')
     }
 
     // Healthcare
-    if (queryLower.includes('medical') || queryLower.includes('health') || queryLower.includes('doctor') ||
-        queryLower.includes('clinic') || queryLower.includes('hospital') || queryLower.includes('dental')) {
+    if (
+      queryLower.includes('medical') ||
+      queryLower.includes('health') ||
+      queryLower.includes('doctor') ||
+      queryLower.includes('clinic') ||
+      queryLower.includes('hospital') ||
+      queryLower.includes('dental')
+    ) {
       categories.push('healthcare')
     }
 
     // Professional Services
-    if (queryLower.includes('professional') || queryLower.includes('service') || queryLower.includes('consulting') ||
-        queryLower.includes('legal') || queryLower.includes('accounting') || queryLower.includes('law')) {
+    if (
+      queryLower.includes('professional') ||
+      queryLower.includes('service') ||
+      queryLower.includes('consulting') ||
+      queryLower.includes('legal') ||
+      queryLower.includes('accounting') ||
+      queryLower.includes('law')
+    ) {
       categories.push('professional')
     }
 
     // Retail
-    if (queryLower.includes('shop') || queryLower.includes('store') || queryLower.includes('retail') ||
-        queryLower.includes('clothing') || queryLower.includes('electronics')) {
+    if (
+      queryLower.includes('shop') ||
+      queryLower.includes('store') ||
+      queryLower.includes('retail') ||
+      queryLower.includes('clothing') ||
+      queryLower.includes('electronics')
+    ) {
       categories.push('retail')
     }
 
     // Beauty & Wellness
-    if (queryLower.includes('salon') || queryLower.includes('spa') || queryLower.includes('beauty') ||
-        queryLower.includes('fitness') || queryLower.includes('gym')) {
+    if (
+      queryLower.includes('salon') ||
+      queryLower.includes('spa') ||
+      queryLower.includes('beauty') ||
+      queryLower.includes('fitness') ||
+      queryLower.includes('gym')
+    ) {
       categories.push('beauty')
     }
 
@@ -1507,10 +1785,6 @@ export class ClientSearchEngine {
     return categories
   }
 
-
-
-
-
   /**
    * Parse Google Custom Search results
    */
@@ -1521,14 +1795,17 @@ export class ClientSearchEngine {
       url: item.link,
       title: item.title,
       snippet: item.snippet || '',
-      domain: new URL(item.link).hostname
+      domain: new URL(item.link).hostname,
     }))
   }
 
   /**
    * Parse Azure AI Foundry "Grounding with Bing Custom Search" results
    */
-  private parseAzureGroundingResults(data: AzureSearchResponse, maxResults: number): SearchResult[] {
+  private parseAzureGroundingResults(
+    data: AzureSearchResponse,
+    maxResults: number
+  ): SearchResult[] {
     const results: SearchResult[] = []
 
     // The new Grounding with Bing Custom Search API returns results in webPages.value format
@@ -1556,7 +1833,6 @@ export class ClientSearchEngine {
           snippet: item.snippet || '',
           domain: domain,
         })
-
       } catch (error) {
         logger.warn('ClientSearchEngine', 'Failed to parse Azure AI Foundry result item', error)
         continue
@@ -1578,17 +1854,17 @@ export class ClientSearchEngine {
    * Check if any API credentials are configured
    */
   hasApiCredentials(): boolean {
-    return !!(
-      this.credentials?.googleSearchApiKey ||
-      this.credentials?.azureSearchApiKey
-    )
+    return !!(this.credentials?.googleSearchApiKey || this.credentials?.azureSearchApiKey)
   }
 
   /**
    * Apply domain blacklist filtering to search results
    * Uses both global blacklist and industry-specific blacklists
    */
-  private applyDomainBlacklist(results: SearchResult[], industryKeywords?: string[]): SearchResult[] {
+  private applyDomainBlacklist(
+    results: SearchResult[],
+    industryKeywords?: string[]
+  ): SearchResult[] {
     // Collect all blacklist patterns
     const allBlacklistPatterns: string[] = []
 
@@ -1602,9 +1878,10 @@ export class ClientSearchEngine {
       for (const industry of this.cachedIndustries) {
         // Check if this industry matches the search keywords
         const hasMatchingKeyword = industry.keywords.some(keyword =>
-          industryKeywords.some(searchKeyword =>
-            searchKeyword.toLowerCase().includes(keyword.toLowerCase()) ||
-            keyword.toLowerCase().includes(searchKeyword.toLowerCase())
+          industryKeywords.some(
+            searchKeyword =>
+              searchKeyword.toLowerCase().includes(keyword.toLowerCase()) ||
+              keyword.toLowerCase().includes(searchKeyword.toLowerCase())
           )
         )
 
@@ -1618,9 +1895,7 @@ export class ClientSearchEngine {
       return results
     }
 
-    const blacklistedPatterns = allBlacklistPatterns.map(pattern =>
-      pattern.toLowerCase().trim()
-    )
+    const blacklistedPatterns = allBlacklistPatterns.map(pattern => pattern.toLowerCase().trim())
 
     const filteredResults = results.filter(result => {
       try {
@@ -1637,8 +1912,9 @@ export class ClientSearchEngine {
         }
 
         // Check if domain matches any blacklist pattern (exact or wildcard)
-        const isBlacklisted = this.isDomainBlacklisted(domain, blacklistedPatterns) ||
-                             this.isDomainBlacklisted(cleanDomain, blacklistedPatterns)
+        const isBlacklisted =
+          this.isDomainBlacklisted(domain, blacklistedPatterns) ||
+          this.isDomainBlacklisted(cleanDomain, blacklistedPatterns)
 
         if (isBlacklisted) {
           logger.debug('ClientSearchEngine', `Filtered out blacklisted domain: ${domain}`)
@@ -1647,13 +1923,19 @@ export class ClientSearchEngine {
         return !isBlacklisted
       } catch (error) {
         // If URL parsing fails, keep the result
-        logger.warn('ClientSearchEngine', `Failed to parse URL for blacklist filtering: ${result.url}`)
+        logger.warn(
+          'ClientSearchEngine',
+          `Failed to parse URL for blacklist filtering: ${result.url}`
+        )
         return true
       }
     })
 
     if (filteredResults.length < results.length) {
-      logger.info('ClientSearchEngine', `Domain blacklist filtered ${results.length - filteredResults.length} results`)
+      logger.info(
+        'ClientSearchEngine',
+        `Domain blacklist filtered ${results.length - filteredResults.length} results`
+      )
     }
 
     return filteredResults
@@ -1678,17 +1960,11 @@ export class ClientSearchEngine {
       'office',
       'administration',
       'illinois.gov',
-      'state.il.us'
+      'state.il.us',
     ]
 
     // Educational domains and patterns
-    const eduPatterns = [
-      '.edu',
-      'university',
-      'college',
-      'school.edu',
-      'district.edu'
-    ]
+    const eduPatterns = ['.edu', 'university', 'college', 'school.edu', 'district.edu']
 
     // Directory and listing sites that aren't actual businesses
     const directoryPatterns = [
@@ -1707,14 +1983,12 @@ export class ClientSearchEngine {
       'foursquare.',
       'citysearch.',
       'goingmerry.com',
-      'nationalblueribbonschools.ed.gov'
+      'nationalblueribbonschools.ed.gov',
     ]
 
     const allPatterns = [...govPatterns, ...eduPatterns, ...directoryPatterns]
 
-    return allPatterns.some(pattern =>
-      domain.includes(pattern) || url.includes(pattern)
-    )
+    return allPatterns.some(pattern => domain.includes(pattern) || url.includes(pattern))
   }
 
   /**
@@ -1744,15 +2018,18 @@ export class ClientSearchEngine {
         if (domain.endsWith('.' + baseDomain)) {
           return true
         }
-      } else if (pattern.endsWith('*') && pattern.substring(0, pattern.length - 1).indexOf('*') === -1) {
+      } else if (
+        pattern.endsWith('*') &&
+        pattern.substring(0, pattern.length - 1).indexOf('*') === -1
+      ) {
         // Pattern like "statefarm.*" (TLD wildcard, no other wildcards)
         const basePattern = pattern.substring(0, pattern.length - 1) // Remove "*"
         return domain.startsWith(basePattern)
       } else {
         // Pattern contains * in the middle or multiple wildcards - convert to regex
         const regexPattern = pattern
-          .replace(/\./g, '\\.')  // Escape dots
-          .replace(/\*/g, '.*')   // Convert * to .*
+          .replace(/\./g, '\\.') // Escape dots
+          .replace(/\*/g, '.*') // Convert * to .*
 
         const regex = new RegExp('^' + regexPattern + '$', 'i')
         return regex.test(domain)
@@ -1818,10 +2095,16 @@ export class ClientSearchEngine {
   private recordDuckDuckGoFailure(): void {
     this.duckduckgoFailures++
     this.duckduckgoLastFailureTime = Date.now()
-    logger.warn('ClientSearchEngine', `DuckDuckGo failure recorded. Count: ${this.duckduckgoFailures}/${this.duckduckgoMaxFailures}`)
+    logger.warn(
+      'ClientSearchEngine',
+      `DuckDuckGo failure recorded. Count: ${this.duckduckgoFailures}/${this.duckduckgoMaxFailures}`
+    )
 
     if (this.duckduckgoFailures >= this.duckduckgoMaxFailures) {
-      logger.warn('ClientSearchEngine', `DuckDuckGo temporarily disabled for ${this.duckduckgoDisableTime / 60000} minutes due to repeated failures`)
+      logger.warn(
+        'ClientSearchEngine',
+        `DuckDuckGo temporarily disabled for ${this.duckduckgoDisableTime / 60000} minutes due to repeated failures`
+      )
     }
   }
 

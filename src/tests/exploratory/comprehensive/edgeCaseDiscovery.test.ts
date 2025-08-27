@@ -45,20 +45,20 @@ class ExploratoryTester {
     for (const testCase of this.testCases) {
       try {
         await testCase.testFunction()
-        
+
         this.results.push({
           testCase,
-          passed: true
+          passed: true,
         })
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-        
+
         this.results.push({
           testCase,
           passed: false,
           unexpectedBehavior: errorMessage,
           potentialIssue: this.analyzePotentialIssue(testCase, errorMessage),
-          recommendation: this.generateRecommendation(testCase, errorMessage)
+          recommendation: this.generateRecommendation(testCase, errorMessage),
         })
       }
     }
@@ -70,19 +70,19 @@ class ExploratoryTester {
     if (testCase.category === 'security' && error.includes('injection')) {
       return 'Potential security vulnerability detected'
     }
-    
+
     if (testCase.category === 'performance' && error.includes('timeout')) {
       return 'Performance degradation under stress conditions'
     }
-    
+
     if (testCase.category === 'boundary' && error.includes('overflow')) {
       return 'Boundary condition handling issue'
     }
-    
+
     if (testCase.category === 'data' && error.includes('validation')) {
       return 'Data validation gap identified'
     }
-    
+
     return 'Unexpected behavior requiring investigation'
   }
 
@@ -90,37 +90,37 @@ class ExploratoryTester {
     if (testCase.riskLevel === 'critical') {
       return 'Immediate investigation and fix required'
     }
-    
+
     if (testCase.riskLevel === 'high') {
       return 'High priority fix needed before production'
     }
-    
+
     if (testCase.riskLevel === 'medium') {
       return 'Should be addressed in next development cycle'
     }
-    
+
     return 'Monitor and consider for future improvements'
   }
 
   getHighRiskIssues(): ExploratoryTestResult[] {
-    return this.results.filter(r => 
-      !r.passed && (r.testCase.riskLevel === 'critical' || r.testCase.riskLevel === 'high')
+    return this.results.filter(
+      r => !r.passed && (r.testCase.riskLevel === 'critical' || r.testCase.riskLevel === 'high')
     )
   }
 
   getCategorySummary(): Map<string, { total: number; failed: number }> {
     const summary = new Map()
-    
+
     for (const result of this.results) {
       const category = result.testCase.category
       const current = summary.get(category) || { total: 0, failed: 0 }
-      
+
       current.total++
       if (!result.passed) current.failed++
-      
+
       summary.set(category, current)
     }
-    
+
     return summary
   }
 }
@@ -143,12 +143,12 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         expectedBehavior: 'Should handle or reject gracefully',
         testFunction: async () => {
           const maxString = 'a'.repeat(1000000) // 1MB string
-          
+
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue([])
-          
+
           const result = await clientSearchEngine.searchBusinesses(maxString, '12345', 10)
           expect(result).toEqual([])
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -159,10 +159,10 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         expectedBehavior: 'Should validate and reject negative values',
         testFunction: async () => {
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue([])
-          
+
           const result = await clientSearchEngine.searchBusinesses('restaurants', '12345', -999999)
           expect(result).toEqual([])
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -173,17 +173,17 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         expectedBehavior: 'Should handle Unicode gracefully',
         testFunction: async () => {
           const unicodeString = '🏢🍕🏨🛍️💼🔍📊🌐🚀⚡🎯🔧🎨🎭🎪🎨🎯🔥💎🌟⭐'
-          
+
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue([])
-          
+
           const result = await clientSearchEngine.searchBusinesses(unicodeString, '12345', 10)
           expect(result).toEqual([])
-        }
+        },
       })
 
       const results = await exploratoryTester.runExploratoryTests()
       const boundaryIssues = results.filter(r => r.testCase.category === 'boundary' && !r.passed)
-      
+
       // Log any boundary issues found
       if (boundaryIssues.length > 0) {
         console.log('🔍 Boundary issues discovered:', boundaryIssues.length)
@@ -203,16 +203,16 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
           const malformedData = {
             businessName: { nested: { deeply: { invalid: 'structure' } } },
             url: ['array', 'instead', 'of', 'string'],
-            confidence: 'string instead of number'
+            confidence: 'string instead of number',
           }
-          
+
           // Test data validation
           expect(() => {
             if (typeof malformedData.confidence !== 'number') {
               throw new Error('Invalid data type')
             }
           }).toThrow()
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -224,12 +224,12 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         testFunction: async () => {
           const circularData: any = { name: 'test' }
           circularData.self = circularData
-          
+
           // Should handle circular references safely
           expect(() => {
             JSON.stringify(circularData)
           }).toThrow()
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -247,14 +247,14 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
             undefined,
             [1, 2, 3],
             () => 'function',
-            Symbol('symbol')
+            Symbol('symbol'),
           ]
-          
+
           // Should handle mixed array types
           mixedArray.forEach(item => {
             expect(typeof item).toBeDefined()
           })
-        }
+        },
       })
 
       await exploratoryTester.runExploratoryTests()
@@ -271,16 +271,16 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         expectedBehavior: 'Should handle or throttle appropriately',
         testFunction: async () => {
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue([])
-          
+
           const promises = Array.from({ length: 100 }, (_, i) =>
             clientSearchEngine.searchBusinesses(`query${i}`, '12345', 1)
           )
-          
+
           const results = await Promise.allSettled(promises)
-          
+
           // Should handle rapid requests without crashing
           expect(results.length).toBe(100)
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -292,16 +292,16 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         testFunction: async () => {
           ;(scraperService.initializeBrowser as jest.Mock).mockResolvedValue(true)
           ;(scraperService.cleanup as jest.Mock).mockResolvedValue(undefined)
-          
+
           // Simulate concurrent init and cleanup
           const initPromise = scraperService.initializeBrowser()
           const cleanupPromise = scraperService.cleanup()
-          
+
           const results = await Promise.allSettled([initPromise, cleanupPromise])
-          
+
           // Should handle concurrent operations safely
           expect(results.length).toBe(2)
-        }
+        },
       })
 
       await exploratoryTester.runExploratoryTests()
@@ -319,7 +319,7 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         testFunction: async () => {
           // Simulate memory pressure
           const largeArrays: number[][] = []
-          
+
           try {
             for (let i = 0; i < 1000; i++) {
               largeArrays.push(new Array(10000).fill(i))
@@ -327,13 +327,13 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
           } catch (error) {
             // Memory pressure detected
           }
-          
+
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue([])
-          
+
           // Should still function under memory pressure
           const result = await clientSearchEngine.searchBusinesses('test', '12345', 1)
           expect(result).toEqual([])
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -353,15 +353,15 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
               return Promise.reject(new Error('Network error'))
             }
           })
-          
+
           try {
             await clientSearchEngine.searchBusinesses('test', '12345', 1)
           } catch (error) {
             // Network errors are expected in this simulation
           }
-          
+
           expect(callCount).toBeGreaterThan(0)
-        }
+        },
       })
 
       await exploratoryTester.runExploratoryTests()
@@ -378,14 +378,14 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
         expectedBehavior: 'Should prevent prototype pollution',
         testFunction: async () => {
           const maliciousPayload = {
-            '__proto__': { polluted: true },
-            'constructor': { prototype: { polluted: true } }
+            __proto__: { polluted: true },
+            constructor: { prototype: { polluted: true } },
           }
-          
+
           // Should not pollute Object prototype
           const testObj = Object.assign({}, maliciousPayload)
           expect((Object.prototype as any).polluted).toBeUndefined()
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -400,9 +400,9 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
             'javascript:alert("xss")',
             'onload="alert(1)"',
             '${alert("xss")}',
-            '{{constructor.constructor("alert(1)")()}}'
+            '{{constructor.constructor("alert(1)")()}}',
           ]
-          
+
           scriptPayloads.forEach(payload => {
             // Should sanitize script content
             const sanitized = payload
@@ -411,12 +411,12 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
               .replace(/on\w+\s*=/gi, '')
               .replace(/\$\{.*?\}/g, '')
               .replace(/\{\{.*?\}\}/g, '')
-            
+
             expect(sanitized).not.toContain('<script>')
             expect(sanitized).not.toContain('javascript:')
             expect(sanitized).not.toContain('alert')
           })
-        }
+        },
       })
 
       await exploratoryTester.runExploratoryTests()
@@ -445,19 +445,19 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
             industry: 'test',
             confidence: Math.random(),
             source: 'test',
-            scrapedAt: new Date().toISOString()
+            scrapedAt: new Date().toISOString(),
           }))
-          
+
           const startTime = Date.now()
-          
+
           // Process large dataset
           const processed = largeDataset.filter(business => business.confidence > 0.5)
-          
+
           const processingTime = Date.now() - startTime
-          
+
           expect(processed.length).toBeGreaterThan(0)
           expect(processingTime).toBeLessThan(5000) // Should process within 5 seconds
-        }
+        },
       })
 
       exploratoryTester.addTestCase({
@@ -472,14 +472,14 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
             if (depth > 1000) throw new Error('Maximum recursion depth exceeded')
             return 1 + deepRecursion(depth - 1)
           }
-          
+
           // Should handle reasonable recursion depth
           const result = deepRecursion(100)
           expect(result).toBe(100)
-          
+
           // Should prevent stack overflow
           expect(() => deepRecursion(10000)).toThrow()
-        }
+        },
       })
 
       await exploratoryTester.runExploratoryTests()
@@ -502,7 +502,8 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
 
       console.log('\n📋 Category Summary:')
       categorySummary.forEach((summary, category) => {
-        const failureRate = summary.total > 0 ? (summary.failed / summary.total * 100).toFixed(1) : '0'
+        const failureRate =
+          summary.total > 0 ? ((summary.failed / summary.total) * 100).toFixed(1) : '0'
         console.log(`  ${category}: ${summary.failed}/${summary.total} failed (${failureRate}%)`)
       })
 
@@ -517,10 +518,10 @@ describe('Exploratory Testing - Edge Case Discovery', () => {
       // Exploratory testing quality metrics
       expect(results.length).toBeGreaterThan(10) // Should have comprehensive coverage
       expect(highRiskIssues.length).toBeLessThanOrEqual(2) // Minimal high-risk issues
-      
+
       // Category coverage
       expect(categorySummary.size).toBeGreaterThanOrEqual(5) // Multiple categories tested
-      
+
       // Overall failure rate should be reasonable for exploratory testing
       const failureRate = results.filter(r => !r.passed).length / results.length
       expect(failureRate).toBeLessThan(0.3) // Less than 30% failure rate

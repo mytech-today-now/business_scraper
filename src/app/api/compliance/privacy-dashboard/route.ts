@@ -26,21 +26,18 @@ export async function GET(request: NextRequest) {
     const sessionId = searchParams.get('sessionId')
 
     if (!email && !sessionId) {
-      return NextResponse.json(
-        { error: 'Either email or sessionId is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Either email or sessionId is required' }, { status: 400 })
     }
 
     // Get data categories
     const dataCategories = await getDataCategories(email, sessionId)
-    
+
     // Get privacy rights
     const privacyRights = await getPrivacyRights(email)
-    
+
     // Get DSAR requests
     const dsarRequests = await getDSARRequests(email)
-    
+
     // Get privacy settings
     const privacySettings = await getPrivacySettings(email, sessionId)
 
@@ -54,14 +51,14 @@ export async function GET(request: NextRequest) {
         email,
         sessionId,
         categoriesCount: dataCategories.length,
-        rightsCount: privacyRights.length
+        rightsCount: privacyRights.length,
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     return NextResponse.json({
@@ -70,9 +67,8 @@ export async function GET(request: NextRequest) {
       privacyRights,
       dsarRequests,
       privacySettings,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     })
-
   } catch (error) {
     logger.error('Privacy Dashboard', 'Failed to get privacy dashboard data', error)
     return NextResponse.json(
@@ -95,7 +91,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
         'SELECT COUNT(*) as count, MAX(updated_at) as last_updated FROM businesses WHERE email ILIKE $1',
         [`%${email}%`]
       )
-      
+
       if (parseInt(businessResult.rows[0].count) > 0) {
         categories.push({
           id: 'business_contacts',
@@ -106,7 +102,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
           retentionPeriod: 1095, // 3 years
           canDelete: true,
           canExport: true,
-          canModify: true
+          canModify: true,
         })
       }
     }
@@ -116,7 +112,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
       'SELECT COUNT(*) as count, MAX(timestamp) as last_updated FROM consent_records WHERE user_id = (SELECT id FROM users WHERE email = $1) OR session_id = $2',
       [email, sessionId]
     )
-    
+
     if (parseInt(consentResult.rows[0].count) > 0) {
       categories.push({
         id: 'consent_records',
@@ -127,7 +123,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
         retentionPeriod: 2190, // 6 years
         canDelete: false, // Legal requirement to keep
         canExport: true,
-        canModify: true
+        canModify: true,
       })
     }
 
@@ -136,7 +132,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
       'SELECT COUNT(*) as count, MAX(timestamp) as last_updated FROM audit_log WHERE user_id = (SELECT id FROM users WHERE email = $1)',
       [email]
     )
-    
+
     if (parseInt(auditResult.rows[0].count) > 0) {
       categories.push({
         id: 'audit_logs',
@@ -147,7 +143,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
         retentionPeriod: 2555, // 7 years
         canDelete: false, // Security requirement
         canExport: true,
-        canModify: false
+        canModify: false,
       })
     }
 
@@ -157,7 +153,7 @@ async function getDataCategories(email?: string, sessionId?: string) {
         'SELECT COUNT(*) as count, MAX(created_at) as last_updated FROM user_sessions WHERE session_token = $1',
         [sessionId]
       )
-      
+
       if (parseInt(sessionResult.rows[0].count) > 0) {
         categories.push({
           id: 'session_data',
@@ -168,13 +164,12 @@ async function getDataCategories(email?: string, sessionId?: string) {
           retentionPeriod: 90,
           canDelete: true,
           canExport: true,
-          canModify: false
+          canModify: false,
         })
       }
     }
 
     return categories
-
   } catch (error) {
     logger.error('Privacy Dashboard', 'Failed to get data categories', error)
     return []
@@ -191,43 +186,43 @@ async function getPrivacyRights(email?: string) {
       name: 'Right to Access',
       description: 'Request a copy of all personal data we hold about you',
       available: true,
-      status: 'available'
+      status: 'available',
     },
     {
       id: 'rectification',
       name: 'Right to Rectification',
       description: 'Request correction of inaccurate or incomplete personal data',
       available: true,
-      status: 'available'
+      status: 'available',
     },
     {
       id: 'erasure',
       name: 'Right to Erasure',
       description: 'Request deletion of your personal data (right to be forgotten)',
       available: true,
-      status: 'available'
+      status: 'available',
     },
     {
       id: 'portability',
       name: 'Right to Data Portability',
       description: 'Request your data in a structured, machine-readable format',
       available: true,
-      status: 'available'
+      status: 'available',
     },
     {
       id: 'restriction',
       name: 'Right to Restriction',
       description: 'Request limitation of processing of your personal data',
       available: true,
-      status: 'available'
+      status: 'available',
     },
     {
       id: 'objection',
       name: 'Right to Object',
       description: 'Object to processing of your personal data for specific purposes',
       available: true,
-      status: 'available'
-    }
+      status: 'available',
+    },
   ]
 
   // Check for recent usage of rights
@@ -270,9 +265,8 @@ async function getDSARRequests(email?: string) {
       status: row.status,
       submittedAt: row.submitted_at,
       completedAt: row.completed_at,
-      description: row.description
+      description: row.description,
     }))
-
   } catch (error) {
     logger.error('Privacy Dashboard', 'Failed to get DSAR requests', error)
     return []
@@ -286,7 +280,7 @@ async function getPrivacySettings(email?: string, sessionId?: string) {
   try {
     // Get consent preferences
     const consentPreferences = await consentService.getConsentPreferences(undefined, sessionId)
-    
+
     // Get CCPA opt-out status
     let ccpaOptOut = false
     if (email) {
@@ -307,12 +301,11 @@ async function getPrivacySettings(email?: string, sessionId?: string) {
         email: true,
         sms: false,
         dataUpdates: true,
-        securityAlerts: true
-      }
+        securityAlerts: true,
+      },
     }
 
     return settings
-
   } catch (error) {
     logger.error('Privacy Dashboard', 'Failed to get privacy settings', error)
     return null
@@ -350,21 +343,24 @@ export async function PUT(request: NextRequest) {
     if (settings.ccpaOptOut !== undefined && userEmail) {
       if (settings.ccpaOptOut) {
         // Submit CCPA opt-out request
-        await pool.query(`
+        await pool.query(
+          `
           INSERT INTO ccpa_opt_out_requests (
             consumer_email, categories, verification_method, verification_data,
             ip_address, user_agent, status
           ) VALUES ($1, $2, $3, $4, $5, $6, $7)
           ON CONFLICT DO NOTHING
-        `, [
-          userEmail,
-          JSON.stringify(['all']),
-          'email',
-          JSON.stringify({ email: userEmail }),
-          request.headers.get('x-forwarded-for'),
-          request.headers.get('user-agent'),
-          'processed'
-        ])
+        `,
+          [
+            userEmail,
+            JSON.stringify(['all']),
+            'email',
+            JSON.stringify({ email: userEmail }),
+            request.headers.get('x-forwarded-for'),
+            request.headers.get('user-agent'),
+            'processed',
+          ]
+        )
       }
     }
 
@@ -375,26 +371,22 @@ export async function PUT(request: NextRequest) {
       details: {
         userEmail,
         sessionId,
-        settingsUpdated: Object.keys(settings)
+        settingsUpdated: Object.keys(settings),
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     return NextResponse.json({
       success: true,
-      message: 'Privacy settings updated successfully'
+      message: 'Privacy settings updated successfully',
     })
-
   } catch (error) {
     logger.error('Privacy Dashboard', 'Failed to update privacy settings', error)
-    return NextResponse.json(
-      { error: 'Failed to update privacy settings' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update privacy settings' }, { status: 500 })
   }
 }

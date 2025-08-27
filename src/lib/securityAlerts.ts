@@ -14,7 +14,7 @@ export enum AlertChannel {
   WEBHOOK = 'WEBHOOK',
   LOG = 'LOG',
   CONSOLE = 'CONSOLE',
-  DATABASE = 'DATABASE'
+  DATABASE = 'DATABASE',
 }
 
 /**
@@ -108,7 +108,7 @@ export class SecurityAlertManager {
         conditions: [],
         channels: [AlertChannel.LOG, AlertChannel.CONSOLE],
         cooldown: 5,
-        maxAlertsPerHour: 20
+        maxAlertsPerHour: 20,
       },
       {
         id: 'failed-login-burst',
@@ -122,12 +122,12 @@ export class SecurityAlertManager {
             type: 'count',
             operator: 'gte',
             value: 10,
-            timeWindow: 5
-          }
+            timeWindow: 5,
+          },
         ],
         channels: [AlertChannel.LOG, AlertChannel.CONSOLE],
         cooldown: 15,
-        maxAlertsPerHour: 4
+        maxAlertsPerHour: 4,
       },
       {
         id: 'sql-injection-attempt',
@@ -139,7 +139,7 @@ export class SecurityAlertManager {
         conditions: [],
         channels: [AlertChannel.LOG, AlertChannel.CONSOLE],
         cooldown: 10,
-        maxAlertsPerHour: 6
+        maxAlertsPerHour: 6,
       },
       {
         id: 'brute-force-attack',
@@ -151,7 +151,7 @@ export class SecurityAlertManager {
         conditions: [],
         channels: [AlertChannel.LOG, AlertChannel.CONSOLE],
         cooldown: 30,
-        maxAlertsPerHour: 2
+        maxAlertsPerHour: 2,
       },
       {
         id: 'unauthorized-data-access',
@@ -163,7 +163,7 @@ export class SecurityAlertManager {
         conditions: [],
         channels: [AlertChannel.LOG, AlertChannel.CONSOLE],
         cooldown: 10,
-        maxAlertsPerHour: 10
+        maxAlertsPerHour: 10,
       },
       {
         id: 'high-risk-activity',
@@ -177,13 +177,13 @@ export class SecurityAlertManager {
             type: 'count',
             operator: 'gte',
             value: 20,
-            timeWindow: 60
-          }
+            timeWindow: 60,
+          },
         ],
         channels: [AlertChannel.LOG, AlertChannel.CONSOLE],
         cooldown: 60,
-        maxAlertsPerHour: 1
-      }
+        maxAlertsPerHour: 1,
+      },
     ]
 
     defaultRules.forEach(rule => this.rules.set(rule.id, rule))
@@ -289,11 +289,11 @@ export class SecurityAlertManager {
   private evaluateCountCondition(condition: AlertCondition, eventType: SecurityEventType): boolean {
     const timeWindow = condition.timeWindow || 60 // Default 1 hour
     const cutoff = new Date(Date.now() - timeWindow * 60 * 1000)
-    
+
     // This would typically query the security events from the logger
     // For now, we'll use a simplified approach
     const recentEventCount = this.getRecentEventCount(eventType, cutoff)
-    
+
     return this.compareValues(recentEventCount, condition.operator, condition.value as number)
   }
 
@@ -303,34 +303,40 @@ export class SecurityAlertManager {
   private evaluateRateCondition(condition: AlertCondition, eventType: SecurityEventType): boolean {
     const timeWindow = condition.timeWindow || 60
     const cutoff = new Date(Date.now() - timeWindow * 60 * 1000)
-    
+
     const eventCount = this.getRecentEventCount(eventType, cutoff)
     const rate = eventCount / timeWindow // events per minute
-    
+
     return this.compareValues(rate, condition.operator, condition.value as number)
   }
 
   /**
    * Evaluate threshold-based condition
    */
-  private evaluateThresholdCondition(condition: AlertCondition, details: Record<string, any>): boolean {
+  private evaluateThresholdCondition(
+    condition: AlertCondition,
+    details: Record<string, any>
+  ): boolean {
     if (!condition.field) return false
-    
+
     const value = details[condition.field]
     if (value === undefined) return false
-    
+
     return this.compareValues(value, condition.operator, condition.value)
   }
 
   /**
    * Evaluate pattern-based condition
    */
-  private evaluatePatternCondition(condition: AlertCondition, details: Record<string, any>): boolean {
+  private evaluatePatternCondition(
+    condition: AlertCondition,
+    details: Record<string, any>
+  ): boolean {
     if (!condition.field) return false
-    
+
     const value = details[condition.field]
     if (typeof value !== 'string') return false
-    
+
     switch (condition.operator) {
       case 'contains':
         return value.includes(condition.value as string)
@@ -347,12 +353,18 @@ export class SecurityAlertManager {
    */
   private compareValues(actual: any, operator: string, expected: any): boolean {
     switch (operator) {
-      case 'gt': return actual > expected
-      case 'gte': return actual >= expected
-      case 'lt': return actual < expected
-      case 'lte': return actual <= expected
-      case 'eq': return actual === expected
-      default: return false
+      case 'gt':
+        return actual > expected
+      case 'gte':
+        return actual >= expected
+      case 'lt':
+        return actual < expected
+      case 'lte':
+        return actual <= expected
+      case 'eq':
+        return actual === expected
+      default:
+        return false
     }
   }
 
@@ -387,8 +399,8 @@ export class SecurityAlertManager {
     if (!rule) return false
 
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000)
-    const recentAlerts = this.alerts.filter(alert => 
-      alert.ruleId === ruleId && alert.timestamp >= hourAgo
+    const recentAlerts = this.alerts.filter(
+      alert => alert.ruleId === ruleId && alert.timestamp >= hourAgo
     )
 
     return recentAlerts.length >= rule.maxAlertsPerHour
@@ -413,7 +425,7 @@ export class SecurityAlertManager {
       description: this.generateAlertDescription(rule, eventType, details),
       details,
       acknowledged: false,
-      resolved: false
+      resolved: false,
     }
 
     this.alerts.push(alert)
@@ -425,7 +437,7 @@ export class SecurityAlertManager {
       alertId: alert.id,
       ruleId: rule.id,
       severity,
-      eventType
+      eventType,
     })
 
     return alert
@@ -470,7 +482,7 @@ export class SecurityAlertManager {
         alertId: alert.id,
         channel,
         status: 'pending',
-        retryCount: 0
+        retryCount: 0,
       }
 
       this.notifications.push(notification)
@@ -486,7 +498,10 @@ export class SecurityAlertManager {
   /**
    * Send individual notification
    */
-  private async sendNotification(notification: AlertNotification, alert: SecurityAlert): Promise<void> {
+  private async sendNotification(
+    notification: AlertNotification,
+    alert: SecurityAlert
+  ): Promise<void> {
     try {
       switch (notification.channel) {
         case AlertChannel.LOG:
@@ -516,7 +531,7 @@ export class SecurityAlertManager {
       logger.error('SecurityAlert', `Failed to send notification`, {
         notificationId: notification.id,
         channel: notification.channel,
-        error: notification.error
+        error: notification.error,
       })
     }
   }
@@ -530,7 +545,7 @@ export class SecurityAlertManager {
       alertId: alert.id,
       severity: alert.severity,
       description: alert.description,
-      details: alert.details
+      details: alert.details,
     })
   }
 
@@ -540,7 +555,7 @@ export class SecurityAlertManager {
   private sendConsoleNotification(alert: SecurityAlert): void {
     const timestamp = alert.timestamp.toISOString()
     const severityIcon = alert.severity === SecuritySeverity.CRITICAL ? '🚨' : '⚠️'
-    
+
     console.warn(`${severityIcon} [${timestamp}] SECURITY ALERT: ${alert.title}`)
     console.warn(`   Description: ${alert.description}`)
     console.warn(`   Severity: ${alert.severity}`)
@@ -579,7 +594,7 @@ export class SecurityAlertManager {
    */
   private updateAlertTracking(ruleId: string): void {
     this.lastAlertTime.set(ruleId, new Date())
-    
+
     const currentCount = this.alertCounts.get(ruleId) || 0
     this.alertCounts.set(ruleId, currentCount + 1)
   }
@@ -604,20 +619,26 @@ export class SecurityAlertManager {
     const cutoff = new Date(Date.now() - timeWindow * 60 * 60 * 1000)
     const recentAlerts = this.alerts.filter(alert => alert.timestamp >= cutoff)
 
-    const alertsBySeverity = recentAlerts.reduce((acc, alert) => {
-      acc[alert.severity] = (acc[alert.severity] || 0) + 1
-      return acc
-    }, {} as Record<SecuritySeverity, number>)
+    const alertsBySeverity = recentAlerts.reduce(
+      (acc, alert) => {
+        acc[alert.severity] = (acc[alert.severity] || 0) + 1
+        return acc
+      },
+      {} as Record<SecuritySeverity, number>
+    )
 
     const alertsByRule = Object.entries(
-      recentAlerts.reduce((acc, alert) => {
-        acc[alert.ruleId] = (acc[alert.ruleId] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      recentAlerts.reduce(
+        (acc, alert) => {
+          acc[alert.ruleId] = (acc[alert.ruleId] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      )
     ).map(([ruleId, count]) => ({
       ruleId,
       ruleName: this.rules.get(ruleId)?.name || 'Unknown',
-      count
+      count,
     }))
 
     return {
@@ -625,7 +646,7 @@ export class SecurityAlertManager {
       alertsBySeverity,
       alertsByRule,
       acknowledgedAlerts: recentAlerts.filter(alert => alert.acknowledged).length,
-      resolvedAlerts: recentAlerts.filter(alert => alert.resolved).length
+      resolvedAlerts: recentAlerts.filter(alert => alert.resolved).length,
     }
   }
 
@@ -643,7 +664,7 @@ export class SecurityAlertManager {
     logger.info('SecurityAlert', `Alert acknowledged`, {
       alertId,
       acknowledgedBy,
-      acknowledgedAt: alert.acknowledgedAt
+      acknowledgedAt: alert.acknowledgedAt,
     })
 
     return true
@@ -663,7 +684,7 @@ export class SecurityAlertManager {
     logger.info('SecurityAlert', `Alert resolved`, {
       alertId,
       resolvedBy,
-      resolvedAt: alert.resolvedAt
+      resolvedAt: alert.resolvedAt,
     })
 
     return true

@@ -10,10 +10,8 @@ import { logger } from '@/utils/logger'
 import { SecureDatabase } from './secureDatabase'
 import { metrics } from '@/lib/metrics'
 
-
 export class PostgreSQLDatabase implements DatabaseInterface {
   private secureDb: SecureDatabase
-
 
   constructor(config: DatabaseConfig) {
     // Create secure database connection with hardened configuration
@@ -46,16 +44,13 @@ export class PostgreSQLDatabase implements DatabaseInterface {
       // Use secure database wrapper with SQL injection protection
       const result = await this.secureDb.query(text, params, {
         validateQuery: true,
-        logQuery: process.env.NODE_ENV === 'development'
+        logQuery: process.env.NODE_ENV === 'development',
       })
 
       const duration = (Date.now() - startTime) / 1000
 
       // Record successful query metrics
-      metrics.dbQueryDuration.observe(
-        { operation, table, status: 'success' },
-        duration
-      )
+      metrics.dbQueryDuration.observe({ operation, table, status: 'success' }, duration)
       metrics.dbQueryTotal.inc({ operation, table, status: 'success' })
 
       return result
@@ -63,15 +58,12 @@ export class PostgreSQLDatabase implements DatabaseInterface {
       const duration = (Date.now() - startTime) / 1000
 
       // Record error metrics
-      metrics.dbQueryDuration.observe(
-        { operation, table, status: 'error' },
-        duration
-      )
+      metrics.dbQueryDuration.observe({ operation, table, status: 'error' }, duration)
       metrics.dbQueryTotal.inc({ operation, table, status: 'error' })
       metrics.dbQueryErrors.inc({
         operation,
         table,
-        error_type: error instanceof Error ? error.name : 'unknown'
+        error_type: error instanceof Error ? error.name : 'unknown',
       })
 
       throw error
@@ -112,7 +104,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   // Campaign operations
   async createCampaign(campaign: any): Promise<string> {
     const id = campaign.id || crypto.randomUUID()
-    
+
     const query = `
       INSERT INTO campaigns (
         id, name, industry, location, status, description,
@@ -120,7 +112,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING id
     `
-    
+
     const values = [
       id,
       campaign.name,
@@ -147,7 +139,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
   async getCampaign(id: string): Promise<any | null> {
     const query = 'SELECT * FROM campaigns WHERE id = $1'
-    
+
     try {
       const result = await this.query(query, [id])
       if (result.rows.length === 0) {
@@ -184,10 +176,16 @@ export class PostgreSQLDatabase implements DatabaseInterface {
     // Build dynamic SET clause
     for (const [key, value] of Object.entries(updates)) {
       if (value !== undefined) {
-        const dbKey = key === 'searchRadius' ? 'search_radius' :
-                     key === 'searchDepth' ? 'search_depth' :
-                     key === 'pagesPerSite' ? 'pages_per_site' :
-                     key === 'zipCode' ? 'zip_code' : key
+        const dbKey =
+          key === 'searchRadius'
+            ? 'search_radius'
+            : key === 'searchDepth'
+              ? 'search_depth'
+              : key === 'pagesPerSite'
+                ? 'pages_per_site'
+                : key === 'zipCode'
+                  ? 'zip_code'
+                  : key
 
         setClause.push(`${dbKey} = $${paramIndex}`)
         values.push(key === 'parameters' ? JSON.stringify(value) : value)
@@ -215,7 +213,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
   async deleteCampaign(id: string): Promise<void> {
     const query = 'DELETE FROM campaigns WHERE id = $1'
-    
+
     try {
       await this.query(query, [id])
       logger.info('PostgreSQL', `Deleted campaign: ${id}`)
@@ -273,7 +271,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   // Business operations
   async createBusiness(business: any): Promise<string> {
     const id = business.id || crypto.randomUUID()
-    
+
     const query = `
       INSERT INTO businesses (
         id, campaign_id, name, email, phone, website, address,
@@ -283,7 +281,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
       RETURNING id
     `
-    
+
     const values = [
       id,
       business.campaignId,
@@ -316,7 +314,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
   async getBusiness(id: string): Promise<any | null> {
     const query = 'SELECT * FROM businesses WHERE id = $1'
-    
+
     try {
       const result = await this.query(query, [id])
       if (result.rows.length === 0) {
@@ -360,18 +358,29 @@ export class PostgreSQLDatabase implements DatabaseInterface {
     // Build dynamic SET clause
     for (const [key, value] of Object.entries(updates)) {
       if (value !== undefined) {
-        const dbKey = key === 'campaignId' ? 'campaign_id' :
-                     key === 'confidenceScore' ? 'confidence_score' :
-                     key === 'contactPerson' ? 'contact_person' :
-                     key === 'businessDescription' ? 'business_description' :
-                     key === 'socialMedia' ? 'social_media' :
-                     key === 'businessHours' ? 'business_hours' :
-                     key === 'employeeCount' ? 'employee_count' :
-                     key === 'annualRevenue' ? 'annual_revenue' :
-                     key === 'foundedYear' ? 'founded_year' : key
+        const dbKey =
+          key === 'campaignId'
+            ? 'campaign_id'
+            : key === 'confidenceScore'
+              ? 'confidence_score'
+              : key === 'contactPerson'
+                ? 'contact_person'
+                : key === 'businessDescription'
+                  ? 'business_description'
+                  : key === 'socialMedia'
+                    ? 'social_media'
+                    : key === 'businessHours'
+                      ? 'business_hours'
+                      : key === 'employeeCount'
+                        ? 'employee_count'
+                        : key === 'annualRevenue'
+                          ? 'annual_revenue'
+                          : key === 'foundedYear'
+                            ? 'founded_year'
+                            : key
 
         setClause.push(`${dbKey} = $${paramIndex}`)
-        
+
         if (['address', 'coordinates', 'socialMedia', 'businessHours'].includes(key)) {
           values.push(JSON.stringify(value))
         } else {
@@ -401,7 +410,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
   async deleteBusiness(id: string): Promise<void> {
     const query = 'DELETE FROM businesses WHERE id = $1'
-    
+
     try {
       await this.query(query, [id])
       logger.info('PostgreSQL', `Deleted business: ${id}`)
@@ -471,7 +480,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   // Scraping session operations
   async createSession(session: any): Promise<string> {
     const id = session.id || crypto.randomUUID()
-    
+
     const query = `
       INSERT INTO scraping_sessions (
         id, campaign_id, status, total_urls, successful_scrapes, failed_scrapes,
@@ -480,7 +489,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING id
     `
-    
+
     const values = [
       id,
       session.campaignId,
@@ -510,7 +519,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
   async getSession(id: string): Promise<any | null> {
     const query = 'SELECT * FROM scraping_sessions WHERE id = $1'
-    
+
     try {
       const result = await this.query(query, [id])
       if (result.rows.length === 0) {
@@ -552,22 +561,37 @@ export class PostgreSQLDatabase implements DatabaseInterface {
     // Build dynamic SET clause
     for (const [key, value] of Object.entries(updates)) {
       if (value !== undefined) {
-        const dbKey = key === 'campaignId' ? 'campaign_id' :
-                     key === 'startedAt' ? 'started_at' :
-                     key === 'completedAt' ? 'completed_at' :
-                     key === 'totalUrls' ? 'total_urls' :
-                     key === 'successfulScrapes' ? 'successful_scrapes' :
-                     key === 'failedScrapes' ? 'failed_scrapes' :
-                     key === 'sessionConfig' ? 'session_config' :
-                     key === 'userAgent' ? 'user_agent' :
-                     key === 'timeoutMs' ? 'timeout_ms' :
-                     key === 'maxRetries' ? 'max_retries' :
-                     key === 'delayMs' ? 'delay_ms' :
-                     key === 'currentUrl' ? 'current_url' :
-                     key === 'progressPercentage' ? 'progress_percentage' : key
+        const dbKey =
+          key === 'campaignId'
+            ? 'campaign_id'
+            : key === 'startedAt'
+              ? 'started_at'
+              : key === 'completedAt'
+                ? 'completed_at'
+                : key === 'totalUrls'
+                  ? 'total_urls'
+                  : key === 'successfulScrapes'
+                    ? 'successful_scrapes'
+                    : key === 'failedScrapes'
+                      ? 'failed_scrapes'
+                      : key === 'sessionConfig'
+                        ? 'session_config'
+                        : key === 'userAgent'
+                          ? 'user_agent'
+                          : key === 'timeoutMs'
+                            ? 'timeout_ms'
+                            : key === 'maxRetries'
+                              ? 'max_retries'
+                              : key === 'delayMs'
+                                ? 'delay_ms'
+                                : key === 'currentUrl'
+                                  ? 'current_url'
+                                  : key === 'progressPercentage'
+                                    ? 'progress_percentage'
+                                    : key
 
         setClause.push(`${dbKey} = $${paramIndex}`)
-        
+
         if (['errors', 'sessionConfig'].includes(key)) {
           values.push(JSON.stringify(value))
         } else {
@@ -597,7 +621,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
   async deleteSession(id: string): Promise<void> {
     const query = 'DELETE FROM scraping_sessions WHERE id = $1'
-    
+
     try {
       await this.query(query, [id])
       logger.info('PostgreSQL', `Deleted session: ${id}`)
@@ -661,7 +685,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   // Settings operations
   async getSetting(key: string): Promise<any | null> {
     const query = 'SELECT * FROM app_settings WHERE key = $1'
-    
+
     try {
       const result = await this.query(query, [key])
       if (result.rows.length === 0) {
@@ -707,7 +731,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   }
 
   async setSetting(key: string, value: any, type?: string): Promise<void> {
-    const valueType = type || (typeof value)
+    const valueType = type || typeof value
     const stringValue = valueType === 'json' ? JSON.stringify(value) : String(value)
 
     const query = `
@@ -789,7 +813,7 @@ export class PostgreSQLDatabase implements DatabaseInterface {
 
     try {
       const results = await Promise.all(queries.map(q => this.query(q)))
-      
+
       return {
         campaigns: parseInt(results[0].rows[0].campaigns),
         businesses: parseInt(results[1].rows[0].businesses),

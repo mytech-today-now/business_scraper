@@ -36,7 +36,7 @@ export class BBBScrapingService {
     }
 
     logger.info('BBBScraping', 'Initializing Puppeteer browser')
-    
+
     this.browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -48,8 +48,8 @@ export class BBBScrapingService {
         '--no-zygote',
         '--disable-gpu',
         '--disable-web-security',
-        '--disable-features=VizDisplayCompositor'
-      ]
+        '--disable-features=VizDisplayCompositor',
+      ],
     })
 
     return this.browser
@@ -61,19 +61,21 @@ export class BBBScrapingService {
   private async createPage(): Promise<Page> {
     const browser = await this.initBrowser()
     const page = await browser.newPage()
-    
+
     // Set realistic user agent and viewport
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    )
     await page.setViewport({ width: 1366, height: 768 })
-    
+
     // Set extra headers to appear more like a real browser
     await page.setExtraHTTPHeaders({
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
       'Accept-Language': 'en-US,en;q=0.5',
       'Accept-Encoding': 'gzip, deflate',
-      'DNT': '1',
-      'Connection': 'keep-alive',
-      'Upgrade-Insecure-Requests': '1'
+      DNT: '1',
+      Connection: 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
     })
 
     return page
@@ -85,13 +87,13 @@ export class BBBScrapingService {
   private async rateLimit(): Promise<void> {
     const now = Date.now()
     const timeSinceLastRequest = now - this.lastRequestTime
-    
+
     if (timeSinceLastRequest < this.minDelay) {
       const delay = this.minDelay - timeSinceLastRequest
       logger.info('BBBScraping', `Rate limiting: waiting ${delay}ms`)
       await new Promise(resolve => setTimeout(resolve, delay))
     }
-    
+
     this.lastRequestTime = Date.now()
     this.requestCount++
   }
@@ -101,8 +103,11 @@ export class BBBScrapingService {
    */
   async searchBusinesses(options: BBBSearchOptions): Promise<BBBBusinessResult[]> {
     const { query, location, accreditedOnly, zipRadius, maxResults } = options
-    
-    logger.info('BBBScraping', `Starting BBB search: ${query} in ${location} (accredited: ${accreditedOnly}, radius: ${zipRadius}mi)`)
+
+    logger.info(
+      'BBBScraping',
+      `Starting BBB search: ${query} in ${location} (accredited: ${accreditedOnly}, radius: ${zipRadius}mi)`
+    )
 
     let page: Page | null = null
     let retries = 0
@@ -110,30 +115,33 @@ export class BBBScrapingService {
     while (retries < this.maxRetries) {
       try {
         await this.rateLimit()
-        
+
         page = await this.createPage()
-        
+
         // Build BBB search URL
         const bbbSearchUrl = new URL('https://www.bbb.org/search')
         bbbSearchUrl.searchParams.set('find_country', 'USA')
         bbbSearchUrl.searchParams.set('find_text', query)
         bbbSearchUrl.searchParams.set('find_loc', location)
-        
+
         if (accreditedOnly) {
           bbbSearchUrl.searchParams.set('find_type', 'accredited')
         }
 
         logger.info('BBBScraping', `Navigating to: ${bbbSearchUrl.toString()}`)
-        
+
         // Navigate to BBB search page
-        await page.goto(bbbSearchUrl.toString(), { 
+        await page.goto(bbbSearchUrl.toString(), {
           waitUntil: 'networkidle2',
-          timeout: 30000 
+          timeout: 30000,
         })
 
         // Wait for search results to load - updated selectors for current BBB structure
         try {
-          await page.waitForSelector('section[aria-label="Search results"], .search-results, h3 a[href*="/profile/"]', { timeout: 15000 })
+          await page.waitForSelector(
+            'section[aria-label="Search results"], .search-results, h3 a[href*="/profile/"]',
+            { timeout: 15000 }
+          )
           logger.info('BBBScraping', 'Search results page loaded successfully')
         } catch (error) {
           logger.warn('BBBScraping', 'Search results selector not found, proceeding anyway')
@@ -142,7 +150,7 @@ export class BBBScrapingService {
 
         // Extract business information from search results
         const businesses = await this.extractBusinessListings(page, maxResults)
-        
+
         if (businesses.length === 0) {
           logger.warn('BBBScraping', 'No businesses found on search page')
           await page.close()
@@ -152,28 +160,34 @@ export class BBBScrapingService {
         logger.info('BBBScraping', `Found ${businesses.length} businesses on search page`)
 
         // Extract actual business websites from BBB profile pages
-        const businessesWithWebsites = await this.extractBusinessWebsites(page, businesses, maxResults)
+        const businessesWithWebsites = await this.extractBusinessWebsites(
+          page,
+          businesses,
+          maxResults
+        )
 
         // Filter businesses by ZIP radius if specified
         const filteredBusinesses = await this.filterByZipRadius(businessesWithWebsites, options)
 
         await page.close()
 
-        logger.info('BBBScraping', `Successfully extracted ${filteredBusinesses.length} business websites (${businessesWithWebsites.length} before radius filtering)`)
+        logger.info(
+          'BBBScraping',
+          `Successfully extracted ${filteredBusinesses.length} business websites (${businessesWithWebsites.length} before radius filtering)`
+        )
         return filteredBusinesses
-
       } catch (error) {
         retries++
         logger.warn('BBBScraping', `Attempt ${retries} failed`, error)
-        
+
         if (page) {
           await page.close().catch(() => {})
         }
-        
+
         if (retries >= this.maxRetries) {
           throw new Error(`BBB scraping failed after ${this.maxRetries} attempts: ${error}`)
         }
-        
+
         // Exponential backoff
         const delay = Math.pow(2, retries) * 1000
         logger.info('BBBScraping', `Retrying in ${delay}ms`)
@@ -188,13 +202,14 @@ export class BBBScrapingService {
    * Extract business listings from BBB search results page
    */
   private async extractBusinessListings(page: Page, maxResults: number): Promise<any[]> {
-    return await page.evaluate((maxResults) => {
+    return await page.evaluate(maxResults => {
       const businesses: any[] = []
 
       // Look for the search results section first
-      const searchResultsSection = document.querySelector('section[aria-label="Search results"]') ||
-                                   document.querySelector('.search-results') ||
-                                   document.querySelector('[data-testid="search-results"]')
+      const searchResultsSection =
+        document.querySelector('section[aria-label="Search results"]') ||
+        document.querySelector('.search-results') ||
+        document.querySelector('[data-testid="search-results"]')
 
       if (!searchResultsSection) {
         console.log('No search results section found')
@@ -207,13 +222,15 @@ export class BBBScrapingService {
         'article h3 a[href*="/profile/"]',
         'div h3 a[href*="/profile/"]',
         'h3 a[href*="/profile/"]',
-        'a[href*="/profile/"]'
+        'a[href*="/profile/"]',
       ]
 
       let businessLinks: NodeListOf<HTMLAnchorElement> | null = null
 
       for (const selector of businessSelectors) {
-        businessLinks = searchResultsSection.querySelectorAll(selector) as NodeListOf<HTMLAnchorElement>
+        businessLinks = searchResultsSection.querySelectorAll(
+          selector
+        ) as NodeListOf<HTMLAnchorElement>
         if (businessLinks.length > 0) {
           console.log(`Found ${businessLinks.length} business links using selector: ${selector}`)
           break
@@ -234,16 +251,17 @@ export class BBBScrapingService {
 
         const businessName = link.textContent?.trim() || ''
         const profileUrl = link.getAttribute('href') || ''
-        const fullProfileUrl = profileUrl.startsWith('/') ? `https://www.bbb.org${profileUrl}` : profileUrl
+        const fullProfileUrl = profileUrl.startsWith('/')
+          ? `https://www.bbb.org${profileUrl}`
+          : profileUrl
 
         if (!businessName || !fullProfileUrl) {
           continue
         }
 
         // Find the parent container for this business to extract additional info
-        const businessContainer = link.closest('article') ||
-                               link.closest('div[class*="result"]') ||
-                               link.closest('div')
+        const businessContainer =
+          link.closest('article') || link.closest('div[class*="result"]') || link.closest('div')
 
         let address = ''
         let phone = ''
@@ -254,7 +272,7 @@ export class BBBScrapingService {
           for (const element of addressElements) {
             const text = element.textContent?.trim() || ''
             // Look for patterns that indicate an address (contains street number, state, zip)
-            if (text.match(/\d+.*[A-Z]{2}\s+\d{5}/) || text.includes(',') && text.length > 10) {
+            if (text.match(/\d+.*[A-Z]{2}\s+\d{5}/) || (text.includes(',') && text.length > 10)) {
               address = text
               break
             }
@@ -272,7 +290,7 @@ export class BBBScrapingService {
           bbbProfileUrl: fullProfileUrl,
           address: address,
           phone: phone,
-          snippet: `${businessName}${address ? ' - ' + address : ''}`.trim()
+          snippet: `${businessName}${address ? ' - ' + address : ''}`.trim(),
         })
 
         console.log(`Extracted business: ${businessName} -> ${fullProfileUrl}`)
@@ -286,26 +304,33 @@ export class BBBScrapingService {
   /**
    * Extract business websites from BBB profile pages
    */
-  private async extractBusinessWebsites(page: Page, businesses: any[], maxResults: number): Promise<BBBBusinessResult[]> {
+  private async extractBusinessWebsites(
+    page: Page,
+    businesses: any[],
+    maxResults: number
+  ): Promise<BBBBusinessResult[]> {
     const businessesWithWebsites: BBBBusinessResult[] = []
-    
+
     // Limit to first 5 businesses to avoid too many requests
     const businessesToProcess = businesses.slice(0, Math.min(5, maxResults))
-    
+
     for (const business of businessesToProcess) {
       try {
         await this.rateLimit()
-        
+
         logger.info('BBBScraping', `Extracting website from: ${business.bbbProfileUrl}`)
-        
-        await page.goto(business.bbbProfileUrl, { 
+
+        await page.goto(business.bbbProfileUrl, {
           waitUntil: 'networkidle2',
-          timeout: 20000 
+          timeout: 20000,
         })
 
         // Wait for profile page to load
         try {
-          await page.waitForSelector('main, .business-details, .business-info, .contact-info, .business-profile, h1', { timeout: 10000 })
+          await page.waitForSelector(
+            'main, .business-details, .business-info, .contact-info, .business-profile, h1',
+            { timeout: 10000 }
+          )
           logger.info('BBBScraping', 'Business profile page loaded successfully')
         } catch (error) {
           logger.warn('BBBScraping', 'Profile page selector not found, proceeding anyway')
@@ -331,7 +356,7 @@ export class BBBScrapingService {
             // Look for links in business details sections
             '.business-details a[href^="http"]',
             '.business-info a[href^="http"]',
-            '.contact-details a[href^="http"]'
+            '.contact-details a[href^="http"]',
           ]
 
           for (const selector of websiteSelectors) {
@@ -339,17 +364,19 @@ export class BBBScrapingService {
             console.log(`Checking selector "${selector}": found ${links.length} links`)
 
             for (const link of links) {
-              if (link.href &&
-                  !link.href.includes('bbb.org') &&
-                  !link.href.includes('mailto:') &&
-                  !link.href.includes('tel:') &&
-                  !link.href.includes('facebook.com') &&
-                  !link.href.includes('twitter.com') &&
-                  !link.href.includes('linkedin.com') &&
-                  !link.href.includes('instagram.com') &&
-                  !link.href.includes('youtube.com') &&
-                  !link.href.includes('yelp.com') &&
-                  !link.href.includes('google.com')) {
+              if (
+                link.href &&
+                !link.href.includes('bbb.org') &&
+                !link.href.includes('mailto:') &&
+                !link.href.includes('tel:') &&
+                !link.href.includes('facebook.com') &&
+                !link.href.includes('twitter.com') &&
+                !link.href.includes('linkedin.com') &&
+                !link.href.includes('instagram.com') &&
+                !link.href.includes('youtube.com') &&
+                !link.href.includes('yelp.com') &&
+                !link.href.includes('google.com')
+              ) {
                 console.log(`Found potential website: ${link.href}`)
                 return link.href
               }
@@ -357,7 +384,9 @@ export class BBBScrapingService {
           }
 
           // If no direct website links found, look for any external links in the page content
-          const allLinks = Array.from(document.querySelectorAll('a[href^="http"]')) as HTMLAnchorElement[]
+          const allLinks = Array.from(
+            document.querySelectorAll('a[href^="http"]')
+          ) as HTMLAnchorElement[]
           console.log(`Checking all ${allLinks.length} external links as fallback...`)
 
           for (const link of allLinks) {
@@ -365,24 +394,28 @@ export class BBBScrapingService {
             const linkText = link.textContent?.toLowerCase() || ''
 
             // Skip social media, BBB, and other non-business sites
-            if (href.includes('bbb.org') ||
-                href.includes('facebook.com') ||
-                href.includes('twitter.com') ||
-                href.includes('linkedin.com') ||
-                href.includes('instagram.com') ||
-                href.includes('youtube.com') ||
-                href.includes('yelp.com') ||
-                href.includes('google.com') ||
-                href.includes('mailto:') ||
-                href.includes('tel:')) {
+            if (
+              href.includes('bbb.org') ||
+              href.includes('facebook.com') ||
+              href.includes('twitter.com') ||
+              href.includes('linkedin.com') ||
+              href.includes('instagram.com') ||
+              href.includes('youtube.com') ||
+              href.includes('yelp.com') ||
+              href.includes('google.com') ||
+              href.includes('mailto:') ||
+              href.includes('tel:')
+            ) {
               continue
             }
 
             // Look for links that might be business websites
-            if (linkText.includes('website') ||
-                linkText.includes('visit') ||
-                linkText.includes('www.') ||
-                href.match(/^https?:\/\/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/)) {
+            if (
+              linkText.includes('website') ||
+              linkText.includes('visit') ||
+              linkText.includes('www.') ||
+              href.match(/^https?:\/\/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/)
+            ) {
               console.log(`Found fallback website: ${href}`)
               return href
             }
@@ -400,14 +433,13 @@ export class BBBScrapingService {
             domain: new URL(websiteUrl).hostname,
             address: business.address,
             phone: business.phone,
-            bbbProfileUrl: business.bbbProfileUrl
+            bbbProfileUrl: business.bbbProfileUrl,
           })
-          
+
           logger.info('BBBScraping', `Extracted website: ${websiteUrl} for ${business.name}`)
         } else {
           logger.warn('BBBScraping', `No website found for ${business.name}`)
         }
-        
       } catch (error) {
         logger.warn('BBBScraping', `Failed to extract website for ${business.name}`, error)
         continue
@@ -454,11 +486,11 @@ export class BBBScrapingService {
         if (isWithinRadius) {
           filteredBusinesses.push(business)
         } else {
-          logger.info('BBBScraping',
+          logger.info(
+            'BBBScraping',
             `Filtered out ${business.title} - outside ${options.zipRadius}mi radius from ${centerZip}`
           )
         }
-
       } catch (error) {
         logger.warn('BBBScraping', `Error filtering business ${business.title}`, error)
         // Include business if filtering fails
@@ -466,7 +498,8 @@ export class BBBScrapingService {
       }
     }
 
-    logger.info('BBBScraping',
+    logger.info(
+      'BBBScraping',
       `ZIP radius filtering: ${filteredBusinesses.length}/${businesses.length} businesses within ${options.zipRadius}mi of ${centerZip}`
     )
 
@@ -491,7 +524,7 @@ export class BBBScrapingService {
     return {
       requestCount: this.requestCount,
       lastRequestTime: this.lastRequestTime,
-      browserActive: !!this.browser
+      browserActive: !!this.browser,
     }
   }
 }

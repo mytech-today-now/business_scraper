@@ -11,10 +11,10 @@ module.exports = {
   theme: {
     // Mobile-first breakpoints (default Tailwind, but explicitly defined)
     screens: {
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
       '2xl': '1536px',
     },
     extend: {
@@ -79,20 +79,20 @@ module.exports = {
       },
       // Mobile-first spacing and sizing
       spacing: {
-        'touch': '44px', // Minimum touch target size
+        touch: '44px', // Minimum touch target size
         'safe-top': 'env(safe-area-inset-top)',
         'safe-bottom': 'env(safe-area-inset-bottom)',
         'safe-left': 'env(safe-area-inset-left)',
         'safe-right': 'env(safe-area-inset-right)',
       },
       minHeight: {
-        'touch': '44px',
+        touch: '44px',
         'screen-safe': 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
       },
       maxWidth: {
-        'mobile': '100vw',
-        'tablet': '768px',
-        'desktop': '1024px',
+        mobile: '100vw',
+        tablet: '768px',
+        desktop: '1024px',
       },
     },
   },

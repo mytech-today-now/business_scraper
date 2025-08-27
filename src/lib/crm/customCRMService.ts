@@ -11,7 +11,7 @@ import {
   CRMWebhookSubscription,
   CustomCRMAdapter,
   CRMEndpoint,
-  ResponseMapping
+  ResponseMapping,
 } from '@/types/crm'
 import { BaseCRMService } from './baseCRMService'
 import { logger } from '@/utils/logger'
@@ -23,12 +23,12 @@ export class CustomCRMService extends BaseCRMService {
   async initialize(): Promise<void> {
     try {
       logger.info('CustomCRMService', 'Initializing Custom CRM service', {
-        providerId: this.provider.id
+        providerId: this.provider.id,
       })
 
       // Load custom adapter configuration
       this.adapter = this.provider.configuration as any as CustomCRMAdapter
-      
+
       if (!this.adapter) {
         throw new Error('Custom CRM adapter configuration not found')
       }
@@ -49,7 +49,7 @@ export class CustomCRMService extends BaseCRMService {
       }
 
       const auth = this.adapter.authentication
-      
+
       switch (auth.type) {
         case 'oauth2':
           return await this.authenticateOAuth2()
@@ -72,7 +72,7 @@ export class CustomCRMService extends BaseCRMService {
     try {
       const auth = this.adapter!.authentication
       const tokenEndpoint = this.findEndpoint('token') || this.findEndpoint('auth')
-      
+
       if (!tokenEndpoint) {
         throw new Error('Token endpoint not found in adapter configuration')
       }
@@ -80,7 +80,7 @@ export class CustomCRMService extends BaseCRMService {
       const response = await this.makeCustomApiCall(tokenEndpoint, {
         grant_type: 'client_credentials',
         client_id: auth.credentials.clientId,
-        client_secret: auth.credentials.clientSecret
+        client_secret: auth.credentials.clientSecret,
       })
 
       if (response.ok) {
@@ -101,7 +101,7 @@ export class CustomCRMService extends BaseCRMService {
     try {
       const auth = this.adapter!.authentication
       this.authToken = auth.credentials.apiKey
-      
+
       // Test the API key with a validation endpoint
       const isValid = await this.validateConnection()
       if (isValid) {
@@ -119,9 +119,11 @@ export class CustomCRMService extends BaseCRMService {
   private async authenticateBasic(): Promise<boolean> {
     try {
       const auth = this.adapter!.authentication
-      const credentials = Buffer.from(`${auth.credentials.username}:${auth.credentials.password}`).toString('base64')
+      const credentials = Buffer.from(
+        `${auth.credentials.username}:${auth.credentials.password}`
+      ).toString('base64')
       this.authToken = `Basic ${credentials}`
-      
+
       const isValid = await this.validateConnection()
       if (isValid) {
         logger.info('CustomCRMService', 'Basic authentication successful')
@@ -152,8 +154,9 @@ export class CustomCRMService extends BaseCRMService {
         return false
       }
 
-      const testEndpoint = this.findEndpoint('test') || this.findEndpoint('validate') || this.findEndpoint('me')
-      
+      const testEndpoint =
+        this.findEndpoint('test') || this.findEndpoint('validate') || this.findEndpoint('me')
+
       if (!testEndpoint) {
         // If no test endpoint, assume connection is valid if we have a token
         return !!this.authToken
@@ -182,8 +185,12 @@ export class CustomCRMService extends BaseCRMService {
       // Check for duplicates
       const duplicateIds = await this.checkForDuplicates(record)
       if (duplicateIds.length > 0) {
-        return this.createSyncRecord(record, 'conflict', undefined, 
-          `Duplicate records found: ${duplicateIds.join(', ')}`)
+        return this.createSyncRecord(
+          record,
+          'conflict',
+          undefined,
+          `Duplicate records found: ${duplicateIds.join(', ')}`
+        )
       }
 
       // Map business record to target format
@@ -191,7 +198,7 @@ export class CustomCRMService extends BaseCRMService {
 
       // Find create endpoint
       const createEndpoint = this.findEndpoint('create') || this.findEndpoint('post')
-      
+
       if (!createEndpoint) {
         throw new Error('Create endpoint not found in adapter configuration')
       }
@@ -201,7 +208,7 @@ export class CustomCRMService extends BaseCRMService {
       if (response.ok) {
         const responseData = await response.json()
         const targetRecordId = this.extractRecordId(responseData, createEndpoint.responseMapping)
-        
+
         return this.createSyncRecord(record, 'synced', targetRecordId)
       } else {
         const errorText = await response.text()
@@ -222,7 +229,7 @@ export class CustomCRMService extends BaseCRMService {
 
       // Check if adapter supports batch operations
       const batchEndpoint = this.findEndpoint('batch') || this.findEndpoint('bulk')
-      
+
       if (batchEndpoint) {
         // Use batch endpoint
         const batchResults = await this.processBatchSync(records, batchEndpoint)
@@ -230,12 +237,12 @@ export class CustomCRMService extends BaseCRMService {
       } else {
         // Process individually
         const batchSize = this.provider.configuration.syncSettings.batchSize || 5
-        
+
         for (let i = 0; i < records.length; i += batchSize) {
           const batch = records.slice(i, i + batchSize)
           const batchResults = await this.processBatch(
             batch,
-            (record) => this.syncBusinessRecord(record),
+            record => this.syncBusinessRecord(record),
             batchSize
           )
           syncRecords.push(...batchResults)
@@ -255,7 +262,7 @@ export class CustomCRMService extends BaseCRMService {
         totalRecords: records.length,
         successfulRecords,
         failedRecords,
-        errors: []
+        errors: [],
       }
     } catch (error) {
       logger.error('CustomCRMService', 'Batch sync failed', error)
@@ -270,13 +277,13 @@ export class CustomCRMService extends BaseCRMService {
       }
 
       const listEndpoint = this.findEndpoint('list') || this.findEndpoint('get')
-      
+
       if (!listEndpoint) {
         throw new Error('List endpoint not found in adapter configuration')
       }
 
       const params: Record<string, any> = {}
-      
+
       if (since) {
         // Add since parameter based on endpoint configuration
         params.since = since.toISOString()
@@ -301,14 +308,14 @@ export class CustomCRMService extends BaseCRMService {
   async setupWebhooks(): Promise<CRMWebhookSubscription[]> {
     try {
       logger.info('CustomCRMService', 'Setting up Custom CRM webhooks')
-      
+
       const webhookUrl = this.provider.configuration.webhookUrl
       if (!webhookUrl) {
         throw new Error('Webhook URL not configured')
       }
 
       const webhookEndpoint = this.findEndpoint('webhook') || this.findEndpoint('subscribe')
-      
+
       if (!webhookEndpoint) {
         logger.warn('CustomCRMService', 'Webhook endpoint not found in adapter configuration')
         return []
@@ -320,7 +327,7 @@ export class CustomCRMService extends BaseCRMService {
       const webhookData = {
         url: webhookUrl,
         events: ['create', 'update', 'delete'],
-        active: true
+        active: true,
       }
 
       const response = await this.makeCustomApiCall(webhookEndpoint, webhookData)
@@ -328,7 +335,7 @@ export class CustomCRMService extends BaseCRMService {
       if (response.ok) {
         const data = await response.json()
         const subscriptionId = this.extractRecordId(data, webhookEndpoint.responseMapping)
-        
+
         subscriptions.push({
           id: subscriptionId || `custom-webhook-${Date.now()}`,
           crmProviderId: this.provider.id,
@@ -337,7 +344,7 @@ export class CustomCRMService extends BaseCRMService {
           isActive: true,
           secret: this.adapter?.authentication.credentials.webhookSecret || '',
           createdAt: new Date(),
-          lastTriggeredAt: undefined
+          lastTriggeredAt: undefined,
         })
       }
 
@@ -353,7 +360,7 @@ export class CustomCRMService extends BaseCRMService {
       logger.info('CustomCRMService', 'Handling Custom CRM webhook event', {
         eventType: event.eventType,
         objectType: event.objectType,
-        objectId: event.objectId
+        objectId: event.objectId,
       })
 
       // Validate webhook signature if configured
@@ -364,7 +371,7 @@ export class CustomCRMService extends BaseCRMService {
           event.signature,
           webhookSecret
         )
-        
+
         if (!isValid) {
           throw new Error('Invalid webhook signature')
         }
@@ -388,12 +395,15 @@ export class CustomCRMService extends BaseCRMService {
   }
 
   private findEndpoint(name: string): CRMEndpoint | undefined {
-    return this.adapter?.endpoints.find(endpoint => 
+    return this.adapter?.endpoints.find(endpoint =>
       endpoint.name.toLowerCase().includes(name.toLowerCase())
     )
   }
 
-  private async makeCustomApiCall(endpoint: CRMEndpoint, data?: Record<string, any>): Promise<Response> {
+  private async makeCustomApiCall(
+    endpoint: CRMEndpoint,
+    data?: Record<string, any>
+  ): Promise<Response> {
     if (!this.authToken) {
       throw new Error('Not authenticated')
     }
@@ -429,7 +439,7 @@ export class CustomCRMService extends BaseCRMService {
 
     const options: RequestInit = {
       method: endpoint.method,
-      headers
+      headers,
     }
 
     // Add body for non-GET requests
@@ -451,7 +461,7 @@ export class CustomCRMService extends BaseCRMService {
     }
 
     const mapped: Record<string, any> = {}
-    
+
     for (const mapping of this.adapter.dataMapping.businessToTarget) {
       const sourceValue = this.getNestedValue(record, mapping.sourceField)
       if (sourceValue !== undefined) {
@@ -473,7 +483,9 @@ export class CustomCRMService extends BaseCRMService {
   private transformValue(value: any, transformation?: string, dataType?: string): any {
     // Apply transformations defined in the adapter
     if (transformation) {
-      const transform = this.adapter?.dataMapping.transformations.find(t => t.name === transformation)
+      const transform = this.adapter?.dataMapping.transformations.find(
+        t => t.name === transformation
+      )
       if (transform) {
         // Execute transformation logic
         // This would be implemented based on the transformation type
@@ -507,12 +519,18 @@ export class CustomCRMService extends BaseCRMService {
     return this.getNestedValue(responseData, idPath)
   }
 
-  private mapCustomRecordsToBusinessRecords(data: any, responseMapping: ResponseMapping): BusinessRecord[] {
+  private mapCustomRecordsToBusinessRecords(
+    data: any,
+    responseMapping: ResponseMapping
+  ): BusinessRecord[] {
     const records = this.getNestedValue(data, responseMapping.dataPath) || []
-    
+
     return records.map((record: any) => ({
-      id: this.getNestedValue(record, 'id') || `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      businessName: this.getNestedValue(record, 'name') || this.getNestedValue(record, 'company') || '',
+      id:
+        this.getNestedValue(record, 'id') ||
+        `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      businessName:
+        this.getNestedValue(record, 'name') || this.getNestedValue(record, 'company') || '',
       email: this.getNestedValue(record, 'email') ? [this.getNestedValue(record, 'email')] : [],
       phone: this.getNestedValue(record, 'phone'),
       websiteUrl: this.getNestedValue(record, 'website') || '',
@@ -520,11 +538,15 @@ export class CustomCRMService extends BaseCRMService {
         street: this.getNestedValue(record, 'address.street') || '',
         city: this.getNestedValue(record, 'address.city') || '',
         state: this.getNestedValue(record, 'address.state') || '',
-        zipCode: this.getNestedValue(record, 'address.zipCode') || ''
+        zipCode: this.getNestedValue(record, 'address.zipCode') || '',
       },
       contactPerson: this.getNestedValue(record, 'contactPerson'),
       industry: this.getNestedValue(record, 'industry') || '',
-      scrapedAt: new Date(this.getNestedValue(record, 'updatedAt') || this.getNestedValue(record, 'createdAt') || Date.now())
+      scrapedAt: new Date(
+        this.getNestedValue(record, 'updatedAt') ||
+          this.getNestedValue(record, 'createdAt') ||
+          Date.now()
+      ),
     }))
   }
 
@@ -550,26 +572,34 @@ export class CustomCRMService extends BaseCRMService {
       syncDirection: 'push',
       lastSyncAt: new Date(),
       syncAttempts: 1,
-      errors: errorMessage ? [{
-        timestamp: new Date(),
-        errorCode: 'SYNC_ERROR',
-        errorMessage,
-        isRetryable: status !== 'conflict'
-      }] : [],
-      metadata: {}
+      errors: errorMessage
+        ? [
+            {
+              timestamp: new Date(),
+              errorCode: 'SYNC_ERROR',
+              errorMessage,
+              isRetryable: status !== 'conflict',
+            },
+          ]
+        : [],
+      metadata: {},
     }
   }
 
-  private async processBatchSync(records: BusinessRecord[], batchEndpoint: CRMEndpoint): Promise<CRMSyncRecord[]> {
+  private async processBatchSync(
+    records: BusinessRecord[],
+    batchEndpoint: CRMEndpoint
+  ): Promise<CRMSyncRecord[]> {
     const batchData = records.map(record => this.mapBusinessRecordToCustomFormat(record))
-    
+
     const response = await this.makeCustomApiCall(batchEndpoint, { records: batchData })
     const results: CRMSyncRecord[] = []
-    
+
     if (response.ok) {
       const responseData = await response.json()
-      const batchResults = this.getNestedValue(responseData, batchEndpoint.responseMapping.dataPath) || []
-      
+      const batchResults =
+        this.getNestedValue(responseData, batchEndpoint.responseMapping.dataPath) || []
+
       batchResults.forEach((result: any, index: number) => {
         const targetRecordId = this.extractRecordId(result, batchEndpoint.responseMapping)
         results.push(this.createSyncRecord(records[index], 'synced', targetRecordId))
@@ -587,7 +617,7 @@ export class CustomCRMService extends BaseCRMService {
   private async handleRecordUpdate(event: CRMWebhookEvent): Promise<void> {
     logger.info('CustomCRMService', 'Processing record update', {
       objectId: event.objectId,
-      objectType: event.objectType
+      objectType: event.objectType,
     })
     // Implementation for handling record updates
   }
@@ -595,7 +625,7 @@ export class CustomCRMService extends BaseCRMService {
   private async handleRecordDeletion(event: CRMWebhookEvent): Promise<void> {
     logger.info('CustomCRMService', 'Processing record deletion', {
       objectId: event.objectId,
-      objectType: event.objectType
+      objectType: event.objectType,
     })
     // Implementation for handling record deletions
   }

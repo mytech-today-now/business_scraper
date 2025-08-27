@@ -18,12 +18,7 @@ import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
-import {
-  formatBusinessName,
-  formatAddress,
-  formatPhoneNumber,
-  formatUrl
-} from '@/utils/formatters'
+import { formatBusinessName, formatAddress, formatPhoneNumber, formatUrl } from '@/utils/formatters'
 import { clsx } from 'clsx'
 import { usePerformance } from '@/controller/PerformanceContext'
 import { DEFAULT_PAGINATION_CONFIG } from '@/types/performance'
@@ -80,7 +75,7 @@ export function PaginatedResultsTable({
   className,
 }: PaginatedResultsTableProps) {
   const { preferences, currentPage, setCurrentPage } = usePerformance()
-  
+
   // State management
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' })
   const [filterConfig, setFilterConfig] = useState<FilterConfig>({
@@ -90,7 +85,9 @@ export function PaginatedResultsTable({
     hasPhone: null,
   })
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
-  const [pageSize, setPageSize] = useState(preferences.pageSize || DEFAULT_PAGINATION_CONFIG.pageSize)
+  const [pageSize, setPageSize] = useState(
+    preferences.pageSize || DEFAULT_PAGINATION_CONFIG.pageSize
+  )
 
   // Filtered and sorted data
   const filteredAndSortedBusinesses = useMemo(() => {
@@ -99,11 +96,12 @@ export function PaginatedResultsTable({
     // Apply filters
     if (filterConfig.search) {
       const searchLower = filterConfig.search.toLowerCase()
-      filtered = filtered.filter(business =>
-        business.businessName.toLowerCase().includes(searchLower) ||
-        business.address.toLowerCase().includes(searchLower) ||
-        business.email?.toLowerCase().includes(searchLower) ||
-        business.phone?.includes(filterConfig.search)
+      filtered = filtered.filter(
+        business =>
+          business.businessName.toLowerCase().includes(searchLower) ||
+          business.address.toLowerCase().includes(searchLower) ||
+          business.email?.toLowerCase().includes(searchLower) ||
+          business.phone?.includes(filterConfig.search)
       )
     }
 
@@ -130,10 +128,10 @@ export function PaginatedResultsTable({
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key!]
         const bValue = b[sortConfig.key!]
-        
+
         if (aValue === null || aValue === undefined) return 1
         if (bValue === null || bValue === undefined) return -1
-        
+
         if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
         if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
         return 0
@@ -150,7 +148,8 @@ export function PaginatedResultsTable({
   const currentPageData = filteredAndSortedBusinesses.slice(startIndex, endIndex)
 
   // Selection handlers
-  const allSelected = currentPageData.length > 0 && currentPageData.every(b => selectedRows.has(b.id))
+  const allSelected =
+    currentPageData.length > 0 && currentPageData.every(b => selectedRows.has(b.id))
   const someSelected = currentPageData.some(b => selectedRows.has(b.id)) && !allSelected
 
   const handleSort = useCallback((key: keyof BusinessRecord) => {
@@ -172,30 +171,39 @@ export function PaginatedResultsTable({
     })
   }, [])
 
-  const handleSelectAll = useCallback((selected: boolean) => {
-    if (selected) {
-      setSelectedRows(prev => {
-        const newSet = new Set(prev)
-        currentPageData.forEach(business => newSet.add(business.id))
-        return newSet
-      })
-    } else {
-      setSelectedRows(prev => {
-        const newSet = new Set(prev)
-        currentPageData.forEach(business => newSet.delete(business.id))
-        return newSet
-      })
-    }
-  }, [currentPageData])
+  const handleSelectAll = useCallback(
+    (selected: boolean) => {
+      if (selected) {
+        setSelectedRows(prev => {
+          const newSet = new Set(prev)
+          currentPageData.forEach(business => newSet.add(business.id))
+          return newSet
+        })
+      } else {
+        setSelectedRows(prev => {
+          const newSet = new Set(prev)
+          currentPageData.forEach(business => newSet.delete(business.id))
+          return newSet
+        })
+      }
+    },
+    [currentPageData]
+  )
 
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)))
-  }, [setCurrentPage, totalPages])
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setCurrentPage(Math.max(1, Math.min(page, totalPages)))
+    },
+    [setCurrentPage, totalPages]
+  )
 
-  const handlePageSizeChange = useCallback((newPageSize: number) => {
-    setPageSize(newPageSize)
-    setCurrentPage(1) // Reset to first page when changing page size
-  }, [setCurrentPage])
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => {
+      setPageSize(newPageSize)
+      setCurrentPage(1) // Reset to first page when changing page size
+    },
+    [setCurrentPage]
+  )
 
   /**
    * Render sortable column header
@@ -207,11 +215,12 @@ export function PaginatedResultsTable({
       onClick={() => handleSort(key)}
     >
       {label}
-      {sortConfig.key === key && (
-        sortConfig.direction === 'asc' ? 
-          <SortAsc className="h-3 w-3" /> : 
+      {sortConfig.key === key &&
+        (sortConfig.direction === 'asc' ? (
+          <SortAsc className="h-3 w-3" />
+        ) : (
           <SortDesc className="h-3 w-3" />
-      )}
+        ))}
     </button>
   )
 
@@ -225,17 +234,19 @@ export function PaginatedResultsTable({
           Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedBusinesses.length)} of{' '}
           {filteredAndSortedBusinesses.length} results
         </span>
-        
+
         {DEFAULT_PAGINATION_CONFIG.showPageSizeSelector && (
           <div className="flex items-center gap-2">
             <span>Show:</span>
             <select
               value={pageSize}
-              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              onChange={e => handlePageSizeChange(Number(e.target.value))}
               className="border rounded px-2 py-1 text-sm bg-background"
             >
               {DEFAULT_PAGINATION_CONFIG.pageSizeOptions.map(size => (
-                <option key={size} value={size}>{size}</option>
+                <option key={size} value={size}>
+                  {size}
+                </option>
               ))}
             </select>
             <span>per page</span>
@@ -253,7 +264,7 @@ export function PaginatedResultsTable({
         >
           <ChevronsLeft className="h-4 w-4" />
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
@@ -280,7 +291,7 @@ export function PaginatedResultsTable({
             return (
               <Button
                 key={pageNum}
-                variant={currentPage === pageNum ? "default" : "outline"}
+                variant={currentPage === pageNum ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => handlePageChange(pageNum)}
                 className="h-8 w-8 p-0"
@@ -300,7 +311,7 @@ export function PaginatedResultsTable({
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
@@ -319,7 +330,7 @@ export function PaginatedResultsTable({
               min={1}
               max={totalPages}
               value={currentPage}
-              onChange={(e) => {
+              onChange={e => {
                 const page = parseInt(e.target.value)
                 if (!isNaN(page)) {
                   handlePageChange(page)
@@ -356,9 +367,7 @@ export function PaginatedResultsTable({
 
           <div className="flex items-center gap-2">
             {selectedRows.size > 0 && (
-              <span className="text-sm text-muted-foreground">
-                {selectedRows.size} selected
-              </span>
+              <span className="text-sm text-muted-foreground">{selectedRows.size} selected</span>
             )}
             {onExport && (
               <Button
@@ -378,7 +387,7 @@ export function PaginatedResultsTable({
             <Input
               placeholder="Search businesses..."
               value={filterConfig.search}
-              onChange={(e) => setFilterConfig(prev => ({ ...prev, search: e.target.value }))}
+              onChange={e => setFilterConfig(prev => ({ ...prev, search: e.target.value }))}
               className="max-w-sm"
             />
           </div>
@@ -400,10 +409,10 @@ export function PaginatedResultsTable({
                     <input
                       type="checkbox"
                       checked={allSelected}
-                      ref={(el) => {
+                      ref={el => {
                         if (el) el.indeterminate = someSelected
                       }}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      onChange={e => handleSelectAll(e.target.checked)}
                       className="rounded"
                       title="Select all on this page"
                     />
@@ -432,25 +441,26 @@ export function PaginatedResultsTable({
                     </td>
                   </tr>
                 ) : (
-                  currentPageData.map((business) => (
+                  currentPageData.map(business => (
                     <tr
                       key={business.id}
-                      className={clsx(
-                        'border-b hover:bg-muted/50 transition-colors',
-                        { 'bg-primary/5': selectedRows.has(business.id) }
-                      )}
+                      className={clsx('border-b hover:bg-muted/50 transition-colors', {
+                        'bg-primary/5': selectedRows.has(business.id),
+                      })}
                     >
                       <td className="p-3">
                         <input
                           type="checkbox"
                           checked={selectedRows.has(business.id)}
-                          onChange={(e) => handleRowSelect(business.id, e.target.checked)}
+                          onChange={e => handleRowSelect(business.id, e.target.checked)}
                           className="rounded"
                           title={`Select ${business.businessName}`}
                         />
                       </td>
                       <td className="p-3">
-                        <div className="font-medium">{formatBusinessName(business.businessName)}</div>
+                        <div className="font-medium">
+                          {formatBusinessName(business.businessName)}
+                        </div>
                         {business.website && (
                           <div className="text-xs text-muted-foreground truncate">
                             {formatUrl(business.website)}
@@ -460,9 +470,7 @@ export function PaginatedResultsTable({
                       <td className="p-3 text-sm">{business.industry || '-'}</td>
                       <td className="p-3">
                         <div className="space-y-1">
-                          {business.email && (
-                            <div className="text-sm">{business.email}</div>
-                          )}
+                          {business.email && <div className="text-sm">{business.email}</div>}
                           {business.phone && (
                             <div className="text-xs text-muted-foreground">
                               {formatPhoneNumber(business.phone)}

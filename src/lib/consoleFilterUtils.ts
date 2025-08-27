@@ -21,9 +21,9 @@ export const COMMON_CONSOLE_FILTERS = {
   PERMISSIONS_POLICY: [
     'Permissions-Policy header: Unrecognized feature',
     'interest-cohort',
-    'browsing-topics'
+    'browsing-topics',
   ],
-  
+
   // Resource loading errors
   RESOURCE_ERRORS: [
     'Failed to load resource',
@@ -35,42 +35,33 @@ export const COMMON_CONSOLE_FILTERS = {
     'favicon',
     '.ico',
     'mapkit',
-    'apple-mapkit'
+    'apple-mapkit',
   ],
-  
+
   // Preload warnings
-  PRELOAD_WARNINGS: [
-    'was preloaded using link preload but not used',
-    'preload',
-    'link preload'
-  ],
-  
+  PRELOAD_WARNINGS: ['was preloaded using link preload but not used', 'preload', 'link preload'],
+
   // DuckDuckGo specific
   DUCKDUCKGO_SPECIFIC: [
     'useTranslation: DISMISS is not available',
     'expanded-maps-vertical',
     'duckassist-ia',
-    'wpm.'
+    'wpm.',
   ],
-  
+
   // General web app noise
-  WEB_APP_NOISE: [
-    'Non-passive event listener',
-    'Violation',
-    'deprecated',
-    'DevTools'
-  ]
+  WEB_APP_NOISE: ['Non-passive event listener', 'Violation', 'deprecated', 'DevTools'],
 }
 
 /**
  * Apply console filtering to a Puppeteer page
  */
 export async function applyConsoleFiltering(
-  page: Page, 
+  page: Page,
   options: ConsoleFilterOptions = {
     filterLevel: 'moderate',
     logCriticalErrors: true,
-    logPageErrors: true
+    logPageErrors: true,
   }
 ): Promise<void> {
   const { filterLevel, logCriticalErrors, logPageErrors, customFilters = [] } = options
@@ -79,12 +70,12 @@ export async function applyConsoleFiltering(
   const filterPatterns = buildFilterPatterns(filterLevel, customFilters)
 
   // Set up console message filtering
-  page.on('console', (msg) => {
+  page.on('console', msg => {
     const text = msg.text()
     const type = msg.type()
-    
+
     // Check if message should be filtered
-    const shouldFilter = filterPatterns.some(pattern => 
+    const shouldFilter = filterPatterns.some(pattern =>
       text.toLowerCase().includes(pattern.toLowerCase())
     )
 
@@ -98,11 +89,11 @@ export async function applyConsoleFiltering(
 
   // Set up page error filtering
   if (logPageErrors) {
-    page.on('pageerror', (error) => {
+    page.on('pageerror', error => {
       const message = error.message
-      
+
       // Check if page error should be filtered
-      const shouldFilter = filterPatterns.some(pattern => 
+      const shouldFilter = filterPatterns.some(pattern =>
         message.toLowerCase().includes(pattern.toLowerCase())
       )
 
@@ -113,10 +104,10 @@ export async function applyConsoleFiltering(
   }
 
   // Handle request failures that might cause console noise
-  page.on('requestfailed', (request) => {
+  page.on('requestfailed', request => {
     const url = request.url()
     const failure = request.failure()
-    
+
     // Only log significant request failures
     if (failure && !isFilteredResource(url)) {
       logger.debug('ConsoleFilter', `Request failed: ${url} - ${failure.errorText}`)
@@ -141,7 +132,7 @@ function buildFilterPatterns(filterLevel: string, customFilters: string[]): stri
         ...COMMON_CONSOLE_FILTERS.WEB_APP_NOISE
       )
       break
-      
+
     case 'moderate':
       // Filter common noise but allow some warnings
       patterns.push(
@@ -151,7 +142,7 @@ function buildFilterPatterns(filterLevel: string, customFilters: string[]): stri
         ...COMMON_CONSOLE_FILTERS.DUCKDUCKGO_SPECIFIC
       )
       break
-      
+
     case 'minimal':
       // Only filter the most obvious noise
       patterns.push(
@@ -175,7 +166,7 @@ function isFilteredResource(url: string): boolean {
     'analytics',
     'tracking',
     'ads',
-    'doubleclick'
+    'doubleclick',
   ]
 
   return filteredPatterns.some(pattern => url.includes(pattern))
@@ -193,17 +184,12 @@ export const RESOURCE_BLOCKING_PATTERNS = {
     'apple-mapkit',
     'preload',
     'expanded-maps-vertical',
-    'duckassist-ia'
+    'duckassist-ia',
   ],
-  
+
   // Performance optimization blocks
-  PERFORMANCE_BLOCKS: [
-    'image',
-    'stylesheet', 
-    'font',
-    'media'
-  ],
-  
+  PERFORMANCE_BLOCKS: ['image', 'stylesheet', 'font', 'media'],
+
   // Privacy and tracking blocks
   TRACKING_BLOCKS: [
     'google-analytics',
@@ -212,8 +198,8 @@ export const RESOURCE_BLOCKING_PATTERNS = {
     'doubleclick',
     'adsystem',
     'analytics',
-    'tracking'
-  ]
+    'tracking',
+  ],
 }
 
 /**
@@ -224,34 +210,35 @@ export async function applyResourceBlocking(
   blockLevel: 'strict' | 'moderate' | 'minimal' = 'moderate'
 ): Promise<void> {
   await page.setRequestInterception(true)
-  
-  page.on('request', (request) => {
+
+  page.on('request', request => {
     const resourceType = request.resourceType()
     const url = request.url()
-    
+
     let shouldBlock = false
-    
+
     // Apply blocking based on level
     switch (blockLevel) {
       case 'strict':
-        shouldBlock = 
+        shouldBlock =
           RESOURCE_BLOCKING_PATTERNS.PERFORMANCE_BLOCKS.includes(resourceType) ||
           RESOURCE_BLOCKING_PATTERNS.CONSOLE_ERROR_SOURCES.some(pattern => url.includes(pattern)) ||
           RESOURCE_BLOCKING_PATTERNS.TRACKING_BLOCKS.some(pattern => url.includes(pattern))
         break
-        
+
       case 'moderate':
-        shouldBlock = 
+        shouldBlock =
           RESOURCE_BLOCKING_PATTERNS.CONSOLE_ERROR_SOURCES.some(pattern => url.includes(pattern)) ||
           RESOURCE_BLOCKING_PATTERNS.TRACKING_BLOCKS.some(pattern => url.includes(pattern))
         break
-        
+
       case 'minimal':
-        shouldBlock = 
-          RESOURCE_BLOCKING_PATTERNS.CONSOLE_ERROR_SOURCES.some(pattern => url.includes(pattern))
+        shouldBlock = RESOURCE_BLOCKING_PATTERNS.CONSOLE_ERROR_SOURCES.some(pattern =>
+          url.includes(pattern)
+        )
         break
     }
-    
+
     if (shouldBlock) {
       request.abort()
     } else {
@@ -278,19 +265,19 @@ export async function setupCleanScraping(
     consoleFilter = {
       filterLevel: 'moderate',
       logCriticalErrors: true,
-      logPageErrors: true
+      logPageErrors: true,
     },
-    resourceBlocking = 'moderate'
+    resourceBlocking = 'moderate',
   } = options
 
   // Apply console filtering
   await applyConsoleFiltering(page, consoleFilter)
-  
+
   // Apply resource blocking
   await applyResourceBlocking(page, resourceBlocking)
-  
+
   logger.debug('ConsoleFilter', 'Clean scraping setup completed', {
     consoleFilterLevel: consoleFilter.filterLevel,
-    resourceBlockingLevel: resourceBlocking
+    resourceBlockingLevel: resourceBlocking,
   })
 }

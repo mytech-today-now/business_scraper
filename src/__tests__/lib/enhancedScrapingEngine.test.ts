@@ -25,72 +25,72 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
   describe('parseAndFormatAddress', () => {
     it('should parse a complete address correctly', () => {
       const rawAddress = '123 Main Street, Suite 100, New York, NY 10001'
-      
+
       const result = (scrapingEngine as any).parseAndFormatAddress(rawAddress)
-      
+
       expect(result).toEqual({
         street: '123 Main Street',
         suite: 'Suite 100',
         city: 'New York',
         state: 'NY',
-        zipCode: '10001'
+        zipCode: '10001',
       })
     })
 
     it('should handle address without suite', () => {
       const rawAddress = '456 Oak Avenue, Los Angeles, CA 90210'
-      
+
       const result = (scrapingEngine as any).parseAndFormatAddress(rawAddress)
-      
+
       expect(result).toEqual({
         street: '456 Oak Avenue',
         suite: undefined,
         city: 'Los Angeles',
         state: 'CA',
-        zipCode: '90210'
+        zipCode: '90210',
       })
     })
 
     it('should handle multiline address format', () => {
       const rawAddress = '789 Pine Street\nChicago, IL 60601'
-      
+
       const result = (scrapingEngine as any).parseAndFormatAddress(rawAddress)
-      
+
       expect(result).toEqual({
         street: '789 Pine Street',
         suite: undefined,
         city: 'Chicago',
         state: 'IL',
-        zipCode: '60601'
+        zipCode: '60601',
       })
     })
 
     it('should handle empty or undefined address', () => {
       const result1 = (scrapingEngine as any).parseAndFormatAddress('')
       const result2 = (scrapingEngine as any).parseAndFormatAddress(undefined)
-      
+
       const expectedEmpty = {
         street: '',
         city: '',
         state: '',
-        zipCode: ''
+        zipCode: '',
       }
-      
+
       expect(result1).toEqual(expectedEmpty)
       expect(result2).toEqual(expectedEmpty)
     })
 
     it('should handle address with apartment number', () => {
       const rawAddress = '321 Elm Street Apt 5B, Boston, MA 02101'
-      
+
       const result = (scrapingEngine as any).parseAndFormatAddress(rawAddress)
-      
+
       expect(result).toEqual({
         street: '321 Elm Street',
         suite: 'Apt 5B',
         city: 'Boston',
         state: 'MA',
-        zipCode: '02101'
+        zipCode: '02101',
       })
     })
   })
@@ -108,20 +108,20 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
         structuredData: [
           {
             type: 'Person',
-            data: { name: 'John Smith' }
-          }
+            data: { name: 'John Smith' },
+          },
         ],
         confidence: {
           email: 0,
           phone: 0,
           address: 0,
           businessName: 0,
-          overall: 0
-        }
+          overall: 0,
+        },
       }
-      
+
       const result = (scrapingEngine as any).extractContactPerson(contactInfo)
-      
+
       expect(result).toBe('John Smith')
     })
 
@@ -137,22 +137,22 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
         structuredData: [
           {
             type: 'Organization',
-            data: { 
-              contactPoint: { name: 'Jane Doe' }
-            }
-          }
+            data: {
+              contactPoint: { name: 'Jane Doe' },
+            },
+          },
         ],
         confidence: {
           email: 0,
           phone: 0,
           address: 0,
           businessName: 0,
-          overall: 0
-        }
+          overall: 0,
+        },
       }
-      
+
       const result = (scrapingEngine as any).extractContactPerson(contactInfo)
-      
+
       expect(result).toBe('Jane Doe')
     })
 
@@ -171,12 +171,12 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
           phone: 0,
           address: 0,
           businessName: 0,
-          overall: 0
-        }
+          overall: 0,
+        },
       }
-      
+
       const result = (scrapingEngine as any).extractContactPerson(contactInfo)
-      
+
       expect(result).toBe('Michael Johnson')
     })
 
@@ -195,12 +195,12 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
           phone: 0,
           address: 0,
           businessName: 0,
-          overall: 0
-        }
+          overall: 0,
+        },
       }
-      
+
       const result = (scrapingEngine as any).extractContactPerson(contactInfo)
-      
+
       expect(result).toBe('Sarah Wilson')
     })
 
@@ -219,12 +219,12 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
           phone: 0,
           address: 0,
           businessName: 0,
-          overall: 0
-        }
+          overall: 0,
+        },
       }
-      
+
       const result = (scrapingEngine as any).extractContactPerson(contactInfo)
-      
+
       expect(result).toBeUndefined()
     })
   })
@@ -235,11 +235,11 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
         'noreply@example.com',
         'info@business.com',
         'john@personal.com',
-        'contact@company.com'
+        'contact@company.com',
       ]
-      
+
       const result = (scrapingEngine as any).prioritizeEmails(emails)
-      
+
       expect(result[0]).toBe('info@business.com')
       expect(result[1]).toBe('contact@company.com')
       expect(result).toContain('john@personal.com')
@@ -247,14 +247,10 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
     })
 
     it('should filter out invalid emails', () => {
-      const emails = [
-        'valid@business.com',
-        'invalid-email',
-        'another@valid.com'
-      ]
-      
+      const emails = ['valid@business.com', 'invalid-email', 'another@valid.com']
+
       const result = (scrapingEngine as any).prioritizeEmails(emails)
-      
+
       expect(result).toHaveLength(2)
       expect(result).toContain('valid@business.com')
       expect(result).toContain('another@valid.com')
@@ -264,33 +260,33 @@ describe('EnhancedScrapingEngine Contact Processing', () => {
   describe('formatPhoneNumber', () => {
     it('should format 10-digit US phone number', () => {
       const phone = '5551234567'
-      
+
       const result = (scrapingEngine as any).formatPhoneNumber(phone)
-      
+
       expect(result).toBe('(555) 123-4567')
     })
 
     it('should format 11-digit US phone number with country code', () => {
       const phone = '15551234567'
-      
+
       const result = (scrapingEngine as any).formatPhoneNumber(phone)
-      
+
       expect(result).toBe('+1 (555) 123-4567')
     })
 
     it('should handle phone number with existing formatting', () => {
       const phone = '(555) 123-4567'
-      
+
       const result = (scrapingEngine as any).formatPhoneNumber(phone)
-      
+
       expect(result).toBe('(555) 123-4567')
     })
 
     it('should return original for non-standard formats', () => {
       const phone = '+44 20 7946 0958'
-      
+
       const result = (scrapingEngine as any).formatPhoneNumber(phone)
-      
+
       expect(result).toBe('+44 20 7946 0958')
     })
   })

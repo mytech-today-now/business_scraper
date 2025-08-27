@@ -84,7 +84,7 @@ export function useScraperController(): {
     canStopEarly: false,
     hasCompletedScraping: false,
   })
-  
+
   // Refs for managing scraping process
   const abortControllerRef = useRef<AbortController | null>(null)
   const sessionIdRef = useRef<string | null>(null)
@@ -130,7 +130,7 @@ export function useScraperController(): {
       ...step,
       id: `step-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       startTime: new Date(),
-      dataSource: step.dataSource || 'real'
+      dataSource: step.dataSource || 'real',
     }
 
     setScrapingState(prev => ({
@@ -152,10 +152,14 @@ export function useScraperController(): {
           ? {
               ...step,
               ...updates,
-              endTime: updates.status === 'completed' || updates.status === 'failed' ? new Date() : step.endTime,
-              duration: updates.status === 'completed' || updates.status === 'failed'
-                ? (new Date().getTime() - (step.startTime?.getTime() || 0))
-                : step.duration
+              endTime:
+                updates.status === 'completed' || updates.status === 'failed'
+                  ? new Date()
+                  : step.endTime,
+              duration:
+                updates.status === 'completed' || updates.status === 'failed'
+                  ? new Date().getTime() - (step.startTime?.getTime() || 0)
+                  : step.duration,
             }
           : step
       ),
@@ -198,7 +202,7 @@ export function useScraperController(): {
         logger.info('ScraperController', 'WebSocket connected for real-time streaming')
       }
 
-      wsRef.current.onmessage = (event) => {
+      wsRef.current.onmessage = event => {
         try {
           const data = JSON.parse(event.data)
           handleRealtimeUpdate(data)
@@ -211,7 +215,7 @@ export function useScraperController(): {
         logger.info('ScraperController', 'WebSocket disconnected')
       }
 
-      wsRef.current.onerror = (error) => {
+      wsRef.current.onerror = error => {
         logger.error('ScraperController', 'WebSocket error', error)
       }
     } catch (error) {
@@ -306,7 +310,9 @@ export function useScraperController(): {
     try {
       // Check if search engines are available
       if (!searchEngineManager.hasAvailableEngines()) {
-        toast.error('No search engines are available. Please enable at least one search engine in the API settings.')
+        toast.error(
+          'No search engines are available. Please enable at least one search engine in the API settings.'
+        )
         return
       }
 
@@ -338,7 +344,7 @@ export function useScraperController(): {
       addProcessingStep({
         name: 'Initializing Scraper',
         status: 'running',
-        details: 'Connecting to live web services'
+        details: 'Connecting to live web services',
       })
 
       // Start WebSocket server
@@ -346,7 +352,7 @@ export function useScraperController(): {
         const wsResponse = await fetch('/api/websocket', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'start' })
+          body: JSON.stringify({ action: 'start' }),
         })
 
         if (!wsResponse.ok) {
@@ -359,7 +365,11 @@ export function useScraperController(): {
         // Wait a moment for connection to establish
         await new Promise(resolve => setTimeout(resolve, 1000))
       } catch (error) {
-        logger.warn('ScraperController', 'Failed to start WebSocket server, continuing without real-time streaming', error)
+        logger.warn(
+          'ScraperController',
+          'Failed to start WebSocket server, continuing without real-time streaming',
+          error
+        )
       }
 
       // Set session ID on scraper service
@@ -374,7 +384,7 @@ export function useScraperController(): {
       if (initStepId) {
         updateProcessingStep(initStepId, {
           status: 'completed',
-          details: 'Connected to live web services'
+          details: 'Connected to live web services',
         })
       }
 
@@ -405,23 +415,33 @@ export function useScraperController(): {
         }
         const industryName = industryObject.name
 
-        logger.info('ScraperController', `Starting complete processing for industry: ${industryName}`)
+        logger.info(
+          'ScraperController',
+          `Starting complete processing for industry: ${industryName}`
+        )
 
         // Update overall progress
-        updateProgress(industryIndex, selectedIndustryObjects.length, `Processing ${industryName} businesses...`)
+        updateProgress(
+          industryIndex,
+          selectedIndustryObjects.length,
+          `Processing ${industryName} businesses...`
+        )
 
         // Step 1: Search for websites for this industry using individual keywords
         addProcessingStep({
           name: `Searching ${industryName} Businesses`,
           status: 'running',
-          details: `Processing ${industryObject.keywords.length} keywords individually in ${config.zipCode}`
+          details: `Processing ${industryObject.keywords.length} keywords individually in ${config.zipCode}`,
         })
 
         let industryUrls: string[] = []
 
         try {
           // Process each keyword individually with ZIP code
-          logger.info('ScraperController', `Processing ${industryObject.keywords.length} keywords for ${industryName}`)
+          logger.info(
+            'ScraperController',
+            `Processing ${industryObject.keywords.length} keywords for ${industryName}`
+          )
 
           for (let i = 0; i < industryObject.keywords.length; i++) {
             // Safe array access to prevent object injection
@@ -432,7 +452,7 @@ export function useScraperController(): {
             addProcessingStep({
               name: `Searching "${keyword}"`,
               status: 'running',
-              details: `Searching for "${keyword} ${config.zipCode}"`
+              details: `Searching for "${keyword} ${config.zipCode}"`,
             })
 
             try {
@@ -445,7 +465,10 @@ export function useScraperController(): {
 
               industryUrls.push(...keywordUrls)
 
-              logger.info('ScraperController', `Found ${keywordUrls.length} URLs for keyword "${keyword}"`)
+              logger.info(
+                'ScraperController',
+                `Found ${keywordUrls.length} URLs for keyword "${keyword}"`
+              )
 
               // Update keyword search step as completed
               const keywordSearchSteps = scrapingState.processingSteps.filter(s =>
@@ -457,7 +480,7 @@ export function useScraperController(): {
                   status: 'completed',
                   details: `Found ${keywordUrls.length} websites for "${keyword} ${config.zipCode}"`,
                   businessesFound: keywordUrls.length,
-                  dataSource: 'real'
+                  dataSource: 'real',
                 })
               }
 
@@ -465,9 +488,11 @@ export function useScraperController(): {
               if (i < industryObject.keywords.length - 1) {
                 await new Promise(resolve => setTimeout(resolve, 1000))
               }
-
             } catch (keywordError) {
-              logger.error('ScraperController', `Failed to search for keyword "${keyword}": ${keywordError}`)
+              logger.error(
+                'ScraperController',
+                `Failed to search for keyword "${keyword}": ${keywordError}`
+              )
 
               // Update keyword search step as failed
               const keywordSearchSteps = scrapingState.processingSteps.filter(s =>
@@ -479,7 +504,7 @@ export function useScraperController(): {
                   status: 'failed',
                   details: `Failed to search for "${keyword}": ${keywordError}`,
                   businessesFound: 0,
-                  dataSource: 'real'
+                  dataSource: 'real',
                 })
               }
             }
@@ -488,31 +513,37 @@ export function useScraperController(): {
           // Remove duplicates from combined results
           industryUrls = [...new Set(industryUrls)]
 
-          logger.info('ScraperController', `Found ${industryUrls.length} unique URLs for ${industryName} after processing all keywords`)
+          logger.info(
+            'ScraperController',
+            `Found ${industryUrls.length} unique URLs for ${industryName} after processing all keywords`
+          )
 
           // Update main search step as completed
-          const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industryName}`))
+          const searchSteps = scrapingState.processingSteps.filter(s =>
+            s.name.includes(`Searching ${industryName}`)
+          )
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
             updateProcessingStep(latestSearchStep.id, {
               status: 'completed',
               details: `Found ${industryUrls.length} unique websites from ${industryObject.keywords.length} keywords`,
               businessesFound: industryUrls.length,
-              dataSource: 'real'
+              dataSource: 'real',
             })
           }
-
         } catch (error) {
           const errorMsg = `Failed to search for ${industryName} businesses: ${error}`
           addError(errorMsg)
 
           // Update search step as failed
-          const searchSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Searching ${industryName}`))
+          const searchSteps = scrapingState.processingSteps.filter(s =>
+            s.name.includes(`Searching ${industryName}`)
+          )
           const latestSearchStep = searchSteps[searchSteps.length - 1]
           if (latestSearchStep) {
             updateProcessingStep(latestSearchStep.id, {
               status: 'failed',
-              error: errorMsg
+              error: errorMsg,
             })
           }
           continue // Move to next industry
@@ -526,7 +557,7 @@ export function useScraperController(): {
           addProcessingStep({
             name: `Scraping ${industryName} Websites`,
             status: 'running',
-            details: `Processing ${uniqueIndustryUrls.length} websites with ${config.pagesPerSite} pages each`
+            details: `Processing ${uniqueIndustryUrls.length} websites with ${config.pagesPerSite} pages each`,
           })
 
           const batchSize = 3 // Process in batches to avoid overwhelming
@@ -549,7 +580,7 @@ export function useScraperController(): {
                 name: `Scraping Website`,
                 status: 'running',
                 url: url,
-                details: `Extracting business data from ${url} (${config.pagesPerSite} pages)`
+                details: `Extracting business data from ${url} (${config.pagesPerSite} pages)`,
               })
 
               try {
@@ -566,7 +597,11 @@ export function useScraperController(): {
                 }
 
                 // Scrape this website with the configured number of pages
-                const businesses = await scraperService.scrapeWebsite(url, config.searchDepth, config.pagesPerSite)
+                const businesses = await scraperService.scrapeWebsite(
+                  url,
+                  config.searchDepth,
+                  config.pagesPerSite
+                )
 
                 // Set industry for scraped businesses
                 const businessesWithIndustry = businesses.map(business => ({
@@ -575,14 +610,16 @@ export function useScraperController(): {
                 }))
 
                 // Update scraping step as completed
-                const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
+                const scrapingSteps = scrapingState.processingSteps.filter(
+                  s => s.url === url && s.name === 'Scraping Website'
+                )
                 const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
                 if (latestScrapingStep) {
                   updateProcessingStep(latestScrapingStep.id, {
                     status: 'completed',
                     details: `Found ${businessesWithIndustry.length} businesses`,
                     businessesFound: businessesWithIndustry.length,
-                    dataSource: 'real'
+                    dataSource: 'real',
                   })
                 }
 
@@ -592,7 +629,10 @@ export function useScraperController(): {
                   // Save to storage
                   await storage.saveBusinesses(businessesWithIndustry)
 
-                  logger.info('ScraperController', `Scraped ${businessesWithIndustry.length} businesses from ${url} for ${industryName}`)
+                  logger.info(
+                    'ScraperController',
+                    `Scraped ${businessesWithIndustry.length} businesses from ${url} for ${industryName}`
+                  )
                 }
 
                 return businessesWithIndustry
@@ -601,12 +641,14 @@ export function useScraperController(): {
                 addError(errorMsg)
 
                 // Update scraping step as failed
-                const scrapingSteps = scrapingState.processingSteps.filter(s => s.url === url && s.name === 'Scraping Website')
+                const scrapingSteps = scrapingState.processingSteps.filter(
+                  s => s.url === url && s.name === 'Scraping Website'
+                )
                 const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
                 if (latestScrapingStep) {
                   updateProcessingStep(latestScrapingStep.id, {
                     status: 'failed',
-                    error: errorMsg
+                    error: errorMsg,
                   })
                 }
 
@@ -623,12 +665,14 @@ export function useScraperController(): {
           }
 
           // Update scraping step for this industry
-          const scrapingSteps = scrapingState.processingSteps.filter(s => s.name.includes(`Scraping ${industryName}`))
+          const scrapingSteps = scrapingState.processingSteps.filter(s =>
+            s.name.includes(`Scraping ${industryName}`)
+          )
           const latestScrapingStep = scrapingSteps[scrapingSteps.length - 1]
           if (latestScrapingStep) {
             updateProcessingStep(latestScrapingStep.id, {
               status: 'completed',
-              details: `Completed scraping ${uniqueIndustryUrls.length} websites for ${industryName}`
+              details: `Completed scraping ${uniqueIndustryUrls.length} websites for ${industryName}`,
             })
           }
 
@@ -644,7 +688,7 @@ export function useScraperController(): {
         name: 'Scraping Complete',
         status: 'completed',
         details: `Successfully processed ${industryNames.length} industries and found ${scrapingState.results.length} businesses`,
-        businessesFound: scrapingState.results.length
+        businessesFound: scrapingState.results.length,
       })
 
       // Get final stats
@@ -670,7 +714,6 @@ export function useScraperController(): {
         totalBusinesses: scrapingState.results.length,
         totalErrors: scrapingState.errors.length,
       })
-
     } catch (error) {
       const errorMsg = `Scraping failed: ${error}`
       addError(errorMsg)
@@ -690,7 +733,19 @@ export function useScraperController(): {
       }))
       abortControllerRef.current = null
     }
-  }, [configState, getSelectedIndustryNames, isConfigValid, scrapingState.isScrapingActive, scrapingState.results.length, scrapingState.errors.length, updateProgress, addError, addResults, updateProcessingStep, addProcessingStep])
+  }, [
+    configState,
+    getSelectedIndustryNames,
+    isConfigValid,
+    scrapingState.isScrapingActive,
+    scrapingState.results.length,
+    scrapingState.errors.length,
+    updateProgress,
+    addError,
+    addResults,
+    updateProcessingStep,
+    addProcessingStep,
+  ])
 
   /**
    * Stop scraping process
@@ -709,7 +764,7 @@ export function useScraperController(): {
       addProcessingStep({
         name: 'Stopping Scraper',
         status: 'running',
-        details: 'Cancelling active operations and cleaning up resources'
+        details: 'Cancelling active operations and cleaning up resources',
       })
 
       // Abort the scraping process
@@ -727,9 +782,14 @@ export function useScraperController(): {
           currentUrl: '',
           processingSteps: prev.processingSteps.map(step =>
             step.name === 'Stopping Scraper' && step.status === 'running'
-              ? { ...step, status: 'completed' as const, details: 'Scraping stopped successfully', endTime: new Date() }
+              ? {
+                  ...step,
+                  status: 'completed' as const,
+                  details: 'Scraping stopped successfully',
+                  endTime: new Date(),
+                }
               : step
-          )
+          ),
         }))
       }, 1500)
     }
@@ -744,10 +804,12 @@ export function useScraperController(): {
 
       // Send stop signal via WebSocket
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({
-          type: 'stop_session',
-          sessionId: scrapingState.sessionId
-        }))
+        wsRef.current.send(
+          JSON.stringify({
+            type: 'stop_session',
+            sessionId: scrapingState.sessionId,
+          })
+        )
       }
 
       // Update UI state
@@ -767,9 +829,18 @@ export function useScraperController(): {
       disconnectWebSocket()
 
       toast.success(`Scraping stopped early. Found ${scrapingState.results.length} results.`)
-      logger.info('ScraperController', `Scraping stopped early by user with ${scrapingState.results.length} results`)
+      logger.info(
+        'ScraperController',
+        `Scraping stopped early by user with ${scrapingState.results.length} results`
+      )
     }
-  }, [scrapingState.isScrapingActive, scrapingState.canStopEarly, scrapingState.sessionId, scrapingState.results.length, disconnectWebSocket])
+  }, [
+    scrapingState.isScrapingActive,
+    scrapingState.canStopEarly,
+    scrapingState.sessionId,
+    scrapingState.results.length,
+    disconnectWebSocket,
+  ])
 
   /**
    * Clear results
@@ -796,7 +867,7 @@ export function useScraperController(): {
         ...prev,
         results: prev.results.filter(b => b.id !== businessId),
       }))
-      
+
       await storage.deleteBusiness(businessId)
       toast.success('Business removed')
       logger.info('ScraperController', 'Business removed', { businessId })
@@ -809,30 +880,31 @@ export function useScraperController(): {
   /**
    * Update business information
    */
-  const updateBusiness = useCallback(async (businessId: string, updates: Partial<BusinessRecord>) => {
-    try {
-      setScrapingState(prev => ({
-        ...prev,
-        results: prev.results.map(business =>
-          business.id === businessId
-            ? { ...business, ...updates }
-            : business
-        ),
-      }))
-      
-      // Get updated business and save to storage
-      const updatedBusiness = scrapingState.results.find(b => b.id === businessId)
-      if (updatedBusiness) {
-        await storage.saveBusiness({ ...updatedBusiness, ...updates })
+  const updateBusiness = useCallback(
+    async (businessId: string, updates: Partial<BusinessRecord>) => {
+      try {
+        setScrapingState(prev => ({
+          ...prev,
+          results: prev.results.map(business =>
+            business.id === businessId ? { ...business, ...updates } : business
+          ),
+        }))
+
+        // Get updated business and save to storage
+        const updatedBusiness = scrapingState.results.find(b => b.id === businessId)
+        if (updatedBusiness) {
+          await storage.saveBusiness({ ...updatedBusiness, ...updates })
+        }
+
+        toast.success('Business updated')
+        logger.info('ScraperController', 'Business updated', { businessId, updates })
+      } catch (error) {
+        toast.error('Failed to update business')
+        logger.error('ScraperController', 'Failed to update business', error)
       }
-      
-      toast.success('Business updated')
-      logger.info('ScraperController', 'Business updated', { businessId, updates })
-    } catch (error) {
-      toast.error('Failed to update business')
-      logger.error('ScraperController', 'Failed to update business', error)
-    }
-  }, [scrapingState.results])
+    },
+    [scrapingState.results]
+  )
 
   /**
    * Load previous results from storage
@@ -844,7 +916,7 @@ export function useScraperController(): {
         ...prev,
         results: businesses,
       }))
-      
+
       if (businesses.length > 0) {
         toast.success(`Loaded ${businesses.length} previous results`)
         logger.info('ScraperController', 'Previous results loaded', { count: businesses.length })
@@ -905,7 +977,7 @@ function isDirectoryOrSearchPage(url: string): boolean {
       'instagram.com',
       'foursquare.com',
       'citysearch.com',
-      'superpages.com'
+      'superpages.com',
     ]
 
     // Check if it's a directory site
@@ -924,7 +996,7 @@ function isDirectoryOrSearchPage(url: string): boolean {
       'find_loc=',
       'q=',
       'query=',
-      'search='
+      'search=',
     ]
 
     if (searchPatterns.some(pattern => pathname.includes(pattern) || search.includes(pattern))) {

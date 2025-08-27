@@ -89,14 +89,14 @@ export const GET = withRBAC(
             username: cleanCampaign.created_by_username,
             firstName: cleanCampaign.created_by_first_name,
             lastName: cleanCampaign.created_by_last_name,
-            fullName: `${cleanCampaign.created_by_first_name} ${cleanCampaign.created_by_last_name}`
+            fullName: `${cleanCampaign.created_by_first_name} ${cleanCampaign.created_by_last_name}`,
           },
           workspace: {
-            name: cleanCampaign.workspace_name
+            name: cleanCampaign.workspace_name,
           },
           businessCount: parseInt(cleanCampaign.business_count) || 0,
           sessionCount: parseInt(cleanCampaign.session_count) || 0,
-          avgConfidenceScore: parseFloat(cleanCampaign.avg_confidence_score) || 0
+          avgConfidenceScore: parseFloat(cleanCampaign.avg_confidence_score) || 0,
         }
       })
 
@@ -105,7 +105,7 @@ export const GET = withRBAC(
         workspaceId,
         page,
         limit,
-        totalCount
+        totalCount,
       })
 
       return NextResponse.json({
@@ -117,15 +117,12 @@ export const GET = withRBAC(
           total: totalCount,
           totalPages,
           hasNext: page < totalPages,
-          hasPrev: page > 1
-        }
+          hasPrev: page > 1,
+        },
       })
     } catch (error) {
       logger.error('Campaigns API', 'Error listing campaigns', error)
-      return NextResponse.json(
-        { error: 'Failed to list campaigns' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to list campaigns' }, { status: 500 })
     }
   },
   { permissions: ['campaigns.view'] }
@@ -138,15 +135,7 @@ export const POST = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const body = await request.json()
-      const {
-        name,
-        description,
-        industry,
-        location,
-        workspaceId,
-        parameters,
-        settings
-      } = body
+      const { name, description, industry, location, workspaceId, parameters, settings } = body
 
       // Validate required fields
       if (!name || !industry || !location) {
@@ -158,24 +147,21 @@ export const POST = withRBAC(
 
       const targetWorkspaceId = workspaceId || context.workspaceId
       if (!targetWorkspaceId) {
-        return NextResponse.json(
-          { error: 'Workspace ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Workspace ID is required' }, { status: 400 })
       }
 
       // Check if user has access to the workspace
-      const workspaceAccess = await context.database.query(`
+      const workspaceAccess = await context.database.query(
+        `
         SELECT wm.role, wm.permissions
         FROM workspace_members wm
         WHERE wm.workspace_id = $1 AND wm.user_id = $2 AND wm.is_active = true
-      `, [targetWorkspaceId, context.user.id])
+      `,
+        [targetWorkspaceId, context.user.id]
+      )
 
       if (!workspaceAccess.rows[0]) {
-        return NextResponse.json(
-          { error: 'Access denied to workspace' },
-          { status: 403 }
-        )
+        return NextResponse.json({ error: 'Access denied to workspace' }, { status: 403 })
       }
 
       // Generate campaign ID
@@ -202,7 +188,7 @@ export const POST = withRBAC(
         JSON.stringify(settings || {}),
         'draft',
         new Date(),
-        new Date()
+        new Date(),
       ])
 
       const campaign = campaignResult.rows[0]
@@ -217,7 +203,7 @@ export const POST = withRBAC(
           name,
           industry,
           location,
-          workspaceId: targetWorkspaceId
+          workspaceId: targetWorkspaceId,
         }
       )
 
@@ -225,28 +211,25 @@ export const POST = withRBAC(
         campaignId,
         name,
         createdBy: context.user.id,
-        workspaceId: targetWorkspaceId
+        workspaceId: targetWorkspaceId,
       })
 
-      return NextResponse.json({
-        success: true,
-        data: campaign,
-        message: 'Campaign created successfully'
-      }, { status: 201 })
+      return NextResponse.json(
+        {
+          success: true,
+          data: campaign,
+          message: 'Campaign created successfully',
+        },
+        { status: 201 }
+      )
     } catch (error) {
       logger.error('Campaigns API', 'Error creating campaign', error)
-      
+
       if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: error.message }, { status: 400 })
       }
-      
-      return NextResponse.json(
-        { error: 'Failed to create campaign' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Failed to create campaign' }, { status: 500 })
     }
   },
   { permissions: ['campaigns.create'] }
@@ -262,17 +245,11 @@ export const PUT = withRBAC(
       const { campaignIds, updateData } = body
 
       if (!Array.isArray(campaignIds) || campaignIds.length === 0) {
-        return NextResponse.json(
-          { error: 'Campaign IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Campaign IDs array is required' }, { status: 400 })
       }
 
       if (!updateData || typeof updateData !== 'object') {
-        return NextResponse.json(
-          { error: 'Update data is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Update data is required' }, { status: 400 })
       }
 
       const updatedCampaigns = []
@@ -282,12 +259,15 @@ export const PUT = withRBAC(
       for (const campaignId of campaignIds) {
         try {
           // Check if user can edit this campaign
-          const campaignAccess = await context.database.query(`
+          const campaignAccess = await context.database.query(
+            `
             SELECT c.*, wm.role, wm.permissions
             FROM campaigns c
             JOIN workspace_members wm ON c.workspace_id = wm.workspace_id
             WHERE c.id = $1 AND wm.user_id = $2 AND wm.is_active = true
-          `, [campaignId, context.user.id])
+          `,
+            [campaignId, context.user.id]
+          )
 
           if (!campaignAccess.rows[0]) {
             errors.push({ campaignId, error: 'Campaign not found or access denied' })
@@ -358,7 +338,7 @@ export const PUT = withRBAC(
         } catch (error) {
           errors.push({
             campaignId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
@@ -367,7 +347,7 @@ export const PUT = withRBAC(
         updatedBy: context.user.id,
         successCount: updatedCampaigns.length,
         errorCount: errors.length,
-        campaignIds
+        campaignIds,
       })
 
       return NextResponse.json({
@@ -376,16 +356,13 @@ export const PUT = withRBAC(
           updated: updatedCampaigns.length,
           errors: errors.length,
           results: updatedCampaigns,
-          errors: errors
+          errors: errors,
         },
-        message: `Updated ${updatedCampaigns.length} campaigns successfully`
+        message: `Updated ${updatedCampaigns.length} campaigns successfully`,
       })
     } catch (error) {
       logger.error('Campaigns API', 'Error in bulk campaign update', error)
-      return NextResponse.json(
-        { error: 'Failed to update campaigns' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update campaigns' }, { status: 500 })
     }
   },
   { permissions: ['campaigns.edit'] }
@@ -401,10 +378,7 @@ export const DELETE = withRBAC(
       const { campaignIds, permanent = false } = body
 
       if (!Array.isArray(campaignIds) || campaignIds.length === 0) {
-        return NextResponse.json(
-          { error: 'Campaign IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Campaign IDs array is required' }, { status: 400 })
       }
 
       const deletedCampaigns = []
@@ -414,12 +388,15 @@ export const DELETE = withRBAC(
       for (const campaignId of campaignIds) {
         try {
           // Check if user can delete this campaign
-          const campaignAccess = await context.database.query(`
+          const campaignAccess = await context.database.query(
+            `
             SELECT c.*, wm.role, wm.permissions
             FROM campaigns c
             JOIN workspace_members wm ON c.workspace_id = wm.workspace_id
             WHERE c.id = $1 AND wm.user_id = $2 AND wm.is_active = true
-          `, [campaignId, context.user.id])
+          `,
+            [campaignId, context.user.id]
+          )
 
           if (!campaignAccess.rows[0]) {
             errors.push({ campaignId, error: 'Campaign not found or access denied' })
@@ -440,7 +417,7 @@ export const DELETE = withRBAC(
 
           const values = permanent ? [campaignId] : [campaignId, context.user.id]
           const result = await context.database.query(query, values)
-          
+
           if (result.rows[0]) {
             deletedCampaigns.push(result.rows[0])
 
@@ -456,18 +433,22 @@ export const DELETE = withRBAC(
         } catch (error) {
           errors.push({
             campaignId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
 
-      logger.info('Campaigns API', permanent ? 'Campaigns deleted permanently' : 'Campaigns marked as deleted', {
-        deletedBy: context.user.id,
-        successCount: deletedCampaigns.length,
-        errorCount: errors.length,
-        campaignIds,
-        permanent
-      })
+      logger.info(
+        'Campaigns API',
+        permanent ? 'Campaigns deleted permanently' : 'Campaigns marked as deleted',
+        {
+          deletedBy: context.user.id,
+          successCount: deletedCampaigns.length,
+          errorCount: errors.length,
+          campaignIds,
+          permanent,
+        }
+      )
 
       return NextResponse.json({
         success: true,
@@ -475,16 +456,13 @@ export const DELETE = withRBAC(
           deleted: deletedCampaigns.length,
           errors: errors.length,
           results: deletedCampaigns,
-          errors: errors
+          errors: errors,
         },
-        message: `${permanent ? 'Deleted' : 'Marked as deleted'} ${deletedCampaigns.length} campaigns successfully`
+        message: `${permanent ? 'Deleted' : 'Marked as deleted'} ${deletedCampaigns.length} campaigns successfully`,
       })
     } catch (error) {
       logger.error('Campaigns API', 'Error deleting campaigns', error)
-      return NextResponse.json(
-        { error: 'Failed to delete campaigns' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete campaigns' }, { status: 500 })
     }
   },
   { permissions: ['campaigns.delete'] }

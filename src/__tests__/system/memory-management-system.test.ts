@@ -12,7 +12,7 @@ import { storage } from '@/model/storage'
 
 // Mock dependencies for system testing
 jest.mock('@/lib/security', () => ({
-  getClientIP: jest.fn(() => '127.0.0.1')
+  getClientIP: jest.fn(() => '127.0.0.1'),
 }))
 
 describe('Memory Management System Tests', () => {
@@ -43,7 +43,7 @@ describe('Memory Management System Tests', () => {
       // Test POST endpoint - start monitoring
       const startRequest = new NextRequest('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: JSON.stringify({ action: 'start-monitoring' })
+        body: JSON.stringify({ action: 'start-monitoring' }),
       })
       const startResponse = await POST(startRequest)
       const startResult = await startResponse.json()
@@ -55,13 +55,13 @@ describe('Memory Management System Tests', () => {
       // Test POST endpoint - cleanup
       const cleanupRequest = new NextRequest('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           action: 'cleanup',
           options: {
             clearSearchResults: true,
-            clearCachedData: true
-          }
-        })
+            clearCachedData: true,
+          },
+        }),
       })
       const cleanupResponse = await POST(cleanupRequest)
       const cleanupResult = await cleanupResponse.json()
@@ -73,7 +73,7 @@ describe('Memory Management System Tests', () => {
       // Test POST endpoint - stop monitoring
       const stopRequest = new NextRequest('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: JSON.stringify({ action: 'stop-monitoring' })
+        body: JSON.stringify({ action: 'stop-monitoring' }),
       })
       const stopResponse = await POST(stopRequest)
       const stopResult = await stopResponse.json()
@@ -87,7 +87,7 @@ describe('Memory Management System Tests', () => {
       // Test invalid action
       const invalidRequest = new NextRequest('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: JSON.stringify({ action: 'invalid-action' })
+        body: JSON.stringify({ action: 'invalid-action' }),
       })
       const invalidResponse = await POST(invalidRequest)
       const invalidResult = await invalidResponse.json()
@@ -99,7 +99,7 @@ describe('Memory Management System Tests', () => {
       // Test malformed JSON
       const malformedRequest = new NextRequest('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: 'invalid-json'
+        body: 'invalid-json',
       })
       const malformedResponse = await POST(malformedRequest)
 
@@ -107,12 +107,12 @@ describe('Memory Management System Tests', () => {
     })
 
     test('should handle concurrent API requests', async () => {
-      const requests = Array(10).fill(null).map(() => 
-        GET(new NextRequest('http://localhost:3000/api/memory'))
-      )
+      const requests = Array(10)
+        .fill(null)
+        .map(() => GET(new NextRequest('http://localhost:3000/api/memory')))
 
       const responses = await Promise.all(requests)
-      
+
       responses.forEach(response => {
         expect(response.status).toBe(200)
       })
@@ -145,10 +145,10 @@ describe('Memory Management System Tests', () => {
 
       // Simulate scraping operation
       const mockUrls = ['https://example.com', 'https://test.com']
-      
+
       // This would normally trigger memory usage
       // In a real test, we'd scrape actual data
-      
+
       // Perform cleanup during operation
       const cleanupResult = await memoryCleanup.performManualCleanup()
       expect(cleanupResult.success).toBe(true)
@@ -176,10 +176,10 @@ describe('Memory Management System Tests', () => {
           used: 850000000,
           total: 1000000000,
           percentage: 85,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         },
         timestamp: Date.now(),
-        action: 'cleanup-suggested'
+        action: 'cleanup-suggested',
       })
 
       expect(alertsReceived).toBe(1)
@@ -192,22 +192,24 @@ describe('Memory Management System Tests', () => {
     test('should handle compressed storage operations in system context', async () => {
       // This test would need to mock the storage service
       // since IndexedDB is not available in Node.js test environment
-      
-      const mockBusinesses = Array(10).fill(null).map((_, i) => ({
-        id: `test-${i}`,
-        businessName: `Test Business ${i}`,
-        email: [`test${i}@example.com`],
-        phone: `555-010${i}`,
-        websiteUrl: `https://test${i}.com`,
-        address: {
-          street: `${i} Test St`,
-          city: 'Test City',
-          state: 'TS',
-          zipCode: '12345'
-        },
-        industry: 'Testing',
-        scrapedAt: new Date()
-      }))
+
+      const mockBusinesses = Array(10)
+        .fill(null)
+        .map((_, i) => ({
+          id: `test-${i}`,
+          businessName: `Test Business ${i}`,
+          email: [`test${i}@example.com`],
+          phone: `555-010${i}`,
+          websiteUrl: `https://test${i}.com`,
+          address: {
+            street: `${i} Test St`,
+            city: 'Test City',
+            state: 'TS',
+            zipCode: '12345',
+          },
+          industry: 'Testing',
+          scrapedAt: new Date(),
+        }))
 
       // In a real system test, this would save to actual storage
       // For now, we verify the compression logic works
@@ -227,7 +229,7 @@ describe('Memory Management System Tests', () => {
       const result = await memoryCleanup.performManualCleanup({
         clearSearchResults: true,
         clearCachedData: true,
-        forceGarbageCollection: true
+        forceGarbageCollection: true,
       })
 
       expect(result.success).toBe(true)
@@ -248,7 +250,7 @@ describe('Memory Management System Tests', () => {
       try {
         // Force an error condition
         memoryMonitor.updateThresholds({ warning: -1 } as any)
-        
+
         // System should continue functioning
         expect(memoryMonitor.getThresholds()).toBeDefined()
       } finally {
@@ -259,11 +261,11 @@ describe('Memory Management System Tests', () => {
     test('should handle memory service failures gracefully', async () => {
       // Test system resilience when memory services fail
       const scraper = new ScraperService()
-      
+
       // Even if memory monitoring fails, scraper should work
       await scraper.initialize()
       expect(scraper).toBeDefined()
-      
+
       await scraper.cleanup()
     })
 
@@ -271,9 +273,9 @@ describe('Memory Management System Tests', () => {
       // Test API error handling
       const errorRequest = new NextRequest('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: JSON.stringify({ action: 'update-thresholds', options: null })
+        body: JSON.stringify({ action: 'update-thresholds', options: null }),
       })
-      
+
       const errorResponse = await POST(errorRequest)
       const errorResult = await errorResponse.json()
 
@@ -294,7 +296,7 @@ describe('Memory Management System Tests', () => {
       const operations = [
         memoryCleanup.performManualCleanup(),
         memoryMonitor.forceGarbageCollection(),
-        GET(new NextRequest('http://localhost:3000/api/memory'))
+        GET(new NextRequest('http://localhost:3000/api/memory')),
       ]
 
       await Promise.all(operations)
@@ -313,9 +315,9 @@ describe('Memory Management System Tests', () => {
       memoryMonitor.startMonitoring()
 
       // Perform rapid operations
-      const operations = Array(100).fill(null).map(() => 
-        memoryMonitor.getCurrentStats()
-      )
+      const operations = Array(100)
+        .fill(null)
+        .map(() => memoryMonitor.getCurrentStats())
 
       const results = operations.map(op => op)
 
@@ -332,7 +334,7 @@ describe('Memory Management System Tests', () => {
       memoryMonitor.updateThresholds({
         warning: 70,
         critical: 85,
-        emergency: 95
+        emergency: 95,
       })
 
       // Configure cleanup policy
@@ -340,7 +342,7 @@ describe('Memory Management System Tests', () => {
         maxSessions: 5,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         maxSize: 100 * 1024 * 1024, // 100MB
-        autoCleanup: true
+        autoCleanup: true,
       })
 
       // Verify configuration is applied

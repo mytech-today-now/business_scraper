@@ -7,16 +7,12 @@ import { FileUploadSecurityService } from '@/lib/fileUploadSecurity'
 import { validateFileUpload, generateSecureFilename } from '@/lib/fileUploadMiddleware'
 import { validationService } from '@/utils/validation'
 import { jest } from '@jest/globals'
-import {
-  createMockFileSystem,
-  createMockEnvironment,
-  createMockFile
-} from './utils/mockHelpers'
+import { createMockFileSystem, createMockEnvironment, createMockFile } from './utils/mockHelpers'
 import {
   testPaths,
   testFileContents,
   encodedSecurityPatterns,
-  decodeSecurityPattern
+  decodeSecurityPattern,
 } from './fixtures/testData'
 import { setupTest, cleanupTest, securityTestHelpers } from './setup/testSetup'
 
@@ -28,8 +24,8 @@ jest.mock('fs', () => mockFs)
 jest.mock('crypto', () => ({
   createHash: jest.fn(() => ({
     update: jest.fn().mockReturnThis(),
-    digest: jest.fn(() => 'test-hash-12345')
-  }))
+    digest: jest.fn(() => 'test-hash-12345'),
+  })),
 }))
 
 describe('File Upload Security', () => {
@@ -51,7 +47,9 @@ describe('File Upload Security', () => {
 
   describe('File Validation', () => {
     test('should validate file size limits', () => {
-      const largeFile = new File(['x'.repeat(11 * 1024 * 1024)], 'large.txt', { type: 'text/plain' })
+      const largeFile = new File(['x'.repeat(11 * 1024 * 1024)], 'large.txt', {
+        type: 'text/plain',
+      })
       const result = validateFileUpload(largeFile, { maxSize: 10 * 1024 * 1024 })
 
       expect(result.isValid).toBe(false)
@@ -59,7 +57,9 @@ describe('File Upload Security', () => {
     })
 
     test('should validate file types', () => {
-      const executableFile = new File(['content'], 'malware.exe', { type: 'application/octet-stream' })
+      const executableFile = new File(['content'], 'malware.exe', {
+        type: 'application/octet-stream',
+      })
       const result = validateFileUpload(executableFile)
 
       expect(result.isValid).toBe(false)
@@ -111,10 +111,10 @@ describe('File Upload Security', () => {
   describe('Magic Number Validation', () => {
     test('should validate JPEG magic numbers', async () => {
       // JPEG magic number: FF D8 FF
-      const jpegBuffer = Buffer.from([0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46])
+      const jpegBuffer = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46])
       const result = await securityService.scanFile(jpegBuffer, 'image.jpg', {
         enableContentAnalysis: false,
-        validateMagicNumbers: true
+        validateMagicNumbers: true,
       })
 
       expect(result.isSecure).toBe(true)
@@ -122,10 +122,10 @@ describe('File Upload Security', () => {
 
     test('should detect mismatched file types', async () => {
       // PNG magic number in a .jpg file
-      const pngBuffer = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])
+      const pngBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
       const result = await securityService.scanFile(pngBuffer, 'fake.jpg', {
         enableContentAnalysis: false,
-        validateMagicNumbers: true
+        validateMagicNumbers: true,
       })
 
       expect(result.warnings).toContain("File content doesn't match expected type for .jpg")
@@ -133,10 +133,10 @@ describe('File Upload Security', () => {
 
     test('should detect embedded executables', async () => {
       // PE executable magic number: MZ
-      const executableBuffer = Buffer.from([0x4D, 0x5A, 0x90, 0x00])
+      const executableBuffer = Buffer.from([0x4d, 0x5a, 0x90, 0x00])
       const result = await securityService.scanFile(executableBuffer, 'document.pdf', {
         enableContentAnalysis: true,
-        validateMagicNumbers: true
+        validateMagicNumbers: true,
       })
 
       expect(result.isSecure).toBe(false)
@@ -149,7 +149,7 @@ describe('File Upload Security', () => {
       const maliciousContent = decodeSecurityPattern(encodedSecurityPatterns.xssPattern)
       const buffer = Buffer.from(maliciousContent)
       const result = await securityService.scanFile(buffer, 'malicious.html', {
-        enableContentAnalysis: true
+        enableContentAnalysis: true,
       })
 
       expect(result.isSecure).toBe(false)
@@ -160,7 +160,7 @@ describe('File Upload Security', () => {
       const maliciousContent = 'system("rm -rf /")'
       const buffer = Buffer.from(maliciousContent)
       const result = await securityService.scanFile(buffer, 'malicious.txt', {
-        enableContentAnalysis: true
+        enableContentAnalysis: true,
       })
 
       expect(result.warnings).toContain('File contains command execution patterns')
@@ -171,17 +171,19 @@ describe('File Upload Security', () => {
       const highEntropyContent = 'aB3xY9mK2pQ7wE5rT8uI1oP6sD4fG0hJ'
       const buffer = Buffer.from(highEntropyContent.repeat(100))
       const result = await securityService.scanFile(buffer, 'suspicious.txt', {
-        enableContentAnalysis: true
+        enableContentAnalysis: true,
       })
 
-      expect(result.warnings).toContain('File has high entropy - possible obfuscation or encryption')
+      expect(result.warnings).toContain(
+        'File has high entropy - possible obfuscation or encryption'
+      )
     })
 
     test('should detect multiple base64 strings', async () => {
       const base64Content = 'SGVsbG8gV29ybGQ= ' + 'VGhpcyBpcyBhIHRlc3Q= '.repeat(10)
       const buffer = Buffer.from(base64Content)
       const result = await securityService.scanFile(buffer, 'encoded.txt', {
-        enableContentAnalysis: true
+        enableContentAnalysis: true,
       })
 
       expect(result.warnings).toContain('File contains multiple base64 encoded strings')
@@ -195,7 +197,7 @@ describe('File Upload Security', () => {
       const result = await securityService.scanFile(maliciousBuffer, 'malicious.html', {
         enableQuarantine: true,
         enableContentAnalysis: true,
-        quarantineDirectory: testPaths.quarantineDir
+        quarantineDirectory: testPaths.quarantineDir,
       })
 
       expect(result.quarantined).toBe(true)
@@ -207,7 +209,7 @@ describe('File Upload Security', () => {
       const result = await securityService.scanFile(safeBuffer, 'safe.txt', {
         enableQuarantine: true,
         enableContentAnalysis: true,
-        quarantineDirectory: testPaths.quarantineDir
+        quarantineDirectory: testPaths.quarantineDir,
       })
 
       expect(result.quarantined).toBe(false)
@@ -223,7 +225,7 @@ describe('File Upload Security', () => {
       securityService.addMalwareHash(mockHash)
 
       const result = await securityService.scanFile(testBuffer, 'malware.exe', {
-        enableHashChecking: true
+        enableHashChecking: true,
       })
 
       expect(result.isSecure).toBe(false)
@@ -270,7 +272,7 @@ describe('File Upload Security', () => {
 
       const result = await securityService.scanFile(largeBuffer, 'large.txt', {
         enableContentAnalysis: true,
-        maxScanTime: 100 // Very short timeout
+        maxScanTime: 100, // Very short timeout
       })
 
       const duration = Date.now() - startTime
@@ -282,7 +284,7 @@ describe('File Upload Security', () => {
       // Test that very large files don't cause memory issues
       const hugeBuffer = Buffer.alloc(10 * 1024 * 1024, 'x') // 10MB
       const result = await securityService.scanFile(hugeBuffer, 'huge.txt', {
-        enableContentAnalysis: true
+        enableContentAnalysis: true,
       })
 
       // Should complete without throwing memory errors
@@ -296,13 +298,13 @@ describe('File Upload Security', () => {
       const file = {
         name: 'test.txt',
         size: 1024,
-        type: 'text/plain'
+        type: 'text/plain',
       }
 
       const result = validationService.validateFileUpload(file, {
         maxSize: 2048,
         allowedTypes: ['text/plain'],
-        allowedExtensions: ['.txt']
+        allowedExtensions: ['.txt'],
       })
 
       expect(result.isValid).toBe(true)

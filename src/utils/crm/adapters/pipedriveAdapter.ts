@@ -11,7 +11,7 @@ import {
   BatchTransformationResult,
   ValidationError,
   CRMExportOptions,
-  CommonTransformers
+  CommonTransformers,
 } from '../types'
 import { CRMTransformationEngine } from '../transformationEngine'
 import { logger } from '@/utils/logger'
@@ -36,7 +36,15 @@ export class PipedriveAdapter implements CRMAdapter {
 
     /** Format Pipedrive deal stage */
     formatDealStage: (value: any): string => {
-      const stages = ['Lead In', 'Contact Made', 'Demo Scheduled', 'Proposal Made', 'Negotiations Started', 'Won', 'Lost']
+      const stages = [
+        'Lead In',
+        'Contact Made',
+        'Demo Scheduled',
+        'Proposal Made',
+        'Negotiations Started',
+        'Won',
+        'Lost',
+      ]
       const stage = String(value || '').trim()
       return stages.includes(stage) ? stage : 'Lead In'
     },
@@ -86,16 +94,16 @@ export class PipedriveAdapter implements CRMAdapter {
 
       // Estimate based on industry
       const industryValues: Record<string, number> = {
-        'technology': 50000,
-        'finance': 75000,
-        'healthcare': 40000,
-        'manufacturing': 60000,
-        'retail': 25000,
-        'restaurants': 15000,
+        technology: 50000,
+        finance: 75000,
+        healthcare: 40000,
+        manufacturing: 60000,
+        retail: 25000,
+        restaurants: 15000,
         'real estate': 100000,
-        'construction': 80000,
-        'automotive': 45000,
-        'education': 30000
+        construction: 80000,
+        automotive: 45000,
+        education: 30000,
       }
 
       const industry = String(record.industry || '').toLowerCase()
@@ -108,7 +116,7 @@ export class PipedriveAdapter implements CRMAdapter {
       if (!value) return ''
       const phone = String(value).replace(/\D/g, '')
       return phone.length >= 10 ? phone : ''
-    }
+    },
   }
 
   /**
@@ -129,26 +137,26 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.formatOrganizationName,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Organization name'
+          description: 'Organization name',
         },
         {
           sourceField: 'websiteUrl',
           targetField: 'Organization Website',
           validation: { required: false, type: 'url' },
-          description: 'Organization website'
+          description: 'Organization website',
         },
         {
           sourceField: 'phone',
           targetField: 'Organization Phone',
           transformer: this.pipedriveTransformers.formatPipedrivePhone,
           validation: { required: false, type: 'phone' },
-          description: 'Organization phone'
+          description: 'Organization phone',
         },
         {
           sourceField: 'address.street',
           targetField: 'Organization Address',
           validation: { required: false, type: 'string', maxLength: 255 },
-          description: 'Organization address'
+          description: 'Organization address',
         },
         {
           sourceField: 'confidence',
@@ -161,7 +169,7 @@ export class PipedriveAdapter implements CRMAdapter {
           },
           defaultValue: 'warm',
           validation: { required: false, type: 'string' },
-          description: 'Organization label (hot/warm/cold)'
+          description: 'Organization label (hot/warm/cold)',
         },
         // Person fields
         {
@@ -170,21 +178,21 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.formatPersonName,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Person name'
+          description: 'Person name',
         },
         {
           sourceField: 'email',
           targetField: 'Person Email',
           transformer: CommonTransformers.formatEmail,
           validation: { required: false, type: 'email' },
-          description: 'Person email'
+          description: 'Person email',
         },
         {
           sourceField: 'phone',
           targetField: 'Person Phone',
           transformer: this.pipedriveTransformers.formatPipedrivePhone,
           validation: { required: false, type: 'phone' },
-          description: 'Person phone'
+          description: 'Person phone',
         },
         {
           sourceField: 'confidence',
@@ -192,8 +200,8 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.formatLabel,
           defaultValue: 'warm',
           validation: { required: false, type: 'string' },
-          description: 'Person label'
-        }
+          description: 'Person label',
+        },
       ],
       customHeaders: {
         'Organization Name': 'Organization Name',
@@ -204,20 +212,20 @@ export class PipedriveAdapter implements CRMAdapter {
         'Person Name': 'Person Name',
         'Person Email': 'Email',
         'Person Phone': 'Phone',
-        'Person Label': 'Label'
+        'Person Label': 'Label',
       },
       metadata: {
         version: '1.0.0',
         author: 'Business Scraper',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['pipedrive', 'organization', 'person']
+        tags: ['pipedrive', 'organization', 'person'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
+        maxErrors: 100,
+      },
     },
     {
       id: 'pipedrive-deals-complete',
@@ -233,7 +241,7 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.generateDealTitle,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Deal title'
+          description: 'Deal title',
         },
         {
           sourceField: 'confidence',
@@ -241,7 +249,7 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.estimateDealValue,
           defaultValue: '25000.00',
           validation: { required: false, type: 'string' },
-          description: 'Deal value in currency'
+          description: 'Deal value in currency',
         },
         {
           sourceField: 'industry',
@@ -249,7 +257,7 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: () => 'USD',
           defaultValue: 'USD',
           validation: { required: false, type: 'string' },
-          description: 'Deal currency'
+          description: 'Deal currency',
         },
         {
           sourceField: 'confidence',
@@ -264,7 +272,7 @@ export class PipedriveAdapter implements CRMAdapter {
           },
           defaultValue: 'Lead In',
           validation: { required: false, type: 'string' },
-          description: 'Deal stage'
+          description: 'Deal stage',
         },
         {
           sourceField: 'scrapedAt',
@@ -275,7 +283,7 @@ export class PipedriveAdapter implements CRMAdapter {
             return date.toISOString().split('T')[0] // YYYY-MM-DD format
           },
           validation: { required: false, type: 'date' },
-          description: 'Expected close date'
+          description: 'Expected close date',
         },
         // Organization fields for the deal
         {
@@ -284,20 +292,20 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.formatOrganizationName,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Organization name'
+          description: 'Organization name',
         },
         {
           sourceField: 'websiteUrl',
           targetField: 'Organization Website',
           validation: { required: false, type: 'url' },
-          description: 'Organization website'
+          description: 'Organization website',
         },
         {
           sourceField: 'phone',
           targetField: 'Organization Phone',
           transformer: this.pipedriveTransformers.formatPipedrivePhone,
           validation: { required: false, type: 'phone' },
-          description: 'Organization phone'
+          description: 'Organization phone',
         },
         // Person fields for the deal
         {
@@ -306,22 +314,22 @@ export class PipedriveAdapter implements CRMAdapter {
           transformer: this.pipedriveTransformers.formatPersonName,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Person name'
+          description: 'Person name',
         },
         {
           sourceField: 'email',
           targetField: 'Person Email',
           transformer: CommonTransformers.formatEmail,
           validation: { required: false, type: 'email' },
-          description: 'Person email'
+          description: 'Person email',
         },
         {
           sourceField: 'phone',
           targetField: 'Person Phone',
           transformer: this.pipedriveTransformers.formatPipedrivePhone,
           validation: { required: false, type: 'phone' },
-          description: 'Person phone'
-        }
+          description: 'Person phone',
+        },
       ],
       customHeaders: {
         'Deal Title': 'Title',
@@ -334,21 +342,21 @@ export class PipedriveAdapter implements CRMAdapter {
         'Organization Phone': 'Organization Phone',
         'Person Name': 'Person Name',
         'Person Email': 'Person Email',
-        'Person Phone': 'Person Phone'
+        'Person Phone': 'Person Phone',
       },
       metadata: {
         version: '1.0.0',
         author: 'Business Scraper',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['pipedrive', 'deals', 'complete', 'organization', 'person']
+        tags: ['pipedrive', 'deals', 'complete', 'organization', 'person'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
-    }
+        maxErrors: 100,
+      },
+    },
   ]
 
   /**
@@ -359,15 +367,18 @@ export class PipedriveAdapter implements CRMAdapter {
     template: CRMTemplate,
     options?: CRMExportOptions
   ): Promise<BatchTransformationResult> {
-    logger.info('PipedriveAdapter', `Transforming ${records.length} records using template: ${template.name}`)
-    
+    logger.info(
+      'PipedriveAdapter',
+      `Transforming ${records.length} records using template: ${template.name}`
+    )
+
     const mergedOptions: CRMExportOptions = {
       ...options,
       template,
       customTransformers: {
         ...this.pipedriveTransformers,
-        ...options?.customTransformers
-      }
+        ...options?.customTransformers,
+      },
     }
 
     return await this.transformationEngine.transformBatch(records, template, mergedOptions)
@@ -385,7 +396,7 @@ export class PipedriveAdapter implements CRMAdapter {
         field: 'Organization Name',
         message: 'Organization name is required for Pipedrive',
         value: record.businessName,
-        rule: 'pipedrive-organization-required'
+        rule: 'pipedrive-organization-required',
       })
     }
 
@@ -394,7 +405,7 @@ export class PipedriveAdapter implements CRMAdapter {
         field: 'Deal Title',
         message: 'Deal title is required for Pipedrive deals',
         value: record.businessName,
-        rule: 'pipedrive-deal-required'
+        rule: 'pipedrive-deal-required',
       })
     }
 
@@ -429,14 +440,14 @@ export class PipedriveAdapter implements CRMAdapter {
         author: 'User',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['pipedrive', 'custom']
+        tags: ['pipedrive', 'custom'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
         maxErrors: 100,
-        ...options?.validation
-      }
+        ...options?.validation,
+      },
     }
   }
 }

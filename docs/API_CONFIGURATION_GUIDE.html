@@ -1,151 +1,190 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Configuration Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">API Configuration Guide</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>API Configuration Guide</h1>
-<h2>Overview</h2>
-<p>The Business Scraper application supports multiple search APIs for enhanced functionality. However, these APIs require valid credentials to function properly. This guide explains how to configure them.</p>
-<h2>Current Status</h2>
-<p><strong>All external API keys are currently DISABLED</strong> to prevent errors with placeholder/test credentials.</p>
-<h2>Supported APIs</h2>
-<h3>1. Google Custom Search API</h3>
-<ul>
-<li><strong>Purpose</strong>: Enhanced web search capabilities</li>
-<li><strong>Configuration</strong>: <ul>
-<li><code>GOOGLE_SEARCH_API_KEY</code> - Your Google Custom Search API key</li>
-<li><code>GOOGLE_SEARCH_ENGINE_ID</code> - Your Custom Search Engine ID</li>
-</ul>
-</li>
-<li><strong>How to get</strong>: Visit <a href="https://developers.google.com/custom-search/v1/introduction">Google Custom Search API</a></li>
-</ul>
-<h3>2. Azure AI Foundry (Bing Custom Search)</h3>
-<ul>
-<li><strong>Purpose</strong>: Alternative search engine with Bing results</li>
-<li><strong>Configuration</strong>:<ul>
-<li><code>AZURE_AI_FOUNDRY_API_KEY</code> - Your Azure AI Foundry API key</li>
-<li><code>AZURE_AI_FOUNDRY_ENDPOINT</code> - Your Azure endpoint URL</li>
-<li><code>AZURE_AI_FOUNDRY_REGION</code> - Azure region (e.g., eastus)</li>
-</ul>
-</li>
-<li><strong>How to get</strong>: Visit <a href="https://azure.microsoft.com/en-us/products/ai-foundry/">Azure AI Foundry</a></li>
-</ul>
-<h3>3. Google Maps API</h3>
-<ul>
-<li><strong>Purpose</strong>: Enhanced geocoding and location services</li>
-<li><strong>Configuration</strong>: <code>GOOGLE_MAPS_API_KEY</code></li>
-<li><strong>How to get</strong>: Visit <a href="https://developers.google.com/maps">Google Maps Platform</a></li>
-</ul>
-<h3>4. OpenCage Geocoding API</h3>
-<ul>
-<li><strong>Purpose</strong>: Alternative geocoding service</li>
-<li><strong>Configuration</strong>: <code>OPENCAGE_API_KEY</code></li>
-<li><strong>How to get</strong>: Visit <a href="https://opencagedata.com/">OpenCage Geocoding API</a></li>
-</ul>
-<h2>Fallback Behavior</h2>
-<p>When API keys are not configured, the application automatically falls back to:</p>
-<ul>
-<li><strong>DuckDuckGo Search</strong> (free, no API key required)</li>
-<li><strong>Built-in geocoding</strong> (basic functionality)</li>
-</ul>
-<p>This ensures the application continues to work without external API dependencies.</p>
-<h2>How to Enable APIs</h2>
-<ol>
-<li><strong>Obtain valid API keys</strong> from the respective providers</li>
-<li><strong>Update the <code>.env</code> file</strong> with your real API keys:<pre><code class="language-bash"># Uncomment and replace with real keys
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">API Configuration Guide</li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>API Configuration Guide</h1>
+        <h2>Overview</h2>
+        <p>
+          The Business Scraper application supports multiple search APIs for enhanced functionality.
+          However, these APIs require valid credentials to function properly. This guide explains
+          how to configure them.
+        </p>
+        <h2>Current Status</h2>
+        <p>
+          <strong>All external API keys are currently DISABLED</strong> to prevent errors with
+          placeholder/test credentials.
+        </p>
+        <h2>Supported APIs</h2>
+        <h3>1. Google Custom Search API</h3>
+        <ul>
+          <li><strong>Purpose</strong>: Enhanced web search capabilities</li>
+          <li>
+            <strong>Configuration</strong>:
+            <ul>
+              <li><code>GOOGLE_SEARCH_API_KEY</code> - Your Google Custom Search API key</li>
+              <li><code>GOOGLE_SEARCH_ENGINE_ID</code> - Your Custom Search Engine ID</li>
+            </ul>
+          </li>
+          <li>
+            <strong>How to get</strong>: Visit
+            <a href="https://developers.google.com/custom-search/v1/introduction"
+              >Google Custom Search API</a
+            >
+          </li>
+        </ul>
+        <h3>2. Azure AI Foundry (Bing Custom Search)</h3>
+        <ul>
+          <li><strong>Purpose</strong>: Alternative search engine with Bing results</li>
+          <li>
+            <strong>Configuration</strong>:
+            <ul>
+              <li><code>AZURE_AI_FOUNDRY_API_KEY</code> - Your Azure AI Foundry API key</li>
+              <li><code>AZURE_AI_FOUNDRY_ENDPOINT</code> - Your Azure endpoint URL</li>
+              <li><code>AZURE_AI_FOUNDRY_REGION</code> - Azure region (e.g., eastus)</li>
+            </ul>
+          </li>
+          <li>
+            <strong>How to get</strong>: Visit
+            <a href="https://azure.microsoft.com/en-us/products/ai-foundry/">Azure AI Foundry</a>
+          </li>
+        </ul>
+        <h3>3. Google Maps API</h3>
+        <ul>
+          <li><strong>Purpose</strong>: Enhanced geocoding and location services</li>
+          <li><strong>Configuration</strong>: <code>GOOGLE_MAPS_API_KEY</code></li>
+          <li>
+            <strong>How to get</strong>: Visit
+            <a href="https://developers.google.com/maps">Google Maps Platform</a>
+          </li>
+        </ul>
+        <h3>4. OpenCage Geocoding API</h3>
+        <ul>
+          <li><strong>Purpose</strong>: Alternative geocoding service</li>
+          <li><strong>Configuration</strong>: <code>OPENCAGE_API_KEY</code></li>
+          <li>
+            <strong>How to get</strong>: Visit
+            <a href="https://opencagedata.com/">OpenCage Geocoding API</a>
+          </li>
+        </ul>
+        <h2>Fallback Behavior</h2>
+        <p>When API keys are not configured, the application automatically falls back to:</p>
+        <ul>
+          <li><strong>DuckDuckGo Search</strong> (free, no API key required)</li>
+          <li><strong>Built-in geocoding</strong> (basic functionality)</li>
+        </ul>
+        <p>This ensures the application continues to work without external API dependencies.</p>
+        <h2>How to Enable APIs</h2>
+        <ol>
+          <li><strong>Obtain valid API keys</strong> from the respective providers</li>
+          <li>
+            <strong>Update the <code>.env</code> file</strong> with your real API keys:
+            <pre><code class="language-bash"># Uncomment and replace with real keys
 GOOGLE_SEARCH_API_KEY=your_real_google_search_api_key_here
 GOOGLE_SEARCH_ENGINE_ID=your_real_search_engine_id_here
 AZURE_AI_FOUNDRY_API_KEY=your_real_azure_api_key_here
 AZURE_AI_FOUNDRY_ENDPOINT=https://your-real-endpoint.cognitiveservices.azure.com/
 GOOGLE_MAPS_API_KEY=your_real_google_maps_api_key_here
 </code></pre>
-</li>
-<li><strong>Restart the application</strong> to apply the changes</li>
-</ol>
-<h2>Testing API Configuration</h2>
-<p>The application includes an <strong>API Configuration</strong> page where you can:</p>
-<ul>
-<li>Enter your API credentials</li>
-<li>Test each API connection</li>
-<li>View detailed error messages if configuration fails</li>
-<li>See which APIs are available and working</li>
-</ul>
-<p>Access this via the &quot;API Configuration&quot; button in the application header.</p>
-<h2>Security Notes</h2>
-<ul>
-<li><strong>Never commit real API keys</strong> to version control</li>
-<li><strong>Use environment variables</strong> for production deployments</li>
-<li><strong>Rotate API keys regularly</strong> for security</li>
-<li><strong>Monitor API usage</strong> to avoid unexpected charges</li>
-</ul>
-<h2>Troubleshooting</h2>
-<h3>Common Issues:</h3>
-<ol>
-<li><strong>400 Bad Request</strong>: Usually indicates invalid API key or malformed request</li>
-<li><strong>404 Not Found</strong>: Usually indicates incorrect endpoint URL</li>
-<li><strong>403 Forbidden</strong>: Usually indicates API key lacks required permissions</li>
-<li><strong>429 Too Many Requests</strong>: API rate limit exceeded</li>
-</ol>
-<h3>Solutions:</h3>
-<ol>
-<li>Verify API keys are correct and active</li>
-<li>Check endpoint URLs for typos</li>
-<li>Ensure API keys have required permissions</li>
-<li>Monitor API usage and implement rate limiting</li>
-</ol>
-<h2>Cost Considerations</h2>
-<p>Most APIs have free tiers but may charge for usage beyond limits:</p>
-<ul>
-<li><strong>Google Custom Search</strong>: 100 queries/day free, then $5 per 1000 queries</li>
-<li><strong>Azure AI Foundry</strong>: Varies by service tier</li>
-<li><strong>Google Maps</strong>: $200 monthly credit, then pay-per-use</li>
-<li><strong>OpenCage</strong>: 2500 queries/day free, then paid plans</li>
-</ul>
-<h2>Current Configuration</h2>
-<p>As of the latest update, all external APIs are disabled to prevent errors. The application runs successfully using free fallback services (DuckDuckGo search and basic geocoding).</p>
+          </li>
+          <li><strong>Restart the application</strong> to apply the changes</li>
+        </ol>
+        <h2>Testing API Configuration</h2>
+        <p>The application includes an <strong>API Configuration</strong> page where you can:</p>
+        <ul>
+          <li>Enter your API credentials</li>
+          <li>Test each API connection</li>
+          <li>View detailed error messages if configuration fails</li>
+          <li>See which APIs are available and working</li>
+        </ul>
+        <p>Access this via the &quot;API Configuration&quot; button in the application header.</p>
+        <h2>Security Notes</h2>
+        <ul>
+          <li><strong>Never commit real API keys</strong> to version control</li>
+          <li><strong>Use environment variables</strong> for production deployments</li>
+          <li><strong>Rotate API keys regularly</strong> for security</li>
+          <li><strong>Monitor API usage</strong> to avoid unexpected charges</li>
+        </ul>
+        <h2>Troubleshooting</h2>
+        <h3>Common Issues:</h3>
+        <ol>
+          <li>
+            <strong>400 Bad Request</strong>: Usually indicates invalid API key or malformed request
+          </li>
+          <li><strong>404 Not Found</strong>: Usually indicates incorrect endpoint URL</li>
+          <li>
+            <strong>403 Forbidden</strong>: Usually indicates API key lacks required permissions
+          </li>
+          <li><strong>429 Too Many Requests</strong>: API rate limit exceeded</li>
+        </ol>
+        <h3>Solutions:</h3>
+        <ol>
+          <li>Verify API keys are correct and active</li>
+          <li>Check endpoint URLs for typos</li>
+          <li>Ensure API keys have required permissions</li>
+          <li>Monitor API usage and implement rate limiting</li>
+        </ol>
+        <h2>Cost Considerations</h2>
+        <p>Most APIs have free tiers but may charge for usage beyond limits:</p>
+        <ul>
+          <li>
+            <strong>Google Custom Search</strong>: 100 queries/day free, then $5 per 1000 queries
+          </li>
+          <li><strong>Azure AI Foundry</strong>: Varies by service tier</li>
+          <li><strong>Google Maps</strong>: $200 monthly credit, then pay-per-use</li>
+          <li><strong>OpenCage</strong>: 2500 queries/day free, then paid plans</li>
+        </ul>
+        <h2>Current Configuration</h2>
+        <p>
+          As of the latest update, all external APIs are disabled to prevent errors. The application
+          runs successfully using free fallback services (DuckDuckGo search and basic geocoding).
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

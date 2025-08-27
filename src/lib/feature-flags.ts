@@ -24,116 +24,116 @@ export const FEATURE_FLAGS: Record<string, FeatureFlag> = {
     name: 'Authentication',
     description: 'Enable user authentication and session management',
     defaultValue: false,
-    environments: ['development', 'production', 'test']
+    environments: ['development', 'production', 'test'],
   },
-  
+
   CACHING: {
     key: 'CACHING',
     name: 'Caching',
     description: 'Enable caching for improved performance',
     defaultValue: true,
-    environments: ['development', 'production', 'test']
+    environments: ['development', 'production', 'test'],
   },
-  
+
   RATE_LIMITING: {
     key: 'RATE_LIMITING',
     name: 'Rate Limiting',
     description: 'Enable rate limiting for API endpoints',
     defaultValue: true,
-    environments: ['production', 'test']
+    environments: ['production', 'test'],
   },
-  
+
   METRICS: {
     key: 'METRICS',
     name: 'Metrics Collection',
     description: 'Enable metrics collection and monitoring',
     defaultValue: false,
-    environments: ['production']
+    environments: ['production'],
   },
-  
+
   DEBUG_MODE: {
     key: 'DEBUG_MODE',
     name: 'Debug Mode',
     description: 'Enable debug logging and development tools',
     defaultValue: false,
-    environments: ['development', 'test']
+    environments: ['development', 'test'],
   },
-  
+
   EXPERIMENTAL_FEATURES: {
     key: 'EXPERIMENTAL_FEATURES',
     name: 'Experimental Features',
     description: 'Enable experimental and beta features',
     defaultValue: false,
-    environments: ['development']
+    environments: ['development'],
   },
-  
+
   ADVANCED_SCRAPING: {
     key: 'ADVANCED_SCRAPING',
     name: 'Advanced Scraping',
     description: 'Enable advanced scraping features like JavaScript rendering',
     defaultValue: false,
-    environments: ['development', 'production', 'test']
+    environments: ['development', 'production', 'test'],
   },
-  
+
   BULK_OPERATIONS: {
     key: 'BULK_OPERATIONS',
     name: 'Bulk Operations',
     description: 'Enable bulk import/export operations',
     defaultValue: true,
-    environments: ['development', 'production', 'test']
+    environments: ['development', 'production', 'test'],
   },
-  
+
   API_INTEGRATIONS: {
     key: 'API_INTEGRATIONS',
     name: 'API Integrations',
     description: 'Enable third-party API integrations (Google Maps, etc.)',
     defaultValue: true,
-    environments: ['development', 'production', 'test']
+    environments: ['development', 'production', 'test'],
   },
-  
+
   REAL_TIME_UPDATES: {
     key: 'REAL_TIME_UPDATES',
     name: 'Real-time Updates',
     description: 'Enable real-time updates via WebSocket',
     defaultValue: false,
     environments: ['development', 'production', 'test'],
-    dependencies: ['CACHING']
+    dependencies: ['CACHING'],
   },
-  
+
   ENHANCED_VALIDATION: {
     key: 'ENHANCED_VALIDATION',
     name: 'Enhanced Validation',
     description: 'Enable enhanced input validation and sanitization',
     defaultValue: true,
-    environments: ['development', 'production', 'test']
+    environments: ['development', 'production', 'test'],
   },
-  
+
   PERFORMANCE_MONITORING: {
     key: 'PERFORMANCE_MONITORING',
     name: 'Performance Monitoring',
     description: 'Enable performance monitoring and profiling',
     defaultValue: false,
     environments: ['production'],
-    dependencies: ['METRICS']
+    dependencies: ['METRICS'],
   },
-  
+
   BACKUP_AUTOMATION: {
     key: 'BACKUP_AUTOMATION',
     name: 'Backup Automation',
     description: 'Enable automated backup and restore functionality',
     defaultValue: false,
-    environments: ['production']
+    environments: ['production'],
   },
-  
+
   MULTI_LANGUAGE: {
     key: 'MULTI_LANGUAGE',
     name: 'Multi-language Support',
     description: 'Enable internationalization and localization',
     defaultValue: false,
     environments: ['development', 'production', 'test'],
-    deprecated: false
+    deprecated: false,
   },
-  
+
   LEGACY_SUPPORT: {
     key: 'LEGACY_SUPPORT',
     name: 'Legacy Browser Support',
@@ -141,8 +141,8 @@ export const FEATURE_FLAGS: Record<string, FeatureFlag> = {
     defaultValue: false,
     environments: ['production'],
     deprecated: true,
-    deprecationMessage: 'Legacy browser support will be removed in v2.0.0'
-  }
+    deprecationMessage: 'Legacy browser support will be removed in v2.0.0',
+  },
 }
 
 // Feature flag evaluation context
@@ -175,14 +175,14 @@ class FeatureFlagManager {
 
       // Evaluate feature flag
       const result = this.evaluateFlag(flagKey, context)
-      
+
       // Cache the result
       this.setCachedValue(flagKey, result)
-      
+
       return result
     } catch (error) {
       logger.error('FeatureFlags', `Error evaluating feature flag ${flagKey}`, error)
-      
+
       // Return default value on error
       const flag = Object.prototype.hasOwnProperty.call(FEATURE_FLAGS, flagKey)
         ? FEATURE_FLAGS[flagKey as keyof typeof FEATURE_FLAGS]
@@ -198,7 +198,7 @@ class FeatureFlagManager {
     const flag = Object.prototype.hasOwnProperty.call(FEATURE_FLAGS, flagKey)
       ? FEATURE_FLAGS[flagKey as keyof typeof FEATURE_FLAGS]
       : null
-    
+
     if (!flag) {
       logger.warn('FeatureFlags', `Unknown feature flag: ${flagKey}`)
       return false
@@ -206,23 +206,32 @@ class FeatureFlagManager {
 
     // Check if feature is deprecated
     if (flag.deprecated) {
-      logger.warn('FeatureFlags', `Feature flag ${flagKey} is deprecated: ${flag.deprecationMessage || 'No message provided'}`)
+      logger.warn(
+        'FeatureFlags',
+        `Feature flag ${flagKey} is deprecated: ${flag.deprecationMessage || 'No message provided'}`
+      )
     }
 
     const config = getConfig()
     const featureFlags = getFeatureFlags()
     const currentEnv = config.app.environment
-    
+
     // Build evaluation context
     const evalContext: FeatureContext = {
       environment: currentEnv,
       timestamp: new Date(),
-      ...context
+      ...context,
     }
 
     // Check environment restrictions
-    if (flag.environments && !flag.environments.includes(evalContext.environment as 'development' | 'production' | 'test')) {
-      logger.debug('FeatureFlags', `Feature ${flagKey} not available in ${evalContext.environment} environment`)
+    if (
+      flag.environments &&
+      !flag.environments.includes(evalContext.environment as 'development' | 'production' | 'test')
+    ) {
+      logger.debug(
+        'FeatureFlags',
+        `Feature ${flagKey} not available in ${evalContext.environment} environment`
+      )
       return false
     }
 
@@ -230,7 +239,10 @@ class FeatureFlagManager {
     if (flag.dependencies) {
       for (const dependency of flag.dependencies) {
         if (!this.isEnabled(dependency, context)) {
-          logger.debug('FeatureFlags', `Feature ${flagKey} disabled due to missing dependency: ${dependency}`)
+          logger.debug(
+            'FeatureFlags',
+            `Feature ${flagKey} disabled due to missing dependency: ${dependency}`
+          )
           return false
         }
       }
@@ -275,7 +287,7 @@ class FeatureFlagManager {
       flag: flag.name,
       environment: evalContext.environment,
       dependencies: flag.dependencies,
-      defaultValue: flag.defaultValue
+      defaultValue: flag.defaultValue,
     })
 
     return enabled
@@ -291,7 +303,7 @@ class FeatureFlagManager {
       this.cacheExpiry.delete(flagKey)
       return null
     }
-    
+
     return this.cache.get(flagKey) ?? null
   }
 
@@ -315,23 +327,25 @@ class FeatureFlagManager {
   /**
    * Get all feature flags with their current status
    */
-  getAllFlags(context?: Partial<FeatureContext>): Record<string, { enabled: boolean; flag: FeatureFlag }> {
+  getAllFlags(
+    context?: Partial<FeatureContext>
+  ): Record<string, { enabled: boolean; flag: FeatureFlag }> {
     const result: Record<string, { enabled: boolean; flag: FeatureFlag }> = {}
-    
+
     for (const [key, flag] of Object.entries(FEATURE_FLAGS)) {
       if (typeof key === 'string' && key.length > 0) {
         Object.defineProperty(result, key, {
           value: {
             enabled: this.isEnabled(key, context),
-            flag
+            flag,
           },
           writable: true,
           enumerable: true,
-          configurable: true
+          configurable: true,
         })
       }
     }
-    
+
     return result
   }
 
@@ -341,22 +355,22 @@ class FeatureFlagManager {
   getFlagsForEnvironment(environment: string): Record<string, boolean> {
     const context: FeatureContext = {
       environment,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
-    
+
     const result: Record<string, boolean> = {}
-    
+
     for (const key of Object.keys(FEATURE_FLAGS)) {
       if (typeof key === 'string' && key.length > 0) {
         Object.defineProperty(result, key, {
           value: this.isEnabled(key, context),
           writable: true,
           enumerable: true,
-          configurable: true
+          configurable: true,
         })
       }
     }
-    
+
     return result
   }
 
@@ -365,7 +379,7 @@ class FeatureFlagManager {
    */
   validateDependencies(): { isValid: boolean; errors: string[] } {
     const errors: string[] = []
-    
+
     for (const [key, flag] of Object.entries(FEATURE_FLAGS)) {
       if (flag.dependencies) {
         for (const dependency of flag.dependencies) {
@@ -379,10 +393,10 @@ class FeatureFlagManager {
         }
       }
     }
-    
+
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     }
   }
 }
@@ -400,7 +414,9 @@ export function isFeatureEnabled(flagKey: string, context?: Partial<FeatureConte
 /**
  * Get all feature flags
  */
-export function getAllFeatureFlags(context?: Partial<FeatureContext>): Record<string, { enabled: boolean; flag: FeatureFlag }> {
+export function getAllFeatureFlags(
+  context?: Partial<FeatureContext>
+): Record<string, { enabled: boolean; flag: FeatureFlag }> {
   return featureFlagManager.getAllFlags(context)
 }
 
@@ -429,19 +445,31 @@ export function getFeatureFlagsForEnvironment(environment: string): Record<strin
 export const Features = {
   isAuthEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('AUTH', context),
   isCachingEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('CACHING', context),
-  isRateLimitingEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('RATE_LIMITING', context),
+  isRateLimitingEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('RATE_LIMITING', context),
   isMetricsEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('METRICS', context),
-  isDebugModeEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('DEBUG_MODE', context),
-  areExperimentalFeaturesEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('EXPERIMENTAL_FEATURES', context),
-  isAdvancedScrapingEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('ADVANCED_SCRAPING', context),
-  areBulkOperationsEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('BULK_OPERATIONS', context),
-  areApiIntegrationsEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('API_INTEGRATIONS', context),
-  areRealTimeUpdatesEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('REAL_TIME_UPDATES', context),
-  isEnhancedValidationEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('ENHANCED_VALIDATION', context),
-  isPerformanceMonitoringEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('PERFORMANCE_MONITORING', context),
-  isBackupAutomationEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('BACKUP_AUTOMATION', context),
-  isMultiLanguageEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('MULTI_LANGUAGE', context),
-  isLegacySupportEnabled: (context?: Partial<FeatureContext>) => isFeatureEnabled('LEGACY_SUPPORT', context)
+  isDebugModeEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('DEBUG_MODE', context),
+  areExperimentalFeaturesEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('EXPERIMENTAL_FEATURES', context),
+  isAdvancedScrapingEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('ADVANCED_SCRAPING', context),
+  areBulkOperationsEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('BULK_OPERATIONS', context),
+  areApiIntegrationsEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('API_INTEGRATIONS', context),
+  areRealTimeUpdatesEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('REAL_TIME_UPDATES', context),
+  isEnhancedValidationEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('ENHANCED_VALIDATION', context),
+  isPerformanceMonitoringEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('PERFORMANCE_MONITORING', context),
+  isBackupAutomationEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('BACKUP_AUTOMATION', context),
+  isMultiLanguageEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('MULTI_LANGUAGE', context),
+  isLegacySupportEnabled: (context?: Partial<FeatureContext>) =>
+    isFeatureEnabled('LEGACY_SUPPORT', context),
 }
 
 // Export the manager for advanced usage

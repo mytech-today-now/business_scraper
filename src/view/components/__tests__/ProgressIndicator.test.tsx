@@ -18,7 +18,7 @@ describe('ProgressIndicator', () => {
     currentBatch: 5,
     estimatedTimeRemaining: 120,
     status: 'streaming',
-    connectionStatus: 'connected'
+    connectionStatus: 'connected',
   }
 
   beforeEach(() => {
@@ -78,7 +78,7 @@ describe('ProgressIndicator', () => {
     )
 
     expect(screen.getByText('Stream paused')).toBeInTheDocument()
-    
+
     const resumeButton = screen.getByLabelText('Resume streaming')
     expect(resumeButton).toBeInTheDocument()
 
@@ -144,7 +144,7 @@ describe('ProgressIndicator', () => {
 
   it('displays error message when error occurs', () => {
     const errorMessage = 'Connection failed'
-    
+
     render(
       <ProgressIndicator
         progress={{ ...defaultProgress, status: 'error' }}
@@ -175,14 +175,16 @@ describe('ProgressIndicator', () => {
     )
 
     expect(screen.getByText('Fallback Mode')).toBeInTheDocument()
-    expect(screen.getByText('Streaming connection failed. Using standard search method.')).toBeInTheDocument()
+    expect(
+      screen.getByText('Streaming connection failed. Using standard search method.')
+    ).toBeInTheDocument()
   })
 
   it('calculates progress percentage correctly', () => {
     const progress = {
       ...defaultProgress,
       totalFound: 400,
-      processed: 100
+      processed: 100,
     }
 
     render(
@@ -203,7 +205,7 @@ describe('ProgressIndicator', () => {
   it('formats time correctly', () => {
     const progress = {
       ...defaultProgress,
-      estimatedTimeRemaining: 75 // 1 minute 15 seconds
+      estimatedTimeRemaining: 75, // 1 minute 15 seconds
     }
 
     render(
@@ -276,7 +278,7 @@ describe('ProgressIndicator', () => {
       ...defaultProgress,
       totalFound: 0,
       processed: 0,
-      estimatedTimeRemaining: 0
+      estimatedTimeRemaining: 0,
     }
 
     render(

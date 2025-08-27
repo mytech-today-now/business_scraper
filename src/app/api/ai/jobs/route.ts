@@ -25,16 +25,15 @@ export async function GET(request: NextRequest) {
         jobs: jobStatus,
         totalJobs: jobStatus.length,
         enabledJobs: jobStatus.filter(job => job.enabled).length,
-        lastUpdate: new Date().toISOString()
-      }
+        lastUpdate: new Date().toISOString(),
+      },
     })
-
   } catch (error) {
     logger.error('Jobs API', 'Failed to get job status', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to get job status',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -57,14 +56,14 @@ export async function POST(request: NextRequest) {
         backgroundJobScheduler.start()
         return NextResponse.json({
           success: true,
-          message: 'Background job scheduler started'
+          message: 'Background job scheduler started',
         })
 
       case 'stop':
         backgroundJobScheduler.stop()
         return NextResponse.json({
           success: true,
-          message: 'Background job scheduler stopped'
+          message: 'Background job scheduler stopped',
         })
 
       case 'toggle':
@@ -74,11 +73,11 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         backgroundJobScheduler.setJobEnabled(jobId, enabled)
         return NextResponse.json({
           success: true,
-          message: `Job ${jobId} ${enabled ? 'enabled' : 'disabled'}`
+          message: `Job ${jobId} ${enabled ? 'enabled' : 'disabled'}`,
         })
 
       default:
@@ -87,13 +86,12 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
     }
-
   } catch (error) {
     logger.error('Jobs API', 'Job management failed', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to manage jobs',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )

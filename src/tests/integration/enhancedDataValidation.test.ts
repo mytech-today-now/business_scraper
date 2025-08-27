@@ -9,13 +9,13 @@ import { BusinessRecord } from '@/types/business'
 
 // Mock external dependencies
 jest.mock('dns/promises', () => ({
-  resolveMx: jest.fn()
+  resolveMx: jest.fn(),
 }))
 
 jest.mock('@/model/geocoder', () => ({
   geocoder: {
-    geocodeAddress: jest.fn()
-  }
+    geocodeAddress: jest.fn(),
+  },
 }))
 
 describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
@@ -26,12 +26,12 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
   beforeEach(() => {
     pipeline = new DataValidationPipeline()
     jest.clearAllMocks()
-    
+
     // Setup default mocks
     mockResolveMx.mockResolvedValue([{ exchange: 'mx.example.com', priority: 10 }])
     mockGeocoder.geocodeAddress.mockResolvedValue({
       lat: 40.7128,
-      lng: -74.0060
+      lng: -74.006,
     })
   })
 
@@ -47,49 +47,52 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Main St',
           city: 'New York',
           state: 'NY',
-          zipCode: '10001'
+          zipCode: '10001',
         },
         industry: 'Technology',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       // Mock page for business intelligence
       const mockPage = {
-        content: jest.fn().mockResolvedValue('<html><body>We have 25 employees and use WordPress</body></html>'),
-        evaluate: jest.fn()
+        content: jest
+          .fn()
+          .mockResolvedValue('<html><body>We have 25 employees and use WordPress</body></html>'),
+        evaluate: jest
+          .fn()
           .mockResolvedValueOnce('We have 25 employees and use WordPress') // text content
           .mockResolvedValueOnce(['/wp-content/script.js']) // scripts
           .mockResolvedValueOnce(['/wp-content/style.css']) // stylesheets
           .mockResolvedValueOnce([]) // headers
           .mockResolvedValueOnce([]) // social links
-          .mockResolvedValueOnce([]) // widgets
+          .mockResolvedValueOnce([]), // widgets
       }
 
       // Mock the enrichment data that would be added by the pipeline
       businessRecord.emailValidation = {
         validationResults: [
           { email: 'contact@techsolutions.com', isValid: true, confidence: 0.95 },
-          { email: 'info@techsolutions.com', isValid: true, confidence: 0.92 }
+          { email: 'info@techsolutions.com', isValid: true, confidence: 0.92 },
         ],
-        overallConfidence: 0.935
+        overallConfidence: 0.935,
       }
 
       businessRecord.phoneValidation = {
         isValid: true,
         standardizedNumber: '+15551234567',
-        confidence: 0.9
+        confidence: 0.9,
       }
 
       businessRecord.businessIntelligence = {
         companySize: {
           employeeCount: 25,
-          confidence: 0.8
+          confidence: 0.8,
         },
         revenue: {
           estimatedRevenue: 25000000,
           revenueRange: '$10M-$50M',
-          confidence: 0.7
-        }
+          confidence: 0.7,
+        },
       }
 
       // Perform validation and enrichment
@@ -115,12 +118,14 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
       // Check business intelligence enrichment
       expect(businessRecord.businessIntelligence).toBeDefined()
       expect(businessRecord.businessIntelligence?.companySize?.employeeCount).toBe(25)
-      expect(businessRecord.businessIntelligence?.technologyStack?.platforms?.length).toBeGreaterThan(0)
+      expect(
+        businessRecord.businessIntelligence?.technologyStack?.platforms?.length
+      ).toBeGreaterThan(0)
 
       // Check geocoding
       expect(businessRecord.coordinates).toBeDefined()
       expect(businessRecord.coordinates?.lat).toBe(40.7128)
-      expect(businessRecord.coordinates?.lng).toBe(-74.0060)
+      expect(businessRecord.coordinates?.lng).toBe(-74.006)
 
       // Check overall data quality
       expect(businessRecord.dataQualityScore).toBeGreaterThan(70)
@@ -139,10 +144,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '456 Oak St',
           city: 'Boston',
           state: 'MA',
-          zipCode: '02101'
+          zipCode: '02101',
         },
         industry: 'Retail',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
         // No phone number
       }
 
@@ -171,10 +176,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '',
           city: '',
           state: '',
-          zipCode: 'invalid'
+          zipCode: 'invalid',
         },
         industry: '',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       mockResolveMx.mockRejectedValue(new Error('No MX records'))
@@ -202,10 +207,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Test St',
           city: 'Test City',
           state: 'TC',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       await pipeline.validateAndClean(businessRecord)
@@ -240,10 +245,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Broadway',
           city: 'New York',
           state: 'NY',
-          zipCode: '10001'
+          zipCode: '10001',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       await pipeline.validateAndClean(businessRecord)
@@ -268,10 +273,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Corporate Blvd',
           city: 'San Francisco',
           state: 'CA',
-          zipCode: '94105'
+          zipCode: '94105',
         },
         industry: 'Technology',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       const mockPage = {
@@ -289,16 +294,22 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
             </body>
           </html>
         `),
-        evaluate: jest.fn()
-          .mockResolvedValueOnce('Founded in 2010, we are an established company with 150 employees. Annual revenue of $25 million.')
-          .mockResolvedValueOnce(['https://www.google-analytics.com/analytics.js', '/wp-content/script.js'])
+        evaluate: jest
+          .fn()
+          .mockResolvedValueOnce(
+            'Founded in 2010, we are an established company with 150 employees. Annual revenue of $25 million.'
+          )
+          .mockResolvedValueOnce([
+            'https://www.google-analytics.com/analytics.js',
+            '/wp-content/script.js',
+          ])
           .mockResolvedValueOnce(['/wp-content/themes/style.css'])
           .mockResolvedValueOnce([])
           .mockResolvedValueOnce([
             { href: 'https://linkedin.com/company/bicorp', text: 'LinkedIn', title: '' },
-            { href: 'https://twitter.com/bicorp', text: 'Twitter', title: '' }
+            { href: 'https://twitter.com/bicorp', text: 'Twitter', title: '' },
           ])
-          .mockResolvedValueOnce([])
+          .mockResolvedValueOnce([]),
       }
 
       // Mock the business intelligence data
@@ -306,27 +317,27 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
         companySize: {
           employeeCount: 150,
           employeeRange: '51-200',
-          confidence: 0.9
+          confidence: 0.9,
         },
         revenue: {
           estimatedRevenue: 25000000,
           revenueRange: '$10M-$50M',
-          confidence: 0.8
+          confidence: 0.8,
         },
         businessMaturity: {
           yearsInBusiness: 14,
           maturityStage: 'mature',
-          confidence: 0.85
+          confidence: 0.85,
         },
         technology: {
           platforms: ['WordPress'],
           analytics: ['Google Analytics'],
-          confidence: 0.9
+          confidence: 0.9,
         },
         socialPresence: {
           platforms: ['LinkedIn', 'Twitter'],
-          confidence: 0.95
-        }
+          confidence: 0.95,
+        },
       }
 
       await pipeline.enrichData(businessRecord)
@@ -342,7 +353,9 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
       expect(businessRecord.businessIntelligence?.revenue?.revenueRange).toBe('$10M-$50M')
 
       // Maturity
-      expect(businessRecord.businessIntelligence?.businessMaturity?.yearsInBusiness).toBeGreaterThan(10)
+      expect(
+        businessRecord.businessIntelligence?.businessMaturity?.yearsInBusiness
+      ).toBeGreaterThan(10)
       expect(businessRecord.businessIntelligence?.businessMaturity?.maturityStage).toBe('mature')
 
       // Technology
@@ -369,10 +382,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Quality St',
           city: 'Excellence',
           state: 'EX',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Quality Assurance',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       await pipeline.validateAndClean(highQualityRecord)
@@ -393,10 +406,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '',
           city: '',
           state: '',
-          zipCode: ''
+          zipCode: '',
         },
         industry: '',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       mockResolveMx.mockRejectedValue(new Error('No MX records'))
@@ -419,10 +432,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Cache St',
           city: 'Cache City',
           state: 'CC',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       const businessRecord2: BusinessRecord = {
@@ -434,10 +447,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '456 Cache Ave',
           city: 'Cache City',
           state: 'CC',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       // First validation
@@ -453,8 +466,9 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
       expect(businessRecord2.emailValidation).toBeDefined()
 
       // Email validation results should be similar due to caching
-      expect(businessRecord1.emailValidation?.validationResults[0].confidence)
-        .toBe(businessRecord2.emailValidation?.validationResults[0].confidence)
+      expect(businessRecord1.emailValidation?.validationResults[0].confidence).toBe(
+        businessRecord2.emailValidation?.validationResults[0].confidence
+      )
     })
   })
 
@@ -470,10 +484,10 @@ describe('Enhanced Data Validation Pipeline - Integration Tests', () => {
           street: '123 Error St',
           city: 'Recovery',
           state: 'RC',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       // Simulate email validation failure

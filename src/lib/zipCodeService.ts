@@ -29,7 +29,10 @@ export class ZipCodeService {
       const location2 = await this.getZipCodeLocation(zipCode2)
 
       if (!location1 || !location2) {
-        logger.warn('ZipCodeService', `Could not find coordinates for ZIP codes: ${zipCode1}, ${zipCode2}`)
+        logger.warn(
+          'ZipCodeService',
+          `Could not find coordinates for ZIP codes: ${zipCode1}, ${zipCode2}`
+        )
         return { distance: 0, withinRadius: true } // Default to allowing if we can't calculate
       }
 
@@ -42,9 +45,8 @@ export class ZipCodeService {
 
       return {
         distance,
-        withinRadius: distance <= radiusMiles
+        withinRadius: distance <= radiusMiles,
       }
-
     } catch (error) {
       logger.error('ZipCodeService', 'Error calculating distance', error)
       return { distance: 0, withinRadius: true } // Default to allowing if error occurs
@@ -66,7 +68,7 @@ export class ZipCodeService {
     try {
       // Try to get coordinates from a free geocoding service
       const location = await this.fetchZipCodeFromAPI(cleanZip)
-      
+
       if (location) {
         this.zipCodeCache.set(cleanZip, location)
         return location
@@ -80,7 +82,6 @@ export class ZipCodeService {
       }
 
       return null
-
     } catch (error) {
       logger.warn('ZipCodeService', `Failed to get location for ZIP ${cleanZip}`, error)
       return null
@@ -108,12 +109,11 @@ export class ZipCodeService {
           latitude: parseFloat(place.latitude),
           longitude: parseFloat(place.longitude),
           city: place['place name'],
-          state: place['state abbreviation']
+          state: place['state abbreviation'],
         }
       }
 
       return null
-
     } catch (error) {
       logger.warn('ZipCodeService', `API request failed for ZIP ${zipCode}`, error)
       return null
@@ -127,44 +127,164 @@ export class ZipCodeService {
     // Hardcoded coordinates for major ZIP codes as fallback
     const majorZipCodes: Record<string, ZipCodeLocation> = {
       // New York
-      '10001': { zipCode: '10001', latitude: 40.7505, longitude: -73.9934, city: 'New York', state: 'NY' },
-      '10002': { zipCode: '10002', latitude: 40.7156, longitude: -73.9877, city: 'New York', state: 'NY' },
-      
+      '10001': {
+        zipCode: '10001',
+        latitude: 40.7505,
+        longitude: -73.9934,
+        city: 'New York',
+        state: 'NY',
+      },
+      '10002': {
+        zipCode: '10002',
+        latitude: 40.7156,
+        longitude: -73.9877,
+        city: 'New York',
+        state: 'NY',
+      },
+
       // Los Angeles
-      '90210': { zipCode: '90210', latitude: 34.0901, longitude: -118.4065, city: 'Beverly Hills', state: 'CA' },
-      '90001': { zipCode: '90001', latitude: 33.9731, longitude: -118.2479, city: 'Los Angeles', state: 'CA' },
-      
+      '90210': {
+        zipCode: '90210',
+        latitude: 34.0901,
+        longitude: -118.4065,
+        city: 'Beverly Hills',
+        state: 'CA',
+      },
+      '90001': {
+        zipCode: '90001',
+        latitude: 33.9731,
+        longitude: -118.2479,
+        city: 'Los Angeles',
+        state: 'CA',
+      },
+
       // Chicago
-      '60601': { zipCode: '60601', latitude: 41.8825, longitude: -87.6441, city: 'Chicago', state: 'IL' },
-      '60602': { zipCode: '60602', latitude: 41.8796, longitude: -87.6355, city: 'Chicago', state: 'IL' },
-      
+      '60601': {
+        zipCode: '60601',
+        latitude: 41.8825,
+        longitude: -87.6441,
+        city: 'Chicago',
+        state: 'IL',
+      },
+      '60602': {
+        zipCode: '60602',
+        latitude: 41.8796,
+        longitude: -87.6355,
+        city: 'Chicago',
+        state: 'IL',
+      },
+
       // Houston
-      '77001': { zipCode: '77001', latitude: 29.7749, longitude: -95.3890, city: 'Houston', state: 'TX' },
-      '77002': { zipCode: '77002', latitude: 29.7604, longitude: -95.3698, city: 'Houston', state: 'TX' },
-      
+      '77001': {
+        zipCode: '77001',
+        latitude: 29.7749,
+        longitude: -95.389,
+        city: 'Houston',
+        state: 'TX',
+      },
+      '77002': {
+        zipCode: '77002',
+        latitude: 29.7604,
+        longitude: -95.3698,
+        city: 'Houston',
+        state: 'TX',
+      },
+
       // Phoenix
-      '85001': { zipCode: '85001', latitude: 33.4484, longitude: -112.0740, city: 'Phoenix', state: 'AZ' },
-      '85002': { zipCode: '85002', latitude: 33.4734, longitude: -112.0580, city: 'Phoenix', state: 'AZ' },
-      
+      '85001': {
+        zipCode: '85001',
+        latitude: 33.4484,
+        longitude: -112.074,
+        city: 'Phoenix',
+        state: 'AZ',
+      },
+      '85002': {
+        zipCode: '85002',
+        latitude: 33.4734,
+        longitude: -112.058,
+        city: 'Phoenix',
+        state: 'AZ',
+      },
+
       // Philadelphia
-      '19101': { zipCode: '19101', latitude: 39.9526, longitude: -75.1652, city: 'Philadelphia', state: 'PA' },
-      '19102': { zipCode: '19102', latitude: 39.9500, longitude: -75.1667, city: 'Philadelphia', state: 'PA' },
-      
+      '19101': {
+        zipCode: '19101',
+        latitude: 39.9526,
+        longitude: -75.1652,
+        city: 'Philadelphia',
+        state: 'PA',
+      },
+      '19102': {
+        zipCode: '19102',
+        latitude: 39.95,
+        longitude: -75.1667,
+        city: 'Philadelphia',
+        state: 'PA',
+      },
+
       // San Antonio
-      '78201': { zipCode: '78201', latitude: 29.4241, longitude: -98.4936, city: 'San Antonio', state: 'TX' },
-      '78202': { zipCode: '78202', latitude: 29.4252, longitude: -98.4946, city: 'San Antonio', state: 'TX' },
-      
+      '78201': {
+        zipCode: '78201',
+        latitude: 29.4241,
+        longitude: -98.4936,
+        city: 'San Antonio',
+        state: 'TX',
+      },
+      '78202': {
+        zipCode: '78202',
+        latitude: 29.4252,
+        longitude: -98.4946,
+        city: 'San Antonio',
+        state: 'TX',
+      },
+
       // San Diego
-      '92101': { zipCode: '92101', latitude: 32.7157, longitude: -117.1611, city: 'San Diego', state: 'CA' },
-      '92102': { zipCode: '92102', latitude: 32.7081, longitude: -117.1370, city: 'San Diego', state: 'CA' },
-      
+      '92101': {
+        zipCode: '92101',
+        latitude: 32.7157,
+        longitude: -117.1611,
+        city: 'San Diego',
+        state: 'CA',
+      },
+      '92102': {
+        zipCode: '92102',
+        latitude: 32.7081,
+        longitude: -117.137,
+        city: 'San Diego',
+        state: 'CA',
+      },
+
       // Dallas
-      '75201': { zipCode: '75201', latitude: 32.7767, longitude: -96.7970, city: 'Dallas', state: 'TX' },
-      '75202': { zipCode: '75202', latitude: 32.7831, longitude: -96.8067, city: 'Dallas', state: 'TX' },
-      
+      '75201': {
+        zipCode: '75201',
+        latitude: 32.7767,
+        longitude: -96.797,
+        city: 'Dallas',
+        state: 'TX',
+      },
+      '75202': {
+        zipCode: '75202',
+        latitude: 32.7831,
+        longitude: -96.8067,
+        city: 'Dallas',
+        state: 'TX',
+      },
+
       // San Jose
-      '95101': { zipCode: '95101', latitude: 37.3382, longitude: -121.8863, city: 'San Jose', state: 'CA' },
-      '95102': { zipCode: '95102', latitude: 37.3541, longitude: -121.9552, city: 'San Jose', state: 'CA' }
+      '95101': {
+        zipCode: '95101',
+        latitude: 37.3382,
+        longitude: -121.8863,
+        city: 'San Jose',
+        state: 'CA',
+      },
+      '95102': {
+        zipCode: '95102',
+        latitude: 37.3541,
+        longitude: -121.9552,
+        city: 'San Jose',
+        state: 'CA',
+      },
     }
 
     return majorZipCodes[zipCode] || null
@@ -182,15 +302,17 @@ export class ZipCodeService {
     const R = 3959 // Earth's radius in miles
     const dLat = this.toRadians(lat2 - lat1)
     const dLon = this.toRadians(lon2 - lon1)
-    
-    const a = 
+
+    const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2)
-    
+      Math.cos(this.toRadians(lat1)) *
+        Math.cos(this.toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2)
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     const distance = R * c
-    
+
     return Math.round(distance * 100) / 100 // Round to 2 decimal places
   }
 
@@ -221,20 +343,20 @@ export class ZipCodeService {
   ): Promise<boolean> {
     try {
       const businessZip = this.extractZipCodeFromAddress(businessAddress)
-      
+
       if (!businessZip) {
         logger.warn('ZipCodeService', `Could not extract ZIP code from address: ${businessAddress}`)
         return true // Default to allowing if we can't extract ZIP
       }
 
       const result = await this.calculateDistance(centerZipCode, businessZip, radiusMiles)
-      
-      logger.info('ZipCodeService', 
+
+      logger.info(
+        'ZipCodeService',
         `Distance from ${centerZipCode} to ${businessZip}: ${result.distance} miles (within ${radiusMiles}mi: ${result.withinRadius})`
       )
-      
-      return result.withinRadius
 
+      return result.withinRadius
     } catch (error) {
       logger.error('ZipCodeService', 'Error validating business radius', error)
       return true // Default to allowing if error occurs
@@ -247,7 +369,7 @@ export class ZipCodeService {
   getCacheStats() {
     return {
       cacheSize: this.zipCodeCache.size,
-      cachedZipCodes: Array.from(this.zipCodeCache.keys())
+      cachedZipCodes: Array.from(this.zipCodeCache.keys()),
     }
   }
 

@@ -22,30 +22,22 @@ export const GET = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const userId = context.resourceId
-      
+
       if (!userId) {
-        return NextResponse.json(
-          { error: 'User ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
       }
 
       // Get user with full profile
       const user = await UserManagementService.getUserById(userId)
-      
+
       if (!user) {
-        return NextResponse.json(
-          { error: 'User not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ error: 'User not found' }, { status: 404 })
       }
 
       // Check if user can view this profile
-      const canViewProfile = 
+      const canViewProfile =
         context.user.id === userId || // Own profile
-        context.user.roles?.some(role => 
-          role.role.permissions.includes('users.view')
-        )
+        context.user.roles?.some(role => role.role.permissions.includes('users.view'))
 
       if (!canViewProfile) {
         return NextResponse.json(
@@ -55,12 +47,10 @@ export const GET = withRBAC(
       }
 
       // Remove sensitive information for non-admin users
-      const isAdmin = context.user.roles?.some(role => 
-        role.role.name === 'admin'
-      )
+      const isAdmin = context.user.roles?.some(role => role.role.name === 'admin')
 
       let responseUser = { ...user }
-      
+
       if (!isAdmin && context.user.id !== userId) {
         // Remove sensitive fields for non-admin viewing other users
         delete responseUser.failedLoginAttempts
@@ -72,24 +62,21 @@ export const GET = withRBAC(
       logger.info('Users API', 'User profile retrieved', {
         requestedBy: context.user.id,
         targetUserId: userId,
-        isOwnProfile: context.user.id === userId
+        isOwnProfile: context.user.id === userId,
       })
 
       return NextResponse.json({
         success: true,
-        data: responseUser
+        data: responseUser,
       })
     } catch (error) {
       logger.error('Users API', 'Error retrieving user', error)
-      return NextResponse.json(
-        { error: 'Failed to retrieve user' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to retrieve user' }, { status: 500 })
     }
   },
-  { 
-    permissions: ['users.view'], 
-    allowSelfAccess: true 
+  {
+    permissions: ['users.view'],
+    allowSelfAccess: true,
   }
 )
 
@@ -100,12 +87,9 @@ export const PUT = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const userId = context.resourceId
-      
+
       if (!userId) {
-        return NextResponse.json(
-          { error: 'User ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
       }
 
       const body = await request.json()
@@ -114,18 +98,13 @@ export const PUT = withRBAC(
       // Check if user exists
       const existingUser = await UserManagementService.getUserById(userId)
       if (!existingUser) {
-        return NextResponse.json(
-          { error: 'User not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ error: 'User not found' }, { status: 404 })
       }
 
       // Check permissions
-      const canEditUser = 
+      const canEditUser =
         context.user.id === userId || // Own profile
-        context.user.roles?.some(role => 
-          role.role.permissions.includes('users.edit')
-        )
+        context.user.roles?.some(role => role.role.permissions.includes('users.edit'))
 
       if (!canEditUser) {
         return NextResponse.json(
@@ -135,25 +114,29 @@ export const PUT = withRBAC(
       }
 
       // Restrict certain fields for non-admin users editing their own profile
-      const isAdmin = context.user.roles?.some(role => 
-        role.role.name === 'admin'
-      )
+      const isAdmin = context.user.roles?.some(role => role.role.name === 'admin')
 
       if (!isAdmin && context.user.id === userId) {
         // Users can only edit their own basic profile information
         const allowedFields = [
-          'firstName', 'lastName', 'jobTitle', 'department', 
-          'phone', 'timezone', 'language', 'preferences'
+          'firstName',
+          'lastName',
+          'jobTitle',
+          'department',
+          'phone',
+          'timezone',
+          'language',
+          'preferences',
         ]
-        
+
         const restrictedFields = Object.keys(updateData).filter(
           field => !allowedFields.includes(field)
         )
-        
+
         if (restrictedFields.length > 0) {
           return NextResponse.json(
-            { 
-              error: `Cannot modify restricted fields: ${restrictedFields.join(', ')}` 
+            {
+              error: `Cannot modify restricted fields: ${restrictedFields.join(', ')}`,
             },
             { status: 403 }
           )
@@ -171,33 +154,27 @@ export const PUT = withRBAC(
         updatedBy: context.user.id,
         targetUserId: userId,
         isOwnProfile: context.user.id === userId,
-        fields: Object.keys(updateData)
+        fields: Object.keys(updateData),
       })
 
       return NextResponse.json({
         success: true,
         data: updatedUser,
-        message: 'User updated successfully'
+        message: 'User updated successfully',
       })
     } catch (error) {
       logger.error('Users API', 'Error updating user', error)
-      
+
       if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: error.message }, { status: 400 })
       }
-      
-      return NextResponse.json(
-        { error: 'Failed to update user' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Failed to update user' }, { status: 500 })
     }
   },
-  { 
-    permissions: ['users.edit'], 
-    allowSelfAccess: true 
+  {
+    permissions: ['users.edit'],
+    allowSelfAccess: true,
   }
 )
 
@@ -208,29 +185,20 @@ export const DELETE = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const userId = context.resourceId
-      
+
       if (!userId) {
-        return NextResponse.json(
-          { error: 'User ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
       }
 
       // Prevent self-deletion
       if (context.user.id === userId) {
-        return NextResponse.json(
-          { error: 'Cannot delete your own account' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 })
       }
 
       // Check if user exists
       const existingUser = await UserManagementService.getUserById(userId)
       if (!existingUser) {
-        return NextResponse.json(
-          { error: 'User not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ error: 'User not found' }, { status: 404 })
       }
 
       const { searchParams } = new URL(request.url)
@@ -247,7 +215,7 @@ export const DELETE = withRBAC(
             { status: 403 }
           )
         }
-        
+
         query = 'DELETE FROM users WHERE id = $1 RETURNING username'
         successMessage = 'User deleted permanently'
       } else {
@@ -265,17 +233,14 @@ export const DELETE = withRBAC(
       const deletedUser = result.rows[0]
 
       if (!deletedUser) {
-        return NextResponse.json(
-          { error: 'Failed to delete user' },
-          { status: 500 }
-        )
+        return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 })
       }
 
       logger.info('Users API', permanent ? 'User deleted permanently' : 'User deactivated', {
         deletedBy: context.user.id,
         targetUserId: userId,
         username: deletedUser.username,
-        permanent
+        permanent,
       })
 
       return NextResponse.json({
@@ -283,16 +248,13 @@ export const DELETE = withRBAC(
         data: {
           userId,
           username: deletedUser.username,
-          permanent
+          permanent,
         },
-        message: successMessage
+        message: successMessage,
       })
     } catch (error) {
       logger.error('Users API', 'Error deleting user', error)
-      return NextResponse.json(
-        { error: 'Failed to delete user' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 })
     }
   },
   { permissions: ['users.delete'] }
@@ -305,31 +267,22 @@ export const PATCH = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const userId = context.resourceId
-      
+
       if (!userId) {
-        return NextResponse.json(
-          { error: 'User ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
       }
 
       const body = await request.json()
       const { action, ...data } = body
 
       if (!action) {
-        return NextResponse.json(
-          { error: 'Action is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Action is required' }, { status: 400 })
       }
 
       // Check if user exists
       const existingUser = await UserManagementService.getUserById(userId)
       if (!existingUser) {
-        return NextResponse.json(
-          { error: 'User not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ error: 'User not found' }, { status: 404 })
       }
 
       let result: any
@@ -337,15 +290,10 @@ export const PATCH = withRBAC(
 
       switch (action) {
         case 'activate':
-          if (!context.user.roles?.some(role => 
-            role.role.permissions.includes('users.manage')
-          )) {
-            return NextResponse.json(
-              { error: 'Insufficient permissions' },
-              { status: 403 }
-            )
+          if (!context.user.roles?.some(role => role.role.permissions.includes('users.manage'))) {
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
           }
-          
+
           await context.database.query(
             'UPDATE users SET is_active = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
             [userId]
@@ -354,22 +302,17 @@ export const PATCH = withRBAC(
           break
 
         case 'deactivate':
-          if (!context.user.roles?.some(role => 
-            role.role.permissions.includes('users.manage')
-          )) {
-            return NextResponse.json(
-              { error: 'Insufficient permissions' },
-              { status: 403 }
-            )
+          if (!context.user.roles?.some(role => role.role.permissions.includes('users.manage'))) {
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
           }
-          
+
           if (context.user.id === userId) {
             return NextResponse.json(
               { error: 'Cannot deactivate your own account' },
               { status: 400 }
             )
           }
-          
+
           await context.database.query(
             'UPDATE users SET is_active = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
             [userId]
@@ -378,15 +321,10 @@ export const PATCH = withRBAC(
           break
 
         case 'verify':
-          if (!context.user.roles?.some(role => 
-            role.role.permissions.includes('users.manage')
-          )) {
-            return NextResponse.json(
-              { error: 'Insufficient permissions' },
-              { status: 403 }
-            )
+          if (!context.user.roles?.some(role => role.role.permissions.includes('users.manage'))) {
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
           }
-          
+
           await context.database.query(
             'UPDATE users SET is_verified = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1',
             [userId]
@@ -395,47 +333,36 @@ export const PATCH = withRBAC(
           break
 
         case 'reset_password':
-          if (!context.user.roles?.some(role => 
-            role.role.permissions.includes('users.manage')
-          )) {
-            return NextResponse.json(
-              { error: 'Insufficient permissions' },
-              { status: 403 }
-            )
+          if (!context.user.roles?.some(role => role.role.permissions.includes('users.manage'))) {
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
           }
-          
+
           // TODO: Implement password reset logic
           message = 'Password reset initiated'
           break
 
         default:
-          return NextResponse.json(
-            { error: `Unknown action: ${action}` },
-            { status: 400 }
-          )
+          return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
       }
 
       logger.info('Users API', `User ${action} completed`, {
         actionBy: context.user.id,
         targetUserId: userId,
-        action
+        action,
       })
 
       return NextResponse.json({
         success: true,
         data: { action, userId },
-        message
+        message,
       })
     } catch (error) {
       logger.error('Users API', 'Error in user patch operation', error)
-      return NextResponse.json(
-        { error: 'Failed to perform operation' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to perform operation' }, { status: 500 })
     }
   },
-  { 
-    permissions: ['users.edit'], 
-    allowSelfAccess: true 
+  {
+    permissions: ['users.edit'],
+    allowSelfAccess: true,
   }
 )

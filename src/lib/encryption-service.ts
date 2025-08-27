@@ -11,14 +11,14 @@ import { logger } from '@/utils/logger'
 export enum EncryptionAlgorithm {
   AES_256_GCM = 'aes-256-gcm',
   AES_256_CBC = 'aes-256-cbc',
-  CHACHA20_POLY1305 = 'chacha20-poly1305'
+  CHACHA20_POLY1305 = 'chacha20-poly1305',
 }
 
 // Key derivation functions
 export enum KeyDerivationFunction {
   PBKDF2 = 'pbkdf2',
   SCRYPT = 'scrypt',
-  ARGON2 = 'argon2'
+  ARGON2 = 'argon2',
 }
 
 // Encryption configuration
@@ -67,10 +67,10 @@ export class EncryptionService {
       algorithm: EncryptionAlgorithm.AES_256_GCM,
       keyDerivationFunction: KeyDerivationFunction.PBKDF2,
       keyLength: 32, // 256 bits
-      ivLength: 16,  // 128 bits
+      ivLength: 16, // 128 bits
       tagLength: 16, // 128 bits
       iterations: 100000,
-      saltLength: 32
+      saltLength: 32,
     }
 
     // Initialize master key from environment or generate new one
@@ -82,7 +82,7 @@ export class EncryptionService {
    */
   private initializeMasterKey(): void {
     const masterKeyHex = process.env.MASTER_ENCRYPTION_KEY
-    
+
     if (masterKeyHex) {
       this.masterKey = Buffer.from(masterKeyHex, 'hex')
       if (this.masterKey.length !== this.config.keyLength) {
@@ -92,7 +92,7 @@ export class EncryptionService {
       // Generate new master key (should be stored securely in production)
       this.masterKey = crypto.randomBytes(this.config.keyLength)
       logger.warn('Encryption Service', 'Generated new master key - store securely!', {
-        keyHex: this.masterKey.toString('hex')
+        keyHex: this.masterKey.toString('hex'),
       })
     }
   }
@@ -111,13 +111,13 @@ export class EncryptionService {
       const iv = crypto.randomBytes(this.config.ivLength)
 
       // Derive encryption key
-      const encryptionKey = useEphemeralKey 
+      const encryptionKey = useEphemeralKey
         ? await this.generateEphemeralKey(purpose)
         : await this.deriveKey(salt, purpose)
 
       // Create cipher
       const cipher = crypto.createCipher(this.config.algorithm, encryptionKey)
-      
+
       // Encrypt data
       let encrypted = cipher.update(plaintext, 'utf8', 'hex')
       encrypted += cipher.final('hex')
@@ -133,17 +133,16 @@ export class EncryptionService {
         data: encrypted,
         keyDerivation: this.config.keyDerivationFunction,
         iterations: this.config.iterations,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
 
       logger.debug('Encryption Service', 'Data encrypted successfully', {
         purpose,
         algorithm: this.config.algorithm,
-        dataLength: plaintext.length
+        dataLength: plaintext.length,
       })
 
       return encryptedData
-
     } catch (error) {
       logger.error('Encryption Service', 'Failed to encrypt data', error)
       throw new Error('Encryption failed')
@@ -153,10 +152,7 @@ export class EncryptionService {
   /**
    * Decrypt sensitive data
    */
-  async decryptData(
-    encryptedData: EncryptedData,
-    purpose: string = 'general'
-  ): Promise<string> {
+  async decryptData(encryptedData: EncryptedData, purpose: string = 'general'): Promise<string> {
     try {
       // Parse encrypted data components
       const iv = Buffer.from(encryptedData.iv, 'hex')
@@ -177,11 +173,10 @@ export class EncryptionService {
 
       logger.debug('Encryption Service', 'Data decrypted successfully', {
         purpose,
-        algorithm: encryptedData.algorithm
+        algorithm: encryptedData.algorithm,
       })
 
       return decrypted
-
     } catch (error) {
       logger.error('Encryption Service', 'Failed to decrypt data', error)
       throw new Error('Decryption failed')
@@ -193,7 +188,7 @@ export class EncryptionService {
    */
   private async deriveKey(salt: Buffer, purpose: string): Promise<Buffer> {
     const cacheKey = `${salt.toString('hex')}-${purpose}`
-    
+
     // Check cache first
     if (this.keyCache.has(cacheKey)) {
       return this.keyCache.get(cacheKey)!
@@ -211,16 +206,15 @@ export class EncryptionService {
           'sha256'
         )
         break
-      
+
       case KeyDerivationFunction.SCRYPT:
-        derivedKey = crypto.scryptSync(
-          this.masterKey,
-          salt,
-          this.config.keyLength,
-          { N: 16384, r: 8, p: 1 }
-        )
+        derivedKey = crypto.scryptSync(this.masterKey, salt, this.config.keyLength, {
+          N: 16384,
+          r: 8,
+          p: 1,
+        })
         break
-      
+
       default:
         throw new Error(`Unsupported key derivation function: ${this.config.keyDerivationFunction}`)
     }
@@ -249,7 +243,7 @@ export class EncryptionService {
     logger.debug('Encryption Service', 'Generated ephemeral key', {
       keyId,
       purpose,
-      expiresAt
+      expiresAt,
     })
 
     return key
@@ -270,11 +264,7 @@ export class EncryptionService {
   /**
    * Encrypt database field
    */
-  async encryptDatabaseField(
-    value: string,
-    fieldName: string,
-    tableName: string
-  ): Promise<string> {
+  async encryptDatabaseField(value: string, fieldName: string, tableName: string): Promise<string> {
     const purpose = `db-${tableName}-${fieldName}`
     const encryptedData = await this.encryptData(value, purpose)
     return JSON.stringify(encryptedData)
@@ -342,7 +332,7 @@ export class EncryptionService {
     try {
       // Generate new master key
       const newMasterKey = crypto.randomBytes(this.config.keyLength)
-      
+
       // TODO: Re-encrypt all data with new key
       // This would typically involve:
       // 1. Decrypt all encrypted data with old key
@@ -351,10 +341,9 @@ export class EncryptionService {
       // 4. Update master key
 
       logger.info('Encryption Service', 'Key rotation initiated')
-      
+
       // For now, just log the operation
       // In production, implement proper key rotation
-
     } catch (error) {
       logger.error('Encryption Service', 'Key rotation failed', error)
       throw error
@@ -376,7 +365,7 @@ export class EncryptionService {
       keyDerivationFunction: this.config.keyDerivationFunction,
       cachedKeys: this.keyCache.size,
       ephemeralKeys: this.ephemeralKeys.size,
-      masterKeyAge: Date.now() // Placeholder
+      masterKeyAge: Date.now(), // Placeholder
     }
   }
 }
@@ -437,7 +426,7 @@ export class PuppeteerEncryptedCache {
     this.cache.clear()
     this.encryptionKey.fill(0) // Zero out the key
     logger.debug('Puppeteer Cache', 'Cache destroyed and key zeroed', {
-      sessionId: this.sessionId
+      sessionId: this.sessionId,
     })
   }
 
@@ -448,7 +437,7 @@ export class PuppeteerEncryptedCache {
     return {
       sessionId: this.sessionId,
       cacheSize: this.cache.size,
-      keyLength: this.encryptionKey.length
+      keyLength: this.encryptionKey.length,
     }
   }
 }
@@ -469,7 +458,7 @@ export class DatabaseEncryption {
     tableName: string
   ): Promise<Record<string, any>> {
     const result = { ...data }
-    
+
     for (const field of sensitiveFields) {
       if (result[field] && typeof result[field] === 'string') {
         result[field] = await encryptionService.encryptDatabaseField(
@@ -479,7 +468,7 @@ export class DatabaseEncryption {
         )
       }
     }
-    
+
     return result
   }
 
@@ -492,7 +481,7 @@ export class DatabaseEncryption {
     tableName: string
   ): Promise<Record<string, any>> {
     const result = { ...data }
-    
+
     for (const field of sensitiveFields) {
       if (result[field] && typeof result[field] === 'string') {
         try {
@@ -507,7 +496,7 @@ export class DatabaseEncryption {
         }
       }
     }
-    
+
     return result
   }
 }
@@ -518,14 +507,14 @@ export class DatabaseEncryption {
 export const TLSConfig = {
   // Minimum TLS version
   minVersion: 'TLSv1.3',
-  
+
   // Cipher suites for TLS 1.3
   cipherSuites: [
     'TLS_AES_256_GCM_SHA384',
     'TLS_CHACHA20_POLY1305_SHA256',
-    'TLS_AES_128_GCM_SHA256'
+    'TLS_AES_128_GCM_SHA256',
   ],
-  
+
   // Security headers
   securityHeaders: {
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
@@ -533,6 +522,7 @@ export const TLSConfig = {
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
-  }
+    'Content-Security-Policy':
+      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
+  },
 }

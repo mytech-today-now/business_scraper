@@ -16,28 +16,30 @@ export const GET = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const { searchParams } = new URL(request.url)
-      
+
       // Extract parameters
       const workspaceId = searchParams.get('workspaceId') || context.workspaceId
       const period = (searchParams.get('period') as any) || 'month'
-      const startDate = searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-      const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : new Date()
-      const costPerHour = searchParams.get('costPerHour') ? parseFloat(searchParams.get('costPerHour')!) : 50
-      const estimatedLeadValue = searchParams.get('estimatedLeadValue') ? parseFloat(searchParams.get('estimatedLeadValue')!) : 100
+      const startDate = searchParams.get('startDate')
+        ? new Date(searchParams.get('startDate')!)
+        : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      const endDate = searchParams.get('endDate')
+        ? new Date(searchParams.get('endDate')!)
+        : new Date()
+      const costPerHour = searchParams.get('costPerHour')
+        ? parseFloat(searchParams.get('costPerHour')!)
+        : 50
+      const estimatedLeadValue = searchParams.get('estimatedLeadValue')
+        ? parseFloat(searchParams.get('estimatedLeadValue')!)
+        : 100
 
       // Validate parameters
       if (!workspaceId) {
-        return NextResponse.json(
-          { error: 'Workspace ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Workspace ID is required' }, { status: 400 })
       }
 
       if (startDate >= endDate) {
-        return NextResponse.json(
-          { error: 'Start date must be before end date' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Start date must be before end date' }, { status: 400 })
       }
 
       const validPeriods = ['day', 'week', 'month', 'quarter', 'year']
@@ -55,7 +57,7 @@ export const GET = withRBAC(
         startDate,
         endDate,
         costPerHour,
-        estimatedLeadValue
+        estimatedLeadValue,
       }
 
       // Add conversion data if provided
@@ -69,7 +71,7 @@ export const GET = withRBAC(
           leadsContacted: parseInt(leadsContacted),
           responseRate: parseFloat(responseRate),
           conversionRate: parseFloat(conversionRate),
-          avgDealValue: parseFloat(avgDealValue)
+          avgDealValue: parseFloat(avgDealValue),
         }
       }
 
@@ -87,9 +89,13 @@ export const GET = withRBAC(
           endDate: endDate.toISOString(),
           roi: metrics.roi,
           totalCosts: metrics.totalCosts,
-          estimatedValue: metrics.estimatedValue
+          estimatedValue: metrics.estimatedValue,
         },
-        context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+        context: AuditService.extractContextFromRequest(
+          request,
+          context.user.id,
+          context.sessionId
+        ),
       })
 
       logger.info('ROI API', 'ROI metrics calculated', {
@@ -97,20 +103,17 @@ export const GET = withRBAC(
         workspaceId,
         period,
         roi: metrics.roi,
-        totalBusinesses: metrics.totalBusinessesFound
+        totalBusinesses: metrics.totalBusinessesFound,
       })
 
       return NextResponse.json({
         success: true,
         data: metrics,
-        calculatedAt: new Date().toISOString()
+        calculatedAt: new Date().toISOString(),
       })
     } catch (error) {
       logger.error('ROI API', 'Error calculating ROI metrics', error)
-      return NextResponse.json(
-        { error: 'Failed to calculate ROI metrics' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to calculate ROI metrics' }, { status: 500 })
     }
   },
   { permissions: ['analytics.view'] }
@@ -133,7 +136,7 @@ export const POST = withRBAC(
         conversionData,
         includeBreakdown = true,
         includeTrends = true,
-        includeRecommendations = true
+        includeRecommendations = true,
       } = body
 
       // Validate required fields
@@ -152,15 +155,12 @@ export const POST = withRBAC(
         endDate: new Date(endDate),
         costPerHour,
         estimatedLeadValue,
-        conversionData
+        conversionData,
       }
 
       // Validate dates
       if (input.startDate >= input.endDate) {
-        return NextResponse.json(
-          { error: 'Start date must be before end date' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Start date must be before end date' }, { status: 400 })
       }
 
       // Generate comprehensive ROI report
@@ -171,7 +171,7 @@ export const POST = withRBAC(
         metrics: report.metrics,
         ...(includeBreakdown && { breakdown: report.breakdown }),
         ...(includeTrends && { trends: report.trends }),
-        ...(includeRecommendations && { recommendations: report.recommendations })
+        ...(includeRecommendations && { recommendations: report.recommendations }),
       }
 
       // Log report generation
@@ -186,9 +186,13 @@ export const POST = withRBAC(
           includeBreakdown,
           includeTrends,
           includeRecommendations,
-          roi: report.metrics.roi
+          roi: report.metrics.roi,
         },
-        context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+        context: AuditService.extractContextFromRequest(
+          request,
+          context.user.id,
+          context.sessionId
+        ),
       })
 
       logger.info('ROI API', 'ROI report generated', {
@@ -196,20 +200,17 @@ export const POST = withRBAC(
         workspaceId,
         period,
         roi: report.metrics.roi,
-        recommendationCount: report.recommendations.length
+        recommendationCount: report.recommendations.length,
       })
 
       return NextResponse.json({
         success: true,
         data: filteredReport,
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
       })
     } catch (error) {
       logger.error('ROI API', 'Error generating ROI report', error)
-      return NextResponse.json(
-        { error: 'Failed to generate ROI report' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to generate ROI report' }, { status: 500 })
     }
   },
   { permissions: ['analytics.view'] }
@@ -222,13 +223,7 @@ export const PUT = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const body = await request.json()
-      const {
-        workspaceId,
-        campaignId,
-        conversionData,
-        actualRevenue,
-        notes
-      } = body
+      const { workspaceId, campaignId, conversionData, actualRevenue, notes } = body
 
       // Validate required fields
       if (!workspaceId || !conversionData) {
@@ -242,9 +237,11 @@ export const PUT = withRBAC(
       const requiredFields = ['leadsContacted', 'responseRate', 'conversionRate', 'avgDealValue']
       for (const field of requiredFields) {
         // Use safe property access to prevent object injection
-        if (!Object.prototype.hasOwnProperty.call(conversionData, field) ||
-            conversionData[field as keyof typeof conversionData] === undefined ||
-            conversionData[field as keyof typeof conversionData] === null) {
+        if (
+          !Object.prototype.hasOwnProperty.call(conversionData, field) ||
+          conversionData[field as keyof typeof conversionData] === undefined ||
+          conversionData[field as keyof typeof conversionData] === null
+        ) {
           return NextResponse.json(
             { error: `Conversion data must include ${field}` },
             { status: 400 }
@@ -253,7 +250,8 @@ export const PUT = withRBAC(
       }
 
       // Store conversion data in database
-      await context.database.query(`
+      await context.database.query(
+        `
         INSERT INTO roi_tracking (
           workspace_id, campaign_id, leads_contacted, response_rate, 
           conversion_rate, avg_deal_value, actual_revenue, notes, 
@@ -268,19 +266,21 @@ export const PUT = withRBAC(
           actual_revenue = EXCLUDED.actual_revenue,
           notes = EXCLUDED.notes,
           updated_at = EXCLUDED.updated_at
-      `, [
-        workspaceId,
-        campaignId || null,
-        conversionData.leadsContacted,
-        conversionData.responseRate,
-        conversionData.conversionRate,
-        conversionData.avgDealValue,
-        actualRevenue || null,
-        notes || null,
-        context.user.id,
-        new Date(),
-        new Date()
-      ])
+      `,
+        [
+          workspaceId,
+          campaignId || null,
+          conversionData.leadsContacted,
+          conversionData.responseRate,
+          conversionData.conversionRate,
+          conversionData.avgDealValue,
+          actualRevenue || null,
+          notes || null,
+          context.user.id,
+          new Date(),
+          new Date(),
+        ]
+      )
 
       // Log conversion data update
       await AuditService.log({
@@ -291,9 +291,13 @@ export const PUT = withRBAC(
           campaignId,
           conversionData,
           actualRevenue,
-          updatedBy: context.user.id
+          updatedBy: context.user.id,
         },
-        context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+        context: AuditService.extractContextFromRequest(
+          request,
+          context.user.id,
+          context.sessionId
+        ),
       })
 
       logger.info('ROI API', 'Conversion data updated', {
@@ -301,19 +305,16 @@ export const PUT = withRBAC(
         workspaceId,
         campaignId,
         leadsContacted: conversionData.leadsContacted,
-        conversionRate: conversionData.conversionRate
+        conversionRate: conversionData.conversionRate,
       })
 
       return NextResponse.json({
         success: true,
-        message: 'Conversion data updated successfully'
+        message: 'Conversion data updated successfully',
       })
     } catch (error) {
       logger.error('ROI API', 'Error updating conversion data', error)
-      return NextResponse.json(
-        { error: 'Failed to update conversion data' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update conversion data' }, { status: 500 })
     }
   },
   { permissions: ['analytics.manage'] }

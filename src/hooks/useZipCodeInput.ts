@@ -1,6 +1,6 @@
 /**
  * ZIP Code Input Hook
- * 
+ *
  * Custom hook for handling ZIP code input with address parsing,
  * error handling, and user feedback.
  */
@@ -38,12 +38,7 @@ export interface UseZipCodeInputOptions {
  * Custom hook for ZIP code input handling
  */
 export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
-  const {
-    initialValue = '',
-    onValidZipCode,
-    onInvalidInput,
-    debounceMs = 500
-  } = options
+  const { initialValue = '', onValidZipCode, onInvalidInput, debounceMs = 500 } = options
 
   const [state, setState] = useState<ZipCodeInputState>({
     value: '',
@@ -52,7 +47,7 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
     parseResult: null,
     error: null,
     warning: null,
-    isProcessing: false
+    isProcessing: false,
   })
 
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
@@ -60,110 +55,116 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
   /**
    * Process the input and extract ZIP code
    */
-  const processInput = useCallback((input: string) => {
-    setState(prev => ({ ...prev, isProcessing: true }))
+  const processInput = useCallback(
+    (input: string) => {
+      setState(prev => ({ ...prev, isProcessing: true }))
 
-    try {
-      const parseResult = AddressInputHandler.parseAddressInput(input)
-      
-      const newState: Partial<ZipCodeInputState> = {
-        parseResult,
-        isProcessing: false,
-        error: null,
-        warning: null
-      }
+      try {
+        const parseResult = AddressInputHandler.parseAddressInput(input)
 
-      if (parseResult.error) {
-        newState.error = parseResult.error
-        newState.isValid = false
-        newState.value = ''
-        
-        // Call error callback
+        const newState: Partial<ZipCodeInputState> = {
+          parseResult,
+          isProcessing: false,
+          error: null,
+          warning: null,
+        }
+
+        if (parseResult.error) {
+          newState.error = parseResult.error
+          newState.isValid = false
+          newState.value = ''
+
+          // Call error callback
+          if (onInvalidInput) {
+            onInvalidInput(parseResult.error)
+          }
+
+          logger.warn('ZipCodeInput', `Invalid input: ${parseResult.error}`)
+        } else if (parseResult.zipCode) {
+          newState.value = parseResult.zipCode
+          newState.isValid = true
+
+          // Show warning if ZIP was extracted from address
+          if (parseResult.wasExtracted && parseResult.warning) {
+            newState.warning = parseResult.warning
+          }
+
+          // Call success callback
+          if (onValidZipCode) {
+            onValidZipCode(parseResult.zipCode)
+          }
+
+          logger.info('ZipCodeInput', `Valid ZIP code: ${parseResult.zipCode}`)
+        } else {
+          newState.error = 'Please enter a valid ZIP code'
+          newState.isValid = false
+          newState.value = ''
+
+          if (onInvalidInput) {
+            onInvalidInput('Please enter a valid ZIP code')
+          }
+        }
+
+        setState(prev => ({ ...prev, ...newState }))
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+
+        setState(prev => ({
+          ...prev,
+          error: `Error processing input: ${errorMessage}`,
+          isValid: false,
+          value: '',
+          isProcessing: false,
+        }))
+
         if (onInvalidInput) {
-          onInvalidInput(parseResult.error)
+          onInvalidInput(errorMessage)
         }
-        
-        logger.warn('ZipCodeInput', `Invalid input: ${parseResult.error}`)
-      } else if (parseResult.zipCode) {
-        newState.value = parseResult.zipCode
-        newState.isValid = true
-        
-        // Show warning if ZIP was extracted from address
-        if (parseResult.wasExtracted && parseResult.warning) {
-          newState.warning = parseResult.warning
-        }
-        
-        // Call success callback
-        if (onValidZipCode) {
-          onValidZipCode(parseResult.zipCode)
-        }
-        
-        logger.info('ZipCodeInput', `Valid ZIP code: ${parseResult.zipCode}`)
-      } else {
-        newState.error = 'Please enter a valid ZIP code'
-        newState.isValid = false
-        newState.value = ''
-        
-        if (onInvalidInput) {
-          onInvalidInput('Please enter a valid ZIP code')
-        }
-      }
 
-      setState(prev => ({ ...prev, ...newState }))
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
-      
-      setState(prev => ({
-        ...prev,
-        error: `Error processing input: ${errorMessage}`,
-        isValid: false,
-        value: '',
-        isProcessing: false
-      }))
-      
-      if (onInvalidInput) {
-        onInvalidInput(errorMessage)
+        logger.error('ZipCodeInput', 'Error processing input', error)
       }
-      
-      logger.error('ZipCodeInput', 'Error processing input', error)
-    }
-  }, [onValidZipCode, onInvalidInput])
+    },
+    [onValidZipCode, onInvalidInput]
+  )
 
   /**
    * Handle input change with debouncing
    */
-  const handleChange = useCallback((value: string) => {
-    setState(prev => ({
-      ...prev,
-      displayValue: value,
-      error: null,
-      warning: null
-    }))
+  const handleChange = useCallback(
+    (value: string) => {
+      setState(prev => ({
+        ...prev,
+        displayValue: value,
+        error: null,
+        warning: null,
+      }))
 
-    // Clear existing timer
-    if (debounceTimer) {
-      clearTimeout(debounceTimer)
-    }
-
-    // Set new timer for debounced processing
-    const timer = setTimeout(() => {
-      if (value.trim().length > 0) {
-        processInput(value)
-      } else {
-        setState(prev => ({
-          ...prev,
-          value: '',
-          isValid: false,
-          parseResult: null,
-          error: null,
-          warning: null,
-          isProcessing: false
-        }))
+      // Clear existing timer
+      if (debounceTimer) {
+        clearTimeout(debounceTimer)
       }
-    }, debounceMs)
 
-    setDebounceTimer(timer)
-  }, [debounceTimer, debounceMs, processInput])
+      // Set new timer for debounced processing
+      const timer = setTimeout(() => {
+        if (value.trim().length > 0) {
+          processInput(value)
+        } else {
+          setState(prev => ({
+            ...prev,
+            value: '',
+            isValid: false,
+            parseResult: null,
+            error: null,
+            warning: null,
+            isProcessing: false,
+          }))
+        }
+      }, debounceMs)
+
+      setDebounceTimer(timer)
+    },
+    [debounceTimer, debounceMs, processInput]
+  )
 
   /**
    * Handle input blur (immediate processing)
@@ -187,7 +188,7 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
     setState(prev => ({
       ...prev,
       error: null,
-      warning: null
+      warning: null,
     }))
   }, [])
 
@@ -198,7 +199,7 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
     setState(prev => ({
       ...prev,
       error: null,
-      warning: null
+      warning: null,
     }))
   }, [])
 
@@ -218,7 +219,7 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
       parseResult: null,
       error: null,
       warning: null,
-      isProcessing: false
+      isProcessing: false,
     })
   }, [debounceTimer, initialValue])
 
@@ -247,7 +248,7 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
     handleBlur,
     handleFocus,
     clearError,
-    reset
+    reset,
   }
 
   return {
@@ -259,6 +260,6 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
     error: state.error,
     warning: state.warning,
     isProcessing: state.isProcessing,
-    displayValue: state.displayValue
+    displayValue: state.displayValue,
   }
 }

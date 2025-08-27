@@ -1,240 +1,259 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🔐 API Security Audit Report - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">🔐 API Security Audit Report</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>🔐 API Security Audit Report</h1>
-<h2>Executive Summary</h2>
-<p>A comprehensive security audit was conducted on all API endpoints in the Business Scraper application. This report details the security vulnerabilities found, remediation measures implemented, and recommendations for ongoing security maintenance.</p>
-<h2>🔍 Audit Scope</h2>
-<h3>API Endpoints Audited</h3>
-<ul>
-<li><code>/api/auth</code> - Authentication endpoints</li>
-<li><code>/api/health</code> - Health check endpoint  </li>
-<li><code>/api/config</code> - Configuration management</li>
-<li><code>/api/security</code> - Security monitoring</li>
-<li><code>/api/search</code> - Business search functionality</li>
-<li><code>/api/scrape</code> - Web scraping operations</li>
-<li><code>/api/enhanced-scrape</code> - Advanced scraping features</li>
-<li><code>/api/geocode</code> - Address geocoding</li>
-<li><code>/api/data-management</code> - Data operations</li>
-</ul>
-<h2>🚨 Critical Vulnerabilities Found</h2>
-<h3>1. Missing Authentication Controls</h3>
-<p><strong>Severity: HIGH</strong></p>
-<ul>
-<li><strong>Issue</strong>: Core business functionality (search, scrape, data-management) was accessible without authentication</li>
-<li><strong>Risk</strong>: Unauthorized access to expensive operations, potential abuse</li>
-<li><strong>Status</strong>: ✅ FIXED</li>
-</ul>
-<h3>2. Inconsistent Input Validation</h3>
-<p><strong>Severity: HIGH</strong></p>
-<ul>
-<li><strong>Issue</strong>: Several endpoints lacked comprehensive input validation and sanitization</li>
-<li><strong>Risk</strong>: SQL injection, XSS, command injection attacks</li>
-<li><strong>Status</strong>: ✅ FIXED</li>
-</ul>
-<h3>3. Information Leakage in Error Messages</h3>
-<p><strong>Severity: MEDIUM</strong></p>
-<ul>
-<li><strong>Issue</strong>: Detailed error messages exposed internal system information</li>
-<li><strong>Risk</strong>: Information disclosure, system reconnaissance</li>
-<li><strong>Status</strong>: ✅ FIXED</li>
-</ul>
-<h3>4. Missing Rate Limiting</h3>
-<p><strong>Severity: MEDIUM</strong></p>
-<ul>
-<li><strong>Issue</strong>: No rate limiting on resource-intensive operations</li>
-<li><strong>Risk</strong>: DoS attacks, resource exhaustion</li>
-<li><strong>Status</strong>: ✅ FIXED</li>
-</ul>
-<h3>5. Insufficient CSRF Protection</h3>
-<p><strong>Severity: MEDIUM</strong></p>
-<ul>
-<li><strong>Issue</strong>: Some state-changing endpoints bypassed CSRF validation</li>
-<li><strong>Risk</strong>: Cross-site request forgery attacks</li>
-<li><strong>Status</strong>: ✅ FIXED</li>
-</ul>
-<h2>🛡️ Security Measures Implemented</h2>
-<h3>1. Comprehensive Security Middleware</h3>
-<p>Created <code>src/lib/api-security.ts</code> with:</p>
-<ul>
-<li><strong>Authentication enforcement</strong></li>
-<li><strong>Rate limiting by endpoint type</strong></li>
-<li><strong>Input validation and sanitization</strong></li>
-<li><strong>CSRF protection for state-changing requests</strong></li>
-<li><strong>Security headers injection</strong></li>
-</ul>
-<h3>2. Authentication Middleware</h3>
-<p>Created <code>src/lib/auth-middleware.ts</code> with:</p>
-<ul>
-<li><strong>Session validation</strong></li>
-<li><strong>Role-based access control</strong></li>
-<li><strong>Optional authentication support</strong></li>
-<li><strong>Secure session management</strong></li>
-</ul>
-<h3>3. Input Validation Framework</h3>
-<p>Created <code>src/lib/validation-middleware.ts</code> with:</p>
-<ul>
-<li><strong>Type validation and conversion</strong></li>
-<li><strong>Length and range constraints</strong></li>
-<li><strong>Pattern matching (URLs, emails, ZIP codes)</strong></li>
-<li><strong>Custom validation rules</strong></li>
-<li><strong>Comprehensive sanitization</strong></li>
-</ul>
-<h3>4. Secure Error Handling</h3>
-<p>Created <code>src/lib/error-handling.ts</code> with:</p>
-<ul>
-<li><strong>Information leakage prevention</strong></li>
-<li><strong>Structured error logging</strong></li>
-<li><strong>Development vs production error responses</strong></li>
-<li><strong>Security event tracking</strong></li>
-</ul>
-<h2>📊 Security Implementation Status</h2>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Authentication</th>
-<th>Input Validation</th>
-<th>Rate Limiting</th>
-<th>Error Handling</th>
-<th>CSRF Protection</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>/api/auth</code></td>
-<td>N/A (Auth endpoint)</td>
-<td>✅ Comprehensive</td>
-<td>✅ Strict</td>
-<td>✅ Secure</td>
-<td>✅ Implemented</td>
-</tr>
-<tr>
-<td><code>/api/health</code></td>
-<td>❌ Public</td>
-<td>✅ N/A</td>
-<td>✅ Basic</td>
-<td>✅ Secure</td>
-<td>❌ N/A</td>
-</tr>
-<tr>
-<td><code>/api/config</code></td>
-<td>✅ Required</td>
-<td>✅ Comprehensive</td>
-<td>✅ General</td>
-<td>✅ Secure</td>
-<td>✅ Implemented</td>
-</tr>
-<tr>
-<td><code>/api/security</code></td>
-<td>✅ Required</td>
-<td>✅ Basic</td>
-<td>✅ General</td>
-<td>✅ Secure</td>
-<td>✅ Implemented</td>
-</tr>
-<tr>
-<td><code>/api/search</code></td>
-<td>⚠️ Optional</td>
-<td>✅ Comprehensive</td>
-<td>✅ Scraping</td>
-<td>✅ Secure</td>
-<td>❌ N/A</td>
-</tr>
-<tr>
-<td><code>/api/scrape</code></td>
-<td>⚠️ Optional</td>
-<td>✅ Comprehensive</td>
-<td>✅ Scraping</td>
-<td>✅ Secure</td>
-<td>❌ N/A</td>
-</tr>
-<tr>
-<td><code>/api/enhanced-scrape</code></td>
-<td>⚠️ Optional</td>
-<td>✅ Comprehensive</td>
-<td>✅ Scraping</td>
-<td>✅ Secure</td>
-<td>❌ N/A</td>
-</tr>
-<tr>
-<td><code>/api/geocode</code></td>
-<td>❌ Public</td>
-<td>✅ Comprehensive</td>
-<td>✅ General</td>
-<td>✅ Secure</td>
-<td>❌ N/A</td>
-</tr>
-<tr>
-<td><code>/api/data-management</code></td>
-<td>✅ Required</td>
-<td>✅ Comprehensive</td>
-<td>✅ General</td>
-<td>✅ Secure</td>
-<td>✅ Implemented</td>
-</tr>
-</tbody></table>
-<h2>🔧 Security Features Implemented</h2>
-<h3>Rate Limiting Strategy</h3>
-<ul>
-<li><strong>General APIs</strong>: 100 requests/hour</li>
-<li><strong>Scraping APIs</strong>: 10 requests/hour  </li>
-<li><strong>Authentication</strong>: 5 attempts/15 minutes</li>
-<li><strong>Upload APIs</strong>: 20 requests/hour</li>
-<li><strong>Export APIs</strong>: 50 requests/hour</li>
-</ul>
-<h3>Input Validation Rules</h3>
-<ul>
-<li><strong>String sanitization</strong>: XSS prevention, HTML tag removal</li>
-<li><strong>SQL injection protection</strong>: Pattern detection and blocking</li>
-<li><strong>Type validation</strong>: Automatic type conversion and validation</li>
-<li><strong>Length constraints</strong>: Configurable min/max lengths</li>
-<li><strong>Format validation</strong>: URLs, emails, ZIP codes, etc.</li>
-</ul>
-<h3>Authentication Controls</h3>
-<ul>
-<li><strong>Session-based authentication</strong>: Secure session management</li>
-<li><strong>CSRF protection</strong>: Double-submit cookie pattern</li>
-<li><strong>Login attempt tracking</strong>: Brute force protection</li>
-<li><strong>Session timeout</strong>: Configurable session expiration</li>
-</ul>
-<h3>Error Handling Security</h3>
-<ul>
-<li><strong>Information sanitization</strong>: Remove sensitive data from errors</li>
-<li><strong>Generic error messages</strong>: Prevent information leakage</li>
-<li><strong>Structured logging</strong>: Detailed logs for debugging</li>
-<li><strong>Error tracking</strong>: Unique error IDs for correlation</li>
-</ul>
-<h2>📋 Security Configuration</h2>
-<h3>Environment Variables Required</h3>
-<pre><code class="language-env"># Authentication
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">🔐 API Security Audit Report</li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>🔐 API Security Audit Report</h1>
+        <h2>Executive Summary</h2>
+        <p>
+          A comprehensive security audit was conducted on all API endpoints in the Business Scraper
+          application. This report details the security vulnerabilities found, remediation measures
+          implemented, and recommendations for ongoing security maintenance.
+        </p>
+        <h2>🔍 Audit Scope</h2>
+        <h3>API Endpoints Audited</h3>
+        <ul>
+          <li><code>/api/auth</code> - Authentication endpoints</li>
+          <li><code>/api/health</code> - Health check endpoint</li>
+          <li><code>/api/config</code> - Configuration management</li>
+          <li><code>/api/security</code> - Security monitoring</li>
+          <li><code>/api/search</code> - Business search functionality</li>
+          <li><code>/api/scrape</code> - Web scraping operations</li>
+          <li><code>/api/enhanced-scrape</code> - Advanced scraping features</li>
+          <li><code>/api/geocode</code> - Address geocoding</li>
+          <li><code>/api/data-management</code> - Data operations</li>
+        </ul>
+        <h2>🚨 Critical Vulnerabilities Found</h2>
+        <h3>1. Missing Authentication Controls</h3>
+        <p><strong>Severity: HIGH</strong></p>
+        <ul>
+          <li>
+            <strong>Issue</strong>: Core business functionality (search, scrape, data-management)
+            was accessible without authentication
+          </li>
+          <li>
+            <strong>Risk</strong>: Unauthorized access to expensive operations, potential abuse
+          </li>
+          <li><strong>Status</strong>: ✅ FIXED</li>
+        </ul>
+        <h3>2. Inconsistent Input Validation</h3>
+        <p><strong>Severity: HIGH</strong></p>
+        <ul>
+          <li>
+            <strong>Issue</strong>: Several endpoints lacked comprehensive input validation and
+            sanitization
+          </li>
+          <li><strong>Risk</strong>: SQL injection, XSS, command injection attacks</li>
+          <li><strong>Status</strong>: ✅ FIXED</li>
+        </ul>
+        <h3>3. Information Leakage in Error Messages</h3>
+        <p><strong>Severity: MEDIUM</strong></p>
+        <ul>
+          <li>
+            <strong>Issue</strong>: Detailed error messages exposed internal system information
+          </li>
+          <li><strong>Risk</strong>: Information disclosure, system reconnaissance</li>
+          <li><strong>Status</strong>: ✅ FIXED</li>
+        </ul>
+        <h3>4. Missing Rate Limiting</h3>
+        <p><strong>Severity: MEDIUM</strong></p>
+        <ul>
+          <li><strong>Issue</strong>: No rate limiting on resource-intensive operations</li>
+          <li><strong>Risk</strong>: DoS attacks, resource exhaustion</li>
+          <li><strong>Status</strong>: ✅ FIXED</li>
+        </ul>
+        <h3>5. Insufficient CSRF Protection</h3>
+        <p><strong>Severity: MEDIUM</strong></p>
+        <ul>
+          <li><strong>Issue</strong>: Some state-changing endpoints bypassed CSRF validation</li>
+          <li><strong>Risk</strong>: Cross-site request forgery attacks</li>
+          <li><strong>Status</strong>: ✅ FIXED</li>
+        </ul>
+        <h2>🛡️ Security Measures Implemented</h2>
+        <h3>1. Comprehensive Security Middleware</h3>
+        <p>Created <code>src/lib/api-security.ts</code> with:</p>
+        <ul>
+          <li><strong>Authentication enforcement</strong></li>
+          <li><strong>Rate limiting by endpoint type</strong></li>
+          <li><strong>Input validation and sanitization</strong></li>
+          <li><strong>CSRF protection for state-changing requests</strong></li>
+          <li><strong>Security headers injection</strong></li>
+        </ul>
+        <h3>2. Authentication Middleware</h3>
+        <p>Created <code>src/lib/auth-middleware.ts</code> with:</p>
+        <ul>
+          <li><strong>Session validation</strong></li>
+          <li><strong>Role-based access control</strong></li>
+          <li><strong>Optional authentication support</strong></li>
+          <li><strong>Secure session management</strong></li>
+        </ul>
+        <h3>3. Input Validation Framework</h3>
+        <p>Created <code>src/lib/validation-middleware.ts</code> with:</p>
+        <ul>
+          <li><strong>Type validation and conversion</strong></li>
+          <li><strong>Length and range constraints</strong></li>
+          <li><strong>Pattern matching (URLs, emails, ZIP codes)</strong></li>
+          <li><strong>Custom validation rules</strong></li>
+          <li><strong>Comprehensive sanitization</strong></li>
+        </ul>
+        <h3>4. Secure Error Handling</h3>
+        <p>Created <code>src/lib/error-handling.ts</code> with:</p>
+        <ul>
+          <li><strong>Information leakage prevention</strong></li>
+          <li><strong>Structured error logging</strong></li>
+          <li><strong>Development vs production error responses</strong></li>
+          <li><strong>Security event tracking</strong></li>
+        </ul>
+        <h2>📊 Security Implementation Status</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Endpoint</th>
+              <th>Authentication</th>
+              <th>Input Validation</th>
+              <th>Rate Limiting</th>
+              <th>Error Handling</th>
+              <th>CSRF Protection</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/api/auth</code></td>
+              <td>N/A (Auth endpoint)</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ Strict</td>
+              <td>✅ Secure</td>
+              <td>✅ Implemented</td>
+            </tr>
+            <tr>
+              <td><code>/api/health</code></td>
+              <td>❌ Public</td>
+              <td>✅ N/A</td>
+              <td>✅ Basic</td>
+              <td>✅ Secure</td>
+              <td>❌ N/A</td>
+            </tr>
+            <tr>
+              <td><code>/api/config</code></td>
+              <td>✅ Required</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ General</td>
+              <td>✅ Secure</td>
+              <td>✅ Implemented</td>
+            </tr>
+            <tr>
+              <td><code>/api/security</code></td>
+              <td>✅ Required</td>
+              <td>✅ Basic</td>
+              <td>✅ General</td>
+              <td>✅ Secure</td>
+              <td>✅ Implemented</td>
+            </tr>
+            <tr>
+              <td><code>/api/search</code></td>
+              <td>⚠️ Optional</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ Scraping</td>
+              <td>✅ Secure</td>
+              <td>❌ N/A</td>
+            </tr>
+            <tr>
+              <td><code>/api/scrape</code></td>
+              <td>⚠️ Optional</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ Scraping</td>
+              <td>✅ Secure</td>
+              <td>❌ N/A</td>
+            </tr>
+            <tr>
+              <td><code>/api/enhanced-scrape</code></td>
+              <td>⚠️ Optional</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ Scraping</td>
+              <td>✅ Secure</td>
+              <td>❌ N/A</td>
+            </tr>
+            <tr>
+              <td><code>/api/geocode</code></td>
+              <td>❌ Public</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ General</td>
+              <td>✅ Secure</td>
+              <td>❌ N/A</td>
+            </tr>
+            <tr>
+              <td><code>/api/data-management</code></td>
+              <td>✅ Required</td>
+              <td>✅ Comprehensive</td>
+              <td>✅ General</td>
+              <td>✅ Secure</td>
+              <td>✅ Implemented</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>🔧 Security Features Implemented</h2>
+        <h3>Rate Limiting Strategy</h3>
+        <ul>
+          <li><strong>General APIs</strong>: 100 requests/hour</li>
+          <li><strong>Scraping APIs</strong>: 10 requests/hour</li>
+          <li><strong>Authentication</strong>: 5 attempts/15 minutes</li>
+          <li><strong>Upload APIs</strong>: 20 requests/hour</li>
+          <li><strong>Export APIs</strong>: 50 requests/hour</li>
+        </ul>
+        <h3>Input Validation Rules</h3>
+        <ul>
+          <li><strong>String sanitization</strong>: XSS prevention, HTML tag removal</li>
+          <li><strong>SQL injection protection</strong>: Pattern detection and blocking</li>
+          <li><strong>Type validation</strong>: Automatic type conversion and validation</li>
+          <li><strong>Length constraints</strong>: Configurable min/max lengths</li>
+          <li><strong>Format validation</strong>: URLs, emails, ZIP codes, etc.</li>
+        </ul>
+        <h3>Authentication Controls</h3>
+        <ul>
+          <li><strong>Session-based authentication</strong>: Secure session management</li>
+          <li><strong>CSRF protection</strong>: Double-submit cookie pattern</li>
+          <li><strong>Login attempt tracking</strong>: Brute force protection</li>
+          <li><strong>Session timeout</strong>: Configurable session expiration</li>
+        </ul>
+        <h3>Error Handling Security</h3>
+        <ul>
+          <li><strong>Information sanitization</strong>: Remove sensitive data from errors</li>
+          <li><strong>Generic error messages</strong>: Prevent information leakage</li>
+          <li><strong>Structured logging</strong>: Detailed logs for debugging</li>
+          <li><strong>Error tracking</strong>: Unique error IDs for correlation</li>
+        </ul>
+        <h2>📋 Security Configuration</h2>
+        <h3>Environment Variables Required</h3>
+        <pre><code class="language-env"># Authentication
 ENABLE_AUTH=true
 ADMIN_PASSWORD_HASH=&lt;secure_hash&gt;
 ADMIN_PASSWORD_SALT=&lt;secure_salt&gt;
@@ -248,48 +267,62 @@ SESSION_SECRET=&lt;secure_session_secret&gt;
 RATE_LIMIT_MAX=100
 SCRAPING_RATE_LIMIT=10
 </code></pre>
-<h3>Security Headers Applied</h3>
-<ul>
-<li><code>X-Content-Type-Options: nosniff</code></li>
-<li><code>X-Frame-Options: DENY</code></li>
-<li><code>X-XSS-Protection: 1; mode=block</code></li>
-<li><code>Referrer-Policy: strict-origin-when-cross-origin</code></li>
-</ul>
-<h2>🎯 Recommendations</h2>
-<h3>Immediate Actions</h3>
-<ol>
-<li><strong>Enable Authentication</strong>: Set <code>ENABLE_AUTH=true</code> in production</li>
-<li><strong>Generate Secure Secrets</strong>: Use <code>npm run secrets:prod</code> to generate production secrets</li>
-<li><strong>Monitor Rate Limits</strong>: Review rate limiting thresholds based on usage patterns</li>
-<li><strong>Test CSRF Protection</strong>: Verify CSRF tokens are properly validated</li>
-</ol>
-<h3>Ongoing Security Measures</h3>
-<ol>
-<li><strong>Regular Security Audits</strong>: Quarterly API security reviews</li>
-<li><strong>Dependency Updates</strong>: Monthly security patch updates</li>
-<li><strong>Log Monitoring</strong>: Implement automated security event alerting</li>
-<li><strong>Penetration Testing</strong>: Annual third-party security assessment</li>
-</ol>
-<h3>Future Enhancements</h3>
-<ol>
-<li><strong>API Key Authentication</strong>: Implement API key-based authentication for programmatic access</li>
-<li><strong>OAuth Integration</strong>: Add OAuth2/OIDC support for enterprise users</li>
-<li><strong>Advanced Rate Limiting</strong>: Implement sliding window rate limiting</li>
-<li><strong>WAF Integration</strong>: Deploy Web Application Firewall for additional protection</li>
-</ol>
-<h2>🔍 Testing and Validation</h2>
-<h3>Security Test Cases</h3>
-<ul>
-<li>✅ Authentication bypass attempts</li>
-<li>✅ SQL injection attack vectors</li>
-<li>✅ XSS payload injection</li>
-<li>✅ CSRF attack simulation</li>
-<li>✅ Rate limit enforcement</li>
-<li>✅ Error message information leakage</li>
-<li>✅ Input validation boundary testing</li>
-</ul>
-<h3>Automated Security Checks</h3>
-<pre><code class="language-bash"># Run security validation
+        <h3>Security Headers Applied</h3>
+        <ul>
+          <li><code>X-Content-Type-Options: nosniff</code></li>
+          <li><code>X-Frame-Options: DENY</code></li>
+          <li><code>X-XSS-Protection: 1; mode=block</code></li>
+          <li><code>Referrer-Policy: strict-origin-when-cross-origin</code></li>
+        </ul>
+        <h2>🎯 Recommendations</h2>
+        <h3>Immediate Actions</h3>
+        <ol>
+          <li>
+            <strong>Enable Authentication</strong>: Set <code>ENABLE_AUTH=true</code> in production
+          </li>
+          <li>
+            <strong>Generate Secure Secrets</strong>: Use <code>npm run secrets:prod</code> to
+            generate production secrets
+          </li>
+          <li>
+            <strong>Monitor Rate Limits</strong>: Review rate limiting thresholds based on usage
+            patterns
+          </li>
+          <li><strong>Test CSRF Protection</strong>: Verify CSRF tokens are properly validated</li>
+        </ol>
+        <h3>Ongoing Security Measures</h3>
+        <ol>
+          <li><strong>Regular Security Audits</strong>: Quarterly API security reviews</li>
+          <li><strong>Dependency Updates</strong>: Monthly security patch updates</li>
+          <li><strong>Log Monitoring</strong>: Implement automated security event alerting</li>
+          <li><strong>Penetration Testing</strong>: Annual third-party security assessment</li>
+        </ol>
+        <h3>Future Enhancements</h3>
+        <ol>
+          <li>
+            <strong>API Key Authentication</strong>: Implement API key-based authentication for
+            programmatic access
+          </li>
+          <li><strong>OAuth Integration</strong>: Add OAuth2/OIDC support for enterprise users</li>
+          <li><strong>Advanced Rate Limiting</strong>: Implement sliding window rate limiting</li>
+          <li>
+            <strong>WAF Integration</strong>: Deploy Web Application Firewall for additional
+            protection
+          </li>
+        </ol>
+        <h2>🔍 Testing and Validation</h2>
+        <h3>Security Test Cases</h3>
+        <ul>
+          <li>✅ Authentication bypass attempts</li>
+          <li>✅ SQL injection attack vectors</li>
+          <li>✅ XSS payload injection</li>
+          <li>✅ CSRF attack simulation</li>
+          <li>✅ Rate limit enforcement</li>
+          <li>✅ Error message information leakage</li>
+          <li>✅ Input validation boundary testing</li>
+        </ul>
+        <h3>Automated Security Checks</h3>
+        <pre><code class="language-bash"># Run security validation
 npm run config:validate
 
 # Check for vulnerabilities
@@ -298,41 +331,46 @@ npm run security-audit
 # Test authentication
 npm run test:security
 </code></pre>
-<h2>📞 Security Contact</h2>
-<p>For security-related issues or questions:</p>
-<ol>
-<li>Review this documentation</li>
-<li>Check security logs in <code>/logs/security.log</code></li>
-<li>Run security validation: <code>npm run config:validate</code></li>
-<li>Consult the Security Deployment Guide</li>
-</ol>
-<h2>🔄 Maintenance Schedule</h2>
-<ul>
-<li><strong>Daily</strong>: Automated security log review</li>
-<li><strong>Weekly</strong>: Dependency vulnerability scanning</li>
-<li><strong>Monthly</strong>: Security configuration review</li>
-<li><strong>Quarterly</strong>: Comprehensive security audit</li>
-<li><strong>Annually</strong>: Penetration testing and security assessment</li>
-</ul>
-<hr>
-<p><strong>Audit Completed</strong>: 2025-01-12<br><strong>Next Review</strong>: 2025-04-12<br><strong>Security Level</strong>: HIGH<br><strong>Compliance Status</strong>: ✅ SECURE</p>
+        <h2>📞 Security Contact</h2>
+        <p>For security-related issues or questions:</p>
+        <ol>
+          <li>Review this documentation</li>
+          <li>Check security logs in <code>/logs/security.log</code></li>
+          <li>Run security validation: <code>npm run config:validate</code></li>
+          <li>Consult the Security Deployment Guide</li>
+        </ol>
+        <h2>🔄 Maintenance Schedule</h2>
+        <ul>
+          <li><strong>Daily</strong>: Automated security log review</li>
+          <li><strong>Weekly</strong>: Dependency vulnerability scanning</li>
+          <li><strong>Monthly</strong>: Security configuration review</li>
+          <li><strong>Quarterly</strong>: Comprehensive security audit</li>
+          <li><strong>Annually</strong>: Penetration testing and security assessment</li>
+        </ul>
+        <hr />
+        <p>
+          <strong>Audit Completed</strong>: 2025-01-12<br /><strong>Next Review</strong>:
+          2025-04-12<br /><strong>Security Level</strong>: HIGH<br /><strong
+            >Compliance Status</strong
+          >: ✅ SECURE
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

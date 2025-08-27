@@ -2,7 +2,13 @@
  * Test suite for concurrent search functionality in SearchOrchestrator
  */
 
-import { SearchOrchestrator, SearchProvider, BusinessDiscoveryProvider, SearchOptions, BusinessResult } from '../searchProviderAbstraction'
+import {
+  SearchOrchestrator,
+  SearchProvider,
+  BusinessDiscoveryProvider,
+  SearchOptions,
+  BusinessResult,
+} from '../searchProviderAbstraction'
 import { logger } from '@/utils/logger'
 
 // Mock logger to avoid console output during tests
@@ -11,17 +17,21 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-    debug: jest.fn()
-  }
+    debug: jest.fn(),
+  },
 }))
 
 // Mock search providers
 class MockSearchProvider implements SearchProvider {
-  constructor(public name: string, private delay: number = 100, private shouldFail: boolean = false) {}
+  constructor(
+    public name: string,
+    private delay: number = 100,
+    private shouldFail: boolean = false
+  ) {}
 
   async searchSERP(options: SearchOptions): Promise<BusinessResult[]> {
     await new Promise(resolve => setTimeout(resolve, this.delay))
-    
+
     if (this.shouldFail) {
       throw new Error(`${this.name} search failed`)
     }
@@ -37,18 +47,22 @@ class MockSearchProvider implements SearchProvider {
         rating: 4.5,
         reviewCount: 100,
         category: 'Test Business',
-        source: this.name
-      }
+        source: this.name,
+      },
     ]
   }
 }
 
 class MockBusinessProvider implements BusinessDiscoveryProvider {
-  constructor(public name: string, private delay: number = 150, private shouldFail: boolean = false) {}
+  constructor(
+    public name: string,
+    private delay: number = 150,
+    private shouldFail: boolean = false
+  ) {}
 
   async searchBusinesses(options: SearchOptions): Promise<BusinessResult[]> {
     await new Promise(resolve => setTimeout(resolve, this.delay))
-    
+
     if (this.shouldFail) {
       throw new Error(`${this.name} business search failed`)
     }
@@ -64,8 +78,8 @@ class MockBusinessProvider implements BusinessDiscoveryProvider {
         rating: 4.0,
         reviewCount: 50,
         category: 'Directory',
-        source: this.name
-      }
+        source: this.name,
+      },
     ]
   }
 }
@@ -81,7 +95,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
     orchestrator = new SearchOrchestrator({
       enableConcurrentSearches: true,
       maxConcurrentProviders: 4,
-      searchTimeout: 5000
+      searchTimeout: 5000,
     })
 
     // Clear the default business providers for testing
@@ -111,7 +125,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       const searchOptions: SearchOptions = {
         query: 'restaurants',
         location: 'New York, NY',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const startTime = Date.now()
@@ -138,7 +152,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       const searchOptions: SearchOptions = {
         query: 'restaurants',
         location: 'New York, NY',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const results = await orchestrator.searchBusinesses(searchOptions)
@@ -147,7 +161,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       expect(results.length).toBeGreaterThan(0)
       expect(results.some(r => r.source === 'MockGoogle')).toBe(true)
       expect(results.some(r => r.source === 'MockBing')).toBe(true)
-      
+
       // Should not have results from failing provider
       expect(results.some(r => r.source === 'FailingProvider')).toBe(false)
 
@@ -163,7 +177,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       // Create orchestrator with very short timeout
       const shortTimeoutOrchestrator = new SearchOrchestrator({
         enableConcurrentSearches: true,
-        searchTimeout: 50 // Very short timeout
+        searchTimeout: 50, // Very short timeout
       })
 
       // Add slow provider
@@ -173,7 +187,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       const searchOptions: SearchOptions = {
         query: 'restaurants',
         location: 'New York, NY',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const startTime = Date.now()
@@ -197,7 +211,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       const searchOptions: SearchOptions = {
         query: 'restaurants',
         location: 'New York, NY',
-        maxResults: 10
+        maxResults: 10,
       }
 
       // Test concurrent mode
@@ -229,7 +243,7 @@ describe('SearchOrchestrator Concurrent Searches', () => {
       const newConfig = {
         enableConcurrentSearches: false,
         maxConcurrentProviders: 8,
-        searchTimeout: 10000
+        searchTimeout: 10000,
       }
 
       orchestrator.updateConfig(newConfig)

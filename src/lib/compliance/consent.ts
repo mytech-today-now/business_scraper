@@ -16,7 +16,7 @@ export enum ConsentType {
   ANALYTICS = 'analytics',
   SCRAPING = 'scraping',
   STORAGE = 'storage',
-  THIRD_PARTY = 'third_party'
+  THIRD_PARTY = 'third_party',
 }
 
 // Consent status
@@ -24,7 +24,7 @@ export enum ConsentStatus {
   GRANTED = 'granted',
   DENIED = 'denied',
   WITHDRAWN = 'withdrawn',
-  PENDING = 'pending'
+  PENDING = 'pending',
 }
 
 // Legal basis for processing (GDPR Article 6)
@@ -34,7 +34,7 @@ export enum LegalBasis {
   LEGAL_OBLIGATION = 'legal_obligation',
   VITAL_INTERESTS = 'vital_interests',
   PUBLIC_TASK = 'public_task',
-  LEGITIMATE_INTERESTS = 'legitimate_interests'
+  LEGITIMATE_INTERESTS = 'legitimate_interests',
 }
 
 // Consent record interface
@@ -62,11 +62,14 @@ export interface ConsentRecord {
 export interface ConsentPreferences {
   userId?: string
   sessionId?: string
-  preferences: Record<ConsentType, {
-    status: ConsentStatus
-    timestamp: Date
-    version: string
-  }>
+  preferences: Record<
+    ConsentType,
+    {
+      status: ConsentStatus
+      timestamp: Date
+      version: string
+    }
+  >
   gdprApplies: boolean
   ccpaApplies: boolean
   lastUpdated: Date
@@ -99,30 +102,33 @@ export class ConsentService {
         consent.expiresAt = new Date(Date.now() + consent.retentionPeriod * 24 * 60 * 60 * 1000)
       }
 
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         INSERT INTO consent_records (
           user_id, session_id, consent_type, status, legal_basis, purpose,
           data_categories, retention_period, third_parties, ip_address,
           user_agent, timestamp, expires_at, version, metadata
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING id
-      `, [
-        consent.userId,
-        consent.sessionId,
-        consent.consentType,
-        consent.status,
-        consent.legalBasis,
-        consent.purpose,
-        JSON.stringify(consent.dataCategories),
-        consent.retentionPeriod,
-        JSON.stringify(consent.thirdParties || []),
-        consent.ipAddress,
-        consent.userAgent,
-        consent.timestamp,
-        consent.expiresAt,
-        consent.version,
-        JSON.stringify(consent.metadata || {})
-      ])
+      `,
+        [
+          consent.userId,
+          consent.sessionId,
+          consent.consentType,
+          consent.status,
+          consent.legalBasis,
+          consent.purpose,
+          JSON.stringify(consent.dataCategories),
+          consent.retentionPeriod,
+          JSON.stringify(consent.thirdParties || []),
+          consent.ipAddress,
+          consent.userAgent,
+          consent.timestamp,
+          consent.expiresAt,
+          consent.version,
+          JSON.stringify(consent.metadata || {}),
+        ]
+      )
 
       const consentId = result.rows[0].id
 
@@ -139,24 +145,23 @@ export class ConsentService {
           consentType: consent.consentType,
           status: consent.status,
           legalBasis: consent.legalBasis,
-          purpose: consent.purpose
+          purpose: consent.purpose,
         },
         timestamp: new Date(),
         complianceFlags: {
           gdprRelevant: true,
           ccpaRelevant: true,
-          soc2Relevant: true
-        }
+          soc2Relevant: true,
+        },
       })
 
       logger.info('Consent', `Consent recorded: ${consent.consentType} - ${consent.status}`, {
         consentId,
         userId: consent.userId,
-        sessionId: consent.sessionId
+        sessionId: consent.sessionId,
       })
 
       return consentId
-
     } catch (error) {
       logger.error('Consent', 'Failed to record consent', error)
       throw new Error('Failed to record consent')
@@ -175,21 +180,24 @@ export class ConsentService {
     try {
       const withdrawnAt = new Date()
 
-      await pool.query(`
+      await pool.query(
+        `
         UPDATE consent_records 
         SET status = $1, withdrawn_at = $2, metadata = metadata || $3
         WHERE (user_id = $4 OR session_id = $5) 
         AND consent_type = $6 
         AND status = $7
-      `, [
-        ConsentStatus.WITHDRAWN,
-        withdrawnAt,
-        JSON.stringify({ withdrawalReason: reason }),
-        userId,
-        sessionId,
-        consentType,
-        ConsentStatus.GRANTED
-      ])
+      `,
+        [
+          ConsentStatus.WITHDRAWN,
+          withdrawnAt,
+          JSON.stringify({ withdrawalReason: reason }),
+          userId,
+          sessionId,
+          consentType,
+          ConsentStatus.GRANTED,
+        ]
+      )
 
       // Log audit event
       await auditService.logEvent({
@@ -200,22 +208,21 @@ export class ConsentService {
         details: {
           consentType,
           reason,
-          withdrawnAt: withdrawnAt.toISOString()
+          withdrawnAt: withdrawnAt.toISOString(),
         },
         timestamp: new Date(),
         complianceFlags: {
           gdprRelevant: true,
           ccpaRelevant: true,
-          soc2Relevant: true
-        }
+          soc2Relevant: true,
+        },
       })
 
       logger.info('Consent', `Consent withdrawn: ${consentType}`, {
         userId,
         sessionId,
-        reason
+        reason,
       })
-
     } catch (error) {
       logger.error('Consent', 'Failed to withdraw consent', error)
       throw new Error('Failed to withdraw consent')
@@ -264,9 +271,8 @@ export class ConsentService {
         expiresAt: row.expires_at,
         withdrawnAt: row.withdrawn_at,
         version: row.version,
-        metadata: JSON.parse(row.metadata || '{}')
+        metadata: JSON.parse(row.metadata || '{}'),
       }))
-
     } catch (error) {
       logger.error('Consent', 'Failed to get consent status', error)
       throw new Error('Failed to retrieve consent status')
@@ -282,16 +288,18 @@ export class ConsentService {
     consentType: ConsentType
   ): Promise<boolean> {
     try {
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         SELECT COUNT(*) as count FROM consent_records 
         WHERE (user_id = $1 OR session_id = $2)
         AND consent_type = $3 
         AND status = $4
         AND (expires_at IS NULL OR expires_at > NOW())
-      `, [userId, sessionId, consentType, ConsentStatus.GRANTED])
+      `,
+        [userId, sessionId, consentType, ConsentStatus.GRANTED]
+      )
 
       return parseInt(result.rows[0].count) > 0
-
     } catch (error) {
       logger.error('Consent', 'Failed to check consent validity', error)
       return false
@@ -307,7 +315,7 @@ export class ConsentService {
   ): Promise<ConsentPreferences | null> {
     try {
       const consents = await this.getConsentStatus(userId, sessionId)
-      
+
       if (consents.length === 0) {
         return null
       }
@@ -325,7 +333,7 @@ export class ConsentService {
           preferences[type] = {
             status: latestConsent.status,
             timestamp: latestConsent.timestamp,
-            version: latestConsent.version
+            version: latestConsent.version,
           }
 
           if (latestConsent.timestamp > lastUpdated) {
@@ -340,9 +348,8 @@ export class ConsentService {
         preferences,
         gdprApplies: this.isGDPRApplicable(consents[0]?.ipAddress),
         ccpaApplies: this.isCCPAApplicable(consents[0]?.ipAddress),
-        lastUpdated
+        lastUpdated,
       }
-
     } catch (error) {
       logger.error('Consent', 'Failed to get consent preferences', error)
       return null
@@ -374,16 +381,15 @@ export class ConsentService {
           ipAddress,
           userAgent,
           timestamp,
-          version: this.currentConsentVersion
+          version: this.currentConsentVersion,
         })
       }
 
       logger.info('Consent', 'Consent preferences updated', {
         userId,
         sessionId,
-        preferencesCount: Object.keys(preferences).length
+        preferencesCount: Object.keys(preferences).length,
       })
-
     } catch (error) {
       logger.error('Consent', 'Failed to update consent preferences', error)
       throw new Error('Failed to update consent preferences')
@@ -408,21 +414,20 @@ export class ConsentService {
           severity: AuditSeverity.LOW,
           details: {
             type: 'expired_consents',
-            count: deletedCount
+            count: deletedCount,
           },
           timestamp: new Date(),
           complianceFlags: {
             gdprRelevant: true,
             ccpaRelevant: true,
-            soc2Relevant: true
-          }
+            soc2Relevant: true,
+          },
         })
 
         logger.info('Consent', `Cleaned up ${deletedCount} expired consent records`)
       }
 
       return deletedCount
-
     } catch (error) {
       logger.error('Consent', 'Failed to cleanup expired consents', error)
       throw new Error('Failed to cleanup expired consents')
@@ -459,7 +464,7 @@ export class ConsentService {
       [ConsentType.ANALYTICS]: ['usage_data', 'performance_data'],
       [ConsentType.SCRAPING]: ['public_business_data', 'contact_info'],
       [ConsentType.STORAGE]: ['all_collected_data'],
-      [ConsentType.THIRD_PARTY]: ['contact_info', 'business_info']
+      [ConsentType.THIRD_PARTY]: ['contact_info', 'business_info'],
     }
 
     return categoryMap[consentType] || []
@@ -496,16 +501,13 @@ export const ConsentUtils = {
   getScrapingConsents: (): ConsentType[] => [
     ConsentType.DATA_COLLECTION,
     ConsentType.SCRAPING,
-    ConsentType.STORAGE
+    ConsentType.STORAGE,
   ],
 
   /**
    * Get required consents for data export
    */
-  getExportConsents: (): ConsentType[] => [
-    ConsentType.DATA_PROCESSING,
-    ConsentType.DATA_SHARING
-  ],
+  getExportConsents: (): ConsentType[] => [ConsentType.DATA_PROCESSING, ConsentType.DATA_SHARING],
 
   /**
    * Validate consent before data processing
@@ -519,7 +521,7 @@ export const ConsentUtils = {
       scraping: ConsentUtils.getScrapingConsents(),
       export: ConsentUtils.getExportConsents(),
       storage: [ConsentType.STORAGE, ConsentType.DATA_PROCESSING],
-      sharing: [ConsentType.DATA_SHARING, ConsentType.THIRD_PARTY]
+      sharing: [ConsentType.DATA_SHARING, ConsentType.THIRD_PARTY],
     }[operation]
 
     const missingConsents: ConsentType[] = []
@@ -533,7 +535,7 @@ export const ConsentUtils = {
 
     return {
       valid: missingConsents.length === 0,
-      missingConsents
+      missingConsents,
     }
-  }
+  },
 }

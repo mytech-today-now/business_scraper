@@ -8,7 +8,7 @@ import { BusinessRecord } from './business'
 /**
  * Supported export template platforms
  */
-export type ExportPlatform = 
+export type ExportPlatform =
   | 'salesforce'
   | 'hubspot'
   | 'pipedrive'
@@ -19,14 +19,14 @@ export type ExportPlatform =
 /**
  * Field transformation types
  */
-export type FieldTransformationType = 
-  | 'direct'           // Direct field mapping
-  | 'concatenate'      // Combine multiple fields
-  | 'split'           // Split field into multiple
-  | 'format'          // Apply formatting (phone, date, etc.)
-  | 'conditional'     // Conditional logic
-  | 'lookup'          // Lookup table mapping
-  | 'calculate'       // Calculated field
+export type FieldTransformationType =
+  | 'direct' // Direct field mapping
+  | 'concatenate' // Combine multiple fields
+  | 'split' // Split field into multiple
+  | 'format' // Apply formatting (phone, date, etc.)
+  | 'conditional' // Conditional logic
+  | 'lookup' // Lookup table mapping
+  | 'calculate' // Calculated field
 
 /**
  * Data validation rules
@@ -68,12 +68,12 @@ export interface ExportTemplate {
   platform: ExportPlatform
   description: string
   version: string
-  
+
   // Field mappings and transformations
   fieldMappings: FieldTransformation[]
   requiredFields: string[]
   optionalFields: string[]
-  
+
   // Platform-specific configuration
   platformConfig: {
     fileFormat: 'csv' | 'json' | 'xml' | 'xlsx'
@@ -84,7 +84,7 @@ export interface ExportTemplate {
     booleanFormat?: { true: string; false: string }
     nullValue?: string
   }
-  
+
   // Metadata and settings
   metadata: {
     createdAt: string
@@ -93,7 +93,7 @@ export interface ExportTemplate {
     tags: string[]
     category: 'crm' | 'email-marketing' | 'custom'
   }
-  
+
   // Validation and quality rules
   qualityRules?: {
     minimumFields: number
@@ -193,7 +193,7 @@ export interface CRMFieldMapping {
   country?: string
   industry?: string
   description?: string
-  
+
   // Platform-specific fields
   customFields?: Record<string, any>
 }
@@ -204,7 +204,7 @@ export interface CRMFieldMapping {
 export interface EmailMarketingFieldMapping {
   // Required fields
   email: string
-  
+
   // Optional fields
   firstName?: string
   lastName?: string
@@ -215,7 +215,7 @@ export interface EmailMarketingFieldMapping {
   state?: string
   zipCode?: string
   country?: string
-  
+
   // Marketing-specific fields
   optInStatus?: 'subscribed' | 'unsubscribed' | 'pending'
   listId?: string

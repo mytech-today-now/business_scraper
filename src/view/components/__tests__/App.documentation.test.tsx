@@ -12,7 +12,7 @@ import { FileText } from 'lucide-react'
 const mockWindowOpen = jest.fn()
 Object.defineProperty(window, 'open', {
   value: mockWindowOpen,
-  writable: true
+  writable: true,
 })
 
 // Simple Documentation Button Component for testing
@@ -129,9 +129,6 @@ describe('Documentation Integration', () => {
     fireEvent.click(docButton)
 
     // Verify the second parameter is '_blank' for new tab
-    expect(mockWindowOpen).toHaveBeenCalledWith(
-      expect.any(String),
-      '_blank'
-    )
+    expect(mockWindowOpen).toHaveBeenCalledWith(expect.any(String), '_blank')
   })
 })

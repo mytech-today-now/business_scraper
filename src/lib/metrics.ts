@@ -49,19 +49,19 @@ export class MetricsCollector {
       name: 'http_request_duration_seconds',
       help: 'Duration of HTTP requests in seconds',
       labelNames: ['method', 'route', 'status_code'],
-      buckets: [0.1, 0.5, 1, 2, 5, 10, 30]
+      buckets: [0.1, 0.5, 1, 2, 5, 10, 30],
     })
 
     this.httpRequestTotal = new Counter({
       name: 'http_requests_total',
       help: 'Total number of HTTP requests',
-      labelNames: ['method', 'route', 'status_code']
+      labelNames: ['method', 'route', 'status_code'],
     })
 
     this.httpRequestErrors = new Counter({
       name: 'http_request_errors_total',
       help: 'Total number of HTTP request errors',
-      labelNames: ['method', 'route', 'error_type']
+      labelNames: ['method', 'route', 'error_type'],
     })
 
     // Database Metrics
@@ -69,25 +69,25 @@ export class MetricsCollector {
       name: 'db_query_duration_seconds',
       help: 'Duration of database queries in seconds',
       labelNames: ['operation', 'table', 'status'],
-      buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5]
+      buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5],
     })
 
     this.dbConnectionsActive = new Gauge({
       name: 'db_connections_active',
       help: 'Number of active database connections',
-      labelNames: ['pool']
+      labelNames: ['pool'],
     })
 
     this.dbQueryTotal = new Counter({
       name: 'db_queries_total',
       help: 'Total number of database queries',
-      labelNames: ['operation', 'table', 'status']
+      labelNames: ['operation', 'table', 'status'],
     })
 
     this.dbQueryErrors = new Counter({
       name: 'db_query_errors_total',
       help: 'Total number of database query errors',
-      labelNames: ['operation', 'table', 'error_type']
+      labelNames: ['operation', 'table', 'error_type'],
     })
 
     // Scraping Metrics
@@ -95,89 +95,89 @@ export class MetricsCollector {
       name: 'scraping_duration_seconds',
       help: 'Duration of scraping operations in seconds',
       labelNames: ['url', 'strategy', 'status'],
-      buckets: [1, 5, 10, 30, 60, 120, 300]
+      buckets: [1, 5, 10, 30, 60, 120, 300],
     })
 
     this.scrapingTotal = new Counter({
       name: 'scraping_operations_total',
       help: 'Total number of scraping operations',
-      labelNames: ['strategy', 'status']
+      labelNames: ['strategy', 'status'],
     })
 
     this.scrapingErrors = new Counter({
       name: 'scraping_errors_total',
       help: 'Total number of scraping errors',
-      labelNames: ['strategy', 'error_type']
+      labelNames: ['strategy', 'error_type'],
     })
 
     this.businessesFound = new Counter({
       name: 'businesses_found_total',
       help: 'Total number of businesses found during scraping',
-      labelNames: ['strategy', 'industry']
+      labelNames: ['strategy', 'industry'],
     })
 
     this.pagesScraped = new Counter({
       name: 'pages_scraped_total',
       help: 'Total number of pages scraped',
-      labelNames: ['strategy', 'domain']
+      labelNames: ['strategy', 'domain'],
     })
 
     // Cache Metrics
     this.cacheHits = new Counter({
       name: 'cache_hits_total',
       help: 'Total number of cache hits',
-      labelNames: ['cache_type', 'key_prefix']
+      labelNames: ['cache_type', 'key_prefix'],
     })
 
     this.cacheMisses = new Counter({
       name: 'cache_misses_total',
       help: 'Total number of cache misses',
-      labelNames: ['cache_type', 'key_prefix']
+      labelNames: ['cache_type', 'key_prefix'],
     })
 
     this.cacheOperationDuration = new Histogram({
       name: 'cache_operation_duration_seconds',
       help: 'Duration of cache operations in seconds',
       labelNames: ['operation', 'cache_type'],
-      buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1]
+      buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1],
     })
 
     // System Metrics
     this.memoryUsage = new Gauge({
       name: 'memory_usage_bytes',
       help: 'Memory usage in bytes',
-      labelNames: ['type']
+      labelNames: ['type'],
     })
 
     this.cpuUsage = new Gauge({
       name: 'cpu_usage_percent',
       help: 'CPU usage percentage',
-      labelNames: ['core']
+      labelNames: ['core'],
     })
 
     this.activeConnections = new Gauge({
       name: 'active_connections',
       help: 'Number of active connections',
-      labelNames: ['type']
+      labelNames: ['type'],
     })
 
     // Business Logic Metrics
     this.searchOperations = new Counter({
       name: 'search_operations_total',
       help: 'Total number of search operations',
-      labelNames: ['provider', 'status']
+      labelNames: ['provider', 'status'],
     })
 
     this.exportOperations = new Counter({
       name: 'export_operations_total',
       help: 'Total number of export operations',
-      labelNames: ['format', 'status']
+      labelNames: ['format', 'status'],
     })
 
     this.validationErrors = new Counter({
       name: 'validation_errors_total',
       help: 'Total number of validation errors',
-      labelNames: ['field', 'error_type']
+      labelNames: ['field', 'error_type'],
     })
   }
 
@@ -281,10 +281,7 @@ export const metrics = MetricsCollector.getInstance()
 /**
  * Decorator for measuring function execution time
  */
-export function measureExecutionTime(
-  histogram: Histogram<string>,
-  labels: Record<string, string>
-) {
+export function measureExecutionTime(histogram: Histogram<string>, labels: Record<string, string>) {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value
 
@@ -310,13 +307,13 @@ export function measureExecutionTime(
 export function createHttpMetricsMiddleware() {
   return (req: any, res: any, next: any) => {
     const start = Date.now()
-    
+
     res.on('finish', () => {
       const duration = (Date.now() - start) / 1000
       const labels = {
         method: req.method,
         route: req.route?.path || req.path || 'unknown',
-        status_code: res.statusCode.toString()
+        status_code: res.statusCode.toString(),
       }
 
       metrics.httpRequestDuration.observe(labels, duration)
@@ -326,7 +323,7 @@ export function createHttpMetricsMiddleware() {
         metrics.httpRequestErrors.inc({
           method: req.method,
           route: labels.route,
-          error_type: res.statusCode >= 500 ? 'server_error' : 'client_error'
+          error_type: res.statusCode >= 500 ? 'server_error' : 'client_error',
         })
       }
     })

@@ -40,17 +40,18 @@ export class WebsiteQualityAnalyzer {
           cpuSlowdownMultiplier: 1,
           requestLatencyMs: 0,
           downloadThroughputKbps: 0,
-          uploadThroughputKbps: 0
+          uploadThroughputKbps: 0,
         },
         screenEmulation: {
           mobile: false,
           width: 1350,
           height: 940,
           deviceScaleFactor: 1,
-          disabled: false
+          disabled: false,
         },
-        emulatedUserAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36 lighthouse'
-      }
+        emulatedUserAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36 lighthouse',
+      },
     }
   }
 
@@ -90,25 +91,32 @@ export class WebsiteQualityAnalyzer {
           return this.createFallbackLighthouseResults()
         }),
         this.analyzeContent(business),
-        this.analyzeTechnicalAspects(business.website)
+        this.analyzeTechnicalAspects(business.website),
       ])
 
       // Calculate overall health score
-      const healthScore = this.calculateHealthScore(lighthouseResults, contentAnalysis, technicalAnalysis)
+      const healthScore = this.calculateHealthScore(
+        lighthouseResults,
+        contentAnalysis,
+        technicalAnalysis
+      )
 
       const analysis: WebsiteQualityAnalysis = {
         healthScore,
         lighthouse: lighthouseResults,
         content: contentAnalysis,
         technical: technicalAnalysis,
-        analyzedAt: new Date()
+        analyzedAt: new Date(),
       }
 
       logger.info('WebsiteQualityAnalyzer', `Website analysis completed for: ${business.website}`)
       return analysis
-
     } catch (error) {
-      logger.error('WebsiteQualityAnalyzer', `Failed to analyze website: ${business.website}`, error)
+      logger.error(
+        'WebsiteQualityAnalyzer',
+        `Failed to analyze website: ${business.website}`,
+        error
+      )
       return this.createEmptyAnalysis()
     }
   }
@@ -127,7 +135,7 @@ export class WebsiteQualityAnalyzer {
       // For now, return simulated results since Lighthouse requires Chrome
       // In production, this would run actual Lighthouse analysis
       logger.info('WebsiteQualityAnalyzer', `Running Lighthouse analysis for: ${url}`)
-      
+
       // Simulate Lighthouse analysis with realistic scores
       const baseScore = 70 + Math.random() * 25 // 70-95 range
       const variance = () => Math.max(0, Math.min(100, baseScore + (Math.random() - 0.5) * 20))
@@ -137,9 +145,8 @@ export class WebsiteQualityAnalyzer {
         accessibility: Math.round(variance()),
         bestPractices: Math.round(variance()),
         seo: Math.round(variance()),
-        pwa: Math.round(Math.max(0, baseScore - 20 + Math.random() * 15)) // PWA typically lower
+        pwa: Math.round(Math.max(0, baseScore - 20 + Math.random() * 15)), // PWA typically lower
       }
-
     } catch (error) {
       logger.error('WebsiteQualityAnalyzer', 'Lighthouse analysis failed', error)
       return this.createFallbackLighthouseResults()
@@ -158,19 +165,19 @@ export class WebsiteQualityAnalyzer {
   }> {
     try {
       const content = this.extractContentForAnalysis(business)
-      
+
       // Professionalism analysis
       const professionalismScore = this.analyzeProfessionalism(content)
-      
+
       // Readability analysis using Natural
       const readabilityScore = this.analyzeReadability(content)
-      
+
       // Keyword relevance
       const keywordRelevance = this.analyzeKeywordRelevance(content, business.industry || '')
-      
+
       // Call-to-action detection
       const callToActionPresence = this.detectCallToAction(content)
-      
+
       // Contact info availability
       const contactInfoAvailability = this.assessContactInfoAvailability(business)
 
@@ -179,9 +186,8 @@ export class WebsiteQualityAnalyzer {
         readabilityScore,
         keywordRelevance,
         callToActionPresence,
-        contactInfoAvailability
+        contactInfoAvailability,
       }
-
     } catch (error) {
       logger.error('WebsiteQualityAnalyzer', 'Content analysis failed', error)
       return {
@@ -189,7 +195,7 @@ export class WebsiteQualityAnalyzer {
         readabilityScore: 50,
         keywordRelevance: 50,
         callToActionPresence: false,
-        contactInfoAvailability: false
+        contactInfoAvailability: false,
       }
     }
   }
@@ -208,15 +214,14 @@ export class WebsiteQualityAnalyzer {
       // Simulate technical analysis
       const httpsEnabled = url.toLowerCase().startsWith('https://')
       const loadTime = 1.5 + Math.random() * 3 // 1.5-4.5 seconds
-      
+
       return {
         loadTime: Math.round(loadTime * 100) / 100,
         mobileOptimized: Math.random() > 0.3, // 70% chance
         httpsEnabled,
         socialMediaPresence: Math.random() > 0.5, // 50% chance
-        structuredDataPresent: Math.random() > 0.7 // 30% chance
+        structuredDataPresent: Math.random() > 0.7, // 30% chance
       }
-
     } catch (error) {
       logger.error('WebsiteQualityAnalyzer', 'Technical analysis failed', error)
       return {
@@ -224,7 +229,7 @@ export class WebsiteQualityAnalyzer {
         mobileOptimized: false,
         httpsEnabled: false,
         socialMediaPresence: false,
-        structuredDataPresent: false
+        structuredDataPresent: false,
       }
     }
   }
@@ -234,11 +239,11 @@ export class WebsiteQualityAnalyzer {
    */
   private extractContentForAnalysis(business: BusinessRecord): string {
     const parts = []
-    
+
     if (business.businessName) parts.push(business.businessName)
     if (business.description) parts.push(business.description)
     if (business.industry) parts.push(business.industry)
-    
+
     return parts.join(' ')
   }
 
@@ -249,30 +254,38 @@ export class WebsiteQualityAnalyzer {
     if (!content) return 0
 
     let score = 50 // Base score
-    
+
     // Check for professional keywords
     const professionalKeywords = [
-      'professional', 'service', 'quality', 'experience', 'expert',
-      'certified', 'licensed', 'established', 'trusted', 'reliable'
+      'professional',
+      'service',
+      'quality',
+      'experience',
+      'expert',
+      'certified',
+      'licensed',
+      'established',
+      'trusted',
+      'reliable',
     ]
-    
+
     const lowerContent = content.toLowerCase()
     professionalKeywords.forEach(keyword => {
       if (lowerContent.includes(keyword)) score += 5
     })
-    
+
     // Check for proper capitalization
     if (content.match(/[A-Z]/)) score += 10
-    
+
     // Check for complete sentences
     if (content.includes('.')) score += 10
-    
+
     // Penalize for informal language
     const informalWords = ['awesome', 'cool', 'super', 'amazing', 'wow']
     informalWords.forEach(word => {
       if (lowerContent.includes(word)) score -= 5
     })
-    
+
     return Math.max(0, Math.min(100, score))
   }
 
@@ -286,20 +299,19 @@ export class WebsiteQualityAnalyzer {
       // Use Natural's sentence tokenizer
       const sentences = natural.SentenceTokenizer.tokenize(content)
       const words = natural.WordTokenizer.tokenize(content)
-      
+
       if (sentences.length === 0 || words.length === 0) return 0
-      
+
       // Calculate average sentence length
       const avgSentenceLength = words.length / sentences.length
-      
+
       // Calculate readability score (simplified Flesch formula)
-      let score = 206.835 - (1.015 * avgSentenceLength)
-      
+      let score = 206.835 - 1.015 * avgSentenceLength
+
       // Normalize to 0-100 scale
       score = Math.max(0, Math.min(100, score))
-      
-      return Math.round(score)
 
+      return Math.round(score)
     } catch (error) {
       logger.error('WebsiteQualityAnalyzer', 'Readability analysis failed', error)
       return 50
@@ -314,26 +326,25 @@ export class WebsiteQualityAnalyzer {
 
     const lowerContent = content.toLowerCase()
     const lowerIndustry = industry.toLowerCase()
-    
+
     let score = 30 // Base score
-    
+
     // Check if industry is mentioned
     if (lowerContent.includes(lowerIndustry)) score += 30
-    
+
     // Check for related terms using compromise
     try {
       const doc = compromise(content)
       const nouns = doc.nouns().out('array')
       const verbs = doc.verbs().out('array')
-      
+
       // Industry-related terms boost score
       if (nouns.length > 0) score += 20
       if (verbs.length > 0) score += 20
-      
     } catch (error) {
       logger.warn('WebsiteQualityAnalyzer', 'Compromise analysis failed', error)
     }
-    
+
     return Math.max(0, Math.min(100, score))
   }
 
@@ -344,11 +355,24 @@ export class WebsiteQualityAnalyzer {
     if (!content) return false
 
     const ctaKeywords = [
-      'contact', 'call', 'email', 'quote', 'estimate', 'consultation',
-      'schedule', 'book', 'order', 'buy', 'purchase', 'get started',
-      'learn more', 'sign up', 'subscribe', 'download'
+      'contact',
+      'call',
+      'email',
+      'quote',
+      'estimate',
+      'consultation',
+      'schedule',
+      'book',
+      'order',
+      'buy',
+      'purchase',
+      'get started',
+      'learn more',
+      'sign up',
+      'subscribe',
+      'download',
     ]
-    
+
     const lowerContent = content.toLowerCase()
     return ctaKeywords.some(keyword => lowerContent.includes(keyword))
   }
@@ -363,40 +387,28 @@ export class WebsiteQualityAnalyzer {
   /**
    * Calculate overall health score
    */
-  private calculateHealthScore(
-    lighthouse: any,
-    content: any,
-    technical: any
-  ): number {
+  private calculateHealthScore(lighthouse: any, content: any, technical: any): number {
     // Weighted average of all scores
-    const lighthouseAvg = (
-      lighthouse.performance +
-      lighthouse.accessibility +
-      lighthouse.bestPractices +
-      lighthouse.seo +
-      lighthouse.pwa
-    ) / 5
+    const lighthouseAvg =
+      (lighthouse.performance +
+        lighthouse.accessibility +
+        lighthouse.bestPractices +
+        lighthouse.seo +
+        lighthouse.pwa) /
+      5
 
-    const contentAvg = (
-      content.professionalismScore +
-      content.readabilityScore +
-      content.keywordRelevance
-    ) / 3
+    const contentAvg =
+      (content.professionalismScore + content.readabilityScore + content.keywordRelevance) / 3
 
-    const technicalScore = (
+    const technicalScore =
       (technical.httpsEnabled ? 20 : 0) +
       (technical.mobileOptimized ? 20 : 0) +
       (technical.loadTime < 3 ? 20 : 10) +
       (technical.socialMediaPresence ? 10 : 0) +
       (technical.structuredDataPresent ? 10 : 0)
-    )
 
     // Weighted combination
-    const healthScore = (
-      lighthouseAvg * 0.4 +
-      contentAvg * 0.4 +
-      technicalScore * 0.2
-    )
+    const healthScore = lighthouseAvg * 0.4 + contentAvg * 0.4 + technicalScore * 0.2
 
     return Math.round(Math.max(0, Math.min(100, healthScore)))
   }
@@ -410,7 +422,7 @@ export class WebsiteQualityAnalyzer {
       accessibility: 70,
       bestPractices: 65,
       seo: 55,
-      pwa: 30
+      pwa: 30,
     }
   }
 
@@ -425,23 +437,23 @@ export class WebsiteQualityAnalyzer {
         accessibility: 0,
         bestPractices: 0,
         seo: 0,
-        pwa: 0
+        pwa: 0,
       },
       content: {
         professionalismScore: 0,
         readabilityScore: 0,
         keywordRelevance: 0,
         callToActionPresence: false,
-        contactInfoAvailability: false
+        contactInfoAvailability: false,
       },
       technical: {
         loadTime: 0,
         mobileOptimized: false,
         httpsEnabled: false,
         socialMediaPresence: false,
-        structuredDataPresent: false
+        structuredDataPresent: false,
       },
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     }
   }
 
@@ -454,6 +466,4 @@ export class WebsiteQualityAnalyzer {
 }
 
 // Export singleton instance
-export const websiteQualityAnalyzer = new WebsiteQualityAnalyzer(
-  process.env.HUGGINGFACE_API_KEY
-)
+export const websiteQualityAnalyzer = new WebsiteQualityAnalyzer(process.env.HUGGINGFACE_API_KEY)

@@ -71,7 +71,7 @@ describe('Image Optimization', () => {
 
   test('should render optimized favicon image in header', (): void => {
     render(<App />)
-    
+
     const logoImage = screen.getByAltText('Business Scraper Logo')
     expect(logoImage).toBeInTheDocument()
     expect(logoImage).toHaveAttribute('src', '/favicon.ico')
@@ -84,16 +84,16 @@ describe('Image Optimization', () => {
 
   test('should have proper alt text for accessibility', (): void => {
     render(<App />)
-    
+
     const logoImage = screen.getByAltText('Business Scraper Logo')
     expect(logoImage).toHaveAttribute('alt', 'Business Scraper Logo')
   })
 
   test('should use Next.js Image component with optimization settings', (): void => {
     render(<App />)
-    
+
     const logoImage = screen.getByAltText('Business Scraper Logo')
-    
+
     // Verify optimization attributes are present
     expect(logoImage).toHaveAttribute('data-priority', 'true') // Above-the-fold image
     expect(logoImage).toHaveAttribute('data-sizes', '32px') // Responsive sizing

@@ -12,7 +12,7 @@ export enum ScrapingOperation {
   SEARCH = 'search',
   SCRAPE = 'scrape',
   EXTRACT = 'extract',
-  STORE = 'store'
+  STORE = 'store',
 }
 
 // Compliance context for scraping
@@ -52,38 +52,45 @@ export class ScrapingComplianceMiddleware {
       )
 
       if (validation.valid) {
-        logger.info('Scraping Compliance', `Consent validated for operation: ${context.operation}`, {
-          userId: context.userId,
-          sessionId: context.sessionId,
-          operation: context.operation
-        })
+        logger.info(
+          'Scraping Compliance',
+          `Consent validated for operation: ${context.operation}`,
+          {
+            userId: context.userId,
+            sessionId: context.sessionId,
+            operation: context.operation,
+          }
+        )
 
         return {
           allowed: true,
-          missingConsents: []
+          missingConsents: [],
         }
       } else {
-        logger.warn('Scraping Compliance', `Insufficient consent for operation: ${context.operation}`, {
-          userId: context.userId,
-          sessionId: context.sessionId,
-          missingConsents: validation.missingConsents
-        })
+        logger.warn(
+          'Scraping Compliance',
+          `Insufficient consent for operation: ${context.operation}`,
+          {
+            userId: context.userId,
+            sessionId: context.sessionId,
+            missingConsents: validation.missingConsents,
+          }
+        )
 
         return {
           allowed: false,
           missingConsents: validation.missingConsents,
-          message: `Missing required consent: ${validation.missingConsents.join(', ')}`
+          message: `Missing required consent: ${validation.missingConsents.join(', ')}`,
         }
       }
-
     } catch (error) {
       logger.error('Scraping Compliance', 'Failed to validate consent', error)
-      
+
       // Fail secure - deny access if validation fails
       return {
         allowed: false,
         missingConsents: [],
-        message: 'Consent validation failed'
+        message: 'Consent validation failed',
       }
     }
   }
@@ -122,22 +129,21 @@ export class ScrapingComplianceMiddleware {
           recordsFound: result.recordsFound || 0,
           error: result.error,
           duration: result.duration,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         timestamp: new Date(),
         correlationId: context.correlationId,
         complianceFlags: {
           gdprRelevant: true,
           ccpaRelevant: true,
-          soc2Relevant: true
-        }
+          soc2Relevant: true,
+        },
       })
 
       logger.info('Scraping Compliance', `Audit logged for operation: ${context.operation}`, {
         success: result.success,
-        recordsFound: result.recordsFound
+        recordsFound: result.recordsFound,
       })
-
     } catch (error) {
       logger.error('Scraping Compliance', 'Failed to log scraping operation', error)
     }
@@ -146,7 +152,10 @@ export class ScrapingComplianceMiddleware {
   /**
    * Check if scraping is allowed for specific URL/domain
    */
-  static async checkScrapingPermissions(url: string, context: ScrapingComplianceContext): Promise<{
+  static async checkScrapingPermissions(
+    url: string,
+    context: ScrapingComplianceContext
+  ): Promise<{
     allowed: boolean
     reason?: string
   }> {
@@ -156,7 +165,7 @@ export class ScrapingComplianceMiddleware {
       if (!robotsAllowed) {
         return {
           allowed: false,
-          reason: 'Robots.txt disallows scraping'
+          reason: 'Robots.txt disallows scraping',
         }
       }
 
@@ -165,7 +174,7 @@ export class ScrapingComplianceMiddleware {
       if (!domainAllowed) {
         return {
           allowed: false,
-          reason: 'Domain is on blocklist'
+          reason: 'Domain is on blocklist',
         }
       }
 
@@ -174,17 +183,16 @@ export class ScrapingComplianceMiddleware {
       if (!rateLimitOk) {
         return {
           allowed: false,
-          reason: 'Rate limit exceeded'
+          reason: 'Rate limit exceeded',
         }
       }
 
       return { allowed: true }
-
     } catch (error) {
       logger.error('Scraping Compliance', 'Failed to check scraping permissions', error)
       return {
         allowed: false,
-        reason: 'Permission check failed'
+        reason: 'Permission check failed',
       }
     }
   }
@@ -195,9 +203,13 @@ export class ScrapingComplianceMiddleware {
   private static getRequiredConsents(operation: ScrapingOperation): ConsentType[] {
     const consentMap: Record<ScrapingOperation, ConsentType[]> = {
       [ScrapingOperation.SEARCH]: [ConsentType.DATA_COLLECTION],
-      [ScrapingOperation.SCRAPE]: [ConsentType.DATA_COLLECTION, ConsentType.SCRAPING, ConsentType.STORAGE],
+      [ScrapingOperation.SCRAPE]: [
+        ConsentType.DATA_COLLECTION,
+        ConsentType.SCRAPING,
+        ConsentType.STORAGE,
+      ],
       [ScrapingOperation.EXTRACT]: [ConsentType.DATA_PROCESSING],
-      [ScrapingOperation.STORE]: [ConsentType.STORAGE, ConsentType.DATA_PROCESSING]
+      [ScrapingOperation.STORE]: [ConsentType.STORAGE, ConsentType.DATA_PROCESSING],
     }
 
     return consentMap[operation] || []
@@ -211,7 +223,7 @@ export class ScrapingComplianceMiddleware {
       [ScrapingOperation.SEARCH]: 'scraping',
       [ScrapingOperation.SCRAPE]: 'scraping',
       [ScrapingOperation.EXTRACT]: 'storage',
-      [ScrapingOperation.STORE]: 'storage'
+      [ScrapingOperation.STORE]: 'storage',
     }
 
     return operationMap[operation] || 'scraping'
@@ -248,7 +260,7 @@ export class ScrapingComplianceMiddleware {
       const response = await fetch(robotsUrl, {
         method: 'GET',
         headers: { 'User-Agent': 'BusinessScraperBot/1.0' },
-        signal: AbortSignal.timeout(5000) // 5 second timeout
+        signal: AbortSignal.timeout(5000), // 5 second timeout
       })
 
       if (!response.ok) {
@@ -257,19 +269,19 @@ export class ScrapingComplianceMiddleware {
       }
 
       const robotsText = await response.text()
-      
+
       // Simple robots.txt parsing - check for Disallow: /
       const lines = robotsText.split('\n')
       let userAgentMatch = false
-      
+
       for (const line of lines) {
         const trimmedLine = line.trim().toLowerCase()
-        
+
         if (trimmedLine.startsWith('user-agent:')) {
           const userAgent = trimmedLine.split(':')[1].trim()
           userAgentMatch = userAgent === '*' || userAgent.includes('businessscraperbot')
         }
-        
+
         if (userAgentMatch && trimmedLine.startsWith('disallow:')) {
           const disallowPath = trimmedLine.split(':')[1].trim()
           if (disallowPath === '/' || disallowPath === '') {
@@ -279,7 +291,6 @@ export class ScrapingComplianceMiddleware {
       }
 
       return true // Scraping allowed
-
     } catch (error) {
       logger.warn('Scraping Compliance', `Failed to check robots.txt for ${url}`, error)
       return true // Default to allowing if check fails
@@ -292,7 +303,7 @@ export class ScrapingComplianceMiddleware {
   private static async checkDomainBlocklist(url: string): Promise<boolean> {
     try {
       const domain = new URL(url).hostname.toLowerCase()
-      
+
       // Common domains that should not be scraped
       const blockedDomains = [
         'facebook.com',
@@ -306,15 +317,14 @@ export class ScrapingComplianceMiddleware {
         'paypal.com',
         'bank',
         'gov',
-        'edu'
+        'edu',
       ]
 
-      const isBlocked = blockedDomains.some(blocked => 
-        domain.includes(blocked) || domain.endsWith(`.${blocked}`)
+      const isBlocked = blockedDomains.some(
+        blocked => domain.includes(blocked) || domain.endsWith(`.${blocked}`)
       )
 
       return !isBlocked
-
     } catch (error) {
       logger.warn('Scraping Compliance', `Failed to check domain blocklist for ${url}`, error)
       return true // Default to allowing if check fails
@@ -324,11 +334,14 @@ export class ScrapingComplianceMiddleware {
   /**
    * Check rate limiting
    */
-  private static async checkRateLimit(url: string, context: ScrapingComplianceContext): Promise<boolean> {
+  private static async checkRateLimit(
+    url: string,
+    context: ScrapingComplianceContext
+  ): Promise<boolean> {
     try {
       const domain = new URL(url).hostname
       const key = `rate_limit:${domain}:${context.ipAddress || 'unknown'}`
-      
+
       // Simple in-memory rate limiting (in production, use Redis)
       const now = Date.now()
       const windowMs = 60000 // 1 minute window
@@ -337,7 +350,6 @@ export class ScrapingComplianceMiddleware {
       // This is a simplified implementation
       // In production, implement proper rate limiting with Redis
       return true
-
     } catch (error) {
       logger.warn('Scraping Compliance', `Failed to check rate limit for ${url}`, error)
       return true // Default to allowing if check fails
@@ -359,12 +371,14 @@ export const ScrapingComplianceUtils = {
   ): ScrapingComplianceContext => {
     return {
       operation,
-      ipAddress: request?.headers?.get?.('x-forwarded-for') || 
-                 request?.headers?.get?.('x-real-ip') || 
-                 request?.ip || 'unknown',
+      ipAddress:
+        request?.headers?.get?.('x-forwarded-for') ||
+        request?.headers?.get?.('x-real-ip') ||
+        request?.ip ||
+        'unknown',
       userAgent: request?.headers?.get?.('user-agent') || 'unknown',
       correlationId: `scrape-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      ...additionalData
+      ...additionalData,
     }
   },
 
@@ -386,7 +400,10 @@ export const ScrapingComplianceUtils = {
 
       // Check scraping permissions if URL is provided
       if (context.url) {
-        const permissionCheck = await ScrapingComplianceMiddleware.checkScrapingPermissions(context.url, context)
+        const permissionCheck = await ScrapingComplianceMiddleware.checkScrapingPermissions(
+          context.url,
+          context
+        )
         if (!permissionCheck.allowed) {
           throw new Error(permissionCheck.reason || 'Scraping not allowed')
         }
@@ -400,11 +417,10 @@ export const ScrapingComplianceUtils = {
       await ScrapingComplianceMiddleware.logScrapingOperation(context, {
         success: true,
         recordsFound: Array.isArray(result) ? result.length : undefined,
-        duration
+        duration,
       })
 
       return result
-
     } catch (error) {
       const duration = Date.now() - startTime
 
@@ -412,10 +428,10 @@ export const ScrapingComplianceUtils = {
       await ScrapingComplianceMiddleware.logScrapingOperation(context, {
         success: false,
         error: error.message,
-        duration
+        duration,
       })
 
       throw error
     }
-  }
+  },
 }

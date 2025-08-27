@@ -45,15 +45,15 @@ class StreamingServer {
   initialize(server: any): void {
     if (this.isInitialized) return
 
-    this.wss = new WebSocketServer({ 
+    this.wss = new WebSocketServer({
       server,
-      path: '/api/stream'
+      path: '/api/stream',
     })
 
     this.wss.on('connection', (ws: WebSocket, request: IncomingMessage) => {
-      logger.info('WebSocket connection established', { 
+      logger.info('WebSocket connection established', {
         ip: request.socket.remoteAddress,
-        userAgent: request.headers['user-agent']
+        userAgent: request.headers['user-agent'],
       })
 
       ws.on('message', async (data: Buffer) => {
@@ -80,7 +80,7 @@ class StreamingServer {
       this.sendMessage(ws, {
         type: 'connected',
         sessionId: '',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
     })
 
@@ -125,7 +125,7 @@ class StreamingServer {
       status: 'active',
       startTime: Date.now(),
       websocket: ws,
-      searchController: new AbortController()
+      searchController: new AbortController(),
     }
 
     this.sessions.set(message.sessionId, session)
@@ -139,7 +139,7 @@ class StreamingServer {
         estimatedTimeRemaining: 0,
         searchSpeed: 0,
         errors: 0,
-        warnings: 0
+        warnings: 0,
       })
 
       // Start the search process
@@ -164,7 +164,7 @@ class StreamingServer {
     try {
       // Configure search engines based on parameters
       const searchEngines = this.getSearchEngines(params)
-      
+
       for (const engine of searchEngines) {
         if (session.status !== 'active') break
         if (searchController?.signal.aborted) break
@@ -173,16 +173,20 @@ class StreamingServer {
           totalFound,
           processed,
           currentSource: engine.name,
-          estimatedTimeRemaining: this.estimateTimeRemaining(startTime, processed, params.maxResults || 1000),
+          estimatedTimeRemaining: this.estimateTimeRemaining(
+            startTime,
+            processed,
+            params.maxResults || 1000
+          ),
           searchSpeed: this.calculateSearchSpeed(startTime, totalFound),
           errors,
-          warnings: 0
+          warnings: 0,
         })
 
         try {
           // Simulate streaming search results
           const results = await this.searchWithEngine(engine, params, session)
-          
+
           for (const business of results) {
             if (session.status !== 'active') break
             if (searchController?.signal.aborted) break
@@ -192,7 +196,7 @@ class StreamingServer {
               business,
               source: engine.name,
               confidence: this.calculateConfidence(business),
-              timestamp: Date.now()
+              timestamp: Date.now(),
             })
 
             totalFound++
@@ -204,10 +208,14 @@ class StreamingServer {
                 totalFound,
                 processed,
                 currentSource: engine.name,
-                estimatedTimeRemaining: this.estimateTimeRemaining(startTime, processed, params.maxResults || 1000),
+                estimatedTimeRemaining: this.estimateTimeRemaining(
+                  startTime,
+                  processed,
+                  params.maxResults || 1000
+                ),
                 searchSpeed: this.calculateSearchSpeed(startTime, totalFound),
                 errors,
-                warnings: 0
+                warnings: 0,
               })
             }
 
@@ -229,10 +237,9 @@ class StreamingServer {
         data: {
           totalResults: totalFound,
           duration: Date.now() - startTime,
-          errors
-        }
+          errors,
+        },
       })
-
     } catch (error) {
       logger.error('Streaming search error', { sessionId: session.id, error })
       session.status = 'error'
@@ -251,14 +258,18 @@ class StreamingServer {
       { name: 'Bing Places', config: { priority: 2 } },
       { name: 'Yellow Pages', config: { priority: 3 } },
       { name: 'BBB Directory', config: { priority: 4 } },
-      { name: 'Industry Directories', config: { priority: 5 } }
+      { name: 'Industry Directories', config: { priority: 5 } },
     ]
   }
 
   /**
    * Search with a specific engine (mock implementation)
    */
-  private async searchWithEngine(engine: { name: string; config: any }, params: StreamingSearchParams, session: StreamingSession): Promise<BusinessRecord[]> {
+  private async searchWithEngine(
+    engine: { name: string; config: any },
+    params: StreamingSearchParams,
+    session: StreamingSession
+  ): Promise<BusinessRecord[]> {
     // This is a mock implementation - in real scenario, this would call actual search engines
     const mockResults: BusinessRecord[] = []
     const resultCount = Math.floor(Math.random() * 20) + 5 // 5-25 results per engine
@@ -278,11 +289,11 @@ class StreamingServer {
           city: params.location || 'Anytown',
           state: 'CA',
           zipCode: String(Math.floor(Math.random() * 90000) + 10000),
-          country: 'USA'
+          country: 'USA',
         },
         scrapedAt: new Date(),
         source: engine.name,
-        confidence: Math.random() * 0.4 + 0.6 // 0.6-1.0
+        confidence: Math.random() * 0.4 + 0.6, // 0.6-1.0
       })
 
       // Simulate processing time
@@ -324,7 +335,7 @@ class StreamingServer {
    */
   private calculateSearchSpeed(startTime: number, totalFound: number): number {
     const elapsed = (Date.now() - startTime) / 1000 // seconds
-    return elapsed > 0 ? Math.round(totalFound / elapsed * 10) / 10 : 0
+    return elapsed > 0 ? Math.round((totalFound / elapsed) * 10) / 10 : 0
   }
 
   /**
@@ -337,7 +348,7 @@ class StreamingServer {
       this.sendMessage(session.websocket, {
         type: 'paused',
         sessionId,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
     }
   }
@@ -352,7 +363,7 @@ class StreamingServer {
       this.sendMessage(session.websocket, {
         type: 'resumed',
         sessionId,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
     }
   }
@@ -377,7 +388,7 @@ class StreamingServer {
       type: 'progress',
       sessionId: session.id,
       timestamp: Date.now(),
-      progress
+      progress,
     })
   }
 
@@ -389,7 +400,7 @@ class StreamingServer {
       type: 'result',
       sessionId: session.id,
       timestamp: Date.now(),
-      result
+      result,
     })
   }
 
@@ -401,7 +412,7 @@ class StreamingServer {
       type: 'error',
       sessionId: '',
       timestamp: Date.now(),
-      error
+      error,
     })
   }
 
@@ -447,13 +458,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       if (!streamingServer['isInitialized']) {
         streamingServer.initialize((res.socket as any).server)
       }
-      
+
       res.status(200).json({ message: 'WebSocket server ready' })
     } else {
-      res.status(200).json({ 
+      res.status(200).json({
         message: 'Streaming API endpoint',
         status: 'ready',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
     }
   } else {

@@ -145,8 +145,12 @@ describe('usePerformanceMetrics', () => {
 
   it('warns when render time exceeds threshold', () => {
     const { logger } = require('@/utils/logger')
-    const { result } = renderHook(() => 
-      usePerformanceMetrics('TestComponent', { maxRenderTime: 10, maxMemoryUsage: 100 * 1024 * 1024, minFrameRate: 30 })
+    const { result } = renderHook(() =>
+      usePerformanceMetrics('TestComponent', {
+        maxRenderTime: 10,
+        maxMemoryUsage: 100 * 1024 * 1024,
+        minFrameRate: 30,
+      })
     )
 
     act(() => {
@@ -173,12 +177,12 @@ describe('usePerformanceMetrics', () => {
   it('warns when memory usage exceeds threshold', () => {
     const { logger } = require('@/utils/logger')
     const lowMemoryThreshold = 10 * 1024 * 1024 // 10MB
-    
-    renderHook(() => 
-      usePerformanceMetrics('TestComponent', { 
-        maxRenderTime: 16, 
-        maxMemoryUsage: lowMemoryThreshold, 
-        minFrameRate: 30 
+
+    renderHook(() =>
+      usePerformanceMetrics('TestComponent', {
+        maxRenderTime: 16,
+        maxMemoryUsage: lowMemoryThreshold,
+        minFrameRate: 30,
       })
     )
 
@@ -241,11 +245,11 @@ describe('usePerformanceMetrics', () => {
   })
 
   it('determines performance status correctly', () => {
-    const { result } = renderHook(() => 
-      usePerformanceMetrics('TestComponent', { 
-        maxRenderTime: 16, 
-        maxMemoryUsage: 100 * 1024 * 1024, 
-        minFrameRate: 30 
+    const { result } = renderHook(() =>
+      usePerformanceMetrics('TestComponent', {
+        maxRenderTime: 16,
+        maxMemoryUsage: 100 * 1024 * 1024,
+        minFrameRate: 30,
       })
     )
 
@@ -300,9 +304,9 @@ describe('usePerformanceMetrics', () => {
   it('logs performance summary in development mode', () => {
     const originalEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'development'
-    
+
     const { logger } = require('@/utils/logger')
-    
+
     renderHook(() => usePerformanceMetrics('TestComponent'))
 
     act(() => {

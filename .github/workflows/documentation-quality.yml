@@ -3,27 +3,27 @@ name: Documentation Quality Check
 on:
   push:
     paths:
-      - 'docs/**'
-      - '*.md'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'VERSION'
-      - 'package.json'
+      - "docs/**"
+      - "*.md"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "VERSION"
+      - "package.json"
   pull_request:
     paths:
-      - 'docs/**'
-      - '*.md'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'VERSION'
-      - 'package.json'
+      - "docs/**"
+      - "*.md"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "VERSION"
+      - "package.json"
   workflow_dispatch:
 
 jobs:
   documentation-quality:
     name: Documentation Quality Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,8 +33,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: |
@@ -78,26 +78,26 @@ jobs:
           echo "Validating version consistency..."
           VERSION=$(cat VERSION)
           echo "Current version: $VERSION"
-          
+
           # Check package.json version
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           if [ "$VERSION" != "$PACKAGE_VERSION" ]; then
             echo "❌ Version mismatch: VERSION file ($VERSION) vs package.json ($PACKAGE_VERSION)"
             exit 1
           fi
-          
+
           # Check README.md version badge
           if ! grep -q "version-$VERSION" README.md; then
             echo "❌ Version badge not found in README.md for version $VERSION"
             exit 1
           fi
-          
+
           echo "✅ Version consistency check passed"
 
       - name: Check documentation completeness
         run: |
           echo "Checking documentation completeness..."
-          
+
           # Required documentation files
           REQUIRED_FILES=(
             "README.md"
@@ -109,33 +109,33 @@ jobs:
             "docs/DOCUMENTATION_STANDARDS.md"
             "docs/CONTRIBUTING_DOCUMENTATION.md"
           )
-          
+
           MISSING_FILES=()
           for file in "${REQUIRED_FILES[@]}"; do
             if [ ! -f "$file" ]; then
               MISSING_FILES+=("$file")
             fi
           done
-          
+
           if [ ${#MISSING_FILES[@]} -gt 0 ]; then
             echo "❌ Missing required documentation files:"
             printf '%s\n' "${MISSING_FILES[@]}"
             exit 1
           fi
-          
+
           echo "✅ All required documentation files present"
 
       - name: Validate API documentation
         run: |
           echo "Validating API documentation..."
-          
+
           # Check if API documentation includes current version
           VERSION=$(cat VERSION)
           if ! grep -q "$VERSION" docs/API_DOCUMENTATION.md; then
             echo "❌ API documentation does not reference current version $VERSION"
             exit 1
           fi
-          
+
           # Check for required API sections
           REQUIRED_SECTIONS=(
             "Overview"
@@ -145,24 +145,24 @@ jobs:
             "CRM Export API"
             "Error Codes"
           )
-          
+
           for section in "${REQUIRED_SECTIONS[@]}"; do
             if ! grep -q "## .*$section" docs/API_DOCUMENTATION.md; then
               echo "❌ Missing required section in API documentation: $section"
               exit 1
             fi
           done
-          
+
           echo "✅ API documentation validation passed"
 
       - name: Check for outdated information
         run: |
           echo "Checking for potentially outdated information..."
-          
+
           # Check for old version references
           OLD_VERSIONS=("1.0.0" "2.0.0" "3.0.0" "3.1.0" "3.2.0" "3.3.0" "3.4.0" "3.5.0")
           CURRENT_VERSION=$(cat VERSION)
-          
+
           for version in "${OLD_VERSIONS[@]}"; do
             if [ "$version" != "$CURRENT_VERSION" ]; then
               FILES_WITH_OLD_VERSION=$(grep -r "version-$version" docs/ *.md 2>/dev/null || true)
@@ -172,51 +172,51 @@ jobs:
               fi
             fi
           done
-          
+
           echo "✅ Outdated information check completed"
 
       - name: Generate documentation metrics
         run: |
           echo "Generating documentation metrics..."
-          
+
           # Count documentation files
           MD_FILES=$(find . -name "*.md" -not -path "./node_modules/*" | wc -l)
           DOCS_FILES=$(find docs/ -name "*.md" | wc -l)
-          
+
           # Calculate total lines of documentation
           TOTAL_LINES=$(find . -name "*.md" -not -path "./node_modules/*" -exec wc -l {} + | tail -1 | awk '{print $1}')
-          
+
           # Count images and assets
           IMAGES=$(find docs/ -name "*.png" -o -name "*.jpg" -o -name "*.gif" -o -name "*.svg" 2>/dev/null | wc -l)
-          
+
           echo "📊 Documentation Metrics:"
           echo "   Total Markdown files: $MD_FILES"
           echo "   Documentation files: $DOCS_FILES"
           echo "   Total lines: $TOTAL_LINES"
           echo "   Images/Assets: $IMAGES"
-          
+
           # Save metrics to file
           cat > docs/DOCUMENTATION_METRICS.md << EOF
           # Documentation Metrics
-          
+
           Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
           Version: $(cat VERSION)
-          
+
           ## Statistics
-          
+
           - **Total Markdown files**: $MD_FILES
           - **Documentation files**: $DOCS_FILES
           - **Total lines of documentation**: $TOTAL_LINES
           - **Images and assets**: $IMAGES
-          
+
           ## Quality Indicators
-          
+
           - **Version consistency**: ✅ Validated
           - **Required files**: ✅ All present
           - **Link validation**: ✅ Checked
           - **Spell checking**: ✅ Performed
           - **Inclusive language**: ✅ Checked
-          
+
           ---
           *Generated automatically by GitHub Actions*
           EOF
@@ -237,9 +237,9 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            
+
             let comment = '## 📚 Documentation Quality Check Results\n\n';
-            
+
             // Add validation results if available
             try {
               const validationReport = fs.readFileSync('docs/VALIDATION_REPORT.md', 'utf8');
@@ -252,7 +252,7 @@ jobs:
             } catch (error) {
               comment += '⚠️ Could not read validation report\n\n';
             }
-            
+
             // Add metrics if available
             try {
               const metrics = fs.readFileSync('docs/DOCUMENTATION_METRICS.md', 'utf8');
@@ -265,9 +265,9 @@ jobs:
             } catch (error) {
               comment += '⚠️ Could not read documentation metrics\n\n';
             }
-            
+
             comment += '---\n*This comment was generated automatically by the documentation quality workflow.*';
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

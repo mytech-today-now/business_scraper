@@ -5,7 +5,8 @@ process.env.NODE_ENV = 'test'
 process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db'
 process.env.REDIS_URL = 'redis://localhost:6379'
 process.env.ENCRYPTION_KEY = 'test-encryption-key-32-characters'
-process.env.ENCRYPTION_MASTER_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+process.env.ENCRYPTION_MASTER_KEY =
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 process.env.JWT_SECRET = 'test-jwt-secret'
 
 // Add TextEncoder and TextDecoder polyfills for Node.js
@@ -114,7 +115,7 @@ global.Response = class MockResponse {
   static json(data, init = {}) {
     return new MockResponse(JSON.stringify(data), {
       ...init,
-      headers: { 'Content-Type': 'application/json', ...init.headers }
+      headers: { 'Content-Type': 'application/json', ...init.headers },
     })
   }
 }
@@ -122,12 +123,12 @@ global.Response = class MockResponse {
 // Mock crypto for Node.js environment
 global.crypto = {
   randomUUID: () => Math.random().toString(36).substring(2, 15),
-  getRandomValues: (arr) => {
+  getRandomValues: arr => {
     for (let i = 0; i < arr.length; i++) {
       arr[i] = Math.floor(Math.random() * 256)
     }
     return arr
-  }
+  },
 }
 
 // Mock window.matchMedia

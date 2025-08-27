@@ -95,7 +95,14 @@ export interface SalesforceField {
 export interface SalesforceTrigger {
   name: string
   objectName: string
-  events: ('before_insert' | 'after_insert' | 'before_update' | 'after_update' | 'before_delete' | 'after_delete')[]
+  events: (
+    | 'before_insert'
+    | 'after_insert'
+    | 'before_update'
+    | 'after_update'
+    | 'before_delete'
+    | 'after_delete'
+  )[]
   isActive: boolean
 }
 

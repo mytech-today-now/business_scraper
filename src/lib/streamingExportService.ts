@@ -76,7 +76,7 @@ export class StreamingExportService {
           logger.error('StreamingExport', 'CSV export error', error)
           controller.error(error)
         }
-      }
+      },
     })
   }
 
@@ -120,7 +120,7 @@ export class StreamingExportService {
           logger.error('StreamingExport', 'JSON export error', error)
           controller.error(error)
         }
-      }
+      },
     })
   }
 
@@ -141,7 +141,7 @@ export class StreamingExportService {
 
     for (let i = 0; i < total; i += batchSize) {
       const batch = businesses.slice(i, i + batchSize)
-      
+
       try {
         await processor(batch)
         processed += batch.length
@@ -158,7 +158,7 @@ export class StreamingExportService {
             total,
             percentage: (processed / total) * 100,
             estimatedTimeRemaining,
-            status: processed >= total ? 'completed' : 'exporting'
+            status: processed >= total ? 'completed' : 'exporting',
           })
         }
 
@@ -199,12 +199,13 @@ export class StreamingExportService {
         total: businesses.length,
         percentage: 0,
         estimatedTimeRemaining: 0,
-        status: 'preparing'
+        status: 'preparing',
       })
 
-      const stream = format === 'csv' 
-        ? this.createStreamingCSV(businesses)
-        : this.createStreamingJSON(businesses)
+      const stream =
+        format === 'csv'
+          ? this.createStreamingCSV(businesses)
+          : this.createStreamingJSON(businesses)
 
       const reader = stream.getReader()
       let processed = 0
@@ -219,7 +220,7 @@ export class StreamingExportService {
             total: businesses.length,
             percentage: 100,
             estimatedTimeRemaining: 0,
-            status: 'completed'
+            status: 'completed',
           })
           break
         }
@@ -231,7 +232,7 @@ export class StreamingExportService {
           // Estimate progress based on data size
           const estimatedTotal = businesses.length * 200 // Rough estimate
           const percentage = Math.min((processed / estimatedTotal) * 100, 99)
-          
+
           const elapsed = Date.now() - startTime
           const rate = processed / elapsed
           const remaining = estimatedTotal - processed
@@ -242,7 +243,7 @@ export class StreamingExportService {
             total: businesses.length,
             percentage,
             estimatedTimeRemaining,
-            status: 'exporting'
+            status: 'exporting',
           })
         }
       }
@@ -253,7 +254,7 @@ export class StreamingExportService {
         total: businesses.length,
         percentage: 0,
         estimatedTimeRemaining: 0,
-        status: 'error'
+        status: 'error',
       })
       throw error
     } finally {
@@ -275,16 +276,18 @@ export class StreamingExportService {
       business.state || '',
       business.zipCode || '',
       business.industry || '',
-      business.description || ''
+      business.description || '',
     ]
 
     // Escape CSV fields
-    return fields.map(field => {
-      const escaped = String(field).replace(/"/g, '""')
-      return field.includes(',') || field.includes('"') || field.includes('\n') 
-        ? `"${escaped}"` 
-        : escaped
-    }).join(',')
+    return fields
+      .map(field => {
+        const escaped = String(field).replace(/"/g, '""')
+        return field.includes(',') || field.includes('"') || field.includes('\n')
+          ? `"${escaped}"`
+          : escaped
+      })
+      .join(',')
   }
 
   /**
@@ -305,16 +308,18 @@ export class StreamingExportService {
       record.additionalEmails.join('; ') || '',
       record.additionalPhones.join('; ') || '',
       `${Math.round(record.confidence * 100)}%`,
-      record.sources.join('; ') || ''
+      record.sources.join('; ') || '',
     ]
 
     // Escape CSV fields
-    return fields.map(field => {
-      const escaped = String(field).replace(/"/g, '""')
-      return field.includes(',') || field.includes('"') || field.includes('\n')
-        ? `"${escaped}"`
-        : escaped
-    }).join(',')
+    return fields
+      .map(field => {
+        const escaped = String(field).replace(/"/g, '""')
+        return field.includes(',') || field.includes('"') || field.includes('\n')
+          ? `"${escaped}"`
+          : escaped
+      })
+      .join(',')
   }
 
   /**
@@ -330,7 +335,7 @@ export class StreamingExportService {
 
     return new Transform({
       objectMode: true,
-      
+
       async transform(chunk: T, encoding, callback) {
         buffer.push(chunk)
 
@@ -378,7 +383,7 @@ export class StreamingExportService {
         }
 
         callback()
-      }
+      },
     })
   }
 

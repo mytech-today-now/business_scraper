@@ -16,28 +16,27 @@ export const GET = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const { searchParams } = new URL(request.url)
-      
+
       // Extract filter parameters
       const filters = {
         userId: searchParams.get('userId') || undefined,
         workspaceId: searchParams.get('workspaceId') || context.workspaceId,
         teamId: searchParams.get('teamId') || context.teamId,
-        action: searchParams.get('action') as AuditAction || undefined,
+        action: (searchParams.get('action') as AuditAction) || undefined,
         resourceType: searchParams.get('resourceType') || undefined,
         resourceId: searchParams.get('resourceId') || undefined,
-        severity: searchParams.get('severity') as AuditSeverity || undefined,
-        startDate: searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : undefined,
+        severity: (searchParams.get('severity') as AuditSeverity) || undefined,
+        startDate: searchParams.get('startDate')
+          ? new Date(searchParams.get('startDate')!)
+          : undefined,
         endDate: searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : undefined,
         page: parseInt(searchParams.get('page') || '1'),
-        limit: Math.min(parseInt(searchParams.get('limit') || '50'), 100) // Max 100 per page
+        limit: Math.min(parseInt(searchParams.get('limit') || '50'), 100), // Max 100 per page
       }
 
       // Validate date range
       if (filters.startDate && filters.endDate && filters.startDate > filters.endDate) {
-        return NextResponse.json(
-          { error: 'Start date must be before end date' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Start date must be before end date' }, { status: 400 })
       }
 
       // Get audit logs
@@ -50,16 +49,20 @@ export const GET = withRBAC(
         details: {
           filters,
           resultCount: result.logs.length,
-          totalCount: result.total
+          totalCount: result.total,
         },
-        context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+        context: AuditService.extractContextFromRequest(
+          request,
+          context.user.id,
+          context.sessionId
+        ),
       })
 
       logger.info('Audit API', 'Audit logs retrieved', {
         userId: context.user.id,
         filters,
         resultCount: result.logs.length,
-        totalCount: result.total
+        totalCount: result.total,
       })
 
       return NextResponse.json({
@@ -71,16 +74,13 @@ export const GET = withRBAC(
           total: result.total,
           totalPages: result.totalPages,
           hasNext: result.page < result.totalPages,
-          hasPrev: result.page > 1
+          hasPrev: result.page > 1,
         },
-        filters
+        filters,
       })
     } catch (error) {
       logger.error('Audit API', 'Error retrieving audit logs', error)
-      return NextResponse.json(
-        { error: 'Failed to retrieve audit logs' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to retrieve audit logs' }, { status: 500 })
     }
   },
   { permissions: ['audit.view'] }
@@ -128,33 +128,33 @@ export const POST = withRBAC(
         details: {
           manualEntry: true,
           createdBy: context.user.id,
-          ...details
+          ...details,
         },
         severity: severity || 'info',
         context: {
           ...AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
           workspaceId: context.workspaceId,
-          teamId: context.teamId
-        }
+          teamId: context.teamId,
+        },
       })
 
       logger.info('Audit API', 'Manual audit log created', {
         action,
         resourceType,
         resourceId,
-        createdBy: context.user.id
+        createdBy: context.user.id,
       })
 
-      return NextResponse.json({
-        success: true,
-        message: 'Audit log entry created successfully'
-      }, { status: 201 })
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Audit log entry created successfully',
+        },
+        { status: 201 }
+      )
     } catch (error) {
       logger.error('Audit API', 'Error creating audit log', error)
-      return NextResponse.json(
-        { error: 'Failed to create audit log entry' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to create audit log entry' }, { status: 500 })
     }
   },
   { permissions: ['audit.manage'] }
@@ -173,12 +173,15 @@ export const DELETE = withRBAC(
 
       if (logIds && Array.isArray(logIds)) {
         // Delete specific log entries
-        const result = await context.database.query(`
+        const result = await context.database.query(
+          `
           DELETE FROM audit_logs 
           WHERE id = ANY($1)
           RETURNING id
-        `, [logIds])
-        
+        `,
+          [logIds]
+        )
+
         deletedCount = result.rows.length
 
         // Log the deletion
@@ -188,10 +191,14 @@ export const DELETE = withRBAC(
           details: {
             deletedIds: result.rows.map(row => row.id),
             deletedCount,
-            deletedBy: context.user.id
+            deletedBy: context.user.id,
           },
           severity: 'warn',
-          context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+          context: AuditService.extractContextFromRequest(
+            request,
+            context.user.id,
+            context.sessionId
+          ),
         })
       } else if (olderThan) {
         // Delete logs older than specified date
@@ -225,10 +232,14 @@ export const DELETE = withRBAC(
             cutoffDate: cutoffDate.toISOString(),
             severity,
             deletedCount,
-            deletedBy: context.user.id
+            deletedBy: context.user.id,
           },
           severity: 'warn',
-          context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+          context: AuditService.extractContextFromRequest(
+            request,
+            context.user.id,
+            context.sessionId
+          ),
         })
       } else {
         return NextResponse.json(
@@ -242,22 +253,19 @@ export const DELETE = withRBAC(
         deletedBy: context.user.id,
         logIds: logIds?.length || 0,
         olderThan,
-        severity
+        severity,
       })
 
       return NextResponse.json({
         success: true,
         data: {
-          deletedCount
+          deletedCount,
         },
-        message: `Successfully deleted ${deletedCount} audit log entries`
+        message: `Successfully deleted ${deletedCount} audit log entries`,
       })
     } catch (error) {
       logger.error('Audit API', 'Error deleting audit logs', error)
-      return NextResponse.json(
-        { error: 'Failed to delete audit logs' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete audit logs' }, { status: 500 })
     }
   },
   { permissions: ['audit.manage'] }

@@ -21,12 +21,12 @@ const mockLocalStorage = {
   removeItem: jest.fn(),
   clear: jest.fn(),
   length: 0,
-  key: jest.fn()
+  key: jest.fn(),
 }
 
 Object.defineProperty(window, 'localStorage', {
   value: mockLocalStorage,
-  writable: true
+  writable: true,
 })
 
 // Test component to access context
@@ -47,7 +47,7 @@ const TestComponent: React.FC = () => {
     setPagesPerSite,
     setMaxResults,
     exportConfig,
-    importConfig
+    importConfig,
   } = useConfig()
 
   return (
@@ -80,7 +80,10 @@ const TestComponent: React.FC = () => {
       <button data-testid="set-results" onClick={() => setMaxResults(100)}>
         Set Results
       </button>
-      <button data-testid="update-credentials" onClick={() => updateApiCredentials('google', { apiKey: 'test-key' })}>
+      <button
+        data-testid="update-credentials"
+        onClick={() => updateApiCredentials('google', { apiKey: 'test-key' })}
+      >
         Update Credentials
       </button>
       <button data-testid="clear-credentials" onClick={() => clearApiCredentials('google')}>
@@ -121,7 +124,7 @@ describe('ConfigContext Comprehensive Tests', () => {
         zipCode: '',
         searchDepth: expect.any(Number),
         pagesPerSite: expect.any(Number),
-        maxResults: expect.any(Number)
+        maxResults: expect.any(Number),
       })
     })
 
@@ -131,9 +134,9 @@ describe('ConfigContext Comprehensive Tests', () => {
         zipCode: '12345',
         searchDepth: 3,
         pagesPerSite: 10,
-        maxResults: 100
+        maxResults: 100,
       }
-      
+
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedConfig))
 
       render(
@@ -193,7 +196,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const updateButton = screen.getByTestId('update-config')
-      
+
       await act(async () => {
         fireEvent.click(updateButton)
       })
@@ -248,7 +251,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const updateButton = screen.getByTestId('update-config')
-      
+
       await act(async () => {
         fireEvent.click(updateButton)
       })
@@ -270,7 +273,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const addButton = screen.getByTestId('add-industry')
-      
+
       await act(async () => {
         fireEvent.click(addButton)
       })
@@ -290,7 +293,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const addButton = screen.getByTestId('add-industry')
-      
+
       // Add industry twice
       await act(async () => {
         fireEvent.click(addButton)
@@ -300,7 +303,9 @@ describe('ConfigContext Comprehensive Tests', () => {
       await waitFor(() => {
         const configState = screen.getByTestId('config-state')
         const state = JSON.parse(configState.textContent || '{}')
-        const testIndustries = state.customIndustries.filter((industry: string) => industry === 'Test Industry')
+        const testIndustries = state.customIndustries.filter(
+          (industry: string) => industry === 'Test Industry'
+        )
         expect(testIndustries).toHaveLength(1)
       })
     })
@@ -314,7 +319,7 @@ describe('ConfigContext Comprehensive Tests', () => {
 
       const addButton = screen.getByTestId('add-industry')
       const removeButton = screen.getByTestId('remove-industry')
-      
+
       // Add then remove industry
       await act(async () => {
         fireEvent.click(addButton)
@@ -339,7 +344,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const toggleButton = screen.getByTestId('toggle-industry')
-      
+
       await act(async () => {
         fireEvent.click(toggleButton)
       })
@@ -363,11 +368,7 @@ describe('ConfigContext Comprehensive Tests', () => {
     test('should handle empty industry name', async () => {
       const TestComponentWithEmptyIndustry: React.FC = () => {
         const { addCustomIndustry } = useConfig()
-        return (
-          <button onClick={() => addCustomIndustry('')}>
-            Add Empty Industry
-          </button>
-        )
+        return <button onClick={() => addCustomIndustry('')}>Add Empty Industry</button>
       }
 
       render(
@@ -377,16 +378,13 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const button = screen.getByText('Add Empty Industry')
-      
+
       await act(async () => {
         fireEvent.click(button)
       })
 
       // Should not add empty industry
-      expect(logger.warn).toHaveBeenCalledWith(
-        'ConfigContext',
-        'Cannot add empty industry name'
-      )
+      expect(logger.warn).toHaveBeenCalledWith('ConfigContext', 'Cannot add empty industry name')
     })
   })
 
@@ -399,7 +397,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const updateButton = screen.getByTestId('update-credentials')
-      
+
       await act(async () => {
         fireEvent.click(updateButton)
       })
@@ -420,7 +418,7 @@ describe('ConfigContext Comprehensive Tests', () => {
 
       const updateButton = screen.getByTestId('update-credentials')
       const clearButton = screen.getByTestId('clear-credentials')
-      
+
       // First add credentials
       await act(async () => {
         fireEvent.click(updateButton)
@@ -442,7 +440,9 @@ describe('ConfigContext Comprehensive Tests', () => {
       const TestComponentWithInvalidProvider: React.FC = () => {
         const { updateApiCredentials } = useConfig()
         return (
-          <button onClick={() => updateApiCredentials('invalid-provider' as any, { apiKey: 'test' })}>
+          <button
+            onClick={() => updateApiCredentials('invalid-provider' as any, { apiKey: 'test' })}
+          >
             Update Invalid Provider
           </button>
         )
@@ -455,7 +455,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const button = screen.getByText('Update Invalid Provider')
-      
+
       await act(async () => {
         fireEvent.click(button)
       })
@@ -476,7 +476,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const isValid = screen.getByTestId('is-valid')
-      
+
       // Default config should be invalid (no ZIP code)
       expect(isValid.textContent).toBe('false')
     })
@@ -489,7 +489,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const setZipButton = screen.getByTestId('set-zipcode')
-      
+
       await act(async () => {
         fireEvent.click(setZipButton)
       })
@@ -509,7 +509,7 @@ describe('ConfigContext Comprehensive Tests', () => {
 
       const toggleButton = screen.getByTestId('toggle-industry')
       const setZipButton = screen.getByTestId('set-zipcode')
-      
+
       await act(async () => {
         fireEvent.click(toggleButton)
         fireEvent.click(setZipButton)
@@ -529,16 +529,16 @@ describe('ConfigContext Comprehensive Tests', () => {
       const mockClick = jest.fn()
       const mockAppendChild = jest.fn()
       const mockRemoveChild = jest.fn()
-      
+
       Object.defineProperty(URL, 'createObjectURL', {
         value: mockCreateObjectURL,
-        writable: true
+        writable: true,
       })
 
       const mockAnchor = {
         href: '',
         download: '',
-        click: mockClick
+        click: mockClick,
       }
 
       jest.spyOn(document, 'createElement').mockReturnValue(mockAnchor as any)
@@ -552,7 +552,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const exportButton = screen.getByTestId('export-config')
-      
+
       await act(async () => {
         fireEvent.click(exportButton)
       })
@@ -565,7 +565,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       const importConfig = {
         selectedIndustries: ['hotels'],
         zipCode: '67890',
-        searchDepth: 4
+        searchDepth: 4,
       }
 
       render(
@@ -590,7 +590,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const importButton = screen.getByText('Import Config')
-      
+
       await act(async () => {
         fireEvent.click(importButton)
       })
@@ -607,7 +607,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const importButton = screen.getByTestId('import-config')
-      
+
       await act(async () => {
         fireEvent.click(importButton)
       })
@@ -675,7 +675,7 @@ describe('ConfigContext Comprehensive Tests', () => {
       )
 
       const updateButton = screen.getByTestId('update-config')
-      
+
       // Rapidly update config multiple times
       await act(async () => {
         for (let i = 0; i < 10; i++) {

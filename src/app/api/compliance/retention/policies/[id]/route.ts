@@ -20,19 +20,13 @@ async function updatePolicy(request: NextRequest, { params }: { params: { id: st
 
     // Validate policy ID
     if (!policyId) {
-      return NextResponse.json(
-        { error: 'Policy ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Policy ID is required' }, { status: 400 })
     }
 
     const success = await dataRetentionService.updatePolicy(policyId, body)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Failed to update retention policy' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Failed to update retention policy' }, { status: 404 })
     }
 
     // Log audit event
@@ -43,14 +37,14 @@ async function updatePolicy(request: NextRequest, { params }: { params: { id: st
       action: 'update',
       details: {
         policyId,
-        updates: body
+        updates: body,
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Retention Policy API', `Retention policy updated: ${policyId}`)
@@ -58,15 +52,11 @@ async function updatePolicy(request: NextRequest, { params }: { params: { id: st
     return NextResponse.json({
       success: true,
       policyId,
-      message: 'Retention policy updated successfully'
+      message: 'Retention policy updated successfully',
     })
-
   } catch (error) {
     logger.error('Retention Policy API', 'Failed to update retention policy', error)
-    return NextResponse.json(
-      { error: 'Failed to update retention policy' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update retention policy' }, { status: 500 })
   }
 }
 
@@ -80,19 +70,13 @@ async function deletePolicy(request: NextRequest, { params }: { params: { id: st
 
     // Validate policy ID
     if (!policyId) {
-      return NextResponse.json(
-        { error: 'Policy ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Policy ID is required' }, { status: 400 })
     }
 
     const success = await dataRetentionService.deletePolicy(policyId)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Failed to delete retention policy' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Failed to delete retention policy' }, { status: 404 })
     }
 
     // Log audit event
@@ -103,14 +87,14 @@ async function deletePolicy(request: NextRequest, { params }: { params: { id: st
       action: 'delete',
       details: {
         policyId,
-        deletedAt: new Date().toISOString()
+        deletedAt: new Date().toISOString(),
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Retention Policy API', `Retention policy deleted: ${policyId}`)
@@ -118,18 +102,17 @@ async function deletePolicy(request: NextRequest, { params }: { params: { id: st
     return NextResponse.json({
       success: true,
       policyId,
-      message: 'Retention policy deleted successfully'
+      message: 'Retention policy deleted successfully',
     })
-
   } catch (error) {
     logger.error('Retention Policy API', 'Failed to delete retention policy', error)
-    return NextResponse.json(
-      { error: 'Failed to delete retention policy' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete retention policy' }, { status: 500 })
   }
 }
 
 // Apply authentication middleware
-export const PUT = withAuth(updatePolicy, { required: true, roles: ['admin', 'compliance_officer'] })
+export const PUT = withAuth(updatePolicy, {
+  required: true,
+  roles: ['admin', 'compliance_officer'],
+})
 export const DELETE = withAuth(deletePolicy, { required: true, roles: ['admin'] })

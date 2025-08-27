@@ -34,7 +34,7 @@ class MockEventSource {
   simulateMessage(data: any) {
     if (this.onmessage) {
       const event = new MessageEvent('message', {
-        data: JSON.stringify(data)
+        data: JSON.stringify(data),
       })
       this.onmessage(event)
     }
@@ -60,19 +60,20 @@ describe('useSearchStreaming', () => {
     MockEventSource.instances = [] // Clear instances array
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({
-        success: true,
-        data: {
-          businesses: [
-            {
-              id: 'fallback-1',
-              name: 'Fallback Business',
-              url: 'https://fallback.com',
-              industry: 'Test'
-            }
-          ]
-        }
-      })
+      json: () =>
+        Promise.resolve({
+          success: true,
+          data: {
+            businesses: [
+              {
+                id: 'fallback-1',
+                name: 'Fallback Business',
+                url: 'https://fallback.com',
+                industry: 'Test',
+              },
+            ],
+          },
+        }),
     })
   })
 
@@ -95,7 +96,7 @@ describe('useSearchStreaming', () => {
 
     await act(async () => {
       await result.current.startStreaming('restaurants', 'New York', {
-        maxResults: 100
+        maxResults: 100,
       })
     })
 
@@ -124,8 +125,8 @@ describe('useSearchStreaming', () => {
           id: 'test-1',
           name: 'Test Restaurant',
           url: 'https://test.com',
-          industry: 'Restaurant'
-        }
+          industry: 'Restaurant',
+        },
       })
     })
 
@@ -150,8 +151,8 @@ describe('useSearchStreaming', () => {
           totalFound: 500,
           processed: 100,
           currentBatch: 2,
-          estimatedTimeRemaining: 30
-        }
+          estimatedTimeRemaining: 30,
+        },
       })
     })
 
@@ -205,7 +206,7 @@ describe('useSearchStreaming', () => {
     await act(async () => {
       await result.current.startStreaming('restaurants', 'New York', {
         maxRetries: 2,
-        retryDelay: 1000
+        retryDelay: 1000,
       })
     })
 
@@ -235,7 +236,7 @@ describe('useSearchStreaming', () => {
       await result.current.startStreaming('restaurants', 'New York', {
         maxRetries: 1,
         retryDelay: 100,
-        enableFallback: true
+        enableFallback: true,
       })
     })
 
@@ -259,11 +260,14 @@ describe('useSearchStreaming', () => {
       expect(result.current.results[0].name).toBe('Fallback Business')
     })
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/search', expect.objectContaining({
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: expect.stringContaining('restaurants')
-    }))
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/search',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: expect.stringContaining('restaurants'),
+      })
+    )
   })
 
   it('should handle completion message', async () => {
@@ -278,7 +282,7 @@ describe('useSearchStreaming', () => {
 
     await act(async () => {
       eventSource.simulateMessage({
-        type: 'completed'
+        type: 'completed',
       })
     })
 
@@ -299,7 +303,7 @@ describe('useSearchStreaming', () => {
     await act(async () => {
       eventSource.simulateMessage({
         type: 'result',
-        data: { id: 'test-1', name: 'Test' }
+        data: { id: 'test-1', name: 'Test' },
       })
     })
 
@@ -330,7 +334,7 @@ describe('useSearchStreaming', () => {
     await act(async () => {
       eventSource.simulateMessage({
         type: 'result',
-        data: { id: 'test-1', name: 'Test' }
+        data: { id: 'test-1', name: 'Test' },
       })
     })
 
@@ -351,7 +355,7 @@ describe('useSearchStreaming', () => {
     await act(async () => {
       eventSource.simulateMessage({
         type: 'error',
-        message: 'Stream error occurred'
+        message: 'Stream error occurred',
       })
     })
 

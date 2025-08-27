@@ -1,6 +1,13 @@
 'use client'
 
-import React, { createContext, useContext, useReducer, useEffect, useCallback, ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from 'react'
 import { ScrapingConfig, IndustryCategory, IndustrySubCategory } from '@/types/business'
 import { DEFAULT_INDUSTRIES, DEFAULT_SUB_CATEGORIES } from '@/lib/industry-config'
 import { storage } from '@/model/storage'
@@ -138,7 +145,7 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
       const newSelected = isSelected
         ? state.selectedIndustries.filter(id => id !== action.payload)
         : [...state.selectedIndustries, action.payload]
-      
+
       return {
         ...state,
         selectedIndustries: newSelected,
@@ -260,13 +267,13 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
 export interface ConfigContextType {
   state: ConfigState
   dispatch: React.Dispatch<ConfigAction>
-  
+
   // Configuration methods
   updateConfig: (config: Partial<ScrapingConfig>) => Promise<void>
   resetConfig: () => Promise<void>
   saveConfig: () => Promise<void>
   loadConfig: () => Promise<void>
-  
+
   // Industry methods
   addCustomIndustry: (industry: Omit<IndustryCategory, 'id' | 'isCustom'>) => Promise<void>
   updateIndustry: (industry: IndustryCategory, showToast?: boolean) => Promise<void>
@@ -274,7 +281,10 @@ export interface ConfigContextType {
   setAllIndustries: (industries: IndustryCategory[]) => Promise<void>
   refreshDefaultIndustries: () => Promise<void>
   cleanupDuplicateIndustries: () => Promise<void>
-  resetApplicationData: (options?: { includeApiCredentials?: boolean; useAggressiveReset?: boolean }) => Promise<DataResetResult>
+  resetApplicationData: (options?: {
+    includeApiCredentials?: boolean
+    useAggressiveReset?: boolean
+  }) => Promise<DataResetResult>
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
@@ -290,7 +300,7 @@ export interface ConfigContextType {
   startIndustryEdit: (id: string) => void
   endIndustryEdit: (id: string) => void
   clearAllEdits: () => void
-  
+
   // Theme methods
   toggleDarkMode: () => void
 
@@ -315,7 +325,9 @@ interface ConfigProviderProps {
  * Check if default industries need to be updated
  * This compares the current default industries with saved ones to detect changes
  */
-async function checkIfDefaultIndustriesNeedUpdate(savedIndustries: IndustryCategory[]): Promise<boolean> {
+async function checkIfDefaultIndustriesNeedUpdate(
+  savedIndustries: IndustryCategory[]
+): Promise<boolean> {
   if (savedIndustries.length === 0) {
     return true // No saved industries, need to initialize
   }
@@ -330,7 +342,10 @@ async function checkIfDefaultIndustriesNeedUpdate(savedIndustries: IndustryCateg
     }
 
     // Check if keywords have changed
-    if (JSON.stringify(savedIndustry.keywords.sort()) !== JSON.stringify(defaultIndustry.keywords.sort())) {
+    if (
+      JSON.stringify(savedIndustry.keywords.sort()) !==
+      JSON.stringify(defaultIndustry.keywords.sort())
+    ) {
       logger.info('ConfigProvider', `Keywords changed for industry: ${defaultIndustry.id}`)
       return true
     }
@@ -356,20 +371,25 @@ async function checkIfDefaultIndustriesNeedUpdate(savedIndustries: IndustryCateg
 /**
  * Update default industries while preserving custom industries
  */
-async function updateDefaultIndustries(savedIndustries: IndustryCategory[]): Promise<IndustryCategory[]> {
+async function updateDefaultIndustries(
+  savedIndustries: IndustryCategory[]
+): Promise<IndustryCategory[]> {
   // Separate custom industries from default ones, but exclude duplicates of default industries
   const defaultIndustryNames = new Set(DEFAULT_INDUSTRIES.map(ind => ind.name.toLowerCase()))
-  const customIndustries = savedIndustries.filter(industry =>
-    industry.isCustom && !defaultIndustryNames.has(industry.name.toLowerCase())
+  const customIndustries = savedIndustries.filter(
+    industry => industry.isCustom && !defaultIndustryNames.has(industry.name.toLowerCase())
   )
 
   // Log any duplicate custom industries that are being removed
-  const duplicateCustoms = savedIndustries.filter(industry =>
-    industry.isCustom && defaultIndustryNames.has(industry.name.toLowerCase())
+  const duplicateCustoms = savedIndustries.filter(
+    industry => industry.isCustom && defaultIndustryNames.has(industry.name.toLowerCase())
   )
 
   if (duplicateCustoms.length > 0) {
-    logger.info('ConfigProvider', `Removing ${duplicateCustoms.length} duplicate custom industries: ${duplicateCustoms.map(i => i.name).join(', ')}`)
+    logger.info(
+      'ConfigProvider',
+      `Removing ${duplicateCustoms.length} duplicate custom industries: ${duplicateCustoms.map(i => i.name).join(', ')}`
+    )
   }
 
   // Combine updated default industries with existing custom industries
@@ -381,7 +401,10 @@ async function updateDefaultIndustries(savedIndustries: IndustryCategory[]): Pro
     await storage.saveIndustry(industry)
   }
 
-  logger.info('ConfigProvider', `Updated industries: ${DEFAULT_INDUSTRIES.length} default + ${customIndustries.length} custom`)
+  logger.info(
+    'ConfigProvider',
+    `Updated industries: ${DEFAULT_INDUSTRIES.length} default + ${customIndustries.length} custom`
+  )
   return updatedIndustries
 }
 
@@ -431,49 +454,53 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
             // Load industries (default + custom)
             const savedIndustries = await storage.getAllIndustries()
 
-          // Check if we need to update default industries
-          const needsUpdate = await checkIfDefaultIndustriesNeedUpdate(savedIndustries)
+            // Check if we need to update default industries
+            const needsUpdate = await checkIfDefaultIndustriesNeedUpdate(savedIndustries)
 
-          if (savedIndustries.length > 0 && !needsUpdate) {
-            dispatch({ type: 'SET_INDUSTRIES', payload: savedIndustries })
-          } else {
-            // Update/save default industries to storage
-            const updatedIndustries = await updateDefaultIndustries(savedIndustries)
-            dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
+            if (savedIndustries.length > 0 && !needsUpdate) {
+              dispatch({ type: 'SET_INDUSTRIES', payload: savedIndustries })
+            } else {
+              // Update/save default industries to storage
+              const updatedIndustries = await updateDefaultIndustries(savedIndustries)
+              dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
 
-            if (needsUpdate) {
-              toast.success('Default industries updated with latest data')
-              logger.info('ConfigProvider', 'Default industries updated successfully')
+              if (needsUpdate) {
+                toast.success('Default industries updated with latest data')
+                logger.info('ConfigProvider', 'Default industries updated successfully')
+              }
             }
-          }
 
-          // Load sub-categories
-          const savedSubCategories = await storage.getAllSubCategories()
-          if (savedSubCategories.length > 0) {
-            dispatch({ type: 'SET_SUB_CATEGORIES', payload: savedSubCategories })
-          } else {
-            // Save default sub-categories to storage
-            for (const subCategory of DEFAULT_SUB_CATEGORIES) {
-              await storage.saveSubCategory(subCategory)
+            // Load sub-categories
+            const savedSubCategories = await storage.getAllSubCategories()
+            if (savedSubCategories.length > 0) {
+              dispatch({ type: 'SET_SUB_CATEGORIES', payload: savedSubCategories })
+            } else {
+              // Save default sub-categories to storage
+              for (const subCategory of DEFAULT_SUB_CATEGORIES) {
+                await storage.saveSubCategory(subCategory)
+              }
+              dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
+              logger.info('ConfigProvider', 'Default sub-categories saved to storage')
             }
-            dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
-            logger.info('ConfigProvider', 'Default sub-categories saved to storage')
-          }
 
-          // Load theme preference
-          const savedTheme = localStorage.getItem('darkMode')
-          if (savedTheme) {
-            const isDark = JSON.parse(savedTheme)
-            dispatch({ type: 'SET_DARK_MODE', payload: isDark })
-            document.documentElement.classList.toggle('dark', isDark)
-          }
+            // Load theme preference
+            const savedTheme = localStorage.getItem('darkMode')
+            if (savedTheme) {
+              const isDark = JSON.parse(savedTheme)
+              dispatch({ type: 'SET_DARK_MODE', payload: isDark })
+              document.documentElement.classList.toggle('dark', isDark)
+            }
 
-          // Clear any persisted demo mode from localStorage
-          localStorage.removeItem('demoMode')
-          logger.info('ConfigProvider', 'Real scraping mode enabled')
+            // Clear any persisted demo mode from localStorage
+            localStorage.removeItem('demoMode')
+            logger.info('ConfigProvider', 'Real scraping mode enabled')
           } catch (storageError) {
             // Storage initialization failed, use default industries and sub-categories
-            logger.warn('ConfigProvider', 'Storage initialization failed, using defaults', storageError)
+            logger.warn(
+              'ConfigProvider',
+              'Storage initialization failed, using defaults',
+              storageError
+            )
             dispatch({ type: 'SET_INDUSTRIES', payload: DEFAULT_INDUSTRIES })
             dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
             toast.warn('Storage unavailable - using default settings')
@@ -482,7 +509,10 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
           // Server-side initialization - use default industries and sub-categories
           dispatch({ type: 'SET_INDUSTRIES', payload: DEFAULT_INDUSTRIES })
           dispatch({ type: 'SET_SUB_CATEGORIES', payload: DEFAULT_SUB_CATEGORIES })
-          logger.info('ConfigProvider', 'Server-side initialization with default industries and sub-categories')
+          logger.info(
+            'ConfigProvider',
+            'Server-side initialization with default industries and sub-categories'
+          )
         }
 
         dispatch({ type: 'SET_INITIALIZED', payload: true })
@@ -542,8 +572,6 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       throw error
     }
   }
-
-
 
   /**
    * Add custom industry
@@ -641,8 +669,8 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       const defaultIndustryNames = new Set(DEFAULT_INDUSTRIES.map(ind => ind.name.toLowerCase()))
 
       // Find duplicate custom industries
-      const duplicateCustoms = savedIndustries.filter(industry =>
-        industry.isCustom && defaultIndustryNames.has(industry.name.toLowerCase())
+      const duplicateCustoms = savedIndustries.filter(
+        industry => industry.isCustom && defaultIndustryNames.has(industry.name.toLowerCase())
       )
 
       if (duplicateCustoms.length === 0) {
@@ -661,7 +689,10 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
 
       toast.success(`Removed ${duplicateCustoms.length} duplicate custom industries`)
-      logger.info('ConfigProvider', `Cleaned up ${duplicateCustoms.length} duplicate custom industries`)
+      logger.info(
+        'ConfigProvider',
+        `Cleaned up ${duplicateCustoms.length} duplicate custom industries`
+      )
     } catch (error) {
       logger.error('ConfigProvider', 'Failed to cleanup duplicate industries', error)
       toast.error('Failed to cleanup duplicate industries')
@@ -672,23 +703,28 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
    * Reset all application data (complete data purge)
    * This will clear all user data and reset the application to a fresh state
    */
-  const resetApplicationData = async (options: {
-    includeApiCredentials?: boolean
-    useAggressiveReset?: boolean
-  } = {}): Promise<DataResetResult> => {
+  const resetApplicationData = async (
+    options: {
+      includeApiCredentials?: boolean
+      useAggressiveReset?: boolean
+    } = {}
+  ): Promise<DataResetResult> => {
     try {
       logger.info('ConfigProvider', 'Starting application data reset')
 
       // Get data statistics for logging
       const stats = await DataResetService.getDataStatistics()
-      logger.info('ConfigProvider', `Data before reset: ${stats.businesses} businesses, ${stats.configs} configs, ${stats.industries} industries, ${stats.sessions} sessions, ${stats.localStorageItems} localStorage items`)
+      logger.info(
+        'ConfigProvider',
+        `Data before reset: ${stats.businesses} businesses, ${stats.configs} configs, ${stats.industries} industries, ${stats.sessions} sessions, ${stats.localStorageItems} localStorage items`
+      )
 
       // Perform the reset
       const result = await DataResetService.resetAllData({
         includeApiCredentials: options.includeApiCredentials ?? true,
         includeLocalStorage: true,
         useAggressiveReset: options.useAggressiveReset ?? false,
-        confirmationRequired: false // Confirmation handled by UI
+        confirmationRequired: false, // Confirmation handled by UI
       })
 
       if (result.success) {
@@ -699,7 +735,9 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         const updatedIndustries = await updateDefaultIndustries([])
         dispatch({ type: 'SET_INDUSTRIES', payload: updatedIndustries })
 
-        toast.success(`Application reset successfully! Cleared ${result.clearedStores.length} data stores and ${result.clearedLocalStorage.length} localStorage items`)
+        toast.success(
+          `Application reset successfully! Cleared ${result.clearedStores.length} data stores and ${result.clearedLocalStorage.length} localStorage items`
+        )
         logger.info('ConfigProvider', `Application reset completed successfully`)
 
         // Optionally reload the page for a complete fresh start
@@ -723,7 +761,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         clearedStores: [],
         clearedLocalStorage: [],
         errors: [errorMessage],
-        fallbackUsed: false
+        fallbackUsed: false,
       }
     }
   }
@@ -735,12 +773,12 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     try {
       const industry = state.industries.find(i => i.id === id)
       if (!industry) return
-      
+
       if (!industry.isCustom) {
         toast.error('Cannot remove default industries')
         return
       }
-      
+
       await storage.deleteIndustry(id)
       dispatch({ type: 'REMOVE_INDUSTRY', payload: id })
       toast.success(`Removed industry: ${industry.name}`)
@@ -783,8 +821,6 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     logger.info('ConfigProvider', 'Dark mode toggled', { darkMode: newDarkMode })
   }
 
-
-
   /**
    * Get selected industry names
    */
@@ -805,7 +841,11 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         return false
       }
 
-      if (state.config.searchRadius <= 0 || state.config.searchDepth <= 0 || state.config.pagesPerSite <= 0) {
+      if (
+        state.config.searchRadius <= 0 ||
+        state.config.searchDepth <= 0 ||
+        state.config.pagesPerSite <= 0
+      ) {
         return false
       }
 
@@ -818,7 +858,6 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       // Try to parse and extract ZIP code
       const parseResult = AddressInputHandler.parseAddressInput(zipCodeInput)
       return parseResult.zipCode !== null && !parseResult.error
-
     } catch (error) {
       logger.warn('ConfigContext', 'Error validating configuration', error)
       return false
@@ -971,11 +1010,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     isConfigValid,
   }
 
-  return (
-    <ConfigContext.Provider value={contextValue}>
-      {children}
-    </ConfigContext.Provider>
-  )
+  return <ConfigContext.Provider value={contextValue}>{children}</ConfigContext.Provider>
 }
 
 /**

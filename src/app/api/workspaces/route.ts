@@ -50,10 +50,10 @@ export const GET = withRBAC(
         paramIndex++
       } else {
         // Show workspaces where user is a member or has workspaces.view permission
-        const hasWorkspacesView = context.user.roles?.some(role => 
+        const hasWorkspacesView = context.user.roles?.some(role =>
           role.role.permissions.includes('workspaces.view')
         )
-        
+
         if (!hasWorkspacesView) {
           conditions.push(`wm.user_id = $${paramIndex} AND wm.is_active = true`)
           values.push(context.user.id)
@@ -114,20 +114,20 @@ export const GET = withRBAC(
           ...cleanWorkspace,
           team: {
             id: cleanWorkspace.team_id,
-            name: cleanWorkspace.team_name
+            name: cleanWorkspace.team_name,
           },
           owner: {
             id: cleanWorkspace.owner_id,
             username: cleanWorkspace.owner_username,
             firstName: cleanWorkspace.owner_first_name,
             lastName: cleanWorkspace.owner_last_name,
-            fullName: `${cleanWorkspace.owner_first_name} ${cleanWorkspace.owner_last_name}`
+            fullName: `${cleanWorkspace.owner_first_name} ${cleanWorkspace.owner_last_name}`,
           },
           memberCount: parseInt(cleanWorkspace.member_count),
           campaignCount: parseInt(cleanWorkspace.campaign_count),
           businessCount: parseInt(cleanWorkspace.business_count),
           userRole: cleanWorkspace.user_role,
-          userPermissions: cleanWorkspace.user_permissions
+          userPermissions: cleanWorkspace.user_permissions,
         }
       })
 
@@ -136,7 +136,7 @@ export const GET = withRBAC(
         page,
         limit,
         totalCount,
-        filters: { search, teamId, ownedOnly, memberOnly }
+        filters: { search, teamId, ownedOnly, memberOnly },
       })
 
       return NextResponse.json({
@@ -148,15 +148,12 @@ export const GET = withRBAC(
           total: totalCount,
           totalPages,
           hasNext: page < totalPages,
-          hasPrev: page > 1
-        }
+          hasPrev: page > 1,
+        },
       })
     } catch (error) {
       logger.error('Workspaces API', 'Error listing workspaces', error)
-      return NextResponse.json(
-        { error: 'Failed to list workspaces' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to list workspaces' }, { status: 500 })
     }
   },
   { permissions: ['workspaces.view'] }
@@ -173,17 +170,11 @@ export const POST = withRBAC(
 
       // Validate required fields
       if (!workspaceData.name || workspaceData.name.trim().length === 0) {
-        return NextResponse.json(
-          { error: 'Workspace name is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Workspace name is required' }, { status: 400 })
       }
 
       if (!workspaceData.teamId) {
-        return NextResponse.json(
-          { error: 'Team ID is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Team ID is required' }, { status: 400 })
       }
 
       // Check if workspace name already exists in the team
@@ -209,28 +200,25 @@ export const POST = withRBAC(
         createdBy: context.user.id,
         workspaceId: workspace.id,
         name: workspace.name,
-        teamId: workspace.teamId
+        teamId: workspace.teamId,
       })
 
-      return NextResponse.json({
-        success: true,
-        data: workspace,
-        message: 'Workspace created successfully'
-      }, { status: 201 })
+      return NextResponse.json(
+        {
+          success: true,
+          data: workspace,
+          message: 'Workspace created successfully',
+        },
+        { status: 201 }
+      )
     } catch (error) {
       logger.error('Workspaces API', 'Error creating workspace', error)
-      
+
       if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: error.message }, { status: 400 })
       }
-      
-      return NextResponse.json(
-        { error: 'Failed to create workspace' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Failed to create workspace' }, { status: 500 })
     }
   },
   { permissions: ['workspaces.create'] }
@@ -246,17 +234,11 @@ export const PUT = withRBAC(
       const { workspaceIds, updateData } = body
 
       if (!Array.isArray(workspaceIds) || workspaceIds.length === 0) {
-        return NextResponse.json(
-          { error: 'Workspace IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Workspace IDs array is required' }, { status: 400 })
       }
 
       if (!updateData || typeof updateData !== 'object') {
-        return NextResponse.json(
-          { error: 'Update data is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Update data is required' }, { status: 400 })
       }
 
       const updatedWorkspaces = []
@@ -272,10 +254,14 @@ export const PUT = withRBAC(
             continue
           }
 
-          const membership = await WorkspaceManagementService.getWorkspaceMembership(workspaceId, context.user.id)
-          const canEdit = workspace.ownerId === context.user.id || 
-                         membership?.role === 'admin' ||
-                         context.user.roles?.some(role => role.role.permissions.includes('workspaces.manage'))
+          const membership = await WorkspaceManagementService.getWorkspaceMembership(
+            workspaceId,
+            context.user.id
+          )
+          const canEdit =
+            workspace.ownerId === context.user.id ||
+            membership?.role === 'admin' ||
+            context.user.roles?.some(role => role.role.permissions.includes('workspaces.manage'))
 
           if (!canEdit) {
             errors.push({ workspaceId, error: 'Insufficient permissions' })
@@ -340,7 +326,7 @@ export const PUT = withRBAC(
         } catch (error) {
           errors.push({
             workspaceId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
@@ -349,7 +335,7 @@ export const PUT = withRBAC(
         updatedBy: context.user.id,
         successCount: updatedWorkspaces.length,
         errorCount: errors.length,
-        workspaceIds
+        workspaceIds,
       })
 
       return NextResponse.json({
@@ -358,16 +344,13 @@ export const PUT = withRBAC(
           updated: updatedWorkspaces.length,
           errors: errors.length,
           results: updatedWorkspaces,
-          errors: errors
+          errors: errors,
         },
-        message: `Updated ${updatedWorkspaces.length} workspaces successfully`
+        message: `Updated ${updatedWorkspaces.length} workspaces successfully`,
       })
     } catch (error) {
       logger.error('Workspaces API', 'Error in bulk workspace update', error)
-      return NextResponse.json(
-        { error: 'Failed to update workspaces' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update workspaces' }, { status: 500 })
     }
   },
   { permissions: ['workspaces.edit'] }
@@ -383,10 +366,7 @@ export const DELETE = withRBAC(
       const { workspaceIds, permanent = false } = body
 
       if (!Array.isArray(workspaceIds) || workspaceIds.length === 0) {
-        return NextResponse.json(
-          { error: 'Workspace IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Workspace IDs array is required' }, { status: 400 })
       }
 
       const deletedWorkspaces = []
@@ -402,8 +382,9 @@ export const DELETE = withRBAC(
             continue
           }
 
-          const canDelete = workspace.ownerId === context.user.id ||
-                           context.user.roles?.some(role => role.role.permissions.includes('workspaces.delete'))
+          const canDelete =
+            workspace.ownerId === context.user.id ||
+            context.user.roles?.some(role => role.role.permissions.includes('workspaces.delete'))
 
           if (!canDelete) {
             errors.push({ workspaceId, error: 'Insufficient permissions' })
@@ -429,18 +410,22 @@ export const DELETE = withRBAC(
         } catch (error) {
           errors.push({
             workspaceId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
 
-      logger.info('Workspaces API', permanent ? 'Workspaces deleted permanently' : 'Workspaces deactivated', {
-        deletedBy: context.user.id,
-        successCount: deletedWorkspaces.length,
-        errorCount: errors.length,
-        workspaceIds,
-        permanent
-      })
+      logger.info(
+        'Workspaces API',
+        permanent ? 'Workspaces deleted permanently' : 'Workspaces deactivated',
+        {
+          deletedBy: context.user.id,
+          successCount: deletedWorkspaces.length,
+          errorCount: errors.length,
+          workspaceIds,
+          permanent,
+        }
+      )
 
       return NextResponse.json({
         success: true,
@@ -448,16 +433,13 @@ export const DELETE = withRBAC(
           deleted: deletedWorkspaces.length,
           errors: errors.length,
           results: deletedWorkspaces,
-          errors: errors
+          errors: errors,
         },
-        message: `${permanent ? 'Deleted' : 'Deactivated'} ${deletedWorkspaces.length} workspaces successfully`
+        message: `${permanent ? 'Deleted' : 'Deactivated'} ${deletedWorkspaces.length} workspaces successfully`,
       })
     } catch (error) {
       logger.error('Workspaces API', 'Error deleting workspaces', error)
-      return NextResponse.json(
-        { error: 'Failed to delete workspaces' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete workspaces' }, { status: 500 })
     }
   },
   { permissions: ['workspaces.delete'] }

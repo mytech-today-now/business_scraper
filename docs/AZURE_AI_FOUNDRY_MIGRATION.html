@@ -1,85 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Azure AI Foundry Migration Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Azure AI Foundry Migration Guide</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Azure AI Foundry Migration Guide</h1>
-<h2>🚨 Important: Bing Search API Deprecation</h2>
-<p>Microsoft is discontinuing the Bing Search API in <strong>August 2025</strong>. This application has been updated to support the new <strong>&quot;Grounding with Bing Custom Search&quot;</strong> service through Azure AI Foundry.</p>
-<h2>What&#39;s Changing</h2>
-<h3>Old Service (Deprecated)</h3>
-<ul>
-<li><strong>Service</strong>: Bing Search API v7</li>
-<li><strong>Endpoint</strong>: <code>https://api.bing.microsoft.com/v7.0/search</code></li>
-<li><strong>Status</strong>: ⚠️ <strong>Discontinued August 2025</strong></li>
-</ul>
-<h3>New Service (Current)</h3>
-<ul>
-<li><strong>Service</strong>: Azure AI Foundry - &quot;Grounding with Bing Custom Search&quot;</li>
-<li><strong>Endpoint</strong>: <code>https://[your-resource-name].cognitiveservices.azure.com/</code></li>
-<li><strong>Status</strong>: ✅ <strong>Active and Supported</strong></li>
-</ul>
-<h2>Migration Steps</h2>
-<h3>1. Create Azure AI Foundry Resource</h3>
-<ol>
-<li>Go to the <a href="https://portal.azure.com">Azure Portal</a></li>
-<li>Search for &quot;Grounding with Bing Custom Search&quot;</li>
-<li>Create a new resource with these settings:<ul>
-<li><strong>Resource Name</strong>: <code>businessscraper</code> (or your preferred name)</li>
-<li><strong>Region</strong>: <code>eastus</code> (or your preferred region)</li>
-<li><strong>Pricing Tier</strong>: Select based on your usage needs</li>
-</ul>
-</li>
-</ol>
-<h3>2. Get Your Credentials</h3>
-<p>After creating the resource, you&#39;ll receive:</p>
-<pre><code>KEY 1: ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Azure AI Foundry Migration Guide
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Azure AI Foundry Migration Guide</h1>
+        <h2>🚨 Important: Bing Search API Deprecation</h2>
+        <p>
+          Microsoft is discontinuing the Bing Search API in <strong>August 2025</strong>. This
+          application has been updated to support the new
+          <strong>&quot;Grounding with Bing Custom Search&quot;</strong> service through Azure AI
+          Foundry.
+        </p>
+        <h2>What&#39;s Changing</h2>
+        <h3>Old Service (Deprecated)</h3>
+        <ul>
+          <li><strong>Service</strong>: Bing Search API v7</li>
+          <li>
+            <strong>Endpoint</strong>: <code>https://api.bing.microsoft.com/v7.0/search</code>
+          </li>
+          <li><strong>Status</strong>: ⚠️ <strong>Discontinued August 2025</strong></li>
+        </ul>
+        <h3>New Service (Current)</h3>
+        <ul>
+          <li>
+            <strong>Service</strong>: Azure AI Foundry - &quot;Grounding with Bing Custom
+            Search&quot;
+          </li>
+          <li>
+            <strong>Endpoint</strong>:
+            <code>https://[your-resource-name].cognitiveservices.azure.com/</code>
+          </li>
+          <li><strong>Status</strong>: ✅ <strong>Active and Supported</strong></li>
+        </ul>
+        <h2>Migration Steps</h2>
+        <h3>1. Create Azure AI Foundry Resource</h3>
+        <ol>
+          <li>Go to the <a href="https://portal.azure.com">Azure Portal</a></li>
+          <li>Search for &quot;Grounding with Bing Custom Search&quot;</li>
+          <li>
+            Create a new resource with these settings:
+            <ul>
+              <li>
+                <strong>Resource Name</strong>: <code>businessscraper</code> (or your preferred
+                name)
+              </li>
+              <li><strong>Region</strong>: <code>eastus</code> (or your preferred region)</li>
+              <li><strong>Pricing Tier</strong>: Select based on your usage needs</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>2. Get Your Credentials</h3>
+        <p>After creating the resource, you&#39;ll receive:</p>
+        <pre><code>KEY 1: ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 KEY 2: ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 Location/Region: eastus
 Endpoint: https://businessscraper.cognitiveservices.azure.com/
 </code></pre>
-<h3>3. Update Application Configuration</h3>
-<h4>Option A: Using the Configuration UI (Recommended)</h4>
-<ol>
-<li>Open the application</li>
-<li>Go to <strong>Settings</strong> → <strong>API Configuration</strong></li>
-<li>Find the <strong>Azure AI Foundry</strong> section</li>
-<li>Enter your credentials:<ul>
-<li><strong>API Key</strong>: Use either Key 1 or Key 2</li>
-<li><strong>Endpoint URL</strong>: Your full endpoint URL</li>
-<li><strong>Region</strong>: Your selected region</li>
-</ul>
-</li>
-</ol>
-<h4>Option B: Using Environment Variables</h4>
-<p>Update your <code>.env.local</code> file:</p>
-<pre><code class="language-bash"># Azure AI Foundry - Grounding with Bing Custom Search
+        <h3>3. Update Application Configuration</h3>
+        <h4>Option A: Using the Configuration UI (Recommended)</h4>
+        <ol>
+          <li>Open the application</li>
+          <li>Go to <strong>Settings</strong> → <strong>API Configuration</strong></li>
+          <li>Find the <strong>Azure AI Foundry</strong> section</li>
+          <li>
+            Enter your credentials:
+            <ul>
+              <li><strong>API Key</strong>: Use either Key 1 or Key 2</li>
+              <li><strong>Endpoint URL</strong>: Your full endpoint URL</li>
+              <li><strong>Region</strong>: Your selected region</li>
+            </ul>
+          </li>
+        </ol>
+        <h4>Option B: Using Environment Variables</h4>
+        <p>Update your <code>.env.local</code> file:</p>
+        <pre><code class="language-bash"># Azure AI Foundry - Grounding with Bing Custom Search
 AZURE_AI_FOUNDRY_API_KEY=your_key_1_or_key_2_here
 AZURE_AI_FOUNDRY_ENDPOINT=https://businessscraper.cognitiveservices.azure.com/
 AZURE_AI_FOUNDRY_REGION=eastus
@@ -87,95 +112,134 @@ AZURE_AI_FOUNDRY_REGION=eastus
 # Remove or comment out old Bing API key
 # BING_SEARCH_API_KEY=old_bing_key
 </code></pre>
-<h3>4. Test the Configuration</h3>
-<ol>
-<li>In the application, go to <strong>Settings</strong> → <strong>API Configuration</strong></li>
-<li>Click the <strong>Test</strong> button next to Azure AI Foundry</li>
-<li>Verify you see a green checkmark indicating successful connection</li>
-</ol>
-<h2>Key Differences</h2>
-<h3>API Changes</h3>
-<ul>
-<li><strong>Method</strong>: Changed from GET to POST requests</li>
-<li><strong>Endpoint</strong>: New Azure AI Foundry endpoint structure</li>
-<li><strong>Authentication</strong>: Still uses <code>Ocp-Apim-Subscription-Key</code> header</li>
-<li><strong>Response Format</strong>: Compatible with existing Bing Search response format</li>
-</ul>
-<h3>Features Maintained</h3>
-<ul>
-<li>✅ Same search quality and results</li>
-<li>✅ All existing search filters and parameters</li>
-<li>✅ Domain blacklist functionality</li>
-<li>✅ Enhanced contact extraction</li>
-<li>✅ Business-focused result filtering</li>
-</ul>
-<h3>New Benefits</h3>
-<ul>
-<li>🔄 <strong>Future-proof</strong>: Supported long-term by Microsoft</li>
-<li>🚀 <strong>Enhanced Performance</strong>: Improved search capabilities</li>
-<li>🔒 <strong>Better Security</strong>: Modern Azure security features</li>
-<li>📊 <strong>Advanced Analytics</strong>: Better usage tracking and monitoring</li>
-</ul>
-<h2>Troubleshooting</h2>
-<h3>Common Issues</h3>
-<h4>1. &quot;Azure AI Foundry credentials not configured&quot;</h4>
-<ul>
-<li><strong>Solution</strong>: Ensure you&#39;ve entered the API key and endpoint in the configuration</li>
-</ul>
-<h4>2. &quot;Azure AI Foundry API error: 401&quot;</h4>
-<ul>
-<li><strong>Solution</strong>: Check that your API key is correct and hasn&#39;t expired</li>
-</ul>
-<h4>3. &quot;Azure AI Foundry API error: 403&quot;</h4>
-<ul>
-<li><strong>Solution</strong>: Verify your Azure subscription is active and the resource is properly configured</li>
-</ul>
-<h4>4. &quot;No search results returned&quot;</h4>
-<ul>
-<li><strong>Solution</strong>: Check that your endpoint URL is correct and includes the full domain</li>
-</ul>
-<h3>Getting Help</h3>
-<ol>
-<li><strong>Check Configuration</strong>: Verify all credentials are entered correctly</li>
-<li><strong>Test Connection</strong>: Use the built-in test feature in the configuration UI</li>
-<li><strong>Check Azure Portal</strong>: Ensure your resource is active and properly configured</li>
-<li><strong>Review Logs</strong>: Check the browser console for detailed error messages</li>
-</ol>
-<h2>Pricing Information</h2>
-<p>The new Azure AI Foundry service has different pricing than the old Bing Search API. Check the <a href="https://azure.microsoft.com/pricing/calculator/">Azure Pricing Calculator</a> for current rates.</p>
-<h2>Timeline</h2>
-<ul>
-<li><strong>Now</strong>: New Azure AI Foundry integration available</li>
-<li><strong>August 2025</strong>: Bing Search API discontinued</li>
-<li><strong>Recommendation</strong>: Migrate as soon as possible to ensure uninterrupted service</li>
-</ul>
-<h2>Support</h2>
-<p>For technical issues with the migration:</p>
-<ol>
-<li>Check this guide first</li>
-<li>Review the application logs</li>
-<li>Verify your Azure resource configuration</li>
-<li>Contact your Azure support team for Azure-specific issues</li>
-</ol>
-<hr>
-<p><strong>Note</strong>: This migration maintains full backward compatibility. Your existing search configurations, domain blacklists, and other settings will continue to work without changes.</p>
+        <h3>4. Test the Configuration</h3>
+        <ol>
+          <li>
+            In the application, go to <strong>Settings</strong> → <strong>API Configuration</strong>
+          </li>
+          <li>Click the <strong>Test</strong> button next to Azure AI Foundry</li>
+          <li>Verify you see a green checkmark indicating successful connection</li>
+        </ol>
+        <h2>Key Differences</h2>
+        <h3>API Changes</h3>
+        <ul>
+          <li><strong>Method</strong>: Changed from GET to POST requests</li>
+          <li><strong>Endpoint</strong>: New Azure AI Foundry endpoint structure</li>
+          <li>
+            <strong>Authentication</strong>: Still uses
+            <code>Ocp-Apim-Subscription-Key</code> header
+          </li>
+          <li>
+            <strong>Response Format</strong>: Compatible with existing Bing Search response format
+          </li>
+        </ul>
+        <h3>Features Maintained</h3>
+        <ul>
+          <li>✅ Same search quality and results</li>
+          <li>✅ All existing search filters and parameters</li>
+          <li>✅ Domain blacklist functionality</li>
+          <li>✅ Enhanced contact extraction</li>
+          <li>✅ Business-focused result filtering</li>
+        </ul>
+        <h3>New Benefits</h3>
+        <ul>
+          <li>🔄 <strong>Future-proof</strong>: Supported long-term by Microsoft</li>
+          <li>🚀 <strong>Enhanced Performance</strong>: Improved search capabilities</li>
+          <li>🔒 <strong>Better Security</strong>: Modern Azure security features</li>
+          <li>📊 <strong>Advanced Analytics</strong>: Better usage tracking and monitoring</li>
+        </ul>
+        <h2>Troubleshooting</h2>
+        <h3>Common Issues</h3>
+        <h4>1. &quot;Azure AI Foundry credentials not configured&quot;</h4>
+        <ul>
+          <li>
+            <strong>Solution</strong>: Ensure you&#39;ve entered the API key and endpoint in the
+            configuration
+          </li>
+        </ul>
+        <h4>2. &quot;Azure AI Foundry API error: 401&quot;</h4>
+        <ul>
+          <li>
+            <strong>Solution</strong>: Check that your API key is correct and hasn&#39;t expired
+          </li>
+        </ul>
+        <h4>3. &quot;Azure AI Foundry API error: 403&quot;</h4>
+        <ul>
+          <li>
+            <strong>Solution</strong>: Verify your Azure subscription is active and the resource is
+            properly configured
+          </li>
+        </ul>
+        <h4>4. &quot;No search results returned&quot;</h4>
+        <ul>
+          <li>
+            <strong>Solution</strong>: Check that your endpoint URL is correct and includes the full
+            domain
+          </li>
+        </ul>
+        <h3>Getting Help</h3>
+        <ol>
+          <li>
+            <strong>Check Configuration</strong>: Verify all credentials are entered correctly
+          </li>
+          <li>
+            <strong>Test Connection</strong>: Use the built-in test feature in the configuration UI
+          </li>
+          <li>
+            <strong>Check Azure Portal</strong>: Ensure your resource is active and properly
+            configured
+          </li>
+          <li>
+            <strong>Review Logs</strong>: Check the browser console for detailed error messages
+          </li>
+        </ol>
+        <h2>Pricing Information</h2>
+        <p>
+          The new Azure AI Foundry service has different pricing than the old Bing Search API. Check
+          the
+          <a href="https://azure.microsoft.com/pricing/calculator/">Azure Pricing Calculator</a> for
+          current rates.
+        </p>
+        <h2>Timeline</h2>
+        <ul>
+          <li><strong>Now</strong>: New Azure AI Foundry integration available</li>
+          <li><strong>August 2025</strong>: Bing Search API discontinued</li>
+          <li>
+            <strong>Recommendation</strong>: Migrate as soon as possible to ensure uninterrupted
+            service
+          </li>
+        </ul>
+        <h2>Support</h2>
+        <p>For technical issues with the migration:</p>
+        <ol>
+          <li>Check this guide first</li>
+          <li>Review the application logs</li>
+          <li>Verify your Azure resource configuration</li>
+          <li>Contact your Azure support team for Azure-specific issues</li>
+        </ol>
+        <hr />
+        <p>
+          <strong>Note</strong>: This migration maintains full backward compatibility. Your existing
+          search configurations, domain blacklists, and other settings will continue to work without
+          changes.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

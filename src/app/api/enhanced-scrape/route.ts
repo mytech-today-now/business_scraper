@@ -9,7 +9,6 @@ import { scraperService } from '@/model/scraperService'
 import { logger } from '@/utils/logger'
 import { validationService } from '@/utils/validation'
 
-
 /**
  * POST /api/enhanced-scrape - Enhanced scraping operations
  */
@@ -23,9 +22,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     switch (action) {
       case 'initialize':
         await enhancedScrapingEngine.initialize()
-        return NextResponse.json({ 
-          success: true, 
-          message: 'Enhanced scraping engine initialized' 
+        return NextResponse.json({
+          success: true,
+          message: 'Enhanced scraping engine initialized',
         })
 
       case 'add-job':
@@ -50,19 +49,29 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const numPriority = Math.min(Math.max(parseInt(priority) || 1, 1), 10)
         const numMaxPages = Math.min(Math.max(parseInt(maxPages) || 5, 1), 20)
 
-        const jobId = await enhancedScrapingEngine.addJob(sanitizedUrl, numDepth, numPriority, numMaxPages)
-        
+        const jobId = await enhancedScrapingEngine.addJob(
+          sanitizedUrl,
+          numDepth,
+          numPriority,
+          numMaxPages
+        )
+
         return NextResponse.json({
           success: true,
           jobId,
           url: sanitizedUrl,
           depth: numDepth,
           priority: numPriority,
-          maxPages: numMaxPages
+          maxPages: numMaxPages,
         })
 
       case 'add-multiple-jobs':
-        const { urls, depth: batchDepth = 2, priority: batchPriority = 1, maxPages: batchMaxPages = 5 } = params
+        const {
+          urls,
+          depth: batchDepth = 2,
+          priority: batchPriority = 1,
+          maxPages: batchMaxPages = 5,
+        } = params
 
         // Validate URLs array
         if (!Array.isArray(urls) || urls.length === 0) {
@@ -80,7 +89,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           try {
             const sanitizedUrl = validationService.sanitizeInput(url)
             new URL(sanitizedUrl) // Validate URL
-            
+
             const jobId = await enhancedScrapingEngine.addJob(
               sanitizedUrl,
               Math.min(Math.max(parseInt(batchDepth) || 2, 1), 5),
@@ -93,11 +102,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           }
         }
 
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           jobIds,
           totalJobs: jobIds.length,
-          errors: errors.length > 0 ? errors : undefined
+          errors: errors.length > 0 ? errors : undefined,
         })
 
       case 'get-job-status':
@@ -108,13 +117,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         const job = enhancedScrapingEngine.getJobStatus(statusJobId)
-        
+
         if (!job) {
           return NextResponse.json({ error: 'Job not found' }, { status: 404 })
         }
 
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           job: {
             id: job.id,
             url: job.url,
@@ -128,7 +137,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             completedAt: job.completedAt,
             error: job.error,
             resultCount: job.result?.length || 0,
-          }
+          },
         })
 
       case 'get-job-result':
@@ -139,27 +148,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         const resultJob = enhancedScrapingEngine.getJobStatus(resultJobId)
-        
+
         if (!resultJob) {
           return NextResponse.json({ error: 'Job not found' }, { status: 404 })
         }
 
         if (resultJob.status !== 'completed') {
-          return NextResponse.json({ 
-            error: 'Job not completed', 
-            status: resultJob.status 
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              error: 'Job not completed',
+              status: resultJob.status,
+            },
+            { status: 400 }
+          )
         }
 
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           job: {
             id: resultJob.id,
             url: resultJob.url,
             status: resultJob.status,
             completedAt: resultJob.completedAt,
             businesses: resultJob.result || [],
-          }
+          },
         })
 
       case 'cancel-job':
@@ -170,18 +182,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         const cancelled = enhancedScrapingEngine.cancelJob(cancelJobId)
-        
-        return NextResponse.json({ 
-          success: cancelled, 
-          message: cancelled ? 'Job cancelled successfully' : 'Job not found or cannot be cancelled'
+
+        return NextResponse.json({
+          success: cancelled,
+          message: cancelled
+            ? 'Job cancelled successfully'
+            : 'Job not found or cannot be cancelled',
         })
 
       case 'get-stats':
         const stats = enhancedScrapingEngine.getStats()
-        
-        return NextResponse.json({ 
-          success: true, 
-          stats
+
+        return NextResponse.json({
+          success: true,
+          stats,
         })
 
       case 'scrape-website-enhanced':
@@ -205,15 +219,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const numScrapeDepth = Math.min(Math.max(parseInt(scrapeDepth) || 2, 1), 5)
         const numScrapeMaxPages = Math.min(Math.max(parseInt(scrapeMaxPages) || 5, 1), 20)
 
-        const businesses = await scraperService.scrapeWebsiteEnhanced(sanitizedScrapeUrl, numScrapeDepth, numScrapeMaxPages)
-        
+        const businesses = await scraperService.scrapeWebsiteEnhanced(
+          sanitizedScrapeUrl,
+          numScrapeDepth,
+          numScrapeMaxPages
+        )
+
         return NextResponse.json({
           success: true,
           businesses,
           url: sanitizedScrapeUrl,
           depth: numScrapeDepth,
           maxPages: numScrapeMaxPages,
-          count: businesses.length
+          count: businesses.length,
         })
 
       case 'wait-for-jobs':
@@ -224,12 +242,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         const completedJobs = await scraperService.waitForEnhancedJobs(
-          waitJobIds, 
+          waitJobIds,
           Math.min(parseInt(timeout) || 300000, 600000) // Max 10 minutes
         )
 
-        return NextResponse.json({ 
-          success: true, 
+        return NextResponse.json({
+          success: true,
           completedJobs: completedJobs.map(job => ({
             id: job.id,
             url: job.url,
@@ -239,27 +257,29 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             error: job.error,
           })),
           totalCompleted: completedJobs.length,
-          totalRequested: waitJobIds.length
+          totalRequested: waitJobIds.length,
         })
 
       case 'shutdown':
         await enhancedScrapingEngine.shutdown()
-        return NextResponse.json({ 
-          success: true, 
-          message: 'Enhanced scraping engine shutdown' 
+        return NextResponse.json({
+          success: true,
+          message: 'Enhanced scraping engine shutdown',
         })
 
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     logger.error('EnhancedScrapeAPI', 'Request failed', error)
-    
-    return NextResponse.json({ 
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -269,19 +289,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 export async function GET(_request: NextRequest): Promise<NextResponse> {
   try {
     const stats = enhancedScrapingEngine.getStats()
-    
-    return NextResponse.json({ 
-      success: true, 
-      stats,
-      timestamp: new Date().toISOString()
-    })
 
+    return NextResponse.json({
+      success: true,
+      stats,
+      timestamp: new Date().toISOString(),
+    })
   } catch (error) {
     logger.error('EnhancedScrapeAPI', 'GET request failed', error)
-    
-    return NextResponse.json({ 
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }

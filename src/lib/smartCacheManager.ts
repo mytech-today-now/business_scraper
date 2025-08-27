@@ -43,7 +43,7 @@ export class SmartCacheManager {
     l3Hits: 0,
     l3Misses: 0,
     totalRequests: 0,
-    hitRate: 0
+    hitRate: 0,
   }
   private config = getCacheConfig()
 
@@ -125,7 +125,11 @@ export class SmartCacheManager {
   /**
    * Cache search results with optimized TTL
    */
-  async cacheSearchResults(query: string, location: string, results: SearchResult[]): Promise<void> {
+  async cacheSearchResults(
+    query: string,
+    location: string,
+    results: SearchResult[]
+  ): Promise<void> {
     await this.set('search', { query, location }, results, 3600000) // 1 hour
   }
 
@@ -169,7 +173,7 @@ export class SmartCacheManager {
    */
   private setL1Cache<T>(key: string, data: T, ttl: number): void {
     const maxSize = this.config.l1Cache?.maxSize || 1000
-    
+
     // Evict oldest entries if cache is full
     if (this.l1Cache.size >= maxSize) {
       this.evictLRU()
@@ -180,7 +184,7 @@ export class SmartCacheManager {
       timestamp: Date.now(),
       ttl,
       accessCount: 1,
-      lastAccessed: Date.now()
+      lastAccessed: Date.now(),
     })
   }
 
@@ -188,7 +192,7 @@ export class SmartCacheManager {
    * Check if cache entry is expired
    */
   private isExpired(entry: CacheEntry): boolean {
-    return Date.now() > (entry.timestamp + entry.ttl)
+    return Date.now() > entry.timestamp + entry.ttl
   }
 
   /**
@@ -251,7 +255,8 @@ export class SmartCacheManager {
    */
   private updateHitRate(): void {
     const totalHits = this.stats.l1Hits + this.stats.l2Hits + this.stats.l3Hits
-    this.stats.hitRate = this.stats.totalRequests > 0 ? (totalHits / this.stats.totalRequests) * 100 : 0
+    this.stats.hitRate =
+      this.stats.totalRequests > 0 ? (totalHits / this.stats.totalRequests) * 100 : 0
   }
 
   /**

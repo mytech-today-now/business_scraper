@@ -5,11 +5,11 @@
 
 import crypto from 'crypto'
 import { v4 as uuidv4 } from 'uuid'
-import { 
-  OAuthClient, 
-  ClientRegistrationRequest, 
+import {
+  OAuthClient,
+  ClientRegistrationRequest,
   ClientRegistrationResponse,
-  GrantType 
+  GrantType,
 } from '@/types/oauth'
 import { clientRegistrationConfig, oauthConfig } from './config'
 import { logger } from '@/utils/logger'
@@ -36,10 +36,7 @@ export class ClientService {
       secret: this.generateClientSecret(),
       name: 'Business Scraper Web Application',
       type: 'confidential',
-      redirectUris: [
-        'http://localhost:3000/auth/callback',
-        'https://localhost:3000/auth/callback',
-      ],
+      redirectUris: ['http://localhost:3000/auth/callback', 'https://localhost:3000/auth/callback'],
       allowedGrantTypes: ['authorization_code', 'refresh_token'],
       allowedScopes: ['openid', 'profile', 'email', 'read', 'write'],
       createdAt: new Date(),
@@ -103,7 +100,8 @@ export class ClientService {
    */
   registerClient(request: ClientRegistrationRequest): ClientRegistrationResponse {
     const clientId = this.generateClientId()
-    const clientSecret = request.clientType === 'confidential' ? this.generateClientSecret() : undefined
+    const clientSecret =
+      request.clientType === 'confidential' ? this.generateClientSecret() : undefined
     const now = Math.floor(Date.now() / 1000)
 
     // Validate redirect URIs
@@ -151,7 +149,8 @@ export class ClientService {
       grantTypes,
       responseTypes: request.responseTypes || clientRegistrationConfig.defaultResponseTypes,
       scope: scopes.join(' '),
-      tokenEndpointAuthMethod: request.tokenEndpointAuthMethod || clientRegistrationConfig.defaultTokenEndpointAuthMethod,
+      tokenEndpointAuthMethod:
+        request.tokenEndpointAuthMethod || clientRegistrationConfig.defaultTokenEndpointAuthMethod,
     }
 
     return response
@@ -167,9 +166,12 @@ export class ClientService {
   /**
    * Validate client credentials
    */
-  validateClient(clientId: string, clientSecret?: string): { valid: boolean; client?: OAuthClient; error?: string } {
+  validateClient(
+    clientId: string,
+    clientSecret?: string
+  ): { valid: boolean; client?: OAuthClient; error?: string } {
     const client = this.getClient(clientId)
-    
+
     if (!client) {
       return { valid: false, error: 'Client not found' }
     }
@@ -312,14 +314,18 @@ export class ClientService {
     for (const uri of redirectUris) {
       try {
         const url = new URL(uri)
-        
+
         // Validate protocol
         if (!['http:', 'https:', 'com.businessscraper:'].includes(url.protocol)) {
           throw new Error(`Invalid redirect URI protocol: ${url.protocol}`)
         }
 
         // In production, require HTTPS
-        if (process.env.NODE_ENV === 'production' && url.protocol === 'http:' && url.hostname !== 'localhost') {
+        if (
+          process.env.NODE_ENV === 'production' &&
+          url.protocol === 'http:' &&
+          url.hostname !== 'localhost'
+        ) {
           throw new Error('HTTPS required for redirect URIs in production')
         }
       } catch (error) {
@@ -367,7 +373,7 @@ export class ClientService {
     confidentialClients: number
   } {
     const clients = Array.from(this.clients.values())
-    
+
     return {
       totalClients: clients.length,
       activeClients: clients.filter(c => c.isActive).length,

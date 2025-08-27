@@ -9,7 +9,7 @@ import {
   CRMSyncBatch,
   CRMWebhookEvent,
   CRMWebhookSubscription,
-  SalesforceConfiguration
+  SalesforceConfiguration,
 } from '@/types/crm'
 import { BaseCRMService } from './baseCRMService'
 import { logger } from '@/utils/logger'
@@ -22,7 +22,7 @@ export class SalesforceService extends BaseCRMService {
   async initialize(): Promise<void> {
     try {
       logger.info('SalesforceService', 'Initializing Salesforce service', {
-        providerId: this.provider.id
+        providerId: this.provider.id,
       })
 
       const config = this.provider.configuration as SalesforceConfiguration
@@ -41,7 +41,7 @@ export class SalesforceService extends BaseCRMService {
   async authenticate(): Promise<boolean> {
     try {
       const auth = this.provider.configuration.authentication
-      
+
       if (auth.type === 'oauth2') {
         return await this.authenticateOAuth2()
       } else {
@@ -59,17 +59,17 @@ export class SalesforceService extends BaseCRMService {
       const config = this.provider.configuration as SalesforceConfiguration
 
       const tokenUrl = `${config.instanceUrl}/services/oauth2/token`
-      
+
       const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
           grant_type: 'client_credentials',
           client_id: auth.credentials.clientId,
-          client_secret: auth.credentials.clientSecret
-        })
+          client_secret: auth.credentials.clientSecret,
+        }),
       })
 
       if (!response.ok) {
@@ -113,8 +113,12 @@ export class SalesforceService extends BaseCRMService {
       // Check for duplicates
       const duplicateIds = await this.checkForDuplicates(record)
       if (duplicateIds.length > 0) {
-        return this.createSyncRecord(record, 'conflict', undefined, 
-          `Duplicate records found: ${duplicateIds.join(', ')}`)
+        return this.createSyncRecord(
+          record,
+          'conflict',
+          undefined,
+          `Duplicate records found: ${duplicateIds.join(', ')}`
+        )
       }
 
       // Map business record to Salesforce format
@@ -144,12 +148,12 @@ export class SalesforceService extends BaseCRMService {
 
       // Process records in batches to respect API limits
       const batchSize = this.provider.configuration.syncSettings.batchSize || 10
-      
+
       for (let i = 0; i < records.length; i += batchSize) {
         const batch = records.slice(i, i + batchSize)
         const batchResults = await this.processBatch(
           batch,
-          (record) => this.syncBusinessRecord(record),
+          record => this.syncBusinessRecord(record),
           batchSize
         )
         syncRecords.push(...batchResults)
@@ -168,7 +172,7 @@ export class SalesforceService extends BaseCRMService {
         totalRecords: records.length,
         successfulRecords,
         failedRecords,
-        errors: []
+        errors: [],
       }
     } catch (error) {
       logger.error('SalesforceService', 'Batch sync failed', error)
@@ -180,9 +184,9 @@ export class SalesforceService extends BaseCRMService {
     try {
       const sinceDate = since || new Date(Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
       const soqlQuery = this.buildUpdateQuery(sinceDate)
-      
+
       const response = await this.makeApiCall('GET', `/services/data/v${this.apiVersion}/query`, {
-        q: soqlQuery
+        q: soqlQuery,
       })
 
       if (response.ok) {
@@ -202,7 +206,7 @@ export class SalesforceService extends BaseCRMService {
       // Salesforce uses Platform Events or Streaming API for real-time updates
       // This would typically involve setting up PushTopic or Platform Event subscriptions
       logger.info('SalesforceService', 'Setting up Salesforce webhooks/streaming')
-      
+
       // Implementation would depend on specific Salesforce streaming requirements
       return []
     } catch (error) {
@@ -216,7 +220,7 @@ export class SalesforceService extends BaseCRMService {
       logger.info('SalesforceService', 'Handling Salesforce webhook event', {
         eventType: event.eventType,
         objectType: event.objectType,
-        objectId: event.objectId
+        objectId: event.objectId,
       })
 
       // Process the webhook event based on type
@@ -236,7 +240,11 @@ export class SalesforceService extends BaseCRMService {
     }
   }
 
-  private async makeApiCall(method: string, endpoint: string, params?: Record<string, any>): Promise<Response> {
+  private async makeApiCall(
+    method: string,
+    endpoint: string,
+    params?: Record<string, any>
+  ): Promise<Response> {
     if (!this.accessToken || !this.instanceUrl) {
       throw new Error('Not authenticated')
     }
@@ -251,9 +259,9 @@ export class SalesforceService extends BaseCRMService {
     const options: RequestInit = {
       method,
       headers: {
-        'Authorization': `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${this.accessToken}`,
+        'Content-Type': 'application/json',
+      },
     }
 
     if (params && method !== 'GET') {
@@ -265,7 +273,7 @@ export class SalesforceService extends BaseCRMService {
 
   private mapToSalesforceFormat(record: BusinessRecord): Record<string, any> {
     const mapped = this.mapBusinessRecordToTarget(record)
-    
+
     // Add Salesforce-specific mappings
     return {
       Name: record.businessName,
@@ -277,7 +285,7 @@ export class SalesforceService extends BaseCRMService {
       State: record.address.state,
       PostalCode: record.address.zipCode,
       Industry: record.industry,
-      ...mapped
+      ...mapped,
     }
   }
 
@@ -287,7 +295,10 @@ export class SalesforceService extends BaseCRMService {
     return 'Lead' // Default to Lead for new business records
   }
 
-  private async createSalesforceRecord(objectType: string, data: Record<string, any>): Promise<any> {
+  private async createSalesforceRecord(
+    objectType: string,
+    data: Record<string, any>
+  ): Promise<any> {
     const response = await this.makeApiCall(
       'POST',
       `/services/data/v${this.apiVersion}/sobjects/${objectType}`,
@@ -313,13 +324,17 @@ export class SalesforceService extends BaseCRMService {
       syncDirection: 'push',
       lastSyncAt: new Date(),
       syncAttempts: 1,
-      errors: errorMessage ? [{
-        timestamp: new Date(),
-        errorCode: 'SYNC_ERROR',
-        errorMessage,
-        isRetryable: status !== 'conflict'
-      }] : [],
-      metadata: {}
+      errors: errorMessage
+        ? [
+            {
+              timestamp: new Date(),
+              errorCode: 'SYNC_ERROR',
+              errorMessage,
+              isRetryable: status !== 'conflict',
+            },
+          ]
+        : [],
+      metadata: {},
     }
   }
 
@@ -339,10 +354,10 @@ export class SalesforceService extends BaseCRMService {
         street: record.Street || '',
         city: record.City || '',
         state: record.State || '',
-        zipCode: record.PostalCode || ''
+        zipCode: record.PostalCode || '',
       },
       industry: record.Industry || '',
-      scrapedAt: new Date(record.LastModifiedDate)
+      scrapedAt: new Date(record.LastModifiedDate),
     }))
   }
 
@@ -350,7 +365,7 @@ export class SalesforceService extends BaseCRMService {
     // Handle record creation or update from Salesforce
     logger.info('SalesforceService', 'Processing record update', {
       objectId: event.objectId,
-      objectType: event.objectType
+      objectType: event.objectType,
     })
   }
 
@@ -358,7 +373,7 @@ export class SalesforceService extends BaseCRMService {
     // Handle record deletion from Salesforce
     logger.info('SalesforceService', 'Processing record deletion', {
       objectId: event.objectId,
-      objectType: event.objectType
+      objectType: event.objectType,
     })
   }
 }

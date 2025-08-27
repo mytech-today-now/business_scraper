@@ -3,15 +3,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
-import { 
-  Activity, 
-  Clock, 
-  Database, 
-  Zap, 
-  TrendingUp, 
+import {
+  Activity,
+  Clock,
+  Database,
+  Zap,
+  TrendingUp,
   AlertTriangle,
   CheckCircle,
-  XCircle
+  XCircle,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 
@@ -55,39 +55,39 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
   const [alerts, setAlerts] = useState<PerformanceAlert[]>([])
   const [isMonitoring, setIsMonitoring] = useState(false)
   const [historicalData, setHistoricalData] = useState<PerformanceMetrics[]>([])
-  
+
   /**
    * Collect current performance metrics
    */
   const collectMetrics = useCallback(async (): Promise<PerformanceMetrics> => {
     const startTime = performance.now()
-    
+
     // Measure render time (simulate)
     await new Promise(resolve => setTimeout(resolve, 1))
     const renderTime = performance.now() - startTime
-    
+
     // Get memory usage
     const memory = (performance as any).memory || {}
     const memoryUsage = {
       used: memory.usedJSHeapSize || 0,
       total: memory.totalJSHeapSize || 0,
-      limit: memory.jsHeapSizeLimit || 0
+      limit: memory.jsHeapSizeLimit || 0,
     }
-    
+
     // Simulate API performance metrics
     const apiPerformance = {
       avgResponseTime: Math.random() * 500 + 200, // 200-700ms
       successRate: 0.95 + Math.random() * 0.05, // 95-100%
-      errorRate: Math.random() * 0.05 // 0-5%
+      errorRate: Math.random() * 0.05, // 0-5%
     }
-    
+
     // Simulate scroll performance
     const scrollPerformance = {
       avgTime: Math.random() * 50 + 20, // 20-70ms
       maxTime: Math.random() * 100 + 50, // 50-150ms
-      samples: Math.floor(Math.random() * 100) + 50
+      samples: Math.floor(Math.random() * 100) + 50,
     }
-    
+
     return {
       renderTime,
       scrollPerformance,
@@ -95,16 +95,16 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
       apiPerformance,
       cacheHitRate: 0.7 + Math.random() * 0.3, // 70-100%
       activeConnections: Math.floor(Math.random() * 50) + 10,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
   }, [])
-  
+
   /**
    * Check for performance alerts
    */
   const checkAlerts = useCallback((metrics: PerformanceMetrics): PerformanceAlert[] => {
     const newAlerts: PerformanceAlert[] = []
-    
+
     // Render time alert
     if (metrics.renderTime > 100) {
       newAlerts.push({
@@ -114,10 +114,10 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
         metric: 'renderTime',
         value: metrics.renderTime,
         threshold: 100,
-        timestamp: new Date()
+        timestamp: new Date(),
       })
     }
-    
+
     // Memory usage alert
     const memoryUsagePercent = (metrics.memoryUsage.used / metrics.memoryUsage.limit) * 100
     if (memoryUsagePercent > 80) {
@@ -128,10 +128,10 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
         metric: 'memoryUsage',
         value: memoryUsagePercent,
         threshold: 80,
-        timestamp: new Date()
+        timestamp: new Date(),
       })
     }
-    
+
     // API performance alert
     if (metrics.apiPerformance.avgResponseTime > 1000) {
       newAlerts.push({
@@ -141,10 +141,10 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
         metric: 'apiResponseTime',
         value: metrics.apiPerformance.avgResponseTime,
         threshold: 1000,
-        timestamp: new Date()
+        timestamp: new Date(),
       })
     }
-    
+
     // Error rate alert
     if (metrics.apiPerformance.errorRate > 0.05) {
       newAlerts.push({
@@ -154,58 +154,57 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
         metric: 'errorRate',
         value: metrics.apiPerformance.errorRate * 100,
         threshold: 5,
-        timestamp: new Date()
+        timestamp: new Date(),
       })
     }
-    
+
     return newAlerts
   }, [])
-  
+
   /**
    * Start monitoring
    */
   const startMonitoring = useCallback(() => {
     setIsMonitoring(true)
-    
+
     const interval = setInterval(async () => {
       try {
         const newMetrics = await collectMetrics()
         setMetrics(newMetrics)
-        
+
         // Add to historical data (keep last 50 entries)
         setHistoricalData(prev => {
           const updated = [...prev, newMetrics]
           return updated.slice(-50)
         })
-        
+
         // Check for alerts
         const newAlerts = checkAlerts(newMetrics)
         if (newAlerts.length > 0) {
           setAlerts(prev => [...prev, ...newAlerts].slice(-20)) // Keep last 20 alerts
         }
-        
       } catch (error) {
         console.error('Failed to collect metrics:', error)
       }
     }, 2000) // Collect every 2 seconds
-    
+
     return () => clearInterval(interval)
   }, [collectMetrics, checkAlerts])
-  
+
   /**
    * Stop monitoring
    */
   const stopMonitoring = useCallback(() => {
     setIsMonitoring(false)
   }, [])
-  
+
   /**
    * Clear alerts
    */
   const clearAlerts = useCallback(() => {
     setAlerts([])
   }, [])
-  
+
   /**
    * Format bytes to human readable
    */
@@ -216,41 +215,49 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }, [])
-  
+
   /**
    * Get performance status
    */
-  const getPerformanceStatus = useCallback((metrics: PerformanceMetrics): 'excellent' | 'good' | 'warning' | 'critical' => {
-    const issues = checkAlerts(metrics)
-    const errorCount = issues.filter(alert => alert.type === 'error').length
-    const warningCount = issues.filter(alert => alert.type === 'warning').length
-    
-    if (errorCount > 0) return 'critical'
-    if (warningCount > 2) return 'warning'
-    if (warningCount > 0) return 'good'
-    return 'excellent'
-  }, [checkAlerts])
-  
+  const getPerformanceStatus = useCallback(
+    (metrics: PerformanceMetrics): 'excellent' | 'good' | 'warning' | 'critical' => {
+      const issues = checkAlerts(metrics)
+      const errorCount = issues.filter(alert => alert.type === 'error').length
+      const warningCount = issues.filter(alert => alert.type === 'warning').length
+
+      if (errorCount > 0) return 'critical'
+      if (warningCount > 2) return 'warning'
+      if (warningCount > 0) return 'good'
+      return 'excellent'
+    },
+    [checkAlerts]
+  )
+
   useEffect(() => {
     const cleanup = startMonitoring()
     return cleanup
   }, [startMonitoring])
-  
+
   const performanceStatus = metrics ? getPerformanceStatus(metrics) : 'good'
-  
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Performance Monitoring</h2>
         <div className="flex items-center gap-2">
-          <div className={clsx(
-            'flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium',
-            performanceStatus === 'excellent' ? 'bg-green-100 text-green-800' :
-            performanceStatus === 'good' ? 'bg-blue-100 text-blue-800' :
-            performanceStatus === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-red-100 text-red-800'
-          )}>
+          <div
+            className={clsx(
+              'flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium',
+              performanceStatus === 'excellent'
+                ? 'bg-green-100 text-green-800'
+                : performanceStatus === 'good'
+                  ? 'bg-blue-100 text-blue-800'
+                  : performanceStatus === 'warning'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-red-100 text-red-800'
+            )}
+          >
             {performanceStatus === 'excellent' && <CheckCircle className="h-4 w-4" />}
             {performanceStatus === 'good' && <CheckCircle className="h-4 w-4" />}
             {performanceStatus === 'warning' && <AlertTriangle className="h-4 w-4" />}
@@ -258,7 +265,7 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
             {performanceStatus.charAt(0).toUpperCase() + performanceStatus.slice(1)}
           </div>
           <Button
-            variant={isMonitoring ? "destructive" : "default"}
+            variant={isMonitoring ? 'destructive' : 'default'}
             size="sm"
             onClick={isMonitoring ? stopMonitoring : startMonitoring}
             icon={Activity}
@@ -267,7 +274,7 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
           </Button>
         </div>
       </div>
-      
+
       {/* Metrics Grid */}
       {metrics && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -281,12 +288,10 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metrics.renderTime.toFixed(1)}ms</div>
-              <div className="text-xs text-muted-foreground">
-                Target: &lt;100ms
-              </div>
+              <div className="text-xs text-muted-foreground">Target: &lt;100ms</div>
             </CardContent>
           </Card>
-          
+
           {/* Scroll Performance */}
           <Card>
             <CardHeader className="pb-2">
@@ -296,13 +301,15 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{metrics.scrollPerformance.avgTime.toFixed(1)}ms</div>
+              <div className="text-2xl font-bold">
+                {metrics.scrollPerformance.avgTime.toFixed(1)}ms
+              </div>
               <div className="text-xs text-muted-foreground">
                 Max: {metrics.scrollPerformance.maxTime.toFixed(1)}ms
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Memory Usage */}
           <Card>
             <CardHeader className="pb-2">
@@ -314,11 +321,12 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
             <CardContent>
               <div className="text-2xl font-bold">{formatBytes(metrics.memoryUsage.used)}</div>
               <div className="text-xs text-muted-foreground">
-                {((metrics.memoryUsage.used / metrics.memoryUsage.limit) * 100).toFixed(1)}% of limit
+                {((metrics.memoryUsage.used / metrics.memoryUsage.limit) * 100).toFixed(1)}% of
+                limit
               </div>
             </CardContent>
           </Card>
-          
+
           {/* API Performance */}
           <Card>
             <CardHeader className="pb-2">
@@ -328,7 +336,9 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{metrics.apiPerformance.avgResponseTime.toFixed(0)}ms</div>
+              <div className="text-2xl font-bold">
+                {metrics.apiPerformance.avgResponseTime.toFixed(0)}ms
+              </div>
               <div className="text-xs text-muted-foreground">
                 {(metrics.apiPerformance.successRate * 100).toFixed(1)}% success rate
               </div>
@@ -336,7 +346,7 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
           </Card>
         </div>
       )}
-      
+
       {/* Alerts */}
       {alerts.length > 0 && (
         <Card>
@@ -358,9 +368,11 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
                   key={alert.id}
                   className={clsx(
                     'p-3 rounded-lg border',
-                    alert.type === 'error' ? 'bg-red-50 border-red-200' :
-                    alert.type === 'warning' ? 'bg-yellow-50 border-yellow-200' :
-                    'bg-blue-50 border-blue-200'
+                    alert.type === 'error'
+                      ? 'bg-red-50 border-red-200'
+                      : alert.type === 'warning'
+                        ? 'bg-yellow-50 border-yellow-200'
+                        : 'bg-blue-50 border-blue-200'
                   )}
                 >
                   <div className="flex items-center justify-between">
@@ -380,7 +392,7 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Historical Performance Chart */}
       {historicalData.length > 0 && (
         <Card>
@@ -395,7 +407,7 @@ export function PerformanceMonitoringDashboard(): JSX.Element {
                   className="flex-1 bg-blue-200 rounded-t"
                   style={{
                     height: `${Math.min((data.renderTime / 200) * 100, 100)}%`,
-                    minHeight: '4px'
+                    minHeight: '4px',
                   }}
                   title={`${data.renderTime.toFixed(1)}ms at ${data.timestamp.toLocaleTimeString()}`}
                 />

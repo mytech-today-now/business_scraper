@@ -28,7 +28,7 @@ describe('Rate Limiting Integration Tests', () => {
         baseDelay: 30000,
         maxDelay: 300000,
         maxFailures: 2,
-        cooldownPeriod: 600000
+        cooldownPeriod: 600000,
       })
 
       // Test delay calculation with different failure counts
@@ -38,10 +38,10 @@ describe('Rate Limiting Integration Tests', () => {
         for (let j = 0; j < i; j++) {
           tester.recordFailure()
         }
-        
+
         const delay = tester.calculateDelay()
         delays.push(delay)
-        
+
         // Reset for next test
         tester.resetFailures()
       }
@@ -58,7 +58,7 @@ describe('Rate Limiting Integration Tests', () => {
         baseDelay: 30000,
         maxDelay: 300000,
         maxFailures: 2,
-        cooldownPeriod: 600000
+        cooldownPeriod: 600000,
       })
 
       // Should not skip initially
@@ -77,7 +77,7 @@ describe('Rate Limiting Integration Tests', () => {
         baseDelay: 30000,
         maxDelay: 300000,
         maxFailures: 2,
-        cooldownPeriod: 100 // Short cooldown for testing
+        cooldownPeriod: 100, // Short cooldown for testing
       })
 
       // Trigger circuit breaker
@@ -102,13 +102,13 @@ describe('Rate Limiting Integration Tests', () => {
         json: async () => ({
           success: true,
           results: [
-            { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' }
-          ]
-        })
+            { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
+          ],
+        }),
       } as Response)
 
       const startTime = Date.now()
-      
+
       // Make multiple requests
       const results1 = await clientSearchEngine.searchBusinesses('test query', '60010', 5)
       const midTime = Date.now()
@@ -129,22 +129,22 @@ describe('Rate Limiting Integration Tests', () => {
 
     test('should handle 429 errors with exponential backoff', async () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      
+
       // First call returns 429, second call succeeds
       mockFetch
         .mockResolvedValueOnce({
           ok: false,
           status: 429,
-          json: async () => ({ error: 'Rate limit exceeded', message: '429' })
+          json: async () => ({ error: 'Rate limit exceeded', message: '429' }),
         } as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({
             success: true,
             results: [
-              { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' }
-            ]
-          })
+              { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
+            ],
+          }),
         } as Response)
 
       const startTime = Date.now()
@@ -160,21 +160,21 @@ describe('Rate Limiting Integration Tests', () => {
 
     test('should respect circuit breaker', async () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      
+
       // Mock multiple 429 responses to trigger circuit breaker
       mockFetch.mockResolvedValue({
         ok: false,
         status: 429,
-        json: async () => ({ error: 'Rate limit exceeded', message: '429' })
+        json: async () => ({ error: 'Rate limit exceeded', message: '429' }),
       } as Response)
 
       // Make multiple requests to trigger circuit breaker
       await clientSearchEngine.searchBusinesses('test query 1', '60010', 5)
       await clientSearchEngine.searchBusinesses('test query 2', '60010', 5)
-      
+
       // Third request should be skipped due to circuit breaker
       const results = await clientSearchEngine.searchBusinesses('test query 3', '60010', 5)
-      
+
       // Should return empty results due to circuit breaker
       expect(results).toEqual([])
     }, 240000) // 4 minute timeout for this test
@@ -186,14 +186,14 @@ describe('Rate Limiting Integration Tests', () => {
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0'
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
       ]
-      
+
       const viewports = [
         { width: 1366, height: 768 },
         { width: 1920, height: 1080 },
         { width: 1440, height: 900 },
-        { width: 1280, height: 720 }
+        { width: 1280, height: 720 },
       ]
 
       // Test randomization
@@ -203,7 +203,7 @@ describe('Rate Limiting Integration Tests', () => {
       for (let i = 0; i < 20; i++) {
         const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)]
         const randomViewport = viewports[Math.floor(Math.random() * viewports.length)]
-        
+
         selectedUserAgents.add(randomUserAgent)
         selectedViewports.add(JSON.stringify(randomViewport))
       }
@@ -241,12 +241,12 @@ describe('Rate Limiting Integration Tests', () => {
     test('should run comprehensive rate limiting test', async () => {
       // This test runs the actual rate limiting test utility
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation()
-      
+
       await testRateLimiting()
-      
+
       // Verify test ran and logged results
       expect(consoleSpy).toHaveBeenCalled()
-      
+
       consoleSpy.mockRestore()
     }, 60000) // 1 minute timeout
   })
@@ -255,11 +255,11 @@ describe('Rate Limiting Integration Tests', () => {
 // Helper function to run manual tests
 export async function runManualRateLimitingTest() {
   console.log('🧪 Running Manual Rate Limiting Test...')
-  
+
   try {
     // Test the rate limiting utility
     await testRateLimiting()
-    
+
     // Test actual search engine with rate limiting
     console.log('Testing ClientSearchEngine with rate limiting...')
     const results = await clientSearchEngine.searchBusinesses(
@@ -267,10 +267,9 @@ export async function runManualRateLimitingTest() {
       '60010',
       5
     )
-    
+
     console.log(`✅ Search completed successfully with ${results.length} results`)
     console.log('🎉 Manual rate limiting test completed!')
-    
   } catch (error) {
     console.error('❌ Manual test failed:', error)
     throw error

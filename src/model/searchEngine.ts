@@ -33,7 +33,8 @@ const DEFAULT_CONFIG: SearchEngineConfig = {
   timeout: 10000,
   maxRetries: 3,
   retryDelay: 1000,
-  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+  userAgent:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
   maxResults: 10000, // High default to gather as many results as possible
 }
 
@@ -80,7 +81,11 @@ export class SearchEngineService {
       if (enableValidation && rawResults.length > 0) {
         // Validate and score results
         logger.info('SearchEngine', `Validating ${rawResults.length} search results`)
-        const validatedResults = await searchResultValidator.validateResults(rawResults, query, location)
+        const validatedResults = await searchResultValidator.validateResults(
+          rawResults,
+          query,
+          location
+        )
 
         // Convert validated results back to SearchResult format
         finalResults = validatedResults.map(result => ({
@@ -90,7 +95,10 @@ export class SearchEngineService {
           domain: result.domain,
         }))
 
-        logger.info('SearchEngine', `Validation filtered results from ${rawResults.length} to ${finalResults.length}`)
+        logger.info(
+          'SearchEngine',
+          `Validation filtered results from ${rawResults.length} to ${finalResults.length}`
+        )
       } else {
         finalResults = rawResults
       }
@@ -129,8 +137,15 @@ export class SearchEngineService {
       }
 
       // Validate and score results
-      logger.info('SearchEngine', `Validating ${rawResults.length} search results with detailed scoring`)
-      const validatedResults = await searchResultValidator.validateResults(rawResults, query, location)
+      logger.info(
+        'SearchEngine',
+        `Validating ${rawResults.length} search results with detailed scoring`
+      )
+      const validatedResults = await searchResultValidator.validateResults(
+        rawResults,
+        query,
+        location
+      )
 
       logger.info('SearchEngine', `Validation completed: ${validatedResults.length} scored results`)
       return validatedResults
@@ -162,10 +177,16 @@ export class SearchEngineService {
 
     try {
       // Optimize the query
-      logger.info('SearchEngine', `Optimizing query: "${query}" for industry: ${industry || 'general'}`)
+      logger.info(
+        'SearchEngine',
+        `Optimizing query: "${query}" for industry: ${industry || 'general'}`
+      )
       const optimization = await queryOptimizer.optimizeQuery(query, location, industry)
 
-      logger.info('SearchEngine', `Query optimized: "${optimization.optimized}" (confidence: ${optimization.confidence.toFixed(2)})`)
+      logger.info(
+        'SearchEngine',
+        `Query optimized: "${optimization.optimized}" (confidence: ${optimization.confidence.toFixed(2)})`
+      )
 
       // Search with optimized query
       const rawResults = await this.searchWithFallback(
@@ -175,9 +196,10 @@ export class SearchEngineService {
       )
 
       // Validate and score results
-      const validatedResults = rawResults.length > 0
-        ? await searchResultValidator.validateResults(rawResults, query, location)
-        : []
+      const validatedResults =
+        rawResults.length > 0
+          ? await searchResultValidator.validateResults(rawResults, query, location)
+          : []
 
       // Record performance metrics
       const searchTime = Date.now() - startTime
@@ -186,16 +208,21 @@ export class SearchEngineService {
         location: optimization.normalizedLocation,
         searchTime,
         resultCount: validatedResults.length,
-        relevanceScore: validatedResults.length > 0
-          ? validatedResults.reduce((sum, r) => sum + r.scores.relevance, 0) / validatedResults.length
-          : 0,
+        relevanceScore:
+          validatedResults.length > 0
+            ? validatedResults.reduce((sum, r) => sum + r.scores.relevance, 0) /
+              validatedResults.length
+            : 0,
         timestamp: new Date(),
         searchProvider: 'optimized',
       }
 
       queryOptimizer.recordPerformance(performance)
 
-      logger.info('SearchEngine', `Optimized search completed in ${searchTime}ms: ${validatedResults.length} results`)
+      logger.info(
+        'SearchEngine',
+        `Optimized search completed in ${searchTime}ms: ${validatedResults.length} results`
+      )
 
       return {
         results: validatedResults,
@@ -322,28 +349,82 @@ export class SearchEngineService {
   private getBusinessTypesForQuery(query: string): string[] {
     const queryLower = query.toLowerCase()
 
-    if (queryLower.includes('restaurant') || queryLower.includes('food') || queryLower.includes('dining')) {
-      return ['Italian Restaurant', 'Mexican Restaurant', 'Chinese Restaurant', 'American Diner', 'Pizza Place', 'Cafe & Bistro']
+    if (
+      queryLower.includes('restaurant') ||
+      queryLower.includes('food') ||
+      queryLower.includes('dining')
+    ) {
+      return [
+        'Italian Restaurant',
+        'Mexican Restaurant',
+        'Chinese Restaurant',
+        'American Diner',
+        'Pizza Place',
+        'Cafe & Bistro',
+      ]
     }
 
-    if (queryLower.includes('medical') || queryLower.includes('doctor') || queryLower.includes('health')) {
-      return ['Medical Center', 'Family Practice', 'Urgent Care', 'Dental Office', 'Pediatric Clinic', 'Specialist Clinic']
+    if (
+      queryLower.includes('medical') ||
+      queryLower.includes('doctor') ||
+      queryLower.includes('health')
+    ) {
+      return [
+        'Medical Center',
+        'Family Practice',
+        'Urgent Care',
+        'Dental Office',
+        'Pediatric Clinic',
+        'Specialist Clinic',
+      ]
     }
 
-    if (queryLower.includes('shop') || queryLower.includes('store') || queryLower.includes('retail')) {
-      return ['Retail Store', 'Boutique Shop', 'Electronics Store', 'Clothing Store', 'Hardware Store', 'Gift Shop']
+    if (
+      queryLower.includes('shop') ||
+      queryLower.includes('store') ||
+      queryLower.includes('retail')
+    ) {
+      return [
+        'Retail Store',
+        'Boutique Shop',
+        'Electronics Store',
+        'Clothing Store',
+        'Hardware Store',
+        'Gift Shop',
+      ]
     }
 
     if (queryLower.includes('service') || queryLower.includes('professional')) {
-      return ['Consulting Services', 'Legal Services', 'Accounting Firm', 'Insurance Agency', 'Real Estate Office', 'Marketing Agency']
+      return [
+        'Consulting Services',
+        'Legal Services',
+        'Accounting Firm',
+        'Insurance Agency',
+        'Real Estate Office',
+        'Marketing Agency',
+      ]
     }
 
     if (queryLower.includes('construction') || queryLower.includes('contractor')) {
-      return ['Construction Company', 'Plumbing Services', 'Electrical Contractor', 'HVAC Services', 'Roofing Company', 'General Contractor']
+      return [
+        'Construction Company',
+        'Plumbing Services',
+        'Electrical Contractor',
+        'HVAC Services',
+        'Roofing Company',
+        'General Contractor',
+      ]
     }
 
     // Default business types
-    return ['Local Business', 'Professional Services', 'Commercial Enterprise', 'Service Provider', 'Business Solutions', 'Local Company']
+    return [
+      'Local Business',
+      'Professional Services',
+      'Commercial Enterprise',
+      'Service Provider',
+      'Business Solutions',
+      'Local Company',
+    ]
   }
 
   /**
@@ -353,7 +434,16 @@ export class SearchEngineService {
    * @returns Generated business name
    */
   private generateBusinessName(businessType: string, location: string): string {
-    const prefixes = ['Premier', 'Elite', 'Professional', 'Quality', 'Trusted', 'Local', 'Best', 'Top']
+    const prefixes = [
+      'Premier',
+      'Elite',
+      'Professional',
+      'Quality',
+      'Trusted',
+      'Local',
+      'Best',
+      'Top',
+    ]
     const suffixes = ['LLC', 'Inc', 'Co', 'Group', 'Solutions', 'Services']
 
     const locationName = location.split(',')[0]?.split(' ')[0] || 'Local' // Get first part of location
@@ -441,7 +531,6 @@ export class SearchEngineService {
 
       logger.info('SearchEngine', `Bing search returned ${results.length} valid results`)
       return results
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
@@ -451,7 +540,11 @@ export class SearchEngineService {
         } else if (error.response?.status === 429) {
           logger.warn('SearchEngine', 'Bing API rate limit exceeded, will retry later')
         } else {
-          logger.error('SearchEngine', `Bing API error: ${error.response?.status}`, error.response?.data)
+          logger.error(
+            'SearchEngine',
+            `Bing API error: ${error.response?.status}`,
+            error.response?.data
+          )
         }
       } else {
         logger.error('SearchEngine', 'Bing search failed with network error', error)
@@ -476,7 +569,10 @@ export class SearchEngineService {
     const searchEngineId = process.env.GOOGLE_SEARCH_ENGINE_ID
 
     if (!apiKey || !searchEngineId) {
-      logger.warn('SearchEngine', 'Google Custom Search API key or engine ID not configured, skipping Google search')
+      logger.warn(
+        'SearchEngine',
+        'Google Custom Search API key or engine ID not configured, skipping Google search'
+      )
       return []
     }
 
@@ -505,7 +601,6 @@ export class SearchEngineService {
 
       logger.info('SearchEngine', `Google search returned ${results.length} valid results`)
       return results
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 400) {
@@ -515,7 +610,11 @@ export class SearchEngineService {
         } else if (error.response?.status === 429) {
           logger.warn('SearchEngine', 'Google API rate limit exceeded, will retry later')
         } else {
-          logger.error('SearchEngine', `Google API error: ${error.response?.status}`, error.response?.data)
+          logger.error(
+            'SearchEngine',
+            `Google API error: ${error.response?.status}`,
+            error.response?.data
+          )
         }
       } else {
         logger.error('SearchEngine', 'Google search failed with network error', error)
@@ -532,8 +631,8 @@ export class SearchEngineService {
    * @returns Promise resolving to search results
    */
   private async searchWithYandex(
-    query: string, 
-    location: string, 
+    query: string,
+    location: string,
     maxResults: number
   ): Promise<SearchResult[]> {
     const apiKey = process.env.YANDEX_SEARCH_API_KEY
@@ -542,7 +641,7 @@ export class SearchEngineService {
     }
 
     const searchQuery = `${query} ${location}`
-    
+
     try {
       const response = await axios.get('https://yandex.com/search/xml', {
         params: {
@@ -555,7 +654,7 @@ export class SearchEngineService {
           groupby: `attr=d.mode=deep.groups-on-page=${Math.min(maxResults, 10)}.docs-in-group=1`,
         },
         headers: {
-          'Authorization': `Api-Key ${apiKey}`,
+          Authorization: `Api-Key ${apiKey}`,
           'User-Agent': this.config.userAgent,
         },
         timeout: this.config.timeout,
@@ -586,19 +685,13 @@ export class SearchEngineService {
     ]
 
     // Add industry-specific variations
-    const variations = [
-      'contact',
-      'about us',
-      'directory',
-      'professional',
-      'commercial',
-    ]
+    const variations = ['contact', 'about us', 'directory', 'professional', 'commercial']
 
     const expandedQueries: string[] = []
-    
+
     for (const base of baseQueries) {
       expandedQueries.push(base)
-      
+
       // Add some variations
       for (const variation of variations.slice(0, 2)) {
         expandedQueries.push(`${base} ${variation}`)
@@ -628,16 +721,30 @@ export class SearchEngineService {
    */
   private isValidBusinessDomain(domain: string): boolean {
     if (!domain) return false
-    
+
     // Exclude common non-business domains
     const excludedDomains = [
-      'facebook.com', 'twitter.com', 'linkedin.com', 'instagram.com',
-      'yelp.com', 'yellowpages.com', 'google.com', 'youtube.com',
-      'wikipedia.org', 'amazon.com', 'ebay.com', 'craigslist.org',
-      'indeed.com', 'glassdoor.com', 'zillow.com', 'realtor.com',
-      'tripadvisor.com', 'booking.com', 'expedia.com',
+      'facebook.com',
+      'twitter.com',
+      'linkedin.com',
+      'instagram.com',
+      'yelp.com',
+      'yellowpages.com',
+      'google.com',
+      'youtube.com',
+      'wikipedia.org',
+      'amazon.com',
+      'ebay.com',
+      'craigslist.org',
+      'indeed.com',
+      'glassdoor.com',
+      'zillow.com',
+      'realtor.com',
+      'tripadvisor.com',
+      'booking.com',
+      'expedia.com',
     ]
-    
+
     // Exclude social media and directory sites
     const excludedPatterns = [
       /\.facebook\.com$/,
@@ -648,22 +755,22 @@ export class SearchEngineService {
       /\.reddit\.com$/,
       /\.tumblr\.com$/,
     ]
-    
+
     // Check excluded domains
     if (excludedDomains.some(excluded => domain.includes(excluded))) {
       return false
     }
-    
+
     // Check excluded patterns
     if (excludedPatterns.some(pattern => pattern.test(domain))) {
       return false
     }
-    
+
     // Must be a proper domain
     if (!domain.includes('.') || domain.length < 4) {
       return false
     }
-    
+
     return true
   }
 
@@ -680,7 +787,7 @@ export class SearchEngineService {
         return await fn()
       } catch (error) {
         lastError = error as Error
-        
+
         if (attempt < this.config.maxRetries) {
           const delay = this.config.retryDelay * Math.pow(2, attempt - 1)
           await new Promise(resolve => setTimeout(resolve, delay))
@@ -698,11 +805,7 @@ export class SearchEngineService {
    * @param industry - Industry context
    * @returns Array of suggested queries
    */
-  getQuerySuggestions(
-    partialQuery: string,
-    location?: string,
-    industry?: string
-  ): string[] {
+  getQuerySuggestions(partialQuery: string, location?: string, industry?: string): string[] {
     return queryOptimizer.getQuerySuggestions(partialQuery, location, industry)
   }
 
@@ -740,8 +843,6 @@ export class SearchEngineService {
     logger.info('SearchEngine', 'All caches cleared')
   }
 
-
-
   /**
    * Get comprehensive cache statistics
    * @returns Cache statistics including search, validation, and optimization metrics
@@ -749,7 +850,12 @@ export class SearchEngineService {
   getCacheStats(): {
     searchCache: { size: number; keys: string[] }
     validationCache: { cacheSize: number; domainsProcessed: number; duplicatesFound: number }
-    optimizationCache: { performanceMetricsCount: number; synonymCacheSize: number; locationCacheSize: number; searchTemplatesCount: number }
+    optimizationCache: {
+      performanceMetricsCount: number
+      synonymCacheSize: number
+      locationCacheSize: number
+      searchTemplatesCount: number
+    }
   } {
     return {
       searchCache: {
@@ -782,10 +888,21 @@ export class SearchEngineService {
 
     // Add site restrictions to filter out directories and social media
     const excludeSites = [
-      'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
-      'yelp.com', 'yellowpages.com', 'whitepages.com', 'superpages.com',
-      'foursquare.com', 'tripadvisor.com', 'google.com', 'bing.com',
-      'indeed.com', 'glassdoor.com', 'craigslist.org'
+      'facebook.com',
+      'twitter.com',
+      'instagram.com',
+      'linkedin.com',
+      'yelp.com',
+      'yellowpages.com',
+      'whitepages.com',
+      'superpages.com',
+      'foursquare.com',
+      'tripadvisor.com',
+      'google.com',
+      'bing.com',
+      'indeed.com',
+      'glassdoor.com',
+      'craigslist.org',
     ]
 
     for (const site of excludeSites) {
@@ -838,7 +955,6 @@ export class SearchEngineService {
           snippet: item.snippet || '',
           domain: domain,
         })
-
       } catch (error) {
         logger.warn('SearchEngine', 'Failed to parse Bing result item', error)
         continue
@@ -874,9 +990,10 @@ export class SearchEngineService {
     // Add location if provided - for individual keyword searches, location is crucial
     if (cleanLocation) {
       // Check if the query already contains location-specific terms
-      const hasLocationTerms = cleanQuery.includes('near me') ||
-                              cleanQuery.includes('nearby') ||
-                              cleanQuery.includes('local')
+      const hasLocationTerms =
+        cleanQuery.includes('near me') ||
+        cleanQuery.includes('nearby') ||
+        cleanQuery.includes('local')
 
       if (hasLocationTerms) {
         // Replace "near me" with specific location for better results
@@ -889,11 +1006,25 @@ export class SearchEngineService {
 
     // Add site restrictions to filter out directories and social media
     const excludeSites = [
-      'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
-      'yelp.com', 'yellowpages.com', 'whitepages.com', 'superpages.com',
-      'foursquare.com', 'tripadvisor.com', 'indeed.com', 'glassdoor.com',
-      'craigslist.org', 'amazon.com', 'ebay.com', 'nextdoor.com',
-      'thumbtack.com', 'angi.com', 'homeadvisor.com'
+      'facebook.com',
+      'twitter.com',
+      'instagram.com',
+      'linkedin.com',
+      'yelp.com',
+      'yellowpages.com',
+      'whitepages.com',
+      'superpages.com',
+      'foursquare.com',
+      'tripadvisor.com',
+      'indeed.com',
+      'glassdoor.com',
+      'craigslist.org',
+      'amazon.com',
+      'ebay.com',
+      'nextdoor.com',
+      'thumbtack.com',
+      'angi.com',
+      'homeadvisor.com',
     ]
 
     for (const site of excludeSites) {
@@ -901,7 +1032,8 @@ export class SearchEngineService {
     }
 
     // Add file type restrictions
-    googleQuery += ' -filetype:pdf -filetype:doc -filetype:docx -filetype:ppt -filetype:xls -filetype:xlsx'
+    googleQuery +=
+      ' -filetype:pdf -filetype:doc -filetype:docx -filetype:ppt -filetype:xls -filetype:xlsx'
 
     // Prefer business-related domains and content
     googleQuery += ' (site:*.com OR site:*.org OR site:*.net OR site:*.biz)'
@@ -949,7 +1081,6 @@ export class SearchEngineService {
           snippet: item.snippet || '',
           domain: domain,
         })
-
       } catch (error) {
         logger.warn('SearchEngine', 'Failed to parse Google result item', error)
         continue

@@ -50,104 +50,140 @@ const searchHandler = withApiSecurity(
   withValidation(
     async (request: NextRequest, validatedData: SearchRequestData) => {
       const ip = getClientIP(request)
-      const { provider, query, location, maxResults = 1000, industry, enableOptimization = false } = validatedData.body || {}
+      const {
+        provider,
+        query,
+        location,
+        maxResults = 1000,
+        industry,
+        enableOptimization = false,
+      } = validatedData.body || {}
 
       logger.info('Search API', `Search request from IP: ${ip}`, { provider, query, location })
 
       try {
         // Handle DuckDuckGo SERP scraping requests
-    if (provider === 'duckduckgo-serp') {
-      const { page = 0 } = validatedData.body || {}
-      return await handleDuckDuckGoSERP(query, page, maxResults)
-    }
+        if (provider === 'duckduckgo-serp') {
+          const { page = 0 } = validatedData.body || {}
+          return await handleDuckDuckGoSERP(query, page, maxResults)
+        }
 
-    // Handle BBB business discovery requests
-    if (provider === 'bbb-discovery') {
-      const { location: bbbLocation, accreditedOnly = false, zipRadius = 10 } = validatedData.body || {}
-      return await handleBBBBusinessDiscovery(query, bbbLocation || location, accreditedOnly, zipRadius, maxResults)
-    }
+        // Handle BBB business discovery requests
+        if (provider === 'bbb-discovery') {
+          const {
+            location: bbbLocation,
+            accreditedOnly = false,
+            zipRadius = 10,
+          } = validatedData.body || {}
+          return await handleBBBBusinessDiscovery(
+            query,
+            bbbLocation || location,
+            accreditedOnly,
+            zipRadius,
+            maxResults
+          )
+        }
 
-    // Handle Yelp business discovery requests
-    if (provider === 'yelp-discovery') {
-      const { location: yelpLocation, zipRadius = 25, maxPagesPerSite = 20 } = validatedData.body || {}
-      return await handleYelpBusinessDiscovery(query, yelpLocation || location, zipRadius, maxResults, maxPagesPerSite)
-    }
+        // Handle Yelp business discovery requests
+        if (provider === 'yelp-discovery') {
+          const {
+            location: yelpLocation,
+            zipRadius = 25,
+            maxPagesPerSite = 20,
+          } = validatedData.body || {}
+          return await handleYelpBusinessDiscovery(
+            query,
+            yelpLocation || location,
+            zipRadius,
+            maxResults,
+            maxPagesPerSite
+          )
+        }
 
-    // Handle Chamber of Commerce processing requests
-    if (provider === 'chamber-of-commerce') {
-      const { url, maxPagesPerSite = 20 } = validatedData.body || {}
-      return await handleChamberOfCommerceProcessing(url, maxResults, maxPagesPerSite)
-    }
+        // Handle Chamber of Commerce processing requests
+        if (provider === 'chamber-of-commerce') {
+          const { url, maxPagesPerSite = 20 } = validatedData.body || {}
+          return await handleChamberOfCommerceProcessing(url, maxResults, maxPagesPerSite)
+        }
 
-    // Handle comprehensive search using search orchestrator
-    if (provider === 'comprehensive') {
-      const { location: compLocation, zipRadius = 25, accreditedOnly = false } = validatedData.body || {}
-      return await handleComprehensiveSearch(query, compLocation || location, zipRadius, accreditedOnly, maxResults)
-    }
+        // Handle comprehensive search using search orchestrator
+        if (provider === 'comprehensive') {
+          const {
+            location: compLocation,
+            zipRadius = 25,
+            accreditedOnly = false,
+          } = validatedData.body || {}
+          return await handleComprehensiveSearch(
+            query,
+            compLocation || location,
+            zipRadius,
+            accreditedOnly,
+            maxResults
+          )
+        }
 
-    // Validate required fields for regular search
-    if (!query || !location) {
-      return NextResponse.json(
-        { error: 'Query and location are required' },
-        { status: 400 }
-      )
-    }
+        // Validate required fields for regular search
+        if (!query || !location) {
+          return NextResponse.json({ error: 'Query and location are required' }, { status: 400 })
+        }
 
-    // Sanitize inputs
-    const sanitizedQuery = validationService.sanitizeInput(query).substring(0, 100)
-    const sanitizedLocation = validationService.sanitizeInput(location).substring(0, 100)
-    const sanitizedIndustry = industry ? validationService.sanitizeInput(industry).substring(0, 50) : undefined
+        // Sanitize inputs
+        const sanitizedQuery = validationService.sanitizeInput(query).substring(0, 100)
+        const sanitizedLocation = validationService.sanitizeInput(location).substring(0, 100)
+        const sanitizedIndustry = industry
+          ? validationService.sanitizeInput(industry).substring(0, 50)
+          : undefined
 
-    // Parse maxResults (no upper limit - gather as many as possible)
-    const validMaxResults = Math.max(parseInt(maxResults) || 1000, 1)
+        // Parse maxResults (no upper limit - gather as many as possible)
+        const validMaxResults = Math.max(parseInt(maxResults) || 1000, 1)
 
-    logger.info('Search API', `Search request: "${sanitizedQuery}" in "${sanitizedLocation}"`, {
-      industry: sanitizedIndustry,
-      maxResults: validMaxResults,
-      enableOptimization,
-    })
+        logger.info('Search API', `Search request: "${sanitizedQuery}" in "${sanitizedLocation}"`, {
+          industry: sanitizedIndustry,
+          maxResults: validMaxResults,
+          enableOptimization,
+        })
 
-    let results
-    let optimization
-    let performance
+        let results
+        let optimization
+        let performance
 
-    if (enableOptimization && sanitizedIndustry) {
-      // Use optimized search
-      const optimizedResult = await searchEngine.searchBusinessesOptimized(
-        sanitizedQuery,
-        sanitizedLocation,
-        sanitizedIndustry,
-        validMaxResults
-      )
-      
-      results = optimizedResult.results
-      optimization = optimizedResult.optimization
-      performance = optimizedResult.performance
-    } else {
-      // Use regular search
-      results = await searchEngine.searchBusinesses(
-        sanitizedQuery,
-        sanitizedLocation,
-        validMaxResults,
-        true // Enable validation
-      )
-    }
+        if (enableOptimization && sanitizedIndustry) {
+          // Use optimized search
+          const optimizedResult = await searchEngine.searchBusinessesOptimized(
+            sanitizedQuery,
+            sanitizedLocation,
+            sanitizedIndustry,
+            validMaxResults
+          )
 
-    logger.info('Search API', `Search completed: ${results.length} results found`)
+          results = optimizedResult.results
+          optimization = optimizedResult.optimization
+          performance = optimizedResult.performance
+        } else {
+          // Use regular search
+          results = await searchEngine.searchBusinesses(
+            sanitizedQuery,
+            sanitizedLocation,
+            validMaxResults,
+            true // Enable validation
+          )
+        }
 
-    const response = {
-      success: true,
-      results,
-      query: sanitizedQuery,
-      location: sanitizedLocation,
-      industry: sanitizedIndustry,
-      maxResults: validMaxResults,
-      count: results.length,
-      ...(optimization && { optimization }),
-      ...(performance && { performance }),
-    }
+        logger.info('Search API', `Search completed: ${results.length} results found`)
 
-    return NextResponse.json(response)
+        const response = {
+          success: true,
+          results,
+          query: sanitizedQuery,
+          location: sanitizedLocation,
+          industry: sanitizedIndustry,
+          maxResults: validMaxResults,
+          count: results.length,
+          ...(optimization && { optimization }),
+          ...(performance && { performance }),
+        }
+
+        return NextResponse.json(response)
       } catch (error) {
         logger.error('Search API', 'Search request failed', error)
 
@@ -155,34 +191,44 @@ const searchHandler = withApiSecurity(
           {
             success: false,
             error: 'Search failed',
-            message: error instanceof Error ? error.message : 'Unknown error'
+            message: error instanceof Error ? error.message : 'Unknown error',
           },
           { status: 500 }
         )
       }
     },
-{
-  body: [
-    { field: 'provider', type: 'string' as const, allowedValues: ['duckduckgo-serp', 'bbb-discovery', 'yelp-discovery', 'chamber-of-commerce', 'comprehensive'] },
-    { field: 'query', required: true, type: 'string' as const, minLength: 1, maxLength: 500 },
-    { field: 'location', type: 'string' as const, maxLength: 200 },
-    { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
-    { field: 'industry', type: 'string' as const, maxLength: 100 },
-    { field: 'enableOptimization', type: 'boolean' as const },
-    { field: 'page', type: 'number' as const, min: 0, max: 100 },
-    { field: 'accreditedOnly', type: 'boolean' as const },
-    { field: 'zipRadius', type: 'number' as const, min: 1, max: 100 },
-    { field: 'maxPagesPerSite', type: 'number' as const, min: 1, max: 50 },
-    { field: 'url', type: 'url' as const }
-  ]
-}
-),
-{
-  requireAuth: false, // Allow public access for now, but with rate limiting
-  rateLimit: 'scraping',
-  validateInput: false, // Disable to avoid conflict with withValidation middleware
-  logRequests: true
-}
+    {
+      body: [
+        {
+          field: 'provider',
+          type: 'string' as const,
+          allowedValues: [
+            'duckduckgo-serp',
+            'bbb-discovery',
+            'yelp-discovery',
+            'chamber-of-commerce',
+            'comprehensive',
+          ],
+        },
+        { field: 'query', required: true, type: 'string' as const, minLength: 1, maxLength: 500 },
+        { field: 'location', type: 'string' as const, maxLength: 200 },
+        { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
+        { field: 'industry', type: 'string' as const, maxLength: 100 },
+        { field: 'enableOptimization', type: 'boolean' as const },
+        { field: 'page', type: 'number' as const, min: 0, max: 100 },
+        { field: 'accreditedOnly', type: 'boolean' as const },
+        { field: 'zipRadius', type: 'number' as const, min: 1, max: 100 },
+        { field: 'maxPagesPerSite', type: 'number' as const, min: 1, max: 50 },
+        { field: 'url', type: 'url' as const },
+      ],
+    }
+  ),
+  {
+    requireAuth: false, // Allow public access for now, but with rate limiting
+    rateLimit: 'scraping',
+    validateInput: false, // Disable to avoid conflict with withValidation middleware
+    logRequests: true,
+  }
 )
 
 export const POST = searchHandler
@@ -198,16 +244,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const industry = searchParams.get('industry') || ''
 
     if (!query) {
-      return NextResponse.json(
-        { error: 'Query parameter "q" is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Query parameter "q" is required' }, { status: 400 })
     }
 
     // Sanitize inputs
     const sanitizedQuery = validationService.sanitizeInput(query).substring(0, 100)
-    const sanitizedLocation = location ? validationService.sanitizeInput(location).substring(0, 100) : undefined
-    const sanitizedIndustry = industry ? validationService.sanitizeInput(industry).substring(0, 50) : undefined
+    const sanitizedLocation = location
+      ? validationService.sanitizeInput(location).substring(0, 100)
+      : undefined
+    const sanitizedIndustry = industry
+      ? validationService.sanitizeInput(industry).substring(0, 50)
+      : undefined
 
     logger.info('Search API', `Suggestions request: "${sanitizedQuery}"`)
 
@@ -225,19 +272,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     })
   } catch (error) {
     logger.error('Search API', 'Suggestions request failed', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to get suggestions',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
   }
 }
-
-
 
 /**
  * Handle DuckDuckGo SERP scraping to get real business websites using headless browser
@@ -254,13 +299,19 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
     // Check if DuckDuckGo is temporarily disabled due to repeated failures
     const failureCount = rateLimiter.getFailureCount('duckduckgo')
     if (failureCount >= 5) {
-      logger.warn('Search API', `DuckDuckGo temporarily disabled due to ${failureCount} consecutive failures`)
-      return NextResponse.json({
-        success: false,
-        error: 'Service temporarily unavailable',
-        message: 'DuckDuckGo is temporarily disabled due to repeated rate limiting',
-        retryAfter: 3600000 // 1 hour
-      }, { status: 503 })
+      logger.warn(
+        'Search API',
+        `DuckDuckGo temporarily disabled due to ${failureCount} consecutive failures`
+      )
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Service temporarily unavailable',
+          message: 'DuckDuckGo is temporarily disabled due to repeated rate limiting',
+          retryAfter: 3600000, // 1 hour
+        },
+        { status: 503 }
+      )
     }
 
     // Check rate limits and wait if necessary
@@ -269,20 +320,23 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
     const rateLimitStatus = rateLimiter.canMakeRequest('duckduckgo')
     if (!rateLimitStatus.canMakeRequest) {
       logger.warn('Search API', `DuckDuckGo rate limit exceeded`, rateLimitStatus)
-      return NextResponse.json({
-        success: false,
-        error: 'Rate limit exceeded',
-        message: '429',
-        retryAfter: rateLimitStatus.recommendedDelay
-      }, { status: 429 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Rate limit exceeded',
+          message: '429',
+          retryAfter: rateLimitStatus.recommendedDelay,
+        },
+        { status: 429 }
+      )
     }
 
     logger.info('Search API', `DuckDuckGo SERP scraping: ${query} (page ${page + 1})`, {
       rateLimitStatus: {
         requestsInLastMinute: rateLimitStatus.requestsInLastMinute,
         requestsInLastHour: rateLimitStatus.requestsInLastHour,
-        backoffLevel: rateLimitStatus.backoffLevel
-      }
+        backoffLevel: rateLimitStatus.backoffLevel,
+      },
     })
 
     // Import required modules
@@ -295,7 +349,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
       enableIPSpoofing: true,
       enableMACAddressSpoofing: true,
       enableFingerprintSpoofing: true,
-      requestDelay: { min: 8000, max: 20000 } // Much longer delays for DuckDuckGo
+      requestDelay: { min: 8000, max: 20000 }, // Much longer delays for DuckDuckGo
     })
 
     // Get proxy arguments for browser launch (if enabled)
@@ -331,10 +385,10 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         '--disable-component-update',
         '--disable-background-networking',
         '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        ...proxyArgs
+        ...proxyArgs,
       ],
       ignoreDefaultArgs: ['--enable-automation'],
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
     })
 
     try {
@@ -353,10 +407,10 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
           customFilters: [
             'useTranslation: DISMISS is not available',
             'expanded-maps-vertical',
-            'duckassist-ia'
-          ]
+            'duckassist-ia',
+          ],
         },
-        resourceBlocking: 'strict'
+        resourceBlocking: 'strict',
       })
 
       // Additional stealth measures
@@ -378,26 +432,26 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 
         // Override permissions
         const originalQuery = window.navigator.permissions.query
-        window.navigator.permissions.query = (parameters) => (
-          parameters.name === 'notifications' ?
-            Promise.resolve({ state: Notification.permission }) :
-            originalQuery(parameters)
-        )
+        window.navigator.permissions.query = parameters =>
+          parameters.name === 'notifications'
+            ? Promise.resolve({ state: Notification.permission })
+            : originalQuery(parameters)
       })
 
       // Set additional headers to appear more human-like
       await browserPage.setExtraHTTPHeaders({
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        Accept:
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'en-US,en;q=0.9',
         'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
+        Pragma: 'no-cache',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'none',
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
-        'DNT': '1'
+        DNT: '1',
       })
 
       // Randomize user agent from a pool (backup to spoofing service)
@@ -405,7 +459,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0'
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
       ]
 
       // Backup user agent setting (spoofing service already handles this)
@@ -432,7 +486,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
       // Navigate to DuckDuckGo search page with longer timeout
       await browserPage.goto(searchUrl.toString(), {
         waitUntil: 'networkidle2',
-        timeout: 60000 // Increased timeout to 60 seconds
+        timeout: 60000, // Increased timeout to 60 seconds
       })
 
       // Simulate extensive human-like behavior after page load
@@ -454,14 +508,20 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
       const pageContent = await browserPage.content()
       const pageTitle = await browserPage.title()
 
-      if (pageContent.includes('rate limit') || pageContent.includes('too many requests') ||
-          pageTitle.includes('blocked') || pageContent.includes('429')) {
+      if (
+        pageContent.includes('rate limit') ||
+        pageContent.includes('too many requests') ||
+        pageTitle.includes('blocked') ||
+        pageContent.includes('429')
+      ) {
         logger.warn('Search API', 'DuckDuckGo page indicates rate limiting or blocking')
         throw new Error('429')
       }
 
       // Wait for search results to load with increased timeout
-      await browserPage.waitForSelector('[data-testid="result"], .result, .web-result', { timeout: 20000 })
+      await browserPage.waitForSelector('[data-testid="result"], .result, .web-result', {
+        timeout: 20000,
+      })
 
       // Extract search results using the browser
       const results = await extractDuckDuckGoSERPResults(browserPage, maxResults)
@@ -478,7 +538,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 
       logger.info('Search API', `DuckDuckGo SERP scraping returned ${results.length} results`, {
         responseTime,
-        resultsCount: results.length
+        resultsCount: results.length,
       })
 
       return NextResponse.json({
@@ -488,15 +548,13 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         page: page,
         results: results,
         count: results.length,
-        responseTime
+        responseTime,
       })
-
     } finally {
       if (browserInstance) {
         await browserInstance.close()
       }
     }
-
   } catch (error) {
     // Clean up browser if it exists
     if (browserInstance) {
@@ -540,11 +598,12 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
       error: error instanceof Error ? error.message : 'Unknown error',
       responseTime,
       query,
-      page
+      page,
     })
 
     // Check if this is a rate limiting error
-    const isRateLimit = error instanceof Error &&
+    const isRateLimit =
+      error instanceof Error &&
       (error.message.includes('429') || error.message.includes('Rate limit'))
 
     return NextResponse.json(
@@ -552,7 +611,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         success: false,
         error: isRateLimit ? 'Rate limit exceeded' : 'DuckDuckGo SERP scraping failed',
         message: error instanceof Error ? error.message : 'Unknown error',
-        responseTime
+        responseTime,
       },
       { status: isRateLimit ? 429 : 500 }
     )
@@ -562,7 +621,10 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 /**
  * Extract search results from DuckDuckGo SERP using browser automation
  */
-async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Promise<SearchResultItem[]> {
+async function extractDuckDuckGoSERPResults(
+  page: Page,
+  maxResults: number
+): Promise<SearchResultItem[]> {
   return await page.evaluate((maxResults: number) => {
     const results: SearchResultItem[] = []
 
@@ -575,7 +637,7 @@ async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Pro
       '.web-result',
       '.result__body',
       '.results .result',
-      'article[data-testid="result"]'
+      'article[data-testid="result"]',
     ]
 
     let resultElements: NodeListOf<Element> | null = null
@@ -608,7 +670,7 @@ async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Pro
           '.result__title a',
           '.result__a',
           'a[data-testid="result-title-a"]',
-          'a.result__url'
+          'a.result__url',
         ]
 
         let titleLink: HTMLAnchorElement | null = null
@@ -634,7 +696,7 @@ async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Pro
           '.result__body',
           '.snippet',
           '[data-testid="result-snippet"]',
-          '.result-snippet'
+          '.result-snippet',
         ]
 
         let snippet = ''
@@ -651,29 +713,40 @@ async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Pro
 
         // Define business domain filtering logic inline
         const excludedDomains = [
-          'duckduckgo.com', 'google.com', 'bing.com', 'yahoo.com',
-          'wikipedia.org', 'facebook.com', 'twitter.com', 'linkedin.com',
-          'instagram.com', 'youtube.com', 'reddit.com', 'pinterest.com',
-          'amazon.com', 'ebay.com', 'craigslist.org'
+          'duckduckgo.com',
+          'google.com',
+          'bing.com',
+          'yahoo.com',
+          'wikipedia.org',
+          'facebook.com',
+          'twitter.com',
+          'linkedin.com',
+          'instagram.com',
+          'youtube.com',
+          'reddit.com',
+          'pinterest.com',
+          'amazon.com',
+          'ebay.com',
+          'craigslist.org',
         ]
 
-        const isBusinessDomain = !excludedDomains.some(excluded => domain.includes(excluded)) &&
-                                !url.includes('duckduckgo.com') &&
-                                !url.includes('javascript:') &&
-                                !url.startsWith('javascript:') &&
-                                url.startsWith('http')
+        const isBusinessDomain =
+          !excludedDomains.some(excluded => domain.includes(excluded)) &&
+          !url.includes('duckduckgo.com') &&
+          !url.includes('javascript:') &&
+          !url.startsWith('javascript:') &&
+          url.startsWith('http')
 
         if (isBusinessDomain) {
           results.push({
             url: url,
             title: title,
             snippet: snippet,
-            domain: domain
+            domain: domain,
           })
 
           console.log(`Extracted: ${title} -> ${url}`)
         }
-
       } catch (error) {
         console.log(`Error processing result ${i}:`, error)
         continue
@@ -682,7 +755,6 @@ async function extractDuckDuckGoSERPResults(page: Page, maxResults: number): Pro
 
     console.log(`Total business results extracted: ${results.length}`)
     return results
-
   }, maxResults)
 }
 
@@ -703,7 +775,7 @@ function parseDuckDuckGoSERP(html: string, maxResults: number): SearchResultItem
       // Direct result links
       /href="(https?:\/\/[^"]+)"[^>]*class="[^"]*result[^"]*"[^>]*>([^<]+)</g,
       // Alternative result patterns
-      /<a[^>]+href="(https?:\/\/[^"]+)"[^>]*>([^<]+)<\/a>/g
+      /<a[^>]+href="(https?:\/\/[^"]+)"[^>]*>([^<]+)<\/a>/g,
     ]
 
     const urlRegex = /https?:\/\/[^\s<>"']+\.[a-z]{2,}/gi
@@ -739,7 +811,7 @@ function parseDuckDuckGoSERP(html: string, maxResults: number): SearchResultItem
             url: url,
             title: title,
             snippet: `Business website found via DuckDuckGo search`,
-            domain: domain
+            domain: domain,
           })
 
           logger.info('Search API', `Extracted business URL: ${url}`)
@@ -748,7 +820,6 @@ function parseDuckDuckGoSERP(html: string, maxResults: number): SearchResultItem
         // Skip invalid URLs
       }
     }
-
   } catch (error) {
     logger.warn('Search API', 'Failed to parse DuckDuckGo SERP HTML', error)
   }
@@ -762,10 +833,21 @@ function parseDuckDuckGoSERP(html: string, maxResults: number): SearchResultItem
 function shouldIncludeBusinessDomain(domain: string): boolean {
   // Exclude search engines, social media, and other non-business sites
   const excludeDomains = [
-    'google.com', 'bing.com', 'yahoo.com', 'duckduckgo.com',
-    'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
-    'youtube.com', 'wikipedia.org', 'reddit.com', 'pinterest.com',
-    'amazon.com', 'ebay.com', 'craigslist.org'
+    'google.com',
+    'bing.com',
+    'yahoo.com',
+    'duckduckgo.com',
+    'facebook.com',
+    'twitter.com',
+    'instagram.com',
+    'linkedin.com',
+    'youtube.com',
+    'wikipedia.org',
+    'reddit.com',
+    'pinterest.com',
+    'amazon.com',
+    'ebay.com',
+    'craigslist.org',
   ]
 
   if (excludeDomains.some(excluded => domain.includes(excluded))) {
@@ -774,8 +856,12 @@ function shouldIncludeBusinessDomain(domain: string): boolean {
 
   // Include business directory sites
   const businessDirectories = [
-    'yelp.com', 'yellowpages.com', 'bbb.org',
-    'foursquare.com', 'tripadvisor.com', 'angieslist.com'
+    'yelp.com',
+    'yellowpages.com',
+    'bbb.org',
+    'foursquare.com',
+    'tripadvisor.com',
+    'angieslist.com',
   ]
 
   if (businessDirectories.some(directory => domain.includes(directory))) {
@@ -787,9 +873,24 @@ function shouldIncludeBusinessDomain(domain: string): boolean {
   const hasBusinessTLD = businessTLDs.some(tld => domain.endsWith(tld))
 
   const businessKeywords = [
-    'restaurant', 'cafe', 'medical', 'dental', 'law', 'legal',
-    'clinic', 'hospital', 'shop', 'store', 'service', 'repair',
-    'salon', 'spa', 'fitness', 'gym', 'auto', 'insurance'
+    'restaurant',
+    'cafe',
+    'medical',
+    'dental',
+    'law',
+    'legal',
+    'clinic',
+    'hospital',
+    'shop',
+    'store',
+    'service',
+    'repair',
+    'salon',
+    'spa',
+    'fitness',
+    'gym',
+    'auto',
+    'insurance',
   ]
 
   const hasBusinessKeyword = businessKeywords.some(keyword => domain.includes(keyword))
@@ -808,13 +909,19 @@ async function handleBBBBusinessDiscovery(
   maxResults: number
 ) {
   try {
-    logger.info('Search API', `BBB business discovery: ${query} in ${location} (accredited: ${accreditedOnly}, radius: ${zipRadius}mi)`)
+    logger.info(
+      'Search API',
+      `BBB business discovery: ${query} in ${location} (accredited: ${accreditedOnly}, radius: ${zipRadius}mi)`
+    )
 
     // Check if this is an industry category that should be expanded
     const expandedCriteria = expandIndustryCategories(query)
 
     if (expandedCriteria.length > 0) {
-      logger.info('Search API', `Expanded industry category "${query}" to: ${expandedCriteria.join(', ')}`)
+      logger.info(
+        'Search API',
+        `Expanded industry category "${query}" to: ${expandedCriteria.join(', ')}`
+      )
 
       // Search for each expanded criteria individually
       const allBusinessWebsites: SearchResultItem[] = []
@@ -829,7 +936,7 @@ async function handleBBBBusinessDiscovery(
             location,
             accreditedOnly,
             zipRadius,
-            maxResults: resultsPerCriteria
+            maxResults: resultsPerCriteria,
           })
 
           allBusinessWebsites.push(...criteriaResults)
@@ -849,7 +956,10 @@ async function handleBBBBusinessDiscovery(
       // Note: No longer adding directory search URLs as business results
       // Use dedicated discovery services (Yelp Discovery, BBB Discovery) instead
 
-      logger.info('Search API', `BBB business discovery returned ${uniqueResults.length} business websites for expanded criteria`)
+      logger.info(
+        'Search API',
+        `BBB business discovery returned ${uniqueResults.length} business websites for expanded criteria`
+      )
 
       return NextResponse.json({
         success: true,
@@ -858,7 +968,7 @@ async function handleBBBBusinessDiscovery(
         expandedTo: expandedCriteria,
         location: location,
         results: uniqueResults,
-        count: uniqueResults.length
+        count: uniqueResults.length,
       })
     }
 
@@ -868,13 +978,16 @@ async function handleBBBBusinessDiscovery(
       location,
       accreditedOnly,
       zipRadius,
-      maxResults
+      maxResults,
     })
 
     // Note: No longer adding directory search URLs as business results
     // Use dedicated discovery services (Yelp Discovery, BBB Discovery) instead
 
-    logger.info('Search API', `BBB business discovery returned ${businessWebsites.length} business websites`)
+    logger.info(
+      'Search API',
+      `BBB business discovery returned ${businessWebsites.length} business websites`
+    )
 
     return NextResponse.json({
       success: true,
@@ -882,9 +995,8 @@ async function handleBBBBusinessDiscovery(
       query: query,
       location: location,
       results: businessWebsites,
-      count: businessWebsites.length
+      count: businessWebsites.length,
     })
-
   } catch (error) {
     logger.error('Search API', 'BBB business discovery failed', error)
 
@@ -897,7 +1009,7 @@ async function handleBBBBusinessDiscovery(
         query: query,
         location: location,
         results: [],
-        count: 0
+        count: 0,
       },
       { status: 500 }
     )
@@ -914,49 +1026,73 @@ function expandIndustryCategories(query: string): string[] {
   const industryMappings: Record<string, string[]> = {
     // Professional Services
     'professional services': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
-    'professional services businesses': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
-    'professional': ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
+    'professional services businesses': [
+      'consulting',
+      'legal',
+      'accounting',
+      'financial',
+      'insurance',
+    ],
+    professional: ['consulting', 'legal', 'accounting', 'financial', 'insurance'],
 
     // Healthcare & Medical
-    'healthcare': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
+    healthcare: ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
     'healthcare & medical': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
     'healthcare businesses': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
-    'medical': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
+    medical: ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
     'medical businesses': ['medical', 'healthcare', 'clinic', 'hospital', 'dental'],
 
     // Restaurants & Food Service
-    'restaurants': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
+    restaurants: ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
     'restaurants & food service': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
     'restaurant businesses': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
     'food service': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
     'food businesses': ['restaurant', 'cafe', 'food service', 'catering', 'dining'],
 
     // Retail & Shopping
-    'retail': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
+    retail: ['retail', 'store', 'shop', 'boutique', 'marketplace'],
     'retail & shopping': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
     'retail businesses': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
-    'shopping': ['retail', 'store', 'shop', 'boutique', 'marketplace'],
+    shopping: ['retail', 'store', 'shop', 'boutique', 'marketplace'],
 
     // Construction & Contractors
-    'construction': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
-    'construction & contractors': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
+    construction: ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
+    'construction & contractors': [
+      'construction',
+      'contractor',
+      'builder',
+      'renovation',
+      'plumbing',
+    ],
     'construction businesses': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
-    'contractors': ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
+    contractors: ['construction', 'contractor', 'builder', 'renovation', 'plumbing'],
 
     // Automotive
-    'automotive': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
-    'automotive businesses': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
-    'auto': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
+    automotive: ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
+    'automotive businesses': [
+      'automotive',
+      'car repair',
+      'auto service',
+      'mechanic',
+      'tire service',
+    ],
+    auto: ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
     'auto businesses': ['automotive', 'car repair', 'auto service', 'mechanic', 'tire service'],
 
     // Technology
-    'technology': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
-    'technology businesses': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
-    'tech': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
+    technology: ['technology', 'IT services', 'software', 'computer repair', 'web design'],
+    'technology businesses': [
+      'technology',
+      'IT services',
+      'software',
+      'computer repair',
+      'web design',
+    ],
+    tech: ['technology', 'IT services', 'software', 'computer repair', 'web design'],
     'tech businesses': ['technology', 'IT services', 'software', 'computer repair', 'web design'],
 
     // Beauty & Personal Care
-    'beauty': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
+    beauty: ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
     'beauty businesses': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
     'personal care': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
     'personal care businesses': ['salon', 'spa', 'beauty', 'hair', 'nail salon'],
@@ -964,16 +1100,22 @@ function expandIndustryCategories(query: string): string[] {
     // Home Services
     'home services': ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
     'home services businesses': ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
-    'home': ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
+    home: ['cleaning', 'landscaping', 'pest control', 'home repair', 'HVAC'],
 
     // Education
-    'education': ['school', 'tutoring', 'training', 'education', 'learning center'],
+    education: ['school', 'tutoring', 'training', 'education', 'learning center'],
     'education businesses': ['school', 'tutoring', 'training', 'education', 'learning center'],
-    'educational': ['school', 'tutoring', 'training', 'education', 'learning center'],
+    educational: ['school', 'tutoring', 'training', 'education', 'learning center'],
 
     // Entertainment
-    'entertainment': ['entertainment', 'event planning', 'photography', 'music', 'recreation'],
-    'entertainment businesses': ['entertainment', 'event planning', 'photography', 'music', 'recreation']
+    entertainment: ['entertainment', 'event planning', 'photography', 'music', 'recreation'],
+    'entertainment businesses': [
+      'entertainment',
+      'event planning',
+      'photography',
+      'music',
+      'recreation',
+    ],
   }
 
   // Check for exact matches first using safe property access
@@ -1016,20 +1158,36 @@ function removeDuplicateBusinesses(businesses: SearchResultItem[]): SearchResult
 /**
  * Generate alternative business search URLs when BBB scraping isn't available
  */
-function generateAlternativeBusinessSearches(query: string, location: string, maxResults: number): SearchResultItem[] {
+function generateAlternativeBusinessSearches(
+  query: string,
+  location: string,
+  maxResults: number
+): SearchResultItem[] {
   // Return empty array - directory search URLs should not be returned as business websites
   // The proper approach is to use dedicated discovery services (Yelp Discovery, BBB Discovery)
   // that extract actual business websites from directory pages
-  logger.info('Search API', `Not generating directory search URLs as business results for ${query} in ${location}`)
+  logger.info(
+    'Search API',
+    `Not generating directory search URLs as business results for ${query} in ${location}`
+  )
   return []
 }
 
 /**
  * Handle Yelp business discovery
  */
-async function handleYelpBusinessDiscovery(query: string, location: string, zipRadius: number, maxResults: number, maxPagesPerSite: number = 20) {
+async function handleYelpBusinessDiscovery(
+  query: string,
+  location: string,
+  zipRadius: number,
+  maxResults: number,
+  maxPagesPerSite: number = 20
+) {
   try {
-    logger.info('Search API', `Yelp business discovery with deep scraping: ${query} in ${location} (max ${maxPagesPerSite} pages per site)`)
+    logger.info(
+      'Search API',
+      `Yelp business discovery with deep scraping: ${query} in ${location} (max ${maxPagesPerSite} pages per site)`
+    )
 
     // Import Yelp scraping service
     const { yelpScrapingService } = await import('@/lib/yelpScrapingService')
@@ -1039,10 +1197,13 @@ async function handleYelpBusinessDiscovery(query: string, location: string, zipR
       location,
       zipRadius,
       maxResults,
-      maxPagesPerSite
+      maxPagesPerSite,
     })
 
-    logger.info('Search API', `Yelp business discovery returned ${businessWebsites.length} business websites`)
+    logger.info(
+      'Search API',
+      `Yelp business discovery returned ${businessWebsites.length} business websites`
+    )
 
     return NextResponse.json({
       success: true,
@@ -1050,16 +1211,15 @@ async function handleYelpBusinessDiscovery(query: string, location: string, zipR
       query: query,
       location: location,
       results: businessWebsites,
-      count: businessWebsites.length
+      count: businessWebsites.length,
     })
-
   } catch (error) {
     logger.error('Search API', 'Yelp business discovery failed', error)
     return NextResponse.json(
       {
         success: false,
         error: 'Yelp business discovery failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -1087,7 +1247,7 @@ async function handleComprehensiveSearch(
       location,
       zipRadius,
       accreditedOnly,
-      maxResults
+      maxResults,
     })
 
     logger.info('Search API', `Comprehensive search returned ${results.length} business results`)
@@ -1099,16 +1259,15 @@ async function handleComprehensiveSearch(
       location: location,
       results: results,
       count: results.length,
-      providerStats: searchOrchestrator.getProviderStats()
+      providerStats: searchOrchestrator.getProviderStats(),
     })
-
   } catch (error) {
     logger.error('Search API', 'Comprehensive search failed', error)
     return NextResponse.json(
       {
         success: false,
         error: 'Comprehensive search failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -1118,29 +1277,40 @@ async function handleComprehensiveSearch(
 /**
  * Handle Chamber of Commerce processing
  */
-async function handleChamberOfCommerceProcessing(url: string, maxResults: number, maxPagesPerSite: number = 20) {
+async function handleChamberOfCommerceProcessing(
+  url: string,
+  maxResults: number,
+  maxPagesPerSite: number = 20
+) {
   try {
-    logger.info('Search API', `Chamber of Commerce processing: ${url} (max ${maxPagesPerSite} pages per site)`)
+    logger.info(
+      'Search API',
+      `Chamber of Commerce processing: ${url} (max ${maxPagesPerSite} pages per site)`
+    )
 
     // Import Chamber of Commerce scraping service
-    const { chamberOfCommerceScrapingService } = await import('@/lib/chamberOfCommerceScrapingService')
+    const { chamberOfCommerceScrapingService } = await import(
+      '@/lib/chamberOfCommerceScrapingService'
+    )
 
     const businessWebsites = await chamberOfCommerceScrapingService.processChamberOfCommercePage({
       url,
       maxBusinesses: maxResults,
-      maxPagesPerSite
+      maxPagesPerSite,
     })
 
-    logger.info('Search API', `Chamber of Commerce processing returned ${businessWebsites.length} business websites`)
+    logger.info(
+      'Search API',
+      `Chamber of Commerce processing returned ${businessWebsites.length} business websites`
+    )
 
     return NextResponse.json({
       success: true,
       provider: 'chamber-of-commerce',
       url: url,
       results: businessWebsites,
-      count: businessWebsites.length
+      count: businessWebsites.length,
     })
-
   } catch (error) {
     logger.error('Search API', 'Chamber of Commerce processing failed', error)
     return NextResponse.json(
@@ -1150,7 +1320,7 @@ async function handleChamberOfCommerceProcessing(url: string, maxResults: number
         provider: 'chamber-of-commerce',
         url: url,
         results: [],
-        count: 0
+        count: 0,
       },
       { status: 500 }
     )

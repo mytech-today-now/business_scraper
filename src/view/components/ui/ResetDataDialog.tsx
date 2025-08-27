@@ -1,6 +1,6 @@
 /**
  * Reset Data Confirmation Dialog
- * 
+ *
  * Provides a confirmation dialog for resetting all application data
  * with options and data statistics display.
  */
@@ -13,7 +13,10 @@ import { getApplicationDataStats, DataResetResult } from '@/utils/dataReset'
 export interface ResetDataDialogProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: (options: { includeApiCredentials: boolean; useAggressiveReset: boolean }) => Promise<DataResetResult>
+  onConfirm: (options: {
+    includeApiCredentials: boolean
+    useAggressiveReset: boolean
+  }) => Promise<DataResetResult>
   isLoading?: boolean
 }
 
@@ -33,7 +36,7 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [stats, setStats] = useState<DataStats | null>(null)
   const [includeApiCredentials, setIncludeApiCredentials] = useState(false)
@@ -77,8 +80,14 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
 
   if (!isOpen) return null
 
-  const totalItems = stats ? 
-    stats.businesses + stats.configs + stats.industries + stats.sessions + stats.domainBlacklistEntries + stats.localStorageItems : 0
+  const totalItems = stats
+    ? stats.businesses +
+      stats.configs +
+      stats.industries +
+      stats.sessions +
+      stats.domainBlacklistEntries +
+      stats.localStorageItems
+    : 0
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -89,12 +98,8 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
-              Reset Application Data
-            </h3>
-            <p className="text-sm text-gray-500">
-              This action cannot be undone
-            </p>
+            <h3 className="text-lg font-medium text-gray-900">Reset Application Data</h3>
+            <p className="text-sm text-gray-500">This action cannot be undone</p>
           </div>
         </div>
 
@@ -105,11 +110,9 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
             <div className="flex">
               <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5" />
               <div className="ml-3">
-                <h4 className="text-sm font-medium text-red-800">
-                  Warning: Complete Data Reset
-                </h4>
+                <h4 className="text-sm font-medium text-red-800">Warning: Complete Data Reset</h4>
                 <p className="text-sm text-red-700 mt-1">
-                  This will permanently delete all your scraped business data, configurations, 
+                  This will permanently delete all your scraped business data, configurations,
                   custom industries, and application settings. This action cannot be undone.
                 </p>
               </div>
@@ -157,19 +160,17 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
           {/* Options */}
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-gray-900">Reset Options</h4>
-            
+
             <label className="flex items-start space-x-3">
               <input
                 type="checkbox"
                 checked={includeApiCredentials}
-                onChange={(e) => setIncludeApiCredentials(e.target.checked)}
+                onChange={e => setIncludeApiCredentials(e.target.checked)}
                 className="mt-1 h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                 disabled={isConfirming || isLoading}
               />
               <div>
-                <span className="text-sm font-medium text-gray-900">
-                  Include API Credentials
-                </span>
+                <span className="text-sm font-medium text-gray-900">Include API Credentials</span>
                 <p className="text-xs text-gray-500">
                   Also clear saved API keys and authentication data
                 </p>
@@ -180,14 +181,12 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
               <input
                 type="checkbox"
                 checked={useAggressiveReset}
-                onChange={(e) => setUseAggressiveReset(e.target.checked)}
+                onChange={e => setUseAggressiveReset(e.target.checked)}
                 className="mt-1 h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                 disabled={isConfirming || isLoading}
               />
               <div>
-                <span className="text-sm font-medium text-gray-900">
-                  Aggressive Reset
-                </span>
+                <span className="text-sm font-medium text-gray-900">Aggressive Reset</span>
                 <p className="text-xs text-gray-500">
                   Delete and recreate the entire database (use if having issues)
                 </p>
@@ -198,11 +197,7 @@ export const ResetDataDialog: React.FC<ResetDataDialogProps> = ({
 
         {/* Footer */}
         <div className="flex items-center justify-end space-x-3 p-6 border-t bg-gray-50">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isConfirming || isLoading}
-          >
+          <Button variant="outline" onClick={handleClose} disabled={isConfirming || isLoading}>
             Cancel
           </Button>
           <Button

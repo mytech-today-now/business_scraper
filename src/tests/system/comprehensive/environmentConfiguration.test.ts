@@ -40,7 +40,7 @@ class EnvironmentTester {
       REDIS_URL: 'redis://localhost:6379/0',
       API_TIMEOUT: '30000',
       MAX_CONCURRENT_REQUESTS: '10',
-      LOG_LEVEL: 'debug'
+      LOG_LEVEL: 'debug',
     })
 
     this.baseConfigs.set('test', {
@@ -50,7 +50,7 @@ class EnvironmentTester {
       REDIS_URL: 'redis://localhost:6379/1',
       API_TIMEOUT: '10000',
       MAX_CONCURRENT_REQUESTS: '5',
-      LOG_LEVEL: 'error'
+      LOG_LEVEL: 'error',
     })
 
     this.baseConfigs.set('production', {
@@ -60,17 +60,20 @@ class EnvironmentTester {
       REDIS_URL: 'redis://localhost:6379/2',
       API_TIMEOUT: '60000',
       MAX_CONCURRENT_REQUESTS: '50',
-      LOG_LEVEL: 'info'
+      LOG_LEVEL: 'info',
     })
   }
 
-  async testEnvironment(envName: string, customConfig?: Partial<EnvironmentConfig>): Promise<EnvironmentTestResult> {
+  async testEnvironment(
+    envName: string,
+    customConfig?: Partial<EnvironmentConfig>
+  ): Promise<EnvironmentTestResult> {
     const baseConfig = this.baseConfigs.get(envName)
     if (!baseConfig) {
       return {
         environment: envName,
         success: false,
-        error: `Unknown environment: ${envName}`
+        error: `Unknown environment: ${envName}`,
       }
     }
 
@@ -89,13 +92,13 @@ class EnvironmentTester {
           environment: envName,
           success: false,
           error: 'Application failed to start within timeout',
-          startupTime: Date.now() - startTime
+          startupTime: Date.now() - startTime,
         }
       }
 
       // Validate configuration
       const configValid = await this.validateConfiguration(config)
-      
+
       // Check service health
       const serviceHealthy = await this.checkServiceHealth(config.PORT)
 
@@ -104,52 +107,56 @@ class EnvironmentTester {
         success: true,
         startupTime: Date.now() - startTime,
         configValidation: configValid,
-        serviceHealth: serviceHealthy
+        serviceHealth: serviceHealthy,
       }
-
     } catch (error) {
       return {
         environment: envName,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        startupTime: Date.now() - startTime
+        startupTime: Date.now() - startTime,
       }
     }
   }
 
-  private async startApplicationWithConfig(envName: string, config: EnvironmentConfig): Promise<ChildProcess> {
+  private async startApplicationWithConfig(
+    envName: string,
+    config: EnvironmentConfig
+  ): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
       const process = spawn('npm', ['start'], {
         env: { ...process.env, ...config },
         stdio: 'pipe',
-        detached: false
+        detached: false,
       })
 
       process.on('error', reject)
-      
+
       // Give process time to start
       setTimeout(() => resolve(process), 2000)
     })
   }
 
   private async waitForApplicationStart(process: ChildProcess, port: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const timeout = setTimeout(() => resolve(false), 30000)
-      
+
       let outputBuffer = ''
-      
-      process.stdout?.on('data', (data) => {
+
+      process.stdout?.on('data', data => {
         outputBuffer += data.toString()
-        
-        if (outputBuffer.includes('Ready') || 
-            outputBuffer.includes('started server') ||
-            outputBuffer.includes(`listening on port ${port}`)) {
+
+        if (
+          outputBuffer.includes('Ready') ||
+          outputBuffer.includes('started server') ||
+          outputBuffer.includes(`listening on port ${port}`)
+        ) {
           clearTimeout(timeout)
           resolve(true)
         }
       })
 
-      process.stderr?.on('data', (data) => {
+      process.stderr?.on('data', data => {
         const error = data.toString()
         if (error.includes('EADDRINUSE') || error.includes('Error:')) {
           clearTimeout(timeout)
@@ -157,7 +164,7 @@ class EnvironmentTester {
         }
       })
 
-      process.on('exit', (code) => {
+      process.on('exit', code => {
         clearTimeout(timeout)
         resolve(code === 0)
       })
@@ -209,9 +216,9 @@ class EnvironmentTester {
     try {
       const fetch = (await import('node-fetch')).default
       const response = await fetch(`http://localhost:${port}/api/health`, {
-        timeout: 10000
+        timeout: 10000,
       })
-      
+
       return response.ok
     } catch (error) {
       return false
@@ -222,14 +229,14 @@ class EnvironmentTester {
     for (const [envName, process] of this.processes) {
       try {
         process.kill('SIGTERM')
-        
+
         // Wait for graceful shutdown
-        await new Promise<void>((resolve) => {
+        await new Promise<void>(resolve => {
           const timeout = setTimeout(() => {
             process.kill('SIGKILL')
             resolve()
           }, 5000)
-          
+
           process.on('exit', () => {
             clearTimeout(timeout)
             resolve()
@@ -239,7 +246,7 @@ class EnvironmentTester {
         console.error(`Error cleaning up process for ${envName}:`, error)
       }
     }
-    
+
     this.processes.clear()
   }
 }
@@ -258,7 +265,7 @@ describe('Environment Configuration Comprehensive Tests', () => {
   describe('Standard Environment Configurations', () => {
     test('should start successfully in development environment', async () => {
       const result = await envTester.testEnvironment('development')
-      
+
       expect(result.success).toBe(true)
       expect(result.startupTime).toBeLessThan(30000)
       expect(result.configValidation).toBe(true)
@@ -267,7 +274,7 @@ describe('Environment Configuration Comprehensive Tests', () => {
 
     test('should start successfully in test environment', async () => {
       const result = await envTester.testEnvironment('test')
-      
+
       expect(result.success).toBe(true)
       expect(result.startupTime).toBeLessThan(30000)
       expect(result.configValidation).toBe(true)
@@ -276,7 +283,7 @@ describe('Environment Configuration Comprehensive Tests', () => {
 
     test('should start successfully in production environment', async () => {
       const result = await envTester.testEnvironment('production')
-      
+
       expect(result.success).toBe(true)
       expect(result.startupTime).toBeLessThan(30000)
       expect(result.configValidation).toBe(true)
@@ -288,18 +295,18 @@ describe('Environment Configuration Comprehensive Tests', () => {
     test('should handle custom port configuration', async () => {
       const customConfig = { PORT: '3005' }
       const result = await envTester.testEnvironment('test', customConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
 
     test('should handle custom timeout configuration', async () => {
-      const customConfig = { 
+      const customConfig = {
         API_TIMEOUT: '5000',
-        MAX_CONCURRENT_REQUESTS: '20'
+        MAX_CONCURRENT_REQUESTS: '20',
       }
       const result = await envTester.testEnvironment('development', customConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -307,7 +314,7 @@ describe('Environment Configuration Comprehensive Tests', () => {
     test('should handle custom log level configuration', async () => {
       const customConfig = { LOG_LEVEL: 'warn' }
       const result = await envTester.testEnvironment('test', customConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -317,31 +324,31 @@ describe('Environment Configuration Comprehensive Tests', () => {
     test('should handle invalid port configuration', async () => {
       const invalidConfig = { PORT: 'invalid-port' }
       const result = await envTester.testEnvironment('test', invalidConfig)
-      
+
       expect(result.configValidation).toBe(false)
     }, 30000)
 
     test('should handle invalid database URL', async () => {
       const invalidConfig = { DATABASE_URL: 'invalid-url' }
       const result = await envTester.testEnvironment('test', invalidConfig)
-      
+
       expect(result.configValidation).toBe(false)
     }, 30000)
 
     test('should handle invalid Redis URL', async () => {
       const invalidConfig = { REDIS_URL: 'invalid-redis-url' }
       const result = await envTester.testEnvironment('test', invalidConfig)
-      
+
       expect(result.configValidation).toBe(false)
     }, 30000)
 
     test('should handle invalid timeout values', async () => {
-      const invalidConfig = { 
+      const invalidConfig = {
         API_TIMEOUT: 'not-a-number',
-        MAX_CONCURRENT_REQUESTS: 'invalid'
+        MAX_CONCURRENT_REQUESTS: 'invalid',
       }
       const result = await envTester.testEnvironment('test', invalidConfig)
-      
+
       expect(result.configValidation).toBe(false)
     }, 30000)
   })
@@ -350,12 +357,12 @@ describe('Environment Configuration Comprehensive Tests', () => {
     test('should use appropriate logging in different environments', async () => {
       const environments = ['development', 'test', 'production']
       const results = []
-      
+
       for (const env of environments) {
         const result = await envTester.testEnvironment(env)
         results.push(result)
       }
-      
+
       // All environments should start successfully
       results.forEach(result => {
         expect(result.success).toBe(true)
@@ -366,13 +373,13 @@ describe('Environment Configuration Comprehensive Tests', () => {
       const dbConfigs = [
         { DATABASE_URL: 'postgresql://user1:pass1@localhost:5432/db1' },
         { DATABASE_URL: 'postgresql://user2:pass2@localhost:5432/db2' },
-        { DATABASE_URL: 'postgresql://user3:pass3@localhost:5432/db3' }
+        { DATABASE_URL: 'postgresql://user3:pass3@localhost:5432/db3' },
       ]
-      
+
       for (let i = 0; i < dbConfigs.length; i++) {
         const config = { ...dbConfigs[i], PORT: (3006 + i).toString() }
         const result = await envTester.testEnvironment('test', config)
-        
+
         expect(result.configValidation).toBe(true)
       }
     }, 120000)
@@ -381,13 +388,13 @@ describe('Environment Configuration Comprehensive Tests', () => {
       const redisConfigs = [
         { REDIS_URL: 'redis://localhost:6379/0' },
         { REDIS_URL: 'redis://localhost:6379/1' },
-        { REDIS_URL: 'redis://localhost:6379/2' }
+        { REDIS_URL: 'redis://localhost:6379/2' },
       ]
-      
+
       for (let i = 0; i < redisConfigs.length; i++) {
         const config = { ...redisConfigs[i], PORT: (3009 + i).toString() }
         const result = await envTester.testEnvironment('test', config)
-        
+
         expect(result.configValidation).toBe(true)
       }
     }, 120000)
@@ -398,11 +405,11 @@ describe('Environment Configuration Comprehensive Tests', () => {
       const lowResourceConfig = {
         MAX_CONCURRENT_REQUESTS: '1',
         API_TIMEOUT: '5000',
-        PORT: '3012'
+        PORT: '3012',
       }
-      
+
       const result = await envTester.testEnvironment('test', lowResourceConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -411,11 +418,11 @@ describe('Environment Configuration Comprehensive Tests', () => {
       const highResourceConfig = {
         MAX_CONCURRENT_REQUESTS: '100',
         API_TIMEOUT: '120000',
-        PORT: '3013'
+        PORT: '3013',
       }
-      
+
       const result = await envTester.testEnvironment('production', highResourceConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -424,12 +431,12 @@ describe('Environment Configuration Comprehensive Tests', () => {
       const extremeConfigs = [
         { MAX_CONCURRENT_REQUESTS: '0', PORT: '3014' },
         { API_TIMEOUT: '1', PORT: '3015' },
-        { MAX_CONCURRENT_REQUESTS: '1000', PORT: '3016' }
+        { MAX_CONCURRENT_REQUESTS: '1000', PORT: '3016' },
       ]
-      
+
       for (const config of extremeConfigs) {
         const result = await envTester.testEnvironment('test', config)
-        
+
         // Should either succeed or fail gracefully
         expect(typeof result.success).toBe('boolean')
         expect(typeof result.configValidation).toBe('boolean')
@@ -441,7 +448,7 @@ describe('Environment Configuration Comprehensive Tests', () => {
     test('should handle missing configuration files', async () => {
       // Test behavior when optional config files are missing
       const result = await envTester.testEnvironment('test', { PORT: '3017' })
-      
+
       // Should still start with default configurations
       expect(result.success).toBe(true)
     }, 60000)
@@ -451,11 +458,11 @@ describe('Environment Configuration Comprehensive Tests', () => {
       const envOverride = {
         NODE_ENV: 'test',
         PORT: '3018',
-        LOG_LEVEL: 'debug' // Override default test log level
+        LOG_LEVEL: 'debug', // Override default test log level
       }
-      
+
       const result = await envTester.testEnvironment('test', envOverride)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -467,11 +474,11 @@ describe('Environment Configuration Comprehensive Tests', () => {
         NODE_ENV: 'production',
         PORT: '3019',
         LOG_LEVEL: 'warn', // Don't log sensitive info
-        API_TIMEOUT: '30000'
+        API_TIMEOUT: '30000',
       }
-      
+
       const result = await envTester.testEnvironment('production', secureConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -481,11 +488,11 @@ describe('Environment Configuration Comprehensive Tests', () => {
         NODE_ENV: 'development',
         PORT: '3020',
         LOG_LEVEL: 'debug',
-        API_TIMEOUT: '60000'
+        API_TIMEOUT: '60000',
       }
-      
+
       const result = await envTester.testEnvironment('development', debugConfig)
-      
+
       expect(result.success).toBe(true)
       expect(result.configValidation).toBe(true)
     }, 60000)
@@ -495,21 +502,21 @@ describe('Environment Configuration Comprehensive Tests', () => {
     test('should compare startup times across environments', async () => {
       const environments = ['development', 'test', 'production']
       const startupTimes: { [key: string]: number } = {}
-      
+
       for (const env of environments) {
         const config = { PORT: (3021 + environments.indexOf(env)).toString() }
         const result = await envTester.testEnvironment(env, config)
-        
+
         if (result.success && result.startupTime) {
           startupTimes[env] = result.startupTime
         }
       }
-      
+
       // All environments should start within reasonable time
       Object.values(startupTimes).forEach(time => {
         expect(time).toBeLessThan(30000)
       })
-      
+
       // Development might be slower due to additional tooling
       if (startupTimes.development && startupTimes.production) {
         expect(startupTimes.development).toBeGreaterThanOrEqual(startupTimes.production * 0.5)

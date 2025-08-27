@@ -35,29 +35,33 @@ export class CSRFProtectionService {
   generateCSRFToken(sessionId: string): CSRFTokenInfo {
     const token = generateSecureToken(32)
     const now = Date.now()
-    
+
     const tokenInfo: CSRFTokenInfo = {
       token,
       expiresAt: now + this.tokenExpiry,
-      issuedAt: now
+      issuedAt: now,
     }
 
     this.tokenStore.set(sessionId, tokenInfo)
     logger.info('CSRF', `Generated new CSRF token for session: ${sessionId}`)
-    
+
     return tokenInfo
   }
 
   /**
    * Validate CSRF token with comprehensive checks
    */
-  validateCSRFToken(sessionId: string, providedToken: string, request?: NextRequest): CSRFValidationResult {
+  validateCSRFToken(
+    sessionId: string,
+    providedToken: string,
+    request?: NextRequest
+  ): CSRFValidationResult {
     // Check if session exists
     const session = getSession(sessionId)
     if (!session || !session.isValid) {
       return {
         isValid: false,
-        error: 'Invalid session'
+        error: 'Invalid session',
       }
     }
 
@@ -66,7 +70,7 @@ export class CSRFProtectionService {
     if (!tokenInfo) {
       return {
         isValid: false,
-        error: 'No CSRF token found for session'
+        error: 'No CSRF token found for session',
       }
     }
 
@@ -76,7 +80,7 @@ export class CSRFProtectionService {
       return {
         isValid: false,
         error: 'CSRF token expired',
-        needsRefresh: true
+        needsRefresh: true,
       }
     }
 
@@ -91,12 +95,12 @@ export class CSRFProtectionService {
         logger.warn('CSRF', `Invalid CSRF token provided for session: ${sessionId}`)
         return {
           isValid: false,
-          error: 'Invalid CSRF token'
+          error: 'Invalid CSRF token',
         }
       }
 
       // Check if token needs refresh (approaching expiry)
-      const needsRefresh = (tokenInfo.expiresAt - Date.now()) < this.refreshThreshold
+      const needsRefresh = tokenInfo.expiresAt - Date.now() < this.refreshThreshold
 
       // Double-submit cookie validation if request is provided
       if (request) {
@@ -105,21 +109,20 @@ export class CSRFProtectionService {
           logger.warn('CSRF', `CSRF cookie mismatch for session: ${sessionId}`)
           return {
             isValid: false,
-            error: 'CSRF token mismatch'
+            error: 'CSRF token mismatch',
           }
         }
       }
 
       return {
         isValid: true,
-        needsRefresh
+        needsRefresh,
       }
-
     } catch (error) {
       logger.error('CSRF', 'Error validating CSRF token', error)
       return {
         isValid: false,
-        error: 'Token validation error'
+        error: 'Token validation error',
       }
     }
   }
@@ -133,7 +136,7 @@ export class CSRFProtectionService {
       return null
     }
 
-    const needsRefresh = (tokenInfo.expiresAt - Date.now()) < this.refreshThreshold
+    const needsRefresh = tokenInfo.expiresAt - Date.now() < this.refreshThreshold
     if (needsRefresh) {
       return this.generateCSRFToken(sessionId)
     }
@@ -186,7 +189,7 @@ export class CSRFProtectionService {
         httpOnly: false, // Needs to be accessible to JavaScript
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: Math.floor((tokenInfo.expiresAt - Date.now()) / 1000)
+        maxAge: Math.floor((tokenInfo.expiresAt - Date.now()) / 1000),
       })
 
       // Add CSRF token to response headers for AJAX requests
@@ -219,7 +222,7 @@ export class CSRFProtectionService {
     if (!csrfToken) {
       return {
         isValid: false,
-        error: 'CSRF token not provided'
+        error: 'CSRF token not provided',
       }
     }
 
@@ -245,7 +248,7 @@ export class CSRFProtectionService {
 
     return {
       token: tokenInfo.token,
-      expiresAt: tokenInfo.expiresAt
+      expiresAt: tokenInfo.expiresAt,
     }
   }
 }
@@ -257,9 +260,12 @@ export const csrfProtectionService = new CSRFProtectionService()
 
 // Cleanup interval for expired tokens (every 10 minutes)
 if (typeof window === 'undefined') {
-  setInterval(() => {
-    csrfProtectionService.cleanupExpiredTokens()
-  }, 10 * 60 * 1000)
+  setInterval(
+    () => {
+      csrfProtectionService.cleanupExpiredTokens()
+    },
+    10 * 60 * 1000
+  )
 }
 
 /**
@@ -282,36 +288,30 @@ export function validateCSRFMiddleware(request: NextRequest): NextResponse | nul
 
   const sessionId = request.cookies.get('session-id')?.value
   if (!sessionId) {
-    return new NextResponse(
-      JSON.stringify({ error: 'Session required for CSRF protection' }),
-      { 
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    )
+    return new NextResponse(JSON.stringify({ error: 'Session required for CSRF protection' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const csrfToken = request.headers.get('x-csrf-token')
   if (!csrfToken) {
-    return new NextResponse(
-      JSON.stringify({ error: 'CSRF token required' }),
-      { 
-        status: 403,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    )
+    return new NextResponse(JSON.stringify({ error: 'CSRF token required' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const validation = csrfProtectionService.validateCSRFToken(sessionId, csrfToken, request)
   if (!validation.isValid) {
     return new NextResponse(
-      JSON.stringify({ 
+      JSON.stringify({
         error: validation.error || 'CSRF validation failed',
-        needsRefresh: validation.needsRefresh
+        needsRefresh: validation.needsRefresh,
       }),
-      { 
+      {
         status: 403,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     )
   }

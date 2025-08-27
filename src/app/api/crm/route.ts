@@ -14,7 +14,7 @@ import { getClientIP } from '@/lib/security'
 /**
  * GET /api/crm - Get all CRM providers and their status
  */
-export async function GET(request: NextRequest): Promise<NextResponse> {
+async function GET(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
@@ -28,43 +28,49 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const providersWithStatus = providers.map(provider => ({
       ...provider,
       isConnected: connectionTests[provider.id] || false,
-      lastTested: new Date().toISOString()
+      lastTested: new Date().toISOString(),
     }))
 
     return NextResponse.json({
       success: true,
       data: {
         providers: providersWithStatus,
-        statistics
+        statistics,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('CRM_API', 'Failed to get CRM providers', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to retrieve CRM providers'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to retrieve CRM providers',
+      },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * POST /api/crm - Create or register a new CRM provider
  */
-export async function POST(request: NextRequest): Promise<NextResponse> {
+async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
     logger.info('CRM_API', `Create CRM provider request from IP: ${ip}`)
 
     const body = await request.json()
-    
+
     // Validate required fields
     if (!body.name || !body.type || !body.configuration) {
-      return NextResponse.json({
-        success: false,
-        error: 'Missing required fields: name, type, configuration'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Missing required fields: name, type, configuration',
+        },
+        { status: 400 }
+      )
     }
 
     // Create provider object
@@ -82,8 +88,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         customFields: false,
         webhookSupport: false,
         deduplication: false,
-        validation: false
-      }
+        validation: false,
+      },
     }
 
     // Register the provider
@@ -95,44 +101,53 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.info('CRM_API', `CRM provider created successfully: ${provider.name}`, {
       providerId: provider.id,
       type: provider.type,
-      isConnected
+      isConnected,
     })
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        provider: {
-          ...provider,
-          isConnected
-        }
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          provider: {
+            ...provider,
+            isConnected,
+          },
+        },
+        message: 'CRM provider created successfully',
       },
-      message: 'CRM provider created successfully'
-    }, { status: 201 })
+      { status: 201 }
+    )
   } catch (error) {
     logger.error('CRM_API', 'Failed to create CRM provider', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Failed to create CRM provider'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Failed to create CRM provider',
+      },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * PUT /api/crm - Update an existing CRM provider
  */
-export async function PUT(request: NextRequest): Promise<NextResponse> {
+async function PUT(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
     logger.info('CRM_API', `Update CRM provider request from IP: ${ip}`)
 
     const body = await request.json()
-    
+
     if (!body.id) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider ID is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Update the provider
@@ -149,24 +164,27 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
       data: {
         provider: {
           ...updatedProvider,
-          isConnected
-        }
+          isConnected,
+        },
       },
-      message: 'CRM provider updated successfully'
+      message: 'CRM provider updated successfully',
     })
   } catch (error) {
     logger.error('CRM_API', 'Failed to update CRM provider', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Failed to update CRM provider'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Failed to update CRM provider',
+      },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * DELETE /api/crm - Remove a CRM provider
  */
-export async function DELETE(request: NextRequest): Promise<NextResponse> {
+async function DELETE(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
 
   try {
@@ -174,21 +192,27 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     const url = new URL(request.url)
     const providerId = url.searchParams.get('id')
-    
+
     if (!providerId) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider ID is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Get provider info before deletion
     const provider = crmServiceRegistry.getProvider(providerId)
     if (!provider) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider not found',
+        },
+        { status: 404 }
+      )
     }
 
     // Unregister the provider
@@ -198,14 +222,17 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       success: true,
-      message: 'CRM provider deleted successfully'
+      message: 'CRM provider deleted successfully',
     })
   } catch (error) {
     logger.error('CRM_API', 'Failed to delete CRM provider', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Failed to delete CRM provider'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Failed to delete CRM provider',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -214,28 +241,28 @@ const securedGET = withApiSecurity(GET, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 const securedPOST = withApiSecurity(POST, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 const securedPUT = withApiSecurity(PUT, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 const securedDELETE = withApiSecurity(DELETE, {
   requireAuth: false,
   rateLimit: 'general',
   validateInput: true,
-  logRequests: true
+  logRequests: true,
 })
 
 export { securedGET as GET, securedPOST as POST, securedPUT as PUT, securedDELETE as DELETE }

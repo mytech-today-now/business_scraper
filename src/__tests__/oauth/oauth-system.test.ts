@@ -43,7 +43,7 @@ describe('OAuth 2.0 System', () => {
       }
 
       const response = clientService.registerClient(registrationRequest)
-      
+
       expect(response.clientId).toBeTruthy()
       expect(response.clientName).toBe('Test Client')
       expect(response.clientType).toBe('public')
@@ -54,21 +54,15 @@ describe('OAuth 2.0 System', () => {
       const webClient = clientService.getClient('business-scraper-web')
       expect(webClient).toBeTruthy()
 
-      const validation = clientService.validateClient(
-        'business-scraper-web',
-        webClient!.secret
-      )
-      
+      const validation = clientService.validateClient('business-scraper-web', webClient!.secret)
+
       expect(validation.valid).toBe(true)
       expect(validation.client).toBeTruthy()
     })
 
     it('should reject invalid client credentials', () => {
-      const validation = clientService.validateClient(
-        'business-scraper-web',
-        'wrong-secret'
-      )
-      
+      const validation = clientService.validateClient('business-scraper-web', 'wrong-secret')
+
       expect(validation.valid).toBe(false)
       expect(validation.error).toBeTruthy()
     })
@@ -77,7 +71,7 @@ describe('OAuth 2.0 System', () => {
   describe('PKCE Service', () => {
     it('should generate valid PKCE challenge', () => {
       const challenge = pkceService.generatePKCEChallenge('S256')
-      
+
       expect(challenge.codeVerifier).toBeTruthy()
       expect(challenge.codeChallenge).toBeTruthy()
       expect(challenge.codeChallengeMethod).toBe('S256')
@@ -87,25 +81,25 @@ describe('OAuth 2.0 System', () => {
 
     it('should verify PKCE code verifier', () => {
       const challenge = pkceService.generatePKCEChallenge('S256')
-      
+
       const isValid = pkceService.verifyCodeVerifier(
         challenge.codeVerifier,
         challenge.codeChallenge,
         'S256'
       )
-      
+
       expect(isValid).toBe(true)
     })
 
     it('should reject invalid PKCE code verifier', () => {
       const challenge = pkceService.generatePKCEChallenge('S256')
-      
+
       const isValid = pkceService.verifyCodeVerifier(
         'wrong-verifier',
         challenge.codeChallenge,
         'S256'
       )
-      
+
       expect(isValid).toBe(false)
     })
 
@@ -128,7 +122,7 @@ describe('OAuth 2.0 System', () => {
         undefined,
         true // is public client
       )
-      
+
       expect(validation.valid).toBe(false)
       expect(validation.error).toContain('required for public clients')
     })
@@ -170,7 +164,7 @@ describe('OAuth 2.0 System', () => {
       }
 
       const validation = authorizationService.validateAuthorizationRequest(request, client)
-      
+
       expect(validation.valid).toBe(true)
       expect(validation.scopes).toContain('openid')
       expect(validation.scopes).toContain('profile')
@@ -186,7 +180,7 @@ describe('OAuth 2.0 System', () => {
       }
 
       const validation = authorizationService.validateAuthorizationRequest(request, client)
-      
+
       expect(validation.valid).toBe(false)
       expect(validation.error).toBe('invalid_request')
     })
@@ -206,11 +200,11 @@ describe('OAuth 2.0 System', () => {
         updatedAt: new Date(),
       }
 
-      const { token, expiresAt } = tokenService.generateAccessToken(
-        client,
-        user,
-        ['openid', 'profile', 'read']
-      )
+      const { token, expiresAt } = tokenService.generateAccessToken(client, user, [
+        'openid',
+        'profile',
+        'read',
+      ])
 
       expect(token).toBeTruthy()
       expect(expiresAt).toBeInstanceOf(Date)
@@ -230,14 +224,14 @@ describe('OAuth 2.0 System', () => {
         updatedAt: new Date(),
       }
 
-      const { token } = tokenService.generateAccessToken(
-        client,
-        user,
-        ['openid', 'profile', 'read']
-      )
+      const { token } = tokenService.generateAccessToken(client, user, [
+        'openid',
+        'profile',
+        'read',
+      ])
 
       const validation = tokenService.validateToken(token)
-      
+
       expect(validation.valid).toBe(true)
       expect(validation.payload).toBeTruthy()
       expect(validation.payload?.sub).toBe('test-user')
@@ -257,11 +251,11 @@ describe('OAuth 2.0 System', () => {
         updatedAt: new Date(),
       }
 
-      const { token } = tokenService.generateAccessToken(
-        client,
-        user,
-        ['openid', 'profile', 'read']
-      )
+      const { token } = tokenService.generateAccessToken(client, user, [
+        'openid',
+        'profile',
+        'read',
+      ])
 
       // Token should be valid initially
       let validation = tokenService.validateToken(token)
@@ -289,14 +283,14 @@ describe('OAuth 2.0 System', () => {
         updatedAt: new Date(),
       }
 
-      const { token } = tokenService.generateAccessToken(
-        client,
-        user,
-        ['openid', 'profile', 'read']
-      )
+      const { token } = tokenService.generateAccessToken(client, user, [
+        'openid',
+        'profile',
+        'read',
+      ])
 
       const introspection = tokenService.introspectToken(token)
-      
+
       expect(introspection.active).toBe(true)
       expect(introspection.scope).toBe('openid profile read')
       expect(introspection.clientId).toBe(client.id)
@@ -308,7 +302,7 @@ describe('OAuth 2.0 System', () => {
     it('should complete authorization code flow', () => {
       // 1. Get client
       const client = clientService.getClient('business-scraper-web')!
-      
+
       // 2. Validate authorization request
       const authRequest = {
         responseType: 'code' as const,
@@ -316,8 +310,11 @@ describe('OAuth 2.0 System', () => {
         redirectUri: client.redirectUris[0],
         scope: 'openid profile read',
       }
-      
-      const requestValidation = authorizationService.validateAuthorizationRequest(authRequest, client)
+
+      const requestValidation = authorizationService.validateAuthorizationRequest(
+        authRequest,
+        client
+      )
       expect(requestValidation.valid).toBe(true)
 
       // 3. Generate authorization code
@@ -345,7 +342,7 @@ describe('OAuth 2.0 System', () => {
         client.id,
         authRequest.redirectUri
       )
-      
+
       expect(codeValidation.valid).toBe(true)
       expect(codeValidation.authCode).toBeTruthy()
 
@@ -365,10 +362,10 @@ describe('OAuth 2.0 System', () => {
     it('should complete PKCE flow', () => {
       // 1. Generate PKCE challenge
       const pkceChallenge = pkceService.generatePKCEChallenge('S256')
-      
+
       // 2. Get public client
       const client = clientService.getClient('business-scraper-mobile')!
-      
+
       // 3. Validate PKCE request
       const pkceValidation = pkceService.validatePKCERequest(
         pkceChallenge.codeChallenge,
@@ -402,10 +399,7 @@ describe('OAuth 2.0 System', () => {
       pkceService.storePKCEChallenge(code, pkceChallenge)
 
       // 6. Validate PKCE flow
-      const pkceFlowValidation = pkceService.validatePKCEFlow(
-        code,
-        pkceChallenge.codeVerifier
-      )
+      const pkceFlowValidation = pkceService.validatePKCEFlow(code, pkceChallenge.codeVerifier)
       expect(pkceFlowValidation.valid).toBe(true)
     })
   })

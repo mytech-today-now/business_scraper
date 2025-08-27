@@ -20,22 +20,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const url = new URL(request.url)
     const providerId = url.searchParams.get('providerId')
-    
+
     if (!providerId) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider ID is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Get the CRM service
     const service = crmServiceRegistry.getService(providerId)
     if (!service) {
       logger.warn('CRM_WEBHOOK_API', `Unknown provider ID: ${providerId}`)
-      return NextResponse.json({
-        success: false,
-        error: 'Unknown CRM provider'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Unknown CRM provider',
+        },
+        { status: 404 }
+      )
     }
 
     // Get request body and headers
@@ -43,25 +49,29 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const headers = Object.fromEntries(request.headers.entries())
 
     // Extract webhook signature for validation
-    const signature = headers['x-signature'] || 
-                     headers['x-hub-signature'] || 
-                     headers['x-webhook-signature'] ||
-                     headers['signature']
+    const signature =
+      headers['x-signature'] ||
+      headers['x-hub-signature'] ||
+      headers['x-webhook-signature'] ||
+      headers['signature']
 
     // Parse webhook event based on provider type
     const webhookEvent = await parseWebhookEvent(providerId, body, headers, signature)
-    
+
     if (!webhookEvent) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid webhook payload'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid webhook payload',
+        },
+        { status: 400 }
+      )
     }
 
     logger.info('CRM_WEBHOOK_API', `Processing webhook event: ${webhookEvent.eventType}`, {
       providerId,
       objectType: webhookEvent.objectType,
-      objectId: webhookEvent.objectId
+      objectId: webhookEvent.objectId,
     })
 
     // Handle the webhook event
@@ -71,23 +81,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.info('CRM_WEBHOOK_API', `Webhook processed successfully`, {
       providerId,
       eventType: webhookEvent.eventType,
-      objectId: webhookEvent.objectId
+      objectId: webhookEvent.objectId,
     })
 
     return NextResponse.json({
       success: true,
       message: 'Webhook processed successfully',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('CRM_WEBHOOK_API', 'Webhook processing failed', error)
-    
+
     // Return 200 to prevent webhook retries for processing errors
-    return NextResponse.json({
-      success: false,
-      error: 'Webhook processing failed',
-      message: error.message
-    }, { status: 200 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Webhook processing failed',
+        message: error.message,
+      },
+      { status: 200 }
+    )
   }
 }
 
@@ -107,10 +120,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       // Get webhook status for specific provider
       const service = crmServiceRegistry.getService(providerId)
       if (!service) {
-        return NextResponse.json({
-          success: false,
-          error: 'Provider not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Provider not found',
+          },
+          { status: 404 }
+        )
       }
 
       const provider = service.getProvider()
@@ -123,8 +139,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           providerName: provider.name,
           webhookUrl,
           webhookSupport: provider.capabilities.webhookSupport,
-          isActive: provider.isActive
-        }
+          isActive: provider.isActive,
+        },
       })
     } else {
       // Get webhook status for all providers
@@ -134,7 +150,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         providerName: provider.name,
         webhookUrl: provider.configuration.webhookUrl,
         webhookSupport: provider.capabilities.webhookSupport,
-        isActive: provider.isActive
+        isActive: provider.isActive,
       }))
 
       return NextResponse.json({
@@ -142,16 +158,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         data: {
           providers: webhookStatus,
           totalProviders: providers.length,
-          webhookEnabledProviders: providers.filter(p => p.capabilities.webhookSupport).length
-        }
+          webhookEnabledProviders: providers.filter(p => p.capabilities.webhookSupport).length,
+        },
       })
     }
   } catch (error) {
     logger.error('CRM_WEBHOOK_API', 'Failed to get webhook status', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to retrieve webhook status'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to retrieve webhook status',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -168,29 +187,38 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     const { providerId, webhookUrl, eventTypes } = body
 
     if (!providerId) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider ID is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Get the CRM service
     const service = crmServiceRegistry.getService(providerId)
     if (!service) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider not found',
+        },
+        { status: 404 }
+      )
     }
 
     const provider = service.getProvider()
 
     // Check if provider supports webhooks
     if (!provider.capabilities.webhookSupport) {
-      return NextResponse.json({
-        success: false,
-        error: 'Provider does not support webhooks'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Provider does not support webhooks',
+        },
+        { status: 400 }
+      )
     }
 
     // Update webhook URL in provider configuration if provided
@@ -198,8 +226,8 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
       await crmServiceRegistry.updateProvider(providerId, {
         configuration: {
           ...provider.configuration,
-          webhookUrl
-        }
+          webhookUrl,
+        },
       })
     }
 
@@ -208,7 +236,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
 
     logger.info('CRM_WEBHOOK_API', `Webhook setup completed for ${provider.name}`, {
       providerId,
-      subscriptionsCount: subscriptions.length
+      subscriptionsCount: subscriptions.length,
     })
 
     return NextResponse.json({
@@ -217,16 +245,19 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
         providerId,
         providerName: provider.name,
         subscriptions,
-        webhookUrl: provider.configuration.webhookUrl
+        webhookUrl: provider.configuration.webhookUrl,
       },
-      message: 'Webhook setup completed successfully'
+      message: 'Webhook setup completed successfully',
     })
   } catch (error) {
     logger.error('CRM_WEBHOOK_API', 'Webhook setup failed', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Webhook setup failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Webhook setup failed',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -273,7 +304,11 @@ async function parseWebhookEvent(
   }
 }
 
-function parseSalesforceWebhook(data: any, headers: Record<string, string>, signature?: string): CRMWebhookEvent {
+function parseSalesforceWebhook(
+  data: any,
+  headers: Record<string, string>,
+  signature?: string
+): CRMWebhookEvent {
   return {
     id: `sf-webhook-${Date.now()}`,
     crmProviderId: 'salesforce',
@@ -282,11 +317,15 @@ function parseSalesforceWebhook(data: any, headers: Record<string, string>, sign
     objectId: data.sobjectId || data.Id,
     timestamp: new Date(data.eventDate || Date.now()),
     data,
-    signature
+    signature,
   }
 }
 
-function parseHubSpotWebhook(data: any, headers: Record<string, string>, signature?: string): CRMWebhookEvent {
+function parseHubSpotWebhook(
+  data: any,
+  headers: Record<string, string>,
+  signature?: string
+): CRMWebhookEvent {
   return {
     id: `hs-webhook-${Date.now()}`,
     crmProviderId: 'hubspot',
@@ -295,11 +334,15 @@ function parseHubSpotWebhook(data: any, headers: Record<string, string>, signatu
     objectId: data.objectId?.toString(),
     timestamp: new Date(data.occurredAt || Date.now()),
     data,
-    signature
+    signature,
   }
 }
 
-function parsePipedriveWebhook(data: any, headers: Record<string, string>, signature?: string): CRMWebhookEvent {
+function parsePipedriveWebhook(
+  data: any,
+  headers: Record<string, string>,
+  signature?: string
+): CRMWebhookEvent {
   return {
     id: `pd-webhook-${Date.now()}`,
     crmProviderId: 'pipedrive',
@@ -308,11 +351,15 @@ function parsePipedriveWebhook(data: any, headers: Record<string, string>, signa
     objectId: data.current?.id?.toString(),
     timestamp: new Date(),
     data,
-    signature
+    signature,
   }
 }
 
-function parseCustomWebhook(data: any, headers: Record<string, string>, signature?: string): CRMWebhookEvent {
+function parseCustomWebhook(
+  data: any,
+  headers: Record<string, string>,
+  signature?: string
+): CRMWebhookEvent {
   return {
     id: `custom-webhook-${Date.now()}`,
     crmProviderId: 'custom',
@@ -321,7 +368,7 @@ function parseCustomWebhook(data: any, headers: Record<string, string>, signatur
     objectId: data.id?.toString(),
     timestamp: new Date(data.timestamp || Date.now()),
     data,
-    signature
+    signature,
   }
 }
 

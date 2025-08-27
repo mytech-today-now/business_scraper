@@ -1,6 +1,6 @@
 /**
  * Enhanced ZIP Code Input Component
- * 
+ *
  * Handles various address formats and extracts ZIP codes gracefully
  * with proper error handling and user feedback.
  */
@@ -23,20 +23,22 @@ export interface ZipCodeInputProps extends Omit<InputProps, 'value' | 'onChange'
  * Enhanced ZIP Code Input Component
  */
 export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps>(
-  ({ 
-    value: externalValue,
-    onChange,
-    onValidZipCode,
-    onInvalidInput,
-    showExtractedWarning = true,
-    debounceMs = 500,
-    label = "ZIP Code",
-    placeholder = "e.g., 90210 or 123 Main St, Beverly Hills, CA 90210",
-    helperText = "Enter ZIP code or full address",
-    className,
-    ...props 
-  }, ref) => {
-    
+  (
+    {
+      value: externalValue,
+      onChange,
+      onValidZipCode,
+      onInvalidInput,
+      showExtractedWarning = true,
+      debounceMs = 500,
+      label = 'ZIP Code',
+      placeholder = 'e.g., 90210 or 123 Main St, Beverly Hills, CA 90210',
+      helperText = 'Enter ZIP code or full address',
+      className,
+      ...props
+    },
+    ref
+  ) => {
     const hookOptions: UseZipCodeInputOptions = {
       initialValue: externalValue || '',
       onValidZipCode: (zipCode: string) => {
@@ -44,18 +46,11 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
         onValidZipCode?.(zipCode)
       },
       onInvalidInput,
-      debounceMs
+      debounceMs,
     }
 
-    const {
-      state,
-      handlers,
-      displayValue,
-      isValid,
-      error,
-      warning,
-      isProcessing
-    } = useZipCodeInput(hookOptions)
+    const { state, handlers, displayValue, isValid, error, warning, isProcessing } =
+      useZipCodeInput(hookOptions)
 
     // Sync external value changes
     React.useEffect(() => {
@@ -69,15 +64,15 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
       if (error) {
         return error
       }
-      
+
       if (warning && showExtractedWarning) {
         return warning
       }
-      
+
       if (isProcessing) {
-        return "Processing address..."
+        return 'Processing address...'
       }
-      
+
       return helperText
     }
 
@@ -95,7 +90,7 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
     return (
       <div className="space-y-2">
         {label && (
-          <label 
+          <label
             htmlFor={props.id}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
@@ -107,13 +102,13 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
             )}
           </label>
         )}
-        
+
         <div className="relative">
           <input
             ref={ref}
             type="text"
             value={displayValue}
-            onChange={(e) => handlers.handleChange(e.target.value)}
+            onChange={e => handlers.handleChange(e.target.value)}
             onBlur={handlers.handleBlur}
             onFocus={handlers.handleFocus}
             placeholder={placeholder}
@@ -131,7 +126,7 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
             )}
             {...props}
           />
-          
+
           {/* Status indicator */}
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             {isProcessing && (
@@ -140,21 +135,36 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
             {!isProcessing && isValid && (
               <div className="h-4 w-4 text-green-600">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </div>
             )}
             {!isProcessing && error && (
               <div className="h-4 w-4 text-red-600">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </div>
             )}
             {!isProcessing && warning && !error && (
               <div className="h-4 w-4 text-yellow-600">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
                 </svg>
               </div>
             )}
@@ -163,13 +173,15 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
 
         {/* Message display */}
         {displayMessage && (
-          <p className={clsx(
-            'text-sm',
-            messageType === 'error' && 'text-destructive',
-            messageType === 'warning' && 'text-yellow-600',
-            messageType === 'success' && 'text-green-600',
-            messageType === 'info' && 'text-muted-foreground'
-          )}>
+          <p
+            className={clsx(
+              'text-sm',
+              messageType === 'error' && 'text-destructive',
+              messageType === 'warning' && 'text-yellow-600',
+              messageType === 'success' && 'text-green-600',
+              messageType === 'info' && 'text-muted-foreground'
+            )}
+          >
             {displayMessage}
           </p>
         )}
@@ -182,9 +194,7 @@ export const ZipCodeInput = React.forwardRef<HTMLInputElement, ZipCodeInputProps
               <div>Extracted from: {state.parseResult.extractedFrom}</div>
               <div>Confidence: {state.parseResult.confidence}</div>
               <div>Was extracted: {state.parseResult.wasExtracted ? 'Yes' : 'No'}</div>
-              {state.parseResult.zipCode && (
-                <div>ZIP Code: {state.parseResult.zipCode}</div>
-              )}
+              {state.parseResult.zipCode && <div>ZIP Code: {state.parseResult.zipCode}</div>}
             </div>
           </details>
         )}

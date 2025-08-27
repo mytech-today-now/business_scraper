@@ -50,7 +50,7 @@ export class StreamingSearchService extends EventEmitter {
    * Stream search results in real-time
    */
   async *streamSearchResults(
-    query: string, 
+    query: string,
     location: string = '',
     options: StreamingSearchOptions = {}
   ): AsyncGenerator<StreamingSearchResult, void, unknown> {
@@ -59,7 +59,7 @@ export class StreamingSearchService extends EventEmitter {
       maxResults = 1000,
       batchSize = 50,
       delayBetweenBatches = 100,
-      enableRealTimeUpdates = true
+      enableRealTimeUpdates = true,
     } = options
 
     this.activeStreams.set(streamId, true)
@@ -74,7 +74,7 @@ export class StreamingSearchService extends EventEmitter {
       while (offset < maxResults && this.activeStreams.get(streamId)) {
         // Search for batch of results
         const searchResults = await this.searchBatch(query, location, offset, batchSize)
-        
+
         if (searchResults.length === 0) {
           break // No more results
         }
@@ -88,13 +88,13 @@ export class StreamingSearchService extends EventEmitter {
             processed,
             currentBatch: Math.floor(offset / batchSize) + 1,
             estimatedTimeRemaining: this.estimateTimeRemaining(startTime, processed, totalFound),
-            status: 'processing'
+            status: 'processing',
           }
 
           yield {
             type: 'progress',
             progress,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           }
         }
 
@@ -105,22 +105,22 @@ export class StreamingSearchService extends EventEmitter {
           try {
             // Scrape business data from the URL
             const businessData = await this.scraperService.scrapeWebsite(searchResult.url, 1, 1)
-            
+
             if (businessData.length > 0) {
               const business = businessData[0]
-              
+
               // Enhance with search result data
               const enhancedBusiness: BusinessRecord = {
                 ...business,
                 name: business.name || searchResult.title,
                 website: business.website || searchResult.url,
-                description: business.description || searchResult.snippet
+                description: business.description || searchResult.snippet,
               }
 
               yield {
                 type: 'result',
                 data: enhancedBusiness,
-                timestamp: Date.now()
+                timestamp: Date.now(),
               }
 
               processed++
@@ -152,20 +152,22 @@ export class StreamingSearchService extends EventEmitter {
           processed,
           currentBatch: Math.floor(offset / batchSize),
           estimatedTimeRemaining: 0,
-          status: 'completed'
+          status: 'completed',
         },
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }
 
-      logger.info('StreamingSearch', `Completed streaming search for "${query}": ${processed} results`)
-
+      logger.info(
+        'StreamingSearch',
+        `Completed streaming search for "${query}": ${processed} results`
+      )
     } catch (error) {
       logger.error('StreamingSearch', `Streaming search failed for "${query}"`, error)
-      
+
       yield {
         type: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }
     } finally {
       this.activeStreams.delete(streamId)
@@ -176,9 +178,9 @@ export class StreamingSearchService extends EventEmitter {
    * Search for a batch of results
    */
   private async searchBatch(
-    query: string, 
-    location: string, 
-    offset: number, 
+    query: string,
+    location: string,
+    offset: number,
     batchSize: number
   ): Promise<SearchResult[]> {
     try {

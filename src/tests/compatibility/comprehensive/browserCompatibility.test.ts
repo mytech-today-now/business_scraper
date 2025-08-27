@@ -35,9 +35,7 @@ class CompatibilityTester {
       const startTime = Date.now()
 
       // Create context with device configuration if provided
-      context = deviceConfig 
-        ? await browser.newContext(deviceConfig)
-        : await browser.newContext()
+      context = deviceConfig ? await browser.newContext(deviceConfig) : await browser.newContext()
 
       page = await context.newPage()
 
@@ -61,25 +59,23 @@ class CompatibilityTester {
         performanceMetrics: {
           loadTime,
           renderTime,
-          interactionTime
-        }
+          interactionTime,
+        },
       }
 
       this.results.push(result)
       return result
-
     } catch (error) {
       const result: CompatibilityTestResult = {
         browser: browserName,
         device: deviceConfig?.name,
         viewport: deviceConfig?.viewport,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
 
       this.results.push(result)
       return result
-
     } finally {
       if (page) await page.close()
       if (context) await context.close()
@@ -89,21 +85,21 @@ class CompatibilityTester {
   private async testBasicFunctionality(page: Page): Promise<void> {
     // Test page load
     await expect(page.locator('body')).toBeVisible()
-    
+
     // Test navigation
     const title = await page.title()
     expect(title).toBeTruthy()
-    
+
     // Test CSS rendering
     const bodyStyles = await page.locator('body').evaluate(el => {
       const styles = window.getComputedStyle(el)
       return {
         display: styles.display,
-        fontFamily: styles.fontFamily
+        fontFamily: styles.fontFamily,
       }
     })
     expect(bodyStyles.display).toBeTruthy()
-    
+
     // Test JavaScript execution
     const jsWorking = await page.evaluate(() => {
       return typeof window !== 'undefined' && typeof document !== 'undefined'
@@ -114,7 +110,9 @@ class CompatibilityTester {
   private async testUserInteractions(page: Page): Promise<void> {
     try {
       // Test navigation to search page
-      const searchLink = page.locator('a[href*="/search"], button:has-text("Search"), [data-testid="search-nav"]')
+      const searchLink = page.locator(
+        'a[href*="/search"], button:has-text("Search"), [data-testid="search-nav"]'
+      )
       if (await searchLink.isVisible()) {
         await searchLink.click()
         await page.waitForURL('**/search**', { timeout: 10000 })
@@ -123,29 +121,34 @@ class CompatibilityTester {
       }
 
       // Test form interactions
-      const industryInput = page.locator('input[name="industry"], [data-testid="industry-input"]').first()
+      const industryInput = page
+        .locator('input[name="industry"], [data-testid="industry-input"]')
+        .first()
       if (await industryInput.isVisible()) {
         await industryInput.fill('restaurants')
-        
-        const zipInput = page.locator('input[name="zipCode"], [data-testid="zipcode-input"]').first()
+
+        const zipInput = page
+          .locator('input[name="zipCode"], [data-testid="zipcode-input"]')
+          .first()
         if (await zipInput.isVisible()) {
           await zipInput.fill('12345')
         }
       }
 
       // Test button interactions
-      const submitButton = page.locator('button[type="submit"], [data-testid="search-button"]').first()
+      const submitButton = page
+        .locator('button[type="submit"], [data-testid="search-button"]')
+        .first()
       if (await submitButton.isVisible()) {
         await submitButton.click()
-        
+
         // Wait for response (either results or error)
         await Promise.race([
           page.waitForSelector('[data-testid="results"], .results', { timeout: 15000 }),
           page.waitForSelector('[data-testid="error-message"], .error', { timeout: 15000 }),
-          page.waitForTimeout(10000)
+          page.waitForTimeout(10000),
         ])
       }
-
     } catch (error) {
       // Some interactions might fail on certain browsers/devices
       console.warn('User interaction test failed:', error)
@@ -177,7 +180,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
   test.describe('Desktop Browser Compatibility', () => {
     test('should work on Chromium-based browsers', async ({ browser }) => {
       const result = await compatibilityTester.testBrowserCompatibility(browser, 'Chromium')
-      
+
       expect(result.success).toBe(true)
       expect(result.performanceMetrics?.loadTime).toBeLessThan(10000)
     })
@@ -185,14 +188,14 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
     test('should work on Firefox', async ({ browser }) => {
       // Note: This test will use the configured browser from playwright.config.ts
       const result = await compatibilityTester.testBrowserCompatibility(browser, 'Firefox')
-      
+
       expect(result.success).toBe(true)
       expect(result.performanceMetrics?.loadTime).toBeLessThan(15000)
     })
 
     test('should work on WebKit/Safari', async ({ browser }) => {
       const result = await compatibilityTester.testBrowserCompatibility(browser, 'WebKit')
-      
+
       expect(result.success).toBe(true)
       expect(result.performanceMetrics?.loadTime).toBeLessThan(15000)
     })
@@ -201,24 +204,36 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
   test.describe('Mobile Device Compatibility', () => {
     test('should work on iPhone devices', async ({ browser }) => {
       const iPhoneConfig = devices['iPhone 13']
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Mobile Safari', iPhoneConfig)
-      
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Mobile Safari',
+        iPhoneConfig
+      )
+
       expect(result.success).toBe(true)
       expect(result.viewport?.width).toBe(390)
     })
 
     test('should work on Android devices', async ({ browser }) => {
       const androidConfig = devices['Pixel 5']
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Chrome Mobile', androidConfig)
-      
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Chrome Mobile',
+        androidConfig
+      )
+
       expect(result.success).toBe(true)
       expect(result.viewport?.width).toBe(393)
     })
 
     test('should work on tablet devices', async ({ browser }) => {
       const tabletConfig = devices['iPad Pro']
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Mobile Safari', tabletConfig)
-      
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Mobile Safari',
+        tabletConfig
+      )
+
       expect(result.success).toBe(true)
       expect(result.viewport?.width).toBe(1024)
     })
@@ -227,41 +242,57 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
   test.describe('Viewport Size Compatibility', () => {
     test('should work on small screens (320px)', async ({ browser }) => {
       const smallScreenConfig = {
-        viewport: { width: 320, height: 568 }
+        viewport: { width: 320, height: 568 },
       }
-      
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Small Screen', smallScreenConfig)
-      
+
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Small Screen',
+        smallScreenConfig
+      )
+
       expect(result.success).toBe(true)
     })
 
     test('should work on medium screens (768px)', async ({ browser }) => {
       const mediumScreenConfig = {
-        viewport: { width: 768, height: 1024 }
+        viewport: { width: 768, height: 1024 },
       }
-      
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Medium Screen', mediumScreenConfig)
-      
+
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Medium Screen',
+        mediumScreenConfig
+      )
+
       expect(result.success).toBe(true)
     })
 
     test('should work on large screens (1920px)', async ({ browser }) => {
       const largeScreenConfig = {
-        viewport: { width: 1920, height: 1080 }
+        viewport: { width: 1920, height: 1080 },
       }
-      
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Large Screen', largeScreenConfig)
-      
+
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Large Screen',
+        largeScreenConfig
+      )
+
       expect(result.success).toBe(true)
     })
 
     test('should work on ultra-wide screens (2560px)', async ({ browser }) => {
       const ultraWideConfig = {
-        viewport: { width: 2560, height: 1440 }
+        viewport: { width: 2560, height: 1440 },
       }
-      
-      const result = await compatibilityTester.testBrowserCompatibility(browser, 'Ultra-wide Screen', ultraWideConfig)
-      
+
+      const result = await compatibilityTester.testBrowserCompatibility(
+        browser,
+        'Ultra-wide Screen',
+        ultraWideConfig
+      )
+
       expect(result.success).toBe(true)
     })
   })
@@ -276,7 +307,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
       })
 
       await page.goto(BASE_URL)
-      
+
       // Should still render basic HTML/CSS
       await expect(page.locator('body')).toBeVisible()
     })
@@ -285,15 +316,15 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
       const context = await browser.newContext({
         permissions: [],
         extraHTTPHeaders: {
-          'Cookie': ''
-        }
+          Cookie: '',
+        },
       })
 
       const page = await context.newPage()
-      
+
       await page.goto(BASE_URL)
       await expect(page.locator('body')).toBeVisible()
-      
+
       await context.close()
     })
 
@@ -302,7 +333,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
         // Disable localStorage
         Object.defineProperty(window, 'localStorage', {
           value: null,
-          writable: false
+          writable: false,
         })
       })
 
@@ -312,7 +343,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
 
     test('should handle slow network connections', async ({ browser }) => {
       const context = await browser.newContext()
-      
+
       // Simulate slow 3G connection
       await context.route('**/*', async route => {
         await new Promise(resolve => setTimeout(resolve, 1000)) // 1 second delay
@@ -320,14 +351,14 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
       })
 
       const page = await context.newPage()
-      
+
       const startTime = Date.now()
       await page.goto(BASE_URL, { timeout: 30000 })
       const loadTime = Date.now() - startTime
-      
+
       await expect(page.locator('body')).toBeVisible()
       expect(loadTime).toBeGreaterThan(1000) // Should reflect the delay
-      
+
       await context.close()
     })
   })
@@ -335,22 +366,22 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
   test.describe('Accessibility Compatibility', () => {
     test('should work with screen readers', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Check for ARIA landmarks
       const landmarks = await page.locator('[role="main"], [role="navigation"], main, nav').count()
       expect(landmarks).toBeGreaterThan(0)
-      
+
       // Check for proper heading structure
       const h1Count = await page.locator('h1').count()
       expect(h1Count).toBe(1) // Should have exactly one h1
-      
+
       // Check for alt text on images
       const images = await page.locator('img').all()
       for (const image of images) {
         const alt = await image.getAttribute('alt')
         const ariaLabel = await image.getAttribute('aria-label')
         const role = await image.getAttribute('role')
-        
+
         // Images should have alt text, aria-label, or be decorative
         expect(alt !== null || ariaLabel !== null || role === 'presentation').toBe(true)
       }
@@ -358,17 +389,17 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
 
     test('should support keyboard navigation', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Test tab navigation
       await page.keyboard.press('Tab')
       const firstFocusable = await page.locator(':focus').first()
       await expect(firstFocusable).toBeVisible()
-      
+
       // Continue tabbing through focusable elements
       for (let i = 0; i < 5; i++) {
         await page.keyboard.press('Tab')
         const focused = await page.locator(':focus').first()
-        if (await focused.count() > 0) {
+        if ((await focused.count()) > 0) {
           await expect(focused).toBeVisible()
         }
       }
@@ -377,18 +408,18 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
     test('should support high contrast mode', async ({ browser }) => {
       const context = await browser.newContext({
         colorScheme: 'dark',
-        forcedColors: 'active'
+        forcedColors: 'active',
       })
 
       const page = await context.newPage()
       await page.goto(BASE_URL)
-      
+
       await expect(page.locator('body')).toBeVisible()
-      
+
       // Check that content is still readable
       const bodyText = await page.locator('body').textContent()
       expect(bodyText).toBeTruthy()
-      
+
       await context.close()
     })
   })
@@ -399,30 +430,30 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
         viewport: { width: 360, height: 640 },
         deviceScaleFactor: 1,
         isMobile: true,
-        hasTouch: true
+        hasTouch: true,
       }
 
       const context = await browser.newContext(lowEndConfig)
       const page = await context.newPage()
-      
+
       // Simulate slower CPU
       await page.emulateMedia({ reducedMotion: 'reduce' })
-      
+
       const startTime = Date.now()
       await page.goto(BASE_URL)
       const loadTime = Date.now() - startTime
-      
+
       await expect(page.locator('body')).toBeVisible()
-      
+
       // Should still load within reasonable time even on low-end devices
       expect(loadTime).toBeLessThan(20000) // 20 seconds max
-      
+
       await context.close()
     })
 
     test('should handle memory constraints', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Simulate memory pressure by creating large objects
       await page.evaluate(() => {
         const largeArrays: number[][] = []
@@ -434,7 +465,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
           // Memory pressure detected
         }
       })
-      
+
       // Application should still be responsive
       await expect(page.locator('body')).toBeVisible()
     })
@@ -447,7 +478,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
         { name: 'Desktop Chrome', config: { viewport: { width: 1920, height: 1080 } } },
         { name: 'Mobile Portrait', config: devices['iPhone 13'] },
         { name: 'Tablet Landscape', config: devices['iPad Pro'] },
-        { name: 'Small Screen', config: { viewport: { width: 320, height: 568 } } }
+        { name: 'Small Screen', config: { viewport: { width: 320, height: 568 } } },
       ]
 
       for (const { name, config } of testConfigs) {
@@ -462,7 +493,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
       console.log('\n🌐 Browser Compatibility Test Results:')
       console.log(`✅ Success Rate: ${(successRate * 100).toFixed(1)}%`)
       console.log(`📱 Configurations Tested: ${results.length}`)
-      
+
       if (failedTests.length > 0) {
         console.log('❌ Failed Tests:')
         failedTests.forEach(test => {
@@ -473,7 +504,7 @@ test.describe('Browser Compatibility Comprehensive Tests', () => {
       // Compatibility requirements
       expect(successRate).toBeGreaterThanOrEqual(0.8) // 80% compatibility minimum
       expect(results.length).toBeGreaterThan(3) // Test multiple configurations
-      
+
       // Performance requirements
       const successfulTests = results.filter(r => r.success && r.performanceMetrics)
       successfulTests.forEach(test => {

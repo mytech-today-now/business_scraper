@@ -114,23 +114,23 @@ function generateMockInsights(): AIInsightsSummary {
       'Food & Restaurants',
       'Professional Services',
       'Healthcare',
-      'Technology'
+      'Technology',
     ],
     keyTrends: [
       'Increased demand for local services',
       'Growing emphasis on digital presence',
       'Rising customer service expectations',
       'Shift towards sustainable business practices',
-      'Mobile-first customer interactions'
+      'Mobile-first customer interactions',
     ],
     recommendations: [
       'Focus on local retail stores and shopping centers for immediate opportunities',
       'Target food service establishments with strong community presence',
       'Expand into professional services sector for B2B partnerships',
       'Consider seasonal trends when planning outreach campaigns',
-      'Leverage location-based marketing for better conversion rates'
+      'Leverage location-based marketing for better conversion rates',
     ],
-    generatedAt: currentDate
+    generatedAt: currentDate,
   }
 }
 
@@ -161,12 +161,18 @@ export async function GET(request: NextRequest) {
               highPriorityLeads: insight.highPriorityLeads || 0,
               topIndustries: Array.isArray(insight.topIndustries) ? insight.topIndustries : [],
               keyTrends: Array.isArray(insight.keyTrends) ? insight.keyTrends : [],
-              recommendations: Array.isArray(insight.recommendations) ? insight.recommendations : [],
-              generatedAt: insight.createdAt || new Date()
+              recommendations: Array.isArray(insight.recommendations)
+                ? insight.recommendations
+                : [],
+              generatedAt: insight.createdAt || new Date(),
             }
           }
         } catch (dbQueryError) {
-          logger.warn('AI API', 'Failed to query existing insights, will generate new ones', dbQueryError)
+          logger.warn(
+            'AI API',
+            'Failed to query existing insights, will generate new ones',
+            dbQueryError
+          )
         }
       }
 
@@ -191,7 +197,7 @@ export async function GET(request: NextRequest) {
             averageLeadScore: insights.averageLeadScore,
             highPriorityLeads: insights.highPriorityLeads,
             topIndustries: insights.topIndustries,
-            keyTrends: insights.keyTrends
+            keyTrends: insights.keyTrends,
           })
         } catch (dbSaveError) {
           logger.warn('AI API', 'Failed to save insights to database', dbSaveError)
@@ -209,16 +215,17 @@ export async function GET(request: NextRequest) {
       data: insights,
       meta: {
         usingMockData,
-        message: usingMockData ? 'Using mock data - PostgreSQL not available' : 'Data from PostgreSQL database'
-      }
+        message: usingMockData
+          ? 'Using mock data - PostgreSQL not available'
+          : 'Data from PostgreSQL database',
+      },
     })
-
   } catch (error) {
     logger.error('AI API', 'Failed to get AI insights', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to get AI insights',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -260,7 +267,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           averageLeadScore: insights.averageLeadScore,
           highPriorityLeads: insights.highPriorityLeads,
           topIndustries: insights.topIndustries,
-          keyTrends: insights.keyTrends
+          keyTrends: insights.keyTrends,
         })
       } catch (dbSaveError) {
         logger.warn('AI API', 'Failed to save insights to database', dbSaveError)
@@ -277,16 +284,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       data: insights,
       meta: {
         usingMockData,
-        message: usingMockData ? 'Generated mock data - PostgreSQL not available' : 'Data saved to PostgreSQL database'
-      }
+        message: usingMockData
+          ? 'Generated mock data - PostgreSQL not available'
+          : 'Data saved to PostgreSQL database',
+      },
     })
-
   } catch (error) {
     logger.error('AI API', 'Failed to generate AI insights', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to generate AI insights',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -312,7 +320,7 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
       // Use empty analytics array, will generate insights based on current trends
       allAnalytics = []
     }
-    
+
     if (allAnalytics.length === 0) {
       return createEmptyInsights()
     }
@@ -320,7 +328,9 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
     // Calculate summary statistics
     const totalAnalyzed = allAnalytics.length
     const leadScores = allAnalytics.map(a => a.leadScoring.overallScore)
-    const averageLeadScore = Math.round(leadScores.reduce((sum, score) => sum + score, 0) / leadScores.length)
+    const averageLeadScore = Math.round(
+      leadScores.reduce((sum, score) => sum + score, 0) / leadScores.length
+    )
 
     // Count high-priority leads (score >= 80)
     const highPriorityLeads = allAnalytics.filter(a => a.leadScoring.overallScore >= 80).length
@@ -332,9 +342,9 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
     allAnalytics.forEach(analytics => {
       // Get business to find industry
       const industry = 'General' // Would need to get from business record
-      
+
       industryMap.set(industry, (industryMap.get(industry) || 0) + 1)
-      
+
       if (!industryScores.has(industry)) {
         industryScores.set(industry, [])
       }
@@ -346,7 +356,7 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
       .map(([industry, scores]) => ({
         industry,
         avgScore: scores.reduce((sum, score) => sum + score, 0) / scores.length,
-        count: scores.length
+        count: scores.length,
       }))
       .sort((a, b) => b.avgScore - a.avgScore)
       .slice(0, 5)
@@ -378,7 +388,11 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
         }
       }
     } catch (importError) {
-      logger.warn('AI API', 'Predictive analytics engine not available, using fallback trends', importError)
+      logger.warn(
+        'AI API',
+        'Predictive analytics engine not available, using fallback trends',
+        importError
+      )
 
       // Fallback trends when analytics engine is not available
       keyTrends.push(
@@ -391,7 +405,11 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
     }
 
     // Generate recommendations
-    const recommendations = generateRecommendations(allAnalytics, averageLeadScore, highPriorityLeads)
+    const recommendations = generateRecommendations(
+      allAnalytics,
+      averageLeadScore,
+      highPriorityLeads
+    )
 
     const insights: AIInsightsSummary = {
       totalAnalyzed,
@@ -400,12 +418,11 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
       topIndustries,
       keyTrends: keyTrends.slice(0, 10), // Limit to 10 trends
       recommendations,
-      generatedAt: new Date()
+      generatedAt: new Date(),
     }
 
     logger.info('AI API', `Generated insights for ${totalAnalyzed} businesses`)
     return insights
-
   } catch (error) {
     logger.error('AI API', 'Failed to generate insights summary', error)
     return createEmptyInsights()
@@ -416,15 +433,17 @@ async function generateInsightsSummary(): Promise<AIInsightsSummary> {
  * Generate recommendations based on analytics
  */
 function generateRecommendations(
-  allAnalytics: any[], 
-  averageLeadScore: number, 
+  allAnalytics: any[],
+  averageLeadScore: number,
   highPriorityLeads: number
 ): string[] {
   const recommendations: string[] = []
 
   // Lead score recommendations
   if (averageLeadScore < 60) {
-    recommendations.push('Consider refining lead qualification criteria to improve average lead quality')
+    recommendations.push(
+      'Consider refining lead qualification criteria to improve average lead quality'
+    )
   } else if (averageLeadScore > 80) {
     recommendations.push('Excellent lead quality detected - consider expanding search criteria')
   }
@@ -439,16 +458,20 @@ function generateRecommendations(
 
   // Website quality recommendations
   const websiteQualityScores = allAnalytics.map(a => a.websiteQuality.healthScore)
-  const avgWebsiteScore = websiteQualityScores.reduce((sum, score) => sum + score, 0) / websiteQualityScores.length
-  
+  const avgWebsiteScore =
+    websiteQualityScores.reduce((sum, score) => sum + score, 0) / websiteQualityScores.length
+
   if (avgWebsiteScore < 60) {
-    recommendations.push('Many leads have poor website quality - consider this in outreach strategy')
+    recommendations.push(
+      'Many leads have poor website quality - consider this in outreach strategy'
+    )
   }
 
   // Conversion probability recommendations
   const conversionProbs = allAnalytics.map(a => a.conversionPrediction.probability)
-  const avgConversionProb = conversionProbs.reduce((sum, prob) => sum + prob, 0) / conversionProbs.length
-  
+  const avgConversionProb =
+    conversionProbs.reduce((sum, prob) => sum + prob, 0) / conversionProbs.length
+
   if (avgConversionProb > 0.7) {
     recommendations.push('High conversion probability detected - accelerate outreach efforts')
   } else if (avgConversionProb < 0.3) {
@@ -456,9 +479,13 @@ function generateRecommendations(
   }
 
   // Contact strategy recommendations
-  const emailStrategy = allAnalytics.filter(a => a.conversionPrediction.recommendedStrategy === 'email').length
-  const phoneStrategy = allAnalytics.filter(a => a.conversionPrediction.recommendedStrategy === 'phone').length
-  
+  const emailStrategy = allAnalytics.filter(
+    a => a.conversionPrediction.recommendedStrategy === 'email'
+  ).length
+  const phoneStrategy = allAnalytics.filter(
+    a => a.conversionPrediction.recommendedStrategy === 'phone'
+  ).length
+
   if (emailStrategy > phoneStrategy) {
     recommendations.push('Email outreach recommended for majority of leads')
   } else {
@@ -467,12 +494,15 @@ function generateRecommendations(
 
   // Business maturity recommendations
   const maturityScores = allAnalytics.map(a => a.businessMaturity.maturityScore)
-  const avgMaturityScore = maturityScores.reduce((sum, score) => sum + score, 0) / maturityScores.length
-  
+  const avgMaturityScore =
+    maturityScores.reduce((sum, score) => sum + score, 0) / maturityScores.length
+
   if (avgMaturityScore > 70) {
     recommendations.push('High business maturity detected - focus on value proposition')
   } else if (avgMaturityScore < 50) {
-    recommendations.push('Many early-stage businesses - tailor messaging for growth-focused companies')
+    recommendations.push(
+      'Many early-stage businesses - tailor messaging for growth-focused companies'
+    )
   }
 
   return recommendations.slice(0, 8) // Limit to 8 recommendations
@@ -491,8 +521,8 @@ function createEmptyInsights(): AIInsightsSummary {
     recommendations: [
       'Start by analyzing some business records to generate insights',
       'Use the batch processing feature to analyze multiple businesses at once',
-      'Review lead scoring criteria to ensure optimal results'
+      'Review lead scoring criteria to ensure optimal results',
     ],
-    generatedAt: new Date()
+    generatedAt: new Date(),
   }
 }

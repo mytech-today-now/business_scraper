@@ -28,7 +28,7 @@ export const GET = apiFramework.createHandler(
 
       const period = {
         start: startDate || defaultStart.toISOString(),
-        end: endDate || defaultEnd.toISOString()
+        end: endDate || defaultEnd.toISOString(),
       }
 
       let analyticsData: any
@@ -49,7 +49,7 @@ export const GET = apiFramework.createHandler(
           analyticsData = {
             realTime: usageAnalyticsService.getRealTimeMetrics(),
             performance: apiMetricsService.getPerformanceMetrics(),
-            health: usageAnalyticsService.getHealthStatus()
+            health: usageAnalyticsService.getHealthStatus(),
           }
           break
 
@@ -62,22 +62,21 @@ export const GET = apiFramework.createHandler(
         data: {
           type,
           period: type !== 'realtime' ? period : undefined,
-          analytics: analyticsData
+          analytics: analyticsData,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('AnalyticsAPI', 'Failed to get analytics', error)
       throw error
     }
   },
   {
-    permissions: ['read:analytics']
+    permissions: ['read:analytics'],
   }
 )
 
@@ -97,9 +96,10 @@ export const exportAnalytics = apiFramework.createHandler(
         exportData = usageAnalyticsService.exportAnalytics(format as any)
       } else if (type === 'metrics') {
         const metricsData = apiMetricsService.exportMetrics()
-        exportData = format === 'csv' 
-          ? this.convertMetricsToCSV(metricsData)
-          : JSON.stringify(metricsData, null, 2)
+        exportData =
+          format === 'csv'
+            ? this.convertMetricsToCSV(metricsData)
+            : JSON.stringify(metricsData, null, 2)
       } else {
         throw new Error('Invalid export type. Use: usage or metrics')
       }
@@ -113,15 +113,14 @@ export const exportAnalytics = apiFramework.createHandler(
           filename,
           format,
           size: exportData.length,
-          data: Buffer.from(exportData).toString('base64')
+          data: Buffer.from(exportData).toString('base64'),
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('AnalyticsAPI', 'Failed to export analytics', error)
       throw error
@@ -131,8 +130,8 @@ export const exportAnalytics = apiFramework.createHandler(
     permissions: ['read:analytics'],
     rateLimit: {
       requestsPerMinute: 5,
-      requestsPerHour: 20
-    }
+      requestsPerHour: 20,
+    },
   }
 )
 
@@ -146,10 +145,10 @@ export const health = apiFramework.createHandler(
       const performanceMetrics = apiMetricsService.getPerformanceMetrics()
       const alertThresholds = apiMetricsService.getAlertThresholds()
 
-      const overallStatus = healthStatus.every(h => h.status === 'healthy') 
-        ? 'healthy' 
-        : healthStatus.some(h => h.status === 'unhealthy') 
-          ? 'unhealthy' 
+      const overallStatus = healthStatus.every(h => h.status === 'healthy')
+        ? 'healthy'
+        : healthStatus.some(h => h.status === 'unhealthy')
+          ? 'unhealthy'
           : 'degraded'
 
       return {
@@ -161,22 +160,21 @@ export const health = apiFramework.createHandler(
           performance: performanceMetrics,
           thresholds: alertThresholds,
           uptime: process.uptime(),
-          memory: process.memoryUsage()
+          memory: process.memoryUsage(),
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('AnalyticsAPI', 'Failed to get health status', error)
       throw error
     }
   },
   {
-    permissions: ['read:analytics']
+    permissions: ['read:analytics'],
   }
 )
 
@@ -191,8 +189,10 @@ export const updateThresholds = apiFramework.createHandler(
 
       const thresholds: any = {}
       if (typeof errorRate === 'number' && errorRate > 0) thresholds.errorRate = errorRate
-      if (typeof responseTime === 'number' && responseTime > 0) thresholds.responseTime = responseTime
-      if (typeof rateLimitHits === 'number' && rateLimitHits > 0) thresholds.rateLimitHits = rateLimitHits
+      if (typeof responseTime === 'number' && responseTime > 0)
+        thresholds.responseTime = responseTime
+      if (typeof rateLimitHits === 'number' && rateLimitHits > 0)
+        thresholds.rateLimitHits = rateLimitHits
 
       if (Object.keys(thresholds).length === 0) {
         throw new Error('No valid thresholds provided')
@@ -203,22 +203,21 @@ export const updateThresholds = apiFramework.createHandler(
       logger.info('AnalyticsAPI', 'Updated alert thresholds', {
         requestId: context.requestId,
         thresholds,
-        clientId: context.clientId
+        clientId: context.clientId,
       })
 
       return {
         success: true,
         data: {
           message: 'Alert thresholds updated successfully',
-          thresholds: apiMetricsService.getAlertThresholds()
+          thresholds: apiMetricsService.getAlertThresholds(),
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('AnalyticsAPI', 'Failed to update thresholds', error)
       throw error
@@ -228,8 +227,8 @@ export const updateThresholds = apiFramework.createHandler(
     permissions: ['admin:all'],
     rateLimit: {
       requestsPerMinute: 5,
-      requestsPerHour: 20
-    }
+      requestsPerHour: 20,
+    },
   }
 )
 
@@ -243,8 +242,8 @@ export const rateLimits = apiFramework.createHandler(
 
     try {
       // Only allow clients to see their own rate limits unless they have admin permissions
-      const clientId = context.permissions.includes('admin:all') 
-        ? (targetClientId || context.clientId)
+      const clientId = context.permissions.includes('admin:all')
+        ? targetClientId || context.clientId
         : context.clientId
 
       if (!clientId) {
@@ -252,20 +251,20 @@ export const rateLimits = apiFramework.createHandler(
       }
 
       const rateLimitStatus = apiMetricsService.getRateLimitStatus(clientId)
-      
+
       if (!rateLimitStatus) {
         return {
           success: true,
           data: {
             clientId,
             status: 'No rate limit data found',
-            limits: null
+            limits: null,
           },
           metadata: {
             requestId: context.requestId,
             timestamp: new Date().toISOString(),
-            version: 'v1'
-          }
+            version: 'v1',
+          },
         }
       }
 
@@ -277,23 +276,22 @@ export const rateLimits = apiFramework.createHandler(
           resetTimes: {
             minute: new Date(rateLimitStatus.minute.resetTime * 1000).toISOString(),
             hour: new Date(rateLimitStatus.hour.resetTime * 1000).toISOString(),
-            day: new Date(rateLimitStatus.day.resetTime * 1000).toISOString()
-          }
+            day: new Date(rateLimitStatus.day.resetTime * 1000).toISOString(),
+          },
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('AnalyticsAPI', 'Failed to get rate limit status', error)
       throw error
     }
   },
   {
-    permissions: ['read:analytics']
+    permissions: ['read:analytics'],
   }
 )
 
@@ -311,25 +309,25 @@ function convertMetricsToCSV(metricsData: any): string {
       metricsData.timestamp,
       'requests_per_minute',
       performance.realTime.requestsPerMinute.toString(),
-      'Real-time metric'
+      'Real-time metric',
     ])
     rows.push([
       metricsData.timestamp,
       'average_response_time',
       performance.realTime.averageResponseTime.toString(),
-      'Real-time metric'
+      'Real-time metric',
     ])
     rows.push([
       metricsData.timestamp,
       'error_rate',
       performance.realTime.errorRate.toString(),
-      'Real-time metric'
+      'Real-time metric',
     ])
     rows.push([
       metricsData.timestamp,
       'active_clients',
       performance.realTime.activeClients.toString(),
-      'Real-time metric'
+      'Real-time metric',
     ])
   }
 
@@ -337,9 +335,9 @@ function convertMetricsToCSV(metricsData: any): string {
 }
 
 // Export named functions for specific endpoints
-export { 
-  exportAnalytics as GET_export, 
-  health as GET_health, 
+export {
+  exportAnalytics as GET_export,
+  health as GET_health,
   updateThresholds as POST_thresholds,
-  rateLimits as GET_rateLimits
+  rateLimits as GET_rateLimits,
 }

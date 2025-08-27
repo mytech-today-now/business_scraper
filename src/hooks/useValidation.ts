@@ -30,15 +30,12 @@ export interface ValidationOptions {
 /**
  * Hook for real-time email validation
  */
-export function useValidateEmail(
-  value: string,
-  options: ValidationOptions = {}
-): ValidationState {
+export function useValidateEmail(value: string, options: ValidationOptions = {}): ValidationState {
   const {
     debounceMs = 300,
     validateOnMount = false,
     required = false,
-    requiredMessage = 'Email is required'
+    requiredMessage = 'Email is required',
   } = options
 
   const [state, setState] = useState<ValidationState>({ isValid: true })
@@ -65,7 +62,7 @@ export function useValidateEmail(
       if (required && !debouncedValue.trim()) {
         setState({
           isValid: false,
-          error: requiredMessage
+          error: requiredMessage,
         })
         return
       }
@@ -80,7 +77,7 @@ export function useValidateEmail(
       if (!EMAIL_REGEX.test(debouncedValue)) {
         setState({
           isValid: false,
-          error: 'Please enter a valid email address'
+          error: 'Please enter a valid email address',
         })
         return
       }
@@ -88,7 +85,7 @@ export function useValidateEmail(
       // Success state
       setState({
         isValid: true,
-        success: 'Valid email address'
+        success: 'Valid email address',
       })
     }
 
@@ -101,15 +98,12 @@ export function useValidateEmail(
 /**
  * Hook for real-time URL validation
  */
-export function useValidateURL(
-  value: string,
-  options: ValidationOptions = {}
-): ValidationState {
+export function useValidateURL(value: string, options: ValidationOptions = {}): ValidationState {
   const {
     debounceMs = 300,
     validateOnMount = false,
     required = false,
-    requiredMessage = 'URL is required'
+    requiredMessage = 'URL is required',
   } = options
 
   const [state, setState] = useState<ValidationState>({ isValid: true })
@@ -136,7 +130,7 @@ export function useValidateURL(
       if (required && !debouncedValue.trim()) {
         setState({
           isValid: false,
-          error: requiredMessage
+          error: requiredMessage,
         })
         return
       }
@@ -151,7 +145,7 @@ export function useValidateURL(
       if (!URL_REGEX.test(debouncedValue)) {
         setState({
           isValid: false,
-          error: 'Please enter a valid URL (e.g., https://example.com)'
+          error: 'Please enter a valid URL (e.g., https://example.com)',
         })
         return
       }
@@ -160,7 +154,7 @@ export function useValidateURL(
       if (debouncedValue.startsWith('http://')) {
         setState({
           isValid: true,
-          warning: 'Consider using HTTPS for better security'
+          warning: 'Consider using HTTPS for better security',
         })
         return
       }
@@ -168,7 +162,7 @@ export function useValidateURL(
       // Success state
       setState({
         isValid: true,
-        success: 'Valid URL'
+        success: 'Valid URL',
       })
     }
 
@@ -189,7 +183,7 @@ export function useRequiredField(
     debounceMs = 300,
     validateOnMount = false,
     requiredMessage = 'This field is required',
-    minLength = 1
+    minLength = 1,
   } = options
 
   const [state, setState] = useState<ValidationState>({ isValid: true })
@@ -217,9 +211,10 @@ export function useRequiredField(
       if (!trimmedValue || trimmedValue.length < minLength) {
         setState({
           isValid: false,
-          error: minLength > 1 
-            ? `This field requires at least ${minLength} characters`
-            : requiredMessage
+          error:
+            minLength > 1
+              ? `This field requires at least ${minLength} characters`
+              : requiredMessage,
         })
         return
       }
@@ -227,7 +222,7 @@ export function useRequiredField(
       // Success state
       setState({
         isValid: true,
-        success: 'Valid input'
+        success: 'Valid input',
       })
     }
 
@@ -250,7 +245,7 @@ export function useValidateCustomPattern(
     debounceMs = 300,
     validateOnMount = false,
     required = false,
-    requiredMessage = 'This field is required'
+    requiredMessage = 'This field is required',
   } = options
 
   const [state, setState] = useState<ValidationState>({ isValid: true })
@@ -277,7 +272,7 @@ export function useValidateCustomPattern(
       if (required && !debouncedValue.trim()) {
         setState({
           isValid: false,
-          error: requiredMessage
+          error: requiredMessage,
         })
         return
       }
@@ -292,7 +287,7 @@ export function useValidateCustomPattern(
       if (!pattern.test(debouncedValue)) {
         setState({
           isValid: false,
-          error: errorMessage
+          error: errorMessage,
         })
         return
       }
@@ -300,7 +295,7 @@ export function useValidateCustomPattern(
       // Success state
       setState({
         isValid: true,
-        success: 'Valid input'
+        success: 'Valid input',
       })
     }
 
@@ -313,16 +308,8 @@ export function useValidateCustomPattern(
 /**
  * Hook for phone number validation
  */
-export function useValidatePhone(
-  value: string,
-  options: ValidationOptions = {}
-): ValidationState {
-  return useValidateCustomPattern(
-    value,
-    PHONE_REGEX,
-    'Please enter a valid phone number',
-    options
-  )
+export function useValidatePhone(value: string, options: ValidationOptions = {}): ValidationState {
+  return useValidateCustomPattern(value, PHONE_REGEX, 'Please enter a valid phone number', options)
 }
 
 /**
@@ -332,10 +319,5 @@ export function useValidateZipCode(
   value: string,
   options: ValidationOptions = {}
 ): ValidationState {
-  return useValidateCustomPattern(
-    value,
-    ZIP_REGEX,
-    'Please enter a valid ZIP code',
-    options
-  )
+  return useValidateCustomPattern(value, ZIP_REGEX, 'Please enter a valid ZIP code', options)
 }

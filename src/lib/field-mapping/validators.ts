@@ -19,28 +19,27 @@ export interface ValidationResult {
  * Field validation engine
  */
 export class FieldValidationEngine {
-  
   /**
    * Validate a value against a set of validators
    */
   static validate(value: any, validators: FieldValidator[]): ValidationResult {
     const warnings: string[] = []
-    
+
     for (const validator of validators) {
       const result = this.validateSingle(value, validator)
-      
+
       if (!result.isValid) {
         return result
       }
-      
+
       if (result.warnings) {
         warnings.push(...result.warnings)
       }
     }
-    
+
     return {
       isValid: true,
-      warnings: warnings.length > 0 ? warnings : undefined
+      warnings: warnings.length > 0 ? warnings : undefined,
     }
   }
 
@@ -74,17 +73,20 @@ export class FieldValidationEngine {
    * Validate required field
    */
   private static validateRequired(value: any, validator: FieldValidator): ValidationResult {
-    const isEmpty = value === undefined || value === null || value === '' || 
-                   (Array.isArray(value) && value.length === 0)
-    
+    const isEmpty =
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0)
+
     if (isEmpty) {
       return {
         isValid: false,
         error: validator.errorMessage || 'This field is required',
-        suggestedFix: 'Provide a value for this required field'
+        suggestedFix: 'Provide a value for this required field',
       }
     }
-    
+
     return { isValid: true }
   }
 
@@ -93,33 +95,33 @@ export class FieldValidationEngine {
    */
   private static validateEmail(value: any, validator: FieldValidator): ValidationResult {
     if (!value) return { isValid: true } // Allow empty for optional fields
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const isValid = emailRegex.test(String(value))
-    
+
     if (!isValid) {
       return {
         isValid: false,
         error: validator.errorMessage || 'Invalid email format',
-        suggestedFix: 'Ensure email follows format: user@domain.com'
+        suggestedFix: 'Ensure email follows format: user@domain.com',
       }
     }
-    
+
     // Additional email validation warnings
     const warnings: string[] = []
     const email = String(value).toLowerCase()
-    
+
     if (email.includes('+')) {
       warnings.push('Email contains plus sign, may be an alias')
     }
-    
+
     if (email.endsWith('.test') || email.endsWith('.example')) {
       warnings.push('Email appears to be a test/example address')
     }
-    
+
     return {
       isValid: true,
-      warnings: warnings.length > 0 ? warnings : undefined
+      warnings: warnings.length > 0 ? warnings : undefined,
     }
   }
 
@@ -128,31 +130,31 @@ export class FieldValidationEngine {
    */
   private static validatePhone(value: any, validator: FieldValidator): ValidationResult {
     if (!value) return { isValid: true } // Allow empty for optional fields
-    
+
     const phoneStr = String(value).replace(/\D/g, '')
     const isValid = phoneStr.length >= 10 && phoneStr.length <= 15
-    
+
     if (!isValid) {
       return {
         isValid: false,
         error: validator.errorMessage || 'Invalid phone number format',
-        suggestedFix: 'Phone number should contain 10-15 digits'
+        suggestedFix: 'Phone number should contain 10-15 digits',
       }
     }
-    
+
     const warnings: string[] = []
-    
+
     if (phoneStr.length === 11 && !phoneStr.startsWith('1')) {
       warnings.push('11-digit number should start with country code 1')
     }
-    
+
     if (phoneStr.length < 10) {
       warnings.push('Phone number may be incomplete')
     }
-    
+
     return {
       isValid: true,
-      warnings: warnings.length > 0 ? warnings : undefined
+      warnings: warnings.length > 0 ? warnings : undefined,
     }
   }
 
@@ -161,28 +163,28 @@ export class FieldValidationEngine {
    */
   private static validateUrl(value: any, validator: FieldValidator): ValidationResult {
     if (!value) return { isValid: true } // Allow empty for optional fields
-    
+
     try {
       const url = new URL(String(value))
       const warnings: string[] = []
-      
+
       if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         warnings.push('URL should use HTTP or HTTPS protocol')
       }
-      
+
       if (!url.hostname.includes('.')) {
         warnings.push('URL hostname may be invalid')
       }
-      
+
       return {
         isValid: true,
-        warnings: warnings.length > 0 ? warnings : undefined
+        warnings: warnings.length > 0 ? warnings : undefined,
       }
     } catch {
       return {
         isValid: false,
         error: validator.errorMessage || 'Invalid URL format',
-        suggestedFix: 'URL should include protocol (http:// or https://)'
+        suggestedFix: 'URL should include protocol (http:// or https://)',
       }
     }
   }
@@ -192,36 +194,36 @@ export class FieldValidationEngine {
    */
   private static validateLength(value: any, validator: FieldValidator): ValidationResult {
     if (!value) return { isValid: true } // Allow empty for optional fields
-    
+
     const length = String(value).length
     const min = validator.params?.min || 0
     const max = validator.params?.max || Infinity
-    
+
     if (length < min) {
       return {
         isValid: false,
         error: validator.errorMessage || `Value must be at least ${min} characters`,
-        suggestedFix: `Provide at least ${min} characters`
+        suggestedFix: `Provide at least ${min} characters`,
       }
     }
-    
+
     if (length > max) {
       return {
         isValid: false,
         error: validator.errorMessage || `Value must be no more than ${max} characters`,
-        suggestedFix: `Limit to ${max} characters or less`
+        suggestedFix: `Limit to ${max} characters or less`,
       }
     }
-    
+
     const warnings: string[] = []
-    
+
     if (length > max * 0.9) {
       warnings.push(`Value is close to maximum length limit (${max})`)
     }
-    
+
     return {
       isValid: true,
-      warnings: warnings.length > 0 ? warnings : undefined
+      warnings: warnings.length > 0 ? warnings : undefined,
     }
   }
 
@@ -230,21 +232,21 @@ export class FieldValidationEngine {
    */
   private static validatePattern(value: any, validator: FieldValidator): ValidationResult {
     if (!value) return { isValid: true } // Allow empty for optional fields
-    
+
     const pattern = validator.params?.pattern
     if (!pattern) return { isValid: true }
-    
+
     const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern
     const isValid = regex.test(String(value))
-    
+
     if (!isValid) {
       return {
         isValid: false,
         error: validator.errorMessage || 'Value does not match required pattern',
-        suggestedFix: 'Ensure value matches the expected format'
+        suggestedFix: 'Ensure value matches the expected format',
       }
     }
-    
+
     return { isValid: true }
   }
 
@@ -253,36 +255,36 @@ export class FieldValidationEngine {
    */
   private static validateRange(value: any, validator: FieldValidator): ValidationResult {
     if (!value) return { isValid: true } // Allow empty for optional fields
-    
+
     const numValue = Number(value)
-    
+
     if (isNaN(numValue)) {
       return {
         isValid: false,
         error: validator.errorMessage || 'Value must be a number',
-        suggestedFix: 'Provide a valid numeric value'
+        suggestedFix: 'Provide a valid numeric value',
       }
     }
-    
+
     const min = validator.params?.min
     const max = validator.params?.max
-    
+
     if (min !== undefined && numValue < min) {
       return {
         isValid: false,
         error: validator.errorMessage || `Value must be at least ${min}`,
-        suggestedFix: `Provide a value of ${min} or greater`
+        suggestedFix: `Provide a value of ${min} or greater`,
       }
     }
-    
+
     if (max !== undefined && numValue > max) {
       return {
         isValid: false,
         error: validator.errorMessage || `Value must be no more than ${max}`,
-        suggestedFix: `Provide a value of ${max} or less`
+        suggestedFix: `Provide a value of ${max} or less`,
       }
     }
-    
+
     return { isValid: true }
   }
 
@@ -293,7 +295,7 @@ export class FieldValidationEngine {
     try {
       const customFn = validator.params?.customFn
       if (!customFn) return { isValid: true }
-      
+
       // For security, we would need to implement a safe function execution environment
       // For now, return true as custom validation would need to be implemented separately
       return { isValid: true }
@@ -301,7 +303,7 @@ export class FieldValidationEngine {
       return {
         isValid: false,
         error: validator.errorMessage || 'Custom validation failed',
-        suggestedFix: 'Check custom validation logic'
+        suggestedFix: 'Check custom validation logic',
       }
     }
   }
@@ -311,7 +313,6 @@ export class FieldValidationEngine {
  * Common validation presets for business data
  */
 export class BusinessValidationPresets {
-  
   /**
    * Get validators for business name
    */
@@ -319,13 +320,13 @@ export class BusinessValidationPresets {
     return [
       {
         type: 'required',
-        errorMessage: 'Business name is required'
+        errorMessage: 'Business name is required',
       },
       {
         type: 'length',
         params: { min: 2, max: 100 },
-        errorMessage: 'Business name must be between 2 and 100 characters'
-      }
+        errorMessage: 'Business name must be between 2 and 100 characters',
+      },
     ]
   }
 
@@ -336,17 +337,17 @@ export class BusinessValidationPresets {
     const validators: FieldValidator[] = [
       {
         type: 'email',
-        errorMessage: 'Invalid email format'
-      }
+        errorMessage: 'Invalid email format',
+      },
     ]
-    
+
     if (required) {
       validators.unshift({
         type: 'required',
-        errorMessage: 'Email is required'
+        errorMessage: 'Email is required',
       })
     }
-    
+
     return validators
   }
 
@@ -357,17 +358,17 @@ export class BusinessValidationPresets {
     const validators: FieldValidator[] = [
       {
         type: 'phone',
-        errorMessage: 'Invalid phone number format'
-      }
+        errorMessage: 'Invalid phone number format',
+      },
     ]
-    
+
     if (required) {
       validators.unshift({
         type: 'required',
-        errorMessage: 'Phone number is required'
+        errorMessage: 'Phone number is required',
       })
     }
-    
+
     return validators
   }
 
@@ -378,17 +379,17 @@ export class BusinessValidationPresets {
     const validators: FieldValidator[] = [
       {
         type: 'url',
-        errorMessage: 'Invalid website URL format'
-      }
+        errorMessage: 'Invalid website URL format',
+      },
     ]
-    
+
     if (required) {
       validators.unshift({
         type: 'required',
-        errorMessage: 'Website URL is required'
+        errorMessage: 'Website URL is required',
       })
     }
-    
+
     return validators
   }
 
@@ -400,8 +401,8 @@ export class BusinessValidationPresets {
       {
         type: 'length',
         params: { min: 5, max: 200 },
-        errorMessage: 'Address must be between 5 and 200 characters'
-      }
+        errorMessage: 'Address must be between 5 and 200 characters',
+      },
     ]
   }
 
@@ -413,8 +414,8 @@ export class BusinessValidationPresets {
       {
         type: 'pattern',
         params: { pattern: /^\d{5}(-\d{4})?$/ },
-        errorMessage: 'ZIP code must be in format 12345 or 12345-6789'
-      }
+        errorMessage: 'ZIP code must be in format 12345 or 12345-6789',
+      },
     ]
   }
 
@@ -426,8 +427,8 @@ export class BusinessValidationPresets {
       {
         type: 'length',
         params: { min: 2, max: 50 },
-        errorMessage: 'Industry must be between 2 and 50 characters'
-      }
+        errorMessage: 'Industry must be between 2 and 50 characters',
+      },
     ]
   }
 }

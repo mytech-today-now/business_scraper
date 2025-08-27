@@ -18,14 +18,14 @@ const pool = new Pool({
 // Consent types
 const CONSENT_TYPES = [
   'necessary',
-  'scraping', 
+  'scraping',
   'storage',
   'enrichment',
   'analytics',
-  'marketing'
+  'marketing',
 ] as const
 
-type ConsentType = typeof CONSENT_TYPES[number]
+type ConsentType = (typeof CONSENT_TYPES)[number]
 
 interface ConsentPreferences {
   necessary: boolean
@@ -47,22 +47,19 @@ export async function POST(request: NextRequest) {
 
     // Validate preferences
     if (!preferences || typeof preferences !== 'object') {
-      return NextResponse.json(
-        { error: 'Invalid consent preferences' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid consent preferences' }, { status: 400 })
     }
 
     // Get client information
     const clientIP = getClientIP(request)
     const userAgent = request.headers.get('user-agent') || 'Unknown'
-    
+
     // Get user email from session or request
     const userEmail = await getUserEmail(request)
-    
+
     // Record each consent type
     const consentRecords = []
-    
+
     for (const [consentType, consentGiven] of Object.entries(preferences)) {
       if (!CONSENT_TYPES.includes(consentType as ConsentType)) {
         continue
@@ -70,35 +67,38 @@ export async function POST(request: NextRequest) {
 
       // Determine legal basis
       const legalBasis = consentType === 'necessary' ? 'legal_obligation' : 'consent'
-      
+
       // Insert consent record
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         INSERT INTO consent_records (
           id, user_id, email, consent_type, consent_given, consent_date,
           consent_method, ip_address, user_agent, legal_basis, purpose,
           data_categories, retention_period
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         RETURNING id
-      `, [
-        crypto.randomUUID(),
-        null, // user_id - would be set if user is logged in
-        userEmail,
-        consentType,
-        consentGiven,
-        new Date(timestamp || Date.now()),
-        method,
-        clientIP,
-        userAgent,
-        legalBasis,
-        getConsentPurpose(consentType as ConsentType),
-        getDataCategories(consentType as ConsentType),
-        getRetentionPeriod(consentType as ConsentType)
-      ])
+      `,
+        [
+          crypto.randomUUID(),
+          null, // user_id - would be set if user is logged in
+          userEmail,
+          consentType,
+          consentGiven,
+          new Date(timestamp || Date.now()),
+          method,
+          clientIP,
+          userAgent,
+          legalBasis,
+          getConsentPurpose(consentType as ConsentType),
+          getDataCategories(consentType as ConsentType),
+          getRetentionPeriod(consentType as ConsentType),
+        ]
+      )
 
       consentRecords.push({
         id: result.rows[0].id,
         type: consentType,
-        given: consentGiven
+        given: consentGiven,
       })
     }
 
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
         preferences,
         method,
         recordCount: consentRecords.length,
-        email: userEmail
+        email: userEmail,
       }
     )
 
@@ -120,37 +120,35 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       consentRecords,
-      message: 'Consent preferences saved successfully'
+      message: 'Consent preferences saved successfully',
     })
 
     // Set a consent cookie that expires in 1 year
-    const consentCookie = Buffer.from(JSON.stringify({
-      preferences,
-      timestamp: new Date().toISOString(),
-      version: '1.0'
-    })).toString('base64')
+    const consentCookie = Buffer.from(
+      JSON.stringify({
+        preferences,
+        timestamp: new Date().toISOString(),
+        version: '1.0',
+      })
+    ).toString('base64')
 
     response.cookies.set('consent-preferences', consentCookie, {
       maxAge: 365 * 24 * 60 * 60, // 1 year
       httpOnly: false, // Allow client-side access
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax'
+      sameSite: 'lax',
     })
 
     logger.info('Consent API', 'Consent preferences saved', {
       email: userEmail,
       preferences,
-      recordCount: consentRecords.length
+      recordCount: consentRecords.length,
     })
 
     return response
-
   } catch (error) {
     logger.error('Consent API', 'Failed to save consent preferences', error)
-    return NextResponse.json(
-      { error: 'Failed to save consent preferences' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to save consent preferences' }, { status: 500 })
   }
 }
 
@@ -181,18 +179,21 @@ export async function GET(request: NextRequest) {
     let hasConsent = false
 
     if (userEmail || clientIP) {
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         SELECT DISTINCT ON (consent_type) 
           consent_type, consent_given, consent_date
         FROM consent_records 
         WHERE (email = $1 OR ip_address = $2)
         ORDER BY consent_type, consent_date DESC
-      `, [userEmail, clientIP])
+      `,
+        [userEmail, clientIP]
+      )
 
       if (result.rows.length > 0) {
         hasConsent = true
         dbPreferences = {}
-        
+
         // Set defaults
         CONSENT_TYPES.forEach(type => {
           dbPreferences[type] = type === 'necessary' // Necessary is always true by default
@@ -211,15 +212,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       hasConsent: hasConsent || !!cookiePreferences,
       preferences,
-      source: dbPreferences ? 'database' : cookiePreferences ? 'cookie' : 'none'
+      source: dbPreferences ? 'database' : cookiePreferences ? 'cookie' : 'none',
     })
-
   } catch (error) {
     logger.error('Consent API', 'Failed to get consent status', error)
-    return NextResponse.json(
-      { error: 'Failed to get consent status' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to get consent status' }, { status: 500 })
   }
 }
 
@@ -239,32 +236,35 @@ export async function DELETE(request: NextRequest) {
     for (const consentType of CONSENT_TYPES) {
       if (consentType === 'necessary') continue // Cannot withdraw necessary consent
 
-      const result = await pool.query(`
+      const result = await pool.query(
+        `
         INSERT INTO consent_records (
           id, user_id, email, consent_type, consent_given, consent_date,
           consent_method, ip_address, user_agent, legal_basis, purpose,
           withdrawal_reason
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING id
-      `, [
-        crypto.randomUUID(),
-        null,
-        userEmail,
-        consentType,
-        false, // Withdrawing consent
-        new Date(),
-        'api_withdrawal',
-        clientIP,
-        userAgent,
-        'consent',
-        getConsentPurpose(consentType),
-        'User requested consent withdrawal'
-      ])
+      `,
+        [
+          crypto.randomUUID(),
+          null,
+          userEmail,
+          consentType,
+          false, // Withdrawing consent
+          new Date(),
+          'api_withdrawal',
+          clientIP,
+          userAgent,
+          'consent',
+          getConsentPurpose(consentType),
+          'User requested consent withdrawal',
+        ]
+      )
 
       withdrawalRecords.push({
         id: result.rows[0].id,
         type: consentType,
-        withdrawn: true
+        withdrawn: true,
       })
     }
 
@@ -277,7 +277,7 @@ export async function DELETE(request: NextRequest) {
       {
         email: userEmail,
         withdrawnTypes: CONSENT_TYPES.filter(t => t !== 'necessary'),
-        recordCount: withdrawalRecords.length
+        recordCount: withdrawalRecords.length,
       }
     )
 
@@ -285,24 +285,20 @@ export async function DELETE(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       withdrawalRecords,
-      message: 'Consent withdrawn successfully'
+      message: 'Consent withdrawn successfully',
     })
 
     response.cookies.delete('consent-preferences')
 
     logger.info('Consent API', 'Consent withdrawn', {
       email: userEmail,
-      recordCount: withdrawalRecords.length
+      recordCount: withdrawalRecords.length,
     })
 
     return response
-
   } catch (error) {
     logger.error('Consent API', 'Failed to withdraw consent', error)
-    return NextResponse.json(
-      { error: 'Failed to withdraw consent' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to withdraw consent' }, { status: 500 })
   }
 }
 
@@ -310,9 +306,7 @@ export async function DELETE(request: NextRequest) {
  * Get client IP address
  */
 function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-forwarded-for') ||
-         request.headers.get('x-real-ip') ||
-         'unknown'
+  return request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
 }
 
 /**
@@ -322,7 +316,7 @@ async function getUserEmail(request: NextRequest): Promise<string | null> {
   // Try to get from query parameter (for anonymous users)
   const url = new URL(request.url)
   const emailParam = url.searchParams.get('email')
-  
+
   if (emailParam && isValidEmail(emailParam)) {
     return emailParam
   }
@@ -352,7 +346,7 @@ function getConsentPurpose(consentType: ConsentType): string {
     storage: 'Data storage and retrieval',
     enrichment: 'Data enhancement and analysis',
     analytics: 'Website usage analytics',
-    marketing: 'Marketing communications'
+    marketing: 'Marketing communications',
   }
   return purposes[consentType]
 }
@@ -367,7 +361,7 @@ function getDataCategories(consentType: ConsentType): string[] {
     storage: ['user_data', 'search_history'],
     enrichment: ['enhanced_data', 'third_party_data'],
     analytics: ['usage_data', 'performance_data'],
-    marketing: ['contact_data', 'preference_data']
+    marketing: ['contact_data', 'preference_data'],
   }
   return categories[consentType]
 }
@@ -382,7 +376,7 @@ function getRetentionPeriod(consentType: ConsentType): string {
     storage: '7 years',
     enrichment: '2 years',
     analytics: '2 years',
-    marketing: '3 years'
+    marketing: '3 years',
   }
   return periods[consentType]
 }

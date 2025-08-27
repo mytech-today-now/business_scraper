@@ -5,14 +5,16 @@ jest.mock('@/model/clientSearchEngine', () => ({
   clientSearchEngine: {
     initialize: jest.fn().mockResolvedValue(undefined),
     hasApiCredentials: jest.fn().mockReturnValue(false),
-    searchBusinesses: jest.fn().mockResolvedValue([
-      { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' }
-    ])
-  }
+    searchBusinesses: jest
+      .fn()
+      .mockResolvedValue([
+        { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
+      ]),
+  },
 }))
 
 jest.mock('@/utils/secureStorage', () => ({
-  retrieveApiCredentials: jest.fn().mockResolvedValue(null)
+  retrieveApiCredentials: jest.fn().mockResolvedValue(null),
 }))
 
 jest.mock('@/utils/logger', () => ({
@@ -20,8 +22,8 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-    debug: jest.fn()
-  }
+    debug: jest.fn(),
+  },
 }))
 
 // Mock fetch globally
@@ -33,7 +35,7 @@ describe('ClientScraperService', () => {
   beforeEach(() => {
     scraperService = new ClientScraperService()
     jest.clearAllMocks()
-    
+
     // Reset fetch mock
     ;(global.fetch as jest.Mock).mockReset()
   })
@@ -53,12 +55,12 @@ describe('ClientScraperService', () => {
       ;(global.fetch as jest.Mock)
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' })
+          json: () => Promise.resolve({ status: 'healthy' }),
         })
         // Mock successful scraper initialization
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ success: true })
+          json: () => Promise.resolve({ success: true }),
         })
 
       await scraperService.initialize()
@@ -104,16 +106,16 @@ describe('ClientScraperService', () => {
       ;(global.fetch as jest.Mock)
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' })
+          json: () => Promise.resolve({ status: 'healthy' }),
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ success: true })
+          json: () => Promise.resolve({ success: true }),
         })
         // Mock successful scraping
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ businesses: [{ name: 'Test Business' }] })
+          json: () => Promise.resolve({ businesses: [{ name: 'Test Business' }] }),
         })
 
       await scraperService.initialize()
@@ -138,16 +140,16 @@ describe('ClientScraperService', () => {
       ;(global.fetch as jest.Mock)
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' })
+          json: () => Promise.resolve({ status: 'healthy' }),
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ success: true })
+          json: () => Promise.resolve({ success: true }),
         })
         // Mock successful cleanup
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ success: true })
+          json: () => Promise.resolve({ success: true }),
         })
 
       await scraperService.initialize()

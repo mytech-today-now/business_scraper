@@ -28,17 +28,20 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  * Button component with multiple variants and sizes
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    className, 
-    variant = 'default', 
-    size = 'default', 
-    icon: Icon,
-    iconPosition = 'left',
-    loading = false,
-    disabled,
-    children, 
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant = 'default',
+      size = 'default',
+      icon: Icon,
+      iconPosition = 'left',
+      loading = false,
+      disabled,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const baseClasses = [
       'inline-flex items-center justify-center rounded-md text-sm font-medium',
       'ring-offset-background transition-colors',
@@ -69,12 +72,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
-        className={clsx(
-          baseClasses,
-          variantClasses[variant],
-          sizeClasses[size],
-          className
-        )}
+        className={clsx(baseClasses, variantClasses[variant], sizeClasses[size], className)}
         ref={ref}
         disabled={disabled || loading}
         {...props}
@@ -82,13 +80,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading && (
           <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
         )}
-        {Icon && iconPosition === 'left' && !loading && (
-          <Icon className={iconClasses.left} />
-        )}
+        {Icon && iconPosition === 'left' && !loading && <Icon className={iconClasses.left} />}
         {children}
-        {Icon && iconPosition === 'right' && !loading && (
-          <Icon className={iconClasses.right} />
-        )}
+        {Icon && iconPosition === 'right' && !loading && <Icon className={iconClasses.right} />}
       </button>
     )
   }

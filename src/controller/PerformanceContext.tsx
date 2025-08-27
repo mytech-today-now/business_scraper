@@ -1,6 +1,13 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from 'react'
 import {
   PerformanceContextType,
   PerformanceState,
@@ -97,44 +104,50 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
     const memoryScore = Math.max(0, 100 - (metrics.memoryUsage / (500 * 1024 * 1024)) * 50)
     const renderScore = Math.max(0, 100 - (metrics.averageRenderTime / 1000) * 30)
     const sizeScore = Math.max(0, 100 - (metrics.datasetSize / 10000) * 20)
-    
+
     return Math.round((memoryScore + renderScore + sizeScore) / 3)
   }, [])
 
   /**
    * Determine optimal performance mode based on dataset size and preferences
    */
-  const determineOptimalMode = useCallback((size: number): PerformanceMode => {
-    const thresholds = { ...DEFAULT_PERFORMANCE_THRESHOLDS, ...state.preferences.customThresholds }
+  const determineOptimalMode = useCallback(
+    (size: number): PerformanceMode => {
+      const thresholds = {
+        ...DEFAULT_PERFORMANCE_THRESHOLDS,
+        ...state.preferences.customThresholds,
+      }
 
-    // Check user overrides first
-    if (state.preferences.forceDisableVirtualization && size >= thresholds.virtualization) {
-      return state.preferences.forceEnablePagination ? 'pagination' : 'advisory'
-    }
+      // Check user overrides first
+      if (state.preferences.forceDisableVirtualization && size >= thresholds.virtualization) {
+        return state.preferences.forceEnablePagination ? 'pagination' : 'advisory'
+      }
 
-    if (state.preferences.forceEnablePagination && size >= thresholds.pagination) {
-      return 'pagination'
-    }
+      if (state.preferences.forceEnablePagination && size >= thresholds.pagination) {
+        return 'pagination'
+      }
 
-    // Auto-detection logic
-    if (!state.preferences.autoDetection) {
+      // Auto-detection logic
+      if (!state.preferences.autoDetection) {
+        return 'normal'
+      }
+
+      if (size >= thresholds.virtualization) {
+        return 'virtualized'
+      }
+
+      if (size >= thresholds.pagination) {
+        return 'pagination'
+      }
+
+      if (size >= thresholds.advisory) {
+        return 'advisory'
+      }
+
       return 'normal'
-    }
-
-    if (size >= thresholds.virtualization) {
-      return 'virtualized'
-    }
-
-    if (size >= thresholds.pagination) {
-      return 'pagination'
-    }
-
-    if (size >= thresholds.advisory) {
-      return 'advisory'
-    }
-
-    return 'normal'
-  }, [state.preferences])
+    },
+    [state.preferences]
+  )
 
   /**
    * Update performance metrics
@@ -144,7 +157,7 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
 
     const memoryUsage = getMemoryUsage()
     const currentTime = Date.now()
-    
+
     setState(prev => {
       const newMetrics: PerformanceMetrics = {
         ...prev.metrics,
@@ -156,9 +169,12 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
 
       // Calculate memory trend
       const memoryDiff = memoryUsage - prev.metrics.memoryUsage
-      newMetrics.memoryTrend = memoryDiff > 10 * 1024 * 1024 ? 'increasing' 
-                             : memoryDiff < -10 * 1024 * 1024 ? 'decreasing' 
-                             : 'stable'
+      newMetrics.memoryTrend =
+        memoryDiff > 10 * 1024 * 1024
+          ? 'increasing'
+          : memoryDiff < -10 * 1024 * 1024
+            ? 'decreasing'
+            : 'stable'
 
       // Calculate performance score
       newMetrics.performanceScore = calculatePerformanceScore(newMetrics)
@@ -185,18 +201,25 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
         updates.mode = optimalMode
         updates.lastModeChange = Date.now()
         hasUpdates = true
-        logger.info('PerformanceProvider', `Mode changed to ${optimalMode} for dataset size ${datasetSize}`)
+        logger.info(
+          'PerformanceProvider',
+          `Mode changed to ${optimalMode} for dataset size ${datasetSize}`
+        )
       }
 
       // Show/hide advisory banner
-      const shouldShowAdvisory = datasetSize >= thresholds.advisory && datasetSize < thresholds.pagination
+      const shouldShowAdvisory =
+        datasetSize >= thresholds.advisory && datasetSize < thresholds.pagination
       if (shouldShowAdvisory !== prev.showAdvisoryBanner) {
         updates.showAdvisoryBanner = shouldShowAdvisory
         hasUpdates = true
       }
 
       // Show/hide pagination prompt
-      const shouldShowPagination = datasetSize >= thresholds.pagination && datasetSize < thresholds.virtualization && !prev.showPaginationPrompt
+      const shouldShowPagination =
+        datasetSize >= thresholds.pagination &&
+        datasetSize < thresholds.virtualization &&
+        !prev.showPaginationPrompt
       if (shouldShowPagination !== prev.showPaginationPrompt) {
         updates.showPaginationPrompt = shouldShowPagination
         hasUpdates = true
@@ -205,7 +228,13 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
       // Only update if there are actual changes
       return hasUpdates ? { ...prev, ...updates } : prev
     })
-  }, [datasetSize, state.preferences.autoDetection, state.preferences.customThresholds, state.preferences.forceDisableVirtualization, state.preferences.forceEnablePagination])
+  }, [
+    datasetSize,
+    state.preferences.autoDetection,
+    state.preferences.customThresholds,
+    state.preferences.forceDisableVirtualization,
+    state.preferences.forceEnablePagination,
+  ])
 
   /**
    * Performance monitoring effect
@@ -241,13 +270,16 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
   }, [state.preferences.enableMonitoring, state.isMonitoring])
 
   // Action implementations
-  const updatePreferences = useCallback((updates: Partial<typeof state.preferences>) => {
-    setState(prev => {
-      const newPreferences = { ...prev.preferences, ...updates }
-      savePreferences(newPreferences)
-      return { ...prev, preferences: newPreferences }
-    })
-  }, [savePreferences])
+  const updatePreferences = useCallback(
+    (updates: Partial<typeof state.preferences>) => {
+      setState(prev => {
+        const newPreferences = { ...prev.preferences, ...updates }
+        savePreferences(newPreferences)
+        return { ...prev, preferences: newPreferences }
+      })
+    },
+    [savePreferences]
+  )
 
   const setMode = useCallback((mode: PerformanceMode) => {
     setState(prev => ({
@@ -304,11 +336,7 @@ export function PerformanceProvider({ children, datasetSize = 0 }: PerformancePr
     resetPerformance,
   }
 
-  return (
-    <PerformanceContext.Provider value={contextValue}>
-      {children}
-    </PerformanceContext.Provider>
-  )
+  return <PerformanceContext.Provider value={contextValue}>{children}</PerformanceContext.Provider>
 }
 
 /**

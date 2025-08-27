@@ -5,17 +5,17 @@
 
 import React from 'react'
 import { StreamingProgress } from '@/hooks/useSearchStreaming'
-import { 
-  Play, 
-  Pause, 
-  Square, 
-  Wifi, 
-  WifiOff, 
-  RotateCcw, 
-  AlertCircle, 
+import {
+  Play,
+  Pause,
+  Square,
+  Wifi,
+  WifiOff,
+  RotateCcw,
+  AlertCircle,
   CheckCircle,
   Clock,
-  Database
+  Database,
 } from 'lucide-react'
 
 interface ProgressIndicatorProps {
@@ -37,7 +37,7 @@ export function ProgressIndicator({
   onPause,
   onResume,
   onStop,
-  className = ''
+  className = '',
 }: ProgressIndicatorProps): JSX.Element {
   const getStatusIcon = () => {
     switch (progress.connectionStatus) {
@@ -85,7 +85,9 @@ export function ProgressIndicator({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm ${className}`}>
+    <div
+      className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm ${className}`}
+    >
       {/* Header with status and connection */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -94,7 +96,7 @@ export function ProgressIndicator({
             {getStatusText()}
           </span>
         </div>
-        
+
         {/* Control buttons */}
         <div className="flex items-center gap-1">
           {isStreaming && !isPaused && (
@@ -107,7 +109,7 @@ export function ProgressIndicator({
               <Pause className="h-4 w-4 text-gray-600 dark:text-gray-400" />
             </button>
           )}
-          
+
           {isPaused && (
             <button
               onClick={onResume}
@@ -118,7 +120,7 @@ export function ProgressIndicator({
               <Play className="h-4 w-4 text-green-600 dark:text-green-400" />
             </button>
           )}
-          
+
           {(isStreaming || isPaused) && (
             <button
               onClick={onStop}
@@ -175,7 +177,9 @@ export function ProgressIndicator({
           <div>
             <div className="text-xs text-gray-500 dark:text-gray-400">Time Remaining</div>
             <div className="font-medium text-gray-900 dark:text-gray-100" aria-live="polite">
-              {progress.estimatedTimeRemaining > 0 ? formatTime(progress.estimatedTimeRemaining) : '—'}
+              {progress.estimatedTimeRemaining > 0
+                ? formatTime(progress.estimatedTimeRemaining)
+                : '—'}
             </div>
           </div>
         </div>
@@ -199,9 +203,7 @@ export function ProgressIndicator({
           <div className="flex items-start gap-2">
             <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
             <div>
-              <div className="text-sm font-medium text-red-800 dark:text-red-200">
-                Search Error
-              </div>
+              <div className="text-sm font-medium text-red-800 dark:text-red-200">Search Error</div>
               <div className="text-sm text-red-700 dark:text-red-300 mt-1" role="alert">
                 {error}
               </div>
@@ -231,7 +233,8 @@ export function ProgressIndicator({
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {isStreaming && `Search in progress. ${progress.processed} results found so far.`}
         {isPaused && 'Search paused. Click resume to continue.'}
-        {progress.status === 'completed' && `Search completed. Found ${progress.processed} total results.`}
+        {progress.status === 'completed' &&
+          `Search completed. Found ${progress.processed} total results.`}
         {error && `Search error: ${error}`}
       </div>
     </div>

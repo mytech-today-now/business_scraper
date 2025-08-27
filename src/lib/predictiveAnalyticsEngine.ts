@@ -8,11 +8,7 @@
 import { addDays, addWeeks, addMonths, format, parseISO, isWeekend } from 'date-fns'
 import { mean, standardDeviation, linearRegression } from 'simple-statistics'
 import { BusinessRecord } from '@/types/business'
-import { 
-  ConversionPrediction, 
-  IndustryTrendAnalysis, 
-  SeasonalPattern 
-} from '@/types/ai'
+import { ConversionPrediction, IndustryTrendAnalysis, SeasonalPattern } from '@/types/ai'
 import { logger } from '@/utils/logger'
 
 /**
@@ -62,13 +58,13 @@ export class PredictiveAnalyticsEngine {
   async initialize(): Promise<void> {
     try {
       logger.info('PredictiveAnalyticsEngine', 'Initializing predictive analytics engine...')
-      
+
       // Load historical data (in production, this would come from database)
       await this.loadHistoricalData()
-      
+
       // Initialize industry trend tracking
       await this.initializeIndustryTrends()
-      
+
       this.initialized = true
       logger.info('PredictiveAnalyticsEngine', 'Predictive analytics engine initialized')
     } catch (error) {
@@ -86,7 +82,10 @@ export class PredictiveAnalyticsEngine {
         await this.initialize()
       }
 
-      logger.info('PredictiveAnalyticsEngine', `Predicting contact time for: ${business.businessName}`)
+      logger.info(
+        'PredictiveAnalyticsEngine',
+        `Predicting contact time for: ${business.businessName}`
+      )
 
       // Get historical contact data for this industry
       const industryKey = business.industry || 'general'
@@ -108,9 +107,8 @@ export class PredictiveAnalyticsEngine {
         bestHourRange,
         timezone: 'EST', // Default timezone
         confidence,
-        historicalData
+        historicalData,
       }
-
     } catch (error) {
       logger.error('PredictiveAnalyticsEngine', 'Contact time prediction failed', error)
       return this.getDefaultContactTiming()
@@ -126,20 +124,23 @@ export class PredictiveAnalyticsEngine {
         await this.initialize()
       }
 
-      logger.info('PredictiveAnalyticsEngine', `Forecasting response rate for: ${business.businessName}`)
+      logger.info(
+        'PredictiveAnalyticsEngine',
+        `Forecasting response rate for: ${business.businessName}`
+      )
 
       // Analyze business characteristics
       const businessFactors = this.analyzeBusinessFactors(business)
-      
+
       // Get industry-specific response rates
       const industryRates = this.getIndustryResponseRates(business.industry || 'general')
-      
+
       // Calculate predicted rate
       const predictedRate = this.calculatePredictedResponseRate(businessFactors, industryRates)
-      
+
       // Calculate confidence interval
       const confidenceInterval = this.calculateConfidenceInterval(predictedRate, 0.1)
-      
+
       // Recommend best strategy
       const recommendedStrategy = this.recommendOutreachStrategy(businessFactors)
 
@@ -147,9 +148,8 @@ export class PredictiveAnalyticsEngine {
         predictedRate,
         confidenceInterval,
         recommendedStrategy,
-        factors: businessFactors
+        factors: businessFactors,
       }
-
     } catch (error) {
       logger.error('PredictiveAnalyticsEngine', 'Response rate forecasting failed', error)
       return this.getDefaultResponseForecast()
@@ -169,7 +169,7 @@ export class PredictiveAnalyticsEngine {
 
       // Get existing trend data or create new
       let trendAnalysis = this.industryTrends.get(industry)
-      
+
       if (!trendAnalysis) {
         trendAnalysis = await this.generateIndustryTrendAnalysis(industry)
         this.industryTrends.set(industry, trendAnalysis)
@@ -179,9 +179,12 @@ export class PredictiveAnalyticsEngine {
       trendAnalysis = await this.updateTrendAnalysis(trendAnalysis)
 
       return trendAnalysis
-
     } catch (error) {
-      logger.error('PredictiveAnalyticsEngine', `Industry trend analysis failed for: ${industry}`, error)
+      logger.error(
+        'PredictiveAnalyticsEngine',
+        `Industry trend analysis failed for: ${industry}`,
+        error
+      )
       return this.getDefaultTrendAnalysis(industry)
     }
   }
@@ -197,7 +200,7 @@ export class PredictiveAnalyticsEngine {
       // Analyze monthly patterns
       const monthlyData = this.groupDataByMonth(historicalData)
       const monthlyPattern = this.analyzeMonthlyPattern(monthlyData)
-      
+
       if (monthlyPattern.strength > 0.3) {
         patterns.push(monthlyPattern)
       }
@@ -214,11 +217,17 @@ export class PredictiveAnalyticsEngine {
         patterns.push(holidayPattern)
       }
 
-      logger.info('PredictiveAnalyticsEngine', `Found ${patterns.length} seasonal patterns for ${industry}`)
+      logger.info(
+        'PredictiveAnalyticsEngine',
+        `Found ${patterns.length} seasonal patterns for ${industry}`
+      )
       return patterns
-
     } catch (error) {
-      logger.error('PredictiveAnalyticsEngine', `Seasonal pattern detection failed for: ${industry}`, error)
+      logger.error(
+        'PredictiveAnalyticsEngine',
+        `Seasonal pattern detection failed for: ${industry}`,
+        error
+      )
       return []
     }
   }
@@ -229,36 +238,36 @@ export class PredictiveAnalyticsEngine {
   private async loadHistoricalData(): Promise<void> {
     // Generate sample historical data for demonstration
     const industries = ['construction', 'healthcare', 'technology', 'retail', 'finance']
-    
+
     industries.forEach(industry => {
       const data: TimeSeriesDataPoint[] = []
       const startDate = addMonths(new Date(), -12)
-      
+
       for (let i = 0; i < 365; i++) {
         const date = addDays(startDate, i)
         const baseValue = 0.3 + Math.random() * 0.4 // 30-70% base response rate
-        
+
         // Add day-of-week patterns
         const dayOfWeek = date.getDay()
         let dayMultiplier = 1
         if (dayOfWeek === 1 || dayOfWeek === 2) dayMultiplier = 1.2 // Monday/Tuesday better
         if (dayOfWeek === 0 || dayOfWeek === 6) dayMultiplier = 0.6 // Weekend worse
-        
+
         // Add seasonal patterns
         const month = date.getMonth()
         let seasonalMultiplier = 1
         if (month >= 2 && month <= 4) seasonalMultiplier = 1.1 // Spring boost
         if (month >= 10 && month <= 11) seasonalMultiplier = 0.8 // Holiday slowdown
-        
+
         const value = baseValue * dayMultiplier * seasonalMultiplier
-        
+
         data.push({
           date,
           value: Math.max(0, Math.min(1, value)),
-          metadata: { dayOfWeek, month, industry }
+          metadata: { dayOfWeek, month, industry },
         })
       }
-      
+
       this.historicalData.set(industry, data)
     })
   }
@@ -268,7 +277,7 @@ export class PredictiveAnalyticsEngine {
    */
   private async initializeIndustryTrends(): Promise<void> {
     const industries = ['construction', 'healthcare', 'technology', 'retail', 'finance']
-    
+
     for (const industry of industries) {
       const trendAnalysis = await this.generateIndustryTrendAnalysis(industry)
       this.industryTrends.set(industry, trendAnalysis)
@@ -288,12 +297,12 @@ export class PredictiveAnalyticsEngine {
   private analyzeDayOfWeekPatterns(data: TimeSeriesDataPoint[]): Record<string, number> {
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const dayAverages: Record<string, number> = {}
-    
+
     dayNames.forEach((day, index) => {
       const dayData = data.filter(point => point.date.getDay() === index)
       dayAverages[day] = dayData.length > 0 ? mean(dayData.map(p => p.value)) : 0
     })
-    
+
     return dayAverages
   }
 
@@ -311,9 +320,9 @@ export class PredictiveAnalyticsEngine {
       '13:00-14:00': 0.5,
       '14:00-15:00': 0.7,
       '15:00-16:00': 0.6,
-      '16:00-17:00': 0.4
+      '16:00-17:00': 0.4,
     }
-    
+
     return hourRanges
   }
 
@@ -321,16 +330,14 @@ export class PredictiveAnalyticsEngine {
    * Get best day of week
    */
   private getBestDayOfWeek(dayAnalysis: Record<string, number>): string {
-    return Object.entries(dayAnalysis)
-      .sort(([,a], [,b]) => b - a)[0][0]
+    return Object.entries(dayAnalysis).sort(([, a], [, b]) => b - a)[0][0]
   }
 
   /**
    * Get best hour range
    */
   private getBestHourRange(hourAnalysis: Record<string, number>): string {
-    return Object.entries(hourAnalysis)
-      .sort(([,a], [,b]) => b - a)[0][0]
+    return Object.entries(hourAnalysis).sort(([, a], [, b]) => b - a)[0][0]
   }
 
   /**
@@ -353,7 +360,7 @@ export class PredictiveAnalyticsEngine {
       hasAddress: business.address ? 1 : 0,
       descriptionQuality: business.description ? Math.min(1, business.description.length / 200) : 0,
       industryRelevance: business.industry ? 0.8 : 0.5,
-      businessMaturity: this.estimateBusinessMaturity(business)
+      businessMaturity: this.estimateBusinessMaturity(business),
     }
   }
 
@@ -362,12 +369,12 @@ export class PredictiveAnalyticsEngine {
    */
   private estimateBusinessMaturity(business: BusinessRecord): number {
     let score = 0.3 // Base score
-    
+
     if (business.website) score += 0.2
     if (business.phone && business.email) score += 0.2
     if (business.description && business.description.length > 100) score += 0.2
     if (business.address) score += 0.1
-    
+
     return Math.min(1, score)
   }
 
@@ -377,13 +384,13 @@ export class PredictiveAnalyticsEngine {
   private getIndustryResponseRates(industry: string): Record<string, number> {
     const industryRates: Record<string, Record<string, number>> = {
       construction: { email: 0.25, phone: 0.45, linkedin: 0.15, form: 0.35 },
-      healthcare: { email: 0.30, phone: 0.40, linkedin: 0.20, form: 0.25 },
-      technology: { email: 0.35, phone: 0.25, linkedin: 0.40, form: 0.30 },
-      retail: { email: 0.20, phone: 0.35, linkedin: 0.10, form: 0.40 },
-      finance: { email: 0.40, phone: 0.30, linkedin: 0.35, form: 0.25 },
-      general: { email: 0.28, phone: 0.35, linkedin: 0.22, form: 0.30 }
+      healthcare: { email: 0.3, phone: 0.4, linkedin: 0.2, form: 0.25 },
+      technology: { email: 0.35, phone: 0.25, linkedin: 0.4, form: 0.3 },
+      retail: { email: 0.2, phone: 0.35, linkedin: 0.1, form: 0.4 },
+      finance: { email: 0.4, phone: 0.3, linkedin: 0.35, form: 0.25 },
+      general: { email: 0.28, phone: 0.35, linkedin: 0.22, form: 0.3 },
     }
-    
+
     return industryRates[industry] || industryRates.general
   }
 
@@ -395,30 +402,36 @@ export class PredictiveAnalyticsEngine {
     industryRates: Record<string, number>
   ): number {
     const baseRate = mean(Object.values(industryRates))
-    
+
     // Adjust based on business factors
     let adjustedRate = baseRate
-    adjustedRate *= (1 + businessFactors.businessMaturity * 0.3)
-    adjustedRate *= (1 + businessFactors.descriptionQuality * 0.2)
-    adjustedRate *= (1 + (businessFactors.hasWebsite + businessFactors.hasPhone + businessFactors.hasEmail) * 0.1)
-    
+    adjustedRate *= 1 + businessFactors.businessMaturity * 0.3
+    adjustedRate *= 1 + businessFactors.descriptionQuality * 0.2
+    adjustedRate *=
+      1 + (businessFactors.hasWebsite + businessFactors.hasPhone + businessFactors.hasEmail) * 0.1
+
     return Math.max(0.05, Math.min(0.8, adjustedRate))
   }
 
   /**
    * Calculate confidence interval
    */
-  private calculateConfidenceInterval(predicted: number, margin: number): { lower: number; upper: number } {
+  private calculateConfidenceInterval(
+    predicted: number,
+    margin: number
+  ): { lower: number; upper: number } {
     return {
       lower: Math.max(0, predicted - margin),
-      upper: Math.min(1, predicted + margin)
+      upper: Math.min(1, predicted + margin),
     }
   }
 
   /**
    * Recommend outreach strategy
    */
-  private recommendOutreachStrategy(factors: Record<string, number>): 'email' | 'phone' | 'linkedin' | 'form' {
+  private recommendOutreachStrategy(
+    factors: Record<string, number>
+  ): 'email' | 'phone' | 'linkedin' | 'form' {
     if (factors.hasEmail && factors.businessMaturity > 0.6) return 'email'
     if (factors.hasPhone && factors.businessMaturity > 0.4) return 'phone'
     if (factors.hasWebsite) return 'form'
@@ -429,9 +442,10 @@ export class PredictiveAnalyticsEngine {
    * Generate industry trend analysis
    */
   private async generateIndustryTrendAnalysis(industry: string): Promise<IndustryTrendAnalysis> {
-    const trendDirection = Math.random() > 0.3 ? 'growing' : Math.random() > 0.5 ? 'stable' : 'declining'
+    const trendDirection =
+      Math.random() > 0.3 ? 'growing' : Math.random() > 0.5 ? 'stable' : 'declining'
     const trendStrength = Math.random() * 0.8 + 0.2
-    
+
     return {
       industry,
       trendDirection,
@@ -441,24 +455,26 @@ export class PredictiveAnalyticsEngine {
         decliningKeywords: ['traditional', 'manual', 'legacy'],
         seasonalPatterns: await this.detectSeasonalPatterns(industry),
         competitorActivity: Math.random() * 100,
-        marketSentiment: Math.random() * 2 - 1 // -1 to 1
+        marketSentiment: Math.random() * 2 - 1, // -1 to 1
       },
       analysisPeriod: {
         startDate: addMonths(new Date(), -6),
-        endDate: new Date()
+        endDate: new Date(),
       },
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     }
   }
 
   /**
    * Update trend analysis with recent data
    */
-  private async updateTrendAnalysis(analysis: IndustryTrendAnalysis): Promise<IndustryTrendAnalysis> {
+  private async updateTrendAnalysis(
+    analysis: IndustryTrendAnalysis
+  ): Promise<IndustryTrendAnalysis> {
     // Update with recent data (placeholder)
     return {
       ...analysis,
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     }
   }
 
@@ -474,39 +490,41 @@ export class PredictiveAnalyticsEngine {
    */
   private groupDataByMonth(data: TimeSeriesDataPoint[]): Record<number, TimeSeriesDataPoint[]> {
     const grouped: Record<number, TimeSeriesDataPoint[]> = {}
-    
+
     data.forEach(point => {
       const month = point.date.getMonth()
       if (!grouped[month]) grouped[month] = []
       grouped[month].push(point)
     })
-    
+
     return grouped
   }
 
   /**
    * Analyze monthly pattern
    */
-  private analyzeMonthlyPattern(monthlyData: Record<number, TimeSeriesDataPoint[]>): SeasonalPattern {
+  private analyzeMonthlyPattern(
+    monthlyData: Record<number, TimeSeriesDataPoint[]>
+  ): SeasonalPattern {
     const monthlyAverages: Record<number, number> = {}
-    
+
     Object.entries(monthlyData).forEach(([month, data]) => {
       monthlyAverages[parseInt(month)] = mean(data.map(p => p.value))
     })
-    
+
     const values = Object.values(monthlyAverages)
     const avgValue = mean(values)
     const stdDev = standardDeviation(values)
-    
+
     // Find peak and low months
     const peakMonths = Object.entries(monthlyAverages)
       .filter(([, value]) => value > avgValue + stdDev * 0.5)
       .map(([month]) => parseInt(month))
-    
+
     const lowMonths = Object.entries(monthlyAverages)
       .filter(([, value]) => value < avgValue - stdDev * 0.5)
       .map(([month]) => parseInt(month))
-    
+
     return {
       name: 'Monthly Pattern',
       peakMonths,
@@ -515,8 +533,8 @@ export class PredictiveAnalyticsEngine {
       historicalData: Object.entries(monthlyAverages).map(([month, value]) => ({
         month: parseInt(month),
         year: new Date().getFullYear(),
-        activityLevel: value
-      }))
+        activityLevel: value,
+      })),
     }
   }
 
@@ -530,7 +548,7 @@ export class PredictiveAnalyticsEngine {
       peakMonths: [2, 3, 4], // Q2
       lowMonths: [11, 0, 1], // Q4/Q1
       strength: 0.4,
-      historicalData: []
+      historicalData: [],
     }
   }
 
@@ -543,7 +561,7 @@ export class PredictiveAnalyticsEngine {
       peakMonths: [9, 10], // October/November
       lowMonths: [11, 0], // December/January
       strength: 0.3,
-      historicalData: []
+      historicalData: [],
     }
   }
 
@@ -556,7 +574,7 @@ export class PredictiveAnalyticsEngine {
       bestHourRange: '10:00-11:00',
       timezone: 'EST',
       confidence: 0.5,
-      historicalData: []
+      historicalData: [],
     }
   }
 
@@ -568,7 +586,7 @@ export class PredictiveAnalyticsEngine {
       predictedRate: 0.3,
       confidenceInterval: { lower: 0.2, upper: 0.4 },
       recommendedStrategy: 'email',
-      factors: {}
+      factors: {},
     }
   }
 
@@ -585,13 +603,13 @@ export class PredictiveAnalyticsEngine {
         decliningKeywords: [],
         seasonalPatterns: [],
         competitorActivity: 50,
-        marketSentiment: 0
+        marketSentiment: 0,
       },
       analysisPeriod: {
         startDate: addMonths(new Date(), -3),
-        endDate: new Date()
+        endDate: new Date(),
       },
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     }
   }
 

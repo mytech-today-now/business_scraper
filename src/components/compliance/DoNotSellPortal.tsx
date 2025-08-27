@@ -42,11 +42,11 @@ export default function DoNotSellPortal() {
       street: '',
       city: '',
       state: 'CA',
-      zipCode: ''
+      zipCode: '',
     },
     verificationMethod: 'email',
     confirmResidency: false,
-    confirmIdentity: false
+    confirmIdentity: false,
   })
   const [optOutStatus, setOptOutStatus] = useState<OptOutStatus | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -61,7 +61,7 @@ export default function DoNotSellPortal() {
     try {
       const response = await fetch('/api/compliance/ccpa/status')
       const data = await response.json()
-      
+
       if (data.success && data.optOutStatus) {
         setOptOutStatus(data.optOutStatus)
       }
@@ -77,13 +77,13 @@ export default function DoNotSellPortal() {
         ...prev,
         [parent]: {
           ...prev[parent as keyof OptOutFormData],
-          [child]: value
-        }
+          [child]: value,
+        },
       }))
     } else {
       setFormData(prev => ({
         ...prev,
-        [field]: value
+        [field]: value,
       }))
     }
   }
@@ -126,7 +126,7 @@ export default function DoNotSellPortal() {
       const response = await fetch('/api/compliance/ccpa/opt-out', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           consumerEmail: formData.email,
@@ -139,10 +139,10 @@ export default function DoNotSellPortal() {
             method: 'web_portal',
             confirmations: {
               residency: formData.confirmResidency,
-              identity: formData.confirmIdentity
-            }
-          }
-        })
+              identity: formData.confirmIdentity,
+            },
+          },
+        }),
       })
 
       const data = await response.json()
@@ -151,14 +151,13 @@ export default function DoNotSellPortal() {
         setOptOutStatus({
           isOptedOut: true,
           optOutDate: new Date().toISOString(),
-          requestId: data.requestId
+          requestId: data.requestId,
         })
         setStep('success')
       } else {
         setError(data.error || 'Failed to process opt-out request')
         setStep('error')
       }
-
     } catch (error) {
       logger.error('Do Not Sell Portal', 'Failed to submit opt-out request', error)
       setError('Failed to submit request. Please try again.')
@@ -174,26 +173,24 @@ export default function DoNotSellPortal() {
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
         <div className="text-center">
           <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            You're Already Opted Out
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">You're Already Opted Out</h2>
           <p className="text-gray-600 mb-6">
             You have successfully opted out of the sale of your personal information.
           </p>
-          
+
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium text-green-800">Opt-out Date:</span>
               <span className="text-green-700">
-                {optOutStatus.optOutDate ? new Date(optOutStatus.optOutDate).toLocaleDateString() : 'Unknown'}
+                {optOutStatus.optOutDate
+                  ? new Date(optOutStatus.optOutDate).toLocaleDateString()
+                  : 'Unknown'}
               </span>
             </div>
             {optOutStatus.requestId && (
               <div className="flex items-center justify-between text-sm mt-2">
                 <span className="font-medium text-green-800">Request ID:</span>
-                <span className="text-green-700 font-mono text-xs">
-                  {optOutStatus.requestId}
-                </span>
+                <span className="text-green-700 font-mono text-xs">{optOutStatus.requestId}</span>
               </div>
             )}
           </div>
@@ -236,29 +233,25 @@ export default function DoNotSellPortal() {
           {/* Personal Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
                 <input
                   type="text"
                   value={formData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  onChange={e => handleInputChange('firstName', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
                 <input
                   type="text"
                   value={formData.lastName}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
+                  onChange={e => handleInputChange('lastName', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -274,7 +267,7 @@ export default function DoNotSellPortal() {
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  onChange={e => handleInputChange('email', e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -290,7 +283,7 @@ export default function DoNotSellPortal() {
                 <input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  onChange={e => handleInputChange('phone', e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -303,17 +296,15 @@ export default function DoNotSellPortal() {
             <p className="text-sm text-gray-600">
               Providing your California address helps us verify your residency status.
             </p>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Street Address
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
                   value={formData.address?.street}
-                  onChange={(e) => handleInputChange('address.street', e.target.value)}
+                  onChange={e => handleInputChange('address.street', e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -321,38 +312,32 @@ export default function DoNotSellPortal() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  City
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                 <input
                   type="text"
                   value={formData.address?.city}
-                  onChange={(e) => handleInputChange('address.city', e.target.value)}
+                  onChange={e => handleInputChange('address.city', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  State
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
                 <select
                   value={formData.address?.state}
-                  onChange={(e) => handleInputChange('address.state', e.target.value)}
+                  onChange={e => handleInputChange('address.state', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="CA">California</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  ZIP Code
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
                 <input
                   type="text"
                   value={formData.address?.zipCode}
-                  onChange={(e) => handleInputChange('address.zipCode', e.target.value)}
+                  onChange={e => handleInputChange('address.zipCode', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -362,25 +347,25 @@ export default function DoNotSellPortal() {
           {/* Verification Method */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Verification Method</h3>
-            
+
             <div className="space-y-2">
               <label className="flex items-center">
                 <input
                   type="radio"
                   value="email"
                   checked={formData.verificationMethod === 'email'}
-                  onChange={(e) => handleInputChange('verificationMethod', e.target.value)}
+                  onChange={e => handleInputChange('verificationMethod', e.target.value)}
                   className="mr-3"
                 />
                 <span>Email verification (recommended)</span>
               </label>
-              
+
               <label className="flex items-center">
                 <input
                   type="radio"
                   value="phone"
                   checked={formData.verificationMethod === 'phone'}
-                  onChange={(e) => handleInputChange('verificationMethod', e.target.value)}
+                  onChange={e => handleInputChange('verificationMethod', e.target.value)}
                   className="mr-3"
                 />
                 <span>Phone verification</span>
@@ -391,32 +376,33 @@ export default function DoNotSellPortal() {
           {/* Confirmations */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Confirmations</h3>
-            
+
             <div className="space-y-3">
               <label className="flex items-start">
                 <input
                   type="checkbox"
                   checked={formData.confirmResidency}
-                  onChange={(e) => handleInputChange('confirmResidency', e.target.checked)}
+                  onChange={e => handleInputChange('confirmResidency', e.target.checked)}
                   className="mr-3 mt-1"
                   required
                 />
                 <span className="text-sm">
-                  I confirm that I am a California resident and this request relates to my personal information.
+                  I confirm that I am a California resident and this request relates to my personal
+                  information.
                 </span>
               </label>
-              
+
               <label className="flex items-start">
                 <input
                   type="checkbox"
                   checked={formData.confirmIdentity}
-                  onChange={(e) => handleInputChange('confirmIdentity', e.target.checked)}
+                  onChange={e => handleInputChange('confirmIdentity', e.target.checked)}
                   className="mr-3 mt-1"
                   required
                 />
                 <span className="text-sm">
-                  I confirm that I am the person whose personal information is the subject of this request, 
-                  or I am authorized to make this request on their behalf.
+                  I confirm that I am the person whose personal information is the subject of this
+                  request, or I am authorized to make this request on their behalf.
                 </span>
               </label>
             </div>
@@ -449,14 +435,12 @@ export default function DoNotSellPortal() {
       {step === 'success' && (
         <div className="text-center">
           <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Request Submitted Successfully
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Submitted Successfully</h2>
           <p className="text-gray-600 mb-6">
-            Your opt-out request has been processed. You will not receive any discriminatory treatment 
-            for exercising your privacy rights.
+            Your opt-out request has been processed. You will not receive any discriminatory
+            treatment for exercising your privacy rights.
           </p>
-          
+
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <p className="text-sm text-green-800">
               A confirmation email has been sent to <strong>{formData.email}</strong>
@@ -468,13 +452,11 @@ export default function DoNotSellPortal() {
       {step === 'error' && (
         <div className="text-center">
           <AlertCircle className="h-16 w-16 text-red-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Request Failed
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Failed</h2>
           <p className="text-gray-600 mb-6">
             {error || 'There was an error processing your request. Please try again.'}
           </p>
-          
+
           <button
             onClick={() => {
               setStep('form')

@@ -19,7 +19,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
   currentUser,
   onUserCreated,
   onUserUpdated,
-  onUserDeleted
+  onUserDeleted,
 }) => {
   const [users, setUsers] = useState<User[]>([])
   const [roles, setRoles] = useState<Role[]>([])
@@ -43,7 +43,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
     department: '',
     phone: '',
     timezone: 'UTC',
-    language: 'en'
+    language: 'en',
   })
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
         page: currentPage.toString(),
         limit: '20',
         ...(searchTerm && { search: searchTerm }),
-        ...(selectedRole && { role: selectedRole })
+        ...(selectedRole && { role: selectedRole }),
       })
 
       const response = await fetch(`/api/users?${params}`)
@@ -96,7 +96,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       const response = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       })
 
       const data = await response.json()
@@ -119,13 +119,13 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       const response = await fetch(`/api/users/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       })
 
       const data = await response.json()
 
       if (data.success) {
-        setUsers(users.map(user => user.id === userId ? data.data : user))
+        setUsers(users.map(user => (user.id === userId ? data.data : user)))
         setEditingUser(null)
         onUserUpdated?.(data.data)
       } else {
@@ -141,7 +141,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
 
     try {
       const response = await fetch(`/api/users/${userId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       })
 
       const data = await response.json()
@@ -162,7 +162,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       const response = await fetch(`/api/users/${userId}/roles`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roleId })
+        body: JSON.stringify({ roleId }),
       })
 
       const data = await response.json()
@@ -188,11 +188,11 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       department: '',
       phone: '',
       timezone: 'UTC',
-      language: 'en'
+      language: 'en',
     })
   }
 
-  const canManageUsers = currentUser.roles?.some(role => 
+  const canManageUsers = currentUser.roles?.some(role =>
     role.role.permissions.includes('users.manage')
   )
 
@@ -225,10 +225,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-red-600">{error}</p>
-          <button
-            onClick={() => setError(null)}
-            className="text-red-800 hover:text-red-900 ml-2"
-          >
+          <button onClick={() => setError(null)} className="text-red-800 hover:text-red-900 ml-2">
             ×
           </button>
         </div>
@@ -241,14 +238,14 @@ export const UserManagement: React.FC<UserManagementProps> = ({
             type="text"
             placeholder="Search users..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         <div>
           <select
             value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
+            onChange={e => setSelectedRole(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">All Roles</option>
@@ -304,7 +301,8 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                       <div className="flex-shrink-0 h-10 w-10">
                         <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
                           <span className="text-sm font-medium text-gray-700">
-                            {user.firstName[0]}{user.lastName[0]}
+                            {user.firstName[0]}
+                            {user.lastName[0]}
                           </span>
                         </div>
                       </div>
@@ -312,16 +310,14 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                         <div className="text-sm font-medium text-gray-900">
                           {user.firstName} {user.lastName}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {user.email}
-                        </div>
+                        <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
                       value={user.roles?.[0]?.role.id || ''}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                      onChange={e => handleRoleChange(user.id, e.target.value)}
                       className="text-sm border border-gray-300 rounded px-2 py-1"
                     >
                       <option value="">No Role</option>
@@ -333,19 +329,16 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.isActive 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
+                    <span
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}
+                    >
                       {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {user.lastLoginAt 
-                      ? new Date(user.lastLoginAt).toLocaleDateString()
-                      : 'Never'
-                    }
+                    {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString() : 'Never'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
@@ -406,7 +399,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                   type="text"
                   placeholder="First Name"
                   value={formData.firstName}
-                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                  onChange={e => setFormData({ ...formData, firstName: e.target.value })}
                   className="px-3 py-2 border border-gray-300 rounded-lg"
                   required
                 />
@@ -414,7 +407,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                   type="text"
                   placeholder="Last Name"
                   value={formData.lastName}
-                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                  onChange={e => setFormData({ ...formData, lastName: e.target.value })}
                   className="px-3 py-2 border border-gray-300 rounded-lg"
                   required
                 />
@@ -423,7 +416,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                 type="text"
                 placeholder="Username"
                 value={formData.username}
-                onChange={(e) => setFormData({...formData, username: e.target.value})}
+                onChange={e => setFormData({ ...formData, username: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 required
               />
@@ -431,7 +424,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                 type="email"
                 placeholder="Email"
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={e => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 required
               />
@@ -439,7 +432,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                 type="password"
                 placeholder="Password"
                 value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                onChange={e => setFormData({ ...formData, password: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 required
               />

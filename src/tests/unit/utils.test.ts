@@ -40,7 +40,7 @@ const calculateConfidence = (factors: { [key: string]: number }): number => {
     hasEmail: 0.2,
     hasPhone: 0.2,
     hasAddress: 0.2,
-    hasWebsite: 0.1
+    hasWebsite: 0.1,
   }
 
   let score = 0
@@ -85,9 +85,9 @@ describe('Utility Functions', () => {
         'user.name@domain.co.uk',
         'user+tag@example.org',
         'firstname.lastname@company.com',
-        'user@domain-name.com'
+        'user@domain-name.com',
       ]
-      
+
       validEmails.forEach(email => {
         expect(isValidEmail(email)).toBe(true)
       })
@@ -102,9 +102,9 @@ describe('Utility Functions', () => {
         'user space@domain.com',
         'user@domain..com',
         'user@@domain.com',
-        ''
+        '',
       ]
-      
+
       invalidEmails.forEach(email => {
         expect(isValidEmail(email)).toBe(false)
       })
@@ -118,12 +118,14 @@ describe('Utility Functions', () => {
 
   describe('sanitizeBusinessName', () => {
     it('should remove dangerous characters', () => {
-      expect(sanitizeBusinessName('Joe\'s <script>alert("xss")</script> Pizza')).toBe('Joe\'s Pizza')
+      expect(sanitizeBusinessName('Joe\'s <script>alert("xss")</script> Pizza')).toBe("Joe's Pizza")
       expect(sanitizeBusinessName('Business <> Name')).toBe('Business Name')
     })
 
     it('should normalize whitespace', () => {
-      expect(sanitizeBusinessName('  Multiple   Spaces   Business  ')).toBe('Multiple Spaces Business')
+      expect(sanitizeBusinessName('  Multiple   Spaces   Business  ')).toBe(
+        'Multiple Spaces Business'
+      )
       expect(sanitizeBusinessName('\t\nBusiness\t\nName\t\n')).toBe('Business Name')
     })
 
@@ -147,9 +149,9 @@ describe('Utility Functions', () => {
         hasEmail: 1,
         hasPhone: 1,
         hasAddress: 1,
-        hasWebsite: 1
+        hasWebsite: 1,
       }
-      
+
       expect(calculateConfidence(completeData)).toBe(1)
     })
 
@@ -159,9 +161,9 @@ describe('Utility Functions', () => {
         hasEmail: 1,
         hasPhone: 0,
         hasAddress: 0,
-        hasWebsite: 0
+        hasWebsite: 0,
       }
-      
+
       const confidence = calculateConfidence(partialData)
       expect(confidence).toBeGreaterThan(0)
       expect(confidence).toBeLessThan(1)
@@ -173,9 +175,9 @@ describe('Utility Functions', () => {
         hasEmail: 0,
         hasPhone: 0,
         hasAddress: 0,
-        hasWebsite: 0
+        hasWebsite: 0,
       }
-      
+
       expect(calculateConfidence(noData)).toBe(0)
     })
 
@@ -187,7 +189,7 @@ describe('Utility Functions', () => {
       const dataWithUnknown = {
         hasName: 0.8, // Partial name data
         hasEmail: 0.6, // Partial email data
-        unknownFactor: 1 // This should be ignored
+        unknownFactor: 1, // This should be ignored
       }
 
       const confidence = calculateConfidence(dataWithUnknown)
@@ -202,23 +204,23 @@ describe('Utility Functions', () => {
     it('should handle null and undefined inputs gracefully', () => {
       expect(formatPhoneNumber(null as any)).toBeNull()
       expect(formatPhoneNumber(undefined as any)).toBeNull()
-      
+
       expect(isValidEmail(null as any)).toBe(false)
       expect(isValidEmail(undefined as any)).toBe(false)
-      
+
       expect(sanitizeBusinessName(null as any)).toBe('')
       expect(sanitizeBusinessName(undefined as any)).toBe('')
     })
 
     it('should handle special characters in business names', () => {
       const specialNames = [
-        'José\'s Café',
+        "José's Café",
         'Smith & Jones LLC',
         'Company (2024)',
         'Business-Name_123',
-        'Müller\'s Bakery'
+        "Müller's Bakery",
       ]
-      
+
       specialNames.forEach(name => {
         const sanitized = sanitizeBusinessName(name)
         expect(sanitized.length).toBeGreaterThan(0)
@@ -232,9 +234,9 @@ describe('Utility Functions', () => {
       const internationalNumbers = [
         '+44 20 7946 0958', // UK
         '+33 1 42 86 83 26', // France
-        '+49 30 12345678'    // Germany
+        '+49 30 12345678', // Germany
       ]
-      
+
       internationalNumbers.forEach(number => {
         expect(formatPhoneNumber(number)).toBeNull()
       })
@@ -244,7 +246,7 @@ describe('Utility Functions', () => {
   describe('Performance Tests', () => {
     it('should handle large inputs efficiently', () => {
       const start = Date.now()
-      
+
       // Test with many iterations
       for (let i = 0; i < 1000; i++) {
         formatPhoneNumber('5551234567')
@@ -252,17 +254,17 @@ describe('Utility Functions', () => {
         sanitizeBusinessName('Test Business Name')
         calculateConfidence({ hasName: 1, hasEmail: 1 })
       }
-      
+
       const end = Date.now()
       const duration = end - start
-      
+
       // Should complete 1000 iterations in under 100ms
       expect(duration).toBeLessThan(100)
     })
 
     it('should handle very long strings without crashing', () => {
       const veryLongString = 'A'.repeat(10000)
-      
+
       expect(() => {
         sanitizeBusinessName(veryLongString)
         isValidEmail(veryLongString + '@example.com')

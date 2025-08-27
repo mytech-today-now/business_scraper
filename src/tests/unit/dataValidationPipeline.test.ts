@@ -75,10 +75,20 @@ class DataValidationPipeline {
 
   private classifyIndustry(businessName: string): string | null {
     const name = businessName.toLowerCase()
-    if (name.includes('pizza') || name.includes('restaurant') || name.includes('cafe') || name.includes('bistro')) {
+    if (
+      name.includes('pizza') ||
+      name.includes('restaurant') ||
+      name.includes('cafe') ||
+      name.includes('bistro')
+    ) {
       return 'Restaurant'
     }
-    if (name.includes('medical') || name.includes('clinic') || name.includes('hospital') || name.includes('dental')) {
+    if (
+      name.includes('medical') ||
+      name.includes('clinic') ||
+      name.includes('hospital') ||
+      name.includes('dental')
+    ) {
       return 'Healthcare'
     }
     return null
@@ -102,10 +112,10 @@ describe('DataValidationPipeline', () => {
         street: '123 Main St',
         city: 'New York',
         state: 'NY',
-        zipCode: '10001'
+        zipCode: '10001',
       },
       scrapedAt: new Date('2024-01-15'),
-      confidence: 0.85
+      confidence: 0.85,
     }
   })
 
@@ -118,7 +128,7 @@ describe('DataValidationPipeline', () => {
         errors: [],
         cleanedData: mockBusiness,
         warnings: [],
-        suggestions: []
+        suggestions: [],
       })
 
       const result = await pipeline.validateAndClean(mockBusiness)
@@ -136,15 +146,17 @@ describe('DataValidationPipeline', () => {
       mockDataValidationPipeline.validateAndClean.mockResolvedValue({
         isValid: false,
         confidence: 0.2,
-        errors: [{
-          field: 'businessName',
-          code: 'MISSING_NAME',
-          severity: 'critical',
-          message: 'Business name is required'
-        }],
+        errors: [
+          {
+            field: 'businessName',
+            code: 'MISSING_NAME',
+            severity: 'critical',
+            message: 'Business name is required',
+          },
+        ],
         cleanedData: invalidBusiness,
         warnings: [],
-        suggestions: []
+        suggestions: [],
       })
 
       const result = await pipeline.validateAndClean(invalidBusiness)
@@ -154,7 +166,7 @@ describe('DataValidationPipeline', () => {
         expect.objectContaining({
           field: 'businessName',
           code: 'MISSING_NAME',
-          severity: 'critical'
+          severity: 'critical',
         })
       )
     })
@@ -162,12 +174,12 @@ describe('DataValidationPipeline', () => {
     it('should detect invalid email addresses', async () => {
       const invalidBusiness = { ...mockBusiness, email: ['invalid-email'] }
       const result = await pipeline.validateAndClean(invalidBusiness)
-      
+
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'email',
           code: 'INVALID_EMAILS',
-          severity: 'major'
+          severity: 'major',
         })
       )
     })
@@ -175,12 +187,12 @@ describe('DataValidationPipeline', () => {
     it('should detect invalid phone numbers', async () => {
       const invalidBusiness = { ...mockBusiness, phone: '123' }
       const result = await pipeline.validateAndClean(invalidBusiness)
-      
+
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'phone',
           code: 'INVALID_PHONE',
-          severity: 'major'
+          severity: 'major',
         })
       )
     })
@@ -188,12 +200,12 @@ describe('DataValidationPipeline', () => {
     it('should suggest cleaned business name', async () => {
       const messyBusiness = { ...mockBusiness, businessName: '  test   restaurant  ' }
       const result = await pipeline.validateAndClean(messyBusiness)
-      
+
       expect(result.suggestions).toContainEqual(
         expect.objectContaining({
           field: 'businessName',
           suggestedValue: 'Test Restaurant',
-          reason: 'Normalized capitalization and removed extra spaces'
+          reason: 'Normalized capitalization and removed extra spaces',
         })
       )
     })
@@ -208,21 +220,21 @@ describe('DataValidationPipeline', () => {
         website: '',
         address: { street: '', city: '', state: '', zipCode: '' },
         scrapedAt: new Date(),
-        confidence: 0.5
+        confidence: 0.5,
       }
-      
+
       const result = await pipeline.validateAndClean(minimalBusiness)
-      
+
       expect(result.warnings).toContainEqual(
         expect.objectContaining({
           field: 'email',
-          code: 'NO_EMAIL'
+          code: 'NO_EMAIL',
         })
       )
       expect(result.warnings).toContainEqual(
         expect.objectContaining({
           field: 'phone',
-          code: 'NO_PHONE'
+          code: 'NO_PHONE',
         })
       )
     })
@@ -231,7 +243,7 @@ describe('DataValidationPipeline', () => {
   describe('calculateDataQualityScore', () => {
     it('should calculate high quality score for complete data', () => {
       const score = pipeline.calculateDataQualityScore(mockBusiness)
-      
+
       expect(score.overall).toBeGreaterThan(0.8)
       expect(score.completeness).toBeGreaterThan(0.8)
       expect(score.accuracy).toBeGreaterThan(0.8)
@@ -242,11 +254,11 @@ describe('DataValidationPipeline', () => {
         ...mockBusiness,
         email: [],
         phone: '',
-        website: ''
+        website: '',
       }
-      
+
       const score = pipeline.calculateDataQualityScore(incompleteBusiness)
-      
+
       expect(score.completeness).toBeLessThan(0.7)
       expect(score.overall).toBeLessThan(0.8)
     })
@@ -255,11 +267,11 @@ describe('DataValidationPipeline', () => {
       const invalidBusiness = {
         ...mockBusiness,
         email: ['invalid-email'],
-        phone: '123'
+        phone: '123',
       }
-      
+
       const score = pipeline.calculateDataQualityScore(invalidBusiness)
-      
+
       expect(score.accuracy).toBeLessThan(0.7)
     })
   })
@@ -270,7 +282,7 @@ describe('DataValidationPipeline', () => {
       delete businessWithoutCoords.coordinates
 
       const result = await pipeline.enrichData(businessWithoutCoords)
-      
+
       expect(result.enriched).toBe(true)
       expect(result.addedFields).toContain('coordinates')
     })
@@ -278,12 +290,12 @@ describe('DataValidationPipeline', () => {
     it('should classify industry based on business name', async () => {
       const businessWithUnknownIndustry = {
         ...mockBusiness,
-        businessName: 'Joe\'s Medical Clinic',
-        industry: 'Unknown'
+        businessName: "Joe's Medical Clinic",
+        industry: 'Unknown',
       }
-      
+
       const result = await pipeline.enrichData(businessWithUnknownIndustry)
-      
+
       expect(result.enriched).toBe(true)
       expect(result.addedFields).toContain('industry')
       expect(businessWithUnknownIndustry.industry).toBe('Healthcare')
@@ -292,12 +304,8 @@ describe('DataValidationPipeline', () => {
 
   describe('email validation', () => {
     it('should validate correct email formats', () => {
-      const validEmails = [
-        'test@example.com',
-        'user.name@domain.co.uk',
-        'user+tag@example.org'
-      ]
-      
+      const validEmails = ['test@example.com', 'user.name@domain.co.uk', 'user+tag@example.org']
+
       validEmails.forEach(email => {
         expect(pipeline['isValidEmailFormat'](email)).toBe(true)
       })
@@ -309,21 +317,17 @@ describe('DataValidationPipeline', () => {
         '@domain.com',
         'user@',
         'user@domain',
-        'user space@domain.com'
+        'user space@domain.com',
       ]
-      
+
       invalidEmails.forEach(email => {
         expect(pipeline['isValidEmailFormat'](email)).toBe(false)
       })
     })
 
     it('should filter out common invalid emails', () => {
-      const commonInvalidEmails = [
-        'test@example.com',
-        'noreply@domain.com',
-        'no-reply@test.com'
-      ]
-      
+      const commonInvalidEmails = ['test@example.com', 'noreply@domain.com', 'no-reply@test.com']
+
       commonInvalidEmails.forEach(email => {
         expect(pipeline['isCommonInvalidEmail'](email)).toBe(true)
       })
@@ -332,13 +336,8 @@ describe('DataValidationPipeline', () => {
 
   describe('phone validation', () => {
     it('should validate correct phone formats', () => {
-      const validPhones = [
-        '(555) 123-4567',
-        '555-123-4567',
-        '5551234567',
-        '+1 (555) 123-4567'
-      ]
-      
+      const validPhones = ['(555) 123-4567', '555-123-4567', '5551234567', '+1 (555) 123-4567']
+
       validPhones.forEach(phone => {
         expect(pipeline['isValidPhoneFormat'](phone)).toBe(true)
       })
@@ -348,9 +347,9 @@ describe('DataValidationPipeline', () => {
       const testCases = [
         { input: '5551234567', expected: '(555) 123-4567' },
         { input: '15551234567', expected: '+1 (555) 123-4567' },
-        { input: '555.123.4567', expected: '(555) 123-4567' }
+        { input: '555.123.4567', expected: '(555) 123-4567' },
       ]
-      
+
       testCases.forEach(({ input, expected }) => {
         expect(pipeline['formatPhoneNumber'](input)).toBe(expected)
       })
@@ -358,7 +357,7 @@ describe('DataValidationPipeline', () => {
 
     it('should return null for invalid phone numbers', () => {
       const invalidPhones = ['123', '12345', 'abc-def-ghij']
-      
+
       invalidPhones.forEach(phone => {
         expect(pipeline['formatPhoneNumber'](phone)).toBeNull()
       })
@@ -368,7 +367,7 @@ describe('DataValidationPipeline', () => {
   describe('address validation', () => {
     it('should validate complete addresses', async () => {
       const result = await pipeline.validateAndClean(mockBusiness)
-      
+
       const addressErrors = result.errors.filter(e => e.field.startsWith('address'))
       expect(addressErrors).toHaveLength(0)
     })
@@ -376,21 +375,21 @@ describe('DataValidationPipeline', () => {
     it('should detect missing address components', async () => {
       const incompleteAddress = {
         ...mockBusiness,
-        address: { street: '', city: '', state: '', zipCode: '' }
+        address: { street: '', city: '', state: '', zipCode: '' },
       }
-      
+
       const result = await pipeline.validateAndClean(incompleteAddress)
-      
+
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'address.street',
-          code: 'MISSING_STREET'
+          code: 'MISSING_STREET',
         })
       )
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'address.city',
-          code: 'MISSING_CITY'
+          code: 'MISSING_CITY',
         })
       )
     })
@@ -398,15 +397,15 @@ describe('DataValidationPipeline', () => {
     it('should validate ZIP code format', async () => {
       const invalidZip = {
         ...mockBusiness,
-        address: { ...mockBusiness.address, zipCode: '123' }
+        address: { ...mockBusiness.address, zipCode: '123' },
       }
-      
+
       const result = await pipeline.validateAndClean(invalidZip)
-      
+
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'address.zipCode',
-          code: 'INVALID_ZIP'
+          code: 'INVALID_ZIP',
         })
       )
     })
@@ -417,13 +416,13 @@ describe('DataValidationPipeline', () => {
       const validUrls = [
         'https://example.com',
         'http://test.org',
-        'https://subdomain.example.com/path'
+        'https://subdomain.example.com/path',
       ]
-      
+
       for (const url of validUrls) {
         const business = { ...mockBusiness, website: url }
         const result = await pipeline.validateAndClean(business)
-        
+
         const urlErrors = result.errors.filter(e => e.field === 'website')
         expect(urlErrors).toHaveLength(0)
       }
@@ -432,11 +431,11 @@ describe('DataValidationPipeline', () => {
     it('should detect invalid URLs', async () => {
       const invalidBusiness = { ...mockBusiness, website: 'not-a-url' }
       const result = await pipeline.validateAndClean(invalidBusiness)
-      
+
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'website',
-          code: 'INVALID_URL'
+          code: 'INVALID_URL',
         })
       )
     })
@@ -444,12 +443,12 @@ describe('DataValidationPipeline', () => {
     it('should suggest HTTPS upgrade', async () => {
       const httpBusiness = { ...mockBusiness, website: 'http://example.com' }
       const result = await pipeline.validateAndClean(httpBusiness)
-      
+
       expect(result.suggestions).toContainEqual(
         expect.objectContaining({
           field: 'website',
           suggestedValue: 'https://example.com',
-          reason: 'Upgrade to HTTPS for security'
+          reason: 'Upgrade to HTTPS for security',
         })
       )
     })
@@ -457,13 +456,8 @@ describe('DataValidationPipeline', () => {
 
   describe('industry classification', () => {
     it('should classify restaurants correctly', () => {
-      const restaurantNames = [
-        'Joe\'s Pizza',
-        'Main Street Cafe',
-        'The Food Truck',
-        'Bistro 123'
-      ]
-      
+      const restaurantNames = ["Joe's Pizza", 'Main Street Cafe', 'The Food Truck', 'Bistro 123']
+
       restaurantNames.forEach(name => {
         const industry = pipeline['classifyIndustry'](name)
         expect(industry).toBe('Restaurant')
@@ -473,11 +467,11 @@ describe('DataValidationPipeline', () => {
     it('should classify healthcare businesses correctly', () => {
       const healthcareNames = [
         'City Medical Center',
-        'Dr. Smith\'s Clinic',
+        "Dr. Smith's Clinic",
         'Health Plus Hospital',
-        'Dental Care Associates'
+        'Dental Care Associates',
       ]
-      
+
       healthcareNames.forEach(name => {
         const industry = pipeline['classifyIndustry'](name)
         expect(industry).toBe('Healthcare')
@@ -485,12 +479,8 @@ describe('DataValidationPipeline', () => {
     })
 
     it('should return null for unclassifiable businesses', () => {
-      const unclassifiableNames = [
-        'ABC Company',
-        'Generic Business',
-        'Random Name'
-      ]
-      
+      const unclassifiableNames = ['ABC Company', 'Generic Business', 'Random Name']
+
       unclassifiableNames.forEach(name => {
         const industry = pipeline['classifyIndustry'](name)
         expect(industry).toBeNull()
@@ -508,9 +498,9 @@ describe('DataValidationPipeline', () => {
       const invalidBusiness = {
         ...mockBusiness,
         businessName: '', // Critical error
-        email: ['invalid-email'] // Major error
+        email: ['invalid-email'], // Major error
       }
-      
+
       const result = await pipeline.validateAndClean(invalidBusiness)
       expect(result.confidence).toBeLessThan(0.5)
     })
@@ -519,9 +509,9 @@ describe('DataValidationPipeline', () => {
       const warningBusiness = {
         ...mockBusiness,
         email: [], // Warning: no email
-        phone: '' // Warning: no phone
+        phone: '', // Warning: no phone
       }
-      
+
       const result = await pipeline.validateAndClean(warningBusiness)
       expect(result.confidence).toBeLessThan(1.0)
       expect(result.confidence).toBeGreaterThan(0.7)

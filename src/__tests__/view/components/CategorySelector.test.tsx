@@ -11,7 +11,7 @@ import {
   waitForText,
   findButtonByIcon,
   getByDisplayValue,
-  suppressActWarnings
+  suppressActWarnings,
 } from '../../utils/testUtils'
 
 // Create a stateful mock for ConfigContext
@@ -125,7 +125,7 @@ describe('CategorySelector', () => {
 
   it('should render the category selector', async () => {
     renderWithProvider(<CategorySelector />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Industry Categories')).toBeInTheDocument()
     })
@@ -281,7 +281,7 @@ describe('CategorySelector', () => {
 
   it('should show selection count', async () => {
     renderWithProvider(<CategorySelector />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/0 of \d+ categories selected/)).toBeInTheDocument()
     })
@@ -289,9 +289,11 @@ describe('CategorySelector', () => {
 
   it('should show validation message when no categories are selected', async () => {
     renderWithProvider(<CategorySelector />)
-    
+
     await waitFor(() => {
-      expect(screen.getByText('Please select at least one industry category to continue.')).toBeInTheDocument()
+      expect(
+        screen.getByText('Please select at least one industry category to continue.')
+      ).toBeInTheDocument()
     })
   })
 
@@ -311,10 +313,11 @@ describe('CategorySelector', () => {
 
     // Find and expand a sub-category first to access individual industries
     const subCategoryHeaders = screen.getAllByRole('button')
-    const expandableHeader = subCategoryHeaders.find(button =>
-      button.textContent?.includes('Professional Services') ||
-      button.textContent?.includes('Legal') ||
-      button.textContent?.includes('Business')
+    const expandableHeader = subCategoryHeaders.find(
+      button =>
+        button.textContent?.includes('Professional Services') ||
+        button.textContent?.includes('Legal') ||
+        button.textContent?.includes('Business')
     )
 
     if (expandableHeader) {
@@ -322,7 +325,9 @@ describe('CategorySelector', () => {
 
       // Wait for industries to be visible and click on one
       await waitFor(() => {
-        const industryElements = screen.queryAllByText(/Law Firms|Accounting|Medical|Dental|Real Estate/)
+        const industryElements = screen.queryAllByText(
+          /Law Firms|Accounting|Medical|Dental|Real Estate/
+        )
         if (industryElements.length > 0) {
           return user.click(industryElements[0])
         }
@@ -376,9 +381,10 @@ describe('CategorySelector', () => {
 
     // Expand a sub-category to see industries and their keywords
     const subCategoryHeaders = screen.getAllByRole('button')
-    const expandableHeader = subCategoryHeaders.find(button =>
-      button.textContent?.includes('Professional Services') ||
-      button.textContent?.includes('Legal')
+    const expandableHeader = subCategoryHeaders.find(
+      button =>
+        button.textContent?.includes('Professional Services') ||
+        button.textContent?.includes('Legal')
     )
 
     if (expandableHeader) {
@@ -404,9 +410,10 @@ describe('CategorySelector', () => {
 
     // Expand a sub-category to see industries
     const subCategoryHeaders = screen.getAllByRole('button')
-    const expandableHeader = subCategoryHeaders.find(button =>
-      button.textContent?.includes('Professional Services') ||
-      button.textContent?.includes('Legal')
+    const expandableHeader = subCategoryHeaders.find(
+      button =>
+        button.textContent?.includes('Professional Services') ||
+        button.textContent?.includes('Legal')
     )
 
     if (expandableHeader) {
@@ -421,9 +428,9 @@ describe('CategorySelector', () => {
 
     // Try to find and click an edit button or keywords area
     const editButtons = screen.queryAllByRole('button')
-    const editButton = editButtons.find(button =>
-      button.getAttribute('title')?.includes('edit') ||
-      button.textContent?.includes('Edit')
+    const editButton = editButtons.find(
+      button =>
+        button.getAttribute('title')?.includes('edit') || button.textContent?.includes('Edit')
     )
 
     if (editButton) {
@@ -451,10 +458,11 @@ describe('CategorySelector', () => {
     await waitFor(() => {
       // Look for any save-related buttons or functionality
       const buttons = screen.getAllByRole('button')
-      const hasEditingCapability = buttons.some(button =>
-        button.getAttribute('title')?.includes('edit') ||
-        button.textContent?.includes('Save') ||
-        button.textContent?.includes('Edit')
+      const hasEditingCapability = buttons.some(
+        button =>
+          button.getAttribute('title')?.includes('edit') ||
+          button.textContent?.includes('Save') ||
+          button.textContent?.includes('Edit')
       )
       expect(hasEditingCapability || buttons.length > 0).toBe(true)
     })
@@ -474,10 +482,11 @@ describe('CategorySelector', () => {
     await waitFor(() => {
       // Look for any cancel-related buttons or functionality
       const buttons = screen.getAllByRole('button')
-      const hasCancelCapability = buttons.some(button =>
-        button.getAttribute('title')?.includes('cancel') ||
-        button.textContent?.includes('Cancel') ||
-        button.textContent?.includes('X')
+      const hasCancelCapability = buttons.some(
+        button =>
+          button.getAttribute('title')?.includes('cancel') ||
+          button.textContent?.includes('Cancel') ||
+          button.textContent?.includes('X')
       )
       expect(hasCancelCapability || buttons.length > 0).toBe(true)
     })
@@ -487,9 +496,9 @@ describe('CategorySelector', () => {
     // Mock empty industries
     const { storage } = require('@/model/storage')
     storage.getAllIndustries.mockResolvedValueOnce([])
-    
+
     renderWithProvider(<CategorySelector />)
-    
+
     // Should still render without crashing
     await waitFor(() => {
       expect(screen.getByText('Industry Categories')).toBeInTheDocument()

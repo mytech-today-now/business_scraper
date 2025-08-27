@@ -9,16 +9,16 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
 import { Badge } from './ui/Badge'
-import { 
-  Settings, 
-  Sync, 
-  Users, 
-  Building2, 
-  TrendingUp, 
+import {
+  Settings,
+  Sync,
+  Users,
+  Building2,
+  TrendingUp,
   AlertCircle,
   CheckCircle,
   Clock,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react'
 import { logger } from '@/utils/logger'
 
@@ -60,9 +60,9 @@ export function HubSpotDashboard() {
     syncedToday: 0,
     lastSyncTime: 'Never',
     syncStatus: 'never',
-    connectionStatus: 'disconnected'
+    connectionStatus: 'disconnected',
   })
-  
+
   const [providers, setProviders] = useState<HubSpotProvider[]>([])
   const [recentSyncs, setRecentSyncs] = useState<SyncRecord[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -100,9 +100,8 @@ export function HubSpotDashboard() {
         syncedToday: 23,
         lastSyncTime: new Date().toLocaleString(),
         syncStatus: 'success',
-        connectionStatus: 'connected'
+        connectionStatus: 'connected',
       })
-
     } catch (error) {
       logger.error('HubSpotDashboard', 'Failed to load dashboard data', error)
       setError('Failed to load dashboard data')
@@ -115,7 +114,7 @@ export function HubSpotDashboard() {
   const initiateOAuth = useCallback(async () => {
     try {
       setError(null)
-      
+
       // Redirect to OAuth initiation endpoint
       window.location.href = '/api/crm/hubspot/oauth'
     } catch (error) {
@@ -133,18 +132,18 @@ export function HubSpotDashboard() {
       const response = await fetch('/api/crm/sync', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           providerIds: providers.map(p => p.id),
-          syncMode: 'push'
-        })
+          syncMode: 'push',
+        }),
       })
 
       if (response.ok) {
         const result = await response.json()
         logger.info('HubSpotDashboard', 'Sync triggered successfully', result)
-        
+
         // Reload data after sync
         setTimeout(() => {
           loadDashboardData()
@@ -161,25 +160,28 @@ export function HubSpotDashboard() {
   }, [providers, loadDashboardData])
 
   // Disconnect provider
-  const disconnectProvider = useCallback(async (providerId: string) => {
-    try {
-      setError(null)
+  const disconnectProvider = useCallback(
+    async (providerId: string) => {
+      try {
+        setError(null)
 
-      const response = await fetch(`/api/crm?id=${providerId}`, {
-        method: 'DELETE'
-      })
+        const response = await fetch(`/api/crm?id=${providerId}`, {
+          method: 'DELETE',
+        })
 
-      if (response.ok) {
-        logger.info('HubSpotDashboard', 'Provider disconnected successfully')
-        loadDashboardData()
-      } else {
-        throw new Error('Failed to disconnect provider')
+        if (response.ok) {
+          logger.info('HubSpotDashboard', 'Provider disconnected successfully')
+          loadDashboardData()
+        } else {
+          throw new Error('Failed to disconnect provider')
+        }
+      } catch (error) {
+        logger.error('HubSpotDashboard', 'Failed to disconnect provider', error)
+        setError('Failed to disconnect provider')
       }
-    } catch (error) {
-      logger.error('HubSpotDashboard', 'Failed to disconnect provider', error)
-      setError('Failed to disconnect provider')
-    }
-  }, [loadDashboardData])
+    },
+    [loadDashboardData]
+  )
 
   // Load data on component mount
   useEffect(() => {
@@ -235,11 +237,7 @@ export function HubSpotDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={loadDashboardData}
-            disabled={isLoading}
-          >
+          <Button variant="outline" onClick={loadDashboardData} disabled={isLoading}>
             <Sync className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -249,10 +247,7 @@ export function HubSpotDashboard() {
               Connect HubSpot
             </Button>
           ) : (
-            <Button
-              onClick={triggerSync}
-              disabled={isSyncing}
-            >
+            <Button onClick={triggerSync} disabled={isSyncing}>
               <Sync className={`h-4 w-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
               Sync Now
             </Button>
@@ -295,8 +290,11 @@ export function HubSpotDashboard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {providers.map((provider) => (
-                <div key={provider.id} className="flex items-center justify-between p-4 border rounded-lg">
+              {providers.map(provider => (
+                <div
+                  key={provider.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div className="flex items-center gap-3">
                     {getStatusIcon(stats.connectionStatus)}
                     <div>
@@ -386,13 +384,14 @@ export function HubSpotDashboard() {
           </CardHeader>
           <CardContent>
             {recentSyncs.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No recent sync activity
-              </div>
+              <div className="text-center py-8 text-muted-foreground">No recent sync activity</div>
             ) : (
               <div className="space-y-3">
-                {recentSyncs.map((sync) => (
-                  <div key={sync.id} className="flex items-center justify-between p-3 border rounded-lg">
+                {recentSyncs.map(sync => (
+                  <div
+                    key={sync.id}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div className="flex items-center gap-3">
                       {getStatusIcon(sync.syncStatus)}
                       <div>
@@ -401,9 +400,7 @@ export function HubSpotDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <Badge variant={getStatusVariant(sync.syncStatus)}>
-                        {sync.syncStatus}
-                      </Badge>
+                      <Badge variant={getStatusVariant(sync.syncStatus)}>{sync.syncStatus}</Badge>
                       <p className="text-xs text-muted-foreground mt-1">
                         {new Date(sync.syncTime).toLocaleString()}
                       </p>
@@ -428,9 +425,7 @@ export function HubSpotDashboard() {
                 {getStatusIcon(stats.syncStatus)}
                 <span>Last sync: {stats.lastSyncTime}</span>
               </div>
-              <Badge variant={getStatusVariant(stats.syncStatus)}>
-                {stats.syncStatus}
-              </Badge>
+              <Badge variant={getStatusVariant(stats.syncStatus)}>{stats.syncStatus}</Badge>
             </div>
           </CardContent>
         </Card>

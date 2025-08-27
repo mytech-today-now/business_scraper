@@ -59,11 +59,11 @@ export class WebSocketStreamingServer {
     try {
       // Create HTTP server
       this.server = createServer()
-      
+
       // Create WebSocket server
-      this.wss = new WebSocketServer({ 
+      this.wss = new WebSocketServer({
         server: this.server,
-        path: '/ws/streaming'
+        path: '/ws/streaming',
       })
 
       // Handle WebSocket connections
@@ -116,7 +116,7 @@ export class WebSocketStreamingServer {
 
       // Close HTTP server
       if (this.server) {
-        await new Promise<void>((resolve) => {
+        await new Promise<void>(resolve => {
           this.server.close(() => resolve())
         })
         this.server = null
@@ -143,7 +143,7 @@ export class WebSocketStreamingServer {
       ws,
       sessionId,
       isActive: true,
-      connectedAt: Date.now()
+      connectedAt: Date.now(),
     }
 
     this.clients.set(clientId, client)
@@ -161,11 +161,11 @@ export class WebSocketStreamingServer {
       type: 'started',
       message: 'Connected to real-time streaming',
       timestamp: Date.now(),
-      sessionId
+      sessionId,
     })
 
     // Handle client messages
-    ws.on('message', (data) => {
+    ws.on('message', data => {
       try {
         const message = JSON.parse(data.toString())
         this.handleClientMessage(clientId, message)
@@ -180,7 +180,7 @@ export class WebSocketStreamingServer {
     })
 
     // Handle errors
-    ws.on('error', (error) => {
+    ws.on('error', error => {
       logger.error('WebSocketServer', `WebSocket error for client ${clientId}`, error)
       this.handleDisconnection(clientId)
     })
@@ -218,7 +218,7 @@ export class WebSocketStreamingServer {
         this.sendToClient(clientId, {
           type: 'pong',
           timestamp: Date.now(),
-          sessionId: client.sessionId
+          sessionId: client.sessionId,
         })
         break
 
@@ -227,7 +227,10 @@ export class WebSocketStreamingServer {
         break
 
       default:
-        logger.warn('WebSocketServer', `Unknown message type from client ${clientId}: ${message.type}`)
+        logger.warn(
+          'WebSocketServer',
+          `Unknown message type from client ${clientId}: ${message.type}`
+        )
     }
   }
 
@@ -239,7 +242,7 @@ export class WebSocketStreamingServer {
       type: 'result',
       data: result,
       timestamp: Date.now(),
-      sessionId
+      sessionId,
     }
 
     this.broadcastToSession(sessionId, streamingResult)
@@ -253,7 +256,7 @@ export class WebSocketStreamingServer {
       type: 'progress',
       progress,
       timestamp: Date.now(),
-      sessionId
+      sessionId,
     }
 
     this.broadcastToSession(sessionId, streamingResult)
@@ -267,7 +270,7 @@ export class WebSocketStreamingServer {
       type: 'error',
       error,
       timestamp: Date.now(),
-      sessionId
+      sessionId,
     }
 
     this.broadcastToSession(sessionId, streamingResult)
@@ -281,7 +284,7 @@ export class WebSocketStreamingServer {
       type: 'complete',
       message,
       timestamp: Date.now(),
-      sessionId
+      sessionId,
     }
 
     this.broadcastToSession(sessionId, streamingResult)
@@ -295,7 +298,7 @@ export class WebSocketStreamingServer {
       type: 'stopped',
       message: 'Session stopped by user',
       timestamp: Date.now(),
-      sessionId
+      sessionId,
     }
 
     this.broadcastToSession(sessionId, streamingResult)
@@ -351,7 +354,7 @@ export class WebSocketStreamingServer {
       isRunning: this.isRunning,
       port: this.port,
       clientCount: this.clients.size,
-      sessionCount: this.activeSessions.size
+      sessionCount: this.activeSessions.size,
     }
   }
 }

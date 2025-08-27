@@ -30,12 +30,7 @@ export function createSecureErrorResponse(
   context: ErrorContext,
   options: SecureErrorOptions = {}
 ): NextResponse {
-  const {
-    logError = true,
-    includeStack = false,
-    customMessage,
-    statusCode = 500
-  } = options
+  const { logError = true, includeStack = false, customMessage, statusCode = 500 } = options
 
   const isDevelopment = process.env.NODE_ENV === 'development'
   const errorId = generateErrorId()
@@ -49,11 +44,14 @@ export function createSecureErrorResponse(
       ip: context.ip,
       userAgent: context.userAgent,
       sessionId: context.sessionId,
-      error: error instanceof Error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      } : error
+      error:
+        error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            }
+          : error,
     })
   }
 
@@ -61,7 +59,7 @@ export function createSecureErrorResponse(
   const errorResponse: any = {
     error: customMessage || getGenericErrorMessage(statusCode),
     errorId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   }
 
   // In development, include more details
@@ -70,33 +68,31 @@ export function createSecureErrorResponse(
       errorResponse.details = {
         name: error.name,
         message: error.message,
-        ...(includeStack && { stack: error.stack })
+        ...(includeStack && { stack: error.stack }),
       }
     }
   }
 
   const response = NextResponse.json(errorResponse, { status: statusCode })
-  
+
   // Add security headers
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('X-Frame-Options', 'DENY')
-  
+
   return response
 }
 
 /**
  * Error handling middleware wrapper
  */
-export function withErrorHandling(
-  handler: (request: NextRequest) => Promise<NextResponse>
-) {
+export function withErrorHandling(handler: (request: NextRequest) => Promise<NextResponse>) {
   return async (request: NextRequest): Promise<NextResponse> => {
     const context: ErrorContext = {
       endpoint: request.nextUrl.pathname,
       method: request.method,
       ip: getClientIP(request),
       userAgent: request.headers.get('user-agent') || undefined,
-      sessionId: request.cookies.get('session-id')?.value
+      sessionId: request.cookies.get('session-id')?.value,
     }
 
     try {
@@ -106,42 +102,42 @@ export function withErrorHandling(
       if (error instanceof ValidationError) {
         return createSecureErrorResponse(error, context, {
           customMessage: 'Validation failed',
-          statusCode: 400
+          statusCode: 400,
         })
       }
 
       if (error instanceof AuthenticationError) {
         return createSecureErrorResponse(error, context, {
           customMessage: 'Authentication required',
-          statusCode: 401
+          statusCode: 401,
         })
       }
 
       if (error instanceof AuthorizationError) {
         return createSecureErrorResponse(error, context, {
           customMessage: 'Access denied',
-          statusCode: 403
+          statusCode: 403,
         })
       }
 
       if (error instanceof NotFoundError) {
         return createSecureErrorResponse(error, context, {
           customMessage: 'Resource not found',
-          statusCode: 404
+          statusCode: 404,
         })
       }
 
       if (error instanceof RateLimitError) {
         return createSecureErrorResponse(error, context, {
           customMessage: 'Rate limit exceeded',
-          statusCode: 429
+          statusCode: 429,
         })
       }
 
       // Generic server error
       return createSecureErrorResponse(error, context, {
         customMessage: 'Internal server error',
-        statusCode: 500
+        statusCode: 500,
       })
     }
   }
@@ -151,7 +147,10 @@ export function withErrorHandling(
  * Custom error classes
  */
 export class ValidationError extends Error {
-  constructor(message: string, public details?: any) {
+  constructor(
+    message: string,
+    public details?: any
+  ) {
     super(message)
     this.name = 'ValidationError'
   }
@@ -179,7 +178,10 @@ export class NotFoundError extends Error {
 }
 
 export class RateLimitError extends Error {
-  constructor(message: string = 'Rate limit exceeded', public retryAfter?: number) {
+  constructor(
+    message: string = 'Rate limit exceeded',
+    public retryAfter?: number
+  ) {
     super(message)
     this.name = 'RateLimitError'
   }
@@ -234,31 +236,27 @@ function getGenericErrorMessage(statusCode: number): string {
 export function sanitizeErrorMessage(message: string): string {
   // Remove file paths
   message = message.replace(/\/[^\s]+\.(js|ts|jsx|tsx)/g, '[file]')
-  
+
   // Remove database connection strings
   message = message.replace(/postgresql:\/\/[^\s]+/g, '[database]')
   message = message.replace(/mongodb:\/\/[^\s]+/g, '[database]')
-  
+
   // Remove API keys and tokens
   message = message.replace(/[a-zA-Z0-9]{32,}/g, '[token]')
-  
+
   // Remove IP addresses
   message = message.replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, '[ip]')
-  
+
   // Remove email addresses
   message = message.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[email]')
-  
+
   return message
 }
 
 /**
  * Log security event for error monitoring
  */
-export function logSecurityEvent(
-  eventType: string,
-  context: ErrorContext,
-  details?: any
-): void {
+export function logSecurityEvent(eventType: string, context: ErrorContext, details?: any): void {
   logger.warn('Security Event', `${eventType} detected`, {
     eventType,
     endpoint: context.endpoint,
@@ -267,7 +265,7 @@ export function logSecurityEvent(
     userAgent: context.userAgent,
     sessionId: context.sessionId,
     timestamp: new Date().toISOString(),
-    ...details
+    ...details,
   })
 }
 
@@ -279,22 +277,21 @@ export function handleDatabaseError(error: any, context: ErrorContext): NextResp
   logger.error('Database Error', 'Database operation failed', {
     endpoint: context.endpoint,
     ip: context.ip,
-    error: error instanceof Error ? {
-      name: error.name,
-      message: error.message,
-      stack: error.stack
-    } : error
+    error:
+      error instanceof Error
+        ? {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          }
+        : error,
   })
 
   // Return generic error to client
-  return createSecureErrorResponse(
-    new Error('Database operation failed'),
-    context,
-    {
-      customMessage: 'A database error occurred',
-      statusCode: 500
-    }
-  )
+  return createSecureErrorResponse(new Error('Database operation failed'), context, {
+    customMessage: 'A database error occurred',
+    statusCode: 500,
+  })
 }
 
 /**
@@ -309,18 +306,17 @@ export function handleExternalApiError(
     endpoint: context.endpoint,
     ip: context.ip,
     apiName,
-    error: error instanceof Error ? {
-      name: error.name,
-      message: error.message
-    } : error
+    error:
+      error instanceof Error
+        ? {
+            name: error.name,
+            message: error.message,
+          }
+        : error,
   })
 
-  return createSecureErrorResponse(
-    new Error(`${apiName} service error`),
-    context,
-    {
-      customMessage: 'External service temporarily unavailable',
-      statusCode: 503
-    }
-  )
+  return createSecureErrorResponse(new Error(`${apiName} service error`), context, {
+    customMessage: 'External service temporarily unavailable',
+    statusCode: 503,
+  })
 }

@@ -36,14 +36,14 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
     retryDelay = 1000,
     onError,
     logErrors = true,
-    component = 'Component'
+    component = 'Component',
   } = options
 
   const [errorState, setErrorState] = useState<ErrorState>({
     error: null,
     isError: false,
     errorId: null,
-    retryCount: 0
+    retryCount: 0,
   })
 
   const retryTimeoutRef = useRef<NodeJS.Timeout>()
@@ -52,75 +52,84 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
     return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }, [])
 
-  const logError = useCallback((error: Error, errorId: string, context?: any) => {
-    if (logErrors) {
-      logger.error(component, `Error ${errorId}`, {
+  const logError = useCallback(
+    (error: Error, errorId: string, context?: any) => {
+      if (logErrors) {
+        logger.error(component, `Error ${errorId}`, {
+          errorId,
+          error: {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          },
+          retryCount: errorState.retryCount,
+          context,
+        })
+      }
+    },
+    [component, logErrors, errorState.retryCount]
+  )
+
+  const handleError = useCallback(
+    (error: Error, context?: any) => {
+      const errorId = generateErrorId()
+
+      logError(error, errorId, context)
+
+      setErrorState(prev => ({
+        error,
+        isError: true,
         errorId,
-        error: {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        },
-        retryCount: errorState.retryCount,
-        context
-      })
-    }
-  }, [component, logErrors, errorState.retryCount])
+        retryCount: prev.retryCount,
+      }))
 
-  const handleError = useCallback((error: Error, context?: any) => {
-    const errorId = generateErrorId()
-    
-    logError(error, errorId, context)
-    
-    setErrorState(prev => ({
-      error,
-      isError: true,
-      errorId,
-      retryCount: prev.retryCount
-    }))
-
-    onError?.(error, errorId)
-  }, [generateErrorId, logError, onError])
+      onError?.(error, errorId)
+    },
+    [generateErrorId, logError, onError]
+  )
 
   const clearError = useCallback(() => {
     if (retryTimeoutRef.current) {
       clearTimeout(retryTimeoutRef.current)
     }
-    
+
     setErrorState({
       error: null,
       isError: false,
       errorId: null,
-      retryCount: 0
+      retryCount: 0,
     })
   }, [])
 
-  const retry = useCallback((retryFn?: () => void | Promise<void>) => {
-    if (errorState.retryCount >= maxRetries) {
-      logger.warn(component, 'Maximum retry attempts reached')
-      return false
-    }
+  const retry = useCallback(
+    (retryFn?: () => void | Promise<void>) => {
+      if (errorState.retryCount >= maxRetries) {
+        logger.warn(component, 'Maximum retry attempts reached')
+        return false
+      }
 
-    setErrorState(prev => ({
-      ...prev,
-      retryCount: prev.retryCount + 1,
-      isError: false,
-      error: null
-    }))
+      setErrorState(prev => ({
+        ...prev,
+        retryCount: prev.retryCount + 1,
+        isError: false,
+        error: null,
+      }))
 
-    if (retryFn) {
-      const delay = retryDelay * (errorState.retryCount + 1)
-      retryTimeoutRef.current = setTimeout(async () => {
-        try {
-          await retryFn()
-        } catch (error) {
-          handleError(error instanceof Error ? error : new Error(String(error)))
-        }
-      }, delay)
-    }
+      if (retryFn) {
+        const delay = retryDelay * (errorState.retryCount + 1)
+        retryTimeoutRef.current = setTimeout(async () => {
+          try {
+            await retryFn()
+          } catch (error) {
+            handleError(error instanceof Error ? error : new Error(String(error)))
+          }
+        }, delay)
+      }
 
-    return true
-  }, [errorState.retryCount, maxRetries, component, retryDelay, handleError])
+      return true
+    },
+    [errorState.retryCount, maxRetries, component, retryDelay, handleError]
+  )
 
   const canRetry = errorState.retryCount < maxRetries
 
@@ -130,7 +139,7 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
     clearError,
     retry,
     canRetry,
-    maxRetries
+    maxRetries,
   }
 }
 
@@ -143,7 +152,7 @@ export function useAsyncOperation<T = any>(options: UseErrorHandlingOptions = {}
     retryDelay = 1000,
     onError,
     logErrors = true,
-    component = 'AsyncOperation'
+    component = 'AsyncOperation',
   } = options
 
   const [state, setState] = useState<AsyncOperationState<T>>({
@@ -152,7 +161,7 @@ export function useAsyncOperation<T = any>(options: UseErrorHandlingOptions = {}
     error: null,
     isError: false,
     errorId: null,
-    retryCount: 0
+    retryCount: 0,
   })
 
   const retryTimeoutRef = useRef<NodeJS.Timeout>()
@@ -161,98 +170,101 @@ export function useAsyncOperation<T = any>(options: UseErrorHandlingOptions = {}
     return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }, [])
 
-  const logError = useCallback((error: Error, errorId: string, context?: any) => {
-    if (logErrors) {
-      logger.error(component, `Async operation error ${errorId}`, {
-        errorId,
-        error: {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        },
-        retryCount: state.retryCount,
-        context
-      })
-    }
-  }, [component, logErrors, state.retryCount])
+  const logError = useCallback(
+    (error: Error, errorId: string, context?: any) => {
+      if (logErrors) {
+        logger.error(component, `Async operation error ${errorId}`, {
+          errorId,
+          error: {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          },
+          retryCount: state.retryCount,
+          context,
+        })
+      }
+    },
+    [component, logErrors, state.retryCount]
+  )
 
-  const execute = useCallback(async (
-    asyncFn: () => Promise<T>,
-    context?: any
-  ): Promise<T | null> => {
-    setState(prev => ({
-      ...prev,
-      loading: true,
-      error: null,
-      isError: false
-    }))
-
-    try {
-      const result = await asyncFn()
+  const execute = useCallback(
+    async (asyncFn: () => Promise<T>, context?: any): Promise<T | null> => {
       setState(prev => ({
         ...prev,
-        data: result,
-        loading: false,
+        loading: true,
         error: null,
         isError: false,
-        errorId: null
       }))
-      return result
-    } catch (error) {
-      const err = error instanceof Error ? error : new Error(String(error))
-      const errorId = generateErrorId()
-      
-      logError(err, errorId, context)
-      
+
+      try {
+        const result = await asyncFn()
+        setState(prev => ({
+          ...prev,
+          data: result,
+          loading: false,
+          error: null,
+          isError: false,
+          errorId: null,
+        }))
+        return result
+      } catch (error) {
+        const err = error instanceof Error ? error : new Error(String(error))
+        const errorId = generateErrorId()
+
+        logError(err, errorId, context)
+
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          error: err,
+          isError: true,
+          errorId,
+        }))
+
+        onError?.(err, errorId)
+        return null
+      }
+    },
+    [generateErrorId, logError, onError]
+  )
+
+  const retry = useCallback(
+    async (asyncFn: () => Promise<T>, context?: any): Promise<T | null> => {
+      if (state.retryCount >= maxRetries) {
+        logger.warn(component, 'Maximum retry attempts reached for async operation')
+        return null
+      }
+
       setState(prev => ({
         ...prev,
-        loading: false,
-        error: err,
-        isError: true,
-        errorId
+        retryCount: prev.retryCount + 1,
       }))
 
-      onError?.(err, errorId)
-      return null
-    }
-  }, [generateErrorId, logError, onError])
+      const delay = retryDelay * (state.retryCount + 1)
 
-  const retry = useCallback(async (
-    asyncFn: () => Promise<T>,
-    context?: any
-  ): Promise<T | null> => {
-    if (state.retryCount >= maxRetries) {
-      logger.warn(component, 'Maximum retry attempts reached for async operation')
-      return null
-    }
-
-    setState(prev => ({
-      ...prev,
-      retryCount: prev.retryCount + 1
-    }))
-
-    const delay = retryDelay * (state.retryCount + 1)
-    
-    return new Promise((resolve) => {
-      retryTimeoutRef.current = setTimeout(async () => {
-        const result = await execute(asyncFn, context)
-        resolve(result)
-      }, delay)
-    })
-  }, [state.retryCount, maxRetries, component, retryDelay, execute])
+      return new Promise(resolve => {
+        retryTimeoutRef.current = setTimeout(async () => {
+          const result = await execute(asyncFn, context)
+          resolve(result)
+        }, delay)
+      })
+    },
+    [state.retryCount, maxRetries, component, retryDelay, execute]
+  )
 
   const reset = useCallback(() => {
     if (retryTimeoutRef.current) {
       clearTimeout(retryTimeoutRef.current)
     }
-    
+
     setState({
       data: null,
       loading: false,
       error: null,
       isError: false,
       errorId: null,
-      retryCount: 0
+      retryCount: 0,
     })
   }, [])
 
@@ -264,7 +276,7 @@ export function useAsyncOperation<T = any>(options: UseErrorHandlingOptions = {}
     retry,
     reset,
     canRetry,
-    maxRetries
+    maxRetries,
   }
 }
 
@@ -274,7 +286,7 @@ export function useAsyncOperation<T = any>(options: UseErrorHandlingOptions = {}
 export function useFormErrorHandling(options: UseErrorHandlingOptions = {}) {
   const errorHandling = useErrorHandling({
     ...options,
-    component: options.component || 'Form'
+    component: options.component || 'Form',
   })
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -282,7 +294,7 @@ export function useFormErrorHandling(options: UseErrorHandlingOptions = {}) {
   const setFieldError = useCallback((field: string, error: string) => {
     setFieldErrors(prev => ({
       ...prev,
-      [field]: error
+      [field]: error,
     }))
   }, [])
 
@@ -298,21 +310,22 @@ export function useFormErrorHandling(options: UseErrorHandlingOptions = {}) {
     setFieldErrors({})
   }, [])
 
-  const handleSubmissionError = useCallback((error: Error | any) => {
-    // Handle validation errors with field-specific messages
-    if (error?.response?.data?.errors) {
-      const errors = error.response.data.errors
-      if (typeof errors === 'object') {
-        setFieldErrors(errors)
-        return
+  const handleSubmissionError = useCallback(
+    (error: Error | any) => {
+      // Handle validation errors with field-specific messages
+      if (error?.response?.data?.errors) {
+        const errors = error.response.data.errors
+        if (typeof errors === 'object') {
+          setFieldErrors(errors)
+          return
+        }
       }
-    }
 
-    // Handle general form errors
-    errorHandling.handleError(
-      error instanceof Error ? error : new Error(String(error))
-    )
-  }, [errorHandling])
+      // Handle general form errors
+      errorHandling.handleError(error instanceof Error ? error : new Error(String(error)))
+    },
+    [errorHandling]
+  )
 
   const clearAllErrors = useCallback(() => {
     errorHandling.clearError()
@@ -326,7 +339,7 @@ export function useFormErrorHandling(options: UseErrorHandlingOptions = {}) {
     clearFieldError,
     clearAllFieldErrors,
     handleSubmissionError,
-    clearAllErrors
+    clearAllErrors,
   }
 }
 
@@ -337,11 +350,7 @@ export function withErrorHandling<T extends any[], R>(
   fn: (...args: T) => Promise<R>,
   options: UseErrorHandlingOptions = {}
 ) {
-  const {
-    onError,
-    logErrors = true,
-    component = 'AsyncFunction'
-  } = options
+  const { onError, logErrors = true, component = 'AsyncFunction' } = options
 
   return async (...args: T): Promise<R | null> => {
     try {
@@ -349,16 +358,16 @@ export function withErrorHandling<T extends any[], R>(
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error))
       const errorId = `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      
+
       if (logErrors) {
         logger.error(component, `Function error ${errorId}`, {
           errorId,
           error: {
             name: err.name,
             message: err.message,
-            stack: err.stack
+            stack: err.stack,
           },
-          args: args.length > 0 ? 'provided' : 'none'
+          args: args.length > 0 ? 'provided' : 'none',
         })
       }
 

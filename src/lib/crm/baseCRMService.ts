@@ -12,7 +12,7 @@ import {
   CRMSyncMetrics,
   CRMDataQuality,
   CRMWebhookEvent,
-  CRMWebhookSubscription
+  CRMWebhookSubscription,
 } from '@/types/crm'
 import { logger } from '@/utils/logger'
 
@@ -36,7 +36,7 @@ export abstract class BaseCRMService {
 
   // Common utility methods
   async isReady(): Promise<boolean> {
-    return this.isInitialized && await this.validateConnection()
+    return this.isInitialized && (await this.validateConnection())
   }
 
   getProvider(): CRMProvider {
@@ -51,7 +51,7 @@ export abstract class BaseCRMService {
   protected async respectRateLimit(): Promise<void> {
     const rateLimits = this.provider.configuration.rateLimits
     const delay = Math.ceil(60000 / rateLimits.requestsPerMinute)
-    
+
     if (delay > 0) {
       await new Promise(resolve => setTimeout(resolve, delay))
     }
@@ -62,7 +62,7 @@ export abstract class BaseCRMService {
     logger.error('CRMService', `${this.provider.name} ${operation} failed`, {
       providerId: this.provider.id,
       error: error.message,
-      stack: error.stack
+      stack: error.stack,
     })
     throw new Error(`CRM ${operation} failed: ${error.message}`)
   }
@@ -147,20 +147,20 @@ export abstract class BaseCRMService {
   // Phone number formatting helper
   private formatPhoneNumber(phone: string): string {
     if (!phone) return ''
-    
+
     // Remove all non-digit characters
     const digits = phone.replace(/\D/g, '')
-    
+
     // Format as (XXX) XXX-XXXX for US numbers
     if (digits.length === 10) {
       return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
     }
-    
+
     // Format as +X (XXX) XXX-XXXX for international numbers
     if (digits.length === 11 && digits.startsWith('1')) {
       return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`
     }
-    
+
     return phone // Return original if can't format
   }
 
@@ -183,7 +183,7 @@ export abstract class BaseCRMService {
         field: 'businessName',
         issueType: 'missing',
         severity: 'critical',
-        description: 'Business name is required'
+        description: 'Business name is required',
       })
       qualityScore -= 20
     }
@@ -193,7 +193,7 @@ export abstract class BaseCRMService {
         field: 'email',
         issueType: 'missing',
         severity: 'high',
-        description: 'Email address is required'
+        description: 'Email address is required',
       })
       qualityScore -= 15
     }
@@ -203,7 +203,7 @@ export abstract class BaseCRMService {
         field: 'phone',
         issueType: 'missing',
         severity: 'medium',
-        description: 'Phone number is recommended'
+        description: 'Phone number is recommended',
       })
       qualityScore -= 10
     }
@@ -212,13 +212,13 @@ export abstract class BaseCRMService {
     if (record.email && record.email.length > 0) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       const invalidEmails = record.email.filter(email => !emailRegex.test(email))
-      
+
       if (invalidEmails.length > 0) {
         issues.push({
           field: 'email',
           issueType: 'invalid',
           severity: 'high',
-          description: `Invalid email format: ${invalidEmails.join(', ')}`
+          description: `Invalid email format: ${invalidEmails.join(', ')}`,
         })
         qualityScore -= 10
       }
@@ -230,7 +230,7 @@ export abstract class BaseCRMService {
         field: 'address',
         issueType: 'missing',
         severity: 'medium',
-        description: 'Incomplete address information'
+        description: 'Incomplete address information',
       })
       qualityScore -= 5
     }
@@ -239,7 +239,7 @@ export abstract class BaseCRMService {
       recordId: record.id,
       qualityScore: Math.max(0, qualityScore),
       issues,
-      suggestions
+      suggestions,
     }
   }
 
@@ -251,19 +251,19 @@ export abstract class BaseCRMService {
     const totalSyncs = syncRecords.length
     const successfulSyncs = syncRecords.filter(r => r.syncStatus === 'synced').length
     const failedSyncs = syncRecords.filter(r => r.syncStatus === 'failed').length
-    
+
     const syncTimes = syncRecords
       .filter(r => r.lastSyncAt)
       .map(r => r.lastSyncAt!.getTime() - r.businessRecord.scrapedAt.getTime())
-    
-    const averageSyncTime = syncTimes.length > 0 
-      ? syncTimes.reduce((a, b) => a + b, 0) / syncTimes.length 
-      : 0
 
-    const qualityScores = syncRecords.map(r => this.assessDataQuality(r.businessRecord).qualityScore)
-    const dataQualityScore = qualityScores.length > 0
-      ? qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length
-      : 0
+    const averageSyncTime =
+      syncTimes.length > 0 ? syncTimes.reduce((a, b) => a + b, 0) / syncTimes.length : 0
+
+    const qualityScores = syncRecords.map(
+      r => this.assessDataQuality(r.businessRecord).qualityScore
+    )
+    const dataQualityScore =
+      qualityScores.length > 0 ? qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length : 0
 
     return {
       crmProviderId: this.provider.id,
@@ -274,22 +274,16 @@ export abstract class BaseCRMService {
       averageSyncTime,
       dataQualityScore,
       deduplicationRate: 0, // To be calculated by specific implementations
-      validationErrors: failedSyncs
+      validationErrors: failedSyncs,
     }
   }
 
   // Webhook signature validation
   protected validateWebhookSignature(payload: string, signature: string, secret: string): boolean {
     const crypto = require('crypto')
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('hex')
-    
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    )
+    const expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
   }
 
   // Batch processing helper
@@ -299,30 +293,28 @@ export abstract class BaseCRMService {
     batchSize: number = 10
   ): Promise<R[]> {
     const results: R[] = []
-    
+
     for (let i = 0; i < items.length; i += batchSize) {
       const batch = items.slice(i, i + batchSize)
-      const batchResults = await Promise.allSettled(
-        batch.map(item => processor(item))
-      )
-      
+      const batchResults = await Promise.allSettled(batch.map(item => processor(item)))
+
       for (const result of batchResults) {
         if (result.status === 'fulfilled') {
           results.push(result.value)
         } else {
           logger.error('CRMService', 'Batch processing error', {
             providerId: this.provider.id,
-            error: result.reason
+            error: result.reason,
           })
         }
       }
-      
+
       // Respect rate limits between batches
       if (i + batchSize < items.length) {
         await this.respectRateLimit()
       }
     }
-    
+
     return results
   }
 }

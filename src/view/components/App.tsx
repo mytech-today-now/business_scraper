@@ -15,7 +15,7 @@ import {
   Search,
   Info,
   Brain,
-  StopCircle
+  StopCircle,
 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { PerformanceProvider } from '@/controller/PerformanceContext'
@@ -59,12 +59,7 @@ function ConfigurationPanel(): JSX.Element {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Configuration</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleDarkMode}
-          className="h-9 w-9"
-        >
+        <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="h-9 w-9">
           {state.isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </Button>
       </div>
@@ -80,15 +75,14 @@ function ConfigurationPanel(): JSX.Element {
                   🔒 Configuration Locked - Scraping in Progress
                 </h3>
                 <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                  Configuration settings are locked while scraping is active. Stop the scraping process to make changes.
+                  Configuration settings are locked while scraping is active. Stop the scraping
+                  process to make changes.
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
-
-
 
       {/* Location Settings */}
       <Card>
@@ -106,12 +100,12 @@ function ConfigurationPanel(): JSX.Element {
               label="ZIP Code"
               placeholder="e.g., 90210 or 123 Main St, Beverly Hills, CA 90210"
               value={state.config.zipCode}
-              onChange={(zipCode) => updateConfig({ zipCode })}
-              onValidZipCode={(zipCode) => {
+              onChange={zipCode => updateConfig({ zipCode })}
+              onValidZipCode={zipCode => {
                 logger.info('App', `Valid ZIP code entered: ${zipCode}`)
                 toast.success(`ZIP code "${zipCode}" is valid`)
               }}
-              onInvalidInput={(error) => {
+              onInvalidInput={error => {
                 logger.warn('App', `Invalid ZIP code input: ${error}`)
               }}
               helperText="Enter ZIP code or full address - we'll extract the ZIP code"
@@ -125,7 +119,7 @@ function ConfigurationPanel(): JSX.Element {
               min="1"
               max="100"
               value={state.config.searchRadius}
-              onChange={(e) => updateConfig({ searchRadius: parseInt(e.target.value) || 25 })}
+              onChange={e => updateConfig({ searchRadius: parseInt(e.target.value) || 25 })}
               helperText="How far to search from ZIP code"
               disabled={scrapingState.isScrapingActive}
             />
@@ -151,7 +145,7 @@ function ConfigurationPanel(): JSX.Element {
               min="1"
               max="5"
               value={state.config.searchDepth}
-              onChange={(e) => updateConfig({ searchDepth: parseInt(e.target.value) || 2 })}
+              onChange={e => updateConfig({ searchDepth: parseInt(e.target.value) || 2 })}
               helperText="How deep to crawl each website"
               disabled={scrapingState.isScrapingActive}
             />
@@ -161,7 +155,7 @@ function ConfigurationPanel(): JSX.Element {
               min="1"
               max="20"
               value={state.config.pagesPerSite}
-              onChange={(e) => updateConfig({ pagesPerSite: parseInt(e.target.value) || 5 })}
+              onChange={e => updateConfig({ pagesPerSite: parseInt(e.target.value) || 5 })}
               helperText="Maximum pages to scrape per website"
               disabled={scrapingState.isScrapingActive}
             />
@@ -191,7 +185,7 @@ function ConfigurationPanel(): JSX.Element {
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={state.config.duckduckgoSerpPages || 2}
-                onChange={(e) => updateConfig({ duckduckgoSerpPages: parseInt(e.target.value) })}
+                onChange={e => updateConfig({ duckduckgoSerpPages: parseInt(e.target.value) })}
                 aria-label="DuckDuckGo SERP Pages"
                 disabled={scrapingState.isScrapingActive}
               >
@@ -212,7 +206,7 @@ function ConfigurationPanel(): JSX.Element {
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={state.config.maxSearchResults || 1000}
-                onChange={(e) => updateConfig({ maxSearchResults: parseInt(e.target.value) })}
+                onChange={e => updateConfig({ maxSearchResults: parseInt(e.target.value) })}
                 aria-label="Max Results Per Search"
                 disabled={scrapingState.isScrapingActive}
               >
@@ -223,7 +217,8 @@ function ConfigurationPanel(): JSX.Element {
                 <option value={10000}>Unlimited (10,000+)</option>
               </select>
               <p className="text-xs text-gray-600 mt-1">
-                Maximum number of business websites to find per search (higher values gather more comprehensive results)
+                Maximum number of business websites to find per search (higher values gather more
+                comprehensive results)
               </p>
             </div>
           </div>
@@ -236,7 +231,7 @@ function ConfigurationPanel(): JSX.Element {
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={state.config.bbbAccreditedOnly ? 'accredited' : 'all'}
-                onChange={(e) => updateConfig({ bbbAccreditedOnly: e.target.value === 'accredited' })}
+                onChange={e => updateConfig({ bbbAccreditedOnly: e.target.value === 'accredited' })}
                 aria-label="BBB Search Type"
                 disabled={scrapingState.isScrapingActive}
               >
@@ -254,7 +249,7 @@ function ConfigurationPanel(): JSX.Element {
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={state.config.zipRadius || 10}
-                onChange={(e) => updateConfig({ zipRadius: parseInt(e.target.value) })}
+                onChange={e => updateConfig({ zipRadius: parseInt(e.target.value) })}
                 aria-label="ZIP Code Radius"
                 disabled={scrapingState.isScrapingActive}
               >
@@ -276,7 +271,10 @@ function ConfigurationPanel(): JSX.Element {
                 <p className="font-medium">Comprehensive Search Strategy:</p>
                 <ul className="mt-1 space-y-1 text-xs">
                   <li>• Scrapes actual DuckDuckGo search result pages (SERP)</li>
-                  <li>• Searches each industry criteria individually (medical, healthcare, clinic, etc.)</li>
+                  <li>
+                    • Searches each industry criteria individually (medical, healthcare, clinic,
+                    etc.)
+                  </li>
                   <li>• Uses BBB as business discovery platform to find real business websites</li>
                   <li>• Validates ZIP code radius and extracts "Visit Website" URLs from BBB</li>
                   <li>• Scrapes actual business websites for contact information</li>
@@ -291,17 +289,21 @@ function ConfigurationPanel(): JSX.Element {
       <CategorySelector disabled={scrapingState.isScrapingActive} />
 
       {/* Configuration Status */}
-      <div className={clsx(
-        'p-4 rounded-lg border',
-        isConfigValid() 
-          ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800'
-          : 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800'
-      )}>
+      <div
+        className={clsx(
+          'p-4 rounded-lg border',
+          isConfigValid()
+            ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800'
+            : 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800'
+        )}
+      >
         <div className="flex items-center gap-2">
-          <div className={clsx(
-            'w-2 h-2 rounded-full',
-            isConfigValid() ? 'bg-green-500' : 'bg-yellow-500'
-          )} />
+          <div
+            className={clsx(
+              'w-2 h-2 rounded-full',
+              isConfigValid() ? 'bg-green-500' : 'bg-yellow-500'
+            )}
+          />
           <span className="text-sm font-medium">
             {isConfigValid() ? 'Configuration Complete' : 'Configuration Incomplete'}
           </span>
@@ -334,7 +336,7 @@ function ScrapingPanel(): JSX.Element {
     hasResults,
     hasErrors,
     clearProcessingSteps,
-    shouldShowResults
+    shouldShowResults,
   } = useScraperController()
 
   const [showExportOptions, setShowExportOptions] = useState(false)
@@ -356,7 +358,7 @@ function ScrapingPanel(): JSX.Element {
     pauseStreaming,
     resumeStreaming,
     stopStreaming,
-    clearResults: clearStreamingResults
+    clearResults: clearStreamingResults,
   } = useSearchStreaming()
 
   // Error handling for the scraping panel
@@ -366,15 +368,19 @@ function ScrapingPanel(): JSX.Element {
     onError: (error, errorId) => {
       toast.error(`Export failed: ${error.message}`, {
         id: errorId,
-        duration: 5000
+        duration: 5000,
       })
-    }
+    },
   })
 
   /**
    * Handle export functionality with improved error handling and context
    */
-  const handleExport = async (format: string, selectedIds?: string[], template?: ExportTemplate): Promise<void> => {
+  const handleExport = async (
+    format: string,
+    selectedIds?: string[],
+    template?: ExportTemplate
+  ): Promise<void> => {
     if (!scrapingState.results.length) {
       logger.warn('Export', 'No data to export')
       toast.error('No data available to export')
@@ -403,10 +409,10 @@ function ScrapingPanel(): JSX.Element {
             selectedIndustries: selectedIndustryNames,
             searchLocation: configState.config.zipCode,
             searchRadius: configState.config.searchRadius,
-            totalResults: scrapingState.results.length
+            totalResults: scrapingState.results.length,
           },
           selectedBusinesses: selectedIds,
-          template: template
+          template: template,
         }
       )
 
@@ -424,8 +430,13 @@ function ScrapingPanel(): JSX.Element {
       const exportType = selectedIds ? 'selected' : 'all'
       const templateInfo = template ? ` using template "${template.name}"` : ''
 
-      logger.info('Export', `Successfully exported ${exportCount} ${exportType} businesses as ${format}${templateInfo}`)
-      toast.success(`Successfully exported ${exportCount} ${exportType} businesses as ${format.toUpperCase()}${templateInfo}`)
+      logger.info(
+        'Export',
+        `Successfully exported ${exportCount} ${exportType} businesses as ${format}${templateInfo}`
+      )
+      toast.success(
+        `Successfully exported ${exportCount} ${exportType} businesses as ${format.toUpperCase()}${templateInfo}`
+      )
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error))
       exportErrorHandling.handleError(err, { format, resultCount: scrapingState.results.length })
@@ -509,17 +520,19 @@ function ScrapingPanel(): JSX.Element {
                   <Button
                     icon={Play}
                     onClick={async () => {
-                      const selectedIndustryNames = configState.selectedIndustries.map(industryId => {
-                        const industry = configState.industries.find(ind => ind.id === industryId)
-                        return industry?.name || industryId
-                      }).join(', ')
+                      const selectedIndustryNames = configState.selectedIndustries
+                        .map(industryId => {
+                          const industry = configState.industries.find(ind => ind.id === industryId)
+                          return industry?.name || industryId
+                        })
+                        .join(', ')
 
                       await startStreaming(
                         selectedIndustryNames || 'business',
                         configState.config.zipCode,
                         {
                           maxResults: 1000,
-                          enableFallback: true
+                          enableFallback: true,
                         }
                       )
                     }}
@@ -530,11 +543,7 @@ function ScrapingPanel(): JSX.Element {
                 ) : (
                   <>
                     {!isPaused ? (
-                      <Button
-                        variant="outline"
-                        icon={Pause}
-                        onClick={pauseStreaming}
-                      >
+                      <Button variant="outline" icon={Pause} onClick={pauseStreaming}>
                         Pause
                       </Button>
                     ) : (
@@ -582,21 +591,12 @@ function ScrapingPanel(): JSX.Element {
                     )}
                   </>
                 ) : scrapingState.currentUrl === 'Stopping scraping...' ? (
-                  <Button
-                    variant="outline"
-                    icon={Square}
-                    disabled
-                    className="opacity-75"
-                  >
+                  <Button variant="outline" icon={Square} disabled className="opacity-75">
                     Stopping...
                   </Button>
                 ) : (
                   <>
-                    <Button
-                      icon={Play}
-                      onClick={startScraping}
-                      disabled={!canStartScraping}
-                    >
+                    <Button icon={Play} onClick={startScraping} disabled={!canStartScraping}>
                       Start Scraping
                     </Button>
                   </>
@@ -658,17 +658,19 @@ function ScrapingPanel(): JSX.Element {
           </div>
 
           {/* Progress Display */}
-          {(scrapingState.isScrapingActive || scrapingState.currentUrl === 'Stopping scraping...') && (
+          {(scrapingState.isScrapingActive ||
+            scrapingState.currentUrl === 'Stopping scraping...') && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>
-                  {scrapingState.currentUrl === 'Stopping scraping...' ? 'Stopping' : 'Real-Time Progress'}
+                  {scrapingState.currentUrl === 'Stopping scraping...'
+                    ? 'Stopping'
+                    : 'Real-Time Progress'}
                 </span>
                 <span>
                   {scrapingState.currentUrl === 'Stopping scraping...'
                     ? 'Finalizing...'
-                    : `${scrapingState.progress.percentage}%`
-                  }
+                    : `${scrapingState.progress.percentage}%`}
                 </span>
               </div>
 
@@ -692,18 +694,21 @@ function ScrapingPanel(): JSX.Element {
                       : 'bg-primary'
                   }`}
                   style={{
-                    width: scrapingState.currentUrl === 'Stopping scraping...'
-                      ? '100%'
-                      : `${scrapingState.progress.percentage}%`
+                    width:
+                      scrapingState.currentUrl === 'Stopping scraping...'
+                        ? '100%'
+                        : `${scrapingState.progress.percentage}%`,
                   }}
                 />
               </div>
               {scrapingState.currentUrl && (
-                <p className={`text-xs truncate ${
-                  scrapingState.currentUrl === 'Stopping scraping...'
-                    ? 'text-yellow-600 font-medium'
-                    : 'text-muted-foreground'
-                }`}>
+                <p
+                  className={`text-xs truncate ${
+                    scrapingState.currentUrl === 'Stopping scraping...'
+                      ? 'text-yellow-600 font-medium'
+                      : 'text-muted-foreground'
+                  }`}
+                >
                   {scrapingState.currentUrl}
                 </p>
               )}
@@ -711,22 +716,22 @@ function ScrapingPanel(): JSX.Element {
           )}
 
           {/* Completion Summary - shown when scraping is stopped */}
-          {!scrapingState.isScrapingActive && scrapingState.currentUrl === '' && scrapingState.results.length > 0 && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-green-700 font-medium">Scraping Completed</span>
+          {!scrapingState.isScrapingActive &&
+            scrapingState.currentUrl === '' &&
+            scrapingState.results.length > 0 && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-green-700 font-medium">Scraping Completed</span>
+                </div>
+                <div className="text-sm text-green-600">
+                  Found {scrapingState.results.length} businesses.
+                  {scrapingState.errors.length > 0 && (
+                    <span className="ml-1">{scrapingState.errors.length} errors encountered.</span>
+                  )}
+                </div>
               </div>
-              <div className="text-sm text-green-600">
-                Found {scrapingState.results.length} businesses.
-                {scrapingState.errors.length > 0 && (
-                  <span className="ml-1">
-                    {scrapingState.errors.length} errors encountered.
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
+            )}
 
           {/* Statistics */}
           {scrapingState.stats && (
@@ -832,7 +837,6 @@ function ScrapingPanel(): JSX.Element {
         isActive={scrapingState.isScrapingActive}
         currentStep={scrapingState.currentUrl}
         steps={scrapingState.processingSteps}
-
         onToggleVisibility={() => setShowProcessingWindow(!showProcessingWindow)}
         onClear={clearProcessingSteps}
         progress={scrapingState.progress}
@@ -845,23 +849,23 @@ function ScrapingPanel(): JSX.Element {
           {/* Table Mode Toggle */}
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
-              Business Results ({
-                useStreamingSearch
-                  ? streamingResults.length.toLocaleString()
-                  : scrapingState.results.length.toLocaleString()
-              })
+              Business Results (
+              {useStreamingSearch
+                ? streamingResults.length.toLocaleString()
+                : scrapingState.results.length.toLocaleString()}
+              )
             </h3>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Table Mode:</span>
               <Button
-                variant={useVirtualScrolling ? "default" : "outline"}
+                variant={useVirtualScrolling ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setUseVirtualScrolling(true)}
               >
                 Virtual (High Performance)
               </Button>
               <Button
-                variant={!useVirtualScrolling ? "default" : "outline"}
+                variant={!useVirtualScrolling ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setUseVirtualScrolling(false)}
               >
@@ -871,9 +875,11 @@ function ScrapingPanel(): JSX.Element {
           </div>
 
           {/* Smart Performance Mode Table Rendering */}
-          <PerformanceProvider datasetSize={
-            useStreamingSearch ? streamingResults.length : scrapingState.results.length
-          }>
+          <PerformanceProvider
+            datasetSize={
+              useStreamingSearch ? streamingResults.length : scrapingState.results.length
+            }
+          >
             <ResultsTable
               businesses={useStreamingSearch ? streamingResults : scrapingState.results}
               onEdit={updateBusiness}
@@ -899,7 +905,11 @@ interface BreadcrumbNavigationProps {
   onNavigate: (path: string) => void
 }
 
-function BreadcrumbNavigation({ activeTab, hasResults, onNavigate }: BreadcrumbNavigationProps): JSX.Element {
+function BreadcrumbNavigation({
+  activeTab,
+  hasResults,
+  onNavigate,
+}: BreadcrumbNavigationProps): JSX.Element {
   // Generate breadcrumb items based on current state
   const breadcrumbItems = useBreadcrumbItems(
     activeTab === 'ai-insights' ? 'scraping' : activeTab, // Treat AI insights as part of scraping flow
@@ -955,7 +965,7 @@ export function App(): JSX.Element {
         clearedStores: [],
         clearedLocalStorage: [],
         errors: [error instanceof Error ? error.message : 'Unknown error'],
-        fallbackUsed: false
+        fallbackUsed: false,
       }
     } finally {
       setIsResetting(false)
@@ -989,11 +999,11 @@ export function App(): JSX.Element {
                   height={isMobile ? 24 : 32}
                   className="object-contain"
                   priority
-                  sizes={isMobile ? "24px" : "32px"}
+                  sizes={isMobile ? '24px' : '32px'}
                   quality={90}
                 />
                 <h1 className="text-lg md:text-2xl font-bold truncate">
-                  {isMobile ? "Scraper" : "Business Scraper"}
+                  {isMobile ? 'Scraper' : 'Business Scraper'}
                 </h1>
               </div>
               {/* Desktop Navigation - Hidden on mobile */}
@@ -1004,15 +1014,18 @@ export function App(): JSX.Element {
                     size="sm"
                     onClick={() => {
                       if (scrapingState.isScrapingActive) {
-                        toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
+                        toast.error(
+                          'Configuration cannot be changed while scraping is active. Please stop scraping first.'
+                        )
                         return
                       }
                       setActiveTab('config')
                     }}
                     disabled={scrapingState.isScrapingActive}
-                    title={scrapingState.isScrapingActive
-                      ? 'Configuration cannot be changed while scraping is active. Please stop scraping first.'
-                      : undefined
+                    title={
+                      scrapingState.isScrapingActive
+                        ? 'Configuration cannot be changed while scraping is active. Please stop scraping first.'
+                        : undefined
                     }
                     className={clsx(
                       'min-h-touch',
@@ -1031,12 +1044,13 @@ export function App(): JSX.Element {
                     size="sm"
                     onClick={() => setActiveTab('scraping')}
                     disabled={state.industriesInEditMode.length > 0}
-                    title={state.industriesInEditMode.length > 0
-                      ? `Please save or cancel edits for: ${state.industriesInEditMode
-                          .map(id => state.industries.find(industry => industry.id === id)?.name)
-                          .filter(Boolean)
-                          .join(', ')}`
-                      : undefined
+                    title={
+                      state.industriesInEditMode.length > 0
+                        ? `Please save or cancel edits for: ${state.industriesInEditMode
+                            .map(id => state.industries.find(industry => industry.id === id)?.name)
+                            .filter(Boolean)
+                            .join(', ')}`
+                        : undefined
                     }
                     className={clsx(
                       'min-h-touch',
@@ -1071,13 +1085,15 @@ export function App(): JSX.Element {
                     size="sm"
                     onClick={() => setShowResetDialog(true)}
                     disabled={scrapingState.isScrapingActive || isResetting}
-                    title={scrapingState.isScrapingActive
-                      ? 'Cannot reset data while scraping is active. Please stop scraping first.'
-                      : 'Reset all application data to start fresh'
+                    title={
+                      scrapingState.isScrapingActive
+                        ? 'Cannot reset data while scraping is active. Please stop scraping first.'
+                        : 'Reset all application data to start fresh'
                     }
                     className={clsx(
                       'ml-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 min-h-touch',
-                      (scrapingState.isScrapingActive || isResetting) && 'opacity-50 cursor-not-allowed'
+                      (scrapingState.isScrapingActive || isResetting) &&
+                        'opacity-50 cursor-not-allowed'
                     )}
                   >
                     <RotateCcw className="h-4 w-4 mr-1" />
@@ -1093,19 +1109,23 @@ export function App(): JSX.Element {
               {/* Mobile Navigation */}
               <MobileNavigation
                 activeTab={activeTab as 'config' | 'scraping'}
-                onTabChange={(tab) => {
+                onTabChange={tab => {
                   if (tab === 'config') {
                     if (scrapingState.isScrapingActive) {
-                      toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
+                      toast.error(
+                        'Configuration cannot be changed while scraping is active. Please stop scraping first.'
+                      )
                       return
                     }
                     setActiveTab('config')
                   } else if (tab === 'scraping') {
                     if (state.industriesInEditMode.length > 0) {
-                      toast.error(`Please save or cancel edits for: ${state.industriesInEditMode
-                        .map(id => state.industries.find(industry => industry.id === id)?.name)
-                        .filter(Boolean)
-                        .join(', ')}`)
+                      toast.error(
+                        `Please save or cancel edits for: ${state.industriesInEditMode
+                          .map(id => state.industries.find(industry => industry.id === id)?.name)
+                          .filter(Boolean)
+                          .join(', ')}`
+                      )
                       return
                     }
                     setActiveTab('scraping')
@@ -1126,19 +1146,23 @@ export function App(): JSX.Element {
           <BreadcrumbNavigation
             activeTab={activeTab}
             hasResults={hasResults}
-            onNavigate={(path) => {
+            onNavigate={path => {
               if (path === 'config') {
                 if (scrapingState.isScrapingActive) {
-                  toast.error('Configuration cannot be changed while scraping is active. Please stop scraping first.')
+                  toast.error(
+                    'Configuration cannot be changed while scraping is active. Please stop scraping first.'
+                  )
                   return
                 }
                 setActiveTab('config')
               } else if (path === 'scraping') {
                 if (state.industriesInEditMode.length > 0) {
-                  toast.error(`Please save or cancel edits for: ${state.industriesInEditMode
-                    .map(id => state.industries.find(industry => industry.id === id)?.name)
-                    .filter(Boolean)
-                    .join(', ')}`)
+                  toast.error(
+                    `Please save or cancel edits for: ${state.industriesInEditMode
+                      .map(id => state.industries.find(industry => industry.id === id)?.name)
+                      .filter(Boolean)
+                      .join(', ')}`
+                  )
                   return
                 }
                 setActiveTab('scraping')
@@ -1177,15 +1201,14 @@ export function App(): JSX.Element {
       {showApiConfig && (
         <ApiConfigurationPage
           onClose={() => setShowApiConfig(false)}
-          onCredentialsUpdated={async (credentials) => {
+          onCredentialsUpdated={async credentials => {
             // Refresh the scraper service with new credentials
             await clientScraperService.refreshCredentials()
             logger.info('App', 'API credentials updated and refreshed', {
               hasGoogleSearch: !!credentials.googleSearchApiKey,
-              hasAzureSearch: !!credentials.azureSearchApiKey
+              hasAzureSearch: !!credentials.azureSearchApiKey,
             })
           }}
-
         />
       )}
 

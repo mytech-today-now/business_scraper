@@ -3,12 +3,7 @@
  * Comprehensive OAuth 2.0 implementation for secure third-party access
  */
 
-import { 
-  OAuth2Config, 
-  OAuth2Token, 
-  OAuth2Client, 
-  ApiPermission 
-} from '@/types/integrations'
+import { OAuth2Config, OAuth2Token, OAuth2Client, ApiPermission } from '@/types/integrations'
 import { logger } from '@/utils/logger'
 import crypto from 'crypto'
 
@@ -18,14 +13,17 @@ import crypto from 'crypto'
 export class OAuth2Service {
   private clients: Map<string, OAuth2Client> = new Map()
   private tokens: Map<string, OAuth2Token> = new Map()
-  private authorizationCodes: Map<string, {
-    clientId: string
-    redirectUri: string
-    scope: string[]
-    codeChallenge?: string
-    codeChallengeMethod?: string
-    expiresAt: number
-  }> = new Map()
+  private authorizationCodes: Map<
+    string,
+    {
+      clientId: string
+      redirectUri: string
+      scope: string[]
+      codeChallenge?: string
+      codeChallengeMethod?: string
+      expiresAt: number
+    }
+  > = new Map()
 
   constructor() {
     this.initializeDefaultClients()
@@ -49,13 +47,13 @@ export class OAuth2Service {
         scopes: ['read:businesses', 'write:businesses', 'read:exports', 'write:exports'],
         responseType: 'code',
         grantType: 'authorization_code',
-        pkce: true
+        pkce: true,
       },
       tokens: [],
       status: 'active',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      usageCount: 0
+      usageCount: 0,
     }
 
     this.clients.set(defaultClient.id, defaultClient)
@@ -66,7 +64,10 @@ export class OAuth2Service {
    * Create OAuth 2.0 client
    */
   async createClient(
-    clientData: Omit<OAuth2Client, 'id' | 'tokens' | 'status' | 'createdAt' | 'updatedAt' | 'usageCount'>
+    clientData: Omit<
+      OAuth2Client,
+      'id' | 'tokens' | 'status' | 'createdAt' | 'updatedAt' | 'usageCount'
+    >
   ): Promise<OAuth2Client> {
     const clientId = this.generateClientId()
     const clientSecret = this.generateClientSecret()
@@ -78,21 +79,21 @@ export class OAuth2Service {
       config: {
         ...clientData.config,
         clientId,
-        clientSecret
+        clientSecret,
       },
       tokens: [],
       status: 'active',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      usageCount: 0
+      usageCount: 0,
     }
 
     this.clients.set(clientId, client)
-    
+
     logger.info('OAuth2Service', `Created OAuth client: ${clientId}`, {
       clientId,
       name: client.name,
-      scopes: client.config.scopes
+      scopes: client.config.scopes,
     })
 
     return client
@@ -149,7 +150,7 @@ export class OAuth2Service {
       scope,
       codeChallenge,
       codeChallengeMethod,
-      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
     })
 
     const params = new URLSearchParams({
@@ -158,7 +159,7 @@ export class OAuth2Service {
       redirect_uri: redirectUri,
       scope: scope.join(' '),
       state: generatedState,
-      code: authCode
+      code: authCode,
     })
 
     if (codeChallenge) {
@@ -171,12 +172,12 @@ export class OAuth2Service {
     logger.info('OAuth2Service', `Generated authorization URL for client: ${clientId}`, {
       clientId,
       scope,
-      state: generatedState
+      state: generatedState,
     })
 
     return {
       authorizationUrl,
-      state: generatedState
+      state: generatedState,
     }
   }
 
@@ -223,9 +224,10 @@ export class OAuth2Service {
         throw new Error('Code verifier required for PKCE')
       }
 
-      const challenge = authData.codeChallengeMethod === 'S256'
-        ? crypto.createHash('sha256').update(codeVerifier).digest('base64url')
-        : codeVerifier
+      const challenge =
+        authData.codeChallengeMethod === 'S256'
+          ? crypto.createHash('sha256').update(codeVerifier).digest('base64url')
+          : codeVerifier
 
       if (challenge !== authData.codeChallenge) {
         throw new Error('Invalid code verifier')
@@ -243,14 +245,14 @@ export class OAuth2Service {
       refreshToken,
       tokenType: 'Bearer',
       expiresIn,
-      expiresAt: issuedAt + (expiresIn * 1000),
+      expiresAt: issuedAt + expiresIn * 1000,
       scope: authData.scope,
-      issuedAt
+      issuedAt,
     }
 
     // Store token
     this.tokens.set(accessToken, token)
-    
+
     // Add token to client
     client.tokens.push(token)
     client.usageCount++
@@ -262,7 +264,7 @@ export class OAuth2Service {
     logger.info('OAuth2Service', `Issued access token for client: ${clientId}`, {
       clientId,
       scope: authData.scope,
-      expiresIn
+      expiresIn,
     })
 
     return token
@@ -302,9 +304,9 @@ export class OAuth2Service {
       refreshToken: newRefreshToken,
       tokenType: 'Bearer',
       expiresIn,
-      expiresAt: issuedAt + (expiresIn * 1000),
+      expiresAt: issuedAt + expiresIn * 1000,
       scope: existingToken.scope,
-      issuedAt
+      issuedAt,
     }
 
     // Remove old token
@@ -321,7 +323,7 @@ export class OAuth2Service {
 
     logger.info('OAuth2Service', `Refreshed access token for client: ${clientId}`, {
       clientId,
-      scope: newToken.scope
+      scope: newToken.scope,
     })
 
     return newToken
@@ -347,7 +349,7 @@ export class OAuth2Service {
     }
 
     // Find client
-    const client = Array.from(this.clients.values()).find(c => 
+    const client = Array.from(this.clients.values()).find(c =>
       c.tokens.some(t => t.accessToken === accessToken)
     )
 
@@ -359,7 +361,7 @@ export class OAuth2Service {
       valid: true,
       token,
       client,
-      permissions: token.scope as ApiPermission[]
+      permissions: token.scope as ApiPermission[],
     }
   }
 
@@ -376,7 +378,7 @@ export class OAuth2Service {
     this.tokens.delete(accessToken)
 
     // Remove from client
-    const client = Array.from(this.clients.values()).find(c => 
+    const client = Array.from(this.clients.values()).find(c =>
       c.tokens.some(t => t.accessToken === accessToken)
     )
 
@@ -388,7 +390,7 @@ export class OAuth2Service {
     }
 
     logger.info('OAuth2Service', `Revoked access token`, {
-      tokenPrefix: accessToken.substring(0, 8) + '...'
+      tokenPrefix: accessToken.substring(0, 8) + '...',
     })
   }
 
@@ -463,15 +465,22 @@ export class OAuth2Service {
     activeTokens: number
   } {
     const totalClients = this.clients.size
-    const activeClients = Array.from(this.clients.values()).filter(c => c.status === 'active').length
-    const totalTokens = Array.from(this.clients.values()).reduce((sum, c) => sum + c.tokens.length, 0)
-    const activeTokens = Array.from(this.tokens.values()).filter(t => t.expiresAt > Date.now()).length
+    const activeClients = Array.from(this.clients.values()).filter(
+      c => c.status === 'active'
+    ).length
+    const totalTokens = Array.from(this.clients.values()).reduce(
+      (sum, c) => sum + c.tokens.length,
+      0
+    )
+    const activeTokens = Array.from(this.tokens.values()).filter(
+      t => t.expiresAt > Date.now()
+    ).length
 
     return {
       totalClients,
       activeClients,
       totalTokens,
-      activeTokens
+      activeTokens,
     }
   }
 
@@ -514,6 +523,9 @@ export class OAuth2Service {
 export const oauth2Service = new OAuth2Service()
 
 // Start cleanup interval
-setInterval(() => {
-  oauth2Service.cleanupExpiredTokens()
-}, 5 * 60 * 1000) // Every 5 minutes
+setInterval(
+  () => {
+    oauth2Service.cleanupExpiredTokens()
+  },
+  5 * 60 * 1000
+) // Every 5 minutes

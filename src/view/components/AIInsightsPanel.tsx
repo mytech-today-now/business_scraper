@@ -6,17 +6,17 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Brain, 
-  TrendingUp, 
-  Target, 
-  Lightbulb, 
-  RefreshCw, 
+import {
+  Brain,
+  TrendingUp,
+  Target,
+  Lightbulb,
+  RefreshCw,
   BarChart3,
   Users,
   Star,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
@@ -61,7 +61,7 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
 
       const url = `/api/ai/insights${regenerate ? '?regenerate=true' : ''}`
       const response = await fetch(url)
-      
+
       if (!response.ok) {
         throw new Error(`Failed to load insights: ${response.statusText}`)
       }
@@ -76,14 +76,13 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
           topIndustries: safeArray(data.data.topIndustries),
           keyTrends: safeArray(data.data.keyTrends),
           recommendations: safeArray(data.data.recommendations),
-          generatedAt: data.data.generatedAt ? new Date(data.data.generatedAt) : new Date()
+          generatedAt: data.data.generatedAt ? new Date(data.data.generatedAt) : new Date(),
         }
         setInsights(normalizedInsights)
         logger.info('AIInsightsPanel', 'Insights loaded successfully')
       } else {
         throw new Error(data.error || 'Failed to load insights')
       }
-
     } catch (error) {
       logger.error('AIInsightsPanel', 'Failed to load insights', error)
       setError(error instanceof Error ? error.message : 'Failed to load insights')
@@ -103,10 +102,10 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
       const response = await fetch('/api/ai/insights', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
-      
+
       if (!response.ok) {
         throw new Error(`Failed to generate insights: ${response.statusText}`)
       }
@@ -121,7 +120,7 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
           topIndustries: safeArray(data.data.topIndustries),
           keyTrends: safeArray(data.data.keyTrends),
           recommendations: safeArray(data.data.recommendations),
-          generatedAt: data.data.generatedAt ? new Date(data.data.generatedAt) : new Date()
+          generatedAt: data.data.generatedAt ? new Date(data.data.generatedAt) : new Date(),
         }
         setInsights(normalizedInsights)
         logger.info('AIInsightsPanel', 'Insights generated successfully')
@@ -129,7 +128,6 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
       } else {
         throw new Error(data.error || 'Failed to generate insights')
       }
-
     } catch (error) {
       logger.error('AIInsightsPanel', 'Failed to generate insights', error)
       setError(error instanceof Error ? error.message : 'Failed to generate insights')
@@ -170,21 +168,11 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
           <h2 className="text-2xl font-bold">AI Insights</h2>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => loadInsights(true)}
-            disabled={loading}
-          >
+          <Button variant="outline" size="sm" onClick={() => loadInsights(true)} disabled={loading}>
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={generateInsights}
-            disabled={loading}
-          >
+          <Button variant="default" size="sm" onClick={generateInsights} disabled={loading}>
             <Brain className="h-4 w-4 mr-2" />
             Generate New
           </Button>
@@ -223,13 +211,10 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
               <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No AI Insights Available</h3>
               <p className="text-gray-500 mb-4">
-                Generate AI-powered insights to analyze your business data and get actionable recommendations.
+                Generate AI-powered insights to analyze your business data and get actionable
+                recommendations.
               </p>
-              <Button
-                variant="default"
-                onClick={generateInsights}
-                disabled={loading}
-              >
+              <Button variant="default" onClick={generateInsights} disabled={loading}>
                 <Brain className="h-4 w-4 mr-2" />
                 Generate Insights
               </Button>
@@ -260,7 +245,9 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Avg Lead Score</p>
-                    <p className={`text-2xl font-bold ${getPriorityColor(insights.averageLeadScore)}`}>
+                    <p
+                      className={`text-2xl font-bold ${getPriorityColor(insights.averageLeadScore)}`}
+                    >
                       {insights.averageLeadScore}
                     </p>
                   </div>
@@ -274,7 +261,9 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">High Priority</p>
-                    <p className="text-2xl font-bold text-green-600">{insights.highPriorityLeads}</p>
+                    <p className="text-2xl font-bold text-green-600">
+                      {insights.highPriorityLeads}
+                    </p>
                   </div>
                   <Star className="h-8 w-8 text-yellow-600" />
                 </div>
@@ -286,7 +275,9 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Industries</p>
-                    <p className="text-2xl font-bold">{safeArray(insights?.topIndustries).length}</p>
+                    <p className="text-2xl font-bold">
+                      {safeArray(insights?.topIndustries).length}
+                    </p>
                   </div>
                   <Target className="h-8 w-8 text-purple-600" />
                 </div>
@@ -308,7 +299,10 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 return topIndustries.length > 0 ? (
                   <div className="space-y-2">
                     {topIndustries.map((industry, index) => (
-                      <div key={`industry-${index}-${industry}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div
+                        key={`industry-${index}-${industry}`}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      >
                         <div className="flex items-center gap-3">
                           <span className="flex items-center justify-center w-6 h-6 bg-blue-600 text-white text-sm font-bold rounded-full">
                             {index + 1}
@@ -340,7 +334,10 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 return keyTrends.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {keyTrends.map((trend, index) => (
-                      <div key={`trend-${index}`} className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                      <div
+                        key={`trend-${index}`}
+                        className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg"
+                      >
                         <TrendingUp className="h-4 w-4 text-blue-600 flex-shrink-0" />
                         <span className="text-sm">{trend || 'Unknown trend'}</span>
                       </div>
@@ -367,9 +364,14 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
                 return recommendations.length > 0 ? (
                   <div className="space-y-3">
                     {recommendations.map((recommendation, index) => (
-                      <div key={`recommendation-${index}`} className="flex items-start gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <div
+                        key={`recommendation-${index}`}
+                        className="flex items-start gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
+                      >
                         <Lightbulb className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{recommendation || 'No recommendation text available'}</span>
+                        <span className="text-sm">
+                          {recommendation || 'No recommendation text available'}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -383,50 +385,58 @@ export function AIInsightsPanel({ businessAnalytics = [], onRefresh }: AIInsight
           {/* Recent Analytics Preview */}
           {(() => {
             const analytics = safeArray(businessAnalytics)
-            return analytics.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5" />
-                    Recent Business Analytics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {analytics.slice(0, 5).map((analyticsItem, index) => {
-                      const leadScore = safeNumber(analyticsItem?.leadScoring?.overallScore)
-                      const businessId = analyticsItem?.businessId || `business-${index}`
-                      const generatedAt = analyticsItem?.generatedAt ? new Date(analyticsItem.generatedAt) : new Date()
+            return (
+              analytics.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      Recent Business Analytics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {analytics.slice(0, 5).map((analyticsItem, index) => {
+                        const leadScore = safeNumber(analyticsItem?.leadScoring?.overallScore)
+                        const businessId = analyticsItem?.businessId || `business-${index}`
+                        const generatedAt = analyticsItem?.generatedAt
+                          ? new Date(analyticsItem.generatedAt)
+                          : new Date()
 
-                      return (
-                        <div key={`analytics-${businessId}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            {getPriorityIcon(leadScore)}
-                            <div>
-                              <p className="font-medium">Business ID: {businessId}</p>
-                              <p className="text-sm text-gray-600">
-                                Generated: {generatedAt.toLocaleDateString()}
+                        return (
+                          <div
+                            key={`analytics-${businessId}-${index}`}
+                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                          >
+                            <div className="flex items-center gap-3">
+                              {getPriorityIcon(leadScore)}
+                              <div>
+                                <p className="font-medium">Business ID: {businessId}</p>
+                                <p className="text-sm text-gray-600">
+                                  Generated: {generatedAt.toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className={`font-bold ${getPriorityColor(leadScore)}`}>
+                                {leadScore}
                               </p>
+                              <p className="text-sm text-gray-600">Lead Score</p>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className={`font-bold ${getPriorityColor(leadScore)}`}>
-                              {leadScore}
-                            </p>
-                            <p className="text-sm text-gray-600">Lead Score</p>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )
             )
           })()}
 
           {/* Last Updated */}
           <div className="text-center text-sm text-gray-500">
-            Last updated: {insights?.generatedAt ? new Date(insights.generatedAt).toLocaleString() : 'Unknown'}
+            Last updated:{' '}
+            {insights?.generatedAt ? new Date(insights.generatedAt).toLocaleString() : 'Unknown'}
           </div>
         </>
       )}

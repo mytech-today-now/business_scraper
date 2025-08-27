@@ -14,10 +14,10 @@ const path = require('path')
 function updateLinksInFile(filePath) {
   try {
     console.log(`Updating links in: ${filePath}`)
-    
+
     let content = fs.readFileSync(filePath, 'utf8')
     let changeCount = 0
-    
+
     // Pattern to match href="filename.md" and replace with href="filename.html" target="_blank"
     const linkPattern = /href="([^"]+\.md)"/g
     content = content.replace(linkPattern, (match, filename) => {
@@ -36,7 +36,7 @@ function updateLinksInFile(filePath) {
       }
       return match
     })
-    
+
     // Also update any remaining .md references that might not have target="_blank"
     const existingHtmlPattern = /href="([^"]+\.html)"(?!\s+target="_blank")/g
     content = content.replace(existingHtmlPattern, (match, filename) => {
@@ -46,10 +46,10 @@ function updateLinksInFile(filePath) {
       }
       return match
     })
-    
+
     // Write the updated content back to the file
     fs.writeFileSync(filePath, content, 'utf8')
-    
+
     console.log(`✓ Updated ${changeCount} links in ${path.basename(filePath)}`)
     return changeCount
   } catch (error) {
@@ -63,22 +63,19 @@ function updateLinksInFile(filePath) {
  */
 function main() {
   const docsDir = 'docs'
-  
+
   if (!fs.existsSync(docsDir)) {
     console.error(`Error: Directory "${docsDir}" does not exist`)
     process.exit(1)
   }
-  
+
   console.log('🔗 Updating documentation links...\n')
-  
+
   // Files to update
-  const filesToUpdate = [
-    path.join(docsDir, 'README.md'),
-    path.join(docsDir, 'readme.html')
-  ]
-  
+  const filesToUpdate = [path.join(docsDir, 'README.md'), path.join(docsDir, 'readme.html')]
+
   let totalChanges = 0
-  
+
   filesToUpdate.forEach(filePath => {
     if (fs.existsSync(filePath)) {
       totalChanges += updateLinksInFile(filePath)
@@ -86,13 +83,15 @@ function main() {
       console.log(`⚠️  File not found: ${filePath}`)
     }
   })
-  
+
   console.log(`\n📊 Summary:`)
   console.log(`✓ Total links updated: ${totalChanges}`)
   console.log(`📁 Files processed: ${filesToUpdate.length}`)
-  
+
   if (totalChanges > 0) {
-    console.log(`\n🎉 All documentation links have been updated to use HTML files with target="_blank"!`)
+    console.log(
+      `\n🎉 All documentation links have been updated to use HTML files with target="_blank"!`
+    )
   } else {
     console.log(`\n✨ No changes needed - all links are already up to date!`)
   }
@@ -104,5 +103,5 @@ if (require.main === module) {
 }
 
 module.exports = {
-  updateLinksInFile
+  updateLinksInFile,
 }

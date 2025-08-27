@@ -17,7 +17,7 @@ import { AuthorizationRequest, OAuthError } from '@/types/oauth'
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url)
-    
+
     // Parse authorization request
     const authRequest: AuthorizationRequest = {
       responseType: searchParams.get('response_type') as 'code',
@@ -26,7 +26,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       scope: searchParams.get('scope') || undefined,
       state: searchParams.get('state') || undefined,
       codeChallenge: searchParams.get('code_challenge') || undefined,
-      codeChallengeMethod: searchParams.get('code_challenge_method') as 'S256' | 'plain' || undefined,
+      codeChallengeMethod:
+        (searchParams.get('code_challenge_method') as 'S256' | 'plain') || undefined,
     }
 
     // Validate required parameters
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         authRequest.codeChallengeMethod,
         client.type === 'public'
       )
-      
+
       if (!pkceValidation.valid) {
         return createErrorRedirect(authRequest.redirectUri, {
           error: 'invalid_request',
@@ -80,14 +81,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       // Redirect to login with authorization request parameters
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', request.url)
-      
+
       return NextResponse.redirect(loginUrl)
     }
 
     // For this implementation, we'll auto-approve for the default user
     // In a real implementation, you might show a consent screen here
     const scopes = requestValidation.scopes || ['openid', 'profile']
-    
+
     // Create mock user object (in real implementation, get from auth context)
     const user = {
       id: authContext.userId || 'admin',
@@ -122,14 +123,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Redirect back to client with authorization code
     const redirectUrl = new URL(authRequest.redirectUri)
     redirectUrl.searchParams.set('code', code)
-    
+
     if (authRequest.state) {
       redirectUrl.searchParams.set('state', authRequest.state)
     }
 
     logger.info('OAuth', `Authorization granted for client ${client.id}`)
     return NextResponse.redirect(redirectUrl)
-
   } catch (error) {
     logger.error('OAuth', 'Authorization endpoint error', error)
     return createErrorResponse({
@@ -165,7 +165,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     })
 
     return NextResponse.redirect(authUrl)
-
   } catch (error) {
     logger.error('OAuth', 'Authorization POST error', error)
     return createErrorResponse({
@@ -189,11 +188,11 @@ function createErrorRedirect(redirectUri: string, error: OAuthError): NextRespon
   try {
     const url = new URL(redirectUri)
     url.searchParams.set('error', error.error)
-    
+
     if (error.errorDescription) {
       url.searchParams.set('error_description', error.errorDescription)
     }
-    
+
     if (error.state) {
       url.searchParams.set('state', error.state)
     }

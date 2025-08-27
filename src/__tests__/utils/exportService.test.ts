@@ -17,15 +17,15 @@ const mockBusinesses: BusinessRecord[] = [
       street: '123 Test St',
       city: 'Test City',
       state: 'TS',
-      zipCode: '12345'
+      zipCode: '12345',
     },
     industry: 'Technology',
     contactPerson: 'John Doe',
     coordinates: {
       lat: 40.7128,
-      lng: -74.0060
+      lng: -74.006,
     },
-    scrapedAt: new Date('2024-01-01T12:00:00Z')
+    scrapedAt: new Date('2024-01-01T12:00:00Z'),
   },
   {
     id: 'test-2',
@@ -37,16 +37,16 @@ const mockBusinesses: BusinessRecord[] = [
       street: '456 Test Ave',
       city: 'Test Town',
       state: 'TS',
-      zipCode: '67890'
+      zipCode: '67890',
     },
     industry: 'Retail',
     contactPerson: 'Jane Smith',
     coordinates: {
       lat: 34.0522,
-      lng: -118.2437
+      lng: -118.2437,
     },
-    scrapedAt: new Date('2024-01-02T12:00:00Z')
-  }
+    scrapedAt: new Date('2024-01-02T12:00:00Z'),
+  },
 ]
 
 describe('ExportService', () => {
@@ -59,11 +59,11 @@ describe('ExportService', () => {
   describe('CSV Export', () => {
     it('should export businesses to CSV format', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv')
-      
+
       expect(result.blob).toBeInstanceOf(Blob)
       expect(result.filename).toMatch(/\.csv$/)
       expect(result.blob.type).toMatch(/text\/csv/)
-      
+
       // Read blob content using FileReader
       const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
@@ -77,16 +77,16 @@ describe('ExportService', () => {
 
     it('should handle empty business list', async () => {
       const result = await exportService.exportBusinesses([], 'csv')
-      
+
       expect(result.blob).toBeInstanceOf(Blob)
       expect(result.filename).toMatch(/\.csv$/)
     })
 
     it('should use custom filename', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
-        filename: 'custom-export'
+        filename: 'custom-export',
       })
-      
+
       expect(result.filename).toBe('custom-export.csv')
     })
   })
@@ -105,11 +105,11 @@ describe('ExportService', () => {
   describe('JSON Export', () => {
     it('should export businesses to JSON format', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'json')
-      
+
       expect(result.blob).toBeInstanceOf(Blob)
       expect(result.filename).toMatch(/\.json$/)
       expect(result.blob.type).toBe('application/json')
-      
+
       // Read and parse JSON content using FileReader
       const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
@@ -117,7 +117,7 @@ describe('ExportService', () => {
         reader.readAsText(result.blob)
       })
       const data = JSON.parse(text)
-      
+
       expect(data.metadata).toBeDefined()
       expect(data.metadata.totalRecords).toBe(2)
       expect(data.businesses).toHaveLength(2)
@@ -128,7 +128,7 @@ describe('ExportService', () => {
   describe('PDF Export', () => {
     it('should export businesses to PDF format', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'pdf')
-      
+
       expect(result.blob).toBeInstanceOf(Blob)
       expect(result.filename).toMatch(/\.pdf$/)
       expect(result.blob.type).toBe('application/pdf')
@@ -146,9 +146,9 @@ describe('ExportService', () => {
   describe('Export Options', () => {
     it('should respect includeHeaders option', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
-        includeHeaders: false
+        includeHeaders: false,
       })
-      
+
       const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
         reader.onload = (): void => resolve(reader.result as string)
@@ -160,9 +160,9 @@ describe('ExportService', () => {
 
     it('should use custom delimiter for CSV', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
-        delimiter: ';'
+        delimiter: ';',
       })
-      
+
       const text = await new Promise<string>((resolve): void => {
         const reader = new FileReader()
         reader.onload = (): void => resolve(reader.result as string)

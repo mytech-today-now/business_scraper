@@ -22,7 +22,7 @@ export interface OfflineOptions {
 /**
  * Custom hook for offline support and network status detection
  * Provides comprehensive offline/online state management
- * 
+ *
  * @param options Configuration for offline behavior
  * @returns Offline state and utility functions
  */
@@ -33,7 +33,7 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
     pingUrl = '/api/ping',
     pingInterval = 30000, // 30 seconds
     retryAttempts = 3,
-    retryDelay = 1000
+    retryDelay = 1000,
   } = options
 
   const [state, setState] = useState<OfflineState>({
@@ -47,27 +47,30 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
   const [isChecking, setIsChecking] = useState(false)
 
   // Update online/offline state
-  const updateOnlineStatus = useCallback((isOnline: boolean) => {
-    setState(prevState => {
-      const now = new Date()
-      const wasOffline = prevState.isOffline
+  const updateOnlineStatus = useCallback(
+    (isOnline: boolean) => {
+      setState(prevState => {
+        const now = new Date()
+        const wasOffline = prevState.isOffline
 
-      return {
-        isOnline,
-        isOffline: !isOnline,
-        wasOffline: wasOffline || !isOnline,
-        lastOnlineTime: isOnline ? now : prevState.lastOnlineTime,
-        lastOfflineTime: !isOnline ? now : prevState.lastOfflineTime,
+        return {
+          isOnline,
+          isOffline: !isOnline,
+          wasOffline: wasOffline || !isOnline,
+          lastOnlineTime: isOnline ? now : prevState.lastOnlineTime,
+          lastOfflineTime: !isOnline ? now : prevState.lastOfflineTime,
+        }
+      })
+
+      // Trigger callbacks
+      if (isOnline && onOnline) {
+        onOnline()
+      } else if (!isOnline && onOffline) {
+        onOffline()
       }
-    })
-
-    // Trigger callbacks
-    if (isOnline && onOnline) {
-      onOnline()
-    } else if (!isOnline && onOffline) {
-      onOffline()
-    }
-  }, [onOnline, onOffline])
+    },
+    [onOnline, onOffline]
+  )
 
   // Ping server to verify actual connectivity
   const pingServer = useCallback(async (): Promise<boolean> => {
@@ -99,15 +102,13 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
   const retryConnection = useCallback(async (): Promise<boolean> => {
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       const isConnected = await pingServer()
-      
+
       if (isConnected) {
         return true
       }
 
       if (attempt < retryAttempts) {
-        await new Promise(resolve => 
-          setTimeout(resolve, retryDelay * Math.pow(2, attempt - 1))
-        )
+        await new Promise(resolve => setTimeout(resolve, retryDelay * Math.pow(2, attempt - 1)))
       }
     }
 
@@ -176,7 +177,7 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
     // Actions
     checkConnectivity,
     retryConnection,
-    
+
     // Utilities
     getOfflineDuration,
     getTimeSinceLastOnline,
@@ -188,13 +189,15 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
  * Queues actions when offline and syncs when back online
  */
 export function useOfflineSync<T = any>() {
-  const [queue, setQueue] = useState<Array<{
-    id: string
-    action: string
-    data: T
-    timestamp: Date
-    retries: number
-  }>>([])
+  const [queue, setQueue] = useState<
+    Array<{
+      id: string
+      action: string
+      data: T
+      timestamp: Date
+      retries: number
+    }>
+  >([])
 
   const [isSyncing, setIsSyncing] = useState(false)
   const { isOnline } = useOfflineSupport()
@@ -202,14 +205,17 @@ export function useOfflineSync<T = any>() {
   // Add action to queue
   const queueAction = useCallback((action: string, data: T) => {
     const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    
-    setQueue(prev => [...prev, {
-      id,
-      action,
-      data,
-      timestamp: new Date(),
-      retries: 0,
-    }])
+
+    setQueue(prev => [
+      ...prev,
+      {
+        id,
+        action,
+        data,
+        timestamp: new Date(),
+        retries: 0,
+      },
+    ])
 
     return id
   }, [])
@@ -220,38 +226,39 @@ export function useOfflineSync<T = any>() {
   }, [])
 
   // Sync queued actions when online
-  const syncQueue = useCallback(async (
-    syncHandler: (action: string, data: T) => Promise<boolean>
-  ) => {
-    if (!isOnline || isSyncing || queue.length === 0) return
+  const syncQueue = useCallback(
+    async (syncHandler: (action: string, data: T) => Promise<boolean>) => {
+      if (!isOnline || isSyncing || queue.length === 0) return
 
-    setIsSyncing(true)
+      setIsSyncing(true)
 
-    const failedItems = []
+      const failedItems = []
 
-    for (const item of queue) {
-      try {
-        const success = await syncHandler(item.action, item.data)
-        
-        if (!success) {
+      for (const item of queue) {
+        try {
+          const success = await syncHandler(item.action, item.data)
+
+          if (!success) {
+            failedItems.push({
+              ...item,
+              retries: item.retries + 1,
+            })
+          }
+        } catch (error) {
+          console.error('Sync error:', error)
           failedItems.push({
             ...item,
             retries: item.retries + 1,
           })
         }
-      } catch (error) {
-        console.error('Sync error:', error)
-        failedItems.push({
-          ...item,
-          retries: item.retries + 1,
-        })
       }
-    }
 
-    // Update queue with failed items (with retry limit)
-    setQueue(failedItems.filter(item => item.retries < 3))
-    setIsSyncing(false)
-  }, [isOnline, isSyncing, queue])
+      // Update queue with failed items (with retry limit)
+      setQueue(failedItems.filter(item => item.retries < 3))
+      setIsSyncing(false)
+    },
+    [isOnline, isSyncing, queue]
+  )
 
   // Auto-sync when coming back online
   useEffect(() => {

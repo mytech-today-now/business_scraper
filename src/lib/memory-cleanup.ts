@@ -39,7 +39,7 @@ export class MemoryCleanupService extends EventEmitter {
     maxSessions: 3,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     maxSize: 50 * 1024 * 1024, // 50MB
-    autoCleanup: true
+    autoCleanup: true,
   }
 
   private retentionPolicy: RetentionPolicy = { ...this.defaultRetentionPolicy }
@@ -53,7 +53,7 @@ export class MemoryCleanupService extends EventEmitter {
    * Setup memory monitor event listeners
    */
   private setupMemoryMonitorListeners(): void {
-    memoryMonitor.on('memory-alert', (alert) => {
+    memoryMonitor.on('memory-alert', alert => {
       if (alert.level === 'emergency' && alert.action === 'emergency-cleanup') {
         logger.warn('MemoryCleanup', 'Emergency cleanup triggered by memory alert')
         this.performEmergencyCleanup()
@@ -67,7 +67,8 @@ export class MemoryCleanupService extends EventEmitter {
   /**
    * Start automatic cleanup monitoring
    */
-  startAutoCleanup(intervalMs: number = 30000): void { // 30 seconds
+  startAutoCleanup(intervalMs: number = 30000): void {
+    // 30 seconds
     if (this.isAutoCleanupEnabled) {
       logger.warn('MemoryCleanup', 'Auto cleanup already enabled')
       return
@@ -106,7 +107,7 @@ export class MemoryCleanupService extends EventEmitter {
   async performManualCleanup(options: CleanupOptions = {}): Promise<CleanupResult> {
     const startTime = Date.now()
     const initialMemory = memoryMonitor.getCurrentStats()
-    
+
     logger.info('MemoryCleanup', 'Starting manual cleanup', options)
 
     const result: CleanupResult = {
@@ -114,7 +115,7 @@ export class MemoryCleanupService extends EventEmitter {
       itemsCleared: 0,
       memoryFreed: 0,
       errors: [],
-      duration: 0
+      duration: 0,
     }
 
     try {
@@ -154,15 +155,14 @@ export class MemoryCleanupService extends EventEmitter {
       }
 
       result.duration = Date.now() - startTime
-      
+
       logger.info('MemoryCleanup', 'Manual cleanup completed', {
         itemsCleared: result.itemsCleared,
         memoryFreed: result.memoryFreed,
-        duration: result.duration
+        duration: result.duration,
       })
 
       this.emit('cleanup-completed', result)
-      
     } catch (error) {
       result.success = false
       result.errors.push(error instanceof Error ? error.message : 'Unknown error')
@@ -177,14 +177,14 @@ export class MemoryCleanupService extends EventEmitter {
    */
   async performEmergencyCleanup(): Promise<CleanupResult> {
     logger.warn('MemoryCleanup', 'Performing emergency cleanup')
-    
+
     return this.performManualCleanup({
       clearSearchResults: true,
       clearProcessingSteps: true,
       clearErrorLogs: true,
       clearCachedData: true,
       forceGarbageCollection: true,
-      retainLastSessions: 1 // Only keep the most recent session
+      retainLastSessions: 1, // Only keep the most recent session
     })
   }
 
@@ -193,14 +193,14 @@ export class MemoryCleanupService extends EventEmitter {
    */
   async performAutomaticCleanup(): Promise<CleanupResult> {
     logger.info('MemoryCleanup', 'Performing automatic cleanup')
-    
+
     return this.performManualCleanup({
       clearSearchResults: true,
       clearProcessingSteps: false,
       clearErrorLogs: false,
       clearCachedData: true,
       forceGarbageCollection: false,
-      retainLastSessions: this.retentionPolicy.maxSessions
+      retainLastSessions: this.retentionPolicy.maxSessions,
     })
   }
 
@@ -215,7 +215,7 @@ export class MemoryCleanupService extends EventEmitter {
     try {
       // Check if cleanup is needed based on retention policy
       const needsCleanup = await this.checkCleanupNeeded()
-      
+
       if (needsCleanup) {
         logger.info('MemoryCleanup', 'Scheduled cleanup triggered by retention policy')
         await this.performAutomaticCleanup()
@@ -261,27 +261,27 @@ export class MemoryCleanupService extends EventEmitter {
   private async clearSearchResults(retainLastSessions?: number): Promise<number> {
     try {
       const businesses = await storage.getAllBusinesses()
-      
+
       if (retainLastSessions && retainLastSessions > 0) {
         // Sort by scrapedAt and keep only the most recent sessions
-        const sortedBusinesses = businesses.sort((a, b) => 
-          new Date(b.scrapedAt).getTime() - new Date(a.scrapedAt).getTime()
+        const sortedBusinesses = businesses.sort(
+          (a, b) => new Date(b.scrapedAt).getTime() - new Date(a.scrapedAt).getTime()
         )
-        
+
         // Group by session (approximate by time proximity)
         const sessions = this.groupBusinessesBySessions(sortedBusinesses)
         const sessionsToKeep = sessions.slice(0, retainLastSessions)
         const businessesToKeep = sessionsToKeep.flat()
-        
+
         // Clear businesses not in the keep list
-        const businessesToClear = businesses.filter(b => 
-          !businessesToKeep.some(keep => keep.id === b.id)
+        const businessesToClear = businesses.filter(
+          b => !businessesToKeep.some(keep => keep.id === b.id)
         )
-        
+
         for (const business of businessesToClear) {
           await storage.deleteBusiness(business.id)
         }
-        
+
         return businessesToClear.length
       } else {
         // Clear all search results
@@ -302,10 +302,10 @@ export class MemoryCleanupService extends EventEmitter {
   private groupBusinessesBySessions(businesses: any[]): any[][] {
     const sessions: any[][] = []
     const sessionThreshold = 30 * 60 * 1000 // 30 minutes
-    
+
     for (const business of businesses) {
       const businessTime = new Date(business.scrapedAt).getTime()
-      
+
       // Find existing session within threshold
       let addedToSession = false
       for (const session of sessions) {
@@ -318,13 +318,13 @@ export class MemoryCleanupService extends EventEmitter {
           }
         }
       }
-      
+
       // Create new session if not added to existing one
       if (!addedToSession) {
         sessions.push([business])
       }
     }
-    
+
     return sessions
   }
 
@@ -373,10 +373,8 @@ export class MemoryCleanupService extends EventEmitter {
     try {
       const businesses = await storage.getAllBusinesses()
       const cutoffTime = Date.now() - maxAge
-      
-      return businesses.some(business => 
-        new Date(business.scrapedAt).getTime() < cutoffTime
-      )
+
+      return businesses.some(business => new Date(business.scrapedAt).getTime() < cutoffTime)
     } catch (error) {
       logger.error('MemoryCleanup', 'Failed to check data age', error)
       return false
@@ -393,7 +391,7 @@ export class MemoryCleanupService extends EventEmitter {
       const totalSize = businesses.reduce((size, business) => {
         return size + new Blob([JSON.stringify(business)]).size
       }, 0)
-      
+
       return totalSize
     } catch (error) {
       logger.error('MemoryCleanup', 'Failed to get storage size', error)
@@ -440,7 +438,7 @@ export class MemoryCleanupService extends EventEmitter {
   } {
     return {
       autoCleanupEnabled: this.isAutoCleanupEnabled,
-      retentionPolicy: this.getRetentionPolicy()
+      retentionPolicy: this.getRetentionPolicy(),
     }
   }
 

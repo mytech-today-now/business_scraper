@@ -185,11 +185,11 @@ describe('formatters', () => {
 
   describe('formatCoordinates', () => {
     it('should format coordinates with default precision', () => {
-      expect(formatCoordinates(40.7128, -74.0060)).toBe('40.712800, -74.006000')
+      expect(formatCoordinates(40.7128, -74.006)).toBe('40.712800, -74.006000')
     })
 
     it('should format coordinates with custom precision', () => {
-      expect(formatCoordinates(40.7128, -74.0060, 2)).toBe('40.71, -74.01')
+      expect(formatCoordinates(40.7128, -74.006, 2)).toBe('40.71, -74.01')
     })
   })
 
@@ -244,7 +244,7 @@ describe('formatters', () => {
           zipCode: '12345',
         },
         contactPerson: 'John Doe',
-        coordinates: { lat: 40.7128, lng: -74.0060 },
+        coordinates: { lat: 40.7128, lng: -74.006 },
         industry: 'technology',
         scrapedAt: new Date('2024-01-15T12:00:00Z'),
       }

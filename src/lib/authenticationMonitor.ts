@@ -93,8 +93,8 @@ export class AuthenticationMonitor {
     alertThresholds: {
       failedAttempts: 20,
       suspiciousPatterns: 5,
-      blockedIPs: 10
-    }
+      blockedIPs: 10,
+    },
   }
 
   /**
@@ -109,7 +109,7 @@ export class AuthenticationMonitor {
   ): AuthAttempt {
     const ip = getClientIP(request)
     const userAgent = request.headers.get('user-agent') || 'unknown'
-    
+
     const attempt: AuthAttempt = {
       id: crypto.randomUUID(),
       timestamp: new Date(),
@@ -119,7 +119,7 @@ export class AuthenticationMonitor {
       success,
       failureReason,
       sessionId,
-      deviceFingerprint: this.generateDeviceFingerprint(request)
+      deviceFingerprint: this.generateDeviceFingerprint(request),
     }
 
     // Store attempt
@@ -133,12 +133,16 @@ export class AuthenticationMonitor {
 
     // Analyze for suspicious activity
     const indicators = this.analyzeSuspiciousActivity(ip)
-    
+
     // Log security event
     if (success) {
       securityLogger.logAuthEvent(SecurityEventType.LOGIN_SUCCESS, request, { username })
     } else {
-      securityLogger.logFailedAuth(request, username || 'unknown', failureReason || 'invalid_credentials')
+      securityLogger.logFailedAuth(
+        request,
+        username || 'unknown',
+        failureReason || 'invalid_credentials'
+      )
     }
 
     // Check for blocking conditions
@@ -153,7 +157,7 @@ export class AuthenticationMonitor {
           username,
           reason: 'Excessive failed attempts',
           indicators: this.indicatorsToObject(indicators),
-          message: `IP ${ip} blocked due to suspicious authentication activity`
+          message: `IP ${ip} blocked due to suspicious authentication activity`,
         },
         request,
         true
@@ -168,7 +172,7 @@ export class AuthenticationMonitor {
       username,
       success,
       failureReason,
-      indicators: this.indicatorsToObject(indicators)
+      indicators: this.indicatorsToObject(indicators),
     })
 
     return attempt
@@ -188,12 +192,12 @@ export class AuthenticationMonitor {
       usernames: new Set(),
       userAgents: new Set(),
       isBlocked: false,
-      riskScore: 0
+      riskScore: 0,
     }
 
     pattern.attempts++
     pattern.lastAttempt = attempt.timestamp
-    
+
     if (attempt.success) {
       pattern.successfulLogins++
     } else {
@@ -203,7 +207,7 @@ export class AuthenticationMonitor {
     if (attempt.username) {
       pattern.usernames.add(attempt.username)
     }
-    
+
     pattern.userAgents.add(attempt.userAgent)
     pattern.riskScore = this.calculateRiskScore(pattern)
 
@@ -259,7 +263,7 @@ export class AuthenticationMonitor {
         unusualUserAgent: false,
         geoLocationAnomaly: false,
         timePatternAnomaly: false,
-        credentialStuffing: false
+        credentialStuffing: false,
       }
     }
 
@@ -269,7 +273,8 @@ export class AuthenticationMonitor {
       unusualUserAgent: this.isUnusualUserAgent(Array.from(pattern.userAgents)),
       geoLocationAnomaly: false, // Would require geo-location service
       timePatternAnomaly: this.hasTimePatternAnomaly(recentAttempts),
-      credentialStuffing: pattern.usernames.size > 10 && pattern.failedLogins > pattern.successfulLogins * 5
+      credentialStuffing:
+        pattern.usernames.size > 10 && pattern.failedLogins > pattern.successfulLogins * 5,
     }
   }
 
@@ -287,13 +292,12 @@ export class AuthenticationMonitor {
       /python/i,
       /java/i,
       /^$/,
-      /test/i
+      /test/i,
     ]
 
-    return userAgents.some(ua => 
-      suspiciousPatterns.some(pattern => pattern.test(ua)) ||
-      ua.length < 10 ||
-      ua.length > 500
+    return userAgents.some(
+      ua =>
+        suspiciousPatterns.some(pattern => pattern.test(ua)) || ua.length < 10 || ua.length > 500
     )
   }
 
@@ -306,13 +310,15 @@ export class AuthenticationMonitor {
     // Check for perfectly regular intervals (bot behavior)
     const intervals = []
     for (let i = 1; i < attempts.length; i++) {
-      const interval = attempts[i].timestamp.getTime() - attempts[i-1].timestamp.getTime()
+      const interval = attempts[i].timestamp.getTime() - attempts[i - 1].timestamp.getTime()
       intervals.push(interval)
     }
 
     // Check if intervals are suspiciously regular
     const avgInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length
-    const variance = intervals.reduce((sum, interval) => sum + Math.pow(interval - avgInterval, 2), 0) / intervals.length
+    const variance =
+      intervals.reduce((sum, interval) => sum + Math.pow(interval - avgInterval, 2), 0) /
+      intervals.length
     const standardDeviation = Math.sqrt(variance)
 
     // If standard deviation is very low, intervals are too regular (bot-like)
@@ -358,11 +364,13 @@ export class AuthenticationMonitor {
     logger.warn('AuthMonitor', `IP blocked due to suspicious activity`, {
       ip,
       blockUntil: blockUntil.toISOString(),
-      pattern: pattern ? {
-        attempts: pattern.attempts,
-        failedLogins: pattern.failedLogins,
-        riskScore: pattern.riskScore
-      } : null
+      pattern: pattern
+        ? {
+            attempts: pattern.attempts,
+            failedLogins: pattern.failedLogins,
+            riskScore: pattern.riskScore,
+          }
+        : null,
     })
   }
 
@@ -391,9 +399,7 @@ export class AuthenticationMonitor {
    */
   private getRecentAttempts(ip: string, minutes: number = 60): AuthAttempt[] {
     const cutoff = new Date(Date.now() - minutes * 60 * 1000)
-    return this.attempts.filter(attempt => 
-      attempt.ip === ip && attempt.timestamp >= cutoff
-    )
+    return this.attempts.filter(attempt => attempt.ip === ip && attempt.timestamp >= cutoff)
   }
 
   /**
@@ -406,13 +412,10 @@ export class AuthenticationMonitor {
       request.headers.get('user-agent') || '',
       request.headers.get('accept-language') || '',
       request.headers.get('accept-encoding') || '',
-      request.headers.get('accept') || ''
+      request.headers.get('accept') || '',
     ]
 
-    return crypto.createHash('sha256')
-      .update(components.join('|'))
-      .digest('hex')
-      .substring(0, 16)
+    return crypto.createHash('sha256').update(components.join('|')).digest('hex').substring(0, 16)
   }
 
   /**
@@ -425,7 +428,7 @@ export class AuthenticationMonitor {
       unusualUserAgent: indicators.unusualUserAgent,
       geoLocationAnomaly: indicators.geoLocationAnomaly,
       timePatternAnomaly: indicators.timePatternAnomaly,
-      credentialStuffing: indicators.credentialStuffing
+      credentialStuffing: indicators.credentialStuffing,
     }
   }
 
@@ -435,18 +438,16 @@ export class AuthenticationMonitor {
   private checkAlertConditions(): void {
     const now = new Date()
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
-    
+
     // Count recent failed attempts
-    const recentFailedAttempts = this.attempts.filter(attempt => 
-      !attempt.success && attempt.timestamp >= oneHourAgo
+    const recentFailedAttempts = this.attempts.filter(
+      attempt => !attempt.success && attempt.timestamp >= oneHourAgo
     ).length
 
     // Count blocked IPs
-    const blockedIPCount = Array.from(this.blockedIPs.values()).filter(blockUntil => 
-      now < blockUntil
+    const blockedIPCount = Array.from(this.blockedIPs.values()).filter(
+      blockUntil => now < blockUntil
     ).length
-
-
 
     // Trigger alerts if thresholds exceeded
     if (recentFailedAttempts >= this.config.alertThresholds.failedAttempts) {
@@ -457,7 +458,7 @@ export class AuthenticationMonitor {
         {
           failedAttempts: recentFailedAttempts,
           timeWindow: '1 hour',
-          message: `High volume of failed authentication attempts: ${recentFailedAttempts} in the last hour`
+          message: `High volume of failed authentication attempts: ${recentFailedAttempts} in the last hour`,
         }
       )
     }
@@ -469,7 +470,7 @@ export class AuthenticationMonitor {
         'authentication_monitor',
         {
           blockedIPs: blockedIPCount,
-          message: `High number of blocked IPs: ${blockedIPCount}`
+          message: `High number of blocked IPs: ${blockedIPCount}`,
         }
       )
     }
@@ -496,34 +497,35 @@ export class AuthenticationMonitor {
     // Count failure reasons
     const failureReasons = recentAttempts
       .filter(attempt => !attempt.success && attempt.failureReason)
-      .reduce((acc, attempt) => {
-        const reason = attempt.failureReason
-        if (reason) {
-          acc[reason] = (acc[reason] || 0) + 1
-        }
-        return acc
-      }, {} as Record<string, number>)
+      .reduce(
+        (acc, attempt) => {
+          const reason = attempt.failureReason
+          if (reason) {
+            acc[reason] = (acc[reason] || 0) + 1
+          }
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
     const topFailureReasons = Object.entries(failureReasons)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([reason, count]) => ({ reason, count }))
 
     // Hourly distribution
     const hourlyDistribution = Array.from({ length: 24 }, (_, hour) => ({
       hour,
-      attempts: recentAttempts.filter(attempt => 
-        attempt.timestamp.getHours() === hour
-      ).length
+      attempts: recentAttempts.filter(attempt => attempt.timestamp.getHours() === hour).length,
     }))
 
     const now = new Date()
-    const blockedIPs = Array.from(this.blockedIPs.values()).filter(blockUntil => 
-      now < blockUntil
+    const blockedIPs = Array.from(this.blockedIPs.values()).filter(
+      blockUntil => now < blockUntil
     ).length
 
-    const suspiciousPatterns = Array.from(this.patterns.values()).filter(pattern => 
-      pattern.riskScore >= 5
+    const suspiciousPatterns = Array.from(this.patterns.values()).filter(
+      pattern => pattern.riskScore >= 5
     ).length
 
     return {
@@ -533,7 +535,7 @@ export class AuthenticationMonitor {
       blockedIPs,
       suspiciousPatterns,
       topFailureReasons,
-      hourlyDistribution
+      hourlyDistribution,
     }
   }
 
@@ -548,8 +550,7 @@ export class AuthenticationMonitor {
    * Get authentication patterns
    */
   getAuthPatterns(): AuthPattern[] {
-    return Array.from(this.patterns.values())
-      .sort((a, b) => b.riskScore - a.riskScore)
+    return Array.from(this.patterns.values()).sort((a, b) => b.riskScore - a.riskScore)
   }
 
   /**
@@ -557,17 +558,17 @@ export class AuthenticationMonitor {
    */
   cleanup(retentionDays: number = 30): void {
     const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000)
-    
+
     // Clean old attempts
     this.attempts = this.attempts.filter(attempt => attempt.timestamp >= cutoff)
-    
+
     // Clean old patterns
     for (const [ip, pattern] of this.patterns.entries()) {
       if (pattern.lastAttempt < cutoff) {
         this.patterns.delete(ip)
       }
     }
-    
+
     // Clean expired blocks
     const now = new Date()
     for (const [ip, blockUntil] of this.blockedIPs.entries()) {
@@ -576,7 +577,10 @@ export class AuthenticationMonitor {
       }
     }
 
-    logger.info('AuthMonitor', `Cleanup completed. Retained ${this.attempts.length} attempts and ${this.patterns.size} patterns`)
+    logger.info(
+      'AuthMonitor',
+      `Cleanup completed. Retained ${this.attempts.length} attempts and ${this.patterns.size} patterns`
+    )
   }
 }
 

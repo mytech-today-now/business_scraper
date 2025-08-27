@@ -19,10 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!preferences || typeof preferences !== 'object') {
-      return NextResponse.json(
-        { error: 'Missing or invalid preferences object' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing or invalid preferences object' }, { status: 400 })
     }
 
     // Validate preference entries
@@ -31,21 +28,16 @@ export async function POST(request: NextRequest) {
 
     for (const [consentType, status] of Object.entries(preferences)) {
       if (!validConsentTypes.includes(consentType as ConsentType)) {
-        return NextResponse.json(
-          { error: `Invalid consent type: ${consentType}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Invalid consent type: ${consentType}` }, { status: 400 })
       }
 
       if (!validConsentStatuses.includes(status as ConsentStatus)) {
-        return NextResponse.json(
-          { error: `Invalid consent status: ${status}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Invalid consent status: ${status}` }, { status: 400 })
       }
     }
 
-    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const clientIP =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
     // Update consent preferences
@@ -68,33 +60,29 @@ export async function POST(request: NextRequest) {
       details: {
         preferences,
         preferencesCount: Object.keys(preferences).length,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Batch Consent API', 'Consent preferences updated', {
       userId,
       sessionId,
-      preferencesCount: Object.keys(preferences).length
+      preferencesCount: Object.keys(preferences).length,
     })
 
     return NextResponse.json({
       success: true,
       updatedPreferences: preferences,
-      message: 'Consent preferences updated successfully'
+      message: 'Consent preferences updated successfully',
     })
-
   } catch (error) {
     logger.error('Batch Consent API', 'Failed to update consent preferences', error)
-    return NextResponse.json(
-      { error: 'Failed to update consent preferences' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update consent preferences' }, { status: 500 })
   }
 }

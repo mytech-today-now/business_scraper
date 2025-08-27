@@ -6,7 +6,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { VirtualizedResultsTable } from '@/view/components/VirtualizedResultsTable'
 import { virtualScrollingService } from '@/lib/virtualScrollingService'
-import { generateMockDataset, PerformanceTester } from '../performance/virtualScrolling.performance.test'
+import {
+  generateMockDataset,
+  PerformanceTester,
+} from '../performance/virtualScrolling.performance.test'
 import { BusinessRecord } from '@/types/business'
 
 // Mock the virtual scrolling service
@@ -15,13 +18,13 @@ jest.mock('@/lib/virtualScrollingService', () => ({
     fetchBusinesses: jest.fn(),
     prefetchNextPage: jest.fn(),
     clearCache: jest.fn(),
-    getCacheStats: jest.fn()
+    getCacheStats: jest.fn(),
   },
   useVirtualScrolling: () => ({
     fetchBusinesses: jest.fn(),
     prefetchNextPage: jest.fn(),
     clearCache: jest.fn(),
-    getCacheStats: jest.fn()
+    getCacheStats: jest.fn(),
   }),
   calculateAILeadScore: jest.fn().mockReturnValue({
     overallScore: 75,
@@ -31,21 +34,21 @@ jest.mock('@/lib/virtualScrollingService', () => ({
       contactability: { score: 80, weight: 0.3, details: {} },
       businessMaturity: { score: 70, weight: 0.25, details: {} },
       marketPotential: { score: 75, weight: 0.25, details: {} },
-      engagementLikelihood: { score: 80, weight: 0.2, details: {} }
+      engagementLikelihood: { score: 80, weight: 0.2, details: {} },
     },
     predictions: {
       conversionProbability: 0.7,
       responseTime: 'fast',
       bestContactMethod: 'email',
-      optimalContactTime: { dayOfWeek: ['Tuesday'], timeOfDay: ['10:00 AM'] }
+      optimalContactTime: { dayOfWeek: ['Tuesday'], timeOfDay: ['10:00 AM'] },
     },
     badges: [],
     warnings: [],
     recommendations: [],
     scoringVersion: '2.0.0',
     lastUpdated: new Date(),
-    processingTime: 50
-  })
+    processingTime: 50,
+  }),
 }))
 
 // Mock react-window components
@@ -55,29 +58,33 @@ jest.mock('react-window', () => ({
     const items = []
     for (let i = 0; i < Math.min(itemCount, 10); i++) {
       items.push(
-        React.createElement('div', {
-          key: i,
-          'data-testid': `virtual-row-${i}`
-        }, children({ index: i, style: {}, data: itemData }))
+        React.createElement(
+          'div',
+          {
+            key: i,
+            'data-testid': `virtual-row-${i}`,
+          },
+          children({ index: i, style: {}, data: itemData })
+        )
       )
     }
     return React.createElement('div', { 'data-testid': 'virtual-list' }, items)
-  }
+  },
 }))
 
 jest.mock('react-window-infinite-loader', () => ({
   __esModule: true,
-  default: ({ children }: any) => children({ onItemsRendered: jest.fn(), ref: jest.fn() })
+  default: ({ children }: any) => children({ onItemsRendered: jest.fn(), ref: jest.fn() }),
 }))
 
 jest.mock('react-virtualized-auto-sizer', () => ({
   __esModule: true,
-  default: ({ children }: any) => children({ height: 600, width: 800 })
+  default: ({ children }: any) => children({ height: 600, width: 800 }),
 }))
 
 describe('Virtual Scrolling Implementation', () => {
   const mockBusinesses = generateMockDataset(100)
-  
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -94,7 +101,7 @@ describe('Virtual Scrolling Implementation', () => {
           height={600}
         />
       )
-      
+
       expect(screen.getByTestId('virtual-list')).toBeInTheDocument()
     })
 
@@ -109,7 +116,7 @@ describe('Virtual Scrolling Implementation', () => {
           height={600}
         />
       )
-      
+
       expect(screen.getByText(/loading business data/i)).toBeInTheDocument()
     })
 
@@ -126,10 +133,10 @@ describe('Virtual Scrolling Implementation', () => {
           height={600}
         />
       )
-      
+
       const exportButton = screen.getByRole('button', { name: /export/i })
       fireEvent.click(exportButton)
-      
+
       // Should trigger export functionality
       await waitFor(() => {
         expect(exportButton).toBeInTheDocument()
@@ -139,14 +146,14 @@ describe('Virtual Scrolling Implementation', () => {
     it('should handle filtering and sorting', () => {
       const initialFilters = {
         search: 'test',
-        industry: 'Technology'
+        industry: 'Technology',
       }
-      
+
       const initialSort = {
         field: 'businessName' as const,
-        order: 'asc' as const
+        order: 'asc' as const,
       }
-      
+
       render(
         <VirtualizedResultsTable
           data={mockBusinesses}
@@ -159,7 +166,7 @@ describe('Virtual Scrolling Implementation', () => {
           initialSort={initialSort}
         />
       )
-      
+
       expect(screen.getByTestId('virtual-list')).toBeInTheDocument()
     })
   })
@@ -173,21 +180,23 @@ describe('Virtual Scrolling Implementation', () => {
           hasMore: true,
           totalCount: 100,
           currentPage: 1,
-          pageSize: 10
+          pageSize: 10,
         },
         metadata: {
           processingTime: 50,
           source: 'indexeddb' as const,
           appliedFilters: {},
-          sortConfig: { field: 'scrapedAt', order: 'desc' }
-        }
+          sortConfig: { field: 'scrapedAt', order: 'desc' },
+        },
       }
-      
-      const mockFetch = virtualScrollingService.fetchBusinesses as jest.MockedFunction<typeof virtualScrollingService.fetchBusinesses>
+
+      const mockFetch = virtualScrollingService.fetchBusinesses as jest.MockedFunction<
+        typeof virtualScrollingService.fetchBusinesses
+      >
       mockFetch.mockResolvedValue(mockResponse)
-      
+
       const result = await virtualScrollingService.fetchBusinesses(undefined, 10)
-      
+
       expect(result).toEqual(mockResponse)
       expect(mockFetch).toHaveBeenCalledWith(undefined, 10)
     })
@@ -198,19 +207,23 @@ describe('Virtual Scrolling Implementation', () => {
         totalMemoryUsage: 1024,
         hitRate: 0.8,
         oldestEntry: new Date(),
-        newestEntry: new Date()
+        newestEntry: new Date(),
       }
-      
-      const mockGetCacheStats = virtualScrollingService.getCacheStats as jest.MockedFunction<typeof virtualScrollingService.getCacheStats>
+
+      const mockGetCacheStats = virtualScrollingService.getCacheStats as jest.MockedFunction<
+        typeof virtualScrollingService.getCacheStats
+      >
       mockGetCacheStats.mockReturnValue(mockStats)
-      
+
       const stats = virtualScrollingService.getCacheStats()
       expect(stats).toEqual(mockStats)
     })
 
     it('should clear cache when requested', () => {
-      const mockClearCache = virtualScrollingService.clearCache as jest.MockedFunction<typeof virtualScrollingService.clearCache>
-      
+      const mockClearCache = virtualScrollingService.clearCache as jest.MockedFunction<
+        typeof virtualScrollingService.clearCache
+      >
+
       virtualScrollingService.clearCache()
       expect(mockClearCache).toHaveBeenCalled()
     })
@@ -225,7 +238,7 @@ describe('Virtual Scrolling Implementation', () => {
 
     it('should handle small datasets efficiently', async () => {
       const metrics = await performanceTester.measureRenderPerformance(100)
-      
+
       expect(metrics.renderTime).toBeLessThan(1000) // Should render in under 1 second
       expect(metrics.memoryUsage).toBeLessThan(10 * 1024 * 1024) // Should use less than 10MB
       expect(metrics.scrollPerformance).toBeLessThan(100) // Pagination should be under 100ms
@@ -235,7 +248,7 @@ describe('Virtual Scrolling Implementation', () => {
 
     it('should handle medium datasets efficiently', async () => {
       const metrics = await performanceTester.measureRenderPerformance(1000)
-      
+
       expect(metrics.renderTime).toBeLessThan(1000) // Should render in under 1 second
       expect(metrics.memoryUsage).toBeLessThan(50 * 1024 * 1024) // Should use less than 50MB
       expect(metrics.scrollPerformance).toBeLessThan(100) // Pagination should be under 100ms
@@ -245,7 +258,7 @@ describe('Virtual Scrolling Implementation', () => {
 
     it('should handle large datasets with acceptable performance', async () => {
       const metrics = await performanceTester.measureRenderPerformance(10000)
-      
+
       expect(metrics.renderTime).toBeLessThan(2000) // Should render in under 2 seconds
       expect(metrics.memoryUsage).toBeLessThan(100 * 1024 * 1024) // Should use less than 100MB
       expect(metrics.scrollPerformance).toBeLessThan(100) // Pagination should be under 100ms
@@ -256,7 +269,7 @@ describe('Virtual Scrolling Implementation', () => {
     it('should maintain performance with AI scoring enabled', async () => {
       // Test that AI scoring doesn't significantly impact performance
       const startTime = performance.now()
-      
+
       const businesses = generateMockDataset(1000)
       businesses.forEach(business => {
         // Simulate AI scoring calculation
@@ -269,9 +282,9 @@ describe('Virtual Scrolling Implementation', () => {
         if (business.industry) score += 5
         if (business.description) score += 5
       })
-      
+
       const aiScoringTime = performance.now() - startTime
-      
+
       expect(aiScoringTime).toBeLessThan(1000) // AI scoring should complete in under 1 second for 1K records
     })
   })
@@ -279,7 +292,7 @@ describe('Virtual Scrolling Implementation', () => {
   describe('Data Integrity', () => {
     it('should maintain data consistency during virtual scrolling', () => {
       const businesses = generateMockDataset(100)
-      
+
       // Verify all businesses have required fields
       businesses.forEach(business => {
         expect(business.id).toBeDefined()
@@ -292,7 +305,7 @@ describe('Virtual Scrolling Implementation', () => {
     it('should handle empty datasets gracefully', () => {
       const emptyDataset = generateMockDataset(0)
       expect(emptyDataset).toHaveLength(0)
-      
+
       render(
         <VirtualizedResultsTable
           data={mockBusinesses}
@@ -303,13 +316,13 @@ describe('Virtual Scrolling Implementation', () => {
           height={600}
         />
       )
-      
+
       expect(screen.getByTestId('virtual-list')).toBeInTheDocument()
     })
 
     it('should validate business record structure', () => {
       const business = generateMockDataset(1)[0]
-      
+
       expect(business).toMatchObject({
         id: expect.any(String),
         businessName: expect.any(String),
@@ -322,16 +335,18 @@ describe('Virtual Scrolling Implementation', () => {
         scrapedAt: expect.any(Date),
         source: expect.any(String),
         confidence: expect.any(Number),
-        dataQuality: expect.any(Number)
+        dataQuality: expect.any(Number),
       })
     })
   })
 
   describe('Error Handling', () => {
     it('should handle API errors gracefully', async () => {
-      const mockFetch = virtualScrollingService.fetchBusinesses as jest.MockedFunction<typeof virtualScrollingService.fetchBusinesses>
+      const mockFetch = virtualScrollingService.fetchBusinesses as jest.MockedFunction<
+        typeof virtualScrollingService.fetchBusinesses
+      >
       mockFetch.mockRejectedValue(new Error('API Error'))
-      
+
       try {
         await virtualScrollingService.fetchBusinesses()
       } catch (error) {
@@ -341,13 +356,13 @@ describe('Virtual Scrolling Implementation', () => {
     })
 
     it('should handle network timeouts', async () => {
-      const mockFetch = virtualScrollingService.fetchBusinesses as jest.MockedFunction<typeof virtualScrollingService.fetchBusinesses>
-      mockFetch.mockImplementation(() => 
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 100)
-        )
+      const mockFetch = virtualScrollingService.fetchBusinesses as jest.MockedFunction<
+        typeof virtualScrollingService.fetchBusinesses
+      >
+      mockFetch.mockImplementation(
+        () => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 100))
       )
-      
+
       try {
         await virtualScrollingService.fetchBusinesses()
       } catch (error) {

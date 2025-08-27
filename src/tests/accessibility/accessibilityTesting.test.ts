@@ -20,12 +20,16 @@ interface AccessibilityResult {
 class AccessibilityTester {
   private results: AccessibilityResult[] = []
 
-  async runAccessibilityTest(page: Page, url: string, testName: string): Promise<AccessibilityResult> {
+  async runAccessibilityTest(
+    page: Page,
+    url: string,
+    testName: string
+  ): Promise<AccessibilityResult> {
     await page.goto(url)
-    
+
     // Wait for page to be fully loaded
     await page.waitForLoadState('networkidle')
-    
+
     // Run axe accessibility scan
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
@@ -37,7 +41,7 @@ class AccessibilityTester {
       passes: accessibilityScanResults.passes,
       incomplete: accessibilityScanResults.incomplete,
       inapplicable: accessibilityScanResults.inapplicable,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
 
     this.results.push(result)
@@ -50,7 +54,7 @@ class AccessibilityTester {
         console.log(`   Description: ${violation.description}`)
         console.log(`   Help: ${violation.help}`)
         console.log(`   Elements affected: ${violation.nodes.length}`)
-        
+
         violation.nodes.forEach((node: any, nodeIndex: number) => {
           console.log(`   ${nodeIndex + 1}. ${node.target.join(' > ')}`)
           if (node.failureSummary) {
@@ -74,8 +78,8 @@ class AccessibilityTester {
   }
 
   getCriticalViolations(): any[] {
-    return this.getViolations().filter(violation => 
-      violation.impact === 'critical' || violation.impact === 'serious'
+    return this.getViolations().filter(
+      violation => violation.impact === 'critical' || violation.impact === 'serious'
     )
   }
 
@@ -88,7 +92,7 @@ class AccessibilityTester {
       critical: this.getViolations().filter(v => v.impact === 'critical').length,
       serious: this.getViolations().filter(v => v.impact === 'serious').length,
       moderate: this.getViolations().filter(v => v.impact === 'moderate').length,
-      minor: this.getViolations().filter(v => v.impact === 'minor').length
+      minor: this.getViolations().filter(v => v.impact === 'minor').length,
     }
 
     return `
@@ -104,11 +108,15 @@ Violations by Impact:
 - Moderate: ${violationsByImpact.moderate}
 - Minor: ${violationsByImpact.minor}
 
-${this.results.map(result => `
+${this.results
+  .map(
+    result => `
 Page: ${result.url}
 Violations: ${result.violations.length}
 ${result.violations.map(v => `- ${v.id} (${v.impact}): ${v.description}`).join('\n')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
     `.trim()
   }
 }
@@ -123,46 +131,46 @@ test.describe('Accessibility Testing Suite', () => {
   test.describe('Core Page Accessibility', () => {
     test('home page should be accessible', async ({ page }) => {
       const result = await accessibilityTester.runAccessibilityTest(
-        page, 
-        BASE_URL, 
+        page,
+        BASE_URL,
         'home-page-accessibility'
       )
 
       // Should have no critical or serious violations
-      const criticalViolations = result.violations.filter(v => 
-        v.impact === 'critical' || v.impact === 'serious'
+      const criticalViolations = result.violations.filter(
+        v => v.impact === 'critical' || v.impact === 'serious'
       )
-      
+
       expect(criticalViolations).toHaveLength(0)
-      
+
       // Total violations should be minimal
       expect(result.violations.length).toBeLessThanOrEqual(5)
     })
 
     test('search configuration page should be accessible', async ({ page }) => {
       const result = await accessibilityTester.runAccessibilityTest(
-        page, 
-        `${BASE_URL}/search`, 
+        page,
+        `${BASE_URL}/search`,
         'search-page-accessibility'
       )
 
-      const criticalViolations = result.violations.filter(v => 
-        v.impact === 'critical' || v.impact === 'serious'
+      const criticalViolations = result.violations.filter(
+        v => v.impact === 'critical' || v.impact === 'serious'
       )
-      
+
       expect(criticalViolations).toHaveLength(0)
     })
 
     test('results page should be accessible', async ({ page }) => {
       // First navigate to search page and perform a search
       await page.goto(`${BASE_URL}/search`)
-      
+
       // Fill in search form (if it exists)
       try {
         await page.fill('[data-testid="industry-input"]', 'restaurants')
         await page.fill('[data-testid="zipcode-input"]', '12345')
         await page.click('[data-testid="search-button"]')
-        
+
         // Wait for results to load
         await page.waitForSelector('[data-testid="results-container"]', { timeout: 10000 })
       } catch (error) {
@@ -171,15 +179,15 @@ test.describe('Accessibility Testing Suite', () => {
       }
 
       const result = await accessibilityTester.runAccessibilityTest(
-        page, 
-        page.url(), 
+        page,
+        page.url(),
         'results-page-accessibility'
       )
 
-      const criticalViolations = result.violations.filter(v => 
-        v.impact === 'critical' || v.impact === 'serious'
+      const criticalViolations = result.violations.filter(
+        v => v.impact === 'critical' || v.impact === 'serious'
       )
-      
+
       expect(criticalViolations).toHaveLength(0)
     })
   })
@@ -187,7 +195,7 @@ test.describe('Accessibility Testing Suite', () => {
   test.describe('Interactive Elements Accessibility', () => {
     test('form controls should be accessible', async ({ page }) => {
       await page.goto(`${BASE_URL}/search`)
-      
+
       // Test form accessibility
       const result = await new AxeBuilder({ page })
         .include('form')
@@ -195,11 +203,12 @@ test.describe('Accessibility Testing Suite', () => {
         .analyze()
 
       // Check for form-specific accessibility issues
-      const formViolations = result.violations.filter(violation =>
-        violation.tags.includes('cat.forms') || 
-        violation.tags.includes('cat.keyboard') ||
-        violation.id.includes('label') ||
-        violation.id.includes('input')
+      const formViolations = result.violations.filter(
+        violation =>
+          violation.tags.includes('cat.forms') ||
+          violation.tags.includes('cat.keyboard') ||
+          violation.id.includes('label') ||
+          violation.id.includes('input')
       )
 
       expect(formViolations).toHaveLength(0)
@@ -209,26 +218,26 @@ test.describe('Accessibility Testing Suite', () => {
       for (const input of inputs) {
         const ariaLabel = await input.getAttribute('aria-label')
         const id = await input.getAttribute('id')
-        const hasLabel = id ? await page.locator(`label[for="${id}"]`).count() > 0 : false
-        
+        const hasLabel = id ? (await page.locator(`label[for="${id}"]`).count()) > 0 : false
+
         expect(ariaLabel || hasLabel).toBeTruthy()
       }
     })
 
     test('buttons should be accessible', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Test button accessibility
       const buttons = await page.locator('button').all()
-      
+
       for (const button of buttons) {
         // Check if button has accessible name
         const ariaLabel = await button.getAttribute('aria-label')
         const textContent = await button.textContent()
         const title = await button.getAttribute('title')
-        
+
         expect(ariaLabel || textContent?.trim() || title).toBeTruthy()
-        
+
         // Check if button is keyboard accessible
         await button.focus()
         expect(await button.evaluate(el => document.activeElement === el)).toBe(true)
@@ -237,16 +246,16 @@ test.describe('Accessibility Testing Suite', () => {
 
     test('navigation should be accessible', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Test navigation accessibility
       const result = await new AxeBuilder({ page })
         .include('nav')
         .withTags(['wcag2a', 'wcag2aa'])
         .analyze()
 
-      const navViolations = result.violations.filter(violation =>
-        violation.tags.includes('cat.keyboard') || 
-        violation.tags.includes('cat.structure')
+      const navViolations = result.violations.filter(
+        violation =>
+          violation.tags.includes('cat.keyboard') || violation.tags.includes('cat.structure')
       )
 
       expect(navViolations).toHaveLength(0)
@@ -256,14 +265,14 @@ test.describe('Accessibility Testing Suite', () => {
   test.describe('Content Accessibility', () => {
     test('images should have alt text', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       const images = await page.locator('img').all()
-      
+
       for (const image of images) {
         const alt = await image.getAttribute('alt')
         const ariaLabel = await image.getAttribute('aria-label')
         const role = await image.getAttribute('role')
-        
+
         // Images should have alt text, aria-label, or be decorative
         expect(alt !== null || ariaLabel || role === 'presentation').toBeTruthy()
       }
@@ -271,17 +280,16 @@ test.describe('Accessibility Testing Suite', () => {
 
     test('headings should be properly structured', async ({ page }) => {
       await page.goto(BASE_URL)
-      
-      // Test heading structure
-      const result = await new AxeBuilder({ page })
-        .withTags(['cat.structure'])
-        .analyze()
 
-      const headingViolations = result.violations.filter(violation =>
-        violation.id.includes('heading') || 
-        violation.id.includes('h1') ||
-        violation.id.includes('h2') ||
-        violation.id.includes('h3')
+      // Test heading structure
+      const result = await new AxeBuilder({ page }).withTags(['cat.structure']).analyze()
+
+      const headingViolations = result.violations.filter(
+        violation =>
+          violation.id.includes('heading') ||
+          violation.id.includes('h1') ||
+          violation.id.includes('h2') ||
+          violation.id.includes('h3')
       )
 
       expect(headingViolations).toHaveLength(0)
@@ -293,27 +301,24 @@ test.describe('Accessibility Testing Suite', () => {
       for (const heading of headings) {
         const tagName = await heading.evaluate(el => el.tagName.toLowerCase())
         const currentLevel = parseInt(tagName.charAt(1))
-        
+
         // Heading levels should not skip (e.g., h1 -> h3)
         if (previousLevel > 0) {
           expect(currentLevel - previousLevel).toBeLessThanOrEqual(1)
         }
-        
+
         previousLevel = currentLevel
       }
     })
 
     test('color contrast should be sufficient', async ({ page }) => {
       await page.goto(BASE_URL)
-      
-      // Test color contrast
-      const result = await new AxeBuilder({ page })
-        .withTags(['cat.color'])
-        .analyze()
 
-      const colorViolations = result.violations.filter(violation =>
-        violation.id.includes('color-contrast') ||
-        violation.id.includes('color')
+      // Test color contrast
+      const result = await new AxeBuilder({ page }).withTags(['cat.color']).analyze()
+
+      const colorViolations = result.violations.filter(
+        violation => violation.id.includes('color-contrast') || violation.id.includes('color')
       )
 
       expect(colorViolations).toHaveLength(0)
@@ -323,16 +328,16 @@ test.describe('Accessibility Testing Suite', () => {
   test.describe('Keyboard Navigation', () => {
     test('should be fully keyboard navigable', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Test keyboard navigation
-      const focusableElements = await page.locator(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      ).all()
+      const focusableElements = await page
+        .locator('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+        .all()
 
       // Tab through all focusable elements
       for (let i = 0; i < Math.min(focusableElements.length, 10); i++) {
         await page.keyboard.press('Tab')
-        
+
         // Verify focus is visible
         const focusedElement = await page.locator(':focus').first()
         expect(await focusedElement.count()).toBe(1)
@@ -341,10 +346,10 @@ test.describe('Accessibility Testing Suite', () => {
 
     test('should handle escape key properly', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Test escape key handling for modals/dropdowns
       await page.keyboard.press('Escape')
-      
+
       // Should not cause any JavaScript errors
       const errors = await page.evaluate(() => window.console.error.toString())
       expect(errors).not.toContain('Error')
@@ -354,20 +359,22 @@ test.describe('Accessibility Testing Suite', () => {
   test.describe('Screen Reader Compatibility', () => {
     test('should have proper ARIA landmarks', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Check for ARIA landmarks
-      const landmarks = await page.locator('[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"], main, nav, header, footer').count()
-      
+      const landmarks = await page
+        .locator(
+          '[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"], main, nav, header, footer'
+        )
+        .count()
+
       expect(landmarks).toBeGreaterThan(0)
     })
 
     test('should have proper ARIA labels and descriptions', async ({ page }) => {
       await page.goto(BASE_URL)
-      
+
       // Test ARIA attributes
-      const result = await new AxeBuilder({ page })
-        .withTags(['cat.aria'])
-        .analyze()
+      const result = await new AxeBuilder({ page }).withTags(['cat.aria']).analyze()
 
       const ariaViolations = result.violations.filter(violation =>
         violation.tags.includes('cat.aria')
@@ -381,7 +388,7 @@ test.describe('Accessibility Testing Suite', () => {
     test('should generate comprehensive accessibility report', async ({ page }) => {
       // Run tests on multiple pages
       const pages = [BASE_URL, `${BASE_URL}/search`]
-      
+
       for (const pageUrl of pages) {
         await accessibilityTester.runAccessibilityTest(page, pageUrl, `report-${pageUrl}`)
       }

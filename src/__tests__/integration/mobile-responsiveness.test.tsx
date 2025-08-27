@@ -43,9 +43,7 @@ const mockUseResponsive = require('@/hooks/useResponsive').useResponsive
 // Test wrapper with providers
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <ConfigProvider>
-    <PerformanceProvider>
-      {children}
-    </PerformanceProvider>
+    <PerformanceProvider>{children}</PerformanceProvider>
   </ConfigProvider>
 )
 
@@ -89,7 +87,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should open mobile navigation drawer', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -104,7 +102,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should have touch-friendly targets', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -122,7 +120,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should handle mobile navigation between tabs', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -280,7 +278,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should handle touch events properly', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -292,7 +290,7 @@ describe('Mobile Responsiveness Integration', () => {
       // Simulate touch events
       fireEvent.touchStart(menuButton)
       fireEvent.touchEnd(menuButton)
-      
+
       await user.click(menuButton)
 
       expect(screen.getByRole('dialog')).toBeInTheDocument()
@@ -300,7 +298,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should prevent body scroll when modal is open', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -335,7 +333,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should have proper ARIA attributes for mobile navigation', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -356,7 +354,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should support keyboard navigation', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />
@@ -375,7 +373,7 @@ describe('Mobile Responsiveness Integration', () => {
 
     it('should have minimum touch target sizes', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <TestWrapper>
           <App />

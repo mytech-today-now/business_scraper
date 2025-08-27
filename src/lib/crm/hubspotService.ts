@@ -9,7 +9,7 @@ import {
   CRMSyncBatch,
   CRMWebhookEvent,
   CRMWebhookSubscription,
-  HubSpotConfiguration
+  HubSpotConfiguration,
 } from '@/types/crm'
 import { BaseCRMService } from './baseCRMService'
 import { logger } from '@/utils/logger'
@@ -23,7 +23,7 @@ export class HubSpotService extends BaseCRMService {
   async initialize(): Promise<void> {
     try {
       logger.info('HubSpotService', 'Initializing HubSpot service', {
-        providerId: this.provider.id
+        providerId: this.provider.id,
       })
 
       const config = this.provider.configuration as HubSpotConfiguration
@@ -41,7 +41,7 @@ export class HubSpotService extends BaseCRMService {
   async authenticate(): Promise<boolean> {
     try {
       const auth = this.provider.configuration.authentication
-      
+
       if (auth.type === 'oauth2') {
         return await this.authenticateOAuth2()
       } else if (auth.type === 'api_key') {
@@ -75,18 +75,18 @@ export class HubSpotService extends BaseCRMService {
   private async refreshAccessToken(): Promise<boolean> {
     try {
       const auth = this.provider.configuration.authentication
-      
+
       const response = await fetch(`${this.apiBaseUrl}/oauth/v1/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
           grant_type: 'refresh_token',
           client_id: auth.credentials.clientId,
           client_secret: auth.credentials.clientSecret,
-          refresh_token: auth.refreshToken!
-        })
+          refresh_token: auth.refreshToken!,
+        }),
       })
 
       if (!response.ok) {
@@ -149,8 +149,12 @@ export class HubSpotService extends BaseCRMService {
       // Check for duplicates
       const duplicateIds = await this.checkForDuplicates(record)
       if (duplicateIds.length > 0) {
-        return this.createSyncRecord(record, 'conflict', undefined, 
-          `Duplicate records found: ${duplicateIds.join(', ')}`)
+        return this.createSyncRecord(
+          record,
+          'conflict',
+          undefined,
+          `Duplicate records found: ${duplicateIds.join(', ')}`
+        )
       }
 
       // Map business record to HubSpot format
@@ -185,7 +189,7 @@ export class HubSpotService extends BaseCRMService {
 
       // HubSpot supports batch operations
       const batchSize = Math.min(this.provider.configuration.syncSettings.batchSize || 100, 100)
-      
+
       for (let i = 0; i < records.length; i += batchSize) {
         const batch = records.slice(i, i + batchSize)
         const batchResults = await this.processBatchCreate(batch)
@@ -205,7 +209,7 @@ export class HubSpotService extends BaseCRMService {
         totalRecords: records.length,
         successfulRecords,
         failedRecords,
-        errors: []
+        errors: [],
       }
     } catch (error) {
       logger.error('HubSpotService', 'Batch sync failed', error)
@@ -216,11 +220,11 @@ export class HubSpotService extends BaseCRMService {
   async pullUpdates(since?: Date): Promise<BusinessRecord[]> {
     try {
       const sinceTimestamp = since ? since.getTime() : Date.now() - 24 * 60 * 60 * 1000
-      
+
       const response = await this.makeApiCall('GET', '/crm/v3/objects/contacts', {
         properties: 'email,firstname,lastname,company,phone,website,city,state,zip',
         limit: 100,
-        after: sinceTimestamp
+        after: sinceTimestamp,
       })
 
       if (response.ok) {
@@ -238,7 +242,7 @@ export class HubSpotService extends BaseCRMService {
   async setupWebhooks(): Promise<CRMWebhookSubscription[]> {
     try {
       logger.info('HubSpotService', 'Setting up HubSpot webhooks')
-      
+
       const webhookUrl = this.provider.configuration.webhookUrl
       if (!webhookUrl) {
         throw new Error('Webhook URL not configured')
@@ -247,8 +251,13 @@ export class HubSpotService extends BaseCRMService {
       const subscriptions: CRMWebhookSubscription[] = []
 
       // Create webhook subscriptions for different events
-      const eventTypes = ['contact.creation', 'contact.propertyChange', 'company.creation', 'company.propertyChange']
-      
+      const eventTypes = [
+        'contact.creation',
+        'contact.propertyChange',
+        'company.creation',
+        'company.propertyChange',
+      ]
+
       for (const eventType of eventTypes) {
         const subscription = await this.createWebhookSubscription(eventType, webhookUrl)
         if (subscription) {
@@ -268,15 +277,17 @@ export class HubSpotService extends BaseCRMService {
       logger.info('HubSpotService', 'Handling HubSpot webhook event', {
         eventType: event.eventType,
         objectType: event.objectType,
-        objectId: event.objectId
+        objectId: event.objectId,
       })
 
       // Validate webhook signature
-      if (!this.validateWebhookSignature(
-        JSON.stringify(event.data),
-        event.signature || '',
-        this.provider.configuration.authentication.credentials.webhookSecret || ''
-      )) {
+      if (
+        !this.validateWebhookSignature(
+          JSON.stringify(event.data),
+          event.signature || '',
+          this.provider.configuration.authentication.credentials.webhookSecret || ''
+        )
+      ) {
         throw new Error('Invalid webhook signature')
       }
 
@@ -298,7 +309,11 @@ export class HubSpotService extends BaseCRMService {
     }
   }
 
-  private async makeApiCall(method: string, endpoint: string, params?: Record<string, any>): Promise<Response> {
+  private async makeApiCall(
+    method: string,
+    endpoint: string,
+    params?: Record<string, any>
+  ): Promise<Response> {
     if (!this.accessToken) {
       throw new Error('Not authenticated')
     }
@@ -311,7 +326,7 @@ export class HubSpotService extends BaseCRMService {
     }
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     }
 
     // Use different auth header based on auth type
@@ -324,7 +339,7 @@ export class HubSpotService extends BaseCRMService {
 
     const options: RequestInit = {
       method,
-      headers
+      headers,
     }
 
     if (params && method !== 'GET') {
@@ -344,8 +359,8 @@ export class HubSpotService extends BaseCRMService {
         city: record.address.city,
         state: record.address.state,
         zip: record.address.zipCode,
-        hs_lead_status: 'NEW'
-      }
+        hs_lead_status: 'NEW',
+      },
     }
 
     const company = {
@@ -358,8 +373,8 @@ export class HubSpotService extends BaseCRMService {
         state: record.address.state,
         zip: record.address.zipCode,
         address: record.address.street,
-        phone: record.phone
-      }
+        phone: record.phone,
+      },
     }
 
     return { contact, company }
@@ -376,7 +391,10 @@ export class HubSpotService extends BaseCRMService {
   }
 
   private async associateContactWithCompany(contactId: string, companyId: string): Promise<void> {
-    await this.makeApiCall('PUT', `/crm/v3/objects/contacts/${contactId}/associations/companies/${companyId}/1`)
+    await this.makeApiCall(
+      'PUT',
+      `/crm/v3/objects/contacts/${contactId}/associations/companies/${companyId}/1`
+    )
   }
 
   private createSyncRecord(
@@ -395,26 +413,30 @@ export class HubSpotService extends BaseCRMService {
       syncDirection: 'push',
       lastSyncAt: new Date(),
       syncAttempts: 1,
-      errors: errorMessage ? [{
-        timestamp: new Date(),
-        errorCode: 'SYNC_ERROR',
-        errorMessage,
-        isRetryable: status !== 'conflict'
-      }] : [],
-      metadata: {}
+      errors: errorMessage
+        ? [
+            {
+              timestamp: new Date(),
+              errorCode: 'SYNC_ERROR',
+              errorMessage,
+              isRetryable: status !== 'conflict',
+            },
+          ]
+        : [],
+      metadata: {},
     }
   }
 
   private async processBatchCreate(records: BusinessRecord[]): Promise<CRMSyncRecord[]> {
     // HubSpot batch API implementation
     const contacts = records.map(record => this.mapToHubSpotFormat(record).contact)
-    
+
     const response = await this.makeApiCall('POST', '/crm/v3/objects/contacts/batch/create', {
-      inputs: contacts
+      inputs: contacts,
     })
 
     const results: CRMSyncRecord[] = []
-    
+
     if (response.ok) {
       const data = await response.json()
       data.results?.forEach((result: any, index: number) => {
@@ -441,20 +463,24 @@ export class HubSpotService extends BaseCRMService {
         street: contact.properties.address || '',
         city: contact.properties.city || '',
         state: contact.properties.state || '',
-        zipCode: contact.properties.zip || ''
+        zipCode: contact.properties.zip || '',
       },
-      contactPerson: `${contact.properties.firstname || ''} ${contact.properties.lastname || ''}`.trim(),
+      contactPerson:
+        `${contact.properties.firstname || ''} ${contact.properties.lastname || ''}`.trim(),
       industry: contact.properties.industry || '',
-      scrapedAt: new Date(contact.properties.lastmodifieddate || contact.properties.createdate)
+      scrapedAt: new Date(contact.properties.lastmodifieddate || contact.properties.createdate),
     }))
   }
 
-  private async createWebhookSubscription(eventType: string, callbackUrl: string): Promise<CRMWebhookSubscription | null> {
+  private async createWebhookSubscription(
+    eventType: string,
+    callbackUrl: string
+  ): Promise<CRMWebhookSubscription | null> {
     try {
       const response = await this.makeApiCall('POST', '/webhooks/v3/subscriptions', {
         eventType,
         active: true,
-        propertyName: eventType.includes('propertyChange') ? 'email' : undefined
+        propertyName: eventType.includes('propertyChange') ? 'email' : undefined,
       })
 
       if (response.ok) {
@@ -467,26 +493,30 @@ export class HubSpotService extends BaseCRMService {
           isActive: true,
           secret: this.provider.configuration.authentication.credentials.webhookSecret || '',
           createdAt: new Date(),
-          lastTriggeredAt: undefined
+          lastTriggeredAt: undefined,
         }
       }
     } catch (error) {
-      logger.error('HubSpotService', `Failed to create webhook subscription for ${eventType}`, error)
+      logger.error(
+        'HubSpotService',
+        `Failed to create webhook subscription for ${eventType}`,
+        error
+      )
     }
-    
+
     return null
   }
 
   private async handleContactUpdate(event: CRMWebhookEvent): Promise<void> {
     logger.info('HubSpotService', 'Processing contact update', {
-      objectId: event.objectId
+      objectId: event.objectId,
     })
     // Implementation for handling contact updates
   }
 
   private async handleCompanyUpdate(event: CRMWebhookEvent): Promise<void> {
     logger.info('HubSpotService', 'Processing company update', {
-      objectId: event.objectId
+      objectId: event.objectId,
     })
     // Implementation for handling company updates
   }

@@ -9,7 +9,7 @@ import { logger } from '@/utils/logger'
 import {
   DatabaseSecurityService,
   databaseSecurityService,
-  defaultDatabaseSecurityConfig
+  defaultDatabaseSecurityConfig,
 } from './databaseSecurity'
 
 /**
@@ -37,7 +37,11 @@ export interface SecureQueryResult<T = any> {
  * Database transaction interface
  */
 export interface DatabaseTransaction {
-  query<T = any>(text: string, params?: any[], options?: SecureQueryOptions): Promise<SecureQueryResult<T>>
+  query<T = any>(
+    text: string,
+    params?: any[],
+    options?: SecureQueryOptions
+  ): Promise<SecureQueryResult<T>>
   commit(): Promise<void>
   rollback(): Promise<void>
 }
@@ -54,10 +58,10 @@ export class SecureDatabase {
   constructor(config: any) {
     // Apply security hardening to connection config
     const secureConfig = DatabaseSecurityService.createSecureConnectionConfig(config)
-    
+
     this.pool = new Pool(secureConfig)
     this.securityService = databaseSecurityService
-    
+
     // Set up pool event handlers
     this.setupPoolEventHandlers()
   }
@@ -70,29 +74,29 @@ export class SecureDatabase {
       logger.error('SecureDatabase', 'Pool error occurred', {
         error: err.message,
         stack: err.stack,
-        clientProcessId: client?.processID
+        clientProcessId: client?.processID,
       })
     })
 
-    this.pool.on('connect', (client) => {
+    this.pool.on('connect', client => {
       logger.debug('SecureDatabase', 'New client connected', {
         processId: client.processID,
         totalCount: this.pool.totalCount,
-        idleCount: this.pool.idleCount
+        idleCount: this.pool.idleCount,
       })
     })
 
-    this.pool.on('acquire', (client) => {
+    this.pool.on('acquire', client => {
       logger.debug('SecureDatabase', 'Client acquired from pool', {
         processId: client.processID,
-        waitingCount: this.pool.waitingCount
+        waitingCount: this.pool.waitingCount,
       })
     })
 
-    this.pool.on('remove', (client) => {
+    this.pool.on('remove', client => {
       logger.debug('SecureDatabase', 'Client removed from pool', {
         processId: client.processID,
-        totalCount: this.pool.totalCount
+        totalCount: this.pool.totalCount,
       })
     })
   }
@@ -101,8 +105,8 @@ export class SecureDatabase {
    * Execute a secure parameterized query
    */
   async query<T = any>(
-    text: string, 
-    params?: any[], 
+    text: string,
+    params?: any[],
     options: SecureQueryOptions = {}
   ): Promise<SecureQueryResult<T>> {
     const startTime = Date.now()
@@ -115,12 +119,12 @@ export class SecureDatabase {
         if (!validation.isValid) {
           throw new Error(`Query validation failed: ${validation.errors.join(', ')}`)
         }
-        
+
         // Log warnings
         if (validation.warnings.length > 0) {
           logger.warn('SecureDatabase', 'Query validation warnings', {
             warnings: validation.warnings,
-            queryId
+            queryId,
           })
         }
       }
@@ -131,7 +135,7 @@ export class SecureDatabase {
         return {
           ...cached.result,
           isFromCache: true,
-          executionTime: Date.now() - startTime
+          executionTime: Date.now() - startTime,
         }
       }
 
@@ -140,7 +144,7 @@ export class SecureDatabase {
         logger.debug('SecureDatabase', 'Executing query', {
           query: text.substring(0, 200),
           paramCount: params?.length || 0,
-          queryId
+          queryId,
         })
       }
 
@@ -156,8 +160,7 @@ export class SecureDatabase {
         })
 
         const queryPromise = client.query(text, params)
-        result = await Promise.race([queryPromise, timeoutPromise]) as QueryResult
-
+        result = (await Promise.race([queryPromise, timeoutPromise])) as QueryResult
       } finally {
         client.release()
       }
@@ -167,7 +170,7 @@ export class SecureDatabase {
         rows: result.rows,
         rowCount: result.rowCount || 0,
         command: result.command,
-        executionTime
+        executionTime,
       }
 
       // Cache result for SELECT queries
@@ -178,31 +181,30 @@ export class SecureDatabase {
       logger.debug('SecureDatabase', 'Query executed successfully', {
         rowCount: secureResult.rowCount,
         executionTime,
-        queryId
+        queryId,
       })
 
       return secureResult
-
     } catch (error) {
       const executionTime = Date.now() - startTime
-      
+
       logger.error('SecureDatabase', 'Query execution failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         executionTime,
         queryId,
-        query: text.substring(0, 100) // Log partial query for debugging
+        query: text.substring(0, 100), // Log partial query for debugging
       })
 
       // Retry logic for transient errors
       if (options.maxRetries && options.maxRetries > 0 && this.isRetryableError(error)) {
         logger.info('SecureDatabase', 'Retrying query', {
           remainingRetries: options.maxRetries - 1,
-          queryId
+          queryId,
         })
-        
+
         return this.query(text, params, {
           ...options,
-          maxRetries: options.maxRetries - 1
+          maxRetries: options.maxRetries - 1,
         })
       }
 
@@ -213,14 +215,12 @@ export class SecureDatabase {
   /**
    * Execute multiple queries in a transaction
    */
-  async transaction<T>(
-    callback: (tx: DatabaseTransaction) => Promise<T>
-  ): Promise<T> {
+  async transaction<T>(callback: (tx: DatabaseTransaction) => Promise<T>): Promise<T> {
     const client = await this.pool.connect()
-    
+
     try {
       await client.query('BEGIN')
-      
+
       const transaction: DatabaseTransaction = {
         query: async (text: string, params?: any[], _options?: SecureQueryOptions) => {
           const validation = this.securityService.validateQuery(text, params)
@@ -230,29 +230,28 @@ export class SecureDatabase {
 
           const startTime = Date.now()
           const result = await client.query(text, params)
-          
+
           return {
             rows: result.rows,
             rowCount: result.rowCount || 0,
             command: result.command,
-            executionTime: Date.now() - startTime
+            executionTime: Date.now() - startTime,
           }
         },
-        
+
         commit: async () => {
           await client.query('COMMIT')
         },
-        
+
         rollback: async () => {
           await client.query('ROLLBACK')
-        }
+        },
       }
 
       const result = await callback(transaction)
       await transaction.commit()
-      
+
       return result
-      
     } catch (error) {
       try {
         await client.query('ROLLBACK')
@@ -280,23 +279,22 @@ export class SecureDatabase {
     }
 
     const client = await this.pool.connect()
-    
+
     try {
       const startTime = Date.now()
-      
+
       // Prepare the statement if not already prepared
       await client.query(`PREPARE ${name} AS ${text}`)
-      
+
       // Execute the prepared statement
       const result = await client.query(`EXECUTE ${name}`, params)
-      
+
       return {
         rows: result.rows,
         rowCount: result.rowCount || 0,
         command: result.command,
-        executionTime: Date.now() - startTime
+        executionTime: Date.now() - startTime,
       }
-      
     } finally {
       // Clean up the prepared statement
       try {
@@ -319,7 +317,7 @@ export class SecureDatabase {
     return {
       totalCount: this.pool.totalCount,
       idleCount: this.pool.idleCount,
-      waitingCount: this.pool.waitingCount
+      waitingCount: this.pool.waitingCount,
     }
   }
 
@@ -351,12 +349,12 @@ export class SecureDatabase {
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
       return cached
     }
-    
+
     // Remove expired cache entry
     if (cached) {
       this.queryCache.delete(queryId)
     }
-    
+
     return null
   }
 
@@ -369,10 +367,10 @@ export class SecureDatabase {
       const oldestKey = this.queryCache.keys().next().value
       this.queryCache.delete(oldestKey)
     }
-    
+
     this.queryCache.set(queryId, {
       result: { ...result },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 
@@ -385,9 +383,9 @@ export class SecureDatabase {
       'ENOTFOUND',
       'ECONNREFUSED',
       'ETIMEDOUT',
-      'connection terminated unexpectedly'
+      'connection terminated unexpectedly',
     ]
-    
+
     const errorMessage = error?.message?.toLowerCase() || ''
     return retryableErrors.some(pattern => errorMessage.includes(pattern))
   }

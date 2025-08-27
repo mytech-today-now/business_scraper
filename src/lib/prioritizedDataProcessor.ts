@@ -1,6 +1,6 @@
 /**
  * Prioritized Data Processing System
- * 
+ *
  * Processes scraped business data with priority-based deduplication
  * Priority order: Email (1st), Phone (2nd), Street Address (3rd), City (4th), ZIP (5th)
  */
@@ -53,23 +53,23 @@ export interface ProcessingStats {
  */
 export class PrioritizedDataProcessor {
   private emailPriorityPatterns = [
-    /^info@/i,        // Priority 0 (highest)
-    /^contact@/i,     // Priority 1
-    /^sales@/i,       // Priority 2
-    /^admin@/i,       // Priority 3
-    /^office@/i,      // Priority 4
-    /^hello@/i,       // Priority 5
-    /^support@/i,     // Priority 6
-    /^business@/i,    // Priority 7
-    /^mail@/i,        // Priority 8
-    /^general@/i      // Priority 9
+    /^info@/i, // Priority 0 (highest)
+    /^contact@/i, // Priority 1
+    /^sales@/i, // Priority 2
+    /^admin@/i, // Priority 3
+    /^office@/i, // Priority 4
+    /^hello@/i, // Priority 5
+    /^support@/i, // Priority 6
+    /^business@/i, // Priority 7
+    /^mail@/i, // Priority 8
+    /^general@/i, // Priority 9
   ]
 
   private phonePriorityPatterns = [
     /^\+?1?[-.\s]?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}$/, // US format
     /^\([0-9]{3}\)\s[0-9]{3}-[0-9]{4}$/, // (555) 123-4567
     /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/, // 555-123-4567
-    /^[0-9]{10}$/ // 5551234567
+    /^[0-9]{10}$/, // 5551234567
   ]
 
   /**
@@ -87,7 +87,7 @@ export class PrioritizedDataProcessor {
       recordsWithEmail: 0,
       recordsWithPhone: 0,
       recordsWithAddress: 0,
-      finalRecords: 0
+      finalRecords: 0,
     }
 
     // Step 1: Convert to prioritized format
@@ -107,18 +107,24 @@ export class PrioritizedDataProcessor {
       return hasEmail || hasPhone || (hasAddress && record.city && record.zipCode)
     })
 
-    logger.info('PrioritizedDataProcessor', `Filtered to ${valuableRecords.length} valuable records`)
+    logger.info(
+      'PrioritizedDataProcessor',
+      `Filtered to ${valuableRecords.length} valuable records`
+    )
 
     // Step 3: Deduplicate based on priority fields
     const deduplicatedRecords = this.deduplicateByPriorityFields(valuableRecords)
     stats.duplicatesRemoved = valuableRecords.length - deduplicatedRecords.length
     stats.finalRecords = deduplicatedRecords.length
 
-    logger.info('PrioritizedDataProcessor', `Removed ${stats.duplicatesRemoved} duplicates, final count: ${stats.finalRecords}`)
+    logger.info(
+      'PrioritizedDataProcessor',
+      `Removed ${stats.duplicatesRemoved} duplicates, final count: ${stats.finalRecords}`
+    )
 
     return {
       processedRecords: deduplicatedRecords,
-      stats
+      stats,
     }
   }
 
@@ -134,14 +140,17 @@ export class PrioritizedDataProcessor {
     // Prioritize and format phones
     const phones = this.prioritizePhones([record.phone].filter(Boolean))
     const primaryPhone = this.formatPhoneNumber(phones[0] || '')
-    const additionalPhones = phones.slice(1).map(phone => this.formatPhoneNumber(phone)).filter(Boolean)
+    const additionalPhones = phones
+      .slice(1)
+      .map(phone => this.formatPhoneNumber(phone))
+      .filter(Boolean)
 
     // Parse address components using enhanced parser
     const address = record.address || {}
     const rawAddress = this.buildRawAddressString(address)
     const parsedAddress = addressParser.parseAddress(rawAddress, {
       allowPartialMatches: true,
-      logErrors: false
+      logErrors: false,
     })
 
     // Format coordinates
@@ -166,7 +175,7 @@ export class PrioritizedDataProcessor {
       additionalEmails,
       additionalPhones,
       confidence: this.calculateRecordConfidence(record),
-      sources: [record.websiteUrl].filter(Boolean)
+      sources: [record.websiteUrl].filter(Boolean),
     }
   }
 
@@ -233,7 +242,7 @@ export class PrioritizedDataProcessor {
     const result = phoneFormatter.formatPhone(phone, {
       format: 'programmatic',
       removeCountryCode: true,
-      strictValidation: false
+      strictValidation: false,
     })
 
     return result.formatted || ''
@@ -245,12 +254,7 @@ export class PrioritizedDataProcessor {
   private buildRawAddressString(address: BusinessRecord['address']): string {
     if (!address) return ''
 
-    const parts = [
-      address.street,
-      address.city,
-      address.state,
-      address.zipCode
-    ].filter(Boolean)
+    const parts = [address.street, address.city, address.state, address.zipCode].filter(Boolean)
 
     return parts.join(', ')
   }
@@ -270,7 +274,9 @@ export class PrioritizedDataProcessor {
   /**
    * Deduplicate records based on priority fields
    */
-  private deduplicateByPriorityFields(records: PrioritizedBusinessRecord[]): PrioritizedBusinessRecord[] {
+  private deduplicateByPriorityFields(
+    records: PrioritizedBusinessRecord[]
+  ): PrioritizedBusinessRecord[] {
     const seenKeys = new Map<string, PrioritizedBusinessRecord>()
     const result: PrioritizedBusinessRecord[] = []
 
@@ -286,7 +292,7 @@ export class PrioritizedDataProcessor {
         // Merge with existing record
         const merged = this.mergeRecords(existing, record)
         seenKeys.set(key, merged)
-        
+
         // Replace in result array
         const index = result.findIndex(r => r.id === existing.id)
         if (index >= 0) {
@@ -307,7 +313,7 @@ export class PrioritizedDataProcessor {
       this.normalizePhone(record.phone),
       this.normalizeAddress(`${record.streetNumber} ${record.streetName}`),
       record.city.toLowerCase(),
-      record.zipCode
+      record.zipCode,
     ].filter(Boolean)
 
     return parts.join('|')
@@ -316,7 +322,10 @@ export class PrioritizedDataProcessor {
   /**
    * Merge two records, keeping the best information
    */
-  private mergeRecords(existing: PrioritizedBusinessRecord, incoming: PrioritizedBusinessRecord): PrioritizedBusinessRecord {
+  private mergeRecords(
+    existing: PrioritizedBusinessRecord,
+    incoming: PrioritizedBusinessRecord
+  ): PrioritizedBusinessRecord {
     return {
       ...existing,
       // Keep the best email
@@ -324,27 +333,32 @@ export class PrioritizedDataProcessor {
       // Keep the best phone
       phone: existing.phone || incoming.phone,
       // Merge additional emails
-      additionalEmails: Array.from(new Set([
-        ...existing.additionalEmails,
-        ...incoming.additionalEmails,
-        ...(incoming.email ? [incoming.email] : [])
-      ])).filter(email => email !== existing.email),
+      additionalEmails: Array.from(
+        new Set([
+          ...existing.additionalEmails,
+          ...incoming.additionalEmails,
+          ...(incoming.email ? [incoming.email] : []),
+        ])
+      ).filter(email => email !== existing.email),
       // Merge additional phones
-      additionalPhones: Array.from(new Set([
-        ...existing.additionalPhones,
-        ...incoming.additionalPhones,
-        ...(incoming.phone ? [incoming.phone] : [])
-      ])).filter(phone => phone !== existing.phone),
+      additionalPhones: Array.from(
+        new Set([
+          ...existing.additionalPhones,
+          ...incoming.additionalPhones,
+          ...(incoming.phone ? [incoming.phone] : []),
+        ])
+      ).filter(phone => phone !== existing.phone),
       // Merge sources
       sources: Array.from(new Set([...existing.sources, ...incoming.sources])),
       // Use higher confidence
       confidence: Math.max(existing.confidence, incoming.confidence),
       // Keep the better business name (longer is usually better)
-      businessName: existing.businessName.length > incoming.businessName.length 
-        ? existing.businessName 
-        : incoming.businessName,
+      businessName:
+        existing.businessName.length > incoming.businessName.length
+          ? existing.businessName
+          : incoming.businessName,
       // Keep the better contact name
-      contactName: existing.contactName || incoming.contactName
+      contactName: existing.contactName || incoming.contactName,
     }
   }
 
@@ -403,7 +417,10 @@ export class PrioritizedDataProcessor {
   }
 
   private normalizeAddress(address: string): string {
-    return address.toLowerCase().replace(/[^\w\s]/g, '').trim()
+    return address
+      .toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .trim()
   }
 
   private cleanStreetAddress(address: string): string {

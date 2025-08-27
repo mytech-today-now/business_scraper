@@ -4,11 +4,11 @@
  */
 
 import { BusinessRecord } from '@/types/business'
-import { 
-  ExportTemplate, 
-  ExportTemplateResult, 
+import {
+  ExportTemplate,
+  ExportTemplateResult,
   ExportPlatform,
-  ExportTemplateRegistry 
+  ExportTemplateRegistry,
 } from '@/types/export-templates'
 import { logger } from '@/utils/logger'
 
@@ -39,11 +39,11 @@ export class EnhancedExportService implements ExportTemplateRegistry {
       this.registerTemplateInstance('salesforce-leads', createSalesforceTemplate())
       this.registerTemplateInstance('hubspot-companies', createHubSpotTemplate())
       this.registerTemplateInstance('pipedrive-organizations', createPipedriveTemplate())
-      
+
       // Email marketing templates
       this.registerTemplateInstance('mailchimp-contacts', createMailchimpTemplate())
       this.registerTemplateInstance('constant-contact-contacts', createConstantContactTemplate())
-      
+
       logger.info('EnhancedExportService', `Initialized ${this.templates.size} built-in templates`)
     } catch (error) {
       logger.error('EnhancedExportService', 'Failed to initialize built-in templates', error)
@@ -90,11 +90,11 @@ export class EnhancedExportService implements ExportTemplateRegistry {
           platform: template.platform,
           version: template.version,
           supported: false,
-          limitations: ['Template not registered']
-        }
+          limitations: ['Template not registered'],
+        },
       }
     }
-    
+
     return templateInstance.validate()
   }
 
@@ -103,11 +103,11 @@ export class EnhancedExportService implements ExportTemplateRegistry {
    */
   listTemplates(platform?: ExportPlatform): ExportTemplate[] {
     const allTemplates = Array.from(this.templates.values()).map(instance => instance.getTemplate())
-    
+
     if (platform) {
       return allTemplates.filter(template => template.platform === platform)
     }
-    
+
     return allTemplates
   }
 
@@ -116,12 +116,13 @@ export class EnhancedExportService implements ExportTemplateRegistry {
    */
   searchTemplates(query: string): ExportTemplate[] {
     const searchTerm = query.toLowerCase()
-    
-    return this.listTemplates().filter(template => 
-      template.name.toLowerCase().includes(searchTerm) ||
-      template.description.toLowerCase().includes(searchTerm) ||
-      template.platform.toLowerCase().includes(searchTerm) ||
-      template.metadata.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+
+    return this.listTemplates().filter(
+      template =>
+        template.name.toLowerCase().includes(searchTerm) ||
+        template.description.toLowerCase().includes(searchTerm) ||
+        template.platform.toLowerCase().includes(searchTerm) ||
+        template.metadata.tags.some(tag => tag.toLowerCase().includes(searchTerm))
     )
   }
 
@@ -129,7 +130,7 @@ export class EnhancedExportService implements ExportTemplateRegistry {
    * Export businesses using a specific template
    */
   async exportWithTemplate(
-    templateId: string, 
+    templateId: string,
     businesses: BusinessRecord[],
     options: {
       validateData?: boolean
@@ -138,7 +139,7 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     } = {}
   ): Promise<ExportTemplateResult> {
     const templateInstance = this.templates.get(templateId)
-    
+
     if (!templateInstance) {
       throw new Error(`Template not found: ${templateId}`)
     }
@@ -146,12 +147,12 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     logger.info('EnhancedExportService', `Starting export with template: ${templateId}`, {
       templateId,
       businessCount: businesses.length,
-      options
+      options,
     })
 
     try {
       const result = await templateInstance.execute(businesses)
-      
+
       logger.info('EnhancedExportService', `Export completed: ${templateId}`, {
         templateId,
         success: result.success,
@@ -159,7 +160,7 @@ export class EnhancedExportService implements ExportTemplateRegistry {
         recordsExported: result.recordsExported,
         recordsSkipped: result.recordsSkipped,
         errorCount: result.errors.length,
-        warningCount: result.warnings.length
+        warningCount: result.warnings.length,
       })
 
       return result
@@ -206,16 +207,16 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     logger.info('EnhancedExportService', `Starting multi-platform export`, {
       templateIds,
       businessCount: businesses.length,
-      options
+      options,
     })
 
     for (const templateId of templateIds) {
       try {
         const result = await this.exportWithTemplate(templateId, businesses, options)
-        
+
         results.push({
           templateId,
-          result
+          result,
         })
 
         if (result.success) {
@@ -224,20 +225,23 @@ export class EnhancedExportService implements ExportTemplateRegistry {
         } else {
           failedExports++
         }
-
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-        
+
         results.push({
           templateId,
           result: null,
-          error: errorMessage
+          error: errorMessage,
         })
 
         failedExports++
 
         if (!options.continueOnError) {
-          logger.error('EnhancedExportService', `Multi-platform export stopped due to error in ${templateId}`, error)
+          logger.error(
+            'EnhancedExportService',
+            `Multi-platform export stopped due to error in ${templateId}`,
+            error
+          )
           break
         }
       }
@@ -248,7 +252,7 @@ export class EnhancedExportService implements ExportTemplateRegistry {
       successfulExports,
       failedExports,
       totalRecordsProcessed: businesses.length,
-      totalRecordsExported
+      totalRecordsExported,
     }
 
     logger.info('EnhancedExportService', `Multi-platform export completed`, summary)
@@ -265,14 +269,14 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     templatesByCategory: Record<string, number>
   } {
     const templates = this.listTemplates()
-    
+
     const templatesByPlatform: Record<string, number> = {}
     const templatesByCategory: Record<string, number> = {}
 
     for (const template of templates) {
       // Count by platform
       templatesByPlatform[template.platform] = (templatesByPlatform[template.platform] || 0) + 1
-      
+
       // Count by category
       const category = template.metadata.category
       templatesByCategory[category] = (templatesByCategory[category] || 0) + 1
@@ -281,7 +285,7 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     return {
       availableTemplates: templates.length,
       templatesByPlatform: templatesByPlatform as Record<ExportPlatform, number>,
-      templatesByCategory
+      templatesByCategory,
     }
   }
 
@@ -304,30 +308,30 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     validation: any
   }> {
     const templateInstance = this.templates.get(templateId)
-    
+
     if (!templateInstance) {
       throw new Error(`Template not found: ${templateId}`)
     }
 
     const template = templateInstance.getTemplate()
     const sampleBusinesses = businesses.slice(0, sampleSize)
-    
+
     // Generate sample export
     const result = await templateInstance.execute(sampleBusinesses)
-    
+
     // Generate field mapping preview
     const fieldMappings = template.fieldMappings.map(mapping => ({
       sourceField: mapping.sourceFields.join(', '),
       targetField: mapping.targetField,
       sampleValue: result.exportData[0]?.[mapping.targetField] || null,
-      transformationType: mapping.type
+      transformationType: mapping.type,
     }))
 
     return {
       templateInfo: template,
       sampleData: result.exportData,
       fieldMappings,
-      validation: templateInstance.validate()
+      validation: templateInstance.validate(),
     }
   }
 
@@ -360,7 +364,7 @@ export class EnhancedExportService implements ExportTemplateRegistry {
         const csvResult = await this.convertToCSV(result, baseFilename)
         return {
           ...csvResult,
-          filename: csvResult.filename.replace('.csv', '.xlsx')
+          filename: csvResult.filename.replace('.csv', '.xlsx'),
         }
       default:
         throw new Error(`Unsupported format: ${format}`)
@@ -370,7 +374,10 @@ export class EnhancedExportService implements ExportTemplateRegistry {
   /**
    * Convert to CSV format
    */
-  private async convertToCSV(result: ExportTemplateResult, baseFilename: string): Promise<{
+  private async convertToCSV(
+    result: ExportTemplateResult,
+    baseFilename: string
+  ): Promise<{
     blob: Blob
     filename: string
     mimeType: string
@@ -382,14 +389,17 @@ export class EnhancedExportService implements ExportTemplateRegistry {
 
     const headers = Object.keys(template.platformConfig.headers)
     const csvHeaders = headers.map(header => template.platformConfig.headers[header])
-    
+
     let csvContent = csvHeaders.join(',') + '\n'
-    
+
     for (const record of result.exportData) {
       const row = headers.map(header => {
         const value = record[header] || ''
         // Escape CSV values
-        if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+        if (
+          typeof value === 'string' &&
+          (value.includes(',') || value.includes('"') || value.includes('\n'))
+        ) {
           return `"${value.replace(/"/g, '""')}"`
         }
         return value
@@ -398,18 +408,21 @@ export class EnhancedExportService implements ExportTemplateRegistry {
     }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
-    
+
     return {
       blob,
       filename: `${baseFilename}.csv`,
-      mimeType: 'text/csv'
+      mimeType: 'text/csv',
     }
   }
 
   /**
    * Convert to JSON format
    */
-  private async convertToJSON(result: ExportTemplateResult, baseFilename: string): Promise<{
+  private async convertToJSON(
+    result: ExportTemplateResult,
+    baseFilename: string
+  ): Promise<{
     blob: Blob
     filename: string
     mimeType: string
@@ -419,20 +432,20 @@ export class EnhancedExportService implements ExportTemplateRegistry {
       statistics: {
         recordsProcessed: result.recordsProcessed,
         recordsExported: result.recordsExported,
-        recordsSkipped: result.recordsSkipped
+        recordsSkipped: result.recordsSkipped,
       },
       data: result.exportData,
       errors: result.errors,
-      warnings: result.warnings
+      warnings: result.warnings,
     }
 
     const jsonContent = JSON.stringify(exportData, null, 2)
     const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8' })
-    
+
     return {
       blob,
       filename: `${baseFilename}.json`,
-      mimeType: 'application/json'
+      mimeType: 'application/json',
     }
   }
 }

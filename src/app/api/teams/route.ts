@@ -43,10 +43,10 @@ export const GET = withRBAC(
         paramIndex++
       } else {
         // Show teams where user is a member or has teams.view permission
-        const hasTeamsView = context.user.roles?.some(role => 
+        const hasTeamsView = context.user.roles?.some(role =>
           role.role.permissions.includes('teams.view')
         )
-        
+
         if (!hasTeamsView) {
           conditions.push(`tm.user_id = $${paramIndex} AND tm.is_active = true`)
           values.push(context.user.id)
@@ -101,11 +101,11 @@ export const GET = withRBAC(
             username: cleanTeam.owner_username,
             firstName: cleanTeam.owner_first_name,
             lastName: cleanTeam.owner_last_name,
-            fullName: `${cleanTeam.owner_first_name} ${cleanTeam.owner_last_name}`
+            fullName: `${cleanTeam.owner_first_name} ${cleanTeam.owner_last_name}`,
           },
           memberCount: parseInt(cleanTeam.member_count),
           workspaceCount: parseInt(cleanTeam.workspace_count),
-          userRole: cleanTeam.user_role
+          userRole: cleanTeam.user_role,
         }
       })
 
@@ -114,7 +114,7 @@ export const GET = withRBAC(
         page,
         limit,
         totalCount,
-        filters: { search, ownedOnly, memberOnly }
+        filters: { search, ownedOnly, memberOnly },
       })
 
       return NextResponse.json({
@@ -126,15 +126,12 @@ export const GET = withRBAC(
           total: totalCount,
           totalPages,
           hasNext: page < totalPages,
-          hasPrev: page > 1
-        }
+          hasPrev: page > 1,
+        },
       })
     } catch (error) {
       logger.error('Teams API', 'Error listing teams', error)
-      return NextResponse.json(
-        { error: 'Failed to list teams' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to list teams' }, { status: 500 })
     }
   },
   { permissions: ['teams.view'] }
@@ -151,10 +148,7 @@ export const POST = withRBAC(
 
       // Validate required fields
       if (!teamData.name || teamData.name.trim().length === 0) {
-        return NextResponse.json(
-          { error: 'Team name is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Team name is required' }, { status: 400 })
       }
 
       // Check if team name already exists for this user
@@ -164,43 +158,34 @@ export const POST = withRBAC(
       )
 
       if (existingTeam.rows[0]) {
-        return NextResponse.json(
-          { error: 'Team name already exists' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Team name already exists' }, { status: 400 })
       }
 
       // Create team
-      const team = await WorkspaceManagementService.createTeam(
-        teamData,
-        context.user.id
-      )
+      const team = await WorkspaceManagementService.createTeam(teamData, context.user.id)
 
       logger.info('Teams API', 'Team created successfully', {
         createdBy: context.user.id,
         teamId: team.id,
-        name: team.name
+        name: team.name,
       })
 
-      return NextResponse.json({
-        success: true,
-        data: team,
-        message: 'Team created successfully'
-      }, { status: 201 })
+      return NextResponse.json(
+        {
+          success: true,
+          data: team,
+          message: 'Team created successfully',
+        },
+        { status: 201 }
+      )
     } catch (error) {
       logger.error('Teams API', 'Error creating team', error)
-      
+
       if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: error.message }, { status: 400 })
       }
-      
-      return NextResponse.json(
-        { error: 'Failed to create team' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Failed to create team' }, { status: 500 })
     }
   },
   { permissions: ['teams.create'] }
@@ -216,17 +201,11 @@ export const PUT = withRBAC(
       const { teamIds, updateData } = body
 
       if (!Array.isArray(teamIds) || teamIds.length === 0) {
-        return NextResponse.json(
-          { error: 'Team IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Team IDs array is required' }, { status: 400 })
       }
 
       if (!updateData || typeof updateData !== 'object') {
-        return NextResponse.json(
-          { error: 'Update data is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Update data is required' }, { status: 400 })
       }
 
       const updatedTeams = []
@@ -242,10 +221,14 @@ export const PUT = withRBAC(
             continue
           }
 
-          const membership = await WorkspaceManagementService.getTeamMembership(teamId, context.user.id)
-          const canEdit = team.ownerId === context.user.id || 
-                         membership?.role === 'admin' ||
-                         context.user.roles?.some(role => role.role.permissions.includes('teams.manage'))
+          const membership = await WorkspaceManagementService.getTeamMembership(
+            teamId,
+            context.user.id
+          )
+          const canEdit =
+            team.ownerId === context.user.id ||
+            membership?.role === 'admin' ||
+            context.user.roles?.some(role => role.role.permissions.includes('teams.manage'))
 
           if (!canEdit) {
             errors.push({ teamId, error: 'Insufficient permissions' })
@@ -295,7 +278,7 @@ export const PUT = withRBAC(
         } catch (error) {
           errors.push({
             teamId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
@@ -304,7 +287,7 @@ export const PUT = withRBAC(
         updatedBy: context.user.id,
         successCount: updatedTeams.length,
         errorCount: errors.length,
-        teamIds
+        teamIds,
       })
 
       return NextResponse.json({
@@ -313,16 +296,13 @@ export const PUT = withRBAC(
           updated: updatedTeams.length,
           errors: errors.length,
           results: updatedTeams,
-          errors: errors
+          errors: errors,
         },
-        message: `Updated ${updatedTeams.length} teams successfully`
+        message: `Updated ${updatedTeams.length} teams successfully`,
       })
     } catch (error) {
       logger.error('Teams API', 'Error in bulk team update', error)
-      return NextResponse.json(
-        { error: 'Failed to update teams' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update teams' }, { status: 500 })
     }
   },
   { permissions: ['teams.edit'] }
@@ -338,10 +318,7 @@ export const DELETE = withRBAC(
       const { teamIds, permanent = false } = body
 
       if (!Array.isArray(teamIds) || teamIds.length === 0) {
-        return NextResponse.json(
-          { error: 'Team IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Team IDs array is required' }, { status: 400 })
       }
 
       const deletedTeams = []
@@ -357,8 +334,9 @@ export const DELETE = withRBAC(
             continue
           }
 
-          const canDelete = team.ownerId === context.user.id ||
-                           context.user.roles?.some(role => role.role.permissions.includes('teams.delete'))
+          const canDelete =
+            team.ownerId === context.user.id ||
+            context.user.roles?.some(role => role.role.permissions.includes('teams.delete'))
 
           if (!canDelete) {
             errors.push({ teamId, error: 'Insufficient permissions' })
@@ -384,7 +362,7 @@ export const DELETE = withRBAC(
         } catch (error) {
           errors.push({
             teamId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
@@ -394,7 +372,7 @@ export const DELETE = withRBAC(
         successCount: deletedTeams.length,
         errorCount: errors.length,
         teamIds,
-        permanent
+        permanent,
       })
 
       return NextResponse.json({
@@ -403,16 +381,13 @@ export const DELETE = withRBAC(
           deleted: deletedTeams.length,
           errors: errors.length,
           results: deletedTeams,
-          errors: errors
+          errors: errors,
         },
-        message: `${permanent ? 'Deleted' : 'Deactivated'} ${deletedTeams.length} teams successfully`
+        message: `${permanent ? 'Deleted' : 'Deactivated'} ${deletedTeams.length} teams successfully`,
       })
     } catch (error) {
       logger.error('Teams API', 'Error deleting teams', error)
-      return NextResponse.json(
-        { error: 'Failed to delete teams' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete teams' }, { status: 500 })
     }
   },
   { permissions: ['teams.delete'] }

@@ -74,10 +74,10 @@ export class EnhancedScrapingEngine {
 
   constructor(config?: Partial<ScrapingConfig>) {
     this.config = {
-      maxConcurrentJobs: 8,        // Increased from 3 to 8 for better throughput
+      maxConcurrentJobs: 8, // Increased from 3 to 8 for better throughput
       maxRetries: 3,
-      timeout: 45000,              // Reduced from 60000 for faster timeouts
-      retryDelay: 3000,            // Reduced from 5000 for faster retries
+      timeout: 45000, // Reduced from 60000 for faster timeouts
+      retryDelay: 3000, // Reduced from 5000 for faster retries
       enableAntiBot: true,
       enableContactExtraction: true,
       enablePerformanceMonitoring: true,
@@ -91,19 +91,24 @@ export class EnhancedScrapingEngine {
    */
   async initialize(): Promise<void> {
     logger.info('EnhancedScrapingEngine', 'Initializing enhanced scraping engine')
-    
+
     await browserPool.initialize()
     this.startQueueProcessing()
-    
+
     logger.info('EnhancedScrapingEngine', 'Enhanced scraping engine initialized')
   }
 
   /**
    * Add a scraping job to the queue
    */
-  async addJob(url: string, depth: number = 2, priority: number = 1, maxPages: number = 5): Promise<string> {
+  async addJob(
+    url: string,
+    depth: number = 2,
+    priority: number = 1,
+    maxPages: number = 5
+  ): Promise<string> {
     const jobId = `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    
+
     const job: ScrapingJob = {
       id: jobId,
       url,
@@ -183,9 +188,10 @@ export class EnhancedScrapingEngine {
     const queuedJobs = this.jobQueue.length
 
     const completedMetrics = this.performanceMetrics.filter(m => m.success)
-    const averageProcessingTime = completedMetrics.length > 0
-      ? completedMetrics.reduce((sum, m) => sum + m.duration, 0) / completedMetrics.length
-      : 0
+    const averageProcessingTime =
+      completedMetrics.length > 0
+        ? completedMetrics.reduce((sum, m) => sum + m.duration, 0) / completedMetrics.length
+        : 0
 
     const successRate = totalJobs > 0 ? completedJobs / totalJobs : 0
 
@@ -212,9 +218,9 @@ export class EnhancedScrapingEngine {
    */
   async shutdown(): Promise<void> {
     logger.info('EnhancedScrapingEngine', 'Shutting down enhanced scraping engine')
-    
+
     this.isProcessing = false
-    
+
     if (this.processingInterval) {
       clearInterval(this.processingInterval)
     }
@@ -227,13 +233,13 @@ export class EnhancedScrapingEngine {
     // Wait for active jobs to complete or timeout
     const timeout = 30000 // 30 seconds
     const startTime = Date.now()
-    
+
     while (this.activeJobs.size > 0 && Date.now() - startTime < timeout) {
       await new Promise(resolve => setTimeout(resolve, 1000))
     }
 
     await browserPool.shutdown()
-    
+
     logger.info('EnhancedScrapingEngine', 'Enhanced scraping engine shutdown complete')
   }
 
@@ -242,10 +248,10 @@ export class EnhancedScrapingEngine {
    */
   private startQueueProcessing(): void {
     this.isProcessing = true
-    
+
     this.processingInterval = setInterval(async () => {
       if (!this.isProcessing) return
-      
+
       await this.processQueue()
     }, this.config.queueProcessingInterval)
   }
@@ -268,7 +274,7 @@ export class EnhancedScrapingEngine {
     // Remove from queue and add to active jobs
     const queueIndex = this.jobQueue.indexOf(job)
     this.jobQueue.splice(queueIndex, 1)
-    
+
     job.status = 'running'
     job.startedAt = new Date()
     this.activeJobs.set(job.id, job)
@@ -293,7 +299,7 @@ export class EnhancedScrapingEngine {
 
       // Get page from browser pool
       pageInstance = await browserPool.getPage()
-      
+
       // Apply anti-bot bypass measures
       if (this.config.enableAntiBot) {
         await antiBotBypass.applyBypassMeasures(pageInstance.page)
@@ -318,15 +324,17 @@ export class EnhancedScrapingEngine {
 
       // Extract contact information
       const businesses: BusinessRecord[] = []
-      
+
       if (this.config.enableContactExtraction) {
         const contactInfo = await contactExtractor.extractContactInfo(pageInstance.page, job.url)
-        
+
         if (contactInfo.confidence.overall > 0.3) {
           // Prioritize and format contact information
           const prioritizedEmails = this.prioritizeEmails(contactInfo.emails)
-          const formattedPhone = contactInfo.phones.length > 0 && contactInfo.phones[0] ?
-            this.formatPhoneNumber(contactInfo.phones[0]) : ''
+          const formattedPhone =
+            contactInfo.phones.length > 0 && contactInfo.phones[0]
+              ? this.formatPhoneNumber(contactInfo.phones[0])
+              : ''
 
           const business: BusinessRecord = {
             id: `business-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -337,7 +345,7 @@ export class EnhancedScrapingEngine {
             phone: formattedPhone,
             address: this.parseAndFormatAddress(contactInfo.addresses[0]),
             contactPerson: this.extractContactPerson(contactInfo),
-            scrapedAt: new Date()
+            scrapedAt: new Date(),
           }
 
           businesses.push(business)
@@ -359,12 +367,15 @@ export class EnhancedScrapingEngine {
           if (job.status === 'cancelled' || pagesScraped >= job.maxPages) break
 
           pagesScraped++ // Increment page count for each contact page
-          
+
           try {
             await antiBotBypass.navigateHumanLike(pageInstance.page, contactUrl)
-            
-            const contactInfo = await contactExtractor.extractContactInfo(pageInstance.page, contactUrl)
-            
+
+            const contactInfo = await contactExtractor.extractContactInfo(
+              pageInstance.page,
+              contactUrl
+            )
+
             if (contactInfo.confidence.overall > 0.3) {
               // Merge with existing business or create new one
               if (businesses.length > 0) {
@@ -379,11 +390,12 @@ export class EnhancedScrapingEngine {
                     business.phone = this.formatPhoneNumber(contactInfo.phones[0])
                   } else if (contactInfo.phones.length > 0) {
                     // Prefer business/main numbers over mobile
-                    const businessPhone = contactInfo.phones.find(phone =>
-                      phone &&
-                      !phone.toLowerCase().includes('mobile') &&
-                      !phone.toLowerCase().includes('cell') &&
-                      !phone.toLowerCase().includes('fax')
+                    const businessPhone = contactInfo.phones.find(
+                      phone =>
+                        phone &&
+                        !phone.toLowerCase().includes('mobile') &&
+                        !phone.toLowerCase().includes('cell') &&
+                        !phone.toLowerCase().includes('fax')
                     )
                     if (businessPhone) {
                       business.phone = this.formatPhoneNumber(businessPhone)
@@ -394,7 +406,10 @@ export class EnhancedScrapingEngine {
                   const newAddress = this.parseAndFormatAddress(contactInfo.addresses[0])
                   if (!business.address.street && newAddress.street) {
                     business.address = newAddress
-                  } else if (newAddress.street && newAddress.street.length > business.address.street.length) {
+                  } else if (
+                    newAddress.street &&
+                    newAddress.street.length > business.address.street.length
+                  ) {
                     business.address = newAddress
                   }
 
@@ -406,11 +421,15 @@ export class EnhancedScrapingEngine {
                 }
               }
             }
-            
+
             pagesScraped++
             contactsFound += contactInfo.emails.length + contactInfo.phones.length
           } catch (error) {
-            logger.warn('EnhancedScrapingEngine', `Failed to scrape contact page ${contactUrl}`, error)
+            logger.warn(
+              'EnhancedScrapingEngine',
+              `Failed to scrape contact page ${contactUrl}`,
+              error
+            )
           }
         }
       }
@@ -420,33 +439,38 @@ export class EnhancedScrapingEngine {
       job.completedAt = new Date()
       job.result = businesses
 
-      logger.info('EnhancedScrapingEngine', 
-        `Job ${job.id} completed: ${businesses.length} businesses, ${contactsFound} contacts`)
-
+      logger.info(
+        'EnhancedScrapingEngine',
+        `Job ${job.id} completed: ${businesses.length} businesses, ${contactsFound} contacts`
+      )
     } catch (error) {
       logger.error('EnhancedScrapingEngine', `Job ${job.id} failed`, error)
-      
+
       job.retries++
       job.error = error instanceof Error ? error.message : String(error)
 
       if (job.retries < job.maxRetries) {
         // Retry job
         job.status = 'pending'
-        
+
         // Add delay before retry
         setTimeout(() => {
           this.jobQueue.unshift(job) // Add to front of queue
         }, this.config.retryDelay * job.retries)
-        
-        logger.info('EnhancedScrapingEngine', 
-          `Job ${job.id} will be retried (attempt ${job.retries + 1}/${job.maxRetries})`)
+
+        logger.info(
+          'EnhancedScrapingEngine',
+          `Job ${job.id} will be retried (attempt ${job.retries + 1}/${job.maxRetries})`
+        )
       } else {
         // Job failed permanently
         job.status = 'failed'
         job.completedAt = new Date()
-        
-        logger.error('EnhancedScrapingEngine', 
-          `Job ${job.id} failed permanently after ${job.retries} retries`)
+
+        logger.error(
+          'EnhancedScrapingEngine',
+          `Job ${job.id} failed permanently after ${job.retries} retries`
+        )
       }
     } finally {
       // Release page back to pool
@@ -456,17 +480,20 @@ export class EnhancedScrapingEngine {
 
       // Remove from active jobs
       this.activeJobs.delete(job.id)
-      
+
       // Add to completed jobs if not retrying
       if (job.status !== 'pending') {
         this.completedJobs.push(job)
-        
+
         // Keep only recent completed jobs
         if (this.completedJobs.length > 1000) {
           this.completedJobs.splice(0, 100)
         }
 
-        logger.info('EnhancedScrapingEngine', `Scraped ${pagesScraped} pages for ${job.url} (maxPages: ${job.maxPages})`)
+        logger.info(
+          'EnhancedScrapingEngine',
+          `Scraped ${pagesScraped} pages for ${job.url} (maxPages: ${job.maxPages})`
+        )
       }
 
       // Record performance metrics
@@ -484,9 +511,9 @@ export class EnhancedScrapingEngine {
           retries: job.retries,
           error: job.error,
         }
-        
+
         this.performanceMetrics.push(metrics)
-        
+
         // Keep only recent metrics
         if (this.performanceMetrics.length > 1000) {
           this.performanceMetrics.splice(0, 100)
@@ -504,14 +531,17 @@ export class EnhancedScrapingEngine {
         const links = Array.from(document.querySelectorAll('a[href]'))
         const contactKeywords = ['contact', 'about', 'team', 'staff', 'location', 'office']
         const urls: string[] = []
-        
+
         links.forEach((link: any) => {
           const href = link.getAttribute('href')
           const text = link.textContent?.toLowerCase() || ''
-          
-          if (href && contactKeywords.some(keyword => 
-            text.includes(keyword) || href.toLowerCase().includes(keyword)
-          )) {
+
+          if (
+            href &&
+            contactKeywords.some(
+              keyword => text.includes(keyword) || href.toLowerCase().includes(keyword)
+            )
+          ) {
             try {
               const url = new URL(href, base)
               if (url.hostname === new URL(base).hostname) {
@@ -522,10 +552,10 @@ export class EnhancedScrapingEngine {
             }
           }
         })
-        
+
         return Array.from(new Set(urls))
       }, baseUrl)
-      
+
       return contactUrls.slice(0, 5) // Limit to 5 contact pages
     } catch (error) {
       logger.warn('EnhancedScrapingEngine', 'Failed to find contact pages', error)
@@ -562,7 +592,7 @@ export class EnhancedScrapingEngine {
       // ZIP code pattern - ReDoS safe version
       zipCode: /\b([0-9]{5}(?:-[0-9]{4})?)\b/,
       // State abbreviation
-      state: /\b([A-Z]{2})\b/
+      state: /\b([A-Z]{2})\b/,
     }
 
     const lines = rawAddress.split(/[,\n]/).map(line => line.trim())
@@ -621,7 +651,9 @@ export class EnhancedScrapingEngine {
     if (!city && lines.length > 1 && lines[1]) {
       const secondLine = lines[1].trim()
       // Try to parse city, state, zip from the second line - ReDoS safe version
-      const cityStateZipMatch2 = secondLine.match(/^([^,]{1,50}),?\s*([A-Z]{2})\s*([0-9]{5}(?:-[0-9]{4})?)?/)
+      const cityStateZipMatch2 = secondLine.match(
+        /^([^,]{1,50}),?\s*([A-Z]{2})\s*([0-9]{5}(?:-[0-9]{4})?)?/
+      )
       if (cityStateZipMatch2 && cityStateZipMatch2[1]) {
         city = cityStateZipMatch2[1].trim()
         if (!state && cityStateZipMatch2[2]) {
@@ -641,7 +673,7 @@ export class EnhancedScrapingEngine {
       suite: suite || undefined,
       city: city || '',
       state: state || '',
-      zipCode: zipCode || ''
+      zipCode: zipCode || '',
     }
   }
 
@@ -668,7 +700,7 @@ export class EnhancedScrapingEngine {
       const personPatterns = [
         /^(Dr\.|Mr\.|Ms\.|Mrs\.|Prof\.)\s+([A-Z][a-z]+\s+[A-Z][a-z]+)/,
         /([A-Z][a-z]+\s+[A-Z][a-z]+)\s+(MD|DDS|PhD|CPA|Esq\.?)/,
-        /^([A-Z][a-z]+\s+[A-Z][a-z]+)(?:\s+&|\s+and|\s+,)/
+        /^([A-Z][a-z]+\s+[A-Z][a-z]+)(?:\s+&|\s+and|\s+,)/,
       ]
 
       for (const pattern of personPatterns) {
@@ -699,7 +731,7 @@ export class EnhancedScrapingEngine {
       // Medium priority - general emails
       general: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       // Low priority - personal or generic
-      personal: /^(noreply|no-reply|donotreply|test|example)@/i
+      personal: /^(noreply|no-reply|donotreply|test|example)@/i,
     }
 
     const prioritized = emails
@@ -744,8 +776,6 @@ export class EnhancedScrapingEngine {
     // Return original if can't format
     return phone
   }
-
-
 }
 
 /**

@@ -16,7 +16,7 @@ import {
   ConversionPrediction,
   PredictiveAnalytics,
   AIProcessingJob,
-  AIInsightsSummary
+  AIInsightsSummary,
 } from '@/types/ai'
 import { logger } from '@/utils/logger'
 
@@ -71,21 +71,21 @@ export class AIService {
     try {
       // For now, we'll create simple models
       // In production, these would be loaded from saved model files
-      
+
       // Lead scoring model (simple neural network)
       const leadScoringModel = tf.sequential({
         layers: [
           tf.layers.dense({ inputShape: [10], units: 64, activation: 'relu' }),
           tf.layers.dropout({ rate: 0.2 }),
           tf.layers.dense({ units: 32, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'sigmoid' })
-        ]
+          tf.layers.dense({ units: 1, activation: 'sigmoid' }),
+        ],
       })
 
       leadScoringModel.compile({
         optimizer: 'adam',
         loss: 'binaryCrossentropy',
-        metrics: ['accuracy']
+        metrics: ['accuracy'],
       })
 
       this.models.set('leadScoring', leadScoringModel)
@@ -96,19 +96,18 @@ export class AIService {
         layers: [
           tf.layers.dense({ inputShape: [8], units: 32, activation: 'relu' }),
           tf.layers.dense({ units: 16, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'linear' })
-        ]
+          tf.layers.dense({ units: 1, activation: 'linear' }),
+        ],
       })
 
       websiteQualityModel.compile({
         optimizer: 'adam',
         loss: 'meanSquaredError',
-        metrics: ['mae']
+        metrics: ['mae'],
       })
 
       this.models.set('websiteQuality', websiteQualityModel)
       logger.info('AIService', 'Website quality model loaded')
-
     } catch (error) {
       logger.error('AIService', 'Failed to load models', error)
       // Continue without models - use fallback scoring
@@ -127,17 +126,14 @@ export class AIService {
       logger.info('AIService', `Analyzing business: ${business.businessName}`)
 
       // Run parallel analysis
-      const [
-        leadScore,
-        websiteQuality,
-        businessMaturity,
-        conversionPrediction
-      ] = await Promise.all([
-        this.calculateLeadScore(business),
-        this.analyzeWebsiteQuality(business),
-        this.analyzeBusinessMaturity(business),
-        this.predictConversion(business)
-      ])
+      const [leadScore, websiteQuality, businessMaturity, conversionPrediction] = await Promise.all(
+        [
+          this.calculateLeadScore(business),
+          this.analyzeWebsiteQuality(business),
+          this.analyzeBusinessMaturity(business),
+          this.predictConversion(business),
+        ]
+      )
 
       // Generate overall recommendation
       const recommendation = this.generateRecommendation(
@@ -154,12 +150,11 @@ export class AIService {
         conversionPrediction,
         industryTrends: [], // Will be populated by trend analysis
         recommendation,
-        generatedAt: new Date()
+        generatedAt: new Date(),
       }
 
       logger.info('AIService', `Analysis completed for: ${business.businessName}`)
       return analytics
-
     } catch (error) {
       logger.error('AIService', `Failed to analyze business: ${business.businessName}`, error)
       throw error
@@ -173,7 +168,7 @@ export class AIService {
     try {
       // Extract features for ML model
       const features = this.extractLeadScoringFeatures(business)
-      
+
       let overallScore = 50 // Default score
       let confidence = 0.5
 
@@ -196,7 +191,7 @@ export class AIService {
         websiteQuality: this.calculateWebsiteQualityScore(business),
         businessMaturity: this.calculateBusinessMaturityScore(business),
         conversionProbability: this.calculateConversionProbabilityScore(business),
-        industryRelevance: this.calculateIndustryRelevanceScore(business)
+        industryRelevance: this.calculateIndustryRelevanceScore(business),
       }
 
       // Calculate detailed breakdown
@@ -205,7 +200,7 @@ export class AIService {
         contentQuality: this.assessContentQuality(business),
         technicalPerformance: 75, // Will be updated by Lighthouse analysis
         businessSignals: this.assessBusinessSignals(business),
-        contactAvailability: this.assessContactAvailability(business)
+        contactAvailability: this.assessContactAvailability(business),
       }
 
       return {
@@ -214,9 +209,8 @@ export class AIService {
         components,
         breakdown,
         calculatedAt: new Date(),
-        modelVersion: '1.0.0'
+        modelVersion: '1.0.0',
       }
-
     } catch (error) {
       logger.error('AIService', 'Failed to calculate lead score', error)
       throw error
@@ -237,7 +231,7 @@ export class AIService {
       business.industry ? 1 : 0,
       business.scrapedAt ? 1 : 0,
       Math.random(), // Placeholder for domain authority
-      Math.random()  // Placeholder for social signals
+      Math.random(), // Placeholder for social signals
     ]
   }
 
@@ -269,16 +263,16 @@ export class AIService {
    */
   private calculateWebsiteQualityScore(business: BusinessRecord): number {
     if (!business.website) return 0
-    
+
     // Basic scoring based on available data
     let score = 50 // Base score for having a website
-    
+
     // Domain quality indicators
     const domain = business.website.toLowerCase()
     if (domain.includes('https://')) score += 10
     if (!domain.includes('wordpress.com') && !domain.includes('wix.com')) score += 10
     if (domain.length > 10 && domain.length < 50) score += 10
-    
+
     return Math.min(100, score)
   }
 
@@ -287,13 +281,13 @@ export class AIService {
    */
   private calculateBusinessMaturityScore(business: BusinessRecord): number {
     let score = 30 // Base score
-    
+
     // Business information completeness
     if (business.description && business.description.length > 100) score += 20
     if (business.address) score += 15
     if (business.phone && business.email) score += 15
     if (business.website) score += 20
-    
+
     return Math.min(100, score)
   }
 
@@ -302,15 +296,15 @@ export class AIService {
    */
   private calculateConversionProbabilityScore(business: BusinessRecord): number {
     let score = 40 // Base probability
-    
+
     // Contact availability increases conversion probability
     if (business.email) score += 20
     if (business.phone) score += 15
     if (business.website) score += 15
-    
+
     // Business completeness
     if (business.description) score += 10
-    
+
     return Math.min(100, score)
   }
 
@@ -319,7 +313,7 @@ export class AIService {
    */
   private calculateIndustryRelevanceScore(business: BusinessRecord): number {
     if (!business.industry) return 50
-    
+
     // For now, return high relevance for all industries
     // This would be enhanced with industry-specific scoring
     return 85
@@ -330,15 +324,15 @@ export class AIService {
    */
   private estimateDomainAuthority(website: string): number {
     if (!website) return 0
-    
+
     // Simple heuristic-based estimation
     let score = 30 // Base score
-    
+
     const domain = website.toLowerCase()
     if (domain.includes('https://')) score += 10
     if (!domain.includes('.wordpress.com') && !domain.includes('.wix.com')) score += 20
     if (domain.length > 15 && domain.length < 40) score += 15
-    
+
     return Math.min(100, score)
   }
 
@@ -347,14 +341,14 @@ export class AIService {
    */
   private assessContentQuality(business: BusinessRecord): number {
     let score = 40 // Base score
-    
+
     if (business.description) {
       const desc = business.description.toLowerCase()
       if (desc.length > 100) score += 20
       if (desc.includes('service') || desc.includes('professional')) score += 10
       if (desc.includes('experience') || desc.includes('quality')) score += 10
     }
-    
+
     return Math.min(100, score)
   }
 
@@ -363,12 +357,12 @@ export class AIService {
    */
   private assessBusinessSignals(business: BusinessRecord): number {
     let score = 30 // Base score
-    
+
     // Multiple contact methods indicate established business
     if (business.phone && business.email) score += 25
     if (business.website && business.address) score += 25
     if (business.description && business.description.length > 50) score += 20
-    
+
     return Math.min(100, score)
   }
 
@@ -377,11 +371,11 @@ export class AIService {
    */
   private assessContactAvailability(business: BusinessRecord): number {
     let score = 0
-    
+
     if (business.phone) score += 40
     if (business.email) score += 40
     if (business.website) score += 20
-    
+
     return Math.min(100, score)
   }
 
@@ -398,27 +392,29 @@ export class AIService {
         accessibility: 85,
         bestPractices: 90,
         seo: 75,
-        pwa: 60
+        pwa: 60,
       },
       content: {
         professionalismScore: 80,
         readabilityScore: 85,
         keywordRelevance: 70,
         callToActionPresence: true,
-        contactInfoAvailability: true
+        contactInfoAvailability: true,
       },
       technical: {
         loadTime: 2.5,
         mobileOptimized: true,
         httpsEnabled: true,
         socialMediaPresence: false,
-        structuredDataPresent: false
+        structuredDataPresent: false,
       },
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     }
   }
 
-  private async analyzeBusinessMaturity(business: BusinessRecord): Promise<BusinessMaturityIndicators> {
+  private async analyzeBusinessMaturity(
+    business: BusinessRecord
+  ): Promise<BusinessMaturityIndicators> {
     // Placeholder implementation
     return {
       maturityScore: 70,
@@ -429,50 +425,50 @@ export class AIService {
         pressReleases: [],
         investorRelationsPage: false,
         teamPageExists: false,
-        aboutPageQuality: 60
+        aboutPageQuality: 60,
       },
       sizeIndicators: {
         estimatedEmployeeCount: null,
         officeLocations: [],
         serviceAreas: [],
         clientTestimonials: 0,
-        caseStudies: 0
+        caseStudies: 0,
       },
       digitalPresence: {
         socialMediaAccounts: [],
         blogActivity: false,
         lastBlogPost: null,
         emailMarketingSignup: false,
-        liveChatAvailable: false
+        liveChatAvailable: false,
       },
-      analyzedAt: new Date()
+      analyzedAt: new Date(),
     }
   }
 
   private async predictConversion(business: BusinessRecord): Promise<ConversionPrediction> {
     // Placeholder implementation
     const probability = Math.random() * 0.6 + 0.2 // 20-80% range
-    
+
     return {
       probability,
       confidenceInterval: {
         lower: Math.max(0, probability - 0.1),
-        upper: Math.min(1, probability + 0.1)
+        upper: Math.min(1, probability + 0.1),
       },
       factors: {
         industryMatch: 0.8,
         businessSize: 0.6,
         websiteQuality: 0.7,
         contactAvailability: 0.9,
-        geographicRelevance: 0.8
+        geographicRelevance: 0.8,
       },
       recommendedStrategy: 'email',
       bestContactTime: {
         dayOfWeek: 'Tuesday',
         hourRange: '10:00-11:00',
-        timezone: 'EST'
+        timezone: 'EST',
       },
-      predictedAt: new Date()
+      predictedAt: new Date(),
     }
   }
 
@@ -482,21 +478,18 @@ export class AIService {
     businessMaturity: BusinessMaturityIndicators,
     conversionPrediction: ConversionPrediction
   ) {
-    const avgScore = (leadScore.overallScore + websiteQuality.healthScore + businessMaturity.maturityScore) / 3
-    
+    const avgScore =
+      (leadScore.overallScore + websiteQuality.healthScore + businessMaturity.maturityScore) / 3
+
     let priority: 'high' | 'medium' | 'low' = 'medium'
     if (avgScore >= 80) priority = 'high'
     else if (avgScore < 60) priority = 'low'
-    
+
     return {
       priority,
       reasoning: `Based on lead score (${leadScore.overallScore}), website quality (${websiteQuality.healthScore}), and business maturity (${businessMaturity.maturityScore})`,
-      nextSteps: [
-        'Review contact information',
-        'Prepare targeted outreach',
-        'Schedule follow-up'
-      ],
-      estimatedValue: avgScore * 10 // Simple value estimation
+      nextSteps: ['Review contact information', 'Prepare targeted outreach', 'Schedule follow-up'],
+      estimatedValue: avgScore * 10, // Simple value estimation
     }
   }
 
@@ -530,8 +523,8 @@ export const aiService = new AIService({
         lastTrainedAt: new Date(),
         accuracy: 0.85,
         precision: 0.82,
-        recall: 0.88
-      }
+        recall: 0.88,
+      },
     },
     websiteQuality: {
       name: 'websiteQuality',
@@ -544,8 +537,8 @@ export const aiService = new AIService({
         lastTrainedAt: new Date(),
         accuracy: 0.78,
         precision: 0.75,
-        recall: 0.80
-      }
+        recall: 0.8,
+      },
     },
     conversionPrediction: {
       name: 'conversionPrediction',
@@ -557,25 +550,25 @@ export const aiService = new AIService({
         datasetSize: 800,
         lastTrainedAt: new Date(),
         accuracy: 0.72,
-        precision: 0.70,
-        recall: 0.75
-      }
-    }
+        precision: 0.7,
+        recall: 0.75,
+      },
+    },
   },
   apis: {
     huggingFace: {
       apiKey: process.env.HUGGINGFACE_API_KEY || null,
-      model: 'distilbert-base-uncased'
+      model: 'distilbert-base-uncased',
     },
     lighthouse: {
       enabled: true,
-      timeout: 30000
-    }
+      timeout: 30000,
+    },
   },
   performance: {
     batchSize: 10,
     maxConcurrentAnalysis: 3,
     cacheResults: true,
-    cacheTTL: 3600000 // 1 hour
-  }
+    cacheTTL: 3600000, // 1 hour
+  },
 })

@@ -1,6 +1,6 @@
 /**
  * Search Engine Controls Component Tests
- * 
+ *
  * Tests for the search engine management UI component
  */
 
@@ -16,16 +16,16 @@ jest.mock('@/lib/searchEngineManager', () => ({
     getAllEngines: jest.fn(),
     hasAvailableEngines: jest.fn(),
     setEngineEnabled: jest.fn(),
-    resetAllEngines: jest.fn()
-  }
+    resetAllEngines: jest.fn(),
+  },
 }))
 
 // Mock toast
 jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }))
 
 // Mock logger
@@ -33,8 +33,8 @@ jest.mock('@/utils/logger', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }))
 
 const mockSearchEngineManager = searchEngineManager as jest.Mocked<typeof searchEngineManager>
@@ -48,7 +48,7 @@ describe('SearchEngineControls', () => {
       isDisabledForSession: false,
       duplicateCount: 0,
       lastResults: [],
-      sessionId: null
+      sessionId: null,
     },
     {
       id: 'azure',
@@ -57,7 +57,7 @@ describe('SearchEngineControls', () => {
       isDisabledForSession: false,
       duplicateCount: 0,
       lastResults: [],
-      sessionId: null
+      sessionId: null,
     },
     {
       id: 'duckduckgo',
@@ -66,8 +66,8 @@ describe('SearchEngineControls', () => {
       isDisabledForSession: false,
       duplicateCount: 0,
       lastResults: [],
-      sessionId: null
-    }
+      sessionId: null,
+    },
   ]
 
   beforeEach(() => {
@@ -78,7 +78,7 @@ describe('SearchEngineControls', () => {
 
   test('should render search engine controls', () => {
     render(<SearchEngineControls />)
-    
+
     expect(screen.getByText('Search Engine Management')).toBeInTheDocument()
     expect(screen.getByText('Google Search')).toBeInTheDocument()
     expect(screen.getByText('Azure AI Search')).toBeInTheDocument()
@@ -87,9 +87,9 @@ describe('SearchEngineControls', () => {
 
   test('should show warning when no engines are available', () => {
     mockSearchEngineManager.hasAvailableEngines.mockReturnValue(false)
-    
+
     render(<SearchEngineControls />)
-    
+
     expect(screen.getByText('Warning: No search engines are available')).toBeInTheDocument()
     expect(screen.getByText(/The application will not function properly/)).toBeInTheDocument()
   })
@@ -98,13 +98,13 @@ describe('SearchEngineControls', () => {
     const enginesWithVariedStatus = [
       { ...mockEngines[0], enabled: true, isDisabledForSession: false },
       { ...mockEngines[1], enabled: false, isDisabledForSession: false },
-      { ...mockEngines[2], enabled: true, isDisabledForSession: true, duplicateCount: 2 }
+      { ...mockEngines[2], enabled: true, isDisabledForSession: true, duplicateCount: 2 },
     ]
-    
+
     mockSearchEngineManager.getAllEngines.mockReturnValue(enginesWithVariedStatus)
-    
+
     render(<SearchEngineControls />)
-    
+
     expect(screen.getByText('Active')).toBeInTheDocument()
     expect(screen.getByText('Disabled')).toBeInTheDocument()
     expect(screen.getByText('Session Disabled (2 duplicates)')).toBeInTheDocument()
@@ -112,18 +112,18 @@ describe('SearchEngineControls', () => {
 
   test('should handle engine toggle', async () => {
     render(<SearchEngineControls />)
-    
+
     // Find the toggle button for DuckDuckGo (which is disabled)
     const toggleButtons = screen.getAllByRole('button')
-    const duckduckgoToggle = toggleButtons.find(button => 
+    const duckduckgoToggle = toggleButtons.find(button =>
       button.getAttribute('title')?.includes('Enable DuckDuckGo')
     )
-    
+
     expect(duckduckgoToggle).toBeInTheDocument()
-    
+
     if (duckduckgoToggle) {
       fireEvent.click(duckduckgoToggle)
-      
+
       await waitFor(() => {
         expect(mockSearchEngineManager.setEngineEnabled).toHaveBeenCalledWith('duckduckgo', true)
       })
@@ -132,10 +132,10 @@ describe('SearchEngineControls', () => {
 
   test('should handle reset all engines', async () => {
     render(<SearchEngineControls />)
-    
+
     const resetButton = screen.getByText('Reset All')
     fireEvent.click(resetButton)
-    
+
     await waitFor(() => {
       expect(mockSearchEngineManager.resetAllEngines).toHaveBeenCalled()
     })
@@ -143,36 +143,40 @@ describe('SearchEngineControls', () => {
 
   test('should disable toggle for session-disabled engines', () => {
     const enginesWithSessionDisabled = [
-      { ...mockEngines[0], enabled: true, isDisabledForSession: true, duplicateCount: 2 }
+      { ...mockEngines[0], enabled: true, isDisabledForSession: true, duplicateCount: 2 },
     ]
-    
+
     mockSearchEngineManager.getAllEngines.mockReturnValue(enginesWithSessionDisabled)
-    
+
     render(<SearchEngineControls />)
-    
+
     const toggleButtons = screen.getAllByRole('button')
-    const sessionDisabledToggle = toggleButtons.find(button => 
+    const sessionDisabledToggle = toggleButtons.find(button =>
       button.getAttribute('title')?.includes('Cannot enable - disabled for current session')
     )
-    
+
     expect(sessionDisabledToggle).toBeInTheDocument()
     expect(sessionDisabledToggle).toBeDisabled()
   })
 
   test('should call onEngineStateChange callback', () => {
     const mockCallback = jest.fn()
-    
+
     render(<SearchEngineControls onEngineStateChange={mockCallback} />)
-    
+
     expect(mockCallback).toHaveBeenCalledWith(mockEngines)
   })
 
   test('should show help text', () => {
     render(<SearchEngineControls />)
-    
+
     expect(screen.getByText('How Search Engine Management Works:')).toBeInTheDocument()
-    expect(screen.getByText(/Engines are automatically disabled if they return duplicate results twice/)).toBeInTheDocument()
-    expect(screen.getByText(/Session-disabled engines are re-enabled when a new scraping session starts/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/Engines are automatically disabled if they return duplicate results twice/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Session-disabled engines are re-enabled when a new scraping session starts/)
+    ).toBeInTheDocument()
   })
 
   test('should apply correct styling based on engine availability', () => {

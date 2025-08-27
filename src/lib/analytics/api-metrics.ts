@@ -31,7 +31,7 @@ export class ApiMetricsService {
   private alertThresholds = {
     errorRate: 5, // 5% error rate threshold
     responseTime: 2000, // 2 second response time threshold
-    rateLimitHits: 10 // 10 rate limit hits per minute threshold
+    rateLimitHits: 10, // 10 rate limit hits per minute threshold
   }
 
   constructor() {
@@ -44,7 +44,7 @@ export class ApiMetricsService {
    */
   private initializeService(): void {
     logger.info('ApiMetrics', 'Initializing API metrics service')
-    
+
     // Start periodic cleanup and monitoring
     setInterval(() => {
       this.cleanupRateLimits()
@@ -62,20 +62,20 @@ export class ApiMetricsService {
         tokens: 0,
         lastRefill: now,
         windowStart: now,
-        requestCount: 0
+        requestCount: 0,
       },
       hour: {
         tokens: 0,
         lastRefill: now,
         windowStart: now,
-        requestCount: 0
+        requestCount: 0,
       },
       day: {
         tokens: 0,
         lastRefill: now,
         windowStart: now,
-        requestCount: 0
-      }
+        requestCount: 0,
+      },
     }
   }
 
@@ -105,7 +105,7 @@ export class ApiMetricsService {
   } {
     const now = Date.now()
     let clientLimits = this.rateLimits.get(clientId)
-    
+
     if (!clientLimits) {
       clientLimits = this.createRateLimitBucket()
       this.rateLimits.set(clientId, clientLimits)
@@ -148,14 +148,14 @@ export class ApiMetricsService {
       remaining: {
         minute: minuteCheck.remaining,
         hour: hourCheck.remaining,
-        day: dayCheck.remaining
+        day: dayCheck.remaining,
       },
       resetTime: {
         minute: minuteCheck.resetTime,
         hour: hourCheck.resetTime,
-        day: dayCheck.resetTime
+        day: dayCheck.resetTime,
       },
-      rateLimitHit
+      rateLimitHit,
     }
   }
 
@@ -185,7 +185,7 @@ export class ApiMetricsService {
     return {
       allowed,
       remaining,
-      resetTime: Math.ceil(resetTime / 1000) // Convert to seconds
+      resetTime: Math.ceil(resetTime / 1000), // Convert to seconds
     }
   }
 
@@ -236,15 +236,17 @@ export class ApiMetricsService {
         lastCheck: new Date().toISOString(),
         responseTime,
         uptime: process.uptime(),
-        errors: [{
-          timestamp: new Date().toISOString(),
-          error: `${errorType}: ${endpoint} - ${statusCode} (${responseTime}ms)`,
-          severity
-        }],
+        errors: [
+          {
+            timestamp: new Date().toISOString(),
+            error: `${errorType}: ${endpoint} - ${statusCode} (${responseTime}ms)`,
+            severity,
+          },
+        ],
         metrics: {
           lastResponseTime: responseTime,
-          lastStatusCode: statusCode
-        }
+          lastStatusCode: statusCode,
+        },
       })
     }
   }
@@ -267,16 +269,16 @@ export class ApiMetricsService {
     return {
       minute: {
         requests: clientLimits.minute.requestCount,
-        resetTime: Math.ceil((clientLimits.minute.windowStart + 60 * 1000) / 1000)
+        resetTime: Math.ceil((clientLimits.minute.windowStart + 60 * 1000) / 1000),
       },
       hour: {
         requests: clientLimits.hour.requestCount,
-        resetTime: Math.ceil((clientLimits.hour.windowStart + 60 * 60 * 1000) / 1000)
+        resetTime: Math.ceil((clientLimits.hour.windowStart + 60 * 60 * 1000) / 1000),
       },
       day: {
         requests: clientLimits.day.requestCount,
-        resetTime: Math.ceil((clientLimits.day.windowStart + 24 * 60 * 60 * 1000) / 1000)
-      }
+        resetTime: Math.ceil((clientLimits.day.windowStart + 24 * 60 * 60 * 1000) / 1000),
+      },
     }
   }
 
@@ -312,7 +314,7 @@ export class ApiMetricsService {
     return {
       realTime,
       alerts,
-      rateLimitStats
+      rateLimitStats,
     }
   }
 
@@ -334,7 +336,7 @@ export class ApiMetricsService {
         type: 'high_error_rate',
         message: `Error rate is ${metrics.errorRate.toFixed(2)}% (threshold: ${this.alertThresholds.errorRate}%)`,
         severity: metrics.errorRate > 10 ? 'critical' : 'high',
-        timestamp
+        timestamp,
       })
     }
 
@@ -344,7 +346,7 @@ export class ApiMetricsService {
         type: 'slow_response',
         message: `Average response time is ${metrics.averageResponseTime.toFixed(0)}ms (threshold: ${this.alertThresholds.responseTime}ms)`,
         severity: metrics.averageResponseTime > 5000 ? 'critical' : 'medium',
-        timestamp
+        timestamp,
       })
     }
 
@@ -354,7 +356,7 @@ export class ApiMetricsService {
         type: 'high_traffic',
         message: `High traffic detected: ${metrics.requestsPerMinute} requests/minute`,
         severity: metrics.requestsPerMinute > 1000 ? 'high' : 'medium',
-        timestamp
+        timestamp,
       })
     }
 
@@ -380,20 +382,18 @@ export class ApiMetricsService {
     for (const [clientId, limits] of this.rateLimits.entries()) {
       const hits = 0 // Would track actual rate limit hits
       totalRateLimitHits += hits
-      
+
       if (hits > 0) {
         clientHits.push({ clientId, hits })
       }
     }
 
-    const topRateLimitedClients = clientHits
-      .sort((a, b) => b.hits - a.hits)
-      .slice(0, 10)
+    const topRateLimitedClients = clientHits.sort((a, b) => b.hits - a.hits).slice(0, 10)
 
     return {
       totalClients,
       rateLimitHits: totalRateLimitHits,
-      topRateLimitedClients
+      topRateLimitedClients,
     }
   }
 
@@ -407,7 +407,7 @@ export class ApiMetricsService {
     for (const alert of alerts) {
       logger.warn('ApiMetrics', `Alert: ${alert.type}`, {
         message: alert.message,
-        severity: alert.severity
+        severity: alert.severity,
       })
     }
   }
@@ -417,7 +417,7 @@ export class ApiMetricsService {
    */
   private cleanupRateLimits(): void {
     const now = Date.now()
-    const dayAgo = now - (24 * 60 * 60 * 1000)
+    const dayAgo = now - 24 * 60 * 60 * 1000
 
     for (const [clientId, limits] of this.rateLimits.entries()) {
       // Remove clients that haven't made requests in 24 hours
@@ -438,7 +438,7 @@ export class ApiMetricsService {
     return {
       rateLimits: Object.fromEntries(this.rateLimits),
       performance: this.getPerformanceMetrics(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
   }
 

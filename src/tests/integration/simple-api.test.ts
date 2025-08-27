@@ -45,10 +45,10 @@ const mockBusinessData = {
     street: '123 Main St',
     city: 'New York',
     state: 'NY',
-    zipCode: '10001'
+    zipCode: '10001',
   },
   scrapedAt: new Date('2024-01-15'),
-  confidence: 0.85
+  confidence: 0.85,
 }
 
 describe('Simple Integration Tests', () => {
@@ -75,7 +75,7 @@ describe('Simple Integration Tests', () => {
     it('should make POST requests correctly', async () => {
       const mockResponse = { success: true, id: '123' }
       const postData = { name: 'test' }
-      
+
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         json: jest.fn().mockResolvedValue(mockResponse),
       })
@@ -135,8 +135,8 @@ describe('Simple Integration Tests', () => {
           confidence: 0.85,
           errors: [],
           warnings: [],
-          suggestions: []
-        }
+          suggestions: [],
+        },
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
@@ -145,7 +145,7 @@ describe('Simple Integration Tests', () => {
 
       const result = await apiClient.post('/api/data-management', {
         action: 'validate-business',
-        business: mockBusinessData
+        business: mockBusinessData,
       })
 
       expect(result.success).toBe(true)
@@ -158,11 +158,11 @@ describe('Simple Integration Tests', () => {
         success: true,
         results: [
           { id: '1', isValid: true, confidence: 0.85 },
-          { id: '2', isValid: true, confidence: 0.92 }
+          { id: '2', isValid: true, confidence: 0.92 },
         ],
         totalProcessed: 2,
         validCount: 2,
-        invalidCount: 0
+        invalidCount: 0,
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
@@ -172,7 +172,7 @@ describe('Simple Integration Tests', () => {
       const businesses = [mockBusinessData, { ...mockBusinessData, id: '2' }]
       const result = await apiClient.post('/api/data-management', {
         action: 'validate-batch',
-        businesses
+        businesses,
       })
 
       expect(result.success).toBe(true)
@@ -213,7 +213,7 @@ describe('Simple Integration Tests', () => {
         contact_phone: mockBusinessData.phone,
         website_url: mockBusinessData.website,
         full_address: `${mockBusinessData.address.street}, ${mockBusinessData.address.city}, ${mockBusinessData.address.state} ${mockBusinessData.address.zipCode}`,
-        data_quality: Math.round(mockBusinessData.confidence * 100) + '%'
+        data_quality: Math.round(mockBusinessData.confidence * 100) + '%',
       }
 
       expect(exportData.name).toBe('Test Restaurant')
@@ -230,14 +230,14 @@ describe('Simple Integration Tests', () => {
         ...mockBusinessData,
         phone: '',
         website: '',
-        email: []
+        email: [],
       }
 
       const exportData = {
         name: incompleteData.businessName,
         contact_email: incompleteData.email[0] || 'N/A',
         contact_phone: incompleteData.phone || 'N/A',
-        website_url: incompleteData.website || 'N/A'
+        website_url: incompleteData.website || 'N/A',
       }
 
       expect(exportData.contact_email).toBe('N/A')
@@ -251,7 +251,7 @@ describe('Simple Integration Tests', () => {
       const businesses = [
         { ...mockBusinessData, industry: 'Restaurant' },
         { ...mockBusinessData, id: '2', industry: 'Healthcare' },
-        { ...mockBusinessData, id: '3', industry: 'Restaurant' }
+        { ...mockBusinessData, id: '3', industry: 'Restaurant' },
       ]
 
       const restaurants = businesses.filter(b => b.industry === 'Restaurant')
@@ -261,13 +261,13 @@ describe('Simple Integration Tests', () => {
 
     it('should search businesses by name', () => {
       const businesses = [
-        { ...mockBusinessData, businessName: 'Joe\'s Pizza' },
+        { ...mockBusinessData, businessName: "Joe's Pizza" },
         { ...mockBusinessData, id: '2', businessName: 'Main Street Cafe' },
-        { ...mockBusinessData, id: '3', businessName: 'Pizza Palace' }
+        { ...mockBusinessData, id: '3', businessName: 'Pizza Palace' },
       ]
 
       const searchTerm = 'pizza'
-      const results = businesses.filter(b => 
+      const results = businesses.filter(b =>
         b.businessName.toLowerCase().includes(searchTerm.toLowerCase())
       )
 
@@ -279,11 +279,11 @@ describe('Simple Integration Tests', () => {
       const businesses = [
         { ...mockBusinessData, confidence: 0.7 },
         { ...mockBusinessData, id: '2', confidence: 0.9 },
-        { ...mockBusinessData, id: '3', confidence: 0.8 }
+        { ...mockBusinessData, id: '3', confidence: 0.8 },
       ]
 
       const sorted = businesses.sort((a, b) => b.confidence - a.confidence)
-      
+
       expect(sorted[0].confidence).toBe(0.9)
       expect(sorted[1].confidence).toBe(0.8)
       expect(sorted[2].confidence).toBe(0.7)
@@ -295,11 +295,11 @@ describe('Simple Integration Tests', () => {
       const largeDataset = Array.from({ length: 1000 }, (_, i) => ({
         ...mockBusinessData,
         id: i.toString(),
-        businessName: `Business ${i}`
+        businessName: `Business ${i}`,
       }))
 
       const start = Date.now()
-      
+
       // Simulate data processing
       const processed = largeDataset
         .filter(b => b.confidence > 0.8)
@@ -318,9 +318,7 @@ describe('Simple Integration Tests', () => {
         json: jest.fn().mockResolvedValue(mockResponse),
       })
 
-      const requests = Array.from({ length: 10 }, (_, i) => 
-        apiClient.get(`/api/test/${i}`)
-      )
+      const requests = Array.from({ length: 10 }, (_, i) => apiClient.get(`/api/test/${i}`))
 
       const start = Date.now()
       const results = await Promise.all(requests)

@@ -22,10 +22,10 @@ describe('Memory Monitor', () => {
   describe('Lifecycle Management', () => {
     test('should start and stop monitoring', () => {
       expect(monitor.isActive()).toBe(false)
-      
+
       monitor.startMonitoring()
       expect(monitor.isActive()).toBe(true)
-      
+
       monitor.stopMonitoring()
       expect(monitor.isActive()).toBe(false)
     })
@@ -33,7 +33,7 @@ describe('Memory Monitor', () => {
     test('should handle multiple start calls gracefully', () => {
       monitor.startMonitoring()
       expect(monitor.isActive()).toBe(true)
-      
+
       // Second start should not throw
       expect(() => monitor.startMonitoring()).not.toThrow()
       expect(monitor.isActive()).toBe(true)
@@ -50,12 +50,12 @@ describe('Memory Monitor', () => {
       const newThresholds = {
         warning: 60,
         critical: 80,
-        emergency: 90
+        emergency: 90,
       }
-      
+
       monitor.updateThresholds(newThresholds)
       const thresholds = monitor.getThresholds()
-      
+
       expect(thresholds.warning).toBe(60)
       expect(thresholds.critical).toBe(80)
       expect(thresholds.emergency).toBe(90)
@@ -63,10 +63,10 @@ describe('Memory Monitor', () => {
 
     test('should partially update thresholds', () => {
       const originalThresholds = monitor.getThresholds()
-      
+
       monitor.updateThresholds({ warning: 65 })
       const updatedThresholds = monitor.getThresholds()
-      
+
       expect(updatedThresholds.warning).toBe(65)
       expect(updatedThresholds.critical).toBe(originalThresholds.critical)
       expect(updatedThresholds.emergency).toBe(originalThresholds.emergency)
@@ -86,21 +86,21 @@ describe('Memory Monitor', () => {
   })
 
   describe('Event Handling', () => {
-    test('should emit monitoring events', (done) => {
+    test('should emit monitoring events', done => {
       let startedEmitted = false
       let stoppedEmitted = false
-      
+
       monitor.on('monitoring-started', () => {
         startedEmitted = true
       })
-      
+
       monitor.on('monitoring-stopped', () => {
         stoppedEmitted = true
         expect(startedEmitted).toBe(true)
         expect(stoppedEmitted).toBe(true)
         done()
       })
-      
+
       monitor.startMonitoring()
       monitor.stopMonitoring()
     })
@@ -122,11 +122,11 @@ describe('Memory Cleanup Service', () => {
     test('should start and stop auto cleanup', () => {
       const status = cleanup.getStatus()
       expect(status.autoCleanupEnabled).toBe(false)
-      
+
       cleanup.startAutoCleanup(1000) // 1 second for testing
       const startedStatus = cleanup.getStatus()
       expect(startedStatus.autoCleanupEnabled).toBe(true)
-      
+
       cleanup.stopAutoCleanup()
       const stoppedStatus = cleanup.getStatus()
       expect(stoppedStatus.autoCleanupEnabled).toBe(false)
@@ -144,12 +144,12 @@ describe('Memory Cleanup Service', () => {
         maxSessions: 5,
         maxAge: 48 * 60 * 60 * 1000, // 48 hours
         maxSize: 100 * 1024 * 1024, // 100MB
-        autoCleanup: false
+        autoCleanup: false,
       }
-      
+
       cleanup.updateRetentionPolicy(newPolicy)
       const policy = cleanup.getRetentionPolicy()
-      
+
       expect(policy.maxSessions).toBe(5)
       expect(policy.maxAge).toBe(48 * 60 * 60 * 1000)
       expect(policy.maxSize).toBe(100 * 1024 * 1024)
@@ -158,10 +158,10 @@ describe('Memory Cleanup Service', () => {
 
     test('should partially update retention policy', () => {
       const originalPolicy = cleanup.getRetentionPolicy()
-      
+
       cleanup.updateRetentionPolicy({ maxSessions: 10 })
       const updatedPolicy = cleanup.getRetentionPolicy()
-      
+
       expect(updatedPolicy.maxSessions).toBe(10)
       expect(updatedPolicy.maxAge).toBe(originalPolicy.maxAge)
       expect(updatedPolicy.autoCleanup).toBe(originalPolicy.autoCleanup)
@@ -171,7 +171,7 @@ describe('Memory Cleanup Service', () => {
   describe('Manual Cleanup', () => {
     test('should perform manual cleanup with default options', async () => {
       const result = await cleanup.performManualCleanup()
-      
+
       expect(result.success).toBe(true)
       expect(typeof result.itemsCleared).toBe('number')
       expect(typeof result.memoryFreed).toBe('number')
@@ -183,18 +183,18 @@ describe('Memory Cleanup Service', () => {
       const options = {
         clearSearchResults: true,
         clearCachedData: false,
-        retainLastSessions: 2
+        retainLastSessions: 2,
       }
-      
+
       const result = await cleanup.performManualCleanup(options)
-      
+
       expect(result.success).toBe(true)
       expect(typeof result.itemsCleared).toBe('number')
     })
 
     test('should perform emergency cleanup', async () => {
       const result = await cleanup.performEmergencyCleanup()
-      
+
       expect(result.success).toBe(true)
       expect(typeof result.itemsCleared).toBe('number')
     })
@@ -212,16 +212,16 @@ describe('Data Compression', () => {
       street: '123 Test St',
       city: 'Test City',
       state: 'TS',
-      zipCode: '12345'
+      zipCode: '12345',
     },
     industry: 'Testing',
-    scrapedAt: new Date()
+    scrapedAt: new Date(),
   }
 
   describe('Basic Compression', () => {
     test('should compress and decompress data correctly', () => {
       const compressed = DataCompression.compress(mockBusiness)
-      
+
       if (DataCompression.isCompressed(compressed)) {
         const decompressed = DataCompression.decompress(compressed)
         expect(decompressed).toEqual(mockBusiness)
@@ -234,7 +234,7 @@ describe('Data Compression', () => {
     test('should handle small data below compression threshold', () => {
       const smallData = { test: 'small' }
       const result = DataCompression.compress(smallData)
-      
+
       // Should return original data for small objects
       expect(result).toEqual(smallData)
     })
@@ -242,7 +242,7 @@ describe('Data Compression', () => {
     test('should handle large data arrays', () => {
       const largeArray = Array(1000).fill(mockBusiness)
       const compressed = DataCompression.compress(largeArray)
-      
+
       if (DataCompression.isCompressed(compressed)) {
         const decompressed = DataCompression.decompress(compressed)
         expect(decompressed).toEqual(largeArray)
@@ -256,7 +256,7 @@ describe('Data Compression', () => {
       const businesses = [mockBusiness, { ...mockBusiness, id: 'test-2' }]
       const compressed = DataCompression.compressBusinessRecords(businesses)
       const decompressed = DataCompression.decompressBusinessRecords(compressed)
-      
+
       expect(decompressed).toEqual(businesses)
     })
 
@@ -264,7 +264,7 @@ describe('Data Compression', () => {
       const businesses: BusinessRecord[] = []
       const compressed = DataCompression.compressBusinessRecords(businesses)
       const decompressed = DataCompression.decompressBusinessRecords(compressed)
-      
+
       expect(decompressed).toEqual(businesses)
     })
   })
@@ -273,10 +273,10 @@ describe('Data Compression', () => {
     test('should provide compression statistics', () => {
       const largeData = Array(100).fill(mockBusiness)
       const compressed = DataCompression.compress(largeData)
-      
+
       if (DataCompression.isCompressed(compressed)) {
         const stats = DataCompression.getCompressionStats(compressed)
-        
+
         expect(stats).toBeDefined()
         expect(stats!.originalSize).toBeGreaterThan(0)
         expect(stats!.compressedSize).toBeGreaterThan(0)
@@ -295,7 +295,7 @@ describe('Data Compression', () => {
       const items = [mockBusiness, mockBusiness, mockBusiness]
       const compressedItems = DataCompression.batchCompress(items)
       const savings = DataCompression.calculateStorageSavings(compressedItems)
-      
+
       expect(savings.originalTotalSize).toBeGreaterThan(0)
       expect(savings.compressedTotalSize).toBeGreaterThan(0)
       expect(savings.totalSavings).toBeGreaterThanOrEqual(0)
@@ -308,7 +308,7 @@ describe('Data Compression', () => {
       const items = [mockBusiness, mockBusiness, mockBusiness]
       const compressed = DataCompression.batchCompress(items)
       const decompressed = DataCompression.batchDecompress(compressed)
-      
+
       expect(decompressed).toEqual(items)
     })
 
@@ -316,7 +316,7 @@ describe('Data Compression', () => {
       const items: any[] = []
       const compressed = DataCompression.batchCompress(items)
       const decompressed = DataCompression.batchDecompress(compressed)
-      
+
       expect(decompressed).toEqual(items)
     })
   })
@@ -326,9 +326,9 @@ describe('Data Compression', () => {
       const smallData = { test: 'data' }
       const compressed = DataCompression.compressWithOptions(smallData, {
         threshold: 1, // Very low threshold
-        forceCompress: true
+        forceCompress: true,
       })
-      
+
       if (DataCompression.isCompressed(compressed)) {
         const decompressed = DataCompression.decompress(compressed)
         expect(decompressed).toEqual(smallData)
@@ -338,9 +338,9 @@ describe('Data Compression', () => {
     test('should respect time limits', () => {
       const largeData = Array(10000).fill(mockBusiness)
       const compressed = DataCompression.compressWithOptions(largeData, {
-        maxTime: 1 // Very short time limit
+        maxTime: 1, // Very short time limit
       })
-      
+
       // Should return original data if compression takes too long
       expect(compressed).toBeDefined()
     })
@@ -367,8 +367,8 @@ describe('Data Compression', () => {
           originalSize: 100,
           compressedSize: 50,
           compressionRatio: 50,
-          compressionTime: 10
-        }
+          compressionTime: 10,
+        },
       }
 
       expect(() => {
@@ -405,7 +405,7 @@ describe('Data Compression', () => {
       const specialData = {
         emoji: '🚀🧠💾',
         unicode: 'Héllo Wörld',
-        special: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        special: '!@#$%^&*()_+-=[]{}|;:,.<>?',
       }
 
       const compressed = DataCompression.compress(specialData)
@@ -425,10 +425,10 @@ describe('Data Compression', () => {
         nested: {
           deep: {
             deeper: {
-              value: 'found'
-            }
-          }
-        }
+              value: 'found',
+            },
+          },
+        },
       }
 
       const compressed = DataCompression.compress(complexData)
@@ -440,7 +440,7 @@ describe('Data Compression', () => {
     test('should handle date objects', () => {
       const dataWithDate = {
         created: new Date('2025-01-01'),
-        updated: new Date()
+        updated: new Date(),
       }
 
       const compressed = DataCompression.compress(dataWithDate)
@@ -477,7 +477,7 @@ describe('Memory Monitor Edge Cases', () => {
     const invalidThresholds = {
       warning: -10,
       critical: 150,
-      emergency: 200
+      emergency: 200,
     }
 
     // Should not throw, but may clamp values
@@ -522,14 +522,16 @@ describe('Memory Cleanup Edge Cases', () => {
       maxSessions: -1,
       maxAge: -1000,
       maxSize: -500,
-      autoCleanup: 'invalid' as any
+      autoCleanup: 'invalid' as any,
     }
 
     expect(() => cleanup.updateRetentionPolicy(invalidPolicy)).not.toThrow()
   })
 
   test('should handle concurrent cleanup operations', async () => {
-    const promises = Array(5).fill(null).map(() => cleanup.performManualCleanup())
+    const promises = Array(5)
+      .fill(null)
+      .map(() => cleanup.performManualCleanup())
     const results = await Promise.all(promises)
 
     results.forEach(result => {
@@ -541,7 +543,7 @@ describe('Memory Cleanup Edge Cases', () => {
     // This test would need mocking of storage service to simulate errors
     const result = await cleanup.performManualCleanup({
       clearSearchResults: true,
-      clearCachedData: true
+      clearCachedData: true,
     })
 
     // Should handle errors gracefully

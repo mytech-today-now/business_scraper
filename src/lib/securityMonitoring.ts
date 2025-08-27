@@ -21,7 +21,7 @@ export interface SecurityEvent {
   blocked: boolean
 }
 
-export type SecurityEventType = 
+export type SecurityEventType =
   | 'rate_limit_exceeded'
   | 'invalid_csrf_token'
   | 'suspicious_input'
@@ -69,40 +69,42 @@ export class SecurityMonitoringService {
   private threatPatterns: ThreatPattern[] = [
     {
       name: 'SQL Injection',
-      pattern: /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b.*(\b(OR|AND)\b.*=|--|\/\*|\*\/|;))/i,
+      pattern:
+        /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b.*(\b(OR|AND)\b.*=|--|\/\*|\*\/|;))/i,
       severity: 'high',
-      description: 'Potential SQL injection attempt detected'
+      description: 'Potential SQL injection attempt detected',
     },
     {
       name: 'XSS Attack',
       pattern: /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>|javascript:|on\w+\s*=/i,
       severity: 'high',
-      description: 'Potential XSS attack detected'
+      description: 'Potential XSS attack detected',
     },
     {
       name: 'Path Traversal',
       pattern: /\.\.\/|\.\.\\|%2e%2e%2f|%2e%2e%5c/i,
       severity: 'medium',
-      description: 'Path traversal attempt detected'
+      description: 'Path traversal attempt detected',
     },
     {
       name: 'Command Injection',
-      pattern: /[;&|`$(){}[\]]|\b(cat|ls|dir|type|echo|curl|wget|nc|netcat|rm|del|mv|cp|chmod|chown)\b/i,
+      pattern:
+        /[;&|`$(){}[\]]|\b(cat|ls|dir|type|echo|curl|wget|nc|netcat|rm|del|mv|cp|chmod|chown)\b/i,
       severity: 'high',
-      description: 'Command injection attempt detected'
+      description: 'Command injection attempt detected',
     },
     {
       name: 'LDAP Injection',
       pattern: /(\(|\)|&|\||!|=|\*|<|>|~)/,
       severity: 'medium',
-      description: 'Potential LDAP injection detected'
+      description: 'Potential LDAP injection detected',
     },
     {
       name: 'XML Injection',
       pattern: /<\?xml|<!DOCTYPE|<!ENTITY/i,
       severity: 'medium',
-      description: 'XML injection attempt detected'
-    }
+      description: 'XML injection attempt detected',
+    },
   ]
 
   /**
@@ -126,7 +128,7 @@ export class SecurityMonitoringService {
       endpoint: request.nextUrl.pathname,
       method: request.method,
       details,
-      blocked
+      blocked,
     }
 
     this.events.push(event)
@@ -143,7 +145,7 @@ export class SecurityMonitoringService {
       ip: event.ip,
       endpoint: event.endpoint,
       severity,
-      blocked
+      blocked,
     })
 
     // Track suspicious IPs
@@ -171,7 +173,7 @@ export class SecurityMonitoringService {
           {
             message: pattern.description,
             pattern: pattern.name,
-            matchedContent: url
+            matchedContent: url,
           },
           true
         )
@@ -190,7 +192,7 @@ export class SecurityMonitoringService {
             {
               message: pattern.description,
               pattern: pattern.name,
-              inputLength: body.length
+              inputLength: body.length,
             },
             true
           )
@@ -215,7 +217,7 @@ export class SecurityMonitoringService {
       timestamp: Date.now(),
       endpoint: request.nextUrl.pathname,
       method: request.method,
-      headers: Object.fromEntries(request.headers.entries())
+      headers: Object.fromEntries(request.headers.entries()),
     }
 
     if (body) {
@@ -265,19 +267,14 @@ export class SecurityMonitoringService {
       /wget/i,
       /python/i,
       /java/i,
-      /go-http-client/i
+      /go-http-client/i,
     ]
 
     if (suspiciousUserAgents.some(pattern => pattern.test(userAgent))) {
-      this.logSecurityEvent(
-        'unusual_request_pattern',
-        'low',
-        request,
-        {
-          message: 'Suspicious user agent detected',
-          userAgent
-        }
-      )
+      this.logSecurityEvent('unusual_request_pattern', 'low', request, {
+        message: 'Suspicious user agent detected',
+        userAgent,
+      })
     }
 
     // Check for missing common headers
@@ -285,15 +282,10 @@ export class SecurityMonitoringService {
     const missingHeaders = commonHeaders.filter(header => !request.headers.has(header))
 
     if (missingHeaders.length >= 2) {
-      this.logSecurityEvent(
-        'unusual_request_pattern',
-        'low',
-        request,
-        {
-          message: 'Unusual header pattern detected',
-          missingHeaders
-        }
-      )
+      this.logSecurityEvent('unusual_request_pattern', 'low', request, {
+        message: 'Unusual header pattern detected',
+        missingHeaders,
+      })
     }
   }
 
@@ -317,7 +309,7 @@ export class SecurityMonitoringService {
         {
           message: 'Rapid request pattern detected',
           requestCount: recentRequests.length,
-          timeWindow: '5 minutes'
+          timeWindow: '5 minutes',
         }
       )
     }
@@ -332,7 +324,7 @@ export class SecurityMonitoringService {
         { nextUrl: { pathname: '/pattern-analysis' } } as NextRequest,
         {
           message: 'Potential replay attack detected',
-          duplicateRequests: bodyHashes.length - uniqueHashes.size
+          duplicateRequests: bodyHashes.length - uniqueHashes.size,
         }
       )
     }
@@ -401,7 +393,7 @@ export class SecurityMonitoringService {
       eventsByType,
       eventsBySeverity,
       suspiciousIPs: this.suspiciousIPs.size,
-      recentEvents: this.events.filter(event => event.timestamp > oneHourAgo).length
+      recentEvents: this.events.filter(event => event.timestamp > oneHourAgo).length,
     }
   }
 
@@ -440,7 +432,10 @@ export const securityMonitoringService = new SecurityMonitoringService()
 
 // Cleanup interval (every hour)
 if (typeof window === 'undefined') {
-  setInterval(() => {
-    securityMonitoringService.cleanup()
-  }, 60 * 60 * 1000)
+  setInterval(
+    () => {
+      securityMonitoringService.cleanup()
+    },
+    60 * 60 * 1000
+  )
 }

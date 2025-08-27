@@ -5,10 +5,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/utils/logger'
-import { 
-  createSecureErrorResponse, 
+import {
+  createSecureErrorResponse,
   withErrorHandling as withApiErrorHandling,
-  ErrorContext 
+  ErrorContext,
 } from '@/lib/error-handling'
 
 /**
@@ -42,14 +42,11 @@ export function withStandardErrorHandling(
 /**
  * Create a standardized success response
  */
-export function createSuccessResponse<T>(
-  data: T,
-  status: number = 200
-): NextResponse {
+export function createSuccessResponse<T>(data: T, status: number = 200): NextResponse {
   const response: ApiSuccessResponse<T> = {
     success: true,
     data,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   }
 
   return NextResponse.json(response, { status })
@@ -64,12 +61,12 @@ export function createErrorResponse(
   details?: any
 ): NextResponse {
   const errorId = generateErrorId()
-  
+
   const response: ApiErrorResponse = {
     error: message,
     errorId,
     timestamp: new Date().toISOString(),
-    ...(details && { details })
+    ...(details && { details }),
   }
 
   return NextResponse.json(response, { status })
@@ -94,17 +91,20 @@ export async function handleAsyncApiOperation<T>(
       endpoint: context.endpoint,
       method: context.request?.method || 'UNKNOWN',
       ip: context.request ? getClientIP(context.request) : 'unknown',
-      userAgent: context.request?.headers.get('user-agent') || undefined
+      userAgent: context.request?.headers.get('user-agent') || undefined,
     }
 
     logger.error('API Operation', `${context.operationName} failed`, {
       operation: context.operationName,
       endpoint: context.endpoint,
-      error: error instanceof Error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      } : error
+      error:
+        error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            }
+          : error,
     })
 
     const errorResponse = createSecureErrorResponse(
@@ -112,7 +112,7 @@ export async function handleAsyncApiOperation<T>(
       errorContext,
       {
         customMessage: `${context.operationName} failed`,
-        statusCode: 500
+        statusCode: 500,
       }
     )
 
@@ -139,23 +139,23 @@ export async function makeApiCall<T = any>(
     component = 'ApiClient',
     retries = 0,
     retryDelay = 1000,
-    retryCondition
+    retryCondition,
   } = context
   const maxRetries = 3
-  
+
   try {
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
-      }
+        ...options.headers,
+      },
     })
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({
         error: `HTTP ${response.status}: ${response.statusText}`,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }))
 
       // Extract Retry-After header for rate limiting
@@ -165,7 +165,7 @@ export async function makeApiCall<T = any>(
         response.status,
         {
           ...errorData,
-          retryAfter: retryAfter ? parseInt(retryAfter, 10) : undefined
+          retryAfter: retryAfter ? parseInt(retryAfter, 10) : undefined,
         }
       )
 
@@ -173,7 +173,7 @@ export async function makeApiCall<T = any>(
     }
 
     const data = await response.json()
-    
+
     // Handle API responses that have success/error structure
     if (data.success === false) {
       throw new ApiError(data.error || 'API operation failed', 400, data)
@@ -182,15 +182,15 @@ export async function makeApiCall<T = any>(
     logger.debug(component, `${operation} completed successfully`, {
       url,
       method: options.method || 'GET',
-      status: response.status
+      status: response.status,
     })
 
     return { success: true, data: data.data || data }
   } catch (error) {
-    const apiError = error instanceof ApiError ? error : new ApiError(
-      error instanceof Error ? error.message : String(error),
-      500
-    )
+    const apiError =
+      error instanceof ApiError
+        ? error
+        : new ApiError(error instanceof Error ? error.message : String(error), 500)
 
     logger.error(component, `${operation} failed`, {
       url,
@@ -200,8 +200,8 @@ export async function makeApiCall<T = any>(
         name: apiError.name,
         message: apiError.message,
         status: apiError.status,
-        details: apiError.details
-      }
+        details: apiError.details,
+      },
     })
 
     // Retry logic for certain errors
@@ -209,21 +209,27 @@ export async function makeApiCall<T = any>(
 
     if (retries < maxRetries && shouldRetry) {
       // Calculate retry delay - use custom delay or default exponential backoff
-      let calculatedRetryDelay = retryDelay || (1000 * (retries + 1))
+      let calculatedRetryDelay = retryDelay || 1000 * (retries + 1)
 
       if (apiError.status === 429 && apiError.details?.retryAfter) {
         // Use server-specified retry delay for rate limiting
         calculatedRetryDelay = Math.max(apiError.details.retryAfter * 1000, calculatedRetryDelay)
-        logger.info(component, `Rate limited - using server-specified retry delay: ${calculatedRetryDelay}ms`)
+        logger.info(
+          component,
+          `Rate limited - using server-specified retry delay: ${calculatedRetryDelay}ms`
+        )
       }
 
-      logger.info(component, `Retrying ${operation} (attempt ${retries + 1}/${maxRetries}) in ${calculatedRetryDelay}ms`)
+      logger.info(
+        component,
+        `Retrying ${operation} (attempt ${retries + 1}/${maxRetries}) in ${calculatedRetryDelay}ms`
+      )
 
       await new Promise(resolve => setTimeout(resolve, calculatedRetryDelay))
 
       return makeApiCall(url, options, {
         ...context,
-        retries: retries + 1
+        retries: retries + 1,
       })
     }
 
@@ -233,8 +239,8 @@ export async function makeApiCall<T = any>(
         error: apiError.message,
         errorId: generateErrorId(),
         timestamp: new Date().toISOString(),
-        details: apiError.details
-      }
+        details: apiError.details,
+      },
     }
   }
 }
@@ -275,15 +281,15 @@ function isRetryableError(error: ApiError): boolean {
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for')
   const realIp = request.headers.get('x-real-ip')
-  
+
   if (forwarded) {
     return forwarded.split(',')[0].trim()
   }
-  
+
   if (realIp) {
     return realIp
   }
-  
+
   return 'unknown'
 }
 
@@ -308,7 +314,7 @@ export async function validateRequestBody<T>(
   } catch (error) {
     logger.warn('API Validation', 'Request body validation failed', {
       endpoint: request.nextUrl.pathname,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
     })
 
     return {
@@ -317,7 +323,7 @@ export async function validateRequestBody<T>(
         'Invalid request body',
         400,
         error instanceof Error ? error.message : String(error)
-      )
+      ),
     }
   }
 }
@@ -325,40 +331,27 @@ export async function validateRequestBody<T>(
 /**
  * Rate limiting error handler
  */
-export function createRateLimitErrorResponse(
-  retryAfter: number
-): NextResponse {
-  return createErrorResponse(
-    'Rate limit exceeded',
-    429,
-    { retryAfter }
-  )
+export function createRateLimitErrorResponse(retryAfter: number): NextResponse {
+  return createErrorResponse('Rate limit exceeded', 429, { retryAfter })
 }
 
 /**
  * Authentication error handler
  */
-export function createAuthErrorResponse(
-  message: string = 'Authentication required'
-): NextResponse {
+export function createAuthErrorResponse(message: string = 'Authentication required'): NextResponse {
   return createErrorResponse(message, 401)
 }
 
 /**
  * Authorization error handler
  */
-export function createAuthorizationErrorResponse(
-  message: string = 'Access denied'
-): NextResponse {
+export function createAuthorizationErrorResponse(message: string = 'Access denied'): NextResponse {
   return createErrorResponse(message, 403)
 }
 
 /**
  * Validation error handler
  */
-export function createValidationErrorResponse(
-  message: string,
-  details?: any
-): NextResponse {
+export function createValidationErrorResponse(message: string, details?: any): NextResponse {
   return createErrorResponse(message, 400, details)
 }

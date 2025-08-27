@@ -36,7 +36,7 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
     alerts: [],
     thresholds: memoryMonitor.getThresholds(),
     isCleanupInProgress: false,
-    lastCleanupResult: null
+    lastCleanupResult: null,
   })
 
   const alertsRef = useRef<MemoryAlert[]>([])
@@ -53,7 +53,7 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
       setState(prev => ({
         ...prev,
         currentStats: stats,
-        memoryHistory: [...prev.memoryHistory.slice(-99), stats] // Keep last 100 entries
+        memoryHistory: [...prev.memoryHistory.slice(-99), stats], // Keep last 100 entries
       }))
     }
 
@@ -62,10 +62,10 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
         const newAlerts = [...prev.alerts, alert].slice(-maxAlerts)
         return {
           ...prev,
-          alerts: newAlerts
+          alerts: newAlerts,
         }
       })
-      
+
       logger.warn('MemoryMonitor', `Memory alert: ${alert.level}`, alert)
     }
 
@@ -89,7 +89,7 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
       isMonitoring: memoryMonitor.isActive(),
       currentStats: memoryMonitor.getCurrentStats(),
       memoryHistory: memoryMonitor.getMemoryHistory(),
-      thresholds: memoryMonitor.getThresholds()
+      thresholds: memoryMonitor.getThresholds(),
     }))
 
     // Cleanup on unmount
@@ -118,41 +118,44 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
     memoryMonitor.updateThresholds(thresholds)
     setState(prev => ({
       ...prev,
-      thresholds: memoryMonitor.getThresholds()
+      thresholds: memoryMonitor.getThresholds(),
     }))
   }, [])
 
-  const performCleanup = useCallback(async (options: CleanupOptions = {}): Promise<CleanupResult> => {
-    setState(prev => ({ ...prev, isCleanupInProgress: true }))
-    
-    try {
-      const result = await memoryCleanup.performManualCleanup(options)
-      
-      setState(prev => ({
-        ...prev,
-        isCleanupInProgress: false,
-        lastCleanupResult: result
-      }))
-      
-      return result
-    } catch (error) {
-      setState(prev => ({ ...prev, isCleanupInProgress: false }))
-      throw error
-    }
-  }, [])
+  const performCleanup = useCallback(
+    async (options: CleanupOptions = {}): Promise<CleanupResult> => {
+      setState(prev => ({ ...prev, isCleanupInProgress: true }))
+
+      try {
+        const result = await memoryCleanup.performManualCleanup(options)
+
+        setState(prev => ({
+          ...prev,
+          isCleanupInProgress: false,
+          lastCleanupResult: result,
+        }))
+
+        return result
+      } catch (error) {
+        setState(prev => ({ ...prev, isCleanupInProgress: false }))
+        throw error
+      }
+    },
+    []
+  )
 
   const performEmergencyCleanup = useCallback(async (): Promise<CleanupResult> => {
     setState(prev => ({ ...prev, isCleanupInProgress: true }))
-    
+
     try {
       const result = await memoryCleanup.performEmergencyCleanup()
-      
+
       setState(prev => ({
         ...prev,
         isCleanupInProgress: false,
-        lastCleanupResult: result
+        lastCleanupResult: result,
       }))
-      
+
       return result
     } catch (error) {
       setState(prev => ({ ...prev, isCleanupInProgress: false }))
@@ -163,7 +166,7 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
   const dismissAlert = useCallback((index: number) => {
     setState(prev => ({
       ...prev,
-      alerts: prev.alerts.filter((_, i) => i !== index)
+      alerts: prev.alerts.filter((_, i) => i !== index),
     }))
   }, [])
 
@@ -175,7 +178,7 @@ export function useMemoryMonitor(): MemoryMonitorState & MemoryMonitorActions {
     updateThresholds,
     performCleanup,
     performEmergencyCleanup,
-    dismissAlert
+    dismissAlert,
   }
 }
 
@@ -195,35 +198,49 @@ export function useMemoryFormatter() {
     return `${percentage.toFixed(1)}%`
   }, [])
 
-  const getMemoryStatusColor = useCallback((percentage: number, thresholds: MemoryThresholds): string => {
-    if (percentage >= thresholds.emergency) return 'text-red-600 dark:text-red-400'
-    if (percentage >= thresholds.critical) return 'text-orange-600 dark:text-orange-400'
-    if (percentage >= thresholds.warning) return 'text-yellow-600 dark:text-yellow-400'
-    return 'text-green-600 dark:text-green-400'
-  }, [])
+  const getMemoryStatusColor = useCallback(
+    (percentage: number, thresholds: MemoryThresholds): string => {
+      if (percentage >= thresholds.emergency) return 'text-red-600 dark:text-red-400'
+      if (percentage >= thresholds.critical) return 'text-orange-600 dark:text-orange-400'
+      if (percentage >= thresholds.warning) return 'text-yellow-600 dark:text-yellow-400'
+      return 'text-green-600 dark:text-green-400'
+    },
+    []
+  )
 
-  const getMemoryStatusBgColor = useCallback((percentage: number, thresholds: MemoryThresholds): string => {
-    if (percentage >= thresholds.emergency) return 'bg-red-500'
-    if (percentage >= thresholds.critical) return 'bg-orange-500'
-    if (percentage >= thresholds.warning) return 'bg-yellow-500'
-    return 'bg-green-500'
-  }, [])
+  const getMemoryStatusBgColor = useCallback(
+    (percentage: number, thresholds: MemoryThresholds): string => {
+      if (percentage >= thresholds.emergency) return 'bg-red-500'
+      if (percentage >= thresholds.critical) return 'bg-orange-500'
+      if (percentage >= thresholds.warning) return 'bg-yellow-500'
+      return 'bg-green-500'
+    },
+    []
+  )
 
   const getAlertIcon = useCallback((level: MemoryAlert['level']): string => {
     switch (level) {
-      case 'emergency': return '🚨'
-      case 'critical': return '⚠️'
-      case 'warning': return '⚡'
-      default: return 'ℹ️'
+      case 'emergency':
+        return '🚨'
+      case 'critical':
+        return '⚠️'
+      case 'warning':
+        return '⚡'
+      default:
+        return 'ℹ️'
     }
   }, [])
 
   const getAlertColor = useCallback((level: MemoryAlert['level']): string => {
     switch (level) {
-      case 'emergency': return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
-      case 'critical': return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20'
-      case 'warning': return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20'
-      default: return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+      case 'emergency':
+        return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
+      case 'critical':
+        return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20'
+      case 'warning':
+        return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20'
+      default:
+        return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
     }
   }, [])
 
@@ -233,6 +250,6 @@ export function useMemoryFormatter() {
     getMemoryStatusColor,
     getMemoryStatusBgColor,
     getAlertIcon,
-    getAlertColor
+    getAlertColor,
   }
 }

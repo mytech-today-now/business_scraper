@@ -1,6 +1,6 @@
 /**
  * Prioritized Export Formatter
- * 
+ *
  * Formats business data for export with priority-based field ordering
  * Matches the desired output format similar to Good_Mailing_list.ods
  */
@@ -25,23 +25,23 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'email',
     header: 'Email',
     priority: 1,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
-  
+
   // Priority 2: Phone Number
   {
     key: 'phone',
     header: 'Phone',
     priority: 2,
-    formatter: (value: string) => formatPhoneForExport(value)
+    formatter: (value: string) => formatPhoneForExport(value),
   },
-  
+
   // Priority 3: Street Number
   {
     key: 'streetNumber',
     header: 'Street Number',
     priority: 3,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 4: Street Name
@@ -49,7 +49,7 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'streetName',
     header: 'Street Name',
     priority: 4,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 5: Suite/Unit
@@ -57,7 +57,7 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'suite',
     header: 'Suite',
     priority: 5,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 6: City
@@ -65,7 +65,7 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'city',
     header: 'City',
     priority: 6,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 7: State
@@ -73,7 +73,7 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'state',
     header: 'State',
     priority: 7,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 8: ZIP Code
@@ -81,15 +81,15 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'zipCode',
     header: 'ZIP',
     priority: 8,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
-  
+
   // Priority 9: Business Name
   {
     key: 'businessName',
     header: 'Business Name',
     priority: 9,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 10: Contact Name
@@ -97,7 +97,7 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'contactName',
     header: 'Contact Name',
     priority: 10,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 11: Website
@@ -105,7 +105,7 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'website',
     header: 'Website',
     priority: 11,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
 
   // Priority 12: Coordinates
@@ -113,37 +113,37 @@ export const PRIORITY_EXPORT_COLUMNS: ExportColumn[] = [
     key: 'coordinates',
     header: 'Coordinates',
     priority: 12,
-    formatter: (value: string) => value || ''
+    formatter: (value: string) => value || '',
   },
-  
+
   // Additional fields for comprehensive data
   {
     key: 'additionalEmails',
     header: 'Additional Emails',
     priority: 13,
-    formatter: (value: string[]) => value.join('; ')
+    formatter: (value: string[]) => value.join('; '),
   },
 
   {
     key: 'additionalPhones',
     header: 'Additional Phones',
     priority: 14,
-    formatter: (value: string[]) => value.map(formatPhoneForExport).join('; ')
+    formatter: (value: string[]) => value.map(formatPhoneForExport).join('; '),
   },
 
   {
     key: 'confidence',
     header: 'Data Quality',
     priority: 15,
-    formatter: (value: number) => `${Math.round(value * 100)}%`
+    formatter: (value: number) => `${Math.round(value * 100)}%`,
   },
 
   {
     key: 'sources',
     header: 'Sources',
     priority: 16,
-    formatter: (value: string[]) => value.join('; ')
-  }
+    formatter: (value: string[]) => value.join('; '),
+  },
 ]
 
 /**
@@ -192,7 +192,10 @@ export class PrioritizedExportFormatter {
       return []
     }
 
-    logger.info('PrioritizedExportFormatter', `Formatting ${records.length} records for Excel export`)
+    logger.info(
+      'PrioritizedExportFormatter',
+      `Formatting ${records.length} records for Excel export`
+    )
 
     const result = []
 
@@ -221,7 +224,10 @@ export class PrioritizedExportFormatter {
    * Format records for JSON export
    */
   formatForJSON(records: PrioritizedBusinessRecord[]): any {
-    logger.info('PrioritizedExportFormatter', `Formatting ${records.length} records for JSON export`)
+    logger.info(
+      'PrioritizedExportFormatter',
+      `Formatting ${records.length} records for JSON export`
+    )
 
     return {
       metadata: {
@@ -232,8 +238,8 @@ export class PrioritizedExportFormatter {
         columns: this.columns.map(col => ({
           key: col.key,
           header: col.header,
-          priority: col.priority
-        }))
+          priority: col.priority,
+        })),
       },
       records: records.map(record => {
         const formatted: any = {}
@@ -243,7 +249,7 @@ export class PrioritizedExportFormatter {
           formatted[col.header] = formattedValue
         })
         return formatted
-      })
+      }),
     }
   }
 
@@ -262,12 +268,12 @@ export class PrioritizedExportFormatter {
    */
   private escapeCSVField(field: string): string {
     const stringField = String(field || '')
-    
+
     // If field contains comma, quote, or newline, wrap in quotes and escape quotes
     if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
       return `"${stringField.replace(/"/g, '""')}"`
     }
-    
+
     return stringField
   }
 
@@ -289,12 +295,13 @@ export class PrioritizedExportFormatter {
     // Build industry parts - each industry gets its own segment
     let industryParts: string[] = []
     if (context?.industries && context.industries.length > 0) {
-      industryParts = context.industries.map(industry =>
-        industry
-          .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
-          .replace(/\s+/g, '-') // Replace spaces with hyphens
-          .replace(/-+/g, '-') // Replace multiple hyphens with single
-          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      industryParts = context.industries.map(
+        industry =>
+          industry
+            .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-') // Replace multiple hyphens with single
+            .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
       )
     } else {
       industryParts = ['All-Industries']
@@ -327,7 +334,7 @@ export class PrioritizedExportFormatter {
       recordsWithAddress: 0,
       recordsWithContact: 0,
       averageConfidence: 0,
-      topSources: [] as string[]
+      topSources: [] as string[],
     }
 
     if (records.length === 0) {
@@ -342,9 +349,9 @@ export class PrioritizedExportFormatter {
       if (record.phone) summary.recordsWithPhone++
       if (record.streetAddress && record.city && record.zipCode) summary.recordsWithAddress++
       if (record.contactName) summary.recordsWithContact++
-      
+
       totalConfidence += record.confidence
-      
+
       // Count sources
       for (const source of record.sources) {
         sourceCount.set(source, (sourceCount.get(source) || 0) + 1)

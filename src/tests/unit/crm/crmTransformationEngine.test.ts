@@ -14,7 +14,7 @@ describe('CRMTransformationEngine', () => {
 
   beforeEach(() => {
     engine = new CRMTransformationEngine()
-    
+
     mockBusinessRecord = {
       id: 'test-1',
       businessName: 'Test Business',
@@ -28,7 +28,7 @@ describe('CRMTransformationEngine', () => {
       industry: 'technology',
       confidence: 0.85,
       source: 'test',
-      scrapedAt: '2024-01-01T00:00:00.000Z'
+      scrapedAt: '2024-01-01T00:00:00.000Z',
     }
 
     mockTemplate = {
@@ -42,20 +42,20 @@ describe('CRMTransformationEngine', () => {
           sourceField: 'businessName',
           targetField: 'Company',
           required: true,
-          validation: { required: true, type: 'string', maxLength: 255 }
+          validation: { required: true, type: 'string', maxLength: 255 },
         },
         {
           sourceField: 'email',
           targetField: 'Email',
           transformer: CommonTransformers.formatEmail,
-          validation: { required: false, type: 'email' }
+          validation: { required: false, type: 'email' },
         },
         {
           sourceField: 'phone',
           targetField: 'Phone',
           transformer: CommonTransformers.formatPhone,
-          validation: { required: false, type: 'phone' }
-        }
+          validation: { required: false, type: 'phone' },
+        },
       ],
       customHeaders: {},
       metadata: {
@@ -63,13 +63,13 @@ describe('CRMTransformationEngine', () => {
         author: 'Test',
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
-        tags: ['test']
+        tags: ['test'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
+        maxErrors: 100,
+      },
     }
   })
 
@@ -82,7 +82,7 @@ describe('CRMTransformationEngine', () => {
       expect(result.data).toEqual({
         Company: 'Test Business',
         Email: 'contact@testbusiness.com',
-        Phone: '(555) 123-4567'
+        Phone: '(555) 123-4567',
       })
     })
 
@@ -111,9 +111,9 @@ describe('CRMTransformationEngine', () => {
             sourceField: 'missingField',
             targetField: 'DefaultField',
             defaultValue: 'Default Value',
-            validation: { required: false, type: 'string' }
-          }
-        ]
+            validation: { required: false, type: 'string' },
+          },
+        ],
       }
 
       const result = await engine.transformRecord(mockBusinessRecord, templateWithDefault)
@@ -128,9 +128,9 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'businessName',
             targetField: 'NumberField',
-            validation: { required: false, type: 'number' }
-          }
-        ]
+            validation: { required: false, type: 'number' },
+          },
+        ],
       }
 
       const result = await engine.transformRecord(mockBusinessRecord, templateWithValidation)
@@ -145,8 +145,8 @@ describe('CRMTransformationEngine', () => {
         address: {
           street: '123 Main St',
           city: 'Test City',
-          state: 'TS'
-        }
+          state: 'TS',
+        },
       }
 
       const templateWithDotNotation: CRMTemplate = {
@@ -155,9 +155,9 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'address.street',
             targetField: 'Street',
-            validation: { required: false, type: 'string' }
-          }
-        ]
+            validation: { required: false, type: 'string' },
+          },
+        ],
       }
 
       const result = await engine.transformRecord(recordWithNestedData, templateWithDotNotation)
@@ -170,7 +170,7 @@ describe('CRMTransformationEngine', () => {
     it('should transform multiple records', async () => {
       const records = [
         mockBusinessRecord,
-        { ...mockBusinessRecord, id: 'test-2', businessName: 'Test Business 2' }
+        { ...mockBusinessRecord, id: 'test-2', businessName: 'Test Business 2' },
       ]
 
       const result = await engine.transformBatch(records, mockTemplate)
@@ -184,7 +184,7 @@ describe('CRMTransformationEngine', () => {
     it('should handle mixed valid and invalid records', async () => {
       const records = [
         mockBusinessRecord,
-        { ...mockBusinessRecord, id: 'test-2', businessName: '' } // Invalid
+        { ...mockBusinessRecord, id: 'test-2', businessName: '' }, // Invalid
       ]
 
       const result = await engine.transformBatch(records, mockTemplate)
@@ -199,11 +199,11 @@ describe('CRMTransformationEngine', () => {
     it('should respect strict mode validation', async () => {
       const strictTemplate = {
         ...mockTemplate,
-        validation: { ...mockTemplate.validation, strictMode: true }
+        validation: { ...mockTemplate.validation, strictMode: true },
       }
 
       const records = [
-        { ...mockBusinessRecord, email: 'invalid-email' } // Invalid email
+        { ...mockBusinessRecord, email: 'invalid-email' }, // Invalid email
       ]
 
       const result = await engine.transformBatch(records, strictTemplate)
@@ -216,7 +216,7 @@ describe('CRMTransformationEngine', () => {
       const records = Array.from({ length: 10 }, (_, i) => ({
         ...mockBusinessRecord,
         id: `test-${i}`,
-        businessName: `Test Business ${i}`
+        businessName: `Test Business ${i}`,
       }))
 
       const result = await engine.transformBatch(records, mockTemplate)
@@ -234,9 +234,9 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'email',
             targetField: 'Email',
-            validation: { required: false, type: 'email' }
-          }
-        ]
+            validation: { required: false, type: 'email' },
+          },
+        ],
       }
 
       const invalidEmailRecord = { ...mockBusinessRecord, email: 'invalid-email' }
@@ -253,9 +253,9 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'phone',
             targetField: 'Phone',
-            validation: { required: false, type: 'phone' }
-          }
-        ]
+            validation: { required: false, type: 'phone' },
+          },
+        ],
       }
 
       const invalidPhoneRecord = { ...mockBusinessRecord, phone: 'invalid' }
@@ -272,9 +272,9 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'businessName',
             targetField: 'Company',
-            validation: { required: false, type: 'string', maxLength: 5 }
-          }
-        ]
+            validation: { required: false, type: 'string', maxLength: 5 },
+          },
+        ],
       }
 
       const result = await engine.transformRecord(mockBusinessRecord, templateWithLength)
@@ -290,13 +290,13 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'industry',
             targetField: 'Industry',
-            validation: { 
-              required: false, 
-              type: 'string', 
-              allowedValues: ['finance', 'healthcare'] 
-            }
-          }
-        ]
+            validation: {
+              required: false,
+              type: 'string',
+              allowedValues: ['finance', 'healthcare'],
+            },
+          },
+        ],
       }
 
       const result = await engine.transformRecord(mockBusinessRecord, templateWithAllowedValues)
@@ -312,13 +312,13 @@ describe('CRMTransformationEngine', () => {
           {
             sourceField: 'businessName',
             targetField: 'Company',
-            validation: { 
-              required: false, 
+            validation: {
+              required: false,
               type: 'string',
-              customValidator: (value) => value.includes('Test') || 'Must contain "Test"'
-            }
-          }
-        ]
+              customValidator: value => value.includes('Test') || 'Must contain "Test"',
+            },
+          },
+        ],
       }
 
       const invalidRecord = { ...mockBusinessRecord, businessName: 'Invalid Business' }
@@ -334,7 +334,7 @@ describe('CRMTransformationEngine', () => {
     it('should generate a comprehensive summary report', async () => {
       const records = [
         mockBusinessRecord,
-        { ...mockBusinessRecord, id: 'test-2', businessName: '' } // Invalid
+        { ...mockBusinessRecord, id: 'test-2', businessName: '' }, // Invalid
       ]
 
       const result = await engine.transformBatch(records, mockTemplate)
@@ -351,7 +351,7 @@ describe('CRMTransformationEngine', () => {
       const invalidRecords = Array.from({ length: 15 }, (_, i) => ({
         ...mockBusinessRecord,
         id: `test-${i}`,
-        businessName: '' // Invalid
+        businessName: '', // Invalid
       }))
 
       const result = await engine.transformBatch(invalidRecords, mockTemplate)

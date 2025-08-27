@@ -11,10 +11,10 @@ on:
   release:
     types: [published]
   schedule:
-    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM for dependency updates
+    - cron: "0 2 * * 1" # Weekly on Monday at 2 AM for dependency updates
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: "18"
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -81,7 +81,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -122,7 +122,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -161,7 +161,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -205,7 +205,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -236,7 +236,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -283,7 +283,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -369,8 +369,6 @@ jobs:
             test-results/
             coverage/
 
-
-
   # Build and Push Docker Image
   build:
     name: Build Docker Image
@@ -435,13 +433,13 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ needs.build.outputs.image }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: "sarif"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   # Deploy to Staging
   deploy-staging:
@@ -494,11 +492,9 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          channel: '#deployments'
+          channel: "#deployments"
           webhook_url: ${{ secrets.SLACK_WEBHOOK }}
         if: always()
-
-
 
   # Dependency Updates
   dependency-update:
@@ -525,9 +521,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore: update dependencies'
-          title: 'Automated dependency updates'
-          body: 'This PR contains automated dependency updates.'
-          branch: 'automated/dependency-updates'
-
-
+          commit-message: "chore: update dependencies"
+          title: "Automated dependency updates"
+          body: "This PR contains automated dependency updates."
+          branch: "automated/dependency-updates"

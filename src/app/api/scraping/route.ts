@@ -16,20 +16,20 @@ import { logger } from '@/utils/logger'
 export const POST = withRBAC(
   async (request: NextRequest, context) => {
     const ip = getClientIP(request)
-    
+
     try {
       const body = await request.json()
-      const { 
-        action, 
+      const {
+        action,
         campaignId,
         workspaceId,
-        query, 
-        zipCode, 
-        maxResults, 
-        url, 
-        depth, 
-        maxPages, 
-        sessionId 
+        query,
+        zipCode,
+        maxResults,
+        url,
+        depth,
+        maxPages,
+        sessionId,
       } = body
 
       // Validate action parameter
@@ -49,7 +49,7 @@ export const POST = withRBAC(
       }
 
       const targetWorkspaceId = workspaceId || context.workspaceId
-      
+
       // For actions that require workspace context
       if (['search', 'scrape'].includes(sanitizedAction) && !targetWorkspaceId) {
         return NextResponse.json(
@@ -60,17 +60,17 @@ export const POST = withRBAC(
 
       // Verify workspace access if workspace is specified
       if (targetWorkspaceId) {
-        const workspaceAccess = await context.database.query(`
+        const workspaceAccess = await context.database.query(
+          `
           SELECT wm.role, wm.permissions
           FROM workspace_members wm
           WHERE wm.workspace_id = $1 AND wm.user_id = $2 AND wm.is_active = true
-        `, [targetWorkspaceId, context.user.id])
+        `,
+          [targetWorkspaceId, context.user.id]
+        )
 
         if (!workspaceAccess.rows[0]) {
-          return NextResponse.json(
-            { error: 'Access denied to workspace' },
-            { status: 403 }
-          )
+          return NextResponse.json({ error: 'Access denied to workspace' }, { status: 403 })
         }
       }
 
@@ -78,7 +78,7 @@ export const POST = withRBAC(
         action: sanitizedAction,
         workspaceId: targetWorkspaceId,
         campaignId,
-        ip
+        ip,
       })
 
       let result: any
@@ -89,25 +89,31 @@ export const POST = withRBAC(
           break
 
         case 'search':
-          result = await handleSearch({
-            query,
-            zipCode,
-            maxResults,
-            workspaceId: targetWorkspaceId,
-            campaignId,
-            userId: context.user.id
-          }, context)
+          result = await handleSearch(
+            {
+              query,
+              zipCode,
+              maxResults,
+              workspaceId: targetWorkspaceId,
+              campaignId,
+              userId: context.user.id,
+            },
+            context
+          )
           break
 
         case 'scrape':
-          result = await handleScrape({
-            url,
-            depth,
-            maxPages,
-            workspaceId: targetWorkspaceId,
-            campaignId,
-            userId: context.user.id
-          }, context)
+          result = await handleScrape(
+            {
+              url,
+              depth,
+              maxPages,
+              workspaceId: targetWorkspaceId,
+              campaignId,
+              userId: context.user.id,
+            },
+            context
+          )
           break
 
         case 'cleanup':
@@ -132,7 +138,7 @@ export const POST = withRBAC(
           action: sanitizedAction,
           workspaceId: targetWorkspaceId,
           campaignId,
-          parameters: { query, zipCode, maxResults, url, depth, maxPages }
+          parameters: { query, zipCode, maxResults, url, depth, maxPages },
         }
       )
 
@@ -140,12 +146,15 @@ export const POST = withRBAC(
         success: true,
         action: sanitizedAction,
         data: result,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
-
     } catch (error) {
-      logger.error('Scraping API', `Error processing ${body?.action || 'unknown'} request from IP: ${ip}`, error)
-      
+      logger.error(
+        'Scraping API',
+        `Error processing ${body?.action || 'unknown'} request from IP: ${ip}`,
+        error
+      )
+
       // Log failed scraping attempt
       await AuditService.logScraping(
         'scraping.failed',
@@ -154,14 +163,14 @@ export const POST = withRBAC(
         AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
         {
           error: error instanceof Error ? error.message : 'Unknown error',
-          action: body?.action
+          action: body?.action,
         }
       )
 
       return NextResponse.json(
-        { 
+        {
           error: 'Scraping operation failed',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          message: error instanceof Error ? error.message : 'Unknown error',
         },
         { status: 500 }
       )
@@ -176,11 +185,11 @@ export const POST = withRBAC(
 async function handleInitialize(context: any): Promise<any> {
   try {
     await scraperService.initialize()
-    
+
     logger.info('Scraping API', 'Scraper initialized successfully', {
-      userId: context.user.id
+      userId: context.user.id,
     })
-    
+
     return { message: 'Scraper initialized successfully' }
   } catch (error) {
     logger.error('Scraping API', 'Failed to initialize scraper', error)
@@ -191,14 +200,17 @@ async function handleInitialize(context: any): Promise<any> {
 /**
  * Handle search operation
  */
-async function handleSearch(params: {
-  query?: string
-  zipCode?: string
-  maxResults?: number
-  workspaceId?: string
-  campaignId?: string
-  userId: string
-}, context: any): Promise<any> {
+async function handleSearch(
+  params: {
+    query?: string
+    zipCode?: string
+    maxResults?: number
+    workspaceId?: string
+    campaignId?: string
+    userId: string
+  },
+  context: any
+): Promise<any> {
   const { query, zipCode, maxResults, workspaceId, campaignId, userId } = params
 
   // Validate required parameters
@@ -224,23 +236,26 @@ async function handleSearch(params: {
   try {
     // Create scraping session record
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    await context.database.query(`
+
+    await context.database.query(
+      `
       INSERT INTO scraping_sessions (
         id, workspace_id, campaign_id, created_by, query, zip_code, 
         max_results, status, started_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    `, [
-      sessionId,
-      workspaceId,
-      campaignId,
-      userId,
-      sanitizedQuery,
-      sanitizedZipCode,
-      maxResults || 50,
-      'running',
-      new Date()
-    ])
+    `,
+      [
+        sessionId,
+        workspaceId,
+        campaignId,
+        userId,
+        sanitizedQuery,
+        sanitizedZipCode,
+        maxResults || 50,
+        'running',
+        new Date(),
+      ]
+    )
 
     // Perform search
     const searchResults = await scraperService.searchBusinesses(
@@ -250,18 +265,21 @@ async function handleSearch(params: {
     )
 
     // Update session with results
-    await context.database.query(`
+    await context.database.query(
+      `
       UPDATE scraping_sessions 
       SET status = $1, completed_at = $2, successful_scrapes = $3, total_urls = $4
       WHERE id = $5
-    `, ['completed', new Date(), searchResults.length, searchResults.length, sessionId])
+    `,
+      ['completed', new Date(), searchResults.length, searchResults.length, sessionId]
+    )
 
     logger.info('Scraping API', 'Search completed successfully', {
       sessionId,
       query: sanitizedQuery,
       zipCode: sanitizedZipCode,
       resultsCount: searchResults.length,
-      userId
+      userId,
     })
 
     return {
@@ -269,7 +287,7 @@ async function handleSearch(params: {
       results: searchResults,
       count: searchResults.length,
       query: sanitizedQuery,
-      zipCode: sanitizedZipCode
+      zipCode: sanitizedZipCode,
     }
   } catch (error) {
     logger.error('Scraping API', 'Search operation failed', error)
@@ -280,14 +298,17 @@ async function handleSearch(params: {
 /**
  * Handle scrape operation
  */
-async function handleScrape(params: {
-  url?: string
-  depth?: number
-  maxPages?: number
-  workspaceId?: string
-  campaignId?: string
-  userId: string
-}, context: any): Promise<any> {
+async function handleScrape(
+  params: {
+    url?: string
+    depth?: number
+    maxPages?: number
+    workspaceId?: string
+    campaignId?: string
+    userId: string
+  },
+  context: any
+): Promise<any> {
   const { url, depth, maxPages, workspaceId, campaignId, userId } = params
 
   // Validate required parameters
@@ -310,23 +331,26 @@ async function handleScrape(params: {
   try {
     // Create scraping session record
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    await context.database.query(`
+
+    await context.database.query(
+      `
       INSERT INTO scraping_sessions (
         id, workspace_id, campaign_id, created_by, url, depth, 
         max_pages, status, started_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    `, [
-      sessionId,
-      workspaceId,
-      campaignId,
-      userId,
-      sanitizedUrl,
-      numDepth,
-      numMaxPages,
-      'running',
-      new Date()
-    ])
+    `,
+      [
+        sessionId,
+        workspaceId,
+        campaignId,
+        userId,
+        sanitizedUrl,
+        numDepth,
+        numMaxPages,
+        'running',
+        new Date(),
+      ]
+    )
 
     // Perform scraping
     const businesses = await scraperService.scrapeWebsite(sanitizedUrl, numDepth, numMaxPages)
@@ -334,44 +358,50 @@ async function handleScrape(params: {
     // Store businesses in database if campaign is specified
     if (campaignId && businesses.length > 0) {
       for (const business of businesses) {
-        await context.database.query(`
+        await context.database.query(
+          `
           INSERT INTO businesses (
             campaign_id, name, address, phone, email, website, 
             confidence_score, scraped_at, scraped_by
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `, [
-          campaignId,
-          business.name,
-          business.address,
-          business.phone ? [business.phone] : [],
-          business.email ? [business.email] : [],
-          business.website,
-          business.confidence || 0.5,
-          new Date(),
-          userId
-        ])
+        `,
+          [
+            campaignId,
+            business.name,
+            business.address,
+            business.phone ? [business.phone] : [],
+            business.email ? [business.email] : [],
+            business.website,
+            business.confidence || 0.5,
+            new Date(),
+            userId,
+          ]
+        )
       }
     }
 
     // Update session with results
-    await context.database.query(`
+    await context.database.query(
+      `
       UPDATE scraping_sessions 
       SET status = $1, completed_at = $2, successful_scrapes = $3, total_urls = $4
       WHERE id = $5
-    `, ['completed', new Date(), businesses.length, businesses.length, sessionId])
+    `,
+      ['completed', new Date(), businesses.length, businesses.length, sessionId]
+    )
 
     logger.info('Scraping API', 'Scrape completed successfully', {
       sessionId,
       url: sanitizedUrl,
       businessesFound: businesses.length,
-      userId
+      userId,
     })
 
     return {
       sessionId,
       businesses,
       count: businesses.length,
-      url: sanitizedUrl
+      url: sanitizedUrl,
     }
   } catch (error) {
     logger.error('Scraping API', 'Scrape operation failed', error)
@@ -385,11 +415,11 @@ async function handleScrape(params: {
 async function handleCleanup(context: any): Promise<any> {
   try {
     await scraperService.cleanup()
-    
+
     logger.info('Scraping API', 'Scraper cleanup completed', {
-      userId: context.user.id
+      userId: context.user.id,
     })
-    
+
     return { message: 'Scraper cleanup completed' }
   } catch (error) {
     logger.error('Scraping API', 'Failed to cleanup scraper', error)
@@ -406,23 +436,26 @@ async function handleStatus(sessionId: string | undefined, context: any): Promis
   }
 
   try {
-    const sessionResult = await context.database.query(`
+    const sessionResult = await context.database.query(
+      `
       SELECT * FROM scraping_sessions WHERE id = $1
-    `, [sessionId])
+    `,
+      [sessionId]
+    )
 
     if (!sessionResult.rows[0]) {
       return { message: 'Session not found' }
     }
 
     const session = sessionResult.rows[0]
-    
+
     return {
       sessionId,
       status: session.status,
       startedAt: session.started_at,
       completedAt: session.completed_at,
       successfulScrapes: session.successful_scrapes,
-      totalUrls: session.total_urls
+      totalUrls: session.total_urls,
     }
   } catch (error) {
     logger.error('Scraping API', 'Failed to get session status', error)
@@ -445,18 +478,21 @@ export const GET = withRBAC(
         const result = await handleStatus(sessionId, context)
         return NextResponse.json({
           success: true,
-          data: result
+          data: result,
         })
       }
 
       // Get general scraping capabilities and recent sessions
-      const recentSessions = await context.database.query(`
+      const recentSessions = await context.database.query(
+        `
         SELECT id, status, started_at, completed_at, query, url, successful_scrapes
         FROM scraping_sessions
         WHERE created_by = $1 ${workspaceId ? 'AND workspace_id = $2' : ''}
         ORDER BY started_at DESC
         LIMIT 10
-      `, workspaceId ? [context.user.id, workspaceId] : [context.user.id])
+      `,
+        workspaceId ? [context.user.id, workspaceId] : [context.user.id]
+      )
 
       return NextResponse.json({
         success: true,
@@ -466,18 +502,15 @@ export const GET = withRBAC(
             actions: ['initialize', 'search', 'scrape', 'cleanup', 'status'],
             maxDepth: 10,
             maxPages: 50,
-            maxResults: 100
+            maxResults: 100,
           },
           recentSessions: recentSessions.rows,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       })
     } catch (error) {
       logger.error('Scraping API', 'Error getting scraping status', error)
-      return NextResponse.json(
-        { error: 'Failed to get scraping status' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to get scraping status' }, { status: 500 })
     }
   },
   { permissions: ['scraping.view'] }

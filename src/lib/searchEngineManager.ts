@@ -1,6 +1,6 @@
 /**
  * Search Engine Manager
- * 
+ *
  * Manages search engine state, duplicate detection, and session-based disabling
  * for intelligent search engine management during scraping sessions.
  */
@@ -50,7 +50,7 @@ export class SearchEngineManager {
           isDisabledForSession: false,
           duplicateCount: 0,
           lastResults: [],
-          sessionId: null
+          sessionId: null,
         },
         azure: {
           id: 'azure',
@@ -59,7 +59,7 @@ export class SearchEngineManager {
           isDisabledForSession: false,
           duplicateCount: 0,
           lastResults: [],
-          sessionId: null
+          sessionId: null,
         },
         duckduckgo: {
           id: 'duckduckgo',
@@ -68,11 +68,11 @@ export class SearchEngineManager {
           isDisabledForSession: false,
           duplicateCount: 0,
           lastResults: [],
-          sessionId: null
-        }
+          sessionId: null,
+        },
       },
       currentSessionId: null,
-      duplicateThreshold: this.DUPLICATE_THRESHOLD
+      duplicateThreshold: this.DUPLICATE_THRESHOLD,
     }
 
     this.loadState()
@@ -83,9 +83,9 @@ export class SearchEngineManager {
    */
   startSession(sessionId: string): void {
     logger.info('SearchEngineManager', `Starting new session: ${sessionId}`)
-    
+
     this.state.currentSessionId = sessionId
-    
+
     // Reset session-specific state for all engines
     Object.values(this.state.engines).forEach(engine => {
       engine.isDisabledForSession = false
@@ -106,7 +106,7 @@ export class SearchEngineManager {
     }
 
     logger.info('SearchEngineManager', `Ending session: ${this.state.currentSessionId}`)
-    
+
     // Reset session-specific state
     Object.values(this.state.engines).forEach(engine => {
       engine.isDisabledForSession = false
@@ -136,19 +136,25 @@ export class SearchEngineManager {
 
     // Convert results to comparable format
     const resultSignature = this.createResultSignature(results)
-    
+
     // Check for duplicates
     const isDuplicate = this.isResultDuplicate(engine.lastResults, resultSignature)
-    
+
     if (isDuplicate) {
       engine.duplicateCount++
-      logger.warn('SearchEngineManager', `Duplicate results detected for ${engine.name} (count: ${engine.duplicateCount})`)
-      
+      logger.warn(
+        'SearchEngineManager',
+        `Duplicate results detected for ${engine.name} (count: ${engine.duplicateCount})`
+      )
+
       // Disable engine if threshold reached
       if (engine.duplicateCount >= this.state.duplicateThreshold) {
         engine.isDisabledForSession = true
         this.notifyEngineDisabled(engine.name)
-        logger.warn('SearchEngineManager', `${engine.name} disabled for session due to duplicate results`)
+        logger.warn(
+          'SearchEngineManager',
+          `${engine.name} disabled for session due to duplicate results`
+        )
       }
     } else {
       // Update last results
@@ -171,9 +177,9 @@ export class SearchEngineManager {
 
     engine.enabled = enabled
     this.saveState()
-    
+
     logger.info('SearchEngineManager', `${engine.name} ${enabled ? 'enabled' : 'disabled'}`)
-    
+
     // Show toast notification
     toast.success(`${engine.name} ${enabled ? 'enabled' : 'disabled'}`)
   }
@@ -182,8 +188,8 @@ export class SearchEngineManager {
    * Get list of available engines for searching
    */
   getAvailableEngines(): SearchEngineConfig[] {
-    return Object.values(this.state.engines).filter(engine => 
-      engine.enabled && !engine.isDisabledForSession
+    return Object.values(this.state.engines).filter(
+      engine => engine.enabled && !engine.isDisabledForSession
     )
   }
 
@@ -206,7 +212,7 @@ export class SearchEngineManager {
    */
   resetAllEngines(): void {
     logger.info('SearchEngineManager', 'Resetting all search engines to enabled state')
-    
+
     Object.values(this.state.engines).forEach(engine => {
       engine.enabled = true
       engine.isDisabledForSession = false
@@ -239,7 +245,7 @@ export class SearchEngineManager {
     // Calculate similarity ratio
     const intersection = lastResults.filter(result => currentResults.includes(result))
     const similarity = intersection.length / Math.max(lastResults.length, currentResults.length)
-    
+
     return similarity >= this.RESULT_COMPARISON_THRESHOLD
   }
 
@@ -247,13 +253,10 @@ export class SearchEngineManager {
    * Show notification when engine is disabled
    */
   private notifyEngineDisabled(engineName: string): void {
-    toast.error(
-      `${engineName} has been disabled for this session due to duplicate results`,
-      {
-        duration: 6000,
-        icon: '⚠️'
-      }
-    )
+    toast.error(`${engineName} has been disabled for this session due to duplicate results`, {
+      duration: 6000,
+      icon: '⚠️',
+    })
   }
 
   /**
@@ -281,8 +284,8 @@ export class SearchEngineManager {
           ...loadedState,
           engines: {
             ...this.state.engines,
-            ...loadedState.engines
-          }
+            ...loadedState.engines,
+          },
         }
       }
     } catch (error) {

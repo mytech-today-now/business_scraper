@@ -103,7 +103,7 @@ export async function runDatabaseMigrations(): Promise<void> {
 
   try {
     const db = await getDatabaseInstance()
-    
+
     // Check if AI tables exist, if not run migration
     const checkQuery = `
       SELECT EXISTS (
@@ -112,20 +112,20 @@ export async function runDatabaseMigrations(): Promise<void> {
         AND table_name = 'ai_analytics'
       ) as ai_tables_exist
     `
-    
+
     const result = await db.executeQuery(checkQuery)
     const aiTablesExist = result.rows[0]?.ai_tables_exist
 
     if (!aiTablesExist) {
       logger.info('DatabaseFactory', 'AI tables not found, running migration...')
-      
+
       // Read and execute migration file
       const fs = await import('fs/promises')
       const path = await import('path')
-      
+
       const migrationPath = path.join(process.cwd(), 'src/lib/migrations/003_add_ai_tables.sql')
       const migrationSQL = await fs.readFile(migrationPath, 'utf-8')
-      
+
       // Execute migration
       await db.executeQuery(migrationSQL)
       logger.info('DatabaseFactory', 'AI tables migration completed successfully')

@@ -14,7 +14,7 @@ import {
   EyeOff,
   FileText,
   Zap,
-  Activity
+  Activity,
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
@@ -28,7 +28,7 @@ import {
   formatAddress,
   formatPhoneNumber,
   formatDate,
-  formatUrl
+  formatUrl,
 } from '@/utils/formatters'
 import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
@@ -40,14 +40,26 @@ import { usePerformance } from '@/controller/PerformanceContext'
 import { PerformanceAdvisoryBanner, PerformanceModePrompt } from './PerformanceAdvisoryBanner'
 
 // Dynamic imports for performance optimization
-const VirtualizedResultsTable = React.lazy(() => import('./VirtualizedResultsTable').then(module => ({ default: module.VirtualizedResultsTable })))
-const PaginatedResultsTable = React.lazy(() => import('./PaginatedResultsTable').then(module => ({ default: module.PaginatedResultsTable })))
+const VirtualizedResultsTable = React.lazy(() =>
+  import('./VirtualizedResultsTable').then(module => ({ default: module.VirtualizedResultsTable }))
+)
+const PaginatedResultsTable = React.lazy(() =>
+  import('./PaginatedResultsTable').then(module => ({ default: module.PaginatedResultsTable }))
+)
 
 /**
  * Column definition interface
  */
 interface Column {
-  key: keyof BusinessRecord | 'actions' | 'street' | 'city' | 'state' | 'zipCode' | 'source' | 'leadScore'
+  key:
+    | keyof BusinessRecord
+    | 'actions'
+    | 'street'
+    | 'city'
+    | 'state'
+    | 'zipCode'
+    | 'source'
+    | 'leadScore'
   label: string
   sortable: boolean
   visible: boolean
@@ -79,7 +91,11 @@ export interface ResultsTableProps {
   businesses: BusinessRecord[]
   onEdit?: (businessId: string, updates: Partial<BusinessRecord>) => void
   onDelete?: (businessId: string) => void
-  onExport?: (format: string, selectedIds?: string[], template?: ExportTemplate | CRMTemplate) => void
+  onExport?: (
+    format: string,
+    selectedIds?: string[],
+    template?: ExportTemplate | CRMTemplate
+  ) => void
   isLoading?: boolean
   isExporting?: boolean
 }
@@ -114,7 +130,7 @@ export function ResultsTable({
   onDelete,
   onExport,
   isLoading = false,
-  isExporting = false
+  isExporting = false,
 }: ResultsTableProps): JSX.Element {
   // Performance context
   const { mode, showAdvisoryBanner, showPaginationPrompt } = usePerformance()
@@ -154,11 +170,12 @@ export function ResultsTable({
     // Apply filters
     if (filterConfig.search) {
       const searchLower = filterConfig.search.toLowerCase()
-      filtered = filtered.filter(business =>
-        business.businessName.toLowerCase().includes(searchLower) ||
-        business.email.some(email => email.toLowerCase().includes(searchLower)) ||
-        business.websiteUrl.toLowerCase().includes(searchLower) ||
-        formatAddress(business.address).toLowerCase().includes(searchLower)
+      filtered = filtered.filter(
+        business =>
+          business.businessName.toLowerCase().includes(searchLower) ||
+          business.email.some(email => email.toLowerCase().includes(searchLower)) ||
+          business.websiteUrl.toLowerCase().includes(searchLower) ||
+          formatAddress(business.address).toLowerCase().includes(searchLower)
       )
     }
 
@@ -167,13 +184,13 @@ export function ResultsTable({
     }
 
     if (filterConfig.hasEmail !== null) {
-      filtered = filtered.filter(business => 
+      filtered = filtered.filter(business =>
         filterConfig.hasEmail ? business.email.length > 0 : business.email.length === 0
       )
     }
 
     if (filterConfig.hasPhone !== null) {
-      filtered = filtered.filter(business => 
+      filtered = filtered.filter(business =>
         filterConfig.hasPhone ? !!business.phone : !business.phone
       )
     }
@@ -184,7 +201,7 @@ export function ResultsTable({
       filtered.sort((a, b) => {
         const aValue = a[sortKey]
         const bValue = b[sortKey]
-        
+
         let comparison = 0
 
         // Handle undefined values
@@ -193,7 +210,7 @@ export function ResultsTable({
         else if (bValue == null) comparison = 1
         else if (aValue < bValue) comparison = -1
         else if (aValue > bValue) comparison = 1
-        
+
         return sortConfig.direction === 'desc' ? -comparison : comparison
       })
     }
@@ -229,245 +246,231 @@ export function ResultsTable({
   /**
    * Handle select all rows
    */
-  const handleSelectAll = useCallback((selected: boolean): void => {
-    if (selected) {
-      setSelectedRows(new Set(filteredAndSortedBusinesses.map(b => b.id)))
-    } else {
-      setSelectedRows(new Set())
-    }
-  }, [filteredAndSortedBusinesses])
+  const handleSelectAll = useCallback(
+    (selected: boolean): void => {
+      if (selected) {
+        setSelectedRows(new Set(filteredAndSortedBusinesses.map(b => b.id)))
+      } else {
+        setSelectedRows(new Set())
+      }
+    },
+    [filteredAndSortedBusinesses]
+  )
 
   /**
    * Handle column visibility toggle
    */
   const handleColumnVisibility = useCallback((columnKey: string, visible: boolean): void => {
-    setColumns(prev => 
-      prev.map(col => 
-        col.key === columnKey ? { ...col, visible } : col
-      )
-    )
+    setColumns(prev => prev.map(col => (col.key === columnKey ? { ...col, visible } : col)))
   }, [])
 
   /**
    * Handle cell editing
    */
-  const handleCellEdit = useCallback((businessId: string, field: string, value: any): void => {
-    if (onEdit) {
-      const business = businesses.find(b => b.id === businessId)
-      if (business) {
-        onEdit(businessId, { [field]: value })
+  const handleCellEdit = useCallback(
+    (businessId: string, field: string, value: any): void => {
+      if (onEdit) {
+        const business = businesses.find(b => b.id === businessId)
+        if (business) {
+          onEdit(businessId, { [field]: value })
+        }
       }
-    }
-    setEditingCell(null)
-  }, [businesses, onEdit])
+      setEditingCell(null)
+    },
+    [businesses, onEdit]
+  )
 
   /**
    * Render cell content
    */
-  const renderCellContent = useCallback((business: BusinessRecord, column: Column) => {
-    const isEditing = editingCell?.businessId === business.id && editingCell?.field === column.key
+  const renderCellContent = useCallback(
+    (business: BusinessRecord, column: Column) => {
+      const isEditing = editingCell?.businessId === business.id && editingCell?.field === column.key
 
-    if (isEditing && column.key !== 'actions') {
-      return (
-        <Input
-          defaultValue={String(business[column.key as keyof BusinessRecord] || '')}
-          onBlur={(e) => handleCellEdit(business.id, column.key as string, e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleCellEdit(business.id, column.key as string, e.currentTarget.value)
-            }
-            if (e.key === 'Escape') {
-              setEditingCell(null)
-            }
-          }}
-          className="h-8 text-xs"
-          autoFocus
-        />
-      )
-    }
-
-    switch (column.key) {
-      case 'businessName':
+      if (isEditing && column.key !== 'actions') {
         return (
-          <div className="font-medium text-sm">
-            {formatBusinessName(business.businessName)}
-          </div>
-        )
-
-      case 'contactPerson':
-        return business.contactPerson ? (
-          <div className="text-sm">
-            {business.contactPerson}
-          </div>
-        ) : (
-          <span className="text-muted-foreground text-xs">—</span>
-        )
-
-      case 'email':
-        return (
-          <div className="space-y-1">
-            {business.email.slice(0, 2).map((email, index) => (
-              <div key={index} className="text-xs">
-                <a
-                  href={`mailto:${email}`}
-                  className="text-primary hover:underline break-all"
-                >
-                  {email}
-                </a>
-              </div>
-            ))}
-            {business.email.length > 2 && (
-              <div className="text-xs text-muted-foreground">
-                +{business.email.length - 2} more
-              </div>
-            )}
-          </div>
-        )
-
-      case 'phone':
-        return business.phone ? (
-          <a
-            href={`tel:${business.phone}`}
-            className="text-primary hover:underline text-sm whitespace-nowrap"
-          >
-            {formatPhoneNumber(business.phone)}
-          </a>
-        ) : (
-          <span className="text-muted-foreground text-xs">—</span>
-        )
-
-      case 'websiteUrl':
-        return (
-          <div className="flex items-center gap-1">
-            <a
-              href={business.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline text-xs flex items-center gap-1 break-all"
-            >
-              {formatUrl(business.websiteUrl)}
-              <ExternalLink className="h-3 w-3 flex-shrink-0" />
-            </a>
-            <button
-              type="button"
-              onClick={() => handleAddToBlacklist(business.websiteUrl, business.industry)}
-              className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-1 transition-colors"
-              title={`Block ${extractDomain(business.websiteUrl)} from ${business.industry} searches`}
-            >
-              🚫
-            </button>
-          </div>
-        )
-
-      case 'street':
-        return (
-          <div className="text-sm">
-            {business.address?.street ? (
-              <>
-                {business.address.street}
-                {business.address.suite && (
-                  <div className="text-xs text-muted-foreground">
-                    {business.address.suite}
-                  </div>
-                )}
-              </>
-            ) : (
-              <span className="text-muted-foreground text-xs">—</span>
-            )}
-          </div>
-        )
-
-      case 'city':
-        return (
-          <div className="text-sm">
-            {business.address?.city || (
-              <span className="text-muted-foreground text-xs">—</span>
-            )}
-          </div>
-        )
-
-      case 'state':
-        return (
-          <div className="text-sm font-mono">
-            {business.address?.state || (
-              <span className="text-muted-foreground text-xs">—</span>
-            )}
-          </div>
-        )
-
-      case 'zipCode':
-        return (
-          <div className="text-sm font-mono">
-            {business.address?.zipCode || (
-              <span className="text-muted-foreground text-xs">—</span>
-            )}
-          </div>
-        )
-
-      case 'industry':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground whitespace-nowrap">
-            {business.industry}
-          </span>
-        )
-
-      case 'source':
-        return (
-          <div className="text-xs">
-            {(business as any).source ? (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                {(business as any).source}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">—</span>
-            )}
-          </div>
-        )
-
-      case 'scrapedAt':
-        return (
-          <div className="text-xs text-muted-foreground whitespace-nowrap">
-            {formatDate(business.scrapedAt)}
-          </div>
-        )
-      
-      case 'leadScore':
-        return (
-          <LeadScoreBadge
-            business={business}
-            showDetails={true}
-            size="sm"
+          <Input
+            defaultValue={String(business[column.key as keyof BusinessRecord] || '')}
+            onBlur={e => handleCellEdit(business.id, column.key as string, e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                handleCellEdit(business.id, column.key as string, e.currentTarget.value)
+              }
+              if (e.key === 'Escape') {
+                setEditingCell(null)
+              }
+            }}
+            className="h-8 text-xs"
+            autoFocus
           />
         )
+      }
 
-      case 'actions':
-        return (
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => setEditingCell({ businessId: business.id, field: 'businessName' })}
+      switch (column.key) {
+        case 'businessName':
+          return (
+            <div className="font-medium text-sm">{formatBusinessName(business.businessName)}</div>
+          )
+
+        case 'contactPerson':
+          return business.contactPerson ? (
+            <div className="text-sm">{business.contactPerson}</div>
+          ) : (
+            <span className="text-muted-foreground text-xs">—</span>
+          )
+
+        case 'email':
+          return (
+            <div className="space-y-1">
+              {business.email.slice(0, 2).map((email, index) => (
+                <div key={index} className="text-xs">
+                  <a href={`mailto:${email}`} className="text-primary hover:underline break-all">
+                    {email}
+                  </a>
+                </div>
+              ))}
+              {business.email.length > 2 && (
+                <div className="text-xs text-muted-foreground">
+                  +{business.email.length - 2} more
+                </div>
+              )}
+            </div>
+          )
+
+        case 'phone':
+          return business.phone ? (
+            <a
+              href={`tel:${business.phone}`}
+              className="text-primary hover:underline text-sm whitespace-nowrap"
             >
-              <Edit className="h-3 w-3" />
-            </Button>
-            {onDelete && (
+              {formatPhoneNumber(business.phone)}
+            </a>
+          ) : (
+            <span className="text-muted-foreground text-xs">—</span>
+          )
+
+        case 'websiteUrl':
+          return (
+            <div className="flex items-center gap-1">
+              <a
+                href={business.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline text-xs flex items-center gap-1 break-all"
+              >
+                {formatUrl(business.websiteUrl)}
+                <ExternalLink className="h-3 w-3 flex-shrink-0" />
+              </a>
+              <button
+                type="button"
+                onClick={() => handleAddToBlacklist(business.websiteUrl, business.industry)}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-1 transition-colors"
+                title={`Block ${extractDomain(business.websiteUrl)} from ${business.industry} searches`}
+              >
+                🚫
+              </button>
+            </div>
+          )
+
+        case 'street':
+          return (
+            <div className="text-sm">
+              {business.address?.street ? (
+                <>
+                  {business.address.street}
+                  {business.address.suite && (
+                    <div className="text-xs text-muted-foreground">{business.address.suite}</div>
+                  )}
+                </>
+              ) : (
+                <span className="text-muted-foreground text-xs">—</span>
+              )}
+            </div>
+          )
+
+        case 'city':
+          return (
+            <div className="text-sm">
+              {business.address?.city || <span className="text-muted-foreground text-xs">—</span>}
+            </div>
+          )
+
+        case 'state':
+          return (
+            <div className="text-sm font-mono">
+              {business.address?.state || <span className="text-muted-foreground text-xs">—</span>}
+            </div>
+          )
+
+        case 'zipCode':
+          return (
+            <div className="text-sm font-mono">
+              {business.address?.zipCode || (
+                <span className="text-muted-foreground text-xs">—</span>
+              )}
+            </div>
+          )
+
+        case 'industry':
+          return (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground whitespace-nowrap">
+              {business.industry}
+            </span>
+          )
+
+        case 'source':
+          return (
+            <div className="text-xs">
+              {(business as any).source ? (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                  {(business as any).source}
+                </span>
+              ) : (
+                <span className="text-muted-foreground">—</span>
+              )}
+            </div>
+          )
+
+        case 'scrapedAt':
+          return (
+            <div className="text-xs text-muted-foreground whitespace-nowrap">
+              {formatDate(business.scrapedAt)}
+            </div>
+          )
+
+        case 'leadScore':
+          return <LeadScoreBadge business={business} showDetails={true} size="sm" />
+
+        case 'actions':
+          return (
+            <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-destructive hover:text-destructive"
-                onClick={() => onDelete(business.id)}
+                className="h-6 w-6"
+                onClick={() => setEditingCell({ businessId: business.id, field: 'businessName' })}
               >
-                <Trash2 className="h-3 w-3" />
+                <Edit className="h-3 w-3" />
               </Button>
-            )}
-          </div>
-        )
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-destructive hover:text-destructive"
+                  onClick={() => onDelete(business.id)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+          )
 
-      default:
-        return String(business[column.key as keyof BusinessRecord] || '')
-    }
-  }, [editingCell, handleCellEdit, onDelete])
+        default:
+          return String(business[column.key as keyof BusinessRecord] || '')
+      }
+    },
+    [editingCell, handleCellEdit, onDelete]
+  )
 
   /**
    * Extract clean domain from URL
@@ -504,37 +507,42 @@ export function ResultsTable({
   /**
    * Handle adding domain to blacklist
    */
-  const handleAddToBlacklist = useCallback(async (url: string, industry: string): Promise<void> => {
-    try {
-      const domain = extractDomain(url)
+  const handleAddToBlacklist = useCallback(
+    async (url: string, industry: string): Promise<void> => {
+      try {
+        const domain = extractDomain(url)
 
-      const response = await fetch('/api/config', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'add-domain-to-blacklist',
-          domain,
-          industry
-        }),
-      })
+        const response = await fetch('/api/config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'add-domain-to-blacklist',
+            domain,
+            industry,
+          }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        toast.success(`Domain ${domain} added to ${industry} blacklist`)
-      } else {
-        toast.error(result.message || 'Failed to add domain to blacklist')
+        if (result.success) {
+          toast.success(`Domain ${domain} added to ${industry} blacklist`)
+        } else {
+          toast.error(result.message || 'Failed to add domain to blacklist')
+        }
+      } catch (error) {
+        console.error('Failed to add domain to blacklist:', error)
+        toast.error('Failed to add domain to blacklist')
       }
-    } catch (error) {
-      console.error('Failed to add domain to blacklist:', error)
-      toast.error('Failed to add domain to blacklist')
-    }
-  }, [extractDomain])
+    },
+    [extractDomain]
+  )
 
   const visibleColumns = columns.filter(col => col.visible)
-  const allSelected = selectedRows.size === filteredAndSortedBusinesses.length && filteredAndSortedBusinesses.length > 0
+  const allSelected =
+    selectedRows.size === filteredAndSortedBusinesses.length &&
+    filteredAndSortedBusinesses.length > 0
   const someSelected = selectedRows.size > 0
 
   // Dynamic rendering based on performance mode
@@ -591,12 +599,7 @@ export function ResultsTable({
             {/* Export Button */}
             {onExport && (
               <div className="relative group">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  icon={Download}
-                  disabled={isExporting}
-                >
+                <Button variant="outline" size="sm" icon={Download} disabled={isExporting}>
                   {isExporting ? 'Exporting...' : 'Export'}
                 </Button>
                 {!isExporting && (
@@ -604,7 +607,9 @@ export function ResultsTable({
                     <div className="p-1">
                       {/* Primary formats */}
                       <div className="border-b border-border pb-1 mb-1">
-                        <div className="px-3 py-1 text-xs font-medium text-muted-foreground">Primary Formats</div>
+                        <div className="px-3 py-1 text-xs font-medium text-muted-foreground">
+                          Primary Formats
+                        </div>
                         {['CSV', 'XLSX', 'PDF'].map(format => (
                           <button
                             key={format}
@@ -619,12 +624,14 @@ export function ResultsTable({
 
                       {/* Additional formats */}
                       <div>
-                        <div className="px-3 py-1 text-xs font-medium text-muted-foreground">Additional Formats</div>
+                        <div className="px-3 py-1 text-xs font-medium text-muted-foreground">
+                          Additional Formats
+                        </div>
                         {[
                           { format: 'JSON', description: 'Structured data' },
                           { format: 'XML', description: 'Markup format' },
                           { format: 'VCF', description: 'Contact cards' },
-                          { format: 'SQL', description: 'Database inserts' }
+                          { format: 'SQL', description: 'Database inserts' },
                         ].map(({ format, description }) => (
                           <button
                             key={format}
@@ -650,7 +657,9 @@ export function ResultsTable({
                           <FileText className="h-4 w-4" />
                           <div className="flex flex-col">
                             <span>🚀 CRM Templates</span>
-                            <span className="text-xs text-muted-foreground">Salesforce, HubSpot, Pipedrive</span>
+                            <span className="text-xs text-muted-foreground">
+                              Salesforce, HubSpot, Pipedrive
+                            </span>
                           </div>
                         </button>
                         <button
@@ -661,7 +670,9 @@ export function ResultsTable({
                           <FileText className="h-4 w-4" />
                           <div className="flex flex-col">
                             <span>Custom Templates</span>
-                            <span className="text-xs text-muted-foreground">Manage export templates</span>
+                            <span className="text-xs text-muted-foreground">
+                              Manage export templates
+                            </span>
                           </div>
                         </button>
                       </div>
@@ -670,7 +681,7 @@ export function ResultsTable({
                 )}
               </div>
             )}
-            
+
             {/* Column Settings */}
             <div className="relative">
               <Button
@@ -691,7 +702,9 @@ export function ResultsTable({
                           <input
                             type="checkbox"
                             checked={column.visible}
-                            onChange={(e) => handleColumnVisibility(column.key as string, e.target.checked)}
+                            onChange={e =>
+                              handleColumnVisibility(column.key as string, e.target.checked)
+                            }
                             className="rounded"
                           />
                           {column.label}
@@ -709,29 +722,29 @@ export function ResultsTable({
       <CardContent className="space-y-4">
         {/* Business Summary Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{businesses.length}</div>
-              <div className="text-xs text-muted-foreground">Total Businesses</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {businesses.filter(b => b.email.length > 0).length}
-              </div>
-              <div className="text-xs text-muted-foreground">With Email</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {businesses.filter(b => b.phone).length}
-              </div>
-              <div className="text-xs text-muted-foreground">With Phone</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {new Set(businesses.map(b => b.industry)).size}
-              </div>
-              <div className="text-xs text-muted-foreground">Industries</div>
-            </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary">{businesses.length}</div>
+            <div className="text-xs text-muted-foreground">Total Businesses</div>
           </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-600">
+              {businesses.filter(b => b.email.length > 0).length}
+            </div>
+            <div className="text-xs text-muted-foreground">With Email</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600">
+              {businesses.filter(b => b.phone).length}
+            </div>
+            <div className="text-xs text-muted-foreground">With Phone</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-600">
+              {new Set(businesses.map(b => b.industry)).size}
+            </div>
+            <div className="text-xs text-muted-foreground">Industries</div>
+          </div>
+        </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
@@ -739,28 +752,32 @@ export function ResultsTable({
             <Input
               placeholder="Search businesses..."
               value={filterConfig.search}
-              onChange={(e) => setFilterConfig(prev => ({ ...prev, search: e.target.value }))}
+              onChange={e => setFilterConfig(prev => ({ ...prev, search: e.target.value }))}
               className="h-9"
             />
           </div>
-          
+
           <select
             value={filterConfig.industry}
-            onChange={(e) => setFilterConfig(prev => ({ ...prev, industry: e.target.value }))}
+            onChange={e => setFilterConfig(prev => ({ ...prev, industry: e.target.value }))}
             className="h-9 px-3 rounded-md border border-input bg-background text-sm"
           >
             <option value="">All Industries</option>
             {uniqueIndustries.map(industry => (
-              <option key={industry} value={industry}>{industry}</option>
+              <option key={industry} value={industry}>
+                {industry}
+              </option>
             ))}
           </select>
 
           <select
             value={filterConfig.hasEmail === null ? '' : String(filterConfig.hasEmail)}
-            onChange={(e) => setFilterConfig(prev => ({ 
-              ...prev, 
-              hasEmail: e.target.value === '' ? null : e.target.value === 'true' 
-            }))}
+            onChange={e =>
+              setFilterConfig(prev => ({
+                ...prev,
+                hasEmail: e.target.value === '' ? null : e.target.value === 'true',
+              }))
+            }
             className="h-9 px-3 rounded-md border border-input bg-background text-sm"
           >
             <option value="">All Email Status</option>
@@ -775,23 +792,14 @@ export function ResultsTable({
             <span className="text-sm">
               {selectedRows.size} of {filteredAndSortedBusinesses.length} selected
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedRows(new Set())}
-            >
+            <Button variant="outline" size="sm" onClick={() => setSelectedRows(new Set())}>
               Clear Selection
             </Button>
 
             {/* Export Selected */}
             {onExport && (
               <div className="relative group">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  icon={Download}
-                  disabled={isExporting}
-                >
+                <Button variant="outline" size="sm" icon={Download} disabled={isExporting}>
                   {isExporting ? 'Exporting...' : 'Export Selected'}
                 </Button>
                 {!isExporting && (
@@ -831,28 +839,21 @@ export function ResultsTable({
 
         {/* Enhanced Table with Better Organization */}
         <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-900">
-          <div className={clsx(
-            'overflow-x-auto',
-            isMobile && 'scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
-          )}>
-            <table className={clsx(
-              'w-full',
-              isMobile ? 'min-w-[800px]' : 'min-w-[1200px]'
-            )}>
+          <div
+            className={clsx(
+              'overflow-x-auto',
+              isMobile && 'scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
+            )}
+          >
+            <table className={clsx('w-full', isMobile ? 'min-w-[800px]' : 'min-w-[1200px]')}>
               <thead className="bg-muted/50 border-b">
                 <tr>
-                  <th className={clsx(
-                    'text-left',
-                    isMobile ? 'w-10 p-2' : 'w-12 p-3'
-                  )}>
+                  <th className={clsx('text-left', isMobile ? 'w-10 p-2' : 'w-12 p-3')}>
                     <input
                       type="checkbox"
                       checked={allSelected}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                      className={clsx(
-                        'rounded',
-                        isMobile && 'min-h-touch min-w-touch'
-                      )}
+                      onChange={e => handleSelectAll(e.target.checked)}
+                      className={clsx('rounded', isMobile && 'min-h-touch min-w-touch')}
                       title="Select all businesses"
                     />
                   </th>
@@ -875,11 +876,12 @@ export function ResultsTable({
                           onClick={() => handleSort(column.key as keyof BusinessRecord)}
                         >
                           {column.label}
-                          {sortConfig.key === column.key && (
-                            sortConfig.direction === 'asc' ?
-                              <SortAsc className="h-3 w-3" /> :
+                          {sortConfig.key === column.key &&
+                            (sortConfig.direction === 'asc' ? (
+                              <SortAsc className="h-3 w-3" />
+                            ) : (
                               <SortDesc className="h-3 w-3" />
-                          )}
+                            ))}
                         </button>
                       ) : (
                         <span className="text-muted-foreground">{column.label}</span>
@@ -900,10 +902,17 @@ export function ResultsTable({
                   </tr>
                 ) : filteredAndSortedBusinesses.length === 0 ? (
                   <tr>
-                    <td colSpan={visibleColumns.length + 1} className="p-8 text-center text-muted-foreground">
+                    <td
+                      colSpan={visibleColumns.length + 1}
+                      className="p-8 text-center text-muted-foreground"
+                    >
                       <div className="flex flex-col items-center gap-2">
                         <Search className="h-8 w-8 text-muted-foreground/50" />
-                        <span>{businesses.length === 0 ? 'No businesses found' : 'No businesses match your filters'}</span>
+                        <span>
+                          {businesses.length === 0
+                            ? 'No businesses found'
+                            : 'No businesses match your filters'}
+                        </span>
                         {businesses.length > 0 && (
                           <span className="text-xs">Try adjusting your search filters</span>
                         )}
@@ -917,14 +926,16 @@ export function ResultsTable({
                       className={clsx(
                         'hover:bg-accent/50 transition-colors group',
                         selectedRows.has(business.id) && 'bg-accent/30',
-                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/50'
+                        index % 2 === 0
+                          ? 'bg-white dark:bg-gray-900'
+                          : 'bg-gray-50/50 dark:bg-gray-800/50'
                       )}
                     >
                       <td className="p-3 border-r border-muted/20">
                         <input
                           type="checkbox"
                           checked={selectedRows.has(business.id)}
-                          onChange={(e) => handleRowSelect(business.id, e.target.checked)}
+                          onChange={e => handleRowSelect(business.id, e.target.checked)}
                           className="rounded"
                           title={`Select ${business.businessName}`}
                         />
@@ -965,7 +976,7 @@ export function ResultsTable({
       {/* Export Template Manager */}
       {showTemplateManager && (
         <ExportTemplateManager
-          onTemplateSelect={(template) => {
+          onTemplateSelect={template => {
             setShowTemplateManager(false)
             if (onExport) {
               onExport('csv', undefined, template)
@@ -978,7 +989,7 @@ export function ResultsTable({
       {/* CRM Export Template Manager */}
       {showCRMTemplateManager && (
         <CRMExportTemplateManager
-          onTemplateSelect={(template) => {
+          onTemplateSelect={template => {
             setShowCRMTemplateManager(false)
             if (onExport) {
               onExport('csv', undefined, template)

@@ -24,7 +24,7 @@ export enum UserRole {
   OPERATOR = 'operator',
   VIEWER = 'viewer',
   COMPLIANCE_OFFICER = 'compliance_officer',
-  SECURITY_ANALYST = 'security_analyst'
+  SECURITY_ANALYST = 'security_analyst',
 }
 
 export enum Permission {
@@ -32,26 +32,26 @@ export enum Permission {
   SCRAPE_EXECUTE = 'scrape:execute',
   SCRAPE_CONFIGURE = 'scrape:configure',
   SCRAPE_VIEW = 'scrape:view',
-  
+
   // Data permissions
   DATA_EXPORT = 'data:export',
   DATA_DELETE = 'data:delete',
   DATA_VIEW = 'data:view',
   DATA_MODIFY = 'data:modify',
-  
+
   // Admin permissions
   USER_MANAGE = 'user:manage',
   SYSTEM_CONFIGURE = 'system:configure',
   AUDIT_VIEW = 'audit:view',
-  
+
   // Compliance permissions
   COMPLIANCE_MANAGE = 'compliance:manage',
   PRIVACY_MANAGE = 'privacy:manage',
   CONSENT_MANAGE = 'consent:manage',
-  
+
   // Security permissions
   SECURITY_MONITOR = 'security:monitor',
-  SECURITY_CONFIGURE = 'security:configure'
+  SECURITY_CONFIGURE = 'security:configure',
 }
 
 // Role-permission mapping
@@ -71,33 +71,30 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     Permission.PRIVACY_MANAGE,
     Permission.CONSENT_MANAGE,
     Permission.SECURITY_MONITOR,
-    Permission.SECURITY_CONFIGURE
+    Permission.SECURITY_CONFIGURE,
   ],
   [UserRole.OPERATOR]: [
     Permission.SCRAPE_EXECUTE,
     Permission.SCRAPE_VIEW,
     Permission.DATA_EXPORT,
     Permission.DATA_VIEW,
-    Permission.DATA_MODIFY
+    Permission.DATA_MODIFY,
   ],
-  [UserRole.VIEWER]: [
-    Permission.SCRAPE_VIEW,
-    Permission.DATA_VIEW
-  ],
+  [UserRole.VIEWER]: [Permission.SCRAPE_VIEW, Permission.DATA_VIEW],
   [UserRole.COMPLIANCE_OFFICER]: [
     Permission.SCRAPE_VIEW,
     Permission.DATA_VIEW,
     Permission.AUDIT_VIEW,
     Permission.COMPLIANCE_MANAGE,
     Permission.PRIVACY_MANAGE,
-    Permission.CONSENT_MANAGE
+    Permission.CONSENT_MANAGE,
   ],
   [UserRole.SECURITY_ANALYST]: [
     Permission.SCRAPE_VIEW,
     Permission.DATA_VIEW,
     Permission.AUDIT_VIEW,
-    Permission.SECURITY_MONITOR
-  ]
+    Permission.SECURITY_MONITOR,
+  ],
 }
 
 // Extended user interface
@@ -132,7 +129,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
-        mfaCode: { label: 'MFA Code', type: 'text', optional: true }
+        mfaCode: { label: 'MFA Code', type: 'text', optional: true },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -176,10 +173,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Update last login
-          await pool.query(
-            'UPDATE users SET last_login = NOW() WHERE id = $1',
-            [user.id]
-          )
+          await pool.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id])
 
           // Get user permissions
           const permissions = ROLE_PERMISSIONS[user.role as UserRole] || []
@@ -198,15 +192,15 @@ export const authOptions: NextAuthOptions = {
             complianceFlags: {
               gdprConsent: user.gdpr_consent || false,
               ccpaOptOut: user.ccpa_opt_out || false,
-              dataRetentionAgreed: user.data_retention_agreed || false
-            }
+              dataRetentionAgreed: user.data_retention_agreed || false,
+            },
           } as ExtendedUser
         } catch (error) {
           logger.error('Auth', 'Authentication error', error)
           return null
         }
-      }
-    })
+      },
+    }),
   ],
   session: {
     strategy: 'jwt',
@@ -236,7 +230,7 @@ export const authOptions: NextAuthOptions = {
         session.user.complianceFlags = token.complianceFlags
       }
       return session as ExtendedSession
-    }
+    },
   },
   pages: {
     signIn: '/auth/signin',
@@ -249,17 +243,17 @@ export const authOptions: NextAuthOptions = {
         userId: user.id,
         email: user.email,
         provider: account?.provider,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
     },
     async signOut({ session, token }) {
       // Log sign-out for audit trail
       await logSecurityEvent('USER_SIGNOUT', {
         userId: session?.user?.id || token?.sub,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
-    }
-  }
+    },
+  },
 }
 
 /**
@@ -285,7 +279,7 @@ async function verifyMFACode(userId: string, code: string): Promise<boolean> {
       secret: result.rows[0].mfa_secret,
       encoding: 'base32',
       token: code,
-      window: 2 // Allow 2 time steps before/after current time
+      window: 2, // Allow 2 time steps before/after current time
     })
 
     if (verified) {
@@ -339,7 +333,10 @@ export function hasAllPermissions(user: ExtendedUser, permissions: Permission[])
 /**
  * Generate MFA secret for user
  */
-export async function generateMFASecret(userId: string, userEmail: string): Promise<{ secret: string; qrCodeUrl: string }> {
+export async function generateMFASecret(
+  userId: string,
+  userEmail: string
+): Promise<{ secret: string; qrCodeUrl: string }> {
   const speakeasy = require('speakeasy')
   const qrcode = require('qrcode')
 
@@ -348,14 +345,14 @@ export async function generateMFASecret(userId: string, userEmail: string): Prom
     const secret = speakeasy.generateSecret({
       name: `Business Scraper (${userEmail})`,
       issuer: 'Business Scraper App',
-      length: 32
+      length: 32,
     })
 
     // Store secret in database (encrypted)
-    await pool.query(
-      'UPDATE users SET mfa_secret = $1, mfa_enabled = false WHERE id = $2',
-      [secret.base32, userId]
-    )
+    await pool.query('UPDATE users SET mfa_secret = $1, mfa_enabled = false WHERE id = $2', [
+      secret.base32,
+      userId,
+    ])
 
     // Generate QR code URL
     const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url)
@@ -364,7 +361,7 @@ export async function generateMFASecret(userId: string, userEmail: string): Prom
 
     return {
       secret: secret.base32,
-      qrCodeUrl
+      qrCodeUrl,
     }
   } catch (error) {
     logger.error('Auth', 'Failed to generate MFA secret', error)
@@ -385,10 +382,7 @@ export async function enableMFA(userId: string, verificationCode: string): Promi
     }
 
     // Enable MFA
-    await pool.query(
-      'UPDATE users SET mfa_enabled = true WHERE id = $1',
-      [userId]
-    )
+    await pool.query('UPDATE users SET mfa_enabled = true WHERE id = $1', [userId])
 
     logger.info('Auth', `MFA enabled for user: ${userId}`)
     return true
@@ -403,10 +397,9 @@ export async function enableMFA(userId: string, verificationCode: string): Promi
  */
 export async function disableMFA(userId: string): Promise<boolean> {
   try {
-    await pool.query(
-      'UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = $1',
-      [userId]
-    )
+    await pool.query('UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = $1', [
+      userId,
+    ])
 
     logger.info('Auth', `MFA disabled for user: ${userId}`)
     return true

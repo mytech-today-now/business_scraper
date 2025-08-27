@@ -41,7 +41,7 @@ export function useCSRFProtection(): CSRFHookResult {
         method: 'GET',
         credentials: 'include',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
       })
 
@@ -50,19 +50,19 @@ export function useCSRFProtection(): CSRFHookResult {
       }
 
       const data = await response.json()
-      
+
       if (data.csrfToken) {
         setCSRFToken(data.csrfToken)
         setExpiresAt(data.expiresAt ? new Date(data.expiresAt).getTime() : Date.now() + 3600000)
-        
+
         // Also check for token in response headers
         const headerToken = response.headers.get('X-CSRF-Token')
         const headerExpires = response.headers.get('X-CSRF-Expires')
-        
+
         if (headerToken) {
           setCSRFToken(headerToken)
         }
-        
+
         if (headerExpires) {
           setExpiresAt(parseInt(headerExpires, 10))
         }
@@ -89,7 +89,7 @@ export function useCSRFProtection(): CSRFHookResult {
     }
 
     // Check if token expires within the next 5 minutes
-    const fiveMinutesFromNow = Date.now() + (5 * 60 * 1000)
+    const fiveMinutesFromNow = Date.now() + 5 * 60 * 1000
     return expiresAt > fiveMinutesFromNow
   }, [csrfToken, expiresAt])
 
@@ -130,11 +130,14 @@ export function useCSRFProtection(): CSRFHookResult {
    * Set up automatic token refresh
    */
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isTokenValid()) {
-        fetchCSRFToken()
-      }
-    }, 5 * 60 * 1000) // Check every 5 minutes
+    const interval = setInterval(
+      () => {
+        if (!isTokenValid()) {
+          fetchCSRFToken()
+        }
+      },
+      5 * 60 * 1000
+    ) // Check every 5 minutes
 
     return () => clearInterval(interval)
   }, [isTokenValid, fetchCSRFToken])
@@ -165,7 +168,11 @@ export function useFormCSRFProtection(): {
   error: string | null
   getCSRFInput: () => { name: string; type: 'hidden'; value: string } | null
   validateForm: () => Promise<boolean>
-  submitForm: (url: string, formData: FormData | Record<string, any>, options?: RequestInit) => Promise<Response>
+  submitForm: (
+    url: string,
+    formData: FormData | Record<string, any>,
+    options?: RequestInit
+  ) => Promise<Response>
   isTokenValid: () => boolean
 } {
   const { csrfToken, isLoading, error, refreshToken, isTokenValid } = useCSRFProtection()
@@ -204,60 +211,66 @@ export function useFormCSRFProtection(): {
   /**
    * Submit form with CSRF protection
    */
-  const submitForm = useCallback(async (
-    url: string,
-    formData: FormData | Record<string, any>,
-    options: RequestInit = {}
-  ): Promise<Response> => {
-    // Validate token first
-    const isValid = await validateForm()
-    if (!isValid) {
-      throw new Error('CSRF token validation failed')
-    }
+  const submitForm = useCallback(
+    async (
+      url: string,
+      formData: FormData | Record<string, any>,
+      options: RequestInit = {}
+    ): Promise<Response> => {
+      // Validate token first
+      const isValid = await validateForm()
+      if (!isValid) {
+        throw new Error('CSRF token validation failed')
+      }
 
-    // Prepare headers
-    const headers = new Headers(options.headers)
-    if (csrfToken) {
-      headers.set('X-CSRF-Token', csrfToken)
-    }
-
-    // Prepare body
-    let body: string | FormData
-    if (formData instanceof FormData) {
-      // Add CSRF token to FormData
+      // Prepare headers
+      const headers = new Headers(options.headers)
       if (csrfToken) {
-        formData.set('csrf_token', csrfToken)
+        headers.set('X-CSRF-Token', csrfToken)
       }
-      body = formData
-    } else {
-      // Add CSRF token to JSON data
-      const dataWithCSRF = { ...formData }
-      if (csrfToken) {
-        dataWithCSRF.csrf_token = csrfToken
+
+      // Prepare body
+      let body: string | FormData
+      if (formData instanceof FormData) {
+        // Add CSRF token to FormData
+        if (csrfToken) {
+          formData.set('csrf_token', csrfToken)
+        }
+        body = formData
+      } else {
+        // Add CSRF token to JSON data
+        const dataWithCSRF = { ...formData }
+        if (csrfToken) {
+          dataWithCSRF.csrf_token = csrfToken
+        }
+        body = JSON.stringify(dataWithCSRF)
+        headers.set('Content-Type', 'application/json')
       }
-      body = JSON.stringify(dataWithCSRF)
-      headers.set('Content-Type', 'application/json')
-    }
 
-    // Make request
-    const response = await fetch(url, {
-      ...options,
-      method: options.method || 'POST',
-      headers,
-      body,
-      credentials: 'include',
-    })
+      // Make request
+      const response = await fetch(url, {
+        ...options,
+        method: options.method || 'POST',
+        headers,
+        body,
+        credentials: 'include',
+      })
 
-    // Check if we need to refresh token based on response
-    if (response.status === 403) {
-      const responseData = await response.clone().json().catch(() => ({}))
-      if (responseData.needsRefresh) {
-        await refreshToken()
+      // Check if we need to refresh token based on response
+      if (response.status === 403) {
+        const responseData = await response
+          .clone()
+          .json()
+          .catch(() => ({}))
+        if (responseData.needsRefresh) {
+          await refreshToken()
+        }
       }
-    }
 
-    return response
-  }, [csrfToken, validateForm, refreshToken])
+      return response
+    },
+    [csrfToken, validateForm, refreshToken]
+  )
 
   return {
     csrfToken,
@@ -278,7 +291,7 @@ export function withCSRFProtection<T extends object>(
 ): React.ComponentType<T & { csrfToken?: string }> {
   return function CSRFProtectedComponent(props: T & { csrfToken?: string }) {
     const { csrfToken } = useCSRFProtection()
-    
+
     return React.createElement(Component, { ...props, csrfToken: csrfToken || props.csrfToken })
   }
 }

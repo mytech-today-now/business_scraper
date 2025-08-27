@@ -114,11 +114,7 @@ describe('SearchEngineService', () => {
 
   describe('URL validation', () => {
     it('should validate business URLs correctly', () => {
-      const validUrls = [
-        'https://restaurant.com',
-        'https://business.org',
-        'https://company.net',
-      ]
+      const validUrls = ['https://restaurant.com', 'https://business.org', 'https://company.net']
 
       const invalidUrls = [
         'https://facebook.com/page',

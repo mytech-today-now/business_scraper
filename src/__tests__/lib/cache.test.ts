@@ -11,8 +11,8 @@ import { setupTest, cleanupTest } from '../setup/testSetup'
 const mockIsCachingEnabled = jest.fn(() => true)
 jest.mock('@/lib/feature-flags', () => ({
   Features: {
-    isCachingEnabled: mockIsCachingEnabled
-  }
+    isCachingEnabled: mockIsCachingEnabled,
+  },
 }))
 
 // Mock the config
@@ -21,9 +21,9 @@ jest.mock('@/lib/config', () => ({
     type: 'memory',
     memory: {
       maxSize: 100,
-      ttl: 60000
-    }
-  }))
+      ttl: 60000,
+    },
+  })),
 }))
 
 describe('Cache System', () => {
@@ -44,7 +44,7 @@ describe('Cache System', () => {
       it('should set and get values', async () => {
         await cache.set('key1', 'value1')
         const result = await cache.get('key1')
-        
+
         expect(result).toBe('value1')
       })
 
@@ -56,7 +56,7 @@ describe('Cache System', () => {
       it('should delete values', async () => {
         await cache.set('key1', 'value1')
         await cache.delete('key1')
-        
+
         const result = await cache.get('key1')
         expect(result).toBeNull()
       })
@@ -65,20 +65,20 @@ describe('Cache System', () => {
         await cache.set('key1', 'value1')
         await cache.set('key2', 'value2')
         await cache.clear()
-        
+
         const result1 = await cache.get('key1')
         const result2 = await cache.get('key2')
-        
+
         expect(result1).toBeNull()
         expect(result2).toBeNull()
       })
 
       it('should check if key exists', async () => {
         await cache.set('key1', 'value1')
-        
+
         const exists = await cache.exists('key1')
         const notExists = await cache.exists('key2')
-        
+
         expect(exists).toBe(true)
         expect(notExists).toBe(false)
       })
@@ -87,14 +87,14 @@ describe('Cache System', () => {
     describe('TTL (Time To Live)', () => {
       it('should expire entries after TTL', async () => {
         await cache.set('key1', 'value1', 100) // 100ms TTL
-        
+
         // Should exist immediately
         let result = await cache.get('key1')
         expect(result).toBe('value1')
-        
+
         // Wait for expiration
         await new Promise(resolve => setTimeout(resolve, 150))
-        
+
         // Should be expired
         result = await cache.get('key1')
         expect(result).toBeNull()
@@ -102,17 +102,17 @@ describe('Cache System', () => {
 
       it('should use default TTL when not specified', async () => {
         await cache.set('key1', 'value1') // Uses default TTL
-        
+
         const result = await cache.get('key1')
         expect(result).toBe('value1')
       })
 
       it('should handle exists() with expired entries', async () => {
         await cache.set('key1', 'value1', 50)
-        
+
         // Wait for expiration
         await new Promise(resolve => setTimeout(resolve, 100))
-        
+
         const exists = await cache.exists('key1')
         expect(exists).toBe(false)
       })
@@ -121,19 +121,19 @@ describe('Cache System', () => {
     describe('Size limits and eviction', () => {
       it('should evict old entries when size limit reached', async () => {
         const smallCache = new MemoryCache(3, 60000) // Max 3 entries
-        
+
         // Fill cache to capacity
         await smallCache.set('key1', 'value1')
         await smallCache.set('key2', 'value2')
         await smallCache.set('key3', 'value3')
-        
+
         // Add one more (should trigger eviction)
         await smallCache.set('key4', 'value4')
-        
+
         // Some entries should be evicted
         const stats = smallCache.getStats()
         expect(stats.size).toBeLessThanOrEqual(3)
-        
+
         await smallCache.close()
       })
     })
@@ -143,10 +143,10 @@ describe('Cache System', () => {
         await cache.set('user:1', 'user1')
         await cache.set('user:2', 'user2')
         await cache.set('post:1', 'post1')
-        
+
         const userKeys = await cache.keys('user:*')
         const allKeys = await cache.keys()
-        
+
         expect(userKeys).toContain('user:1')
         expect(userKeys).toContain('user:2')
         expect(userKeys).not.toContain('post:1')
@@ -158,12 +158,12 @@ describe('Cache System', () => {
       it('should provide cache statistics', async () => {
         await cache.set('key1', 'value1')
         await cache.set('key2', 'value2', 50) // Short TTL
-        
+
         // Wait for one to expire
         await new Promise(resolve => setTimeout(resolve, 100))
-        
+
         const stats = cache.getStats()
-        
+
         expect(stats.size).toBeGreaterThan(0)
         expect(stats.maxSize).toBe(10)
         expect(typeof stats.expired).toBe('number')
@@ -182,7 +182,7 @@ describe('Cache System', () => {
       it('should set and get values', async () => {
         await CacheHelper.set('test-key', 'test-value')
         const result = await CacheHelper.get('test-key')
-        
+
         expect(result).toBe('test-value')
       })
 
@@ -194,17 +194,17 @@ describe('Cache System', () => {
       it('should delete values', async () => {
         await CacheHelper.set('test-key', 'test-value')
         await CacheHelper.delete('test-key')
-        
+
         const result = await CacheHelper.get('test-key')
         expect(result).toBeNull()
       })
 
       it('should check existence', async () => {
         await CacheHelper.set('test-key', 'test-value')
-        
+
         const exists = await CacheHelper.exists('test-key')
         const notExists = await CacheHelper.exists('other-key')
-        
+
         expect(exists).toBe(true)
         expect(notExists).toBe(false)
       })
@@ -213,10 +213,10 @@ describe('Cache System', () => {
     describe('getOrSet pattern', () => {
       it('should get existing value', async () => {
         await CacheHelper.set('existing-key', 'existing-value')
-        
+
         const factory = jest.fn(() => Promise.resolve('new-value'))
         const result = await CacheHelper.getOrSet('existing-key', factory)
-        
+
         expect(result).toBe('existing-value')
         expect(factory).not.toHaveBeenCalled()
       })
@@ -224,10 +224,10 @@ describe('Cache System', () => {
       it('should set and return new value when key does not exist', async () => {
         const factory = jest.fn(() => Promise.resolve('factory-value'))
         const result = await CacheHelper.getOrSet('new-key', factory)
-        
+
         expect(result).toBe('factory-value')
         expect(factory).toHaveBeenCalledTimes(1)
-        
+
         // Verify it was cached
         const cached = await CacheHelper.get('new-key')
         expect(cached).toBe('factory-value')
@@ -235,7 +235,7 @@ describe('Cache System', () => {
 
       it('should handle factory errors gracefully', async () => {
         const factory = jest.fn(() => Promise.reject(new Error('Factory error')))
-        
+
         await expect(CacheHelper.getOrSet('error-key', factory)).rejects.toThrow('Factory error')
       })
     })
@@ -278,7 +278,7 @@ describe('Cache System', () => {
     it('should cache method results', async () => {
       const result1 = await service.expensiveOperation('test')
       const result2 = await service.expensiveOperation('test')
-      
+
       expect(result1).toBe(result2)
       expect(service.callCount).toBe(1) // Method called only once
     })
@@ -286,19 +286,19 @@ describe('Cache System', () => {
     it('should cache different arguments separately', async () => {
       const result1 = await service.expensiveOperation('input1')
       const result2 = await service.expensiveOperation('input2')
-      
+
       expect(result1).not.toBe(result2)
       expect(service.callCount).toBe(2) // Method called twice for different inputs
     })
 
     it('should respect TTL', async () => {
       const result1 = await service.shortCachedOperation('test')
-      
+
       // Wait for cache to expire
       await new Promise(resolve => setTimeout(resolve, 150))
-      
+
       const result2 = await service.shortCachedOperation('test')
-      
+
       expect(result1).not.toBe(result2) // Different results due to cache expiration
       expect(service.callCount).toBe(2) // Method called twice
     })
@@ -306,10 +306,10 @@ describe('Cache System', () => {
     it('should work when caching is disabled', async () => {
       // Disable caching
       mockIsCachingEnabled.mockReturnValue(false)
-      
+
       const result1 = await service.expensiveOperation('test')
       const result2 = await service.expensiveOperation('test')
-      
+
       expect(result1).not.toBe(result2) // Different results, no caching
       expect(service.callCount).toBe(2) // Method called twice
     })
@@ -323,7 +323,7 @@ describe('Cache System', () => {
       }
 
       const errorService = new ErrorService()
-      
+
       await expect(errorService.errorMethod()).rejects.toThrow('Method error')
     })
   })

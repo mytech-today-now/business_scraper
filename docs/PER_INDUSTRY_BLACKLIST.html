@@ -1,115 +1,145 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Per-Industry Domain Blacklist Feature - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Per-Industry Domain Blacklist Feature</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Per-Industry Domain Blacklist Feature</h1>
-<h2>Overview</h2>
-<p>The Business Scraper application now supports <strong>per-industry domain blacklists</strong>, allowing you to configure specific domain filtering rules for each industry category. This provides much more granular control over search results and helps eliminate irrelevant domains based on the specific industry being searched.</p>
-<h2>Key Features</h2>
-<h3>🎯 <strong>Industry-Specific Filtering</strong></h3>
-<ul>
-<li>Each industry category can have its own domain blacklist</li>
-<li>Blacklists are automatically applied when searching for businesses in that industry</li>
-<li>Supports all wildcard patterns: <code>*.domain.com</code>, <code>domain.*</code>, <code>*keyword*</code></li>
-</ul>
-<h3>🔧 <strong>Enhanced Interface</strong></h3>
-<ul>
-<li>Click on any industry criteria to open the expanded editor</li>
-<li>Two separate text areas: one for search keywords, one for domain blacklist</li>
-<li><strong>Theme-aware design</strong>: Text areas automatically adapt to light/dark mode with proper contrast</li>
-<li>Visual indicators show how many domains are blocked per industry</li>
-<li>Edit button for quick access to the expanded editor</li>
-<li>Full-width expanded editor for better usability</li>
-</ul>
-<h3>📊 <strong>Improved Export/Import</strong></h3>
-<ul>
-<li>Export now includes ALL industries with their current settings (not just custom ones)</li>
-<li>Import overwrites all industry settings for complete configuration management</li>
-<li>Backward compatibility with legacy custom-only exports</li>
-</ul>
-<h2>How to Use</h2>
-<h3>1. <strong>Editing Industry Settings</strong></h3>
-<h4>Method 1: Click on Criteria Text</h4>
-<ol>
-<li>Navigate to the <strong>Industry Categories</strong> section</li>
-<li>Click on the comma-separated criteria text for any industry</li>
-<li>The expanded editor will open with two text areas:<ul>
-<li><strong>Top area</strong>: Search keywords (one per line)</li>
-<li><strong>Bottom area</strong>: Domain blacklist (one per line, supports wildcards)</li>
-</ul>
-</li>
-</ol>
-<h4>Method 2: Use Edit Button</h4>
-<ol>
-<li>Hover over any industry card</li>
-<li>Click the blue <strong>Edit</strong> button (pencil icon) that appears</li>
-<li>The expanded editor will open</li>
-</ol>
-<h3>2. <strong>Configuring Domain Blacklists</strong></h3>
-<p>In the domain blacklist text area, you can add:</p>
-<pre><code>*.statefarm.com
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Per-Industry Domain Blacklist Feature
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Per-Industry Domain Blacklist Feature</h1>
+        <h2>Overview</h2>
+        <p>
+          The Business Scraper application now supports
+          <strong>per-industry domain blacklists</strong>, allowing you to configure specific domain
+          filtering rules for each industry category. This provides much more granular control over
+          search results and helps eliminate irrelevant domains based on the specific industry being
+          searched.
+        </p>
+        <h2>Key Features</h2>
+        <h3>🎯 <strong>Industry-Specific Filtering</strong></h3>
+        <ul>
+          <li>Each industry category can have its own domain blacklist</li>
+          <li>
+            Blacklists are automatically applied when searching for businesses in that industry
+          </li>
+          <li>
+            Supports all wildcard patterns: <code>*.domain.com</code>, <code>domain.*</code>,
+            <code>*keyword*</code>
+          </li>
+        </ul>
+        <h3>🔧 <strong>Enhanced Interface</strong></h3>
+        <ul>
+          <li>Click on any industry criteria to open the expanded editor</li>
+          <li>Two separate text areas: one for search keywords, one for domain blacklist</li>
+          <li>
+            <strong>Theme-aware design</strong>: Text areas automatically adapt to light/dark mode
+            with proper contrast
+          </li>
+          <li>Visual indicators show how many domains are blocked per industry</li>
+          <li>Edit button for quick access to the expanded editor</li>
+          <li>Full-width expanded editor for better usability</li>
+        </ul>
+        <h3>📊 <strong>Improved Export/Import</strong></h3>
+        <ul>
+          <li>
+            Export now includes ALL industries with their current settings (not just custom ones)
+          </li>
+          <li>Import overwrites all industry settings for complete configuration management</li>
+          <li>Backward compatibility with legacy custom-only exports</li>
+        </ul>
+        <h2>How to Use</h2>
+        <h3>1. <strong>Editing Industry Settings</strong></h3>
+        <h4>Method 1: Click on Criteria Text</h4>
+        <ol>
+          <li>Navigate to the <strong>Industry Categories</strong> section</li>
+          <li>Click on the comma-separated criteria text for any industry</li>
+          <li>
+            The expanded editor will open with two text areas:
+            <ul>
+              <li><strong>Top area</strong>: Search keywords (one per line)</li>
+              <li>
+                <strong>Bottom area</strong>: Domain blacklist (one per line, supports wildcards)
+              </li>
+            </ul>
+          </li>
+        </ol>
+        <h4>Method 2: Use Edit Button</h4>
+        <ol>
+          <li>Hover over any industry card</li>
+          <li>Click the blue <strong>Edit</strong> button (pencil icon) that appears</li>
+          <li>The expanded editor will open</li>
+        </ol>
+        <h3>2. <strong>Configuring Domain Blacklists</strong></h3>
+        <p>In the domain blacklist text area, you can add:</p>
+        <pre><code>*.statefarm.com
 *.geico.com
 *insurance*
 yellowpages.*
 </code></pre>
-<p><strong>Wildcard Patterns:</strong></p>
-<ul>
-<li><code>*.statefarm.com</code> - Blocks statefarm.com and all subdomains</li>
-<li><code>statefarm.*</code> - Blocks statefarm across all TLDs (.com, .net, .org)</li>
-<li><code>*insurance*</code> - Blocks any domain containing &quot;insurance&quot;</li>
-</ul>
-<h3>3. <strong>Visual Indicators</strong></h3>
-<p>Each industry card shows:</p>
-<ul>
-<li><strong>Keywords</strong>: Comma-separated list of search terms</li>
-<li><strong>Blocked domains</strong>: &quot;🚫 X blocked domains&quot; if blacklist is configured</li>
-<li><strong>Edit hint</strong>: &quot;Click criteria to edit keywords &amp; blacklist&quot;</li>
-</ul>
-<h3>4. <strong>Export/Import Configuration</strong></h3>
-<h4>Exporting</h4>
-<ol>
-<li>Go to <strong>Industry Categories</strong> section</li>
-<li>Click <strong>Export</strong> button</li>
-<li>Saves file as <code>industries-YYYY-MM-DD.json</code></li>
-<li>Includes ALL industries with their current settings</li>
-</ol>
-<h4>Importing</h4>
-<ol>
-<li>Click <strong>Import</strong> button</li>
-<li>Select a JSON file</li>
-<li><strong>Warning</strong>: This will replace ALL current industry settings</li>
-<li>Supports both new format and legacy custom-only format</li>
-</ol>
-<h2>Technical Implementation</h2>
-<h3>Industry Data Structure</h3>
-<pre><code class="language-json">{
+        <p><strong>Wildcard Patterns:</strong></p>
+        <ul>
+          <li><code>*.statefarm.com</code> - Blocks statefarm.com and all subdomains</li>
+          <li><code>statefarm.*</code> - Blocks statefarm across all TLDs (.com, .net, .org)</li>
+          <li><code>*insurance*</code> - Blocks any domain containing &quot;insurance&quot;</li>
+        </ul>
+        <h3>3. <strong>Visual Indicators</strong></h3>
+        <p>Each industry card shows:</p>
+        <ul>
+          <li><strong>Keywords</strong>: Comma-separated list of search terms</li>
+          <li>
+            <strong>Blocked domains</strong>: &quot;🚫 X blocked domains&quot; if blacklist is
+            configured
+          </li>
+          <li>
+            <strong>Edit hint</strong>: &quot;Click criteria to edit keywords &amp; blacklist&quot;
+          </li>
+        </ul>
+        <h3>4. <strong>Export/Import Configuration</strong></h3>
+        <h4>Exporting</h4>
+        <ol>
+          <li>Go to <strong>Industry Categories</strong> section</li>
+          <li>Click <strong>Export</strong> button</li>
+          <li>Saves file as <code>industries-YYYY-MM-DD.json</code></li>
+          <li>Includes ALL industries with their current settings</li>
+        </ol>
+        <h4>Importing</h4>
+        <ol>
+          <li>Click <strong>Import</strong> button</li>
+          <li>Select a JSON file</li>
+          <li><strong>Warning</strong>: This will replace ALL current industry settings</li>
+          <li>Supports both new format and legacy custom-only format</li>
+        </ol>
+        <h2>Technical Implementation</h2>
+        <h3>Industry Data Structure</h3>
+        <pre><code class="language-json">{
   &quot;id&quot;: &quot;professional&quot;,
   &quot;name&quot;: &quot;Professional Services&quot;, 
   &quot;keywords&quot;: [&quot;consulting&quot;, &quot;legal&quot;, &quot;accounting&quot;],
@@ -117,8 +147,8 @@ yellowpages.*
   &quot;domainBlacklist&quot;: [&quot;*.statefarm.*&quot;, &quot;*.geico.*&quot;]
 }
 </code></pre>
-<h3>Export Format</h3>
-<pre><code class="language-json">{
+        <h3>Export Format</h3>
+        <pre><code class="language-json">{
   &quot;name&quot;: &quot;Business Scraper&quot;,
   &quot;url&quot;: &quot;https://github.com/mytech-today-now/business_scraper&quot;, 
   &quot;version&quot;: &quot;1.0.0&quot;,
@@ -134,133 +164,167 @@ yellowpages.*
   ]
 }
 </code></pre>
-<h3>Search Integration</h3>
-<p>The search engine automatically:</p>
-<ol>
-<li>Extracts keywords from search queries</li>
-<li>Matches keywords to industry categories</li>
-<li>Applies relevant industry blacklists</li>
-<li>Combines with global domain blacklist</li>
-<li>Filters search results using all applicable patterns</li>
-</ol>
-<h3>User Interface Design</h3>
-<p>The interface features a <strong>theme-aware design</strong> that provides optimal user experience:</p>
-<h4>Text Area Styling</h4>
-<ul>
-<li><strong>Background</strong>: Automatically adapts to light/dark mode using <code>bg-background</code></li>
-<li><strong>Text Color</strong>: Uses <code>text-foreground</code> for proper contrast in both themes</li>
-<li><strong>Placeholder Text</strong>: Styled with <code>placeholder:text-muted-foreground</code> for readability</li>
-<li><strong>Focus States</strong>: Maintains primary color ring for clear interaction feedback</li>
-</ul>
-<h4>Responsive Layout</h4>
-<ul>
-<li><strong>Expanded Editor</strong>: Full-width layout for better editing experience</li>
-<li><strong>Dual Text Areas</strong>: Separate areas for keywords and domain blacklist</li>
-<li><strong>Visual Indicators</strong>: Clear feedback showing blocked domain counts</li>
-<li><strong>Hover Actions</strong>: Edit and delete buttons appear on hover for clean interface</li>
-</ul>
-<h2>Pre-configured Examples</h2>
-<h3>Professional Services</h3>
-<ul>
-<li><strong>Keywords</strong>: consulting, legal, accounting, financial, insurance</li>
-<li><strong>Blacklist</strong>: <code>*.statefarm.*</code>, <code>*.geico.*</code>, <code>*.progressive.*</code>, <code>*.allstate.*</code></li>
-</ul>
-<h3>Healthcare &amp; Medical</h3>
-<ul>
-<li><strong>Keywords</strong>: medical, healthcare, clinic, hospital, dental</li>
-<li><strong>Blacklist</strong>: <code>*.webmd.*</code>, <code>*.mayoclinic.*</code>, <code>*.healthline.*</code></li>
-</ul>
-<h2>Migration from Global Blacklist</h2>
-<p>If you were using the global domain blacklist:</p>
-<ol>
-<li><strong>Export</strong> your current industries to backup settings</li>
-<li><strong>Edit</strong> each relevant industry to add domain-specific blacklists</li>
-<li><strong>Remove</strong> domains from global blacklist that are now industry-specific</li>
-<li><strong>Keep</strong> truly global domains (like social media) in global blacklist</li>
-</ol>
-<h2>Best Practices</h2>
-<h3>1. <strong>Industry-Specific Blocking</strong></h3>
-<ul>
-<li>Use industry blacklists for domains specific to that industry</li>
-<li>Example: Block insurance company sites only for insurance-related searches</li>
-</ul>
-<h3>2. <strong>Global vs Industry Blacklists</strong></h3>
-<ul>
-<li><strong>Global</strong>: Social media, directories, generic spam domains</li>
-<li><strong>Industry</strong>: Competitor sites, irrelevant industry-specific domains</li>
-</ul>
-<h3>3. <strong>Wildcard Usage</strong></h3>
-<ul>
-<li><code>*.company.*</code> - Most comprehensive, blocks all subdomains and TLDs</li>
-<li><code>*.company.com</code> - Blocks subdomains but allows other TLDs</li>
-<li><code>*keyword*</code> - Blocks any domain containing the keyword</li>
-</ul>
-<h3>4. <strong>Testing and Refinement</strong></h3>
-<ul>
-<li>Start with broad patterns and refine based on results</li>
-<li>Monitor search results to identify new domains to block</li>
-<li>Regular export for backup before making major changes</li>
-</ul>
-<h2>Troubleshooting</h2>
-<h3>Issue: Industry blacklist not working</h3>
-<ul>
-<li><strong>Check</strong>: Ensure keywords in search query match industry keywords</li>
-<li><strong>Verify</strong>: Domain patterns are correctly formatted</li>
-<li><strong>Test</strong>: Try exact domain match first, then add wildcards</li>
-</ul>
-<h3>Issue: Too many results filtered</h3>
-<ul>
-<li><strong>Review</strong>: Check if wildcard patterns are too broad</li>
-<li><strong>Adjust</strong>: Use more specific patterns</li>
-<li><strong>Balance</strong>: Move overly broad patterns to global blacklist</li>
-</ul>
-<h3>Issue: Import fails</h3>
-<ul>
-<li><strong>Format</strong>: Ensure JSON file has correct structure</li>
-<li><strong>Validation</strong>: Check that all required fields are present</li>
-<li><strong>Backup</strong>: Always export current settings before importing</li>
-</ul>
-<h2>Advanced Configuration</h2>
-<h3>Custom Industry Creation</h3>
-<ol>
-<li>Click <strong>Add Industry</strong> button</li>
-<li>Configure keywords and domain blacklist</li>
-<li>Industry will be marked as &quot;Custom&quot;</li>
-<li>Can be deleted (unlike pre-configured industries)</li>
-</ol>
-<h3>Bulk Configuration</h3>
-<ol>
-<li>Export current settings</li>
-<li>Edit JSON file with text editor</li>
-<li>Add/modify domain blacklists for multiple industries</li>
-<li>Import modified file</li>
-</ol>
-<h3>Pattern Testing</h3>
-<p>Use the search functionality to test blacklist effectiveness:</p>
-<ol>
-<li>Search for industry-specific terms</li>
-<li>Review results for unwanted domains</li>
-<li>Add patterns to block identified domains</li>
-<li>Re-test to verify filtering</li>
-</ol>
-<p>This per-industry blacklist feature provides powerful, granular control over search results while maintaining the simplicity and effectiveness of the original domain filtering system.</p>
+        <h3>Search Integration</h3>
+        <p>The search engine automatically:</p>
+        <ol>
+          <li>Extracts keywords from search queries</li>
+          <li>Matches keywords to industry categories</li>
+          <li>Applies relevant industry blacklists</li>
+          <li>Combines with global domain blacklist</li>
+          <li>Filters search results using all applicable patterns</li>
+        </ol>
+        <h3>User Interface Design</h3>
+        <p>
+          The interface features a <strong>theme-aware design</strong> that provides optimal user
+          experience:
+        </p>
+        <h4>Text Area Styling</h4>
+        <ul>
+          <li>
+            <strong>Background</strong>: Automatically adapts to light/dark mode using
+            <code>bg-background</code>
+          </li>
+          <li>
+            <strong>Text Color</strong>: Uses <code>text-foreground</code> for proper contrast in
+            both themes
+          </li>
+          <li>
+            <strong>Placeholder Text</strong>: Styled with
+            <code>placeholder:text-muted-foreground</code> for readability
+          </li>
+          <li>
+            <strong>Focus States</strong>: Maintains primary color ring for clear interaction
+            feedback
+          </li>
+        </ul>
+        <h4>Responsive Layout</h4>
+        <ul>
+          <li><strong>Expanded Editor</strong>: Full-width layout for better editing experience</li>
+          <li>
+            <strong>Dual Text Areas</strong>: Separate areas for keywords and domain blacklist
+          </li>
+          <li><strong>Visual Indicators</strong>: Clear feedback showing blocked domain counts</li>
+          <li>
+            <strong>Hover Actions</strong>: Edit and delete buttons appear on hover for clean
+            interface
+          </li>
+        </ul>
+        <h2>Pre-configured Examples</h2>
+        <h3>Professional Services</h3>
+        <ul>
+          <li><strong>Keywords</strong>: consulting, legal, accounting, financial, insurance</li>
+          <li>
+            <strong>Blacklist</strong>: <code>*.statefarm.*</code>, <code>*.geico.*</code>,
+            <code>*.progressive.*</code>, <code>*.allstate.*</code>
+          </li>
+        </ul>
+        <h3>Healthcare &amp; Medical</h3>
+        <ul>
+          <li><strong>Keywords</strong>: medical, healthcare, clinic, hospital, dental</li>
+          <li>
+            <strong>Blacklist</strong>: <code>*.webmd.*</code>, <code>*.mayoclinic.*</code>,
+            <code>*.healthline.*</code>
+          </li>
+        </ul>
+        <h2>Migration from Global Blacklist</h2>
+        <p>If you were using the global domain blacklist:</p>
+        <ol>
+          <li><strong>Export</strong> your current industries to backup settings</li>
+          <li><strong>Edit</strong> each relevant industry to add domain-specific blacklists</li>
+          <li>
+            <strong>Remove</strong> domains from global blacklist that are now industry-specific
+          </li>
+          <li>
+            <strong>Keep</strong> truly global domains (like social media) in global blacklist
+          </li>
+        </ol>
+        <h2>Best Practices</h2>
+        <h3>1. <strong>Industry-Specific Blocking</strong></h3>
+        <ul>
+          <li>Use industry blacklists for domains specific to that industry</li>
+          <li>Example: Block insurance company sites only for insurance-related searches</li>
+        </ul>
+        <h3>2. <strong>Global vs Industry Blacklists</strong></h3>
+        <ul>
+          <li><strong>Global</strong>: Social media, directories, generic spam domains</li>
+          <li><strong>Industry</strong>: Competitor sites, irrelevant industry-specific domains</li>
+        </ul>
+        <h3>3. <strong>Wildcard Usage</strong></h3>
+        <ul>
+          <li><code>*.company.*</code> - Most comprehensive, blocks all subdomains and TLDs</li>
+          <li><code>*.company.com</code> - Blocks subdomains but allows other TLDs</li>
+          <li><code>*keyword*</code> - Blocks any domain containing the keyword</li>
+        </ul>
+        <h3>4. <strong>Testing and Refinement</strong></h3>
+        <ul>
+          <li>Start with broad patterns and refine based on results</li>
+          <li>Monitor search results to identify new domains to block</li>
+          <li>Regular export for backup before making major changes</li>
+        </ul>
+        <h2>Troubleshooting</h2>
+        <h3>Issue: Industry blacklist not working</h3>
+        <ul>
+          <li><strong>Check</strong>: Ensure keywords in search query match industry keywords</li>
+          <li><strong>Verify</strong>: Domain patterns are correctly formatted</li>
+          <li><strong>Test</strong>: Try exact domain match first, then add wildcards</li>
+        </ul>
+        <h3>Issue: Too many results filtered</h3>
+        <ul>
+          <li><strong>Review</strong>: Check if wildcard patterns are too broad</li>
+          <li><strong>Adjust</strong>: Use more specific patterns</li>
+          <li><strong>Balance</strong>: Move overly broad patterns to global blacklist</li>
+        </ul>
+        <h3>Issue: Import fails</h3>
+        <ul>
+          <li><strong>Format</strong>: Ensure JSON file has correct structure</li>
+          <li><strong>Validation</strong>: Check that all required fields are present</li>
+          <li><strong>Backup</strong>: Always export current settings before importing</li>
+        </ul>
+        <h2>Advanced Configuration</h2>
+        <h3>Custom Industry Creation</h3>
+        <ol>
+          <li>Click <strong>Add Industry</strong> button</li>
+          <li>Configure keywords and domain blacklist</li>
+          <li>Industry will be marked as &quot;Custom&quot;</li>
+          <li>Can be deleted (unlike pre-configured industries)</li>
+        </ol>
+        <h3>Bulk Configuration</h3>
+        <ol>
+          <li>Export current settings</li>
+          <li>Edit JSON file with text editor</li>
+          <li>Add/modify domain blacklists for multiple industries</li>
+          <li>Import modified file</li>
+        </ol>
+        <h3>Pattern Testing</h3>
+        <p>Use the search functionality to test blacklist effectiveness:</p>
+        <ol>
+          <li>Search for industry-specific terms</li>
+          <li>Review results for unwanted domains</li>
+          <li>Add patterns to block identified domains</li>
+          <li>Re-test to verify filtering</li>
+        </ol>
+        <p>
+          This per-industry blacklist feature provides powerful, granular control over search
+          results while maintaining the simplicity and effectiveness of the original domain
+          filtering system.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

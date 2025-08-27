@@ -3,7 +3,13 @@
  * Comprehensive system for validating, cleaning, and enriching business data
  */
 
-import { BusinessRecord, EmailValidationResult, EmailValidationMetadata, PhoneValidationResult, BusinessIntelligence } from '@/types/business'
+import {
+  BusinessRecord,
+  EmailValidationResult,
+  EmailValidationMetadata,
+  PhoneValidationResult,
+  BusinessIntelligence,
+} from '@/types/business'
 import { logger } from '@/utils/logger'
 import { EmailValidationService } from './emailValidationService'
 import { PhoneValidationService } from './phoneValidationService'
@@ -117,8 +123,10 @@ export class DataValidationPipeline {
     // Calculate overall confidence and validity
     this.calculateOverallScore(result)
 
-    logger.debug('DataValidationPipeline', 
-      `Validation complete: ${result.isValid ? 'VALID' : 'INVALID'} (confidence: ${result.confidence.toFixed(2)})`)
+    logger.debug(
+      'DataValidationPipeline',
+      `Validation complete: ${result.isValid ? 'VALID' : 'INVALID'} (confidence: ${result.confidence.toFixed(2)})`
+    )
 
     return result
   }
@@ -159,7 +167,9 @@ export class DataValidationPipeline {
     try {
       // 1. Enhanced Email Validation (if not already done)
       if (business.email && business.email.length > 0 && !business.emailValidation) {
-        const emailValidationResults = await this.emailValidationService.validateEmails(business.email)
+        const emailValidationResults = await this.emailValidationService.validateEmails(
+          business.email
+        )
 
         const emailValidation: EmailValidationMetadata = {
           validationResults: emailValidationResults,
@@ -169,7 +179,7 @@ export class DataValidationPipeline {
           totalEmailCount: emailValidationResults.length,
           averageReputationScore: this.calculateAverageReputationScore(emailValidationResults),
           averageBounceRate: this.calculateAverageBounceRate(emailValidationResults),
-          smtpVerifiedCount: emailValidationResults.filter(r => r.smtpVerified).length
+          smtpVerifiedCount: emailValidationResults.filter(r => r.smtpVerified).length,
         }
 
         business.emailValidation = emailValidation
@@ -240,13 +250,15 @@ export class DataValidationPipeline {
       // Calculate enrichment confidence based on all factors
       result.confidence = this.calculateEnrichmentConfidence(business, result.addedFields.length)
 
-      logger.info('DataValidationPipeline',
-        `Advanced enrichment ${result.enriched ? 'successful' : 'skipped'}: ${result.addedFields.length} fields added`, {
+      logger.info(
+        'DataValidationPipeline',
+        `Advanced enrichment ${result.enriched ? 'successful' : 'skipped'}: ${result.addedFields.length} fields added`,
+        {
           sources: result.sources,
           dataQualityScore: business.dataQualityScore,
-          confidence: result.confidence
-        })
-
+          confidence: result.confidence,
+        }
+      )
     } catch (error) {
       logger.error('DataValidationPipeline', 'Advanced data enrichment failed', error)
     }
@@ -257,7 +269,10 @@ export class DataValidationPipeline {
   /**
    * Validate business name
    */
-  private async validateBusinessName(business: BusinessRecord, result: ValidationResult): Promise<void> {
+  private async validateBusinessName(
+    business: BusinessRecord,
+    result: ValidationResult
+  ): Promise<void> {
     const name = business.businessName?.trim()
 
     if (!name) {
@@ -409,7 +424,7 @@ export class DataValidationPipeline {
         overallConfidence: this.calculateEmailConfidence(validationResults),
         bestEmail: this.findBestEmail(validationResults),
         validEmailCount: validEmails.length,
-        totalEmailCount: business.email.length
+        totalEmailCount: business.email.length,
       }
 
       if (result.cleanedData) {
@@ -422,11 +437,14 @@ export class DataValidationPipeline {
         validEmails: validEmails.length,
         invalidEmails: invalidEmails.length,
         disposableEmails: disposableEmails.length,
-        overallConfidence: emailValidation.overallConfidence
+        overallConfidence: emailValidation.overallConfidence,
       })
-
     } catch (error) {
-      logger.error('DataValidationPipeline', 'Advanced email validation failed, falling back to basic validation', error)
+      logger.error(
+        'DataValidationPipeline',
+        'Advanced email validation failed, falling back to basic validation',
+        error
+      )
 
       // Fallback to basic validation
       const validEmails: string[] = []
@@ -466,7 +484,8 @@ export class DataValidationPipeline {
     const validResults = validationResults.filter(result => result.isValid)
     if (validResults.length === 0) return 0
 
-    const avgConfidence = validResults.reduce((sum, result) => sum + result.confidence, 0) / validResults.length
+    const avgConfidence =
+      validResults.reduce((sum, result) => sum + result.confidence, 0) / validResults.length
     const countBonus = Math.min(validResults.length * 5, 20)
 
     return Math.min(100, Math.round(avgConfidence + countBonus))
@@ -476,9 +495,7 @@ export class DataValidationPipeline {
    * Find the best email from validation results
    */
   private findBestEmail(validationResults: EmailValidationResult[]): string | undefined {
-    const validEmails = validationResults.filter(result =>
-      result.isValid && !result.isDisposable
-    )
+    const validEmails = validationResults.filter(result => result.isValid && !result.isDisposable)
 
     if (validEmails.length === 0) return undefined
 
@@ -643,7 +660,6 @@ export class DataValidationPipeline {
           result.cleanedData.websiteUrl = cleanedUrl
         }
       }
-
     } catch (error) {
       result.errors.push({
         field: 'website',
@@ -657,7 +673,10 @@ export class DataValidationPipeline {
   /**
    * Validate industry classification
    */
-  private async validateIndustry(business: BusinessRecord, result: ValidationResult): Promise<void> {
+  private async validateIndustry(
+    business: BusinessRecord,
+    result: ValidationResult
+  ): Promise<void> {
     if (!business.industry || business.industry === 'Unknown') {
       result.warnings.push({
         field: 'industry',
@@ -735,11 +754,15 @@ export class DataValidationPipeline {
     ]
 
     let completedFields = 0
-    
+
     fields.forEach(field => {
       const value = business[field as keyof BusinessRecord]
-      if (value !== undefined && value !== null && value !== '' &&
-          !(Array.isArray(value) && value.length === 0)) {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        !(Array.isArray(value) && value.length === 0)
+      ) {
         completedFields++
       }
     })
@@ -828,13 +851,13 @@ export class DataValidationPipeline {
 
   private formatPhoneNumber(phone: string): string | null {
     const cleaned = phone.replace(/[^\d]/g, '')
-    
+
     if (cleaned.length === 10) {
       return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
     } else if (cleaned.length === 11 && cleaned.startsWith('1')) {
       return `+1 (${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`
     }
-    
+
     return null
   }
 
@@ -879,7 +902,10 @@ export class DataValidationPipeline {
     const scoresWithReputation = results.filter(r => r.reputationScore !== undefined)
     if (scoresWithReputation.length === 0) return undefined
 
-    const totalScore = scoresWithReputation.reduce((sum, result) => sum + (result.reputationScore || 0), 0)
+    const totalScore = scoresWithReputation.reduce(
+      (sum, result) => sum + (result.reputationScore || 0),
+      0
+    )
     return Math.round(totalScore / scoresWithReputation.length)
   }
 
@@ -890,7 +916,10 @@ export class DataValidationPipeline {
     const resultsWithBounceRate = results.filter(r => r.bounceRatePrediction !== undefined)
     if (resultsWithBounceRate.length === 0) return undefined
 
-    const totalBounceRate = resultsWithBounceRate.reduce((sum, result) => sum + (result.bounceRatePrediction || 0), 0)
+    const totalBounceRate = resultsWithBounceRate.reduce(
+      (sum, result) => sum + (result.bounceRatePrediction || 0),
+      0
+    )
     return Math.round(totalBounceRate / resultsWithBounceRate.length)
   }
 
@@ -964,7 +993,10 @@ export class DataValidationPipeline {
   /**
    * Calculate enrichment confidence based on enriched fields and data quality
    */
-  private calculateEnrichmentConfidence(business: BusinessRecord, enrichedFieldsCount: number): number {
+  private calculateEnrichmentConfidence(
+    business: BusinessRecord,
+    enrichedFieldsCount: number
+  ): number {
     let confidence = 0
 
     // Base confidence from number of enriched fields
@@ -1012,10 +1044,10 @@ export class DataValidationPipeline {
 
   private classifyIndustry(businessName: string, website?: string): string | null {
     const industryKeywords = {
-      'Restaurant': ['restaurant', 'cafe', 'diner', 'bistro', 'eatery', 'food'],
-      'Healthcare': ['medical', 'doctor', 'clinic', 'hospital', 'health'],
-      'Retail': ['store', 'shop', 'retail', 'boutique', 'market'],
-      'Technology': ['tech', 'software', 'IT', 'computer', 'digital'],
+      Restaurant: ['restaurant', 'cafe', 'diner', 'bistro', 'eatery', 'food'],
+      Healthcare: ['medical', 'doctor', 'clinic', 'hospital', 'health'],
+      Retail: ['store', 'shop', 'retail', 'boutique', 'market'],
+      Technology: ['tech', 'software', 'IT', 'computer', 'digital'],
       'Professional Services': ['law', 'accounting', 'consulting', 'legal'],
     }
 

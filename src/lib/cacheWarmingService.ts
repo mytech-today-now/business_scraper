@@ -43,10 +43,10 @@ export class CacheWarmingService {
         'accounting services',
         'marketing agencies',
         'construction companies',
-        'dental offices'
+        'dental offices',
       ],
       highValueUrls: [],
-      warmingInterval: 6 * 60 * 60 * 1000 // 6 hours
+      warmingInterval: 6 * 60 * 60 * 1000, // 6 hours
     }
 
     this.searchEngine = new SearchEngineService()
@@ -119,10 +119,19 @@ export class CacheWarmingService {
    * Warm cache with popular search queries
    */
   private async warmPopularQueries(): Promise<void> {
-    logger.info('CacheWarming', `Warming cache with ${this.config.popularQueries.length} popular queries`)
+    logger.info(
+      'CacheWarming',
+      `Warming cache with ${this.config.popularQueries.length} popular queries`
+    )
 
-    const locations = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 'Phoenix, AZ']
-    
+    const locations = [
+      'New York, NY',
+      'Los Angeles, CA',
+      'Chicago, IL',
+      'Houston, TX',
+      'Phoenix, AZ',
+    ]
+
     for (const query of this.config.popularQueries) {
       for (const location of locations) {
         try {
@@ -135,13 +144,17 @@ export class CacheWarmingService {
           // Perform search and cache results
           const results = await this.searchEngine.search(query, { maxResults: 20 })
           await smartCacheManager.cacheSearchResults(query, location, results)
-          
+
           logger.debug('CacheWarming', `Warmed search cache for "${query}" in ${location}`)
-          
+
           // Add delay to avoid overwhelming services
           await this.delay(1000)
         } catch (error) {
-          logger.warn('CacheWarming', `Failed to warm cache for query "${query}" in ${location}`, error)
+          logger.warn(
+            'CacheWarming',
+            `Failed to warm cache for query "${query}" in ${location}`,
+            error
+          )
         }
       }
     }
@@ -155,13 +168,16 @@ export class CacheWarmingService {
       return
     }
 
-    logger.info('CacheWarming', `Warming cache with ${this.config.highValueUrls.length} high-value URLs`)
+    logger.info(
+      'CacheWarming',
+      `Warming cache with ${this.config.highValueUrls.length} high-value URLs`
+    )
 
     const batchSize = 5
     for (let i = 0; i < this.config.highValueUrls.length; i += batchSize) {
       const batch = this.config.highValueUrls.slice(i, i + batchSize)
-      
-      const promises = batch.map(async (url) => {
+
+      const promises = batch.map(async url => {
         try {
           // Check if already cached
           const cached = await smartCacheManager.getCachedBusinessData(url)
@@ -181,7 +197,7 @@ export class CacheWarmingService {
       })
 
       await Promise.allSettled(promises)
-      
+
       // Add delay between batches
       await this.delay(2000)
     }
@@ -196,7 +212,7 @@ export class CacheWarmingService {
       { city: 'Los Angeles', state: 'CA', zip: '90210' },
       { city: 'Chicago', state: 'IL', zip: '60601' },
       { city: 'Houston', state: 'TX', zip: '77001' },
-      { city: 'Phoenix', state: 'AZ', zip: '85001' }
+      { city: 'Phoenix', state: 'AZ', zip: '85001' },
     ]
 
     logger.info('CacheWarming', `Warming location cache for ${popularLocations.length} cities`)
@@ -205,10 +221,10 @@ export class CacheWarmingService {
       try {
         // Pre-warm geocoding cache
         const locationKey = `${location.city}, ${location.state}`
-        
+
         // This would integrate with your geocoding service
         // await geocodingService.geocode(locationKey)
-        
+
         logger.debug('CacheWarming', `Warmed location cache for ${locationKey}`)
         await this.delay(500)
       } catch (error) {
@@ -265,7 +281,7 @@ export class CacheWarmingService {
       isWarming: this.isWarming,
       popularQueries: this.config.popularQueries.length,
       highValueUrls: this.config.highValueUrls.length,
-      nextWarmingIn: this.config.warmingInterval
+      nextWarmingIn: this.config.warmingInterval,
     }
   }
 

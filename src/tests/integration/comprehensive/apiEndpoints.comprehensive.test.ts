@@ -35,15 +35,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'restaurants',
         zipCode: '12345',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -56,7 +56,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
 
     test('should handle missing required fields', async () => {
       const requestBody = {
-        query: 'restaurants'
+        query: 'restaurants',
         // Missing zipCode
       }
 
@@ -64,8 +64,8 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -80,8 +80,8 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         method: 'POST',
         body: 'invalid json',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -96,8 +96,8 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         method: 'POST',
         body: '',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -111,15 +111,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'restaurants',
         zipCode: 'invalid-zip',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -134,15 +134,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'restaurants',
         zipCode: '12345',
-        maxResults: -5
+        maxResults: -5,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -156,15 +156,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'restaurants',
         zipCode: '12345',
-        maxResults: 999999
+        maxResults: 999999,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -178,15 +178,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'café & restaurant!@#$%',
         zipCode: '12345',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -198,15 +198,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'a'.repeat(10000),
         zipCode: '12345',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchHandler(request)
@@ -228,15 +228,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         action: 'scrape',
         url: 'https://example.com',
         depth: 2,
-        maxPages: 5
+        maxPages: 5,
       }
 
       const request = new NextRequest('http://localhost:3000/api/scrape', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapeHandler(request)
@@ -252,15 +252,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         action: 'scrape',
         url: 'invalid-url',
         depth: 2,
-        maxPages: 5
+        maxPages: 5,
       }
 
       const request = new NextRequest('http://localhost:3000/api/scrape', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapeHandler(request)
@@ -275,7 +275,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         'javascript:alert("xss")',
         'file:///etc/passwd',
         'ftp://malicious.com',
-        'data:text/html,<script>alert(1)</script>'
+        'data:text/html,<script>alert(1)</script>',
       ]
 
       for (const url of maliciousUrls) {
@@ -283,15 +283,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
           action: 'scrape',
           url,
           depth: 2,
-          maxPages: 5
+          maxPages: 5,
         }
 
         const request = new NextRequest('http://localhost:3000/api/scrape', {
           method: 'POST',
           body: JSON.stringify(requestBody),
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         })
 
         const response = await scrapeHandler(request)
@@ -302,15 +302,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
 
     test('should handle cleanup action', async () => {
       const requestBody = {
-        action: 'cleanup'
+        action: 'cleanup',
       }
 
       const request = new NextRequest('http://localhost:3000/api/scrape', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapeHandler(request)
@@ -324,15 +324,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
     test('should handle unknown action', async () => {
       const requestBody = {
         action: 'unknown-action',
-        url: 'https://example.com'
+        url: 'https://example.com',
       }
 
       const request = new NextRequest('http://localhost:3000/api/scrape', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapeHandler(request)
@@ -353,7 +353,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
 
     test('should return configuration', async () => {
       const request = new NextRequest('http://localhost:3000/api/config', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = await configHandler(request)
@@ -370,7 +370,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       })
 
       const request = new NextRequest('http://localhost:3000/api/config', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = await configHandler(request)
@@ -389,7 +389,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
 
     test('should return health status', async () => {
       const request = new NextRequest('http://localhost:3000/api/health', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = await healthHandler(request)
@@ -402,7 +402,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
 
     test('should include service health checks', async () => {
       const request = new NextRequest('http://localhost:3000/api/health', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = await healthHandler(request)
@@ -421,9 +421,9 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         const request = new NextRequest(`http://localhost:3000${endpoint}`, {
           method: 'OPTIONS',
           headers: {
-            'Origin': 'http://localhost:3000',
-            'Access-Control-Request-Method': 'POST'
-          }
+            Origin: 'http://localhost:3000',
+            'Access-Control-Request-Method': 'POST',
+          },
         })
 
         // Most endpoints should handle OPTIONS or return 405
@@ -445,7 +445,7 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
 
       for (const endpoint of endpoints) {
         const request = new NextRequest(`http://localhost:3000${endpoint}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         })
 
         try {
@@ -466,15 +466,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
       const requestBody = {
         query: 'restaurants',
         zipCode: '12345',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       // Mock timeout scenario
@@ -495,15 +495,15 @@ describe('API Endpoints Comprehensive Integration Tests', () => {
         query: 'restaurants',
         zipCode: '12345',
         maxResults: 10,
-        largeData: 'x'.repeat(1000000) // 1MB of data
+        largeData: 'x'.repeat(1000000), // 1MB of data
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(largeRequestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       try {

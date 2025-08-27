@@ -24,11 +24,11 @@ export interface SimilarityScores {
   overall: number
 }
 
-export type DuplicateMatchType = 
-  | 'exact' 
-  | 'high_confidence' 
-  | 'medium_confidence' 
-  | 'low_confidence' 
+export type DuplicateMatchType =
+  | 'exact'
+  | 'high_confidence'
+  | 'medium_confidence'
+  | 'low_confidence'
   | 'potential'
 
 export interface DuplicateCluster {
@@ -82,7 +82,7 @@ export class DuplicateDetectionSystem {
       thresholds: {
         exact: 0.95,
         highConfidence: 0.85,
-        mediumConfidence: 0.70,
+        mediumConfidence: 0.7,
         lowConfidence: 0.55,
       },
       weights: {
@@ -159,7 +159,7 @@ export class DuplicateDetectionSystem {
       } else if (cluster1 && cluster2 && cluster1 !== cluster2) {
         // Merge clusters
         this.mergeClusters(cluster1, cluster2, clusters)
-        
+
         // Update record mappings
         for (const record of cluster2.records) {
           recordToCluster.set(record.id, cluster1)
@@ -197,20 +197,25 @@ export class DuplicateDetectionSystem {
   /**
    * Calculate similarity scores between two records
    */
-  private async calculateSimilarity(record1: BusinessRecord, record2: BusinessRecord): Promise<SimilarityScores> {
-    const businessNameSim = this.calculateBusinessNameSimilarity(record1.businessName, record2.businessName)
+  private async calculateSimilarity(
+    record1: BusinessRecord,
+    record2: BusinessRecord
+  ): Promise<SimilarityScores> {
+    const businessNameSim = this.calculateBusinessNameSimilarity(
+      record1.businessName,
+      record2.businessName
+    )
     const addressSim = this.calculateAddressSimilarity(record1.address, record2.address)
     const phoneSim = this.calculatePhoneSimilarity(record1.phone, record2.phone)
     const emailSim = this.calculateEmailSimilarity(record1.email, record2.email)
     const websiteSim = this.calculateWebsiteSimilarity(record1.websiteUrl, record2.websiteUrl)
 
-    const overall = (
+    const overall =
       businessNameSim * this.config.weights.businessName +
       addressSim * this.config.weights.address +
       phoneSim * this.config.weights.phone +
       emailSim * this.config.weights.email +
       websiteSim * this.config.weights.website
-    )
 
     return {
       businessName: businessNameSim,
@@ -240,17 +245,17 @@ export class DuplicateDetectionSystem {
     // Fuzzy matching
     if (this.config.enableFuzzyMatching) {
       const fuzzyScore = this.calculateLevenshteinSimilarity(normalized1, normalized2)
-      
+
       // Phonetic matching
       if (this.config.enablePhoneticMatching) {
         const phonetic1 = this.getPhoneticCode(normalized1)
         const phonetic2 = this.getPhoneticCode(normalized2)
-        
+
         if (phonetic1 === phonetic2) {
           return Math.max(fuzzyScore, 0.8)
         }
       }
-      
+
       return fuzzyScore
     }
 
@@ -260,7 +265,10 @@ export class DuplicateDetectionSystem {
   /**
    * Calculate address similarity
    */
-  private calculateAddressSimilarity(addr1: BusinessRecord['address'], addr2: BusinessRecord['address']): number {
+  private calculateAddressSimilarity(
+    addr1: BusinessRecord['address'],
+    addr2: BusinessRecord['address']
+  ): number {
     if (!addr1 || !addr2) return 0
 
     // Exact match
@@ -352,7 +360,7 @@ export class DuplicateDetectionSystem {
 
     const distance = this.levenshteinDistance(str1, str2)
     const maxLength = Math.max(str1.length, str2.length)
-    const similarity = maxLength === 0 ? 1 : 1 - (distance / maxLength)
+    const similarity = maxLength === 0 ? 1 : 1 - distance / maxLength
 
     this.similarityCache.set(cacheKey, similarity)
     return similarity
@@ -362,7 +370,9 @@ export class DuplicateDetectionSystem {
    * Calculate Levenshtein distance
    */
   private levenshteinDistance(str1: string, str2: string): number {
-    const matrix: number[][] = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(0))
+    const matrix: number[][] = Array(str2.length + 1)
+      .fill(null)
+      .map(() => Array(str1.length + 1).fill(0))
 
     for (let i = 0; i <= str1.length; i++) {
       const row = matrix.at(0)
@@ -383,11 +393,14 @@ export class DuplicateDetectionSystem {
         const currentRow = matrix.at(j)
         const prevRow = matrix.at(j - 1)
 
-        if (currentRow && prevRow &&
-            i < currentRow.length &&
-            (i - 1) < currentRow.length &&
-            i < prevRow.length &&
-            (i - 1) < prevRow.length) {
+        if (
+          currentRow &&
+          prevRow &&
+          i < currentRow.length &&
+          i - 1 < currentRow.length &&
+          i < prevRow.length &&
+          i - 1 < prevRow.length
+        ) {
           currentRow[i] = Math.min(
             currentRow[i - 1] + 1,
             prevRow[i] + 1,
@@ -398,7 +411,7 @@ export class DuplicateDetectionSystem {
     }
 
     const finalRow = matrix.at(str2.length)
-    return (finalRow && str1.length < finalRow.length) ? finalRow[str1.length] : 0
+    return finalRow && str1.length < finalRow.length ? finalRow[str1.length] : 0
   }
 
   /**
@@ -454,8 +467,12 @@ export class DuplicateDetectionSystem {
 
     const firstLetter = cleaned.charAt(0)
     const mapping: Record<string, string> = {
-      'bfpv': '1', 'cgjkqsxz': '2', 'dt': '3',
-      'l': '4', 'mn': '5', 'r': '6'
+      bfpv: '1',
+      cgjkqsxz: '2',
+      dt: '3',
+      l: '4',
+      mn: '5',
+      r: '6',
     }
 
     let code = firstLetter
@@ -509,9 +526,13 @@ export class DuplicateDetectionSystem {
   /**
    * Get matched fields between two records
    */
-  private getMatchedFields(_record1: BusinessRecord, _record2: BusinessRecord, similarity: SimilarityScores): string[] {
+  private getMatchedFields(
+    _record1: BusinessRecord,
+    _record2: BusinessRecord,
+    similarity: SimilarityScores
+  ): string[] {
     const matched: string[] = []
-    
+
     if (similarity.businessName > 0.8) matched.push('businessName')
     if (similarity.address > 0.8) matched.push('address')
     if (similarity.phone > 0.8) matched.push('phone')
@@ -526,7 +547,7 @@ export class DuplicateDetectionSystem {
    */
   private createNewCluster(records: BusinessRecord[], confidence: number): DuplicateCluster {
     const primaryRecord = this.selectPrimaryRecord(records)
-    
+
     return {
       id: `cluster-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       records,
@@ -548,10 +569,14 @@ export class DuplicateDetectionSystem {
   /**
    * Merge two clusters
    */
-  private mergeClusters(cluster1: DuplicateCluster, cluster2: DuplicateCluster, clusters: DuplicateCluster[]): void {
+  private mergeClusters(
+    cluster1: DuplicateCluster,
+    cluster2: DuplicateCluster,
+    clusters: DuplicateCluster[]
+  ): void {
     cluster1.records.push(...cluster2.records)
     cluster1.primaryRecord = this.selectPrimaryRecord(cluster1.records)
-    
+
     const index = clusters.indexOf(cluster2)
     if (index > -1) {
       clusters.splice(index, 1)
@@ -600,21 +625,30 @@ export class DuplicateDetectionSystem {
       value: Array.from(allEmails),
       writable: true,
       enumerable: true,
-      configurable: true
+      configurable: true,
     })
 
     // Check for conflicts in other fields
     const fields = ['businessName', 'phone', 'website', 'industry'] as const
     fields.forEach(field => {
-      const values = new Set(records.map(r => {
-        switch (field) {
-          case 'businessName': return r.businessName
-          case 'phone': return r.phone
-          case 'website': return r.websiteUrl
-          case 'industry': return r.industry
-          default: return undefined
-        }
-      }).filter(Boolean))
+      const values = new Set(
+        records
+          .map(r => {
+            switch (field) {
+              case 'businessName':
+                return r.businessName
+              case 'phone':
+                return r.phone
+              case 'website':
+                return r.websiteUrl
+              case 'industry':
+                return r.industry
+              default:
+                return undefined
+            }
+          })
+          .filter(Boolean)
+      )
       if (values.size > 1) {
         conflictingFields.push(field)
       }

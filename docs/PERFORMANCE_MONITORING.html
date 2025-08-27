@@ -1,49 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Performance Monitoring & Optimization Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
+
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Performance Monitoring & Optimization Guide
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Performance Monitoring &amp; Optimization Guide</h1>
+        <div class="alert alert-info">
+          <strong>Version:</strong> 3.3.0 | <strong>Last Updated:</strong> August 25, 2025
         </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Performance Monitoring & Optimization Guide</li>
-                </ol>
-            </nav>
+
+        <h2>Overview</h2>
+        <p>
+          Version 3.3.0 introduces comprehensive enterprise-grade performance monitoring and
+          optimization with Prometheus metrics collection, Grafana dashboards, database
+          optimization, and intelligent caching strategies. This guide covers the complete
+          monitoring infrastructure and optimization features.
+        </p>
+
+        <div class="alert alert-success">
+          <strong>New in v3.3.0:</strong> Production-ready performance monitoring with Prometheus
+          metrics, Grafana dashboards, database optimization, and intelligent caching strategies.
         </div>
-
-        <main class="documentation-content">
-            <h1>Performance Monitoring &amp; Optimization Guide</h1>
-            <div class="alert alert-info">
-                <strong>Version:</strong> 3.3.0 | <strong>Last Updated:</strong> August 25, 2025
-            </div>
-
-<h2>Overview</h2>
-<p>Version 3.3.0 introduces comprehensive enterprise-grade performance monitoring and optimization with Prometheus metrics collection, Grafana dashboards, database optimization, and intelligent caching strategies. This guide covers the complete monitoring infrastructure and optimization features.</p>
-
-<div class="alert alert-success">
-    <strong>New in v3.3.0:</strong> Production-ready performance monitoring with Prometheus metrics, Grafana dashboards, database optimization, and intelligent caching strategies.
-</div>
-<h2>🔍 Performance Monitoring Areas</h2>
-<h3>1. Browser Performance</h3>
-<h4>Memory Usage Monitoring</h4>
-<pre><code class="language-javascript">// Add to browser console for real-time monitoring
+        <h2>🔍 Performance Monitoring Areas</h2>
+        <h3>1. Browser Performance</h3>
+        <h4>Memory Usage Monitoring</h4>
+        <pre><code class="language-javascript">// Add to browser console for real-time monitoring
 setInterval(() =&gt; {
   if (performance.memory) {
     console.log(&#39;Memory Usage:&#39;, {
@@ -54,22 +65,22 @@ setInterval(() =&gt; {
   }
 }, 5000);
 </code></pre>
-<h4>DOM Performance</h4>
-<ul>
-<li>Monitor table rendering time with large datasets</li>
-<li>Check scroll performance with 1000+ rows</li>
-<li>Measure filter/sort operation response times</li>
-</ul>
-<h3>2. Server Performance</h3>
-<h4>Key Metrics to Monitor</h4>
-<ul>
-<li><strong>Search Duration</strong>: Time to complete full industry searches</li>
-<li><strong>Memory Usage</strong>: Server RAM consumption during large scrapes</li>
-<li><strong>CPU Usage</strong>: Processing load during concurrent operations</li>
-<li><strong>Response Times</strong>: API endpoint response times</li>
-</ul>
-<h4>Monitoring Commands</h4>
-<pre><code class="language-bash"># Monitor server resources
+        <h4>DOM Performance</h4>
+        <ul>
+          <li>Monitor table rendering time with large datasets</li>
+          <li>Check scroll performance with 1000+ rows</li>
+          <li>Measure filter/sort operation response times</li>
+        </ul>
+        <h3>2. Server Performance</h3>
+        <h4>Key Metrics to Monitor</h4>
+        <ul>
+          <li><strong>Search Duration</strong>: Time to complete full industry searches</li>
+          <li><strong>Memory Usage</strong>: Server RAM consumption during large scrapes</li>
+          <li><strong>CPU Usage</strong>: Processing load during concurrent operations</li>
+          <li><strong>Response Times</strong>: API endpoint response times</li>
+        </ul>
+        <h4>Monitoring Commands</h4>
+        <pre><code class="language-bash"># Monitor server resources
 top -p $(pgrep -f &quot;next start&quot;)
 
 # Monitor memory usage
@@ -78,38 +89,38 @@ ps aux | grep &quot;next start&quot;
 # Check port usage
 netstat -tulpn | grep :3000
 </code></pre>
-<h3>3. Database Performance (if applicable)</h3>
-<h4>Storage Monitoring</h4>
-<ul>
-<li>IndexedDB storage size growth</li>
-<li>Query performance with large datasets</li>
-<li>Storage cleanup efficiency</li>
-</ul>
-<h2>📊 Performance Benchmarks</h2>
-<h3>Expected Performance Targets</h3>
-<h4>Search Operations</h4>
-<ul>
-<li><strong>Single Industry Search</strong>: 2-5 minutes for 6 pages</li>
-<li><strong>Multiple Industries</strong>: 10-20 minutes for 3-4 industries</li>
-<li><strong>Result Processing</strong>: &lt;1 second per 100 businesses</li>
-</ul>
-<h4>UI Performance</h4>
-<ul>
-<li><strong>Table Rendering</strong>: &lt;2 seconds for 1000 rows</li>
-<li><strong>Filtering</strong>: &lt;500ms response time</li>
-<li><strong>Sorting</strong>: &lt;1 second for large datasets</li>
-<li><strong>Export</strong>: &lt;30 seconds for 1000+ records</li>
-</ul>
-<h4>Memory Usage</h4>
-<ul>
-<li><strong>Browser</strong>: &lt;500MB for 1000 businesses</li>
-<li><strong>Server</strong>: &lt;1GB RAM during active scraping</li>
-<li><strong>Storage</strong>: ~1MB per 100 business records</li>
-</ul>
-<h2>⚡ Optimization Strategies</h2>
-<h3>1. UI Optimizations</h3>
-<h4>Virtual Scrolling Implementation</h4>
-<pre><code class="language-typescript">// Consider implementing virtual scrolling for large tables
+        <h3>3. Database Performance (if applicable)</h3>
+        <h4>Storage Monitoring</h4>
+        <ul>
+          <li>IndexedDB storage size growth</li>
+          <li>Query performance with large datasets</li>
+          <li>Storage cleanup efficiency</li>
+        </ul>
+        <h2>📊 Performance Benchmarks</h2>
+        <h3>Expected Performance Targets</h3>
+        <h4>Search Operations</h4>
+        <ul>
+          <li><strong>Single Industry Search</strong>: 2-5 minutes for 6 pages</li>
+          <li><strong>Multiple Industries</strong>: 10-20 minutes for 3-4 industries</li>
+          <li><strong>Result Processing</strong>: &lt;1 second per 100 businesses</li>
+        </ul>
+        <h4>UI Performance</h4>
+        <ul>
+          <li><strong>Table Rendering</strong>: &lt;2 seconds for 1000 rows</li>
+          <li><strong>Filtering</strong>: &lt;500ms response time</li>
+          <li><strong>Sorting</strong>: &lt;1 second for large datasets</li>
+          <li><strong>Export</strong>: &lt;30 seconds for 1000+ records</li>
+        </ul>
+        <h4>Memory Usage</h4>
+        <ul>
+          <li><strong>Browser</strong>: &lt;500MB for 1000 businesses</li>
+          <li><strong>Server</strong>: &lt;1GB RAM during active scraping</li>
+          <li><strong>Storage</strong>: ~1MB per 100 business records</li>
+        </ul>
+        <h2>⚡ Optimization Strategies</h2>
+        <h3>1. UI Optimizations</h3>
+        <h4>Virtual Scrolling Implementation</h4>
+        <pre><code class="language-typescript">// Consider implementing virtual scrolling for large tables
 // Libraries: react-window, react-virtualized
 import { FixedSizeList as List } from &#39;react-window&#39;;
 
@@ -124,13 +135,13 @@ const VirtualizedTable = ({ items }) =&gt; (
   &lt;/List&gt;
 );
 </code></pre>
-<h4>Lazy Loading Components</h4>
-<pre><code class="language-typescript">// Implement lazy loading for heavy components
+        <h4>Lazy Loading Components</h4>
+        <pre><code class="language-typescript">// Implement lazy loading for heavy components
 const ResultsTable = lazy(() =&gt; import(&#39;./ResultsTable&#39;));
 const AdvancedDashboard = lazy(() =&gt; import(&#39;./AdvancedDashboard&#39;));
 </code></pre>
-<h4>Debounced Filtering</h4>
-<pre><code class="language-typescript">// Implement debounced search/filter
+        <h4>Debounced Filtering</h4>
+        <pre><code class="language-typescript">// Implement debounced search/filter
 const debouncedFilter = useMemo(
   () =&gt; debounce((searchTerm) =&gt; {
     setFilteredResults(filterResults(allResults, searchTerm));
@@ -138,9 +149,9 @@ const debouncedFilter = useMemo(
   [allResults]
 );
 </code></pre>
-<h3>2. Data Management Optimizations</h3>
-<h4>Pagination Controls</h4>
-<pre><code class="language-typescript">// Add smart pagination for performance mode
+        <h3>2. Data Management Optimizations</h3>
+        <h4>Pagination Controls</h4>
+        <pre><code class="language-typescript">// Add smart pagination for performance mode
 const PaginationControls = () =&gt; {
   const [performanceMode, setPerformanceMode] = useState(false);
   
@@ -154,8 +165,8 @@ const PaginationControls = () =&gt; {
   return performanceMode ? &lt;PaginatedView /&gt; : &lt;FullView /&gt;;
 };
 </code></pre>
-<h4>Result Streaming</h4>
-<pre><code class="language-typescript">// Stream results as they&#39;re found instead of waiting for completion
+        <h4>Result Streaming</h4>
+        <pre><code class="language-typescript">// Stream results as they&#39;re found instead of waiting for completion
 const useStreamingResults = () =&gt; {
   const [results, setResults] = useState([]);
   
@@ -166,26 +177,26 @@ const useStreamingResults = () =&gt; {
   return { results, addResult };
 };
 </code></pre>
-<h3>3. Search Optimizations</h3>
-<h4>Batch Processing</h4>
-<pre><code class="language-typescript">// Process searches in smaller batches
+        <h3>3. Search Optimizations</h3>
+        <h4>Batch Processing</h4>
+        <pre><code class="language-typescript">// Process searches in smaller batches
 const batchSize = 5; // URLs per batch
 const processBatch = async (urls) =&gt; {
   const promises = urls.map(url =&gt; scrapeWebsite(url));
   return Promise.allSettled(promises);
 };
 </code></pre>
-<h4>Caching Strategy</h4>
-<pre><code class="language-typescript">// Implement intelligent caching
+        <h4>Caching Strategy</h4>
+        <pre><code class="language-typescript">// Implement intelligent caching
 const searchCache = new Map();
 const getCachedResults = (query, location) =&gt; {
   const key = `${query}-${location}`;
   return searchCache.get(key);
 };
 </code></pre>
-<h2>🚨 Performance Warning System</h2>
-<h3>Automatic Performance Detection</h3>
-<pre><code class="language-typescript">// Add performance monitoring to the application
+        <h2>🚨 Performance Warning System</h2>
+        <h3>Automatic Performance Detection</h3>
+        <pre><code class="language-typescript">// Add performance monitoring to the application
 const PerformanceMonitor = () =&gt; {
   const [performanceWarning, setPerformanceWarning] = useState(false);
   
@@ -211,8 +222,8 @@ const PerformanceMonitor = () =&gt; {
   return null;
 };
 </code></pre>
-<h3>User Controls</h3>
-<pre><code class="language-typescript">// Add performance mode toggle
+        <h3>User Controls</h3>
+        <pre><code class="language-typescript">// Add performance mode toggle
 const PerformanceControls = () =&gt; (
   &lt;div className=&quot;performance-controls&quot;&gt;
     &lt;label&gt;
@@ -225,24 +236,24 @@ const PerformanceControls = () =&gt; (
   &lt;/div&gt;
 );
 </code></pre>
-<h2>📈 Monitoring Dashboard</h2>
-<h3>Key Performance Indicators (KPIs)</h3>
-<h4>Real-time Metrics</h4>
-<ul>
-<li>Current memory usage</li>
-<li>Active search operations</li>
-<li>Results processed per minute</li>
-<li>UI response times</li>
-</ul>
-<h4>Historical Metrics</h4>
-<ul>
-<li>Average search completion times</li>
-<li>Peak memory usage patterns</li>
-<li>User interaction response times</li>
-<li>Error rates and timeouts</li>
-</ul>
-<h3>Implementation Example</h3>
-<pre><code class="language-typescript">const PerformanceDashboard = () =&gt; {
+        <h2>📈 Monitoring Dashboard</h2>
+        <h3>Key Performance Indicators (KPIs)</h3>
+        <h4>Real-time Metrics</h4>
+        <ul>
+          <li>Current memory usage</li>
+          <li>Active search operations</li>
+          <li>Results processed per minute</li>
+          <li>UI response times</li>
+        </ul>
+        <h4>Historical Metrics</h4>
+        <ul>
+          <li>Average search completion times</li>
+          <li>Peak memory usage patterns</li>
+          <li>User interaction response times</li>
+          <li>Error rates and timeouts</li>
+        </ul>
+        <h3>Implementation Example</h3>
+        <pre><code class="language-typescript">const PerformanceDashboard = () =&gt; {
   const [metrics, setMetrics] = useState({
     memoryUsage: 0,
     searchDuration: 0,
@@ -274,70 +285,76 @@ const PerformanceControls = () =&gt; (
   );
 };
 </code></pre>
-<h2>🔧 Optimization Implementation Plan</h2>
-<h3>Phase 1: Immediate Optimizations</h3>
-<ol>
-<li><strong>Add performance warnings</strong> for large datasets</li>
-<li><strong>Implement smart pagination</strong> (auto-enable for 1000+ results)</li>
-<li><strong>Add memory monitoring</strong> to detect issues early</li>
-</ol>
-<h3>Phase 2: Advanced Optimizations</h3>
-<ol>
-<li><strong>Virtual scrolling</strong> for large tables</li>
-<li><strong>Result streaming</strong> for real-time updates</li>
-<li><strong>Intelligent caching</strong> for repeated searches</li>
-</ol>
-<h3>Phase 3: Enterprise Optimizations</h3>
-<ol>
-<li><strong>Worker threads</strong> for heavy processing</li>
-<li><strong>Database optimization</strong> for large datasets</li>
-<li><strong>CDN integration</strong> for static assets</li>
-</ol>
-<h2>📝 Performance Testing Checklist</h2>
-<h3>Before Large Searches</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Monitor baseline memory usage</li>
-<li><input disabled="" type="checkbox"> Check available system resources</li>
-<li><input disabled="" type="checkbox"> Verify network connectivity</li>
-</ul>
-<h3>During Searches</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Monitor memory growth patterns</li>
-<li><input disabled="" type="checkbox"> Check UI responsiveness</li>
-<li><input disabled="" type="checkbox"> Verify search progress indicators</li>
-</ul>
-<h3>After Searches</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Measure total completion time</li>
-<li><input disabled="" type="checkbox"> Check final memory usage</li>
-<li><input disabled="" type="checkbox"> Test UI performance with results</li>
-<li><input disabled="" type="checkbox"> Verify export functionality</li>
-</ul>
-<h3>Performance Regression Testing</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Compare with previous performance benchmarks</li>
-<li><input disabled="" type="checkbox"> Test with various dataset sizes</li>
-<li><input disabled="" type="checkbox"> Verify optimization effectiveness</li>
-<li><input disabled="" type="checkbox"> Document any performance degradation</li>
-</ul>
-<p>This comprehensive performance monitoring setup ensures that the unlimited results capability maintains excellent user experience while providing tools to optimize performance as needed.</p>
+        <h2>🔧 Optimization Implementation Plan</h2>
+        <h3>Phase 1: Immediate Optimizations</h3>
+        <ol>
+          <li><strong>Add performance warnings</strong> for large datasets</li>
+          <li><strong>Implement smart pagination</strong> (auto-enable for 1000+ results)</li>
+          <li><strong>Add memory monitoring</strong> to detect issues early</li>
+        </ol>
+        <h3>Phase 2: Advanced Optimizations</h3>
+        <ol>
+          <li><strong>Virtual scrolling</strong> for large tables</li>
+          <li><strong>Result streaming</strong> for real-time updates</li>
+          <li><strong>Intelligent caching</strong> for repeated searches</li>
+        </ol>
+        <h3>Phase 3: Enterprise Optimizations</h3>
+        <ol>
+          <li><strong>Worker threads</strong> for heavy processing</li>
+          <li><strong>Database optimization</strong> for large datasets</li>
+          <li><strong>CDN integration</strong> for static assets</li>
+        </ol>
+        <h2>📝 Performance Testing Checklist</h2>
+        <h3>Before Large Searches</h3>
+        <ul>
+          <li><input disabled="" type="checkbox" /> Monitor baseline memory usage</li>
+          <li><input disabled="" type="checkbox" /> Check available system resources</li>
+          <li><input disabled="" type="checkbox" /> Verify network connectivity</li>
+        </ul>
+        <h3>During Searches</h3>
+        <ul>
+          <li><input disabled="" type="checkbox" /> Monitor memory growth patterns</li>
+          <li><input disabled="" type="checkbox" /> Check UI responsiveness</li>
+          <li><input disabled="" type="checkbox" /> Verify search progress indicators</li>
+        </ul>
+        <h3>After Searches</h3>
+        <ul>
+          <li><input disabled="" type="checkbox" /> Measure total completion time</li>
+          <li><input disabled="" type="checkbox" /> Check final memory usage</li>
+          <li><input disabled="" type="checkbox" /> Test UI performance with results</li>
+          <li><input disabled="" type="checkbox" /> Verify export functionality</li>
+        </ul>
+        <h3>Performance Regression Testing</h3>
+        <ul>
+          <li>
+            <input disabled="" type="checkbox" /> Compare with previous performance benchmarks
+          </li>
+          <li><input disabled="" type="checkbox" /> Test with various dataset sizes</li>
+          <li><input disabled="" type="checkbox" /> Verify optimization effectiveness</li>
+          <li><input disabled="" type="checkbox" /> Document any performance degradation</li>
+        </ul>
+        <p>
+          This comprehensive performance monitoring setup ensures that the unlimited results
+          capability maintains excellent user experience while providing tools to optimize
+          performance as needed.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

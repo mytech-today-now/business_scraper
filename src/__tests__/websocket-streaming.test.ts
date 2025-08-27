@@ -25,7 +25,7 @@ describe('WebSocket Streaming Server', () => {
       // Start server
       await server.start()
       const status = server.getStatus()
-      
+
       expect(status.isRunning).toBe(true)
       expect(status.port).toBe(testPort)
       expect(status.clientCount).toBe(0)
@@ -34,16 +34,16 @@ describe('WebSocket Streaming Server', () => {
       // Stop server
       await server.stop()
       const stoppedStatus = server.getStatus()
-      
+
       expect(stoppedStatus.isRunning).toBe(false)
     })
 
     test('should handle multiple start calls gracefully', async () => {
       await server.start()
-      
+
       // Second start should not throw
       await expect(server.start()).resolves.not.toThrow()
-      
+
       const status = server.getStatus()
       expect(status.isRunning).toBe(true)
     })
@@ -51,7 +51,7 @@ describe('WebSocket Streaming Server', () => {
     test('should handle stop when not running', async () => {
       // Stop without starting should not throw
       await expect(server.stop()).resolves.not.toThrow()
-      
+
       const status = server.getStatus()
       expect(status.isRunning).toBe(false)
     })
@@ -74,10 +74,10 @@ describe('WebSocket Streaming Server', () => {
           street: '123 Test St',
           city: 'Test City',
           state: 'TS',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       // Should not throw even with no connected clients
@@ -94,7 +94,7 @@ describe('WebSocket Streaming Server', () => {
         currentBatch: 1,
         estimatedTimeRemaining: 30,
         status: 'processing' as const,
-        percentage: 50
+        percentage: 50,
       }
 
       expect(() => {
@@ -131,19 +131,19 @@ describe('WebSocket Streaming Server', () => {
   describe('Status Reporting', () => {
     test('should return correct initial status', () => {
       const status = server.getStatus()
-      
+
       expect(status).toEqual({
         isRunning: false,
         port: testPort,
         clientCount: 0,
-        sessionCount: 0
+        sessionCount: 0,
       })
     })
 
     test('should update status when server starts', async () => {
       await server.start()
       const status = server.getStatus()
-      
+
       expect(status.isRunning).toBe(true)
       expect(status.port).toBe(testPort)
     })
@@ -155,29 +155,29 @@ describe('WebSocket API Integration', () => {
     const mockRequest = new Request('http://localhost/api/websocket', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'start' })
+      body: JSON.stringify({ action: 'start' }),
     })
 
     // Mock the API route handler
     const { POST } = await import('@/app/api/websocket/route')
-    
+
     const response = await POST(mockRequest as any)
     const data = await response.json()
-    
+
     expect(response.status).toBe(200)
     expect(data.success).toBe(true)
   })
 
   test('should handle WebSocket server status request', async () => {
     const mockRequest = new Request('http://localhost/api/websocket', {
-      method: 'GET'
+      method: 'GET',
     })
 
     const { GET } = await import('@/app/api/websocket/route')
-    
+
     const response = await GET(mockRequest as any)
     const data = await response.json()
-    
+
     expect(response.status).toBe(200)
     expect(data.success).toBe(true)
     expect(data.status).toBeDefined()
@@ -188,20 +188,20 @@ describe('Real-Time Streaming Integration', () => {
   test('should handle session ID in scraper service', () => {
     const { ScraperService } = require('@/model/scraperService')
     const scraper = new ScraperService()
-    
+
     const sessionId = 'test-session-123'
     scraper.setSessionId(sessionId)
-    
+
     expect(scraper.getSessionId()).toBe(sessionId)
   })
 
   test('should handle session ID in client scraper service', () => {
     const { ClientScraperService } = require('@/model/clientScraperService')
     const clientScraper = new ClientScraperService()
-    
+
     const sessionId = 'client-session-456'
     clientScraper.setSessionId(sessionId)
-    
+
     expect(clientScraper.getSessionId()).toBe(sessionId)
   })
 })

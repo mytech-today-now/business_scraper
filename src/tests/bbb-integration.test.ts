@@ -18,7 +18,7 @@ describe('BBB Integration Tests', () => {
     test('should calculate distance between ZIP codes', async () => {
       // Test distance between NYC (10001) and LA (90210) - should be ~2400+ miles
       const result = await zipCodeService.calculateDistance('10001', '90210', 50)
-      
+
       expect(result.distance).toBeGreaterThan(2000)
       expect(result.withinRadius).toBe(false)
     })
@@ -27,7 +27,7 @@ describe('BBB Integration Tests', () => {
       // Test with a business in NYC area
       const businessAddress = '123 Broadway, New York, NY 10001'
       const centerZip = '10002' // Nearby ZIP
-      
+
       const isWithin = await zipCodeService.isBusinessWithinRadius(businessAddress, centerZip, 10)
       expect(isWithin).toBe(true)
     })
@@ -40,7 +40,7 @@ describe('BBB Integration Tests', () => {
         location: 'New York, NY 10001',
         accreditedOnly: false,
         zipRadius: 10,
-        maxResults: 3
+        maxResults: 3,
       }
 
       expect(options).toHaveProperty('query')
@@ -64,7 +64,7 @@ describe('BBB Integration Tests', () => {
         location: 'New York, NY 10001',
         accreditedOnly: false,
         zipRadius: 10,
-        maxResults: 5
+        maxResults: 5,
       }
 
       expect(validOptions.query).toBeTruthy()
@@ -79,7 +79,7 @@ describe('BBB Integration Tests', () => {
         { query: '', location: 'New York, NY', expected: 'empty query' },
         { query: 'medical', location: '', expected: 'empty location' },
         { query: 'medical', location: 'New York, NY', zipRadius: 0, expected: 'zero radius' },
-        { query: 'medical', location: 'New York, NY', maxResults: 0, expected: 'zero results' }
+        { query: 'medical', location: 'New York, NY', maxResults: 0, expected: 'zero results' },
       ]
 
       edgeCases.forEach(testCase => {
@@ -90,7 +90,7 @@ describe('BBB Integration Tests', () => {
             location: testCase.location || 'default',
             accreditedOnly: false,
             zipRadius: testCase.zipRadius || 10,
-            maxResults: testCase.maxResults || 5
+            maxResults: testCase.maxResults || 5,
           }
           // Basic validation
           expect(typeof options).toBe('object')

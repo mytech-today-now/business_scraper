@@ -40,7 +40,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate client credentials
     const clientValidation = clientService.validateClient(clientId, clientSecret)
-    
+
     if (!clientValidation.valid || !clientValidation.client) {
       return createErrorResponse({
         error: 'invalid_client',
@@ -93,7 +93,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     logger.info('OAuth', `Token introspection performed by client ${clientId}`)
     return NextResponse.json(response)
-
   } catch (error) {
     logger.error('OAuth', 'Token introspection error', error)
     return createErrorResponse({
@@ -107,10 +106,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  * GET /api/oauth/introspect - Not allowed (introspection must use POST)
  */
 export async function GET(): Promise<NextResponse> {
-  return createErrorResponse({
-    error: 'invalid_request',
-    errorDescription: 'Token introspection must use POST method',
-  }, 405)
+  return createErrorResponse(
+    {
+      error: 'invalid_request',
+      errorDescription: 'Token introspection must use POST method',
+    },
+    405
+  )
 }
 
 /**

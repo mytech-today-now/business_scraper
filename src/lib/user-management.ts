@@ -3,15 +3,15 @@
  * Handles user registration, authentication, profile management, and team assignments
  */
 
-import { 
-  User, 
-  CreateUserRequest, 
-  UpdateUserRequest, 
+import {
+  User,
+  CreateUserRequest,
+  UpdateUserRequest,
   UserProfile,
   UserSession,
   TeamMembership,
   WorkspaceMembership,
-  RoleName
+  RoleName,
 } from '@/types/multi-user'
 import { database } from './postgresql-database'
 import { logger } from '@/utils/logger'
@@ -29,13 +29,10 @@ export class UserManagementService {
     try {
       // Validate input
       await this.validateUserData(userData)
-      
+
       // Check if username or email already exists
-      const existingUser = await this.findUserByUsernameOrEmail(
-        userData.username, 
-        userData.email
-      )
-      
+      const existingUser = await this.findUserByUsernameOrEmail(userData.username, userData.email)
+
       if (existingUser) {
         throw new Error('Username or email already exists')
       }
@@ -43,11 +40,11 @@ export class UserManagementService {
       // Generate password hash and salt
       const salt = generateSalt()
       const passwordHash = await hashPassword(userData.password, salt)
-      
+
       // Create user record
       const userId = generateId()
       const now = new Date()
-      
+
       const user: User = {
         id: userId,
         username: userData.username,
@@ -72,20 +69,20 @@ export class UserManagementService {
             scrapingComplete: true,
             teamInvites: true,
             dataValidation: true,
-            systemAlerts: true
+            systemAlerts: true,
           },
           dashboard: {
             defaultView: 'campaigns',
             chartsVisible: true,
             refreshInterval: 30000,
-            compactMode: false
+            compactMode: false,
           },
           scraping: {
             defaultSearchRadius: 25,
             defaultSearchDepth: 3,
             defaultPagesPerSite: 5,
-            autoValidation: false
-          }
+            autoValidation: false,
+          },
         },
         twoFactorEnabled: false,
         failedLoginAttempts: 0,
@@ -93,22 +90,39 @@ export class UserManagementService {
         updatedAt: now,
         roles: [],
         teams: [],
-        workspaces: []
+        workspaces: [],
       }
 
       // Insert user into database
-      await database.query(`
+      await database.query(
+        `
         INSERT INTO users (
           id, username, email, password_hash, salt, first_name, last_name,
           job_title, department, phone, timezone, language, preferences,
           is_active, is_verified, password_changed_at, created_at, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
-      `, [
-        userId, userData.username, userData.email, passwordHash, salt,
-        userData.firstName, userData.lastName, userData.jobTitle, userData.department,
-        userData.phone, userData.timezone || 'UTC', userData.language || 'en',
-        JSON.stringify(user.preferences), true, false, now, now, now
-      ])
+      `,
+        [
+          userId,
+          userData.username,
+          userData.email,
+          passwordHash,
+          salt,
+          userData.firstName,
+          userData.lastName,
+          userData.jobTitle,
+          userData.department,
+          userData.phone,
+          userData.timezone || 'UTC',
+          userData.language || 'en',
+          JSON.stringify(user.preferences),
+          true,
+          false,
+          now,
+          now,
+          now,
+        ]
+      )
 
       // Assign default role (contributor) unless created by admin
       const defaultRole = createdBy ? 'contributor' : 'admin'
@@ -119,7 +133,7 @@ export class UserManagementService {
         userId,
         username: userData.username,
         email: userData.email,
-        createdBy
+        createdBy,
       })
 
       return { user }
@@ -140,11 +154,11 @@ export class UserManagementService {
     try {
       // Find user by username or email
       const user = await this.findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-      
+
       if (!user) {
         logger.warn('User Management', 'Authentication failed - user not found', {
           usernameOrEmail,
-          ipAddress
+          ipAddress,
         })
         return null
       }
@@ -153,7 +167,7 @@ export class UserManagementService {
       if (!user.isActive) {
         logger.warn('User Management', 'Authentication failed - user inactive', {
           userId: user.id,
-          ipAddress
+          ipAddress,
         })
         return null
       }
@@ -163,7 +177,7 @@ export class UserManagementService {
         logger.warn('User Management', 'Authentication failed - user locked', {
           userId: user.id,
           lockedUntil: user.lockedUntil,
-          ipAddress
+          ipAddress,
         })
         return null
       }
@@ -182,14 +196,14 @@ export class UserManagementService {
 
       // Verify password
       const isValidPassword = await verifyPassword(password, storedHash, salt)
-      
+
       if (!isValidPassword) {
         // Increment failed login attempts
         await this.incrementFailedLoginAttempts(user.id)
-        
+
         logger.warn('User Management', 'Authentication failed - invalid password', {
           userId: user.id,
-          ipAddress
+          ipAddress,
         })
         return null
       }
@@ -203,7 +217,7 @@ export class UserManagementService {
 
       // Load user with roles and memberships
       const fullUser = await this.getUserById(user.id)
-      
+
       if (!fullUser) {
         throw new Error('Failed to load user after authentication')
       }
@@ -211,7 +225,7 @@ export class UserManagementService {
       logger.info('User Management', 'User authenticated successfully', {
         userId: user.id,
         username: user.username,
-        ipAddress
+        ipAddress,
       })
 
       return { user: fullUser, session }
@@ -226,7 +240,8 @@ export class UserManagementService {
    */
   static async getUserById(userId: string): Promise<User | null> {
     try {
-      const result = await database.query(`
+      const result = await database.query(
+        `
         SELECT 
           u.*,
           COALESCE(
@@ -313,14 +328,16 @@ export class UserManagementService {
         LEFT JOIN workspaces w ON wm.workspace_id = w.id
         WHERE u.id = $1
         GROUP BY u.id
-      `, [userId])
+      `,
+        [userId]
+      )
 
       if (!result.rows[0]) {
         return null
       }
 
       const row = result.rows[0]
-      
+
       return {
         id: row.id,
         username: row.username,
@@ -345,7 +362,7 @@ export class UserManagementService {
         updatedAt: row.updated_at,
         roles: row.roles,
         teams: row.teams,
-        workspaces: row.workspaces
+        workspaces: row.workspaces,
       }
     } catch (error) {
       logger.error('User Management', 'Error fetching user by ID', error)
@@ -371,37 +388,37 @@ export class UserManagementService {
         updates.push(`first_name = $${paramIndex++}`)
         values.push(updateData.firstName)
       }
-      
+
       if (updateData.lastName !== undefined) {
         updates.push(`last_name = $${paramIndex++}`)
         values.push(updateData.lastName)
       }
-      
+
       if (updateData.jobTitle !== undefined) {
         updates.push(`job_title = $${paramIndex++}`)
         values.push(updateData.jobTitle)
       }
-      
+
       if (updateData.department !== undefined) {
         updates.push(`department = $${paramIndex++}`)
         values.push(updateData.department)
       }
-      
+
       if (updateData.phone !== undefined) {
         updates.push(`phone = $${paramIndex++}`)
         values.push(updateData.phone)
       }
-      
+
       if (updateData.timezone !== undefined) {
         updates.push(`timezone = $${paramIndex++}`)
         values.push(updateData.timezone)
       }
-      
+
       if (updateData.language !== undefined) {
         updates.push(`language = $${paramIndex++}`)
         values.push(updateData.language)
       }
-      
+
       if (updateData.preferences !== undefined) {
         updates.push(`preferences = $${paramIndex++}`)
         values.push(JSON.stringify(updateData.preferences))
@@ -414,7 +431,7 @@ export class UserManagementService {
       // Add updated_at
       updates.push(`updated_at = $${paramIndex++}`)
       values.push(new Date())
-      
+
       // Add user ID for WHERE clause
       values.push(userId)
 
@@ -426,14 +443,14 @@ export class UserManagementService {
       `
 
       const result = await database.query(query, values)
-      
+
       if (!result.rows[0]) {
         throw new Error('User not found')
       }
 
       // Get updated user with full profile
       const updatedUser = await this.getUserById(userId)
-      
+
       if (!updatedUser) {
         throw new Error('Failed to fetch updated user')
       }
@@ -441,7 +458,7 @@ export class UserManagementService {
       logger.info('User Management', 'User updated successfully', {
         userId,
         updatedBy,
-        fields: Object.keys(updateData)
+        fields: Object.keys(updateData),
       })
 
       return updatedUser
@@ -462,10 +479,7 @@ export class UserManagementService {
   ): Promise<void> {
     try {
       // Get role by name
-      const roleResult = await database.query(
-        'SELECT id FROM roles WHERE name = $1',
-        [roleName]
-      )
+      const roleResult = await database.query('SELECT id FROM roles WHERE name = $1', [roleName])
 
       if (!roleResult.rows[0]) {
         throw new Error(`Role '${roleName}' not found`)
@@ -484,16 +498,19 @@ export class UserManagementService {
       }
 
       // Insert role assignment
-      await database.query(`
+      await database.query(
+        `
         INSERT INTO user_roles (user_id, role_id, assigned_by, expires_at)
         VALUES ($1, $2, $3, $4)
-      `, [userId, roleId, assignedBy, expiresAt])
+      `,
+        [userId, roleId, assignedBy, expiresAt]
+      )
 
       logger.info('User Management', 'Role assigned successfully', {
         userId,
         roleName,
         assignedBy,
-        expiresAt
+        expiresAt,
       })
     } catch (error) {
       logger.error('User Management', 'Error assigning role', error)
@@ -508,10 +525,10 @@ export class UserManagementService {
     username: string,
     email: string
   ): Promise<User | null> {
-    const result = await database.query(
-      'SELECT * FROM users WHERE username = $1 OR email = $2',
-      [username, email]
-    )
+    const result = await database.query('SELECT * FROM users WHERE username = $1 OR email = $2', [
+      username,
+      email,
+    ])
 
     if (!result.rows[0]) {
       return null
@@ -542,7 +559,7 @@ export class UserManagementService {
       updatedAt: row.updated_at,
       roles: [],
       teams: [],
-      workspaces: []
+      workspaces: [],
     }
   }
 
@@ -574,20 +591,20 @@ export class UserManagementService {
   /**
    * Create user session
    */
-  private static async createSession(
-    userId: string,
-    ipAddress?: string
-  ): Promise<UserSession> {
+  private static async createSession(userId: string, ipAddress?: string): Promise<UserSession> {
     const sessionId = generateId()
     const sessionToken = generateId()
     const csrfToken = generateId()
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
 
-    await database.query(`
+    await database.query(
+      `
       INSERT INTO user_sessions (
         id, user_id, session_token, csrf_token, ip_address, expires_at
       ) VALUES ($1, $2, $3, $4, $5, $6)
-    `, [sessionId, userId, sessionToken, csrfToken, ipAddress, expiresAt])
+    `,
+      [sessionId, userId, sessionToken, csrfToken, ipAddress, expiresAt]
+    )
 
     return {
       id: sessionId,
@@ -601,7 +618,7 @@ export class UserManagementService {
       lastAccessedAt: new Date(),
       deviceInfo: { type: 'unknown' },
       locationInfo: {},
-      user: {} as User // Will be populated by caller
+      user: {} as User, // Will be populated by caller
     }
   }
 
@@ -609,7 +626,8 @@ export class UserManagementService {
    * Increment failed login attempts
    */
   private static async incrementFailedLoginAttempts(userId: string): Promise<void> {
-    await database.query(`
+    await database.query(
+      `
       UPDATE users 
       SET 
         failed_login_attempts = failed_login_attempts + 1,
@@ -618,27 +636,31 @@ export class UserManagementService {
           ELSE locked_until
         END
       WHERE id = $1
-    `, [userId])
+    `,
+      [userId]
+    )
   }
 
   /**
    * Reset failed login attempts
    */
   private static async resetFailedLoginAttempts(userId: string): Promise<void> {
-    await database.query(`
+    await database.query(
+      `
       UPDATE users 
       SET failed_login_attempts = 0, locked_until = NULL
       WHERE id = $1
-    `, [userId])
+    `,
+      [userId]
+    )
   }
 
   /**
    * Update last login timestamp
    */
   private static async updateLastLogin(userId: string): Promise<void> {
-    await database.query(
-      'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1',
-      [userId]
-    )
+    await database.query('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1', [
+      userId,
+    ])
   }
 }

@@ -48,15 +48,22 @@ export class ClientScraperService {
     }
 
     try {
-      const response = await this.fetchWithRetry(`${this.baseUrl}/health`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }, 1) // Only 1 retry for health check
+      const response = await this.fetchWithRetry(
+        `${this.baseUrl}/health`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+        1
+      ) // Only 1 retry for health check
 
       if (response.ok) {
         const result = await response.json()
         this.apiServerAvailable = result.status === 'healthy' || result.status === 'warning'
-        logger.info('ClientScraper', `API server health check: ${this.apiServerAvailable ? 'available' : 'unavailable'}`)
+        logger.info(
+          'ClientScraper',
+          `API server health check: ${this.apiServerAvailable ? 'available' : 'unavailable'}`
+        )
         return this.apiServerAvailable
       }
 
@@ -72,7 +79,11 @@ export class ClientScraperService {
   /**
    * Enhanced fetch with retry logic and connection failure handling
    */
-  private async fetchWithRetry(url: string, options: RequestInit, retryCount = 0): Promise<Response> {
+  private async fetchWithRetry(
+    url: string,
+    options: RequestInit,
+    retryCount = 0
+  ): Promise<Response> {
     try {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
@@ -85,16 +96,21 @@ export class ClientScraperService {
       clearTimeout(timeoutId)
       return response
     } catch (error) {
-      const isConnectionError = error instanceof TypeError &&
+      const isConnectionError =
+        error instanceof TypeError &&
         (error.message.includes('Failed to fetch') ||
-         error.message.includes('ERR_CONNECTION_REFUSED') ||
-         error.message.includes('NetworkError'))
+          error.message.includes('ERR_CONNECTION_REFUSED') ||
+          error.message.includes('NetworkError'))
 
       const isTimeoutError = error.name === 'AbortError'
 
       if ((isConnectionError || isTimeoutError) && retryCount < this.maxRetries) {
         const delay = this.retryDelay * Math.pow(2, retryCount) // Exponential backoff
-        logger.warn('ClientScraper', `Connection failed, retrying in ${delay}ms (attempt ${retryCount + 1}/${this.maxRetries})`, error)
+        logger.warn(
+          'ClientScraper',
+          `Connection failed, retrying in ${delay}ms (attempt ${retryCount + 1}/${this.maxRetries})`,
+          error
+        )
 
         await new Promise(resolve => setTimeout(resolve, delay))
         return this.fetchWithRetry(url, options, retryCount + 1)
@@ -117,17 +133,26 @@ export class ClientScraperService {
       const credentials = await retrieveApiCredentials()
       const hasApiCredentials = !!(credentials && credentials.googleSearchApiKey)
 
-      logger.info('ClientScraper', `Initializing scraper - Has API credentials: ${hasApiCredentials}`)
+      logger.info(
+        'ClientScraper',
+        `Initializing scraper - Has API credentials: ${hasApiCredentials}`
+      )
 
       // Check API health before attempting initialization
       const isApiHealthy = await this.checkApiHealth()
       if (!isApiHealthy) {
-        logger.warn('ClientScraper', 'API server not available, enabling fallback mode for client-side scraping')
+        logger.warn(
+          'ClientScraper',
+          'API server not available, enabling fallback mode for client-side scraping'
+        )
         this.fallbackMode = true
 
         // Ensure we have working search engines for fallback
         if (!hasApiCredentials && !clientSearchEngine.hasApiCredentials()) {
-          logger.info('ClientScraper', 'No API credentials available, will use DuckDuckGo SERP scraping as fallback')
+          logger.info(
+            'ClientScraper',
+            'No API credentials available, will use DuckDuckGo SERP scraping as fallback'
+          )
         }
 
         logger.info('ClientScraper', 'Scraper initialized in fallback mode (client-side only)')
@@ -154,7 +179,11 @@ export class ClientScraperService {
         this.fallbackMode = false
         logger.info('ClientScraper', 'Scraper initialized successfully with server-side support')
       } catch (serverError) {
-        logger.warn('ClientScraper', 'Server-side initialization failed, falling back to client-side mode', serverError)
+        logger.warn(
+          'ClientScraper',
+          'Server-side initialization failed, falling back to client-side mode',
+          serverError
+        )
         this.fallbackMode = true
         this.apiServerAvailable = false
       }
@@ -184,7 +213,10 @@ export class ClientScraperService {
           : clientSearchEngine.hasApiCredentials()
             ? 'API credentials'
             : 'DuckDuckGo SERP scraping'
-        logger.info('ClientScraper', `Found ${urls.length} URLs using ${source} for query: ${query}`)
+        logger.info(
+          'ClientScraper',
+          `Found ${urls.length} URLs using ${source} for query: ${query}`
+        )
         return urls
       }
 
@@ -199,7 +231,11 @@ export class ClientScraperService {
   /**
    * Scrape a website for business information
    */
-  async scrapeWebsite(url: string, depth: number = 2, maxPages: number = 5): Promise<BusinessRecord[]> {
+  async scrapeWebsite(
+    url: string,
+    depth: number = 2,
+    maxPages: number = 5
+  ): Promise<BusinessRecord[]> {
     // In fallback mode, return empty array since we don't have server-side scraping
     if (this.fallbackMode) {
       logger.info('ClientScraper', `Skipping website scraping in fallback mode: ${url}`)
@@ -238,7 +274,10 @@ export class ClientScraperService {
   async cleanup(): Promise<void> {
     // In fallback mode, no server-side cleanup needed
     if (this.fallbackMode) {
-      logger.info('ClientScraper', 'Cleanup completed (fallback mode - no server resources to clean)')
+      logger.info(
+        'ClientScraper',
+        'Cleanup completed (fallback mode - no server resources to clean)'
+      )
       return
     }
 
@@ -262,7 +301,10 @@ export class ClientScraperService {
     } catch (error) {
       logger.error('ClientScraper', 'Failed to cleanup scraper', error)
       // Don't throw error for cleanup failures - log and continue
-      logger.warn('ClientScraper', 'Cleanup failed but continuing - this may leave resources uncleaned')
+      logger.warn(
+        'ClientScraper',
+        'Cleanup failed but continuing - this may leave resources uncleaned'
+      )
     }
   }
 

@@ -164,7 +164,7 @@ export interface CRMAdapter {
   displayName: string
   /** Available templates for this platform */
   templates: CRMTemplate[]
-  
+
   /**
    * Transform business records for this CRM platform
    */
@@ -173,20 +173,17 @@ export interface CRMAdapter {
     template: CRMTemplate,
     options?: CRMExportOptions
   ): Promise<BatchTransformationResult>
-  
+
   /**
    * Validate a single record against CRM requirements
    */
-  validateRecord(
-    record: BusinessRecord,
-    template: CRMTemplate
-  ): ValidationError[]
-  
+  validateRecord(record: BusinessRecord, template: CRMTemplate): ValidationError[]
+
   /**
    * Get default template for this platform
    */
   getDefaultTemplate(): CRMTemplate
-  
+
   /**
    * Create custom template based on user requirements
    */
@@ -205,32 +202,32 @@ export interface CRMTemplateManager {
    * Get all available templates
    */
   getAllTemplates(): CRMTemplate[]
-  
+
   /**
    * Get templates for specific platform
    */
   getTemplatesByPlatform(platform: CRMPlatform): CRMTemplate[]
-  
+
   /**
    * Get template by ID
    */
   getTemplate(id: string): CRMTemplate | null
-  
+
   /**
    * Save custom template
    */
   saveTemplate(template: CRMTemplate): Promise<void>
-  
+
   /**
    * Delete custom template
    */
   deleteTemplate(id: string): Promise<void>
-  
+
   /**
    * Clone existing template
    */
   cloneTemplate(id: string, newName: string): CRMTemplate
-  
+
   /**
    * Validate template configuration
    */
@@ -293,10 +290,10 @@ export interface CRMExportResult {
 export const CommonTransformers = {
   /** Convert to uppercase */
   toUpperCase: (value: any): string => String(value || '').toUpperCase(),
-  
+
   /** Convert to lowercase */
   toLowerCase: (value: any): string => String(value || '').toLowerCase(),
-  
+
   /** Format phone number */
   formatPhone: (value: any): string => {
     const phone = String(value || '').replace(/\D/g, '')
@@ -305,37 +302,39 @@ export const CommonTransformers = {
     }
     return phone
   },
-  
+
   /** Format date to ISO string */
   formatDateISO: (value: any): string => {
     if (!value) return ''
     const date = new Date(value)
     return isNaN(date.getTime()) ? '' : date.toISOString()
   },
-  
+
   /** Format date to MM/DD/YYYY */
   formatDateUS: (value: any): string => {
     if (!value) return ''
     const date = new Date(value)
     return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-US')
   },
-  
+
   /** Clean and validate email */
   formatEmail: (value: any): string => {
-    const email = String(value || '').toLowerCase().trim()
+    const email = String(value || '')
+      .toLowerCase()
+      .trim()
     return email.includes('@') ? email : ''
   },
-  
+
   /** Format currency */
   formatCurrency: (value: any): number => {
     const num = parseFloat(String(value || '0').replace(/[^0-9.-]/g, ''))
     return isNaN(num) ? 0 : num
   },
-  
+
   /** Boolean converter */
   toBoolean: (value: any): boolean => {
     if (typeof value === 'boolean') return value
     const str = String(value || '').toLowerCase()
     return ['true', '1', 'yes', 'y', 'on'].includes(str)
-  }
+  },
 } as const

@@ -22,11 +22,11 @@ jest.mock('@/lib/enhanced-export-service', () => ({
           category: 'crm',
           tags: ['crm', 'salesforce', 'leads'],
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         },
         requiredFields: ['Company'],
-        optionalFields: ['Phone', 'Email', 'Website']
-      }
+        optionalFields: ['Phone', 'Email', 'Website'],
+      },
     ]),
     getExportStatistics: jest.fn(() => ({
       availableTemplates: 5,
@@ -35,12 +35,12 @@ jest.mock('@/lib/enhanced-export-service', () => ({
         hubspot: 1,
         pipedrive: 1,
         mailchimp: 1,
-        'constant-contact': 1
+        'constant-contact': 1,
       },
       templatesByCategory: {
         crm: 3,
-        'email-marketing': 2
-      }
+        'email-marketing': 2,
+      },
     })),
     exportWithTemplate: jest.fn(() => ({
       success: true,
@@ -58,7 +58,7 @@ jest.mock('@/lib/enhanced-export-service', () => ({
           Website: 'https://acme.com',
           Industry: 'Technology',
           LeadSource: 'Web Scraping',
-          Rating: 'Hot'
+          Rating: 'Hot',
         },
         {
           Company: 'Beta Industries',
@@ -67,23 +67,23 @@ jest.mock('@/lib/enhanced-export-service', () => ({
           Website: 'https://beta.com',
           Industry: 'Manufacturing',
           LeadSource: 'Web Scraping',
-          Rating: 'Warm'
-        }
+          Rating: 'Warm',
+        },
       ],
       metadata: {
         exportedAt: new Date().toISOString(),
         template: 'Salesforce Leads',
         platform: 'salesforce',
         totalDuration: 150,
-        averageProcessingTime: 75
-      }
+        averageProcessingTime: 75,
+      },
     })),
     convertToDownloadableFormat: jest.fn(() => ({
       blob: new Blob(['test,data\nvalue1,value2'], { type: 'text/csv' }),
       filename: 'salesforce-export-2025-01-24.csv',
-      mimeType: 'text/csv'
-    }))
-  }
+      mimeType: 'text/csv',
+    })),
+  },
 }))
 
 jest.mock('@/lib/analytics/usage-analytics', () => ({
@@ -92,13 +92,13 @@ jest.mock('@/lib/analytics/usage-analytics', () => ({
       requestsPerMinute: 25,
       averageResponseTime: 150,
       errorRate: 0.5,
-      activeClients: 5
+      activeClients: 5,
     })),
     getClientAnalytics: jest.fn(() => ({
       clientId: 'test-client',
       period: {
         start: '2025-01-23T00:00:00.000Z',
-        end: '2025-01-24T00:00:00.000Z'
+        end: '2025-01-24T00:00:00.000Z',
       },
       metrics: {
         totalRequests: 100,
@@ -106,7 +106,7 @@ jest.mock('@/lib/analytics/usage-analytics', () => ({
         failedRequests: 5,
         averageResponseTime: 150,
         dataTransferred: 1024000,
-        rateLimitHits: 2
+        rateLimitHits: 2,
       },
       endpoints: [
         {
@@ -114,10 +114,10 @@ jest.mock('@/lib/analytics/usage-analytics', () => ({
           method: 'POST',
           requests: 50,
           averageResponseTime: 200,
-          errorRate: 2
-        }
+          errorRate: 2,
+        },
       ],
-      errors: []
+      errors: [],
     })),
     getSystemAnalytics: jest.fn(() => ({
       totalClients: 10,
@@ -129,16 +129,16 @@ jest.mock('@/lib/analytics/usage-analytics', () => ({
           endpoint: 'POST /api/v1/exports',
           requests: 500,
           averageResponseTime: 200,
-          errorRate: 2
-        }
+          errorRate: 2,
+        },
       ],
       topClients: [
         {
           clientId: 'client-1',
           requests: 300,
-          dataTransferred: 500000
-        }
-      ]
+          dataTransferred: 500000,
+        },
+      ],
     })),
     getHealthStatus: jest.fn(() => [
       {
@@ -148,10 +148,10 @@ jest.mock('@/lib/analytics/usage-analytics', () => ({
         responseTime: 45,
         uptime: 86400,
         errors: [],
-        metrics: {}
-      }
-    ])
-  }
+        metrics: {},
+      },
+    ]),
+  },
 }))
 
 jest.mock('@/lib/analytics/api-metrics', () => ({
@@ -160,7 +160,7 @@ jest.mock('@/lib/analytics/api-metrics', () => ({
       allowed: true,
       remaining: { minute: 99, hour: 999, day: 9999 },
       resetTime: { minute: 60, hour: 3600, day: 86400 },
-      rateLimitHit: false
+      rateLimitHit: false,
     })),
     recordRequest: jest.fn(),
     getPerformanceMetrics: jest.fn(() => ({
@@ -168,21 +168,21 @@ jest.mock('@/lib/analytics/api-metrics', () => ({
         requestsPerMinute: 25,
         averageResponseTime: 150,
         errorRate: 0.5,
-        activeClients: 5
+        activeClients: 5,
       },
       alerts: [],
       rateLimitStats: {
         totalClients: 10,
         rateLimitHits: 5,
-        topRateLimitedClients: []
-      }
+        topRateLimitedClients: [],
+      },
     })),
     getAlertThresholds: jest.fn(() => ({
       errorRate: 5,
       responseTime: 2000,
-      rateLimitHits: 10
-    }))
-  }
+      rateLimitHits: 10,
+    })),
+  },
 }))
 
 describe('API Endpoints Integration', () => {
@@ -190,9 +190,9 @@ describe('API Endpoints Integration', () => {
     test('GET /api/v1/templates should return template list', async () => {
       const request = new NextRequest('https://example.com/api/v1/templates')
       const response = await getTemplatesList(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.templates).toHaveLength(1)
@@ -203,9 +203,9 @@ describe('API Endpoints Integration', () => {
     test('GET /api/v1/templates with platform filter', async () => {
       const request = new NextRequest('https://example.com/api/v1/templates?platform=salesforce')
       const response = await getTemplatesList(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.templates).toHaveLength(1)
@@ -214,9 +214,9 @@ describe('API Endpoints Integration', () => {
     test('GET /api/v1/templates with details', async () => {
       const request = new NextRequest('https://example.com/api/v1/templates?details=true')
       const response = await getTemplatesList(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.templates[0].requiredFields).toBeDefined()
@@ -234,33 +234,33 @@ describe('API Endpoints Integration', () => {
             email: ['contact@acme.com'],
             phone: ['5551234567'],
             website: 'https://acme.com',
-            industry: 'Technology'
+            industry: 'Technology',
           },
           {
             businessName: 'Beta Industries',
             email: ['info@beta.com'],
             phone: ['5555551234'],
             website: 'https://beta.com',
-            industry: 'Manufacturing'
-          }
+            industry: 'Manufacturing',
+          },
         ],
         options: {
           format: 'csv',
           validateData: true,
-          includeData: true
-        }
+          includeData: true,
+        },
       }
 
       const request = new NextRequest('https://example.com/api/v1/exports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(exportRequest)
+        body: JSON.stringify(exportRequest),
       })
 
       const response = await createExport(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.export.status).toBe('completed')
@@ -273,19 +273,19 @@ describe('API Endpoints Integration', () => {
     test('POST /api/v1/exports should validate required fields', async () => {
       const invalidRequest = {
         // Missing templateId
-        businesses: []
+        businesses: [],
       }
 
       const request = new NextRequest('https://example.com/api/v1/exports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(invalidRequest)
+        body: JSON.stringify(invalidRequest),
       })
 
       const response = await createExport(request)
-      
+
       expect(response.status).toBe(500) // Should be handled by error handling
-      
+
       const data = await response.json()
       expect(data.success).toBe(false)
       expect(data.error.message).toContain('Template ID is required')
@@ -294,19 +294,19 @@ describe('API Endpoints Integration', () => {
     test('POST /api/v1/exports should validate business data', async () => {
       const requestWithInvalidData = {
         templateId: 'salesforce-leads',
-        businesses: [] // Empty array
+        businesses: [], // Empty array
       }
 
       const request = new NextRequest('https://example.com/api/v1/exports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestWithInvalidData)
+        body: JSON.stringify(requestWithInvalidData),
       })
 
       const response = await createExport(request)
-      
+
       expect(response.status).toBe(500)
-      
+
       const data = await response.json()
       expect(data.success).toBe(false)
       expect(data.error.message).toContain('At least one business record is required')
@@ -317,9 +317,9 @@ describe('API Endpoints Integration', () => {
     test('GET /api/v1/analytics?type=realtime should return real-time metrics', async () => {
       const request = new NextRequest('https://example.com/api/v1/analytics?type=realtime')
       const response = await getAnalytics(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.type).toBe('realtime')
@@ -329,11 +329,13 @@ describe('API Endpoints Integration', () => {
     })
 
     test('GET /api/v1/analytics?type=client should return client analytics', async () => {
-      const request = new NextRequest('https://example.com/api/v1/analytics?type=client&clientId=test-client')
+      const request = new NextRequest(
+        'https://example.com/api/v1/analytics?type=client&clientId=test-client'
+      )
       const response = await getAnalytics(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.type).toBe('client')
@@ -345,9 +347,9 @@ describe('API Endpoints Integration', () => {
     test('GET /api/v1/analytics?type=system should return system analytics', async () => {
       const request = new NextRequest('https://example.com/api/v1/analytics?type=system')
       const response = await getAnalytics(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.type).toBe('system')
@@ -360,14 +362,14 @@ describe('API Endpoints Integration', () => {
     test('GET /api/v1/analytics with date range should filter data', async () => {
       const startDate = '2025-01-23T00:00:00.000Z'
       const endDate = '2025-01-24T00:00:00.000Z'
-      
+
       const request = new NextRequest(
         `https://example.com/api/v1/analytics?type=client&clientId=test-client&startDate=${startDate}&endDate=${endDate}`
       )
       const response = await getAnalytics(request)
-      
+
       expect(response.status).toBe(200)
-      
+
       const data = await response.json()
       expect(data.success).toBe(true)
       expect(data.data.period.start).toBe(startDate)
@@ -380,13 +382,13 @@ describe('API Endpoints Integration', () => {
       const request = new NextRequest('https://example.com/api/v1/exports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: 'invalid json'
+        body: 'invalid json',
       })
 
       const response = await createExport(request)
-      
+
       expect(response.status).toBe(500)
-      
+
       const data = await response.json()
       expect(data.success).toBe(false)
       expect(data.error).toBeDefined()
@@ -395,11 +397,11 @@ describe('API Endpoints Integration', () => {
     test('should handle missing required parameters', async () => {
       const request = new NextRequest('https://example.com/api/v1/analytics?type=client')
       // Missing clientId for client analytics
-      
+
       const response = await getAnalytics(request)
-      
+
       expect(response.status).toBe(500)
-      
+
       const data = await response.json()
       expect(data.success).toBe(false)
       expect(data.error.message).toContain('Client ID is required')
@@ -410,7 +412,7 @@ describe('API Endpoints Integration', () => {
     test('should include standard response metadata', async () => {
       const request = new NextRequest('https://example.com/api/v1/templates')
       const response = await getTemplatesList(request)
-      
+
       const data = await response.json()
       expect(data.metadata).toBeDefined()
       expect(data.metadata.requestId).toBeDefined()
@@ -421,7 +423,7 @@ describe('API Endpoints Integration', () => {
     test('should include rate limit headers', async () => {
       const request = new NextRequest('https://example.com/api/v1/templates')
       const response = await getTemplatesList(request)
-      
+
       expect(response.headers.get('X-Request-ID')).toBeTruthy()
       expect(response.headers.get('X-API-Version')).toBe('v1')
       expect(response.headers.get('X-RateLimit-Remaining')).toBeTruthy()
@@ -431,7 +433,7 @@ describe('API Endpoints Integration', () => {
     test('should include CORS headers', async () => {
       const request = new NextRequest('https://example.com/api/v1/templates')
       const response = await getTemplatesList(request)
-      
+
       expect(response.headers.get('Access-Control-Allow-Origin')).toBeTruthy()
     })
   })

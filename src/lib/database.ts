@@ -356,7 +356,7 @@ export interface MigrationInfo {
 
 export async function getMigrationStatus(): Promise<MigrationInfo[]> {
   const config = getDatabaseConfig()
-  
+
   if (config.type === 'postgresql' && typeof window === 'undefined') {
     try {
       const { Pool } = await import('pg')
@@ -401,7 +401,7 @@ export async function getMigrationStatus(): Promise<MigrationInfo[]> {
         name: 'indexeddb_schema',
         applied: true,
         appliedAt: new Date(),
-      }
+      },
     ]
   }
 }

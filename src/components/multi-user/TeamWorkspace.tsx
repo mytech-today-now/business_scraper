@@ -6,7 +6,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Team, Workspace, User, CreateTeamRequest, CreateWorkspaceRequest } from '@/types/multi-user'
+import {
+  Team,
+  Workspace,
+  User,
+  CreateTeamRequest,
+  CreateWorkspaceRequest,
+} from '@/types/multi-user'
 
 interface TeamWorkspaceProps {
   currentUser: User
@@ -17,7 +23,7 @@ interface TeamWorkspaceProps {
 export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
   currentUser,
   onTeamCreated,
-  onWorkspaceCreated
+  onWorkspaceCreated,
 }) => {
   const [teams, setTeams] = useState<Team[]>([])
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
@@ -31,7 +37,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
   // Form state
   const [teamFormData, setTeamFormData] = useState<CreateTeamRequest>({
     name: '',
-    description: ''
+    description: '',
   })
 
   const [workspaceFormData, setWorkspaceFormData] = useState<CreateWorkspaceRequest>({
@@ -40,7 +46,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
     teamId: '',
     defaultSearchRadius: 25,
     defaultSearchDepth: 3,
-    defaultPagesPerSite: 5
+    defaultPagesPerSite: 5,
   })
 
   useEffect(() => {
@@ -87,7 +93,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
       const response = await fetch('/api/teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(teamFormData)
+        body: JSON.stringify(teamFormData),
       })
 
       const data = await response.json()
@@ -111,7 +117,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
       const response = await fetch('/api/workspaces', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(workspaceFormData)
+        body: JSON.stringify(workspaceFormData),
       })
 
       const data = await response.json()
@@ -125,7 +131,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
           teamId: '',
           defaultSearchRadius: 25,
           defaultSearchDepth: 3,
-          defaultPagesPerSite: 5
+          defaultPagesPerSite: 5,
         })
         onWorkspaceCreated?.(data.data)
       } else {
@@ -141,7 +147,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
       const response = await fetch(`/api/teams/${teamId}/members`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role })
+        body: JSON.stringify({ email, role }),
       })
 
       const data = await response.json()
@@ -157,11 +163,11 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
     }
   }
 
-  const canCreateTeams = currentUser.roles?.some(role => 
+  const canCreateTeams = currentUser.roles?.some(role =>
     role.role.permissions.includes('teams.create')
   )
 
-  const canCreateWorkspaces = currentUser.roles?.some(role => 
+  const canCreateWorkspaces = currentUser.roles?.some(role =>
     role.role.permissions.includes('workspaces.create')
   )
 
@@ -179,10 +185,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-red-600">{error}</p>
-          <button
-            onClick={() => setError(null)}
-            className="text-red-800 hover:text-red-900 ml-2"
-          >
+          <button onClick={() => setError(null)} className="text-red-800 hover:text-red-900 ml-2">
             ×
           </button>
         </div>
@@ -231,32 +234,33 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {loading ? (
-              <div className="col-span-full text-center py-8 text-gray-500">
-                Loading teams...
-              </div>
+              <div className="col-span-full text-center py-8 text-gray-500">Loading teams...</div>
             ) : teams.length === 0 ? (
               <div className="col-span-full text-center py-8 text-gray-500">
                 No teams found. Create your first team to get started.
               </div>
             ) : (
               teams.map(team => (
-                <div key={team.id} className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+                <div
+                  key={team.id}
+                  className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-lg font-semibold text-gray-900">{team.name}</h4>
-                    <span className="text-sm text-gray-500">
-                      {team.memberCount} members
-                    </span>
+                    <span className="text-sm text-gray-500">{team.memberCount} members</span>
                   </div>
-                  
+
                   {team.description && (
                     <p className="text-gray-600 text-sm mb-4">{team.description}</p>
                   )}
-                  
+
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <span>{team.workspaceCount} workspaces</span>
-                    <span>Owner: {team.owner?.firstName} {team.owner?.lastName}</span>
+                    <span>
+                      Owner: {team.owner?.firstName} {team.owner?.lastName}
+                    </span>
                   </div>
-                  
+
                   <div className="mt-4 flex space-x-2">
                     <button
                       onClick={() => setSelectedTeam(team)}
@@ -266,7 +270,9 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                     </button>
                     {team.ownerId === currentUser.id && (
                       <button
-                        onClick={() => {/* Handle edit */}}
+                        onClick={() => {
+                          /* Handle edit */
+                        }}
                         className="bg-blue-100 text-blue-700 px-3 py-2 rounded text-sm hover:bg-blue-200 transition-colors"
                       >
                         Edit
@@ -306,18 +312,19 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
               </div>
             ) : (
               workspaces.map(workspace => (
-                <div key={workspace.id} className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+                <div
+                  key={workspace.id}
+                  className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-lg font-semibold text-gray-900">{workspace.name}</h4>
-                    <span className="text-sm text-gray-500">
-                      {workspace.memberCount} members
-                    </span>
+                    <span className="text-sm text-gray-500">{workspace.memberCount} members</span>
                   </div>
-                  
+
                   {workspace.description && (
                     <p className="text-gray-600 text-sm mb-4">{workspace.description}</p>
                   )}
-                  
+
                   <div className="space-y-2 text-sm text-gray-500">
                     <div className="flex justify-between">
                       <span>Team:</span>
@@ -332,17 +339,21 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                       <span>{workspace.businessCount}</span>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 flex space-x-2">
                     <button
-                      onClick={() => {/* Navigate to workspace */}}
+                      onClick={() => {
+                        /* Navigate to workspace */
+                      }}
                       className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors"
                     >
                       Open
                     </button>
                     {workspace.ownerId === currentUser.id && (
                       <button
-                        onClick={() => {/* Handle edit */}}
+                        onClick={() => {
+                          /* Handle edit */
+                        }}
                         className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm hover:bg-gray-200 transition-colors"
                       >
                         Settings
@@ -366,14 +377,14 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                 type="text"
                 placeholder="Team Name"
                 value={teamFormData.name}
-                onChange={(e) => setTeamFormData({...teamFormData, name: e.target.value})}
+                onChange={e => setTeamFormData({ ...teamFormData, name: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <textarea
                 placeholder="Team Description (optional)"
                 value={teamFormData.description}
-                onChange={(e) => setTeamFormData({...teamFormData, description: e.target.value})}
+                onChange={e => setTeamFormData({ ...teamFormData, description: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={3}
               />
@@ -410,13 +421,15 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                 type="text"
                 placeholder="Workspace Name"
                 value={workspaceFormData.name}
-                onChange={(e) => setWorkspaceFormData({...workspaceFormData, name: e.target.value})}
+                onChange={e => setWorkspaceFormData({ ...workspaceFormData, name: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <select
                 value={workspaceFormData.teamId}
-                onChange={(e) => setWorkspaceFormData({...workspaceFormData, teamId: e.target.value})}
+                onChange={e =>
+                  setWorkspaceFormData({ ...workspaceFormData, teamId: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
@@ -430,7 +443,9 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
               <textarea
                 placeholder="Workspace Description (optional)"
                 value={workspaceFormData.description}
-                onChange={(e) => setWorkspaceFormData({...workspaceFormData, description: e.target.value})}
+                onChange={e =>
+                  setWorkspaceFormData({ ...workspaceFormData, description: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={3}
               />
@@ -439,7 +454,12 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                   type="number"
                   placeholder="Search Radius"
                   value={workspaceFormData.defaultSearchRadius}
-                  onChange={(e) => setWorkspaceFormData({...workspaceFormData, defaultSearchRadius: parseInt(e.target.value)})}
+                  onChange={e =>
+                    setWorkspaceFormData({
+                      ...workspaceFormData,
+                      defaultSearchRadius: parseInt(e.target.value),
+                    })
+                  }
                   className="px-3 py-2 border border-gray-300 rounded-lg"
                   min="1"
                   max="100"
@@ -448,7 +468,12 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                   type="number"
                   placeholder="Search Depth"
                   value={workspaceFormData.defaultSearchDepth}
-                  onChange={(e) => setWorkspaceFormData({...workspaceFormData, defaultSearchDepth: parseInt(e.target.value)})}
+                  onChange={e =>
+                    setWorkspaceFormData({
+                      ...workspaceFormData,
+                      defaultSearchDepth: parseInt(e.target.value),
+                    })
+                  }
                   className="px-3 py-2 border border-gray-300 rounded-lg"
                   min="1"
                   max="10"
@@ -457,7 +482,12 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                   type="number"
                   placeholder="Pages/Site"
                   value={workspaceFormData.defaultPagesPerSite}
-                  onChange={(e) => setWorkspaceFormData({...workspaceFormData, defaultPagesPerSite: parseInt(e.target.value)})}
+                  onChange={e =>
+                    setWorkspaceFormData({
+                      ...workspaceFormData,
+                      defaultPagesPerSite: parseInt(e.target.value),
+                    })
+                  }
                   className="px-3 py-2 border border-gray-300 rounded-lg"
                   min="1"
                   max="20"
@@ -474,7 +504,7 @@ export const TeamWorkspace: React.FC<TeamWorkspaceProps> = ({
                       teamId: '',
                       defaultSearchRadius: 25,
                       defaultSearchDepth: 3,
-                      defaultPagesPerSite: 5
+                      defaultPagesPerSite: 5,
                     })
                   }}
                   className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"

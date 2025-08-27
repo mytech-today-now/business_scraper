@@ -1,7 +1,6 @@
 # Documentation Validation Report
 
-Generated: 2025-08-26T19:50:53.747Z
-Version: 3.10.1
+Generated: 2025-08-26T19:50:53.747Z Version: 3.10.1
 
 ## Summary
 
@@ -12,35 +11,56 @@ Version: 3.10.1
 ## Errors
 
 - ❌ docs\API_DOCUMENTATION.md: Broken link "Deployment Guide" -> DEPLOYMENT.md
-- ❌ docs\API_DOCUMENTATION.md: Broken link "Security Guide" -> SECURITY_GUIDE.md
-- ❌ docs\CRM_EXPORT_GUIDE.md: Broken link "CRM Template Creation Guide" -> CRM_TEMPLATE_CREATION.md
-- ❌ docs\CRM_EXPORT_GUIDE.md: Broken link "CRM Troubleshooting Guide" -> CRM_TROUBLESHOOTING.md
-- ❌ docs\README.md: Broken link "Salesforce Integration" -> CRM_SALESFORCE_GUIDE.md
+- ❌ docs\API_DOCUMENTATION.md: Broken link "Security Guide" ->
+  SECURITY_GUIDE.md
+- ❌ docs\CRM_EXPORT_GUIDE.md: Broken link "CRM Template Creation Guide" ->
+  CRM_TEMPLATE_CREATION.md
+- ❌ docs\CRM_EXPORT_GUIDE.md: Broken link "CRM Troubleshooting Guide" ->
+  CRM_TROUBLESHOOTING.md
+- ❌ docs\README.md: Broken link "Salesforce Integration" ->
+  CRM_SALESFORCE_GUIDE.md
 - ❌ docs\README.md: Broken link "HubSpot Integration" -> CRM_HUBSPOT_GUIDE.md
-- ❌ docs\README.md: Broken link "Pipedrive Integration" -> CRM_PIPEDRIVE_GUIDE.md
-- ❌ docs\README.md: Broken link "CRM_TEMPLATE_CREATION.md" -> CRM_TEMPLATE_CREATION.md
-- ❌ docs\README.md: Broken link "CRM_TROUBLESHOOTING.md" -> CRM_TROUBLESHOOTING.md
-- ❌ README.md: Broken link "AZURE_AI_FOUNDRY_MIGRATION.md" -> ./AZURE_AI_FOUNDRY_MIGRATION.md
+- ❌ docs\README.md: Broken link "Pipedrive Integration" ->
+  CRM_PIPEDRIVE_GUIDE.md
+- ❌ docs\README.md: Broken link "CRM_TEMPLATE_CREATION.md" ->
+  CRM_TEMPLATE_CREATION.md
+- ❌ docs\README.md: Broken link "CRM_TROUBLESHOOTING.md" ->
+  CRM_TROUBLESHOOTING.md
+- ❌ README.md: Broken link "AZURE_AI_FOUNDRY_MIGRATION.md" ->
+  ./AZURE_AI_FOUNDRY_MIGRATION.md
 - ❌ README.md: Broken link "LICENSE" -> LICENSE
 - ❌ README.md: Broken link "Issues" -> ../../issues
 - ❌ README.md: Broken link "Current Status" -> CURRENT_STATUS.md
-- ❌ README.md: Broken link "Production Deployment Summary" -> docs/PRODUCTION_DEPLOYMENT_SUMMARY.md
-- ❌ README.md: Broken link "Network Spoofing Implementation" -> docs/NETWORK_SPOOFING_IMPLEMENTATION.md
+- ❌ README.md: Broken link "Production Deployment Summary" ->
+  docs/PRODUCTION_DEPLOYMENT_SUMMARY.md
+- ❌ README.md: Broken link "Network Spoofing Implementation" ->
+  docs/NETWORK_SPOOFING_IMPLEMENTATION.md
 - ❌ README.md: Broken link "Feature Guide" -> FEATURE_GUIDE.md
-- ❌ README.md: Broken link "Chamber of Commerce Processing" -> CHAMBER_OF_COMMERCE_PROCESSING.md
+- ❌ README.md: Broken link "Chamber of Commerce Processing" ->
+  CHAMBER_OF_COMMERCE_PROCESSING.md
 - ❌ README.md: Broken link "Yelp RESTful Scraping" -> YELP_RESTFUL_SCRAPING.md
-- ❌ README.md: Broken link "Yelp Directory URL Fix" -> YELP_DIRECTORY_URL_FIX.md
-- ❌ README.md: Broken link "Per-Industry Blacklist" -> PER_INDUSTRY_BLACKLIST.md
-- ❌ README.md: Broken link "Domain Blacklist Format" -> DOMAIN_BLACKLIST_FORMAT.md
+- ❌ README.md: Broken link "Yelp Directory URL Fix" ->
+  YELP_DIRECTORY_URL_FIX.md
+- ❌ README.md: Broken link "Per-Industry Blacklist" ->
+  PER_INDUSTRY_BLACKLIST.md
+- ❌ README.md: Broken link "Domain Blacklist Format" ->
+  DOMAIN_BLACKLIST_FORMAT.md
 - ❌ README.md: Broken link "Configuration Guide" -> CONFIGURATION.md
 - ❌ README.md: Broken link "API Documentation" -> API_DOCUMENTATION.md
-- ❌ README.md: Broken link "SECURITY_SENSITIVE_FILES.md" -> SECURITY_SENSITIVE_FILES.md
-- ❌ README.md: Broken link "REAL_SCRAPING_GUIDE.example.md" -> REAL_SCRAPING_GUIDE.example.md
-- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 94 (line 4 column 30)
-- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 89 (line 4 column 30)
-- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 124 (line 5 column 37)
-- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 64 (line 3 column 28)
-- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected double-quoted property name in JSON at position 79 (line 3 column 40)
+- ❌ README.md: Broken link "SECURITY_SENSITIVE_FILES.md" ->
+  SECURITY_SENSITIVE_FILES.md
+- ❌ README.md: Broken link "REAL_SCRAPING_GUIDE.example.md" ->
+  REAL_SCRAPING_GUIDE.example.md
+- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected
+  double-quoted property name in JSON at position 94 (line 4 column 30)
+- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected
+  double-quoted property name in JSON at position 89 (line 4 column 30)
+- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected
+  double-quoted property name in JSON at position 124 (line 5 column 37)
+- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected
+  double-quoted property name in JSON at position 64 (line 3 column 28)
+- ❌ docs\oauth2-authentication.md: Invalid JSON in code block: Expected
+  double-quoted property name in JSON at position 79 (line 3 column 40)
 
 ## Warnings
 
@@ -91,7 +111,8 @@ Version: 3.10.1
 - ⚠️ docs\TROUBLESHOOTING.md:594: Heading level skipped (H1 to H3)
 - ⚠️ docs\TROUBLESHOOTING.md: Contains trailing whitespace
 - ⚠️ PERFORMANCE_OPTIMIZATIONS_IMPLEMENTED.md: Multiple H1 titles found (2)
-- ⚠️ PERFORMANCE_OPTIMIZATIONS_IMPLEMENTED.md:112: Heading level skipped (H1 to H3)
+- ⚠️ PERFORMANCE_OPTIMIZATIONS_IMPLEMENTED.md:112: Heading level skipped (H1 to
+  H3)
 - ⚠️ PERFORMANCE_OPTIMIZATIONS_IMPLEMENTED.md: Contains trailing whitespace
 - ⚠️ public\docs\README.md: No H1 title found
 - ⚠️ public\docs\README.md: Contains trailing whitespace
@@ -121,7 +142,8 @@ Version: 3.10.1
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
 - ⚠️ docs\oauth2-authentication.md: Code block without language specification
-- ⚠️ DOMAIN_BLACKLIST_PERSISTENCE_SOLUTION.md: Code block without language specification
+- ⚠️ DOMAIN_BLACKLIST_PERSISTENCE_SOLUTION.md: Code block without language
+  specification
 - ⚠️ SECURITY.md: Code block without language specification
 - ⚠️ test-results-summary.md: Code block without language specification
 - ⚠️ test-results-summary.md: Code block without language specification
@@ -142,4 +164,6 @@ Version: 3.10.1
 3. Address warnings for improved quality
 
 ---
-*This report was generated automatically by the documentation validation script.*
+
+_This report was generated automatically by the documentation validation
+script._

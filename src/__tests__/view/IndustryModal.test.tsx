@@ -48,12 +48,7 @@ describe('IndustryModal', () => {
 
   describe('Add Mode', () => {
     it('should render add modal correctly', () => {
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       expect(screen.getByText('Add Industry Category')).toBeInTheDocument()
       expect(screen.getByText('Add Industry')).toBeInTheDocument()
@@ -62,13 +57,8 @@ describe('IndustryModal', () => {
 
     it('should handle adding new industry', async () => {
       const user = userEvent.setup()
-      
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       // Fill in the form
       await user.type(screen.getByLabelText('Industry Name'), 'Pet Services')
@@ -92,13 +82,8 @@ describe('IndustryModal', () => {
 
     it('should validate required fields', async () => {
       const user = userEvent.setup()
-      
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       // Try to submit without filling fields
       const addButton = screen.getByText('Add Industry')
@@ -116,13 +101,7 @@ describe('IndustryModal', () => {
 
   describe('Edit Mode', () => {
     it('should render edit modal correctly', () => {
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-          industry={sampleIndustry}
-        />
-      )
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} industry={sampleIndustry} />)
 
       expect(screen.getByText('Edit Industry Category')).toBeInTheDocument()
       expect(screen.getByText('Update Industry')).toBeInTheDocument()
@@ -132,14 +111,8 @@ describe('IndustryModal', () => {
 
     it('should handle updating existing industry', async () => {
       const user = userEvent.setup()
-      
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-          industry={sampleIndustry}
-        />
-      )
+
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} industry={sampleIndustry} />)
 
       // Modify the keywords
       const keywordsTextarea = screen.getByLabelText(/Search Keywords/)
@@ -160,13 +133,7 @@ describe('IndustryModal', () => {
     })
 
     it('should show auto-saving indicator', () => {
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-          industry={sampleIndustry}
-        />
-      )
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} industry={sampleIndustry} />)
 
       expect(screen.getByText(/Changes are automatically saved as you type/)).toBeInTheDocument()
     })
@@ -183,14 +150,8 @@ describe('IndustryModal', () => {
 
     it('should auto-save changes after delay in edit mode', async () => {
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
-      
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-          industry={sampleIndustry}
-        />
-      )
+
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} industry={sampleIndustry} />)
 
       // Modify the name
       const nameInput = screen.getByDisplayValue('Test Industry')
@@ -212,26 +173,15 @@ describe('IndustryModal', () => {
 
   describe('Textarea functionality', () => {
     it('should display keywords count', () => {
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-          industry={sampleIndustry}
-        />
-      )
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} industry={sampleIndustry} />)
 
       expect(screen.getByText('Keywords: 3')).toBeInTheDocument()
     })
 
     it('should update keywords count when typing', async () => {
       const user = userEvent.setup()
-      
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       const keywordsTextarea = screen.getByLabelText(/Search Keywords/)
       await user.type(keywordsTextarea, 'keyword1\nkeyword2')
@@ -241,13 +191,8 @@ describe('IndustryModal', () => {
 
     it('should filter out empty lines from keywords count', async () => {
       const user = userEvent.setup()
-      
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       const keywordsTextarea = screen.getByLabelText(/Search Keywords/)
       await user.type(keywordsTextarea, 'keyword1\n\nkeyword2\n\n\nkeyword3')
@@ -260,12 +205,7 @@ describe('IndustryModal', () => {
     it('should close modal when clicking cancel button', async () => {
       const user = userEvent.setup()
 
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       await user.click(screen.getByText('Cancel'))
       expect(mockOnClose).toHaveBeenCalled()
@@ -274,12 +214,7 @@ describe('IndustryModal', () => {
     it('should close modal when clicking X button', async () => {
       const user = userEvent.setup()
 
-      render(
-        <IndustryModal
-          isOpen={true}
-          onClose={mockOnClose}
-        />
-      )
+      render(<IndustryModal isOpen={true} onClose={mockOnClose} />)
 
       // Find the X button in the header
       const closeButton = screen.getByRole('button', { name: '' })
@@ -288,12 +223,7 @@ describe('IndustryModal', () => {
     })
 
     it('should not render when isOpen is false', () => {
-      render(
-        <IndustryModal
-          isOpen={false}
-          onClose={mockOnClose}
-        />
-      )
+      render(<IndustryModal isOpen={false} onClose={mockOnClose} />)
 
       expect(screen.queryByText('Add Industry Category')).not.toBeInTheDocument()
     })

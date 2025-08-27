@@ -1,181 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Business Scraper - Feature Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
+
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Business Scraper - Feature Guide
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Business Scraper - Feature Guide</h1>
+        <div class="alert alert-info">
+          <strong>Version:</strong> 3.3.0 | <strong>Last Updated:</strong> August 25, 2025
         </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Business Scraper - Feature Guide</li>
-                </ol>
-            </nav>
+
+        <h2>🚀 Current Features Overview</h2>
+        <p>
+          The Business Scraper Application provides comprehensive business discovery and data
+          management capabilities with the following core features:
+        </p>
+
+        <div class="alert alert-success">
+          <strong>Latest Enhancement (v3.3.0):</strong> Performance Monitoring & Optimization with
+          Prometheus metrics, Grafana dashboards, database optimization, and intelligent caching
+          strategies.
         </div>
-
-        <main class="documentation-content">
-            <h1>Business Scraper - Feature Guide</h1>
-            <div class="alert alert-info">
-                <strong>Version:</strong> 3.3.0 | <strong>Last Updated:</strong> August 25, 2025
-            </div>
-
-            <h2>🚀 Current Features Overview</h2>
-            <p>The Business Scraper Application provides comprehensive business discovery and data management capabilities with the following core features:</p>
-
-            <div class="alert alert-success">
-                <strong>Latest Enhancement (v3.3.0):</strong> Performance Monitoring & Optimization with Prometheus metrics, Grafana dashboards, database optimization, and intelligent caching strategies.
-            </div>
-<h2>🎯 Smart Industry Expansion</h2>
-<h3>What It Does</h3>
-<p>Automatically converts industry categories into specific business types for targeted searching.</p>
-<h3>How It Works</h3>
-<pre><code>Input: &quot;Professional Services&quot;
+        <h2>🎯 Smart Industry Expansion</h2>
+        <h3>What It Does</h3>
+        <p>
+          Automatically converts industry categories into specific business types for targeted
+          searching.
+        </p>
+        <h3>How It Works</h3>
+        <pre><code>Input: &quot;Professional Services&quot;
 Output: consulting, legal, accounting, financial, insurance
 
 Input: &quot;Healthcare &amp; Medical&quot;  
 Output: medical, healthcare, clinic, hospital, dental
 </code></pre>
-<h3>Supported Industries</h3>
-<ol>
-<li><strong>Professional Services</strong> → consulting, legal, accounting, financial, insurance</li>
-<li><strong>Healthcare &amp; Medical</strong> → medical, healthcare, clinic, hospital, dental</li>
-<li><strong>Restaurants &amp; Food Service</strong> → restaurant, cafe, food service, catering, dining</li>
-<li><strong>Retail &amp; Shopping</strong> → retail, store, shop, boutique, marketplace</li>
-<li><strong>Construction &amp; Contractors</strong> → construction, contractor, builder, renovation, plumbing</li>
-<li><strong>Automotive</strong> → automotive, car repair, auto service, mechanic, tire service</li>
-<li><strong>Technology</strong> → technology, IT services, software, computer repair, web design</li>
-<li><strong>Beauty &amp; Personal Care</strong> → salon, spa, beauty, hair, nail salon</li>
-<li><strong>Home Services</strong> → cleaning, landscaping, pest control, home repair, HVAC</li>
-<li><strong>Education</strong> → school, tutoring, training, education, learning center</li>
-<li><strong>Entertainment</strong> → entertainment, event planning, photography, music, recreation</li>
-</ol>
-<h3>Usage Tips</h3>
-<ul>
-<li>Select industry from dropdown for automatic expansion</li>
-<li>Use comma-separated terms for custom searches: <code>plumber, electrician, carpenter</code></li>
-<li>Use quoted phrases for exact matches: <code>&quot;medical clinic&quot;, &quot;dental office&quot;</code></li>
-<li>Case-insensitive matching works: <code>PROFESSIONAL SERVICES</code> = <code>professional services</code></li>
-</ul>
-<hr>
-<h2>🏢 BBB Business Discovery</h2>
-<h3>What It Does</h3>
-<p>Scrapes Better Business Bureau profiles to extract real business websites instead of just BBB search URLs.</p>
-<h3>How It Works</h3>
-<ol>
-<li><strong>Search BBB</strong> for businesses matching your criteria</li>
-<li><strong>Extract profiles</strong> from BBB search results</li>
-<li><strong>Visit each profile</strong> to find &quot;Visit Website&quot; links</li>
-<li><strong>Return real URLs</strong> for actual business websites</li>
-<li><strong>Filter by radius</strong> using ZIP code geolocation</li>
-</ol>
-<h3>Configuration Options</h3>
-<ul>
-<li><strong>Search Type</strong>: <ul>
-<li>&quot;BBB Accredited Only&quot; - Only accredited businesses</li>
-<li>&quot;All Businesses&quot; - All BBB-listed businesses</li>
-</ul>
-</li>
-<li><strong>ZIP Radius</strong>: 5-50 miles from center ZIP code</li>
-<li><strong>Rate Limiting</strong>: Automatic 1-second delays between requests</li>
-</ul>
-<h3>Anti-Bot Features</h3>
-<ul>
-<li>Realistic browser fingerprinting</li>
-<li>Proper user agents and headers</li>
-<li>Rate limiting and retry logic</li>
-<li>Graceful error handling</li>
-</ul>
-<h3>Fallback Behavior</h3>
-<p>If BBB scraping fails, returns alternative directory URLs:</p>
-<ul>
-<li>Yelp search URLs</li>
-<li>YellowPages search URLs  </li>
-<li>Google Maps search URLs</li>
-</ul>
-<hr>
-<h2>📐 ZIP Radius Validation</h2>
-<h3>What It Does</h3>
-<p>Accurately filters businesses within a specified radius using precise geolocation calculations.</p>
-<h3>How It Works</h3>
-<ol>
-<li><strong>Extract ZIP codes</strong> from business addresses</li>
-<li><strong>Calculate distances</strong> using Haversine formula</li>
-<li><strong>Filter results</strong> within specified radius</li>
-<li><strong>Handle edge cases</strong> gracefully</li>
-</ol>
-<h3>Features</h3>
-<ul>
-<li><strong>Precise Distance Calculation</strong>: Uses latitude/longitude coordinates</li>
-<li><strong>ZIP Code Lookup</strong>: API integration with fallback data</li>
-<li><strong>Address Parsing</strong>: Extracts ZIP codes from various address formats</li>
-<li><strong>Error Handling</strong>: Includes businesses if ZIP extraction fails</li>
-</ul>
-<h3>Supported Formats</h3>
-<ul>
-<li>Standard ZIP: <code>12345</code></li>
-<li>ZIP+4: <code>12345-6789</code></li>
-<li>Address parsing: <code>123 Main St, New York, NY 10001</code></li>
-</ul>
-<hr>
-<h2>🔍 Multi-Strategy Search Engine</h2>
-<h3>What It Does</h3>
-<p>Combines multiple search approaches for comprehensive business discovery.</p>
-<h3>Search Strategies</h3>
-<ol>
-<li><strong>DuckDuckGo SERP Scraping</strong>: Extracts results from search engine pages</li>
-<li><strong>BBB Business Discovery</strong>: Real business websites from BBB profiles</li>
-<li><strong>Instant Answer API</strong>: Quick results for common queries</li>
-<li><strong>Directory Fallbacks</strong>: Yelp, YellowPages, Google Maps URLs</li>
-</ol>
-<h3>Individual Criteria Processing</h3>
-<p>Each search term gets its own targeted search:</p>
-<pre><code>Input: &quot;medical, legal, accounting&quot;
+        <h3>Supported Industries</h3>
+        <ol>
+          <li>
+            <strong>Professional Services</strong> → consulting, legal, accounting, financial,
+            insurance
+          </li>
+          <li>
+            <strong>Healthcare &amp; Medical</strong> → medical, healthcare, clinic, hospital,
+            dental
+          </li>
+          <li>
+            <strong>Restaurants &amp; Food Service</strong> → restaurant, cafe, food service,
+            catering, dining
+          </li>
+          <li>
+            <strong>Retail &amp; Shopping</strong> → retail, store, shop, boutique, marketplace
+          </li>
+          <li>
+            <strong>Construction &amp; Contractors</strong> → construction, contractor, builder,
+            renovation, plumbing
+          </li>
+          <li>
+            <strong>Automotive</strong> → automotive, car repair, auto service, mechanic, tire
+            service
+          </li>
+          <li>
+            <strong>Technology</strong> → technology, IT services, software, computer repair, web
+            design
+          </li>
+          <li>
+            <strong>Beauty &amp; Personal Care</strong> → salon, spa, beauty, hair, nail salon
+          </li>
+          <li>
+            <strong>Home Services</strong> → cleaning, landscaping, pest control, home repair, HVAC
+          </li>
+          <li>
+            <strong>Education</strong> → school, tutoring, training, education, learning center
+          </li>
+          <li>
+            <strong>Entertainment</strong> → entertainment, event planning, photography, music,
+            recreation
+          </li>
+        </ol>
+        <h3>Usage Tips</h3>
+        <ul>
+          <li>Select industry from dropdown for automatic expansion</li>
+          <li>
+            Use comma-separated terms for custom searches:
+            <code>plumber, electrician, carpenter</code>
+          </li>
+          <li>
+            Use quoted phrases for exact matches:
+            <code>&quot;medical clinic&quot;, &quot;dental office&quot;</code>
+          </li>
+          <li>
+            Case-insensitive matching works: <code>PROFESSIONAL SERVICES</code> =
+            <code>professional services</code>
+          </li>
+        </ul>
+        <hr />
+        <h2>🏢 BBB Business Discovery</h2>
+        <h3>What It Does</h3>
+        <p>
+          Scrapes Better Business Bureau profiles to extract real business websites instead of just
+          BBB search URLs.
+        </p>
+        <h3>How It Works</h3>
+        <ol>
+          <li><strong>Search BBB</strong> for businesses matching your criteria</li>
+          <li><strong>Extract profiles</strong> from BBB search results</li>
+          <li><strong>Visit each profile</strong> to find &quot;Visit Website&quot; links</li>
+          <li><strong>Return real URLs</strong> for actual business websites</li>
+          <li><strong>Filter by radius</strong> using ZIP code geolocation</li>
+        </ol>
+        <h3>Configuration Options</h3>
+        <ul>
+          <li>
+            <strong>Search Type</strong>:
+            <ul>
+              <li>&quot;BBB Accredited Only&quot; - Only accredited businesses</li>
+              <li>&quot;All Businesses&quot; - All BBB-listed businesses</li>
+            </ul>
+          </li>
+          <li><strong>ZIP Radius</strong>: 5-50 miles from center ZIP code</li>
+          <li><strong>Rate Limiting</strong>: Automatic 1-second delays between requests</li>
+        </ul>
+        <h3>Anti-Bot Features</h3>
+        <ul>
+          <li>Realistic browser fingerprinting</li>
+          <li>Proper user agents and headers</li>
+          <li>Rate limiting and retry logic</li>
+          <li>Graceful error handling</li>
+        </ul>
+        <h3>Fallback Behavior</h3>
+        <p>If BBB scraping fails, returns alternative directory URLs:</p>
+        <ul>
+          <li>Yelp search URLs</li>
+          <li>YellowPages search URLs</li>
+          <li>Google Maps search URLs</li>
+        </ul>
+        <hr />
+        <h2>📐 ZIP Radius Validation</h2>
+        <h3>What It Does</h3>
+        <p>
+          Accurately filters businesses within a specified radius using precise geolocation
+          calculations.
+        </p>
+        <h3>How It Works</h3>
+        <ol>
+          <li><strong>Extract ZIP codes</strong> from business addresses</li>
+          <li><strong>Calculate distances</strong> using Haversine formula</li>
+          <li><strong>Filter results</strong> within specified radius</li>
+          <li><strong>Handle edge cases</strong> gracefully</li>
+        </ol>
+        <h3>Features</h3>
+        <ul>
+          <li>
+            <strong>Precise Distance Calculation</strong>: Uses latitude/longitude coordinates
+          </li>
+          <li><strong>ZIP Code Lookup</strong>: API integration with fallback data</li>
+          <li><strong>Address Parsing</strong>: Extracts ZIP codes from various address formats</li>
+          <li><strong>Error Handling</strong>: Includes businesses if ZIP extraction fails</li>
+        </ul>
+        <h3>Supported Formats</h3>
+        <ul>
+          <li>Standard ZIP: <code>12345</code></li>
+          <li>ZIP+4: <code>12345-6789</code></li>
+          <li>Address parsing: <code>123 Main St, New York, NY 10001</code></li>
+        </ul>
+        <hr />
+        <h2>🔍 Multi-Strategy Search Engine</h2>
+        <h3>What It Does</h3>
+        <p>Combines multiple search approaches for comprehensive business discovery.</p>
+        <h3>Search Strategies</h3>
+        <ol>
+          <li>
+            <strong>DuckDuckGo SERP Scraping</strong>: Extracts results from search engine pages
+          </li>
+          <li><strong>BBB Business Discovery</strong>: Real business websites from BBB profiles</li>
+          <li><strong>Instant Answer API</strong>: Quick results for common queries</li>
+          <li><strong>Directory Fallbacks</strong>: Yelp, YellowPages, Google Maps URLs</li>
+        </ol>
+        <h3>Individual Criteria Processing</h3>
+        <p>Each search term gets its own targeted search:</p>
+        <pre><code>Input: &quot;medical, legal, accounting&quot;
 Searches:
 - &quot;medical&quot; in 90210
 - &quot;legal&quot; in 90210  
 - &quot;accounting&quot; in 90210
 </code></pre>
-<h3>Automatic Failover</h3>
-<p>If one search method fails, automatically tries the next:</p>
-<pre><code>DuckDuckGo SERP → BBB Discovery → Directory URLs
+        <h3>Automatic Failover</h3>
+        <p>If one search method fails, automatically tries the next:</p>
+        <pre><code>DuckDuckGo SERP → BBB Discovery → Directory URLs
 </code></pre>
-<hr>
-<h2>📊 Export System</h2>
-<h3>Supported Formats</h3>
-<ul>
-<li><strong>CSV</strong>: Universal spreadsheet format</li>
-<li><strong>XLSX</strong>: Modern Excel format</li>
-<li><strong>XLS</strong>: Legacy Excel format</li>
-<li><strong>ODS</strong>: OpenDocument format</li>
-<li><strong>PDF</strong>: Print-ready reports</li>
-<li><strong>JSON</strong>: Structured data for APIs</li>
-</ul>
-<h3>Export Features</h3>
-<ul>
-<li>One-click export from results table</li>
-<li>Proper formatting and encoding</li>
-<li>Loading states and progress indication</li>
-<li>Error handling with user feedback</li>
-</ul>
-<hr>
-<h2>🎯 Usage Examples</h2>
-<h3>Example 1: Professional Services in NYC</h3>
-<pre><code>1. Select &quot;Professional Services&quot; from industry dropdown
+        <hr />
+        <h2>📊 Export System</h2>
+        <h3>Supported Formats</h3>
+        <ul>
+          <li><strong>CSV</strong>: Universal spreadsheet format</li>
+          <li><strong>XLSX</strong>: Modern Excel format</li>
+          <li><strong>XLS</strong>: Legacy Excel format</li>
+          <li><strong>ODS</strong>: OpenDocument format</li>
+          <li><strong>PDF</strong>: Print-ready reports</li>
+          <li><strong>JSON</strong>: Structured data for APIs</li>
+        </ul>
+        <h3>Export Features</h3>
+        <ul>
+          <li>One-click export from results table</li>
+          <li>Proper formatting and encoding</li>
+          <li>Loading states and progress indication</li>
+          <li>Error handling with user feedback</li>
+        </ul>
+        <hr />
+        <h2>🎯 Usage Examples</h2>
+        <h3>Example 1: Professional Services in NYC</h3>
+        <pre><code>1. Select &quot;Professional Services&quot; from industry dropdown
 2. Enter ZIP code: 10001
 3. Set radius: 25 miles
 4. Choose &quot;BBB Accredited Only&quot;
@@ -184,8 +247,8 @@ Searches:
 Result: Individual searches for consulting, legal, accounting, 
 financial, and insurance businesses within 25 miles of 10001
 </code></pre>
-<h3>Example 2: Custom Healthcare Search</h3>
-<pre><code>1. Enter custom terms: &quot;medical clinic&quot;, &quot;dental office&quot;, &quot;urgent care&quot;
+        <h3>Example 2: Custom Healthcare Search</h3>
+        <pre><code>1. Enter custom terms: &quot;medical clinic&quot;, &quot;dental office&quot;, &quot;urgent care&quot;
 2. Enter ZIP code: 90210
 3. Set radius: 15 miles
 4. Choose &quot;All Businesses&quot;
@@ -193,8 +256,8 @@ financial, and insurance businesses within 25 miles of 10001
 
 Result: Exact phrase searches for each quoted term
 </code></pre>
-<h3>Example 3: Mixed Industry Search</h3>
-<pre><code>1. Enter terms: restaurant, cafe, &quot;fine dining&quot;
+        <h3>Example 3: Mixed Industry Search</h3>
+        <pre><code>1. Enter terms: restaurant, cafe, &quot;fine dining&quot;
 2. Enter ZIP code: 60601
 3. Set radius: 10 miles
 4. Click search
@@ -202,70 +265,72 @@ Result: Exact phrase searches for each quoted term
 Result: Individual searches for restaurant, cafe, and exact 
 phrase &quot;fine dining&quot; within 10 miles of Chicago
 </code></pre>
-<hr>
-<h2>🔧 Configuration Best Practices</h2>
-<h3>For Best Results</h3>
-<ul>
-<li><strong>Use specific ZIP codes</strong> rather than city names</li>
-<li><strong>Set appropriate radius</strong> (5-15 miles for urban, 25-50 for rural)</li>
-<li><strong>Choose BBB settings</strong> based on your quality requirements</li>
-<li><strong>Monitor search logs</strong> to understand what&#39;s being searched</li>
-</ul>
-<h3>Performance Optimization</h3>
-<ul>
-<li><strong>Start with smaller radius</strong> and expand if needed</li>
-<li><strong>Use fewer search terms</strong> for faster processing</li>
-<li><strong>Test with small datasets</strong> before running large scraping operations</li>
-<li><strong>Monitor rate limits</strong> to avoid being blocked</li>
-</ul>
-<h3>Troubleshooting</h3>
-<ul>
-<li><strong>No results</strong>: Try broader search terms or larger radius</li>
-<li><strong>Too many results</strong>: Use more specific terms or smaller radius</li>
-<li><strong>BBB errors</strong>: Check network connection and try again</li>
-<li><strong>Export issues</strong>: Check browser download permissions</li>
-</ul>
-<hr>
-<h2>📈 Monitoring &amp; Analytics</h2>
-<h3>Search Logs</h3>
-<p>Monitor the browser console to see:</p>
-<ul>
-<li>Individual search queries being executed</li>
-<li>BBB profile extraction progress</li>
-<li>ZIP radius filtering results</li>
-<li>Fallback strategy activation</li>
-</ul>
-<h3>Performance Metrics</h3>
-<ul>
-<li>Search completion time</li>
-<li>BBB scraping success rate</li>
-<li>ZIP radius filtering accuracy</li>
-<li>Export success rate</li>
-</ul>
-<h3>Quality Indicators</h3>
-<ul>
-<li>Percentage of real business websites vs directory URLs</li>
-<li>Geographic accuracy of results</li>
-<li>Industry relevance of discovered businesses</li>
-<li>Contact information extraction success rate</li>
-</ul>
+        <hr />
+        <h2>🔧 Configuration Best Practices</h2>
+        <h3>For Best Results</h3>
+        <ul>
+          <li><strong>Use specific ZIP codes</strong> rather than city names</li>
+          <li><strong>Set appropriate radius</strong> (5-15 miles for urban, 25-50 for rural)</li>
+          <li><strong>Choose BBB settings</strong> based on your quality requirements</li>
+          <li><strong>Monitor search logs</strong> to understand what&#39;s being searched</li>
+        </ul>
+        <h3>Performance Optimization</h3>
+        <ul>
+          <li><strong>Start with smaller radius</strong> and expand if needed</li>
+          <li><strong>Use fewer search terms</strong> for faster processing</li>
+          <li>
+            <strong>Test with small datasets</strong> before running large scraping operations
+          </li>
+          <li><strong>Monitor rate limits</strong> to avoid being blocked</li>
+        </ul>
+        <h3>Troubleshooting</h3>
+        <ul>
+          <li><strong>No results</strong>: Try broader search terms or larger radius</li>
+          <li><strong>Too many results</strong>: Use more specific terms or smaller radius</li>
+          <li><strong>BBB errors</strong>: Check network connection and try again</li>
+          <li><strong>Export issues</strong>: Check browser download permissions</li>
+        </ul>
+        <hr />
+        <h2>📈 Monitoring &amp; Analytics</h2>
+        <h3>Search Logs</h3>
+        <p>Monitor the browser console to see:</p>
+        <ul>
+          <li>Individual search queries being executed</li>
+          <li>BBB profile extraction progress</li>
+          <li>ZIP radius filtering results</li>
+          <li>Fallback strategy activation</li>
+        </ul>
+        <h3>Performance Metrics</h3>
+        <ul>
+          <li>Search completion time</li>
+          <li>BBB scraping success rate</li>
+          <li>ZIP radius filtering accuracy</li>
+          <li>Export success rate</li>
+        </ul>
+        <h3>Quality Indicators</h3>
+        <ul>
+          <li>Percentage of real business websites vs directory URLs</li>
+          <li>Geographic accuracy of results</li>
+          <li>Industry relevance of discovered businesses</li>
+          <li>Contact information extraction success rate</li>
+        </ul>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

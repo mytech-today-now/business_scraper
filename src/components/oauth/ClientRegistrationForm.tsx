@@ -11,10 +11,22 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Plus, X, AlertCircle, CheckCircle, Copy } from 'lucide-react'
 
@@ -48,13 +60,17 @@ const availableScopes = [
 const availableGrantTypes = [
   { value: 'authorization_code', label: 'Authorization Code', description: 'Standard OAuth flow' },
   { value: 'refresh_token', label: 'Refresh Token', description: 'Token refresh capability' },
-  { value: 'client_credentials', label: 'Client Credentials', description: 'Server-to-server authentication' },
+  {
+    value: 'client_credentials',
+    label: 'Client Credentials',
+    description: 'Server-to-server authentication',
+  },
 ]
 
-export function ClientRegistrationForm({ 
-  open, 
-  onClose, 
-  onClientRegistered 
+export function ClientRegistrationForm({
+  open,
+  onClose,
+  onClientRegistered,
 }: ClientRegistrationFormProps): JSX.Element {
   const [formData, setFormData] = useState<FormData>({
     clientName: '',
@@ -77,24 +93,28 @@ export function ClientRegistrationForm({
     setError(null)
   }
 
-  const handleArrayFieldChange = (field: 'redirectUris' | 'contacts', index: number, value: string): void => {
+  const handleArrayFieldChange = (
+    field: 'redirectUris' | 'contacts',
+    index: number,
+    value: string
+  ): void => {
     setFormData(prev => ({
       ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
+      [field]: prev[field].map((item, i) => (i === index ? value : item)),
     }))
   }
 
   const addArrayField = (field: 'redirectUris' | 'contacts'): void => {
     setFormData(prev => ({
       ...prev,
-      [field]: [...prev[field], '']
+      [field]: [...prev[field], ''],
     }))
   }
 
   const removeArrayField = (field: 'redirectUris' | 'contacts', index: number): void => {
     setFormData(prev => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: prev[field].filter((_, i) => i !== index),
     }))
   }
 
@@ -103,7 +123,7 @@ export function ClientRegistrationForm({
       ...prev,
       scopes: prev.scopes.includes(scope)
         ? prev.scopes.filter(s => s !== scope)
-        : [...prev.scopes, scope]
+        : [...prev.scopes, scope],
     }))
   }
 
@@ -112,7 +132,7 @@ export function ClientRegistrationForm({
       ...prev,
       grantTypes: prev.grantTypes.includes(grantType)
         ? prev.grantTypes.filter(gt => gt !== grantType)
-        : [...prev.grantTypes, grantType]
+        : [...prev.grantTypes, grantType],
     }))
   }
 
@@ -121,8 +141,10 @@ export function ClientRegistrationForm({
       return 'Client name is required'
     }
 
-    if (formData.redirectUris.filter(uri => uri.trim()).length === 0 && 
-        !formData.grantTypes.includes('client_credentials')) {
+    if (
+      formData.redirectUris.filter(uri => uri.trim()).length === 0 &&
+      !formData.grantTypes.includes('client_credentials')
+    ) {
       return 'At least one redirect URI is required for non-client-credentials flows'
     }
 
@@ -148,7 +170,7 @@ export function ClientRegistrationForm({
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
-    
+
     const validationError = validateForm()
     if (validationError) {
       setError(validationError)
@@ -185,7 +207,6 @@ export function ClientRegistrationForm({
 
       setRegistrationResult(mockResponse)
       onClientRegistered?.(mockResponse)
-
     } catch (error) {
       setError('Failed to register client. Please try again.')
       console.error('Client registration error:', error)
@@ -241,7 +262,8 @@ export function ClientRegistrationForm({
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Important:</strong> Save these credentials now. The client secret cannot be retrieved later.
+                <strong>Important:</strong> Save these credentials now. The client secret cannot be
+                retrieved later.
               </AlertDescription>
             </Alert>
 
@@ -252,8 +274,8 @@ export function ClientRegistrationForm({
                   <code className="flex-1 bg-muted px-3 py-2 rounded text-sm">
                     {registrationResult.clientId}
                   </code>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => copyToClipboard(registrationResult.clientId)}
                   >
@@ -269,8 +291,8 @@ export function ClientRegistrationForm({
                     <code className="flex-1 bg-muted px-3 py-2 rounded text-sm">
                       {registrationResult.clientSecret}
                     </code>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => copyToClipboard(registrationResult.clientSecret)}
                     >
@@ -283,7 +305,11 @@ export function ClientRegistrationForm({
               <div>
                 <Label className="text-sm font-medium">Client Type</Label>
                 <div className="mt-1">
-                  <Badge variant={registrationResult.clientType === 'confidential' ? 'default' : 'secondary'}>
+                  <Badge
+                    variant={
+                      registrationResult.clientType === 'confidential' ? 'default' : 'secondary'
+                    }
+                  >
                     {registrationResult.clientType}
                   </Badge>
                 </div>
@@ -305,9 +331,7 @@ export function ClientRegistrationForm({
               <Button variant="outline" onClick={resetForm}>
                 Register Another Client
               </Button>
-              <Button onClick={handleClose}>
-                Done
-              </Button>
+              <Button onClick={handleClose}>Done</Button>
             </div>
           </div>
         </DialogContent>
@@ -320,9 +344,7 @@ export function ClientRegistrationForm({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Register OAuth 2.0 Client</DialogTitle>
-          <DialogDescription>
-            Create a new OAuth 2.0 client for your application
-          </DialogDescription>
+          <DialogDescription>Create a new OAuth 2.0 client for your application</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -336,14 +358,14 @@ export function ClientRegistrationForm({
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Basic Information</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="clientName">Client Name *</Label>
                 <Input
                   id="clientName"
                   value={formData.clientName}
-                  onChange={(e) => handleInputChange('clientName', e.target.value)}
+                  onChange={e => handleInputChange('clientName', e.target.value)}
                   placeholder="My Application"
                   required
                 />
@@ -351,9 +373,9 @@ export function ClientRegistrationForm({
 
               <div>
                 <Label htmlFor="clientType">Client Type *</Label>
-                <Select 
-                  value={formData.clientType} 
-                  onValueChange={(value) => handleInputChange('clientType', value)}
+                <Select
+                  value={formData.clientType}
+                  onValueChange={value => handleInputChange('clientType', value)}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -371,7 +393,7 @@ export function ClientRegistrationForm({
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={e => handleInputChange('description', e.target.value)}
                 placeholder="Brief description of your application"
                 rows={3}
               />
@@ -384,12 +406,12 @@ export function ClientRegistrationForm({
             <p className="text-sm text-muted-foreground">
               URLs where users will be redirected after authorization
             </p>
-            
+
             {formData.redirectUris.map((uri, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <Input
                   value={uri}
-                  onChange={(e) => handleArrayFieldChange('redirectUris', index, e.target.value)}
+                  onChange={e => handleArrayFieldChange('redirectUris', index, e.target.value)}
                   placeholder="https://example.com/auth/callback"
                   className="flex-1"
                 />
@@ -405,7 +427,7 @@ export function ClientRegistrationForm({
                 )}
               </div>
             ))}
-            
+
             <Button
               type="button"
               variant="outline"
@@ -423,9 +445,9 @@ export function ClientRegistrationForm({
             <p className="text-sm text-muted-foreground">
               Permissions your application will request
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {availableScopes.map((scope) => (
+              {availableScopes.map(scope => (
                 <div key={scope.value} className="flex items-start space-x-2">
                   <Checkbox
                     id={scope.value}
@@ -436,9 +458,7 @@ export function ClientRegistrationForm({
                     <Label htmlFor={scope.value} className="text-sm font-medium">
                       {scope.label}
                     </Label>
-                    <p className="text-xs text-muted-foreground">
-                      {scope.description}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{scope.description}</p>
                   </div>
                 </div>
               ))}
@@ -451,9 +471,9 @@ export function ClientRegistrationForm({
             <p className="text-sm text-muted-foreground">
               OAuth 2.0 flows your application will use
             </p>
-            
+
             <div className="space-y-3">
-              {availableGrantTypes.map((grantType) => (
+              {availableGrantTypes.map(grantType => (
                 <div key={grantType.value} className="flex items-start space-x-2">
                   <Checkbox
                     id={grantType.value}
@@ -464,9 +484,7 @@ export function ClientRegistrationForm({
                     <Label htmlFor={grantType.value} className="text-sm font-medium">
                       {grantType.label}
                     </Label>
-                    <p className="text-xs text-muted-foreground">
-                      {grantType.description}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{grantType.description}</p>
                   </div>
                 </div>
               ))}

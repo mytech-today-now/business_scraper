@@ -1,28 +1,28 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { 
-  Play, 
-  Pause, 
-  Square, 
-  Activity, 
-  Clock, 
-  Database, 
+import {
+  Play,
+  Pause,
+  Square,
+  Activity,
+  Clock,
+  Database,
   Zap,
   AlertTriangle,
   CheckCircle,
   XCircle,
-  BarChart3
+  BarChart3,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
 import { VirtualizedResultsTable } from './VirtualizedResultsTable'
 import { BusinessRecord } from '@/types/business'
-import { 
-  streamingService, 
-  StreamingSearchParams, 
-  StreamingMessage, 
-  StreamingSession 
+import {
+  streamingService,
+  StreamingSearchParams,
+  StreamingMessage,
+  StreamingSession,
 } from '@/lib/streamingService'
 import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
@@ -41,7 +41,7 @@ export function StreamingResultsDisplay({
   onResultsUpdate,
   onStatusChange,
   autoStart = false,
-  className
+  className,
 }: StreamingResultsDisplayProps): JSX.Element {
   // State management
   const [session, setSession] = useState<StreamingSession | null>(null)
@@ -55,7 +55,7 @@ export function StreamingResultsDisplay({
     resultsPerSecond: 0,
     avgResponseTime: 0,
     successRate: 100,
-    lastUpdateTime: Date.now()
+    lastUpdateTime: Date.now(),
   })
 
   // Refs
@@ -72,20 +72,20 @@ export function StreamingResultsDisplay({
       setIsStreaming(true)
       setResults([])
       lastResultCountRef.current = 0
-      
+
       const sessionId = await streamingService.startStreaming(searchParams)
       const newSession = streamingService.getSession(sessionId)
-      
+
       if (newSession) {
         setSession(newSession)
         onStatusChange?.('streaming')
-        
+
         // Subscribe to streaming events
         unsubscribeRef.current = streamingService.subscribe(sessionId, handleStreamingMessage)
-        
+
         // Start real-time statistics tracking
         startStatsTracking()
-        
+
         toast.success('Streaming search started')
         logger.info('Streaming search started', { sessionId, searchParams })
       }
@@ -131,13 +131,13 @@ export function StreamingResultsDisplay({
       setIsPaused(false)
       setSession(null)
       onStatusChange?.('stopped')
-      
+
       // Cleanup
       if (unsubscribeRef.current) {
         unsubscribeRef.current()
         unsubscribeRef.current = null
       }
-      
+
       stopStatsTracking()
       toast.info('Streaming stopped')
     }
@@ -146,51 +146,54 @@ export function StreamingResultsDisplay({
   /**
    * Handle streaming messages
    */
-  const handleStreamingMessage = useCallback((message: StreamingMessage) => {
-    switch (message.type) {
-      case 'result':
-        if (message.result) {
-          setResults(prev => {
-            const newResults = [...prev, message.result!.business]
-            onResultsUpdate?.(newResults)
-            return newResults
-          })
-        }
-        break
+  const handleStreamingMessage = useCallback(
+    (message: StreamingMessage) => {
+      switch (message.type) {
+        case 'result':
+          if (message.result) {
+            setResults(prev => {
+              const newResults = [...prev, message.result!.business]
+              onResultsUpdate?.(newResults)
+              return newResults
+            })
+          }
+          break
 
-      case 'progress':
-        if (message.progress) {
-          setSession(prev => prev ? { ...prev, progress: message.progress! } : null)
-        }
-        break
+        case 'progress':
+          if (message.progress) {
+            setSession(prev => (prev ? { ...prev, progress: message.progress! } : null))
+          }
+          break
 
-      case 'complete':
-        setIsStreaming(false)
-        setIsPaused(false)
-        onStatusChange?.('completed')
-        stopStatsTracking()
-        toast.success(`Streaming completed! Found ${results.length} businesses`)
-        break
+        case 'complete':
+          setIsStreaming(false)
+          setIsPaused(false)
+          onStatusChange?.('completed')
+          stopStatsTracking()
+          toast.success(`Streaming completed! Found ${results.length} businesses`)
+          break
 
-      case 'error':
-        setIsStreaming(false)
-        setIsPaused(false)
-        onStatusChange?.('error')
-        stopStatsTracking()
-        toast.error('Streaming error occurred')
-        break
+        case 'error':
+          setIsStreaming(false)
+          setIsPaused(false)
+          onStatusChange?.('error')
+          stopStatsTracking()
+          toast.error('Streaming error occurred')
+          break
 
-      case 'paused':
-        setIsPaused(true)
-        onStatusChange?.('paused')
-        break
+        case 'paused':
+          setIsPaused(true)
+          onStatusChange?.('paused')
+          break
 
-      case 'resumed':
-        setIsPaused(false)
-        onStatusChange?.('streaming')
-        break
-    }
-  }, [results.length, onResultsUpdate, onStatusChange])
+        case 'resumed':
+          setIsPaused(false)
+          onStatusChange?.('streaming')
+          break
+      }
+    },
+    [results.length, onResultsUpdate, onStatusChange]
+  )
 
   /**
    * Start real-time statistics tracking
@@ -200,19 +203,22 @@ export function StreamingResultsDisplay({
       const now = Date.now()
       const timeDelta = (now - lastStatsUpdateRef.current) / 1000 // seconds
       const resultsDelta = results.length - lastResultCountRef.current
-      
+
       if (timeDelta > 0) {
         const resultsPerSecond = resultsDelta / timeDelta
-        
+
         setRealtimeStats(prev => ({
           resultsPerSecond: Math.round(resultsPerSecond * 10) / 10,
           avgResponseTime: prev.avgResponseTime, // Would be calculated from actual response times
-          successRate: session?.progress ? 
-            Math.round((1 - session.progress.errors / Math.max(session.progress.processed, 1)) * 100) : 100,
-          lastUpdateTime: now
+          successRate: session?.progress
+            ? Math.round(
+                (1 - session.progress.errors / Math.max(session.progress.processed, 1)) * 100
+              )
+            : 100,
+          lastUpdateTime: now,
         }))
       }
-      
+
       lastResultCountRef.current = results.length
       lastStatsUpdateRef.current = now
     }, 1000)
@@ -254,12 +260,18 @@ export function StreamingResultsDisplay({
    */
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-green-600'
-      case 'paused': return 'text-yellow-600'
-      case 'completed': return 'text-blue-600'
-      case 'error': return 'text-red-600'
-      case 'cancelled': return 'text-gray-600'
-      default: return 'text-gray-600'
+      case 'active':
+        return 'text-green-600'
+      case 'paused':
+        return 'text-yellow-600'
+      case 'completed':
+        return 'text-blue-600'
+      case 'error':
+        return 'text-red-600'
+      case 'cancelled':
+        return 'text-gray-600'
+      default:
+        return 'text-gray-600'
     }
   }
 
@@ -268,12 +280,18 @@ export function StreamingResultsDisplay({
    */
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'active': return <Activity className="w-4 h-4" />
-      case 'paused': return <Pause className="w-4 h-4" />
-      case 'completed': return <CheckCircle className="w-4 h-4" />
-      case 'error': return <XCircle className="w-4 h-4" />
-      case 'cancelled': return <Square className="w-4 h-4" />
-      default: return <Clock className="w-4 h-4" />
+      case 'active':
+        return <Activity className="w-4 h-4" />
+      case 'paused':
+        return <Pause className="w-4 h-4" />
+      case 'completed':
+        return <CheckCircle className="w-4 h-4" />
+      case 'error':
+        return <XCircle className="w-4 h-4" />
+      case 'cancelled':
+        return <Square className="w-4 h-4" />
+      default:
+        return <Clock className="w-4 h-4" />
     }
   }
 
@@ -287,7 +305,7 @@ export function StreamingResultsDisplay({
               <Zap className="w-5 h-5" />
               Real-time Search Streaming
             </CardTitle>
-            
+
             <div className="flex items-center gap-2">
               {!isStreaming ? (
                 <Button
@@ -300,11 +318,7 @@ export function StreamingResultsDisplay({
               ) : (
                 <>
                   {!isPaused ? (
-                    <Button
-                      onClick={pauseStreaming}
-                      icon={Pause}
-                      variant="outline"
-                    >
+                    <Button onClick={pauseStreaming} icon={Pause} variant="outline">
                       Pause
                     </Button>
                   ) : (
@@ -316,7 +330,7 @@ export function StreamingResultsDisplay({
                       Resume
                     </Button>
                   )}
-                  
+
                   <Button
                     onClick={stopStreaming}
                     icon={Square}
@@ -327,7 +341,7 @@ export function StreamingResultsDisplay({
                   </Button>
                 </>
               )}
-              
+
               <Button
                 onClick={() => setShowProgress(!showProgress)}
                 icon={BarChart3}
@@ -344,7 +358,9 @@ export function StreamingResultsDisplay({
                     icon={Activity}
                     variant="ghost"
                     size="sm"
-                    className={session.connectionHealth.isConnected ? 'text-green-600' : 'text-red-600'}
+                    className={
+                      session.connectionHealth.isConnected ? 'text-green-600' : 'text-red-600'
+                    }
                   >
                     Connection
                   </Button>
@@ -365,7 +381,7 @@ export function StreamingResultsDisplay({
             </div>
           </div>
         </CardHeader>
-        
+
         {showProgress && session && (
           <CardContent>
             {/* Status and Progress */}
@@ -379,17 +395,15 @@ export function StreamingResultsDisplay({
                   {session.status}
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <Database className="w-4 h-4" />
                   <span className="text-sm font-medium">Results Found</span>
                 </div>
-                <div className="font-semibold text-blue-600">
-                  {results.length.toLocaleString()}
-                </div>
+                <div className="font-semibold text-blue-600">{results.length.toLocaleString()}</div>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <Zap className="w-4 h-4" />
@@ -399,42 +413,41 @@ export function StreamingResultsDisplay({
                   {realtimeStats.resultsPerSecond}/sec
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="w-4 h-4" />
                   <span className="text-sm font-medium">ETA</span>
                 </div>
                 <div className="font-semibold text-purple-600">
-                  {session.progress.estimatedTimeRemaining > 0 
+                  {session.progress.estimatedTimeRemaining > 0
                     ? `${Math.round(session.progress.estimatedTimeRemaining)}s`
-                    : 'Calculating...'
-                  }
+                    : 'Calculating...'}
                 </div>
               </div>
             </div>
-            
+
             {/* Current Source and Progress Bar */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Current Source:</span>
                 <span className="font-medium">{session.progress.currentSource}</span>
               </div>
-              
+
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ 
-                    width: `${Math.min((session.progress.processed / (searchParams.maxResults || 1000)) * 100, 100)}%` 
+                  style={{
+                    width: `${Math.min((session.progress.processed / (searchParams.maxResults || 1000)) * 100, 100)}%`,
                   }}
                 />
               </div>
-              
+
               <div className="flex items-center justify-between text-xs text-gray-500">
                 <span>Processed: {session.progress.processed.toLocaleString()}</span>
                 <span>Target: {(searchParams.maxResults || 1000).toLocaleString()}</span>
               </div>
-              
+
               {session.progress.errors > 0 && (
                 <div className="flex items-center gap-1 text-sm text-red-600">
                   <AlertTriangle className="w-4 h-4" />
@@ -459,16 +472,20 @@ export function StreamingResultsDisplay({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className={clsx(
-                    'w-3 h-3 rounded-full',
-                    session.connectionHealth.isConnected ? 'bg-green-500' : 'bg-red-500'
-                  )} />
+                  <div
+                    className={clsx(
+                      'w-3 h-3 rounded-full',
+                      session.connectionHealth.isConnected ? 'bg-green-500' : 'bg-red-500'
+                    )}
+                  />
                   <span className="text-sm font-medium">Status</span>
                 </div>
-                <div className={clsx(
-                  'font-semibold',
-                  session.connectionHealth.isConnected ? 'text-green-600' : 'text-red-600'
-                )}>
+                <div
+                  className={clsx(
+                    'font-semibold',
+                    session.connectionHealth.isConnected ? 'text-green-600' : 'text-red-600'
+                  )}
+                >
                   {session.connectionHealth.isConnected ? 'Connected' : 'Disconnected'}
                 </div>
               </div>
@@ -518,32 +535,41 @@ export function StreamingResultsDisplay({
           </CardHeader>
           <CardContent>
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {session.errorHistory.slice(-10).reverse().map((error, index) => (
-                <div
-                  key={index}
-                  className={clsx(
-                    'p-3 rounded-lg border-l-4',
-                    error.severity === 'high' ? 'bg-red-50 border-red-500' :
-                    error.severity === 'medium' ? 'bg-yellow-50 border-yellow-500' :
-                    'bg-blue-50 border-blue-500'
-                  )}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={clsx(
-                      'text-xs font-medium uppercase',
-                      error.severity === 'high' ? 'text-red-600' :
-                      error.severity === 'medium' ? 'text-yellow-600' :
-                      'text-blue-600'
-                    )}>
-                      {error.severity} Severity
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {new Date(error.timestamp).toLocaleTimeString()}
-                    </span>
+              {session.errorHistory
+                .slice(-10)
+                .reverse()
+                .map((error, index) => (
+                  <div
+                    key={index}
+                    className={clsx(
+                      'p-3 rounded-lg border-l-4',
+                      error.severity === 'high'
+                        ? 'bg-red-50 border-red-500'
+                        : error.severity === 'medium'
+                          ? 'bg-yellow-50 border-yellow-500'
+                          : 'bg-blue-50 border-blue-500'
+                    )}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span
+                        className={clsx(
+                          'text-xs font-medium uppercase',
+                          error.severity === 'high'
+                            ? 'text-red-600'
+                            : error.severity === 'medium'
+                              ? 'text-yellow-600'
+                              : 'text-blue-600'
+                        )}
+                      >
+                        {error.severity} Severity
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {new Date(error.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">{error.error}</p>
                   </div>
-                  <p className="text-sm text-gray-700">{error.error}</p>
-                </div>
-              ))}
+                ))}
             </div>
 
             {session.errorHistory.length > 10 && (
@@ -559,15 +585,15 @@ export function StreamingResultsDisplay({
 
       {/* Results Table */}
       <VirtualizedResultsTable
-        onEdit={(business) => {
+        onEdit={business => {
           // Handle edit
           console.log('Edit business:', business)
         }}
-        onDelete={(businessId) => {
+        onDelete={businessId => {
           // Handle delete
           setResults(prev => prev.filter(b => b.id !== businessId))
         }}
-        onExport={(businesses) => {
+        onExport={businesses => {
           // Handle export
           console.log('Export businesses:', businesses)
         }}

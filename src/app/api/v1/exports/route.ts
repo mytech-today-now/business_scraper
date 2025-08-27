@@ -20,7 +20,7 @@ export const GET = apiFramework.createHandler(
     const search = searchParams.get('search')
 
     try {
-      let templates = platform 
+      let templates = platform
         ? enhancedExportService.listTemplates(platform)
         : enhancedExportService.listTemplates()
 
@@ -42,15 +42,15 @@ export const GET = apiFramework.createHandler(
             category: template.metadata.category,
             tags: template.metadata.tags,
             requiredFields: template.requiredFields,
-            optionalFields: template.optionalFields
+            optionalFields: template.optionalFields,
           })),
-          statistics
+          statistics,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
     } catch (error) {
       logger.error('ExportsAPI', 'Failed to list templates', error)
@@ -58,7 +58,7 @@ export const GET = apiFramework.createHandler(
     }
   },
   {
-    permissions: ['read:exports']
+    permissions: ['read:exports'],
   }
 )
 
@@ -85,8 +85,8 @@ export const POST = apiFramework.createHandler(
       }
 
       // Validate business records
-      const validBusinesses: BusinessRecord[] = businesses.filter(business => 
-        business && typeof business === 'object' && business.businessName
+      const validBusinesses: BusinessRecord[] = businesses.filter(
+        business => business && typeof business === 'object' && business.businessName
       )
 
       if (validBusinesses.length === 0) {
@@ -97,19 +97,15 @@ export const POST = apiFramework.createHandler(
         requestId: context.requestId,
         templateId,
         businessCount: validBusinesses.length,
-        clientId: context.clientId
+        clientId: context.clientId,
       })
 
       // Execute export
-      const result = await enhancedExportService.exportWithTemplate(
-        templateId,
-        validBusinesses,
-        {
-          validateData: options.validateData !== false,
-          skipErrors: options.skipErrors === true,
-          includeMetadata: options.includeMetadata !== false
-        }
-      )
+      const result = await enhancedExportService.exportWithTemplate(templateId, validBusinesses, {
+        validateData: options.validateData !== false,
+        skipErrors: options.skipErrors === true,
+        includeMetadata: options.includeMetadata !== false,
+      })
 
       // Convert to downloadable format if requested
       let downloadData = null
@@ -118,16 +114,16 @@ export const POST = apiFramework.createHandler(
           result,
           options.format
         )
-        
+
         // Convert blob to base64 for JSON response
         const arrayBuffer = await downloadResult.blob.arrayBuffer()
         const base64 = Buffer.from(arrayBuffer).toString('base64')
-        
+
         downloadData = {
           filename: downloadResult.filename,
           mimeType: downloadResult.mimeType,
           data: base64,
-          size: downloadResult.blob.size
+          size: downloadResult.blob.size,
         }
       }
 
@@ -143,22 +139,21 @@ export const POST = apiFramework.createHandler(
             recordsSkipped: result.recordsSkipped,
             errors: result.errors,
             warnings: result.warnings,
-            metadata: result.metadata
+            metadata: result.metadata,
           },
           exportData: options.includeData !== false ? result.exportData : undefined,
-          download: downloadData
+          download: downloadData,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('ExportsAPI', 'Export creation failed', {
         requestId: context.requestId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }
@@ -167,14 +162,14 @@ export const POST = apiFramework.createHandler(
     permissions: ['write:exports'],
     rateLimit: {
       requestsPerMinute: 10,
-      requestsPerHour: 100
+      requestsPerHour: 100,
     },
     validation: {
       body: {
         templateId: 'string',
-        businesses: 'array'
-      }
-    }
+        businesses: 'array',
+      },
+    },
   }
 )
 
@@ -195,8 +190,8 @@ export const preview = apiFramework.createHandler(
         throw new Error('Businesses array is required')
       }
 
-      const validBusinesses: BusinessRecord[] = businesses.filter(business => 
-        business && typeof business === 'object' && business.businessName
+      const validBusinesses: BusinessRecord[] = businesses.filter(
+        business => business && typeof business === 'object' && business.businessName
       )
 
       if (validBusinesses.length === 0) {
@@ -207,7 +202,7 @@ export const preview = apiFramework.createHandler(
         requestId: context.requestId,
         templateId,
         businessCount: validBusinesses.length,
-        sampleSize
+        sampleSize,
       })
 
       const preview = await enhancedExportService.generateExportPreview(
@@ -224,7 +219,7 @@ export const preview = apiFramework.createHandler(
               id: preview.templateInfo.id,
               name: preview.templateInfo.name,
               platform: preview.templateInfo.platform,
-              description: preview.templateInfo.description
+              description: preview.templateInfo.description,
             },
             sampleData: preview.sampleData,
             fieldMappings: preview.fieldMappings,
@@ -232,21 +227,20 @@ export const preview = apiFramework.createHandler(
             statistics: {
               totalBusinesses: validBusinesses.length,
               sampleSize: preview.sampleData.length,
-              fieldCount: preview.fieldMappings.length
-            }
-          }
+              fieldCount: preview.fieldMappings.length,
+            },
+          },
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('ExportsAPI', 'Preview generation failed', {
         requestId: context.requestId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }
@@ -255,8 +249,8 @@ export const preview = apiFramework.createHandler(
     permissions: ['read:exports'],
     rateLimit: {
       requestsPerMinute: 20,
-      requestsPerHour: 200
-    }
+      requestsPerHour: 200,
+    },
   }
 )
 
@@ -277,8 +271,8 @@ export const multiPlatform = apiFramework.createHandler(
         throw new Error('Businesses array is required')
       }
 
-      const validBusinesses: BusinessRecord[] = businesses.filter(business => 
-        business && typeof business === 'object' && business.businessName
+      const validBusinesses: BusinessRecord[] = businesses.filter(
+        business => business && typeof business === 'object' && business.businessName
       )
 
       if (validBusinesses.length === 0) {
@@ -289,7 +283,7 @@ export const multiPlatform = apiFramework.createHandler(
         requestId: context.requestId,
         templateIds,
         businessCount: validBusinesses.length,
-        clientId: context.clientId
+        clientId: context.clientId,
       })
 
       const result = await enhancedExportService.exportToMultiplePlatforms(
@@ -297,7 +291,7 @@ export const multiPlatform = apiFramework.createHandler(
         validBusinesses,
         {
           continueOnError: options.continueOnError !== false,
-          includeMetadata: options.includeMetadata !== false
+          includeMetadata: options.includeMetadata !== false,
         }
       )
 
@@ -310,22 +304,21 @@ export const multiPlatform = apiFramework.createHandler(
               templateId: r.templateId,
               success: r.result?.success || false,
               recordsExported: r.result?.recordsExported || 0,
-              error: r.error
+              error: r.error,
             })),
-            summary: result.summary
-          }
+            summary: result.summary,
+          },
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('ExportsAPI', 'Multi-platform export failed', {
         requestId: context.requestId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }
@@ -334,8 +327,8 @@ export const multiPlatform = apiFramework.createHandler(
     permissions: ['write:exports'],
     rateLimit: {
       requestsPerMinute: 5,
-      requestsPerHour: 50
-    }
+      requestsPerHour: 50,
+    },
   }
 )
 

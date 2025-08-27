@@ -23,7 +23,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
   const [keywordsText, setKeywordsText] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  
+
   const isEditing = !!industry
   const title = isEditing ? 'Edit Industry Category' : 'Add Industry Category'
   const saveButtonText = isEditing ? 'Update Industry' : 'Add Industry'
@@ -97,7 +97,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
 
     try {
       setIsSaving(true)
-      
+
       if (isEditing && industry) {
         const updatedIndustry: IndustryCategory = {
           ...industry,
@@ -112,7 +112,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
           keywords,
         })
       }
-      
+
       onClose()
     } catch (error) {
       console.error('Save failed:', error)
@@ -130,7 +130,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
 
   const handleKeywordsChange = (value: string): void => {
     setKeywordsText(value)
-    
+
     // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
@@ -142,32 +142,32 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className={clsx(
-        'bg-white dark:bg-gray-800 shadow-xl w-full overflow-hidden',
-        isMobile
-          ? 'fixed inset-0 rounded-none max-h-screen-safe'
-          : 'rounded-lg max-w-2xl max-h-[90vh]'
-      )}>
+      <div
+        className={clsx(
+          'bg-white dark:bg-gray-800 shadow-xl w-full overflow-hidden',
+          isMobile
+            ? 'fixed inset-0 rounded-none max-h-screen-safe'
+            : 'rounded-lg max-w-2xl max-h-[90vh]'
+        )}
+      >
         {/* Header */}
-        <div className={clsx(
-          'flex items-center justify-between border-b border-gray-200 dark:border-gray-700',
-          isMobile ? 'p-4 pt-safe-top' : 'p-6'
-        )}>
+        <div
+          className={clsx(
+            'flex items-center justify-between border-b border-gray-200 dark:border-gray-700',
+            isMobile ? 'p-4 pt-safe-top' : 'p-6'
+          )}
+        >
           <div className="flex items-center space-x-2">
             {isEditing ? (
               <Edit3 className="h-5 w-5 text-blue-600" />
             ) : (
               <Plus className="h-5 w-5 text-green-600" />
             )}
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {title}
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
             {isEditing && isSaving && (
               <div className="flex items-center space-x-1">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <span className="text-xs text-blue-600 dark:text-blue-400">
-                  Saving
-                </span>
+                <span className="text-xs text-blue-600 dark:text-blue-400">Saving</span>
               </div>
             )}
           </div>
@@ -180,7 +180,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
               isMobile && 'min-h-touch min-w-touch'
             )}
           >
-            <X className={isMobile ? "h-6 w-6" : "h-5 w-5"} />
+            <X className={isMobile ? 'h-6 w-6' : 'h-5 w-5'} />
           </Button>
         </div>
 
@@ -192,7 +192,7 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
               label="Industry Name"
               placeholder="e.g., Pet Services, Medical Clinics"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               disabled={isSaving}
             />
           </div>
@@ -201,22 +201,23 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Search Keywords
-              <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                (one per line)
-              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">(one per line)</span>
             </label>
             <textarea
               ref={textareaRef}
               className="w-full min-h-[200px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y font-mono text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               value={keywordsText}
-              onChange={(e) => handleKeywordsChange(e.target.value)}
+              onChange={e => handleKeywordsChange(e.target.value)}
               placeholder="Enter keywords, one per line:&#10;pet grooming&#10;veterinary&#10;animal hospital&#10;dog boarding&#10;cat clinic"
               disabled={isSaving}
             />
             <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               <p>• Each line represents a search keyword or phrase</p>
               <p>• Keywords help identify relevant businesses during scraping</p>
-              <p>• Use specific terms for better results (e.g., &quot;dental clinic&quot; vs &quot;dental&quot;)</p>
+              <p>
+                • Use specific terms for better results (e.g., &quot;dental clinic&quot; vs
+                &quot;dental&quot;)
+              </p>
               {isEditing && (
                 <p className="text-blue-600 dark:text-blue-400 mt-1">
                   • Changes are automatically saved as you type (no interruptions)
@@ -233,16 +234,16 @@ export function IndustryModal({ isOpen, onClose, industry }: IndustryModalProps)
 
         {/* Footer */}
         <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSaving}
-          >
+          <Button variant="outline" onClick={handleClose} disabled={isSaving}>
             {isEditing ? 'Close' : 'Cancel'}
           </Button>
           <Button
             onClick={handleSave}
-            disabled={isSaving || !name.trim() || keywordsText.split('\n').filter(k => k.trim()).length === 0}
+            disabled={
+              isSaving ||
+              !name.trim() ||
+              keywordsText.split('\n').filter(k => k.trim()).length === 0
+            }
             icon={Save}
           >
             {isSaving ? 'Saving...' : saveButtonText}

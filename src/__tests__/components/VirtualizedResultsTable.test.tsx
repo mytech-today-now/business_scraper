@@ -7,11 +7,9 @@ import { BusinessRecord } from '@/types/business'
 jest.mock('react-window', () => ({
   FixedSizeList: React.forwardRef(({ children, itemCount, itemData }: any, ref: any) => (
     <div data-testid="virtual-list" ref={ref}>
-      {Array.from({ length: Math.min(itemCount, 10) }, (_, index) =>
-        <div key={index}>
-          {children({ index, style: {}, data: itemData })}
-        </div>
-      )}
+      {Array.from({ length: Math.min(itemCount, 10) }, (_, index) => (
+        <div key={index}>{children({ index, style: {}, data: itemData })}</div>
+      ))}
     </div>
   )),
 }))
@@ -133,11 +131,12 @@ describe('VirtualizedResultsTable', () => {
     // Mock fetch for export functionality
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({
-        success: true,
-        exportId: 'test-export-id',
-        estimatedDuration: 30,
-      }),
+      json: () =>
+        Promise.resolve({
+          success: true,
+          exportId: 'test-export-id',
+          estimatedDuration: 30,
+        }),
     })
   })
 
@@ -211,7 +210,7 @@ describe('VirtualizedResultsTable', () => {
 
   it('displays correct total count', async () => {
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/Business Results \(100\)/)).toBeInTheDocument()
     })
@@ -219,11 +218,11 @@ describe('VirtualizedResultsTable', () => {
 
   it('handles column sorting', async () => {
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       const businessNameHeader = screen.getByText('Business Name')
       fireEvent.click(businessNameHeader)
-      
+
       // Should trigger sort functionality
       expect(businessNameHeader).toBeInTheDocument()
     })
@@ -231,7 +230,7 @@ describe('VirtualizedResultsTable', () => {
 
   it('handles row selection', async () => {
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       const checkboxes = screen.getAllByRole('checkbox')
       if (checkboxes.length > 1) {
@@ -243,11 +242,11 @@ describe('VirtualizedResultsTable', () => {
 
   it('handles select all functionality', async () => {
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
       fireEvent.click(selectAllCheckbox)
-      
+
       // Should select all visible items
       expect(selectAllCheckbox).toBeInTheDocument()
     })
@@ -255,13 +254,13 @@ describe('VirtualizedResultsTable', () => {
 
   it('displays loading state correctly', () => {
     render(<VirtualizedResultsTable {...defaultProps} isLoading={true} />)
-    
+
     expect(screen.getByText(/Business Results/)).toBeInTheDocument()
   })
 
   it('displays export state correctly', () => {
     render(<VirtualizedResultsTable {...defaultProps} isExporting={true} />)
-    
+
     const exportButton = screen.getByText(/Export/)
     expect(exportButton).toBeDisabled()
   })
@@ -269,7 +268,7 @@ describe('VirtualizedResultsTable', () => {
   it('handles edit action', async () => {
     const mockOnEdit = jest.fn()
     render(<VirtualizedResultsTable {...defaultProps} onEdit={mockOnEdit} />)
-    
+
     await waitFor(() => {
       const editButtons = screen.getAllByTitle('Edit business')
       if (editButtons.length > 0) {
@@ -282,7 +281,7 @@ describe('VirtualizedResultsTable', () => {
   it('handles delete action', async () => {
     const mockOnDelete = jest.fn()
     render(<VirtualizedResultsTable {...defaultProps} onDelete={mockOnDelete} />)
-    
+
     await waitFor(() => {
       const deleteButtons = screen.getAllByTitle('Delete business')
       if (deleteButtons.length > 0) {
@@ -294,7 +293,7 @@ describe('VirtualizedResultsTable', () => {
 
   it('renders AI score badges correctly', async () => {
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       // Should render AI score badges for businesses
       const scoreElements = screen.getAllByText(/A \(85\)/)
@@ -305,31 +304,31 @@ describe('VirtualizedResultsTable', () => {
   it('handles performance monitoring toggle', async () => {
     const originalEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'development'
-    
+
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       const performanceButton = screen.getByText('Performance')
       fireEvent.click(performanceButton)
-      
+
       // Should toggle performance panel
       expect(performanceButton).toBeInTheDocument()
     })
-    
+
     process.env.NODE_ENV = originalEnv
   })
 
   it('displays performance metrics when available', async () => {
     const originalEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'development'
-    
+
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       // Performance metrics should be displayed in development mode
       expect(screen.getByText('Performance')).toBeInTheDocument()
     })
-    
+
     process.env.NODE_ENV = originalEnv
   })
 
@@ -340,9 +339,9 @@ describe('VirtualizedResultsTable', () => {
       id: `business-${index}`,
       businessName: `Business ${index}`,
     }))
-    
+
     render(<VirtualizedResultsTable {...defaultProps} />)
-    
+
     await waitFor(() => {
       // Should render without performance issues
       expect(screen.getByTestId('virtual-list')).toBeInTheDocument()

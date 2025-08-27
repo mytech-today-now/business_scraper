@@ -18,8 +18,8 @@ jest.mock('@/model/storage', () => ({
     getAllBusinesses: jest.fn(() => Promise.resolve([])),
     getBusiness: jest.fn(),
     deleteBusiness: jest.fn(),
-    clearAllBusinesses: jest.fn()
-  }
+    clearAllBusinesses: jest.fn(),
+  },
 }))
 
 describe('Memory Management Regression Tests', () => {
@@ -38,10 +38,10 @@ describe('Memory Management Regression Tests', () => {
   describe('Existing Scraper Functionality', () => {
     test('should not break scraper initialization', async () => {
       const scraper = new ScraperService()
-      
+
       // Should initialize without errors
       await expect(scraper.initialize()).resolves.not.toThrow()
-      
+
       // Should cleanup without errors
       await expect(scraper.cleanup()).resolves.not.toThrow()
     })
@@ -50,7 +50,7 @@ describe('Memory Management Regression Tests', () => {
       const scraper = new ScraperService({
         headless: true,
         timeout: 30000,
-        maxConcurrentPages: 3
+        maxConcurrentPages: 3,
       })
 
       expect(scraper).toBeDefined()
@@ -61,7 +61,7 @@ describe('Memory Management Regression Tests', () => {
     test('should not break scraper session management', () => {
       const scraper = new ScraperService()
       const sessionId = 'test-session-123'
-      
+
       // Should set session ID without errors
       expect(() => scraper.setSessionId(sessionId)).not.toThrow()
       expect(scraper.getSessionId()).toBe(sessionId)
@@ -69,10 +69,10 @@ describe('Memory Management Regression Tests', () => {
 
     test('should not break scraper statistics', () => {
       const scraper = new ScraperService()
-      
+
       // Should reset stats without errors
       expect(() => scraper.resetStats()).not.toThrow()
-      
+
       // Should get stats without errors
       const stats = scraper.getStats()
       expect(stats).toBeDefined()
@@ -92,10 +92,10 @@ describe('Memory Management Regression Tests', () => {
           street: '123 Test St',
           city: 'Test City',
           state: 'TS',
-          zipCode: '12345'
+          zipCode: '12345',
         },
         industry: 'Testing',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       // Should save business without errors
@@ -104,21 +104,23 @@ describe('Memory Management Regression Tests', () => {
     })
 
     test('should not break batch business saving', async () => {
-      const mockBusinesses: BusinessRecord[] = Array(5).fill(null).map((_, i) => ({
-        id: `test-${i}`,
-        businessName: `Test Business ${i}`,
-        email: [`test${i}@example.com`],
-        phone: `555-010${i}`,
-        websiteUrl: `https://test${i}.com`,
-        address: {
-          street: `${i} Test St`,
-          city: 'Test City',
-          state: 'TS',
-          zipCode: '12345'
-        },
-        industry: 'Testing',
-        scrapedAt: new Date()
-      }))
+      const mockBusinesses: BusinessRecord[] = Array(5)
+        .fill(null)
+        .map((_, i) => ({
+          id: `test-${i}`,
+          businessName: `Test Business ${i}`,
+          email: [`test${i}@example.com`],
+          phone: `555-010${i}`,
+          websiteUrl: `https://test${i}.com`,
+          address: {
+            street: `${i} Test St`,
+            city: 'Test City',
+            state: 'TS',
+            zipCode: '12345',
+          },
+          industry: 'Testing',
+          scrapedAt: new Date(),
+        }))
 
       // Should save businesses without errors
       await expect(storage.saveBusinesses(mockBusinesses)).resolves.not.toThrow()
@@ -149,7 +151,7 @@ describe('Memory Management Regression Tests', () => {
   describe('Data Compression Backward Compatibility', () => {
     test('should handle uncompressed data correctly', () => {
       const uncompressedData = { id: '1', name: 'Test' }
-      
+
       // Should decompress uncompressed data without errors
       const result = DataCompression.decompress(uncompressedData as any)
       expect(result).toEqual(uncompressedData)
@@ -159,15 +161,15 @@ describe('Memory Management Regression Tests', () => {
       const existingData = {
         businesses: [
           { id: '1', name: 'Business 1' },
-          { id: '2', name: 'Business 2' }
+          { id: '2', name: 'Business 2' },
         ],
-        metadata: { total: 2, timestamp: Date.now() }
+        metadata: { total: 2, timestamp: Date.now() },
       }
 
       // Should compress and decompress without changing structure
       const compressed = DataCompression.compress(existingData)
       const decompressed = DataCompression.decompress(compressed)
-      
+
       expect(decompressed).toEqual(existingData)
       expect(decompressed.businesses).toHaveLength(2)
       expect(decompressed.metadata.total).toBe(2)
@@ -180,7 +182,7 @@ describe('Memory Management Regression Tests', () => {
         boolean: true,
         array: [1, 2, 3],
         object: { nested: 'value' },
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
       }
 
       const compressed = DataCompression.compress(typedData)
@@ -199,7 +201,7 @@ describe('Memory Management Regression Tests', () => {
     test('should not break existing API structure', async () => {
       const { GET } = await import('@/app/api/memory/route')
       const request = new Request('http://localhost:3000/api/memory')
-      
+
       const response = await GET(request as any)
       const data = await response.json()
 
@@ -213,9 +215,9 @@ describe('Memory Management Regression Tests', () => {
       const { POST } = await import('@/app/api/memory/route')
       const request = new Request('http://localhost:3000/api/memory', {
         method: 'POST',
-        body: JSON.stringify({ action: 'invalid' })
+        body: JSON.stringify({ action: 'invalid' }),
       })
-      
+
       const response = await POST(request as any)
       const data = await response.json()
 
@@ -229,7 +231,7 @@ describe('Memory Management Regression Tests', () => {
   describe('Performance Regression', () => {
     test('should not significantly impact scraper performance', async () => {
       const scraper = new ScraperService()
-      
+
       const startTime = Date.now()
       await scraper.initialize()
       const initTime = Date.now() - startTime
@@ -241,24 +243,26 @@ describe('Memory Management Regression Tests', () => {
     })
 
     test('should not significantly impact storage performance', async () => {
-      const mockBusinesses = Array(100).fill(null).map((_, i) => ({
-        id: `test-${i}`,
-        businessName: `Test Business ${i}`,
-        email: [`test${i}@example.com`],
-        phone: `555-010${i}`,
-        websiteUrl: `https://test${i}.com`,
-        address: {
-          street: `${i} Test St`,
-          city: 'Test City',
-          state: 'TS',
-          zipCode: '12345'
-        },
-        industry: 'Testing',
-        scrapedAt: new Date()
-      }))
+      const mockBusinesses = Array(100)
+        .fill(null)
+        .map((_, i) => ({
+          id: `test-${i}`,
+          businessName: `Test Business ${i}`,
+          email: [`test${i}@example.com`],
+          phone: `555-010${i}`,
+          websiteUrl: `https://test${i}.com`,
+          address: {
+            street: `${i} Test St`,
+            city: 'Test City',
+            state: 'TS',
+            zipCode: '12345',
+          },
+          industry: 'Testing',
+          scrapedAt: new Date(),
+        }))
 
       const startTime = Date.now()
-      
+
       // Compress data
       const compressed = DataCompression.batchCompress(mockBusinesses)
       const compressionTime = Date.now() - startTime

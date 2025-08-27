@@ -50,10 +50,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, children, ...props }, ref) => (
     <div
       ref={ref}
-      className={clsx(
-        'rounded-lg border bg-card text-card-foreground shadow-sm',
-        className
-      )}
+      className={clsx('rounded-lg border bg-card text-card-foreground shadow-sm', className)}
       {...props}
     >
       {children}
@@ -68,11 +65,7 @@ Card.displayName = 'Card'
  */
 export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={clsx('flex flex-col space-y-1.5 p-6', className)}
-      {...props}
-    >
+    <div ref={ref} className={clsx('flex flex-col space-y-1.5 p-6', className)} {...props}>
       {children}
     </div>
   )
@@ -87,10 +80,7 @@ export const CardTitle = React.forwardRef<HTMLParagraphElement, CardTitleProps>(
   ({ className, children, ...props }, ref) => (
     <h3
       ref={ref}
-      className={clsx(
-        'text-2xl font-semibold leading-none tracking-tight',
-        className
-      )}
+      className={clsx('text-2xl font-semibold leading-none tracking-tight', className)}
       {...props}
     >
       {children}
@@ -105,11 +95,7 @@ CardTitle.displayName = 'CardTitle'
  */
 export const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className, children, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={clsx('text-sm text-muted-foreground', className)}
-      {...props}
-    >
+    <p ref={ref} className={clsx('text-sm text-muted-foreground', className)} {...props}>
       {children}
     </p>
   )
@@ -135,11 +121,7 @@ CardContent.displayName = 'CardContent'
  */
 export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={clsx('flex items-center p-6 pt-0', className)}
-      {...props}
-    >
+    <div ref={ref} className={clsx('flex items-center p-6 pt-0', className)} {...props}>
       {children}
     </div>
   )

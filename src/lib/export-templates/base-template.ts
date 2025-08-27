@@ -3,12 +3,12 @@
  * Foundation class for all export templates
  */
 
-import { 
-  ExportTemplate, 
-  ExportTemplateResult, 
+import {
+  ExportTemplate,
+  ExportTemplateResult,
   TemplateValidationResult,
   ExportPlatform,
-  FieldTransformation
+  FieldTransformation,
 } from '@/types/export-templates'
 import { BusinessRecord } from '@/types/business'
 import { fieldMappingEngine } from '@/lib/field-mapping/mapping-engine'
@@ -53,7 +53,7 @@ export abstract class BaseExportTemplate {
       const isMapped = this.template.fieldMappings.some(
         mapping => mapping.targetField === requiredField
       )
-      
+
       if (!isMapped) {
         errors.push(`Required field '${requiredField}' is not mapped`)
       }
@@ -74,8 +74,8 @@ export abstract class BaseExportTemplate {
         platform: this.template.platform,
         version: this.template.version,
         supported: errors.length === 0,
-        limitations: warnings
-      }
+        limitations: warnings,
+      },
     }
   }
 
@@ -84,11 +84,11 @@ export abstract class BaseExportTemplate {
    */
   async execute(businesses: BusinessRecord[]): Promise<ExportTemplateResult> {
     const startTime = Date.now()
-    
+
     logger.info('ExportTemplate', `Starting template execution: ${this.template.name}`, {
       templateId: this.template.id,
       platform: this.template.platform,
-      recordCount: businesses.length
+      recordCount: businesses.length,
     })
 
     try {
@@ -127,8 +127,8 @@ export abstract class BaseExportTemplate {
           template: this.template.name,
           platform: this.template.platform,
           totalDuration: duration,
-          averageProcessingTime: duration / businesses.length
-        }
+          averageProcessingTime: duration / businesses.length,
+        },
       }
 
       logger.info('ExportTemplate', `Template execution completed`, {
@@ -136,11 +136,10 @@ export abstract class BaseExportTemplate {
         recordsProcessed: result.recordsProcessed,
         recordsExported: result.recordsExported,
         recordsSkipped: result.recordsSkipped,
-        duration
+        duration,
       })
 
       return result
-
     } catch (error) {
       const endTime = Date.now()
       const duration = endTime - startTime
@@ -153,12 +152,14 @@ export abstract class BaseExportTemplate {
         recordsProcessed: businesses.length,
         recordsExported: 0,
         recordsSkipped: businesses.length,
-        errors: [{
-          recordIndex: -1,
-          field: 'template',
-          error: error instanceof Error ? error.message : 'Unknown error',
-          value: null
-        }],
+        errors: [
+          {
+            recordIndex: -1,
+            field: 'template',
+            error: error instanceof Error ? error.message : 'Unknown error',
+            value: null,
+          },
+        ],
         warnings: [],
         exportData: [],
         metadata: {
@@ -166,8 +167,8 @@ export abstract class BaseExportTemplate {
           template: this.template.name,
           platform: this.template.platform,
           totalDuration: duration,
-          averageProcessingTime: 0
-        }
+          averageProcessingTime: 0,
+        },
       }
     }
   }
@@ -201,9 +202,9 @@ export abstract class BaseExportTemplate {
           logger.warn('ExportTemplate', `Field mapping failed for record ${i}`, {
             templateId: this.template.id,
             mapping: mapping.targetField,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
-          
+
           // Use default value if available
           if (mapping.options?.defaultValue !== undefined) {
             mappedRecord[mapping.targetField] = mapping.options.defaultValue
@@ -220,28 +221,29 @@ export abstract class BaseExportTemplate {
   /**
    * Apply a single field mapping
    */
-  protected async applyFieldMapping(business: BusinessRecord, mapping: FieldTransformation): Promise<any> {
-    const sourceValues = mapping.sourceFields.map(field => 
-      this.extractFieldValue(business, field)
-    )
+  protected async applyFieldMapping(
+    business: BusinessRecord,
+    mapping: FieldTransformation
+  ): Promise<any> {
+    const sourceValues = mapping.sourceFields.map(field => this.extractFieldValue(business, field))
 
     switch (mapping.type) {
       case 'direct':
         return sourceValues[0]
-      
+
       case 'concatenate':
         const separator = mapping.options?.separator || ' '
         return sourceValues.filter(v => v != null && v !== '').join(separator)
-      
+
       case 'format':
         return this.formatValue(sourceValues[0], mapping.options?.format || '')
-      
+
       case 'conditional':
         return this.applyConditionalMapping(sourceValues[0], mapping.options?.conditions || [])
-      
+
       case 'lookup':
         return this.applyLookupMapping(sourceValues[0], mapping.options?.lookupTable || {})
-      
+
       default:
         return sourceValues[0]
     }
@@ -253,14 +255,14 @@ export abstract class BaseExportTemplate {
   protected extractFieldValue(business: BusinessRecord, fieldPath: string): any {
     const keys = fieldPath.split('.')
     let current: any = business
-    
+
     for (const key of keys) {
       if (current == null || typeof current !== 'object') {
         return undefined
       }
       current = current[key]
     }
-    
+
     return current
   }
 
@@ -297,7 +299,7 @@ export abstract class BaseExportTemplate {
         return condition.value
       }
     }
-    
+
     return conditions.find(c => c.condition === 'default')?.value || value
   }
 
@@ -339,16 +341,14 @@ export abstract class BaseExportTemplate {
 
       // Check minimum fields requirement
       if (qualityRules?.minimumFields) {
-        const nonEmptyFields = Object.values(record).filter(v => 
-          v != null && v !== ''
-        ).length
-        
+        const nonEmptyFields = Object.values(record).filter(v => v != null && v !== '').length
+
         if (nonEmptyFields < qualityRules.minimumFields) {
           errors.push({
             recordIndex: i,
             field: 'record',
             error: `Record has only ${nonEmptyFields} fields, minimum ${qualityRules.minimumFields} required`,
-            value: record
+            value: record,
           })
           isValid = false
         }
@@ -361,7 +361,7 @@ export abstract class BaseExportTemplate {
             recordIndex: i,
             field: requiredField,
             error: `Required field '${requiredField}' is missing or empty`,
-            value: record[requiredField]
+            value: record[requiredField],
           })
           isValid = false
         }
@@ -405,15 +405,13 @@ export abstract class BaseExportTemplate {
   }
 
   protected toTitleCase(str: string): string {
-    return str.replace(/\w\S*/g, (txt) => 
-      txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    )
+    return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
   }
 
   protected evaluateCondition(value: any, condition: string): boolean {
     // Simple condition evaluation - can be extended
     const [operator, operand] = condition.split(':')
-    
+
     switch (operator) {
       case 'equals':
         return value === operand

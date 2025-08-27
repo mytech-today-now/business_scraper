@@ -9,7 +9,7 @@ import {
   CRMAdapter,
   CRMPlatform,
   ValidationError,
-  CRMFieldMapping
+  CRMFieldMapping,
 } from './types'
 import { SalesforceAdapter } from './adapters/salesforceAdapter'
 import { HubSpotAdapter } from './adapters/hubspotAdapter'
@@ -42,7 +42,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
     this.adapters.set('pipedrive', pipedriveAdapter)
 
     logger.info('CRMTemplateManager', 'Initialized CRM adapters', {
-      platforms: Array.from(this.adapters.keys())
+      platforms: Array.from(this.adapters.keys()),
     })
   }
 
@@ -80,7 +80,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
    */
   getAllTemplates(): CRMTemplate[] {
     const builtInTemplates: CRMTemplate[] = []
-    
+
     for (const adapter of this.adapters.values()) {
       builtInTemplates.push(...adapter.templates)
     }
@@ -95,7 +95,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
     const adapter = this.adapters.get(platform)
     const builtInTemplates = adapter ? adapter.templates : []
     const customTemplatesForPlatform = this.customTemplates.filter(t => t.platform === platform)
-    
+
     return [...builtInTemplates, ...customTemplatesForPlatform]
   }
 
@@ -124,11 +124,15 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
   /**
    * Get all available platforms
    */
-  getAvailablePlatforms(): Array<{ platform: CRMPlatform; displayName: string; templateCount: number }> {
+  getAvailablePlatforms(): Array<{
+    platform: CRMPlatform
+    displayName: string
+    templateCount: number
+  }> {
     return Array.from(this.adapters.entries()).map(([platform, adapter]) => ({
       platform,
       displayName: adapter.displayName,
-      templateCount: this.getTemplatesByPlatform(platform).length
+      templateCount: this.getTemplatesByPlatform(platform).length,
     }))
   }
 
@@ -144,15 +148,15 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
 
     // Check if template already exists
     const existingIndex = this.customTemplates.findIndex(t => t.id === template.id)
-    
+
     if (existingIndex >= 0) {
       // Update existing template
       this.customTemplates[existingIndex] = {
         ...template,
         metadata: {
           ...template.metadata,
-          updatedAt: new Date().toISOString()
-        }
+          updatedAt: new Date().toISOString(),
+        },
       }
       logger.info('CRMTemplateManager', `Updated custom template: ${template.name}`)
     } else {
@@ -162,8 +166,8 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         metadata: {
           ...template.metadata,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
+          updatedAt: new Date().toISOString(),
+        },
       })
       logger.info('CRMTemplateManager', `Added new custom template: ${template.name}`)
     }
@@ -176,7 +180,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
    */
   async deleteTemplate(id: string): Promise<void> {
     const index = this.customTemplates.findIndex(t => t.id === id)
-    
+
     if (index === -1) {
       throw new Error(`Template with ID ${id} not found`)
     }
@@ -184,7 +188,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
     const template = this.customTemplates[index]
     this.customTemplates.splice(index, 1)
     this.saveCustomTemplates()
-    
+
     logger.info('CRMTemplateManager', `Deleted custom template: ${template.name}`)
   }
 
@@ -193,7 +197,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
    */
   cloneTemplate(id: string, newName: string): CRMTemplate {
     const originalTemplate = this.getTemplate(id)
-    
+
     if (!originalTemplate) {
       throw new Error(`Template with ID ${id} not found`)
     }
@@ -207,8 +211,8 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         author: 'User',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: [...originalTemplate.metadata.tags, 'cloned']
-      }
+        tags: [...originalTemplate.metadata.tags, 'cloned'],
+      },
     }
 
     logger.info('CRMTemplateManager', `Cloned template ${originalTemplate.name} as ${newName}`)
@@ -227,7 +231,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         field: 'id',
         message: 'Template ID is required',
         value: template.id,
-        rule: 'required'
+        rule: 'required',
       })
     }
 
@@ -236,7 +240,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         field: 'name',
         message: 'Template name is required',
         value: template.name,
-        rule: 'required'
+        rule: 'required',
       })
     }
 
@@ -245,7 +249,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         field: 'platform',
         message: 'Template platform is required',
         value: template.platform,
-        rule: 'required'
+        rule: 'required',
       })
     }
 
@@ -254,7 +258,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         field: 'platform',
         message: `Unsupported platform: ${template.platform}`,
         value: template.platform,
-        rule: 'invalid'
+        rule: 'invalid',
       })
     }
 
@@ -263,7 +267,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
         field: 'fieldMappings',
         message: 'At least one field mapping is required',
         value: template.fieldMappings,
-        rule: 'required'
+        rule: 'required',
       })
     }
 
@@ -275,7 +279,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
             field: `fieldMappings[${index}].sourceField`,
             message: 'Source field is required',
             value: mapping.sourceField,
-            rule: 'required'
+            rule: 'required',
           })
         }
 
@@ -284,21 +288,23 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
             field: `fieldMappings[${index}].targetField`,
             message: 'Target field is required',
             value: mapping.targetField,
-            rule: 'required'
+            rule: 'required',
           })
         }
       })
 
       // Check for duplicate target fields
       const targetFields = template.fieldMappings.map(m => m.targetField)
-      const duplicates = targetFields.filter((field, index) => targetFields.indexOf(field) !== index)
-      
+      const duplicates = targetFields.filter(
+        (field, index) => targetFields.indexOf(field) !== index
+      )
+
       if (duplicates.length > 0) {
         errors.push({
           field: 'fieldMappings',
           message: `Duplicate target fields: ${duplicates.join(', ')}`,
           value: duplicates,
-          rule: 'unique'
+          rule: 'unique',
         })
       }
     }
@@ -320,7 +326,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
     }
   ): CRMTemplate {
     const adapter = this.getAdapter(platform)
-    
+
     if (!adapter) {
       throw new Error(`No adapter found for platform: ${platform}`)
     }
@@ -345,27 +351,22 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
     }> = []
 
     for (const template of this.getAllTemplates()) {
-      const requiredFields = template.fieldMappings
-        .filter(m => m.required)
-        .map(m => m.sourceField)
+      const requiredFields = template.fieldMappings.filter(m => m.required).map(m => m.sourceField)
 
-      const availableRequiredFields = requiredFields.filter(field => 
+      const availableRequiredFields = requiredFields.filter(field =>
         availableFields.includes(field)
       )
 
-      const matchScore = requiredFields.length > 0 
-        ? availableRequiredFields.length / requiredFields.length 
-        : 1
+      const matchScore =
+        requiredFields.length > 0 ? availableRequiredFields.length / requiredFields.length : 1
 
-      const missingFields = requiredFields.filter(field => 
-        !availableFields.includes(field)
-      )
+      const missingFields = requiredFields.filter(field => !availableFields.includes(field))
 
       suggestions.push({
         platform: template.platform,
         template,
         matchScore,
-        missingFields
+        missingFields,
       })
     }
 
@@ -378,7 +379,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
    */
   exportTemplateConfig(templateId: string): string {
     const template = this.getTemplate(templateId)
-    
+
     if (!template) {
       throw new Error(`Template with ID ${templateId} not found`)
     }
@@ -392,7 +393,7 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
   async importTemplateConfig(configJson: string): Promise<CRMTemplate> {
     try {
       const template: CRMTemplate = JSON.parse(configJson)
-      
+
       // Validate imported template
       const errors = this.validateTemplate(template)
       if (errors.length > 0) {
@@ -408,7 +409,9 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
       return template
     } catch (error) {
       logger.error('CRMTemplateManager', 'Failed to import template', error)
-      throw new Error(`Failed to import template: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to import template: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 }

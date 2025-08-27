@@ -14,7 +14,7 @@ describe('FieldMappingEngine', () => {
 
   beforeEach(() => {
     engine = new FieldMappingEngineImpl()
-    
+
     // Test schema for business to CRM mapping
     testSchema = {
       id: 'test-crm-mapping',
@@ -30,8 +30,8 @@ describe('FieldMappingEngine', () => {
           { path: 'address.street', type: 'string', required: false },
           { path: 'address.city', type: 'string', required: false },
           { path: 'address.state', type: 'string', required: false },
-          { path: 'industry', type: 'string', required: false }
-        ]
+          { path: 'industry', type: 'string', required: false },
+        ],
       },
       targetSchema: {
         name: 'CRM Record',
@@ -41,8 +41,8 @@ describe('FieldMappingEngine', () => {
           { name: 'Phone', type: 'string', required: false },
           { name: 'Website', type: 'string', required: false },
           { name: 'Address', type: 'string', required: false },
-          { name: 'Industry', type: 'string', required: false }
-        ]
+          { name: 'Industry', type: 'string', required: false },
+        ],
       },
       mappingRules: [
         {
@@ -52,7 +52,7 @@ describe('FieldMappingEngine', () => {
           transformation: { id: 'direct_copy', parameters: {} },
           priority: 1,
           enabled: true,
-          conditions: []
+          conditions: [],
         },
         {
           id: 'email-mapping',
@@ -61,7 +61,7 @@ describe('FieldMappingEngine', () => {
           transformation: { id: 'format_email', parameters: {} },
           priority: 1,
           enabled: true,
-          conditions: []
+          conditions: [],
         },
         {
           id: 'phone-mapping',
@@ -70,27 +70,27 @@ describe('FieldMappingEngine', () => {
           transformation: { id: 'format_phone', parameters: { format: '(###) ###-####' } },
           priority: 1,
           enabled: true,
-          conditions: []
+          conditions: [],
         },
         {
           id: 'address-mapping',
           sourceFields: [
             { path: 'address.street' },
             { path: 'address.city' },
-            { path: 'address.state' }
+            { path: 'address.state' },
           ],
           targetField: { name: 'Address', type: 'string' },
           transformation: { id: 'concatenate', parameters: { separator: ', ' } },
           priority: 1,
           enabled: true,
-          conditions: []
-        }
+          conditions: [],
+        },
       ],
       metadata: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     }
 
     testBusinessData = [
@@ -104,10 +104,10 @@ describe('FieldMappingEngine', () => {
           city: 'Anytown',
           state: 'CA',
           zipCode: '12345',
-          country: 'United States'
+          country: 'United States',
         },
         industry: 'Technology',
-        description: 'Leading technology company'
+        description: 'Leading technology company',
       },
       {
         businessName: 'Beta Industries',
@@ -118,10 +118,10 @@ describe('FieldMappingEngine', () => {
           street: '456 Oak Avenue',
           city: 'Somewhere',
           state: 'NY',
-          zipCode: '67890'
+          zipCode: '67890',
         },
-        industry: 'Manufacturing'
-      }
+        industry: 'Manufacturing',
+      },
     ]
 
     // Register test transformations
@@ -131,7 +131,7 @@ describe('FieldMappingEngine', () => {
       description: 'Format email address',
       inputTypes: ['string'],
       outputType: 'string',
-      transform: (input: string) => input ? input.toLowerCase().trim() : ''
+      transform: (input: string) => (input ? input.toLowerCase().trim() : ''),
     })
   })
 
@@ -139,7 +139,7 @@ describe('FieldMappingEngine', () => {
     test('should register and retrieve schema', () => {
       engine.registerSchema(testSchema)
       const retrieved = engine.getSchema(testSchema.id)
-      
+
       expect(retrieved).toBeDefined()
       expect(retrieved?.id).toBe(testSchema.id)
       expect(retrieved?.name).toBe(testSchema.name)
@@ -147,7 +147,7 @@ describe('FieldMappingEngine', () => {
 
     test('should validate valid schema', () => {
       const validation = engine.validateSchema(testSchema)
-      
+
       expect(validation.isValid).toBe(true)
       expect(validation.errors).toHaveLength(0)
     })
@@ -158,13 +158,13 @@ describe('FieldMappingEngine', () => {
         mappingRules: [
           {
             ...testSchema.mappingRules[0],
-            transformation: { id: 'nonexistent_transform', parameters: {} }
-          }
-        ]
+            transformation: { id: 'nonexistent_transform', parameters: {} },
+          },
+        ],
       }
 
       const validation = engine.validateSchema(invalidSchema)
-      
+
       expect(validation.isValid).toBe(false)
       expect(validation.errors.length).toBeGreaterThan(0)
       expect(validation.errors[0]).toContain('unknown transformation')
@@ -179,12 +179,12 @@ describe('FieldMappingEngine', () => {
         description: 'Test transformation',
         inputTypes: ['string'],
         outputType: 'string',
-        transform: (input: string) => input.toUpperCase()
+        transform: (input: string) => input.toUpperCase(),
       }
 
       engine.registerTransformation(testTransform)
       const retrieved = engine.getTransformation('test_transform')
-      
+
       expect(retrieved).toBeDefined()
       expect(retrieved?.id).toBe('test_transform')
       expect(retrieved?.transform('hello')).toBe('HELLO')
@@ -192,7 +192,7 @@ describe('FieldMappingEngine', () => {
 
     test('should list all transformations', () => {
       const transformations = engine.listTransformations()
-      
+
       expect(transformations.length).toBeGreaterThan(0)
       expect(transformations.some(t => t.id === 'direct_copy')).toBe(true)
       expect(transformations.some(t => t.id === 'concatenate')).toBe(true)
@@ -206,12 +206,12 @@ describe('FieldMappingEngine', () => {
 
     test('should execute mapping successfully', async () => {
       const result = await engine.executeMapping(testSchema.id, testBusinessData)
-      
+
       expect(result.success).toBe(true)
       expect(result.recordsProcessed).toBe(2)
       expect(result.recordsSuccessful).toBe(2)
       expect(result.mappedData).toHaveLength(2)
-      
+
       // Check first record mapping
       const firstRecord = result.mappedData[0]
       expect(firstRecord.Company).toBe('Acme Corporation')
@@ -223,13 +223,13 @@ describe('FieldMappingEngine', () => {
     test('should handle missing source data gracefully', async () => {
       const incompleteData = [
         {
-          businessName: 'Incomplete Corp'
+          businessName: 'Incomplete Corp',
           // Missing other fields
-        }
+        },
       ]
 
       const result = await engine.executeMapping(testSchema.id, incompleteData)
-      
+
       expect(result.success).toBe(true)
       expect(result.recordsProcessed).toBe(1)
       expect(result.mappedData[0].Company).toBe('Incomplete Corp')
@@ -239,13 +239,13 @@ describe('FieldMappingEngine', () => {
 
     test('should apply transformations correctly', async () => {
       const result = await engine.executeMapping(testSchema.id, testBusinessData)
-      
+
       // Check email formatting (lowercase)
       expect(result.mappedData[0].Email).toBe('contact@acme.com')
-      
+
       // Check phone formatting
       expect(result.mappedData[0].Phone).toBe('(555) 123-4567')
-      
+
       // Check address concatenation
       expect(result.mappedData[0].Address).toBe('123 Main Street, Anytown, CA')
     })
@@ -262,14 +262,14 @@ describe('FieldMappingEngine', () => {
             transformation: { id: 'nonexistent_transform', parameters: {} },
             priority: 1,
             enabled: true,
-            conditions: []
-          }
-        ]
+            conditions: [],
+          },
+        ],
       }
 
       engine.registerSchema(errorSchema)
       const result = await engine.executeMapping(errorSchema.id, testBusinessData)
-      
+
       expect(result.success).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
       expect(result.errors[0].errorType).toBe('transformation')
@@ -277,7 +277,7 @@ describe('FieldMappingEngine', () => {
 
     test('should calculate execution statistics', async () => {
       const result = await engine.executeMapping(testSchema.id, testBusinessData)
-      
+
       expect(result.statistics).toBeDefined()
       expect(result.statistics.executionTime).toBeGreaterThan(0)
       expect(result.statistics.averageRecordTime).toBeGreaterThan(0)
@@ -292,14 +292,14 @@ describe('FieldMappingEngine', () => {
 
     test('should validate mapping configuration', async () => {
       const validation = await engine.validateMapping(testSchema, testBusinessData.slice(0, 1))
-      
+
       expect(validation.isValid).toBe(true)
       expect(validation.coverage.coveragePercentage).toBeGreaterThan(0)
     })
 
     test('should test mapping with sample data', async () => {
       const testResult = await engine.testMapping(testSchema, testBusinessData.slice(0, 1))
-      
+
       expect(testResult.testCases).toHaveLength(1)
       expect(testResult.summary.totalTests).toBe(1)
       expect(testResult.summary.successRate).toBeGreaterThanOrEqual(0)
@@ -334,14 +334,15 @@ describe('FieldMappingEngine', () => {
 
   describe('Error Handling', () => {
     test('should handle invalid schema ID', async () => {
-      await expect(engine.executeMapping('nonexistent', testBusinessData))
-        .rejects.toThrow('Schema not found')
+      await expect(engine.executeMapping('nonexistent', testBusinessData)).rejects.toThrow(
+        'Schema not found'
+      )
     })
 
     test('should handle empty data gracefully', async () => {
       engine.registerSchema(testSchema)
       const result = await engine.executeMapping(testSchema.id, [])
-      
+
       expect(result.success).toBe(true)
       expect(result.recordsProcessed).toBe(0)
       expect(result.mappedData).toHaveLength(0)
@@ -350,9 +351,9 @@ describe('FieldMappingEngine', () => {
     test('should handle malformed input data', async () => {
       engine.registerSchema(testSchema)
       const malformedData = [null, undefined, 'not an object', {}]
-      
+
       const result = await engine.executeMapping(testSchema.id, malformedData as any)
-      
+
       expect(result.recordsProcessed).toBe(4)
       expect(result.recordsSuccessful).toBeLessThan(4) // Some should fail validation
     })

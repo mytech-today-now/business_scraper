@@ -16,8 +16,8 @@ jest.mock('@/lib/postgresql-database', () => ({
   database: {
     query: jest.fn(),
     connect: jest.fn(),
-    disconnect: jest.fn()
-  }
+    disconnect: jest.fn(),
+  },
 }))
 
 jest.mock('@/lib/enhancedScrapingEngine', () => ({
@@ -27,8 +27,8 @@ jest.mock('@/lib/enhancedScrapingEngine', () => ({
     getJobStatus: jest.fn(),
     getStats: jest.fn(),
     cancelJob: jest.fn(),
-    shutdown: jest.fn()
-  }
+    shutdown: jest.fn(),
+  },
 }))
 
 describe('API Integration Tests', () => {
@@ -47,7 +47,7 @@ describe('API Integration Tests', () => {
         const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
           method: 'POST',
           body: JSON.stringify({ action: 'initialize' }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -65,9 +65,9 @@ describe('API Integration Tests', () => {
             action: 'add-job',
             url: 'https://example.com',
             depth: 2,
-            priority: 5
+            priority: 5,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -85,10 +85,10 @@ describe('API Integration Tests', () => {
         const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
           method: 'POST',
           body: JSON.stringify({
-            action: 'add-job'
+            action: 'add-job',
             // Missing URL
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -103,9 +103,9 @@ describe('API Integration Tests', () => {
           method: 'POST',
           body: JSON.stringify({
             action: 'add-job',
-            url: 'not-a-valid-url'
+            url: 'not-a-valid-url',
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -122,9 +122,9 @@ describe('API Integration Tests', () => {
             action: 'add-multiple-jobs',
             urls: ['https://example1.com', 'https://example2.com'],
             depth: 3,
-            priority: 7
+            priority: 7,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -142,9 +142,9 @@ describe('API Integration Tests', () => {
           method: 'POST',
           body: JSON.stringify({
             action: 'add-multiple-jobs',
-            urls
+            urls,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -159,9 +159,9 @@ describe('API Integration Tests', () => {
           method: 'POST',
           body: JSON.stringify({
             action: 'get-job-status',
-            jobId: 'test-job-id'
+            jobId: 'test-job-id',
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -177,9 +177,9 @@ describe('API Integration Tests', () => {
           method: 'POST',
           body: JSON.stringify({
             action: 'cancel-job',
-            jobId: 'test-job-id'
+            jobId: 'test-job-id',
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -193,9 +193,9 @@ describe('API Integration Tests', () => {
         const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
           method: 'POST',
           body: JSON.stringify({
-            action: 'invalid-action'
+            action: 'invalid-action',
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await enhancedScrapePost(request)
@@ -235,19 +235,19 @@ describe('API Integration Tests', () => {
             street: '123 Main St',
             city: 'New York',
             state: 'NY',
-            zipCode: '10001'
+            zipCode: '10001',
           },
           scrapedAt: new Date(),
-          confidence: 0.85
+          confidence: 0.85,
         }
 
         const request = new NextRequest('http://localhost:3000/api/data-management', {
           method: 'POST',
           body: JSON.stringify({
             action: 'validate-business',
-            business: mockBusiness
+            business: mockBusiness,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -267,24 +267,24 @@ describe('API Integration Tests', () => {
             businessName: 'Test Business 1',
             industry: 'Technology',
             email: ['test1@example.com'],
-            phone: '(555) 123-4567'
+            phone: '(555) 123-4567',
           },
           {
             id: 'test-2',
             businessName: 'Test Business 2',
             industry: 'Healthcare',
             email: ['test2@example.com'],
-            phone: '(555) 987-6543'
-          }
+            phone: '(555) 987-6543',
+          },
         ]
 
         const request = new NextRequest('http://localhost:3000/api/data-management', {
           method: 'POST',
           body: JSON.stringify({
             action: 'validate-batch',
-            businesses: mockBusinesses
+            businesses: mockBusinesses,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -300,16 +300,16 @@ describe('API Integration Tests', () => {
         const businesses = Array(1001).fill({
           id: 'test',
           businessName: 'Test',
-          industry: 'Test'
+          industry: 'Test',
         })
 
         const request = new NextRequest('http://localhost:3000/api/data-management', {
           method: 'POST',
           body: JSON.stringify({
             action: 'validate-batch',
-            businesses
+            businesses,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -326,24 +326,24 @@ describe('API Integration Tests', () => {
             businessName: 'Test Restaurant',
             industry: 'Restaurant',
             email: ['info@test.com'],
-            phone: '(555) 123-4567'
+            phone: '(555) 123-4567',
           },
           {
             id: 'test-2',
             businessName: 'Test Restaurant',
             industry: 'Restaurant',
             email: ['contact@test.com'],
-            phone: '(555) 123-4567'
-          }
+            phone: '(555) 123-4567',
+          },
         ]
 
         const request = new NextRequest('http://localhost:3000/api/data-management', {
           method: 'POST',
           body: JSON.stringify({
             action: 'find-duplicates',
-            records: mockRecords
+            records: mockRecords,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -360,12 +360,12 @@ describe('API Integration Tests', () => {
         const record1 = {
           id: 'test-1',
           businessName: 'Test Business',
-          industry: 'Technology'
+          industry: 'Technology',
         }
         const record2 = {
           id: 'test-2',
           businessName: 'Test Business Inc',
-          industry: 'Technology'
+          industry: 'Technology',
         }
 
         const request = new NextRequest('http://localhost:3000/api/data-management', {
@@ -373,9 +373,9 @@ describe('API Integration Tests', () => {
           body: JSON.stringify({
             action: 'compare-records',
             record1,
-            record2
+            record2,
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -392,9 +392,9 @@ describe('API Integration Tests', () => {
         const request = new NextRequest('http://localhost:3000/api/data-management', {
           method: 'POST',
           body: JSON.stringify({
-            action: 'get-retention-policies'
+            action: 'get-retention-policies',
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -412,8 +412,8 @@ describe('API Integration Tests', () => {
             id: 'test-1',
             businessName: 'Test Business',
             industry: 'Technology',
-            email: ['test@example.com']
-          }
+            email: ['test@example.com'],
+          },
         ]
 
         const request = new NextRequest('http://localhost:3000/api/data-management', {
@@ -423,10 +423,10 @@ describe('API Integration Tests', () => {
             exportBusinesses: mockBusinesses,
             format: 'csv',
             options: {
-              includeHeaders: true
-            }
+              includeHeaders: true,
+            },
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await dataManagementPost(request)
@@ -453,7 +453,9 @@ describe('API Integration Tests', () => {
       })
 
       it('should get validation statistics', async () => {
-        const request = new NextRequest('http://localhost:3000/api/data-management?type=validation-stats')
+        const request = new NextRequest(
+          'http://localhost:3000/api/data-management?type=validation-stats'
+        )
 
         const response = await dataManagementGet(request)
         const data = await response.json()
@@ -480,7 +482,7 @@ describe('API Integration Tests', () => {
       const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
         method: 'POST',
         body: 'invalid json',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
 
       const response = await enhancedScrapePost(request)
@@ -493,7 +495,7 @@ describe('API Integration Tests', () => {
     it('should handle missing request body', async () => {
       const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
 
       const response = await enhancedScrapePost(request)
@@ -511,9 +513,9 @@ describe('API Integration Tests', () => {
       const request = new NextRequest('http://localhost:3000/api/data-management', {
         method: 'POST',
         body: JSON.stringify({
-          action: 'get-data-usage-stats'
+          action: 'get-data-usage-stats',
         }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
 
       const response = await dataManagementPost(request)
@@ -530,13 +532,13 @@ describe('API Integration Tests', () => {
         action: 'add-job',
         url: 'https://example.com',
         depth: '<script>alert("xss")</script>',
-        priority: 'DROP TABLE users;'
+        priority: 'DROP TABLE users;',
       }
 
       const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
         method: 'POST',
         body: JSON.stringify(maliciousInput),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
 
       const response = await enhancedScrapePost(request)
@@ -549,11 +551,11 @@ describe('API Integration Tests', () => {
       const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
         method: 'POST',
         body: JSON.stringify({ action: 'initialize' }),
-        headers: { 'Content-Type': 'text/plain' }
+        headers: { 'Content-Type': 'text/plain' },
       })
 
       const response = await enhancedScrapePost(request)
-      
+
       // Should handle non-JSON content type appropriately
       expect(response.status).toBeLessThan(500)
     })
@@ -562,17 +564,17 @@ describe('API Integration Tests', () => {
       const largePayload = {
         action: 'add-job',
         url: 'https://example.com',
-        data: 'x'.repeat(10000000) // 10MB of data
+        data: 'x'.repeat(10000000), // 10MB of data
       }
 
       const request = new NextRequest('http://localhost:3000/api/enhanced-scrape', {
         method: 'POST',
         body: JSON.stringify(largePayload),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       })
 
       const response = await enhancedScrapePost(request)
-      
+
       // Should handle large payloads gracefully
       expect(response.status).toBeLessThan(500)
     })

@@ -29,7 +29,7 @@ describe('Breadcrumb Component', () => {
 
     it('renders single breadcrumb item', () => {
       const items: BreadcrumbItem[] = [
-        { label: 'Home', path: 'home', clickable: false, isCurrent: true }
+        { label: 'Home', path: 'home', clickable: false, isCurrent: true },
       ]
 
       render(<Breadcrumb items={items} />)
@@ -45,7 +45,7 @@ describe('Breadcrumb Component', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
         { label: 'Configuration', path: 'config', clickable: true },
-        { label: 'Settings', path: 'settings', clickable: false, isCurrent: true }
+        { label: 'Settings', path: 'settings', clickable: false, isCurrent: true },
       ]
 
       render(<Breadcrumb items={items} />)
@@ -62,7 +62,7 @@ describe('Breadcrumb Component', () => {
     it('renders breadcrumb items with icons', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', icon: Home, clickable: true },
-        { label: 'Settings', path: 'settings', icon: Settings, clickable: false, isCurrent: true }
+        { label: 'Settings', path: 'settings', icon: Settings, clickable: false, isCurrent: true },
       ]
 
       render(<Breadcrumb items={items} showHomeIcon={false} onItemClick={jest.fn()} />)
@@ -78,7 +78,7 @@ describe('Breadcrumb Component', () => {
     it('shows home icon for first item when showHomeIcon is true', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Config', path: 'config', clickable: false, isCurrent: true }
+        { label: 'Config', path: 'config', clickable: false, isCurrent: true },
       ]
 
       render(<Breadcrumb items={items} showHomeIcon={true} onItemClick={jest.fn()} />)
@@ -92,84 +92,84 @@ describe('Breadcrumb Component', () => {
     it('calls onItemClick when clickable item is clicked', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} onItemClick={mockOnItemClick} />)
-      
+
       const homeButton = screen.getByRole('button', { name: 'Home' })
       fireEvent.click(homeButton)
-      
+
       expect(mockOnItemClick).toHaveBeenCalledWith(items[0], 0)
     })
 
     it('does not call onItemClick for non-clickable items', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: false },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} onItemClick={mockOnItemClick} />)
-      
+
       const homeSpan = screen.getByText('Home')
       fireEvent.click(homeSpan)
-      
+
       expect(mockOnItemClick).not.toHaveBeenCalled()
     })
 
     it('does not call onItemClick for current/last item', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: true, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: true, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} onItemClick={mockOnItemClick} />)
-      
+
       const currentSpan = screen.getByText('Current')
       fireEvent.click(currentSpan)
-      
+
       expect(mockOnItemClick).not.toHaveBeenCalled()
     })
 
     it('handles keyboard navigation with Enter key', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} onItemClick={mockOnItemClick} />)
-      
+
       const homeButton = screen.getByRole('button', { name: 'Home' })
       fireEvent.keyDown(homeButton, { key: 'Enter' })
-      
+
       expect(mockOnItemClick).toHaveBeenCalledWith(items[0], 0)
     })
 
     it('handles keyboard navigation with Space key', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} onItemClick={mockOnItemClick} />)
-      
+
       const homeButton = screen.getByRole('button', { name: 'Home' })
       fireEvent.keyDown(homeButton, { key: ' ' })
-      
+
       expect(mockOnItemClick).toHaveBeenCalledWith(items[0], 0)
     })
 
     it('ignores other keyboard keys', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} onItemClick={mockOnItemClick} />)
-      
+
       const homeButton = screen.getByRole('button', { name: 'Home' })
       fireEvent.keyDown(homeButton, { key: 'Tab' })
-      
+
       expect(mockOnItemClick).not.toHaveBeenCalled()
     })
   })
@@ -179,14 +179,14 @@ describe('Breadcrumb Component', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
         { label: 'Configuration', path: 'config', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} />)
-      
+
       const nav = screen.getByRole('navigation')
       expect(nav).toHaveAttribute('aria-label', 'Breadcrumb navigation')
-      
+
       const currentItem = screen.getByText('Current').closest('[aria-current]')
       expect(currentItem).toHaveAttribute('aria-current', 'page')
     })
@@ -194,11 +194,11 @@ describe('Breadcrumb Component', () => {
     it('has proper semantic HTML structure', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} />)
-      
+
       expect(screen.getByRole('navigation')).toBeInTheDocument()
       expect(screen.getByRole('list')).toBeInTheDocument()
       expect(screen.getAllByRole('listitem')).toHaveLength(2)
@@ -207,7 +207,7 @@ describe('Breadcrumb Component', () => {
     it('provides proper button titles for clickable items', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
 
       render(<Breadcrumb items={items} onItemClick={jest.fn()} />)
@@ -225,16 +225,16 @@ describe('Breadcrumb Component', () => {
         { label: 'Level2', path: 'level2', clickable: true },
         { label: 'Level3', path: 'level3', clickable: true },
         { label: 'Level4', path: 'level4', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} maxItems={4} />)
-      
+
       expect(screen.getByText('Home')).toBeInTheDocument()
       expect(screen.getByText(/\.\.\. \(\d+ more\)/)).toBeInTheDocument()
       expect(screen.getByText('Level4')).toBeInTheDocument()
       expect(screen.getByText('Current')).toBeInTheDocument()
-      
+
       // Middle items should be collapsed
       expect(screen.queryByText('Level1')).not.toBeInTheDocument()
       expect(screen.queryByText('Level2')).not.toBeInTheDocument()
@@ -245,11 +245,11 @@ describe('Breadcrumb Component', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
         { label: 'Config', path: 'config', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       render(<Breadcrumb items={items} maxItems={5} />)
-      
+
       expect(screen.getByText('Home')).toBeInTheDocument()
       expect(screen.getByText('Config')).toBeInTheDocument()
       expect(screen.getByText('Current')).toBeInTheDocument()
@@ -261,13 +261,13 @@ describe('Breadcrumb Component', () => {
     it('renders custom separator', () => {
       const items: BreadcrumbItem[] = [
         { label: 'Home', path: 'home', clickable: true },
-        { label: 'Current', path: 'current', clickable: false, isCurrent: true }
+        { label: 'Current', path: 'current', clickable: false, isCurrent: true },
       ]
-      
+
       const customSeparator = <span data-testid="custom-separator">→</span>
-      
+
       render(<Breadcrumb items={items} separator={customSeparator} />)
-      
+
       expect(screen.getByTestId('custom-separator')).toBeInTheDocument()
     })
   })
@@ -276,7 +276,7 @@ describe('Breadcrumb Component', () => {
 describe('useBreadcrumbItems Hook', () => {
   it('generates correct items for config tab', () => {
     const { result } = renderHook(() => useBreadcrumbItems('config', false))
-    
+
     expect(result.current).toHaveLength(2)
     expect(result.current[0]).toMatchObject({
       label: 'Home',
@@ -293,7 +293,7 @@ describe('useBreadcrumbItems Hook', () => {
 
   it('generates correct items for scraping tab without results', () => {
     const { result } = renderHook(() => useBreadcrumbItems('scraping', false))
-    
+
     expect(result.current).toHaveLength(3)
     expect(result.current[0]).toMatchObject({
       label: 'Home',
@@ -315,7 +315,7 @@ describe('useBreadcrumbItems Hook', () => {
 
   it('generates correct items for scraping tab with results', () => {
     const { result } = renderHook(() => useBreadcrumbItems('scraping', true))
-    
+
     expect(result.current).toHaveLength(4)
     expect(result.current[0]).toMatchObject({
       label: 'Home',

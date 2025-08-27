@@ -6,15 +6,15 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Brain, 
-  Star, 
-  TrendingUp, 
-  AlertCircle, 
-  CheckCircle, 
+import {
+  Brain,
+  Star,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle,
   RefreshCw,
   Eye,
-  Zap
+  Zap,
 } from 'lucide-react'
 import { Button } from './ui/Button'
 import { PredictiveAnalytics, LeadScore } from '@/types/ai'
@@ -33,12 +33,12 @@ interface LeadScoreBadgeProps {
  * Lead Score Badge Component
  * Displays AI-powered lead score with interactive features
  */
-export function LeadScoreBadge({ 
-  business, 
-  analytics, 
+export function LeadScoreBadge({
+  business,
+  analytics,
   onAnalyticsUpdate,
   showDetails = false,
-  size = 'md'
+  size = 'md',
 }: LeadScoreBadgeProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -55,12 +55,12 @@ export function LeadScoreBadge({
       const response = await fetch('/api/ai/lead-scoring', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           businessId: business.id,
-          business
-        })
+          business,
+        }),
       })
 
       if (!response.ok) {
@@ -74,7 +74,6 @@ export function LeadScoreBadge({
       } else {
         throw new Error(data.error || 'Failed to calculate lead score')
       }
-
     } catch (error) {
       logger.error('LeadScoreBadge', 'Failed to calculate lead score', error)
       setError(error instanceof Error ? error.message : 'Failed to calculate lead score')
@@ -153,7 +152,9 @@ export function LeadScoreBadge({
   // Loading state
   if (loading) {
     return (
-      <div className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} bg-gray-100 text-gray-600`}>
+      <div
+        className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} bg-gray-100 text-gray-600`}
+      >
         <RefreshCw className="h-3 w-3 animate-spin" />
         <span>Calculating...</span>
       </div>
@@ -163,7 +164,9 @@ export function LeadScoreBadge({
   // No analytics available
   if (!analytics) {
     return (
-      <div className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} bg-gray-100 text-gray-600`}>
+      <div
+        className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} bg-gray-100 text-gray-600`}
+      >
         <Brain className="h-3 w-3" />
         <span>No Score</span>
       </div>
@@ -178,21 +181,22 @@ export function LeadScoreBadge({
   return (
     <div className="flex items-center gap-2">
       {/* Main Score Badge */}
-      <div 
+      <div
         className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} ${scoreColor} cursor-pointer transition-all hover:shadow-sm`}
         onClick={() => showDetails && setShowDetailedView(!showDetailedView)}
         title={`Lead Score: ${leadScore.overallScore} (${priorityLabel} Priority)`}
       >
         {scoreIcon}
         <span className="font-medium">{leadScore.overallScore}</span>
-        {showDetails && (
-          <Eye className="h-3 w-3 ml-1" />
-        )}
+        {showDetails && <Eye className="h-3 w-3 ml-1" />}
       </div>
 
       {/* Confidence Indicator */}
       {leadScore.confidence > 0.8 && (
-        <div className="inline-flex items-center" title={`High Confidence (${Math.round(leadScore.confidence * 100)}%)`}>
+        <div
+          className="inline-flex items-center"
+          title={`High Confidence (${Math.round(leadScore.confidence * 100)}%)`}
+        >
           <CheckCircle className="h-3 w-3 text-green-600" />
         </div>
       )}
@@ -211,8 +215,14 @@ export function LeadScoreBadge({
 
       {/* Detailed View Modal/Popup */}
       {showDetailedView && showDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowDetailedView(false)}>
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowDetailedView(false)}
+        >
+          <div
+            className="bg-white rounded-lg p-6 max-w-md w-full mx-4"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Brain className="h-5 w-5 text-blue-600" />
@@ -244,23 +254,23 @@ export function LeadScoreBadge({
             {/* Component Scores */}
             <div className="space-y-3 mb-4">
               <h4 className="font-medium text-sm">Component Scores</h4>
-              
+
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Website Quality</span>
                   <span className="font-medium">{leadScore.components.websiteQuality}</span>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Business Maturity</span>
                   <span className="font-medium">{leadScore.components.businessMaturity}</span>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Conversion Probability</span>
                   <span className="font-medium">{leadScore.components.conversionProbability}</span>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Industry Relevance</span>
                   <span className="font-medium">{leadScore.components.industryRelevance}</span>
@@ -277,11 +287,15 @@ export function LeadScoreBadge({
                 </div>
                 <p className="text-sm text-gray-700">{analytics.recommendation.reasoning}</p>
                 <div className="mt-2">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    analytics.recommendation.priority === 'high' ? 'bg-green-100 text-green-800' :
-                    analytics.recommendation.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      analytics.recommendation.priority === 'high'
+                        ? 'bg-green-100 text-green-800'
+                        : analytics.recommendation.priority === 'medium'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
                     {analytics.recommendation.priority.toUpperCase()} PRIORITY
                   </span>
                 </div>

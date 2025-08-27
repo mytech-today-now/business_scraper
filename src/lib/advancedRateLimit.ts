@@ -45,9 +45,12 @@ export class AdvancedRateLimitService {
 
   constructor() {
     // Start cleanup interval (every 5 minutes)
-    this.cleanupInterval = setInterval(() => {
-      this.cleanup()
-    }, 5 * 60 * 1000)
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanup()
+      },
+      5 * 60 * 1000
+    )
   }
 
   /**
@@ -64,7 +67,7 @@ export class AdvancedRateLimitService {
         requests: [],
         totalRequests: 0,
         firstRequest: now,
-        lastRequest: now
+        lastRequest: now,
       }
       this.rateLimitStore.set(key, entry)
     }
@@ -89,14 +92,16 @@ export class AdvancedRateLimitService {
         // Add new entry
         entry.requests.push({ timestamp: now, count: 1 })
       }
-      
+
       entry.totalRequests++
       entry.lastRequest = now
     } else {
       // Calculate retry after time
       const oldestRequest = entry.requests[0]
-      const retryAfter = oldestRequest ? Math.ceil((oldestRequest.timestamp + config.windowMs - now) / 1000) : Math.ceil(config.windowMs / 1000)
-      
+      const retryAfter = oldestRequest
+        ? Math.ceil((oldestRequest.timestamp + config.windowMs - now) / 1000)
+        : Math.ceil(config.windowMs / 1000)
+
       if (config.onLimitReached) {
         // Note: We can't pass the actual request here, but we can log the key
         logger.warn('RateLimit', `Rate limit exceeded for key: ${key}`)
@@ -105,58 +110,66 @@ export class AdvancedRateLimitService {
       return {
         allowed: false,
         remaining: 0,
-        resetTime: oldestRequest ? oldestRequest.timestamp + config.windowMs : now + config.windowMs,
-        retryAfter
+        resetTime: oldestRequest
+          ? oldestRequest.timestamp + config.windowMs
+          : now + config.windowMs,
+        retryAfter,
       }
     }
 
     // Calculate reset time (when the oldest request will expire)
     const oldestRequest = entry.requests[0]
-    const resetTime = oldestRequest ? oldestRequest.timestamp + config.windowMs : now + config.windowMs
+    const resetTime = oldestRequest
+      ? oldestRequest.timestamp + config.windowMs
+      : now + config.windowMs
 
     return {
       allowed: true,
       remaining,
-      resetTime
+      resetTime,
     }
   }
 
   /**
    * Check rate limit for API endpoints with different configurations
    */
-  checkApiRateLimit(request: NextRequest, endpointType: 'general' | 'scraping' | 'auth' | 'upload' | 'export'): RateLimitResult {
+  checkApiRateLimit(
+    request: NextRequest,
+    endpointType: 'general' | 'scraping' | 'auth' | 'upload' | 'export'
+  ): RateLimitResult {
     const ip = getClientIP(request)
     const sessionId = request.cookies.get('session-id')?.value
-    
+
     // Use session ID if available, otherwise fall back to IP
     const key = sessionId ? `session:${sessionId}` : `ip:${ip}`
-    
+
     const configs: Record<string, RateLimitConfig> = {
       general: {
         windowMs: 15 * 60 * 1000, // 15 minutes
         maxRequests: 100,
-        onLimitReached: () => logger.warn('RateLimit', `General API rate limit exceeded for ${key}`)
+        onLimitReached: () =>
+          logger.warn('RateLimit', `General API rate limit exceeded for ${key}`),
       },
       scraping: {
         windowMs: 60 * 60 * 1000, // 1 hour
         maxRequests: 100, // Increased from 10 to 100 for better scraping performance
-        onLimitReached: () => logger.warn('RateLimit', `Scraping rate limit exceeded for ${key}`)
+        onLimitReached: () => logger.warn('RateLimit', `Scraping rate limit exceeded for ${key}`),
       },
       auth: {
         windowMs: 15 * 60 * 1000, // 15 minutes
         maxRequests: 5,
-        onLimitReached: () => logger.warn('RateLimit', `Auth rate limit exceeded for ${key}`)
+        onLimitReached: () => logger.warn('RateLimit', `Auth rate limit exceeded for ${key}`),
       },
       upload: {
         windowMs: 60 * 60 * 1000, // 1 hour
         maxRequests: 20,
-        onLimitReached: () => logger.warn('RateLimit', `Upload rate limit exceeded for ${key}`)
+        onLimitReached: () => logger.warn('RateLimit', `Upload rate limit exceeded for ${key}`),
       },
       export: {
         windowMs: 60 * 60 * 1000, // 1 hour
         maxRequests: 50,
-        onLimitReached: () => logger.warn('RateLimit', `Export rate limit exceeded for ${key}`)
-      }
+        onLimitReached: () => logger.warn('RateLimit', `Export rate limit exceeded for ${key}`),
+      },
     }
 
     const config = Object.prototype.hasOwnProperty.call(configs, endpointType)
@@ -172,7 +185,7 @@ export class AdvancedRateLimitService {
     const config: RateLimitConfig = {
       windowMs: 60 * 1000, // 1 minute
       maxRequests: 20,
-      onLimitReached: () => logger.warn('RateLimit', `Burst rate limit exceeded for ${key}`)
+      onLimitReached: () => logger.warn('RateLimit', `Burst rate limit exceeded for ${key}`),
     }
 
     return this.checkRateLimit(`burst:${key}`, config)
@@ -184,11 +197,12 @@ export class AdvancedRateLimitService {
   checkActionRateLimit(request: NextRequest, action: string): RateLimitResult {
     const ip = getClientIP(request)
     const key = `action:${action}:${ip}`
-    
+
     const config: RateLimitConfig = {
       windowMs: 5 * 60 * 1000, // 5 minutes
       maxRequests: 3,
-      onLimitReached: () => logger.warn('RateLimit', `Action rate limit exceeded for ${action} from ${ip}`)
+      onLimitReached: () =>
+        logger.warn('RateLimit', `Action rate limit exceeded for ${action} from ${ip}`),
     }
 
     return this.checkRateLimit(key, config)
@@ -206,7 +220,7 @@ export class AdvancedRateLimitService {
       return {
         allowed: true,
         remaining: config.maxRequests,
-        resetTime: now + config.windowMs
+        resetTime: now + config.windowMs,
       }
     }
 
@@ -219,13 +233,15 @@ export class AdvancedRateLimitService {
     const allowed = currentRequests < config.maxRequests
 
     const oldestRequest = entry.requests.find(req => req.timestamp > windowStart)
-    const resetTime = oldestRequest ? oldestRequest.timestamp + config.windowMs : now + config.windowMs
+    const resetTime = oldestRequest
+      ? oldestRequest.timestamp + config.windowMs
+      : now + config.windowMs
 
     return {
       allowed,
       remaining,
       resetTime,
-      retryAfter: allowed ? undefined : Math.ceil((resetTime - now) / 1000)
+      retryAfter: allowed ? undefined : Math.ceil((resetTime - now) / 1000),
     }
   }
 

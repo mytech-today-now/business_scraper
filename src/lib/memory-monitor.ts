@@ -22,9 +22,9 @@ export interface BrowserMemoryStats {
 }
 
 export interface MemoryThresholds {
-  warning: number    // 70%
-  critical: number   // 85%
-  emergency: number  // 95%
+  warning: number // 70%
+  critical: number // 85%
+  emergency: number // 95%
 }
 
 export interface MemoryAlert {
@@ -46,7 +46,7 @@ export class MemoryMonitor extends EventEmitter {
   private thresholds: MemoryThresholds = {
     warning: 70,
     critical: 85,
-    emergency: 95
+    emergency: 95,
   }
 
   constructor() {
@@ -141,7 +141,7 @@ export class MemoryMonitor extends EventEmitter {
             used: memory.usedJSHeapSize,
             total: memory.totalJSHeapSize,
             percentage: (memory.usedJSHeapSize / memory.totalJSHeapSize) * 100,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           }
         }
       } else if (typeof process !== 'undefined' && process.memoryUsage) {
@@ -151,7 +151,7 @@ export class MemoryMonitor extends EventEmitter {
           used: usage.heapUsed,
           total: usage.heapTotal,
           percentage: (usage.heapUsed / usage.heapTotal) * 100,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         }
       }
     } catch (error) {
@@ -172,7 +172,7 @@ export class MemoryMonitor extends EventEmitter {
           heapTotal: usage.heapTotal,
           external: usage.external,
           rss: usage.rss,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         }
       }
     } catch (error) {
@@ -208,9 +208,19 @@ export class MemoryMonitor extends EventEmitter {
     const { percentage } = stats
 
     if (percentage >= this.thresholds.emergency) {
-      this.emitAlert('emergency', 'Critical memory usage detected! Immediate cleanup required.', stats, 'emergency-cleanup')
+      this.emitAlert(
+        'emergency',
+        'Critical memory usage detected! Immediate cleanup required.',
+        stats,
+        'emergency-cleanup'
+      )
     } else if (percentage >= this.thresholds.critical) {
-      this.emitAlert('critical', 'High memory usage detected. Consider clearing old data.', stats, 'cleanup-suggested')
+      this.emitAlert(
+        'critical',
+        'High memory usage detected. Consider clearing old data.',
+        stats,
+        'cleanup-suggested'
+      )
     } else if (percentage >= this.thresholds.warning) {
       this.emitAlert('warning', 'Memory usage is elevated. Monitor closely.', stats)
     }
@@ -219,19 +229,24 @@ export class MemoryMonitor extends EventEmitter {
   /**
    * Emit memory alert
    */
-  private emitAlert(level: MemoryAlert['level'], message: string, stats: MemoryStats, action?: string): void {
+  private emitAlert(
+    level: MemoryAlert['level'],
+    message: string,
+    stats: MemoryStats,
+    action?: string
+  ): void {
     const alert: MemoryAlert = {
       level,
       message,
       stats,
       timestamp: Date.now(),
-      action
+      action,
     }
 
     logger.warn('MemoryMonitor', `Memory alert: ${level} - ${message}`, {
       percentage: stats.percentage,
       used: this.formatBytes(stats.used),
-      total: this.formatBytes(stats.total)
+      total: this.formatBytes(stats.total),
     })
 
     this.emit('memory-alert', alert)

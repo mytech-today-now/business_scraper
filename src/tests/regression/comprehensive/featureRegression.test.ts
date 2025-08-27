@@ -41,12 +41,12 @@ class RegressionTestSuite {
         this.results.set(testCase.name, { passed: true })
         passed++
       } catch (error) {
-        this.results.set(testCase.name, { 
-          passed: false, 
-          error: error instanceof Error ? error.message : 'Unknown error' 
+        this.results.set(testCase.name, {
+          passed: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
         })
         failed++
-        
+
         if (testCase.criticalLevel === 'critical') {
           critical++
         }
@@ -61,9 +61,8 @@ class RegressionTestSuite {
   }
 
   getCriticalFailures(): RegressionTestCase[] {
-    return this.testCases.filter(testCase => 
-      testCase.criticalLevel === 'critical' && 
-      !this.results.get(testCase.name)?.passed
+    return this.testCases.filter(
+      testCase => testCase.criticalLevel === 'critical' && !this.results.get(testCase.name)?.passed
     )
   }
 }
@@ -98,18 +97,18 @@ describe('Feature Regression Comprehensive Tests', () => {
               industry: 'restaurants',
               confidence: 0.9,
               source: 'search',
-              scrapedAt: new Date().toISOString()
-            }
+              scrapedAt: new Date().toISOString(),
+            },
           ]
 
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue(mockResults)
 
           const results = await clientSearchEngine.searchBusinesses('restaurants', '12345', 10)
-          
+
           expect(results).toHaveLength(1)
           expect(results[0].businessName).toBe('Test Restaurant')
           expect(results[0].industry).toBe('restaurants')
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -125,13 +124,21 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(emptyResults).toEqual([])
 
           // Test invalid ZIP code
-          const invalidZipResults = await clientSearchEngine.searchBusinesses('restaurants', 'invalid', 10)
+          const invalidZipResults = await clientSearchEngine.searchBusinesses(
+            'restaurants',
+            'invalid',
+            10
+          )
           expect(invalidZipResults).toEqual([])
 
           // Test negative max results
-          const negativeResults = await clientSearchEngine.searchBusinesses('restaurants', '12345', -1)
+          const negativeResults = await clientSearchEngine.searchBusinesses(
+            'restaurants',
+            '12345',
+            -1
+          )
           expect(negativeResults).toEqual([])
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -154,7 +161,7 @@ describe('Feature Regression Comprehensive Tests', () => {
               industry: 'restaurants',
               confidence: 0.9,
               source: 'search',
-              scrapedAt: new Date().toISOString()
+              scrapedAt: new Date().toISOString(),
             },
             {
               id: '2',
@@ -169,14 +176,14 @@ describe('Feature Regression Comprehensive Tests', () => {
               industry: 'restaurants',
               confidence: 0.7,
               source: 'search',
-              scrapedAt: new Date().toISOString()
-            }
+              scrapedAt: new Date().toISOString(),
+            },
           ]
 
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue(mockResults)
 
           const results = await clientSearchEngine.searchBusinesses('restaurants', '12345', 10)
-          
+
           results.forEach(business => {
             expect(business).toHaveProperty('id')
             expect(business).toHaveProperty('businessName')
@@ -185,16 +192,16 @@ describe('Feature Regression Comprehensive Tests', () => {
             expect(business).toHaveProperty('confidence')
             expect(business).toHaveProperty('source')
             expect(business).toHaveProperty('scrapedAt')
-            
+
             expect(typeof business.id).toBe('string')
             expect(typeof business.businessName).toBe('string')
             expect(typeof business.confidence).toBe('number')
           })
-        }
+        },
       })
 
       const results = await regressionSuite.runAllTests()
-      
+
       expect(results.critical).toBe(0) // No critical failures allowed
       expect(results.passed).toBeGreaterThan(results.failed)
     })
@@ -222,18 +229,18 @@ describe('Feature Regression Comprehensive Tests', () => {
               industry: 'restaurants',
               confidence: 0.8,
               source: 'scraper',
-              scrapedAt: new Date().toISOString()
-            }
+              scrapedAt: new Date().toISOString(),
+            },
           ]
 
           ;(scraperService.scrapeWebsite as jest.Mock).mockResolvedValue(mockBusinesses)
 
           const results = await scraperService.scrapeWebsite('https://example.com', 2, 5)
-          
+
           expect(results).toHaveLength(1)
           expect(results[0].source).toBe('scraper')
           expect(results[0].businessName).toBe('Scraped Business')
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -249,13 +256,17 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(invalidUrlResults).toEqual([])
 
           // Test malicious URL
-          const maliciousResults = await scraperService.scrapeWebsite('javascript:alert("xss")', 2, 5)
+          const maliciousResults = await scraperService.scrapeWebsite(
+            'javascript:alert("xss")',
+            2,
+            5
+          )
           expect(maliciousResults).toEqual([])
 
           // Test with zero depth
           const zeroDepthResults = await scraperService.scrapeWebsite('https://example.com', 0, 5)
           expect(zeroDepthResults).toEqual([])
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -271,14 +282,14 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(initialized).toBe(true)
 
           await scraperService.cleanup()
-          
+
           // Should not throw error
           expect(true).toBe(true)
-        }
+        },
       })
 
       const results = await regressionSuite.runAllTests()
-      
+
       expect(results.critical).toBe(0)
       expect(results.passed).toBeGreaterThan(results.failed)
     })
@@ -305,7 +316,7 @@ describe('Feature Regression Comprehensive Tests', () => {
             industry: 'restaurants',
             confidence: 0.9,
             source: 'scraper',
-            scrapedAt: new Date().toISOString()
+            scrapedAt: new Date().toISOString(),
           }
 
           // Validate required fields
@@ -320,7 +331,7 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(typeof validBusiness.confidence).toBe('number')
           expect(validBusiness.confidence).toBeGreaterThanOrEqual(0)
           expect(validBusiness.confidence).toBeLessThanOrEqual(1)
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -333,7 +344,7 @@ describe('Feature Regression Comprehensive Tests', () => {
             '<script>alert("xss")</script>',
             '"; DROP TABLE businesses; --',
             '${jndi:ldap://malicious.com}',
-            '../../../etc/passwd'
+            '../../../etc/passwd',
           ]
 
           maliciousInputs.forEach(input => {
@@ -349,11 +360,11 @@ describe('Feature Regression Comprehensive Tests', () => {
             expect(sanitized).not.toContain('${')
             expect(sanitized).not.toContain('..')
           })
-        }
+        },
       })
 
       const results = await regressionSuite.runAllTests()
-      
+
       expect(results.critical).toBe(0)
       expect(results.passed).toBeGreaterThan(results.failed)
     })
@@ -375,12 +386,12 @@ describe('Feature Regression Comprehensive Tests', () => {
                 name: 'Test Business',
                 url: 'https://example.com',
                 address: '123 Main St',
-                phone: '555-1234'
-              }
+                phone: '555-1234',
+              },
             ],
             total: 1,
             page: 1,
-            limit: 10
+            limit: 10,
           }
 
           // Validate response structure
@@ -388,7 +399,7 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(mockApiResponse).toHaveProperty('total')
           expect(Array.isArray(mockApiResponse.results)).toBe(true)
           expect(typeof mockApiResponse.total).toBe('number')
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -402,11 +413,11 @@ describe('Feature Regression Comprehensive Tests', () => {
               {
                 id: '1',
                 businessName: 'Scraped Business',
-                url: 'https://example.com'
-              }
+                url: 'https://example.com',
+              },
             ],
             success: true,
-            scrapedAt: new Date().toISOString()
+            scrapedAt: new Date().toISOString(),
           }
 
           expect(mockScrapeResponse).toHaveProperty('businesses')
@@ -414,7 +425,7 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(mockScrapeResponse).toHaveProperty('scrapedAt')
           expect(Array.isArray(mockScrapeResponse.businesses)).toBe(true)
           expect(typeof mockScrapeResponse.success).toBe('boolean')
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -426,7 +437,7 @@ describe('Feature Regression Comprehensive Tests', () => {
           const mockErrorResponse = {
             error: 'Invalid request parameters',
             code: 'INVALID_PARAMS',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
 
           expect(mockErrorResponse).toHaveProperty('error')
@@ -434,11 +445,11 @@ describe('Feature Regression Comprehensive Tests', () => {
           expect(mockErrorResponse).toHaveProperty('timestamp')
           expect(typeof mockErrorResponse.error).toBe('string')
           expect(typeof mockErrorResponse.code).toBe('string')
-        }
+        },
       })
 
       const results = await regressionSuite.runAllTests()
-      
+
       expect(results.critical).toBe(0)
       expect(results.passed).toBeGreaterThan(results.failed)
     })
@@ -453,14 +464,14 @@ describe('Feature Regression Comprehensive Tests', () => {
         expectedBehavior: 'Search operations should complete within acceptable time',
         testFunction: async () => {
           const startTime = Date.now()
-          
+
           ;(clientSearchEngine.searchBusinesses as jest.Mock).mockResolvedValue([])
-          
+
           await clientSearchEngine.searchBusinesses('restaurants', '12345', 10)
-          
+
           const duration = Date.now() - startTime
           expect(duration).toBeLessThan(5000) // Should complete within 5 seconds
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -470,18 +481,18 @@ describe('Feature Regression Comprehensive Tests', () => {
         expectedBehavior: 'Scraping operations should complete within acceptable time',
         testFunction: async () => {
           const startTime = Date.now()
-          
+
           ;(scraperService.scrapeWebsite as jest.Mock).mockResolvedValue([])
-          
+
           await scraperService.scrapeWebsite('https://example.com', 1, 2)
-          
+
           const duration = Date.now() - startTime
           expect(duration).toBeLessThan(10000) // Should complete within 10 seconds
-        }
+        },
       })
 
       const results = await regressionSuite.runAllTests()
-      
+
       expect(results.passed).toBeGreaterThan(results.failed)
     })
   })
@@ -497,15 +508,15 @@ describe('Feature Regression Comprehensive Tests', () => {
           // Test that old API formats are still supported
           const legacySearchParams = {
             q: 'restaurants', // Old parameter name
-            zip: '12345',     // Old parameter name
-            max: 10          // Old parameter name
+            zip: '12345', // Old parameter name
+            max: 10, // Old parameter name
           }
 
           // Should handle legacy parameters gracefully
           expect(legacySearchParams.q).toBeTruthy()
           expect(legacySearchParams.zip).toBeTruthy()
           expect(legacySearchParams.max).toBeGreaterThan(0)
-        }
+        },
       })
 
       regressionSuite.addTestCase({
@@ -518,18 +529,18 @@ describe('Feature Regression Comprehensive Tests', () => {
           const legacyBusiness = {
             name: 'Legacy Business', // Old field name
             website: 'https://example.com', // Old field name
-            telephone: '555-1234' // Old field name
+            telephone: '555-1234', // Old field name
           }
 
           // Should be able to process legacy format
           expect(legacyBusiness.name).toBeTruthy()
           expect(legacyBusiness.website).toBeTruthy()
           expect(legacyBusiness.telephone).toBeTruthy()
-        }
+        },
       })
 
       const results = await regressionSuite.runAllTests()
-      
+
       expect(results.critical).toBe(0)
       expect(results.passed).toBeGreaterThan(results.failed)
     })
@@ -539,21 +550,24 @@ describe('Feature Regression Comprehensive Tests', () => {
     test('should provide comprehensive regression test coverage', async () => {
       const allResults = await regressionSuite.runAllTests()
       const criticalFailures = regressionSuite.getCriticalFailures()
-      
+
       // Log test results for debugging
       console.log('Regression Test Results:', allResults)
-      
+
       if (criticalFailures.length > 0) {
-        console.error('Critical Failures:', criticalFailures.map(f => f.name))
+        console.error(
+          'Critical Failures:',
+          criticalFailures.map(f => f.name)
+        )
       }
 
       // No critical failures should be allowed
       expect(criticalFailures.length).toBe(0)
-      
+
       // At least 90% of tests should pass
       const successRate = allResults.passed / (allResults.passed + allResults.failed)
       expect(successRate).toBeGreaterThanOrEqual(0.9)
-      
+
       // Should have comprehensive test coverage
       expect(allResults.passed + allResults.failed).toBeGreaterThan(10)
     })

@@ -24,12 +24,12 @@ const mockDatabase = {
   pool: {
     query: mockQuery,
     connect: mockConnect,
-    end: mockEnd
-  }
+    end: mockEnd,
+  },
 }
 
 jest.mock('@/lib/database', () => ({
-  database: mockDatabase
+  database: mockDatabase,
 }))
 
 // Mock logger
@@ -39,7 +39,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockQuery.mockResolvedValue({ rows: [], rowCount: 0 })
-    mockTransaction.mockImplementation(async (callback) => {
+    mockTransaction.mockImplementation(async callback => {
       return await callback(mockDatabase)
     })
   })
@@ -59,17 +59,17 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         industry: 'Test Industry',
         confidence: 0.9,
         source: 'scraper',
-        scrapedAt: new Date().toISOString()
+        scrapedAt: new Date().toISOString(),
       }
 
       mockQuery.mockResolvedValueOnce({
         rows: [{ id: '1', ...businessData }],
-        rowCount: 1
+        rowCount: 1,
       })
 
       // Import the database service
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusiness(businessData)
 
       expect(mockQuery).toHaveBeenCalledWith(
@@ -78,7 +78,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           businessData.businessName,
           businessData.url,
           businessData.phone,
-          businessData.email
+          businessData.email,
         ])
       )
       expect(result).toMatchObject(businessData)
@@ -98,17 +98,17 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         industry: 'Test Industry',
         confidence: 0.9,
         source: 'scraper',
-        scrapedAt: new Date().toISOString()
+        scrapedAt: new Date().toISOString(),
       }
 
       // Mock duplicate key error
       mockQuery.mockRejectedValueOnce({
         code: '23505', // PostgreSQL unique violation
-        constraint: 'businesses_url_key'
+        constraint: 'businesses_url_key',
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusiness(businessData)
 
       expect(result).toBeNull()
@@ -122,16 +122,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         phone: '555-1234',
         email: 'test@example.com',
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
 
       mockQuery.mockResolvedValueOnce({
         rows: [businessData],
-        rowCount: 1
+        rowCount: 1,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.getBusinessById('1')
 
       expect(mockQuery).toHaveBeenCalledWith(
@@ -144,11 +144,11 @@ describe('Database Operations Comprehensive Integration Tests', () => {
     test('should handle non-existent business ID', async () => {
       mockQuery.mockResolvedValueOnce({
         rows: [],
-        rowCount: 0
+        rowCount: 0,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.getBusinessById('non-existent')
 
       expect(result).toBeNull()
@@ -158,16 +158,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
       const updateData = {
         businessName: 'Updated Business Name',
         phone: '555-5678',
-        email: 'updated@example.com'
+        email: 'updated@example.com',
       }
 
       mockQuery.mockResolvedValueOnce({
         rows: [{ id: '1', ...updateData }],
-        rowCount: 1
+        rowCount: 1,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.updateBusiness('1', updateData)
 
       expect(mockQuery).toHaveBeenCalledWith(
@@ -180,11 +180,11 @@ describe('Database Operations Comprehensive Integration Tests', () => {
     test('should delete business record', async () => {
       mockQuery.mockResolvedValueOnce({
         rows: [],
-        rowCount: 1
+        rowCount: 1,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.deleteBusiness('1')
 
       expect(mockQuery).toHaveBeenCalledWith(
@@ -197,11 +197,11 @@ describe('Database Operations Comprehensive Integration Tests', () => {
     test('should handle delete of non-existent business', async () => {
       mockQuery.mockResolvedValueOnce({
         rows: [],
-        rowCount: 0
+        rowCount: 0,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.deleteBusiness('non-existent')
 
       expect(result).toBe(false)
@@ -216,25 +216,29 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           business_name: 'Restaurant A',
           industry: 'restaurants',
           city: 'New York',
-          state: 'NY'
+          state: 'NY',
         },
         {
           id: '2',
           business_name: 'Restaurant B',
           industry: 'restaurants',
           city: 'New York',
-          state: 'NY'
-        }
+          state: 'NY',
+        },
       ]
 
       mockQuery.mockResolvedValueOnce({
         rows: mockBusinesses,
-        rowCount: 2
+        rowCount: 2,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
-      const result = await businessDatabase.searchBusinessesByIndustry('restaurants', 'New York', 'NY')
+
+      const result = await businessDatabase.searchBusinessesByIndustry(
+        'restaurants',
+        'New York',
+        'NY'
+      )
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('WHERE industry = $1'),
@@ -248,23 +252,22 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         {
           id: '1',
           business_name: 'Local Business',
-          zip_code: '12345'
-        }
+          zip_code: '12345',
+        },
       ]
 
       mockQuery.mockResolvedValueOnce({
         rows: mockBusinesses,
-        rowCount: 1
+        rowCount: 1,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.searchBusinessesByZipCode('12345')
 
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('WHERE zip_code = $1'),
-        ['12345']
-      )
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('WHERE zip_code = $1'), [
+        '12345',
+      ])
       expect(result).toHaveLength(1)
     })
 
@@ -274,16 +277,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         city: 'New York',
         state: 'NY',
         zipCode: '10001',
-        minConfidence: 0.8
+        minConfidence: 0.8,
       }
 
       mockQuery.mockResolvedValueOnce({
         rows: [],
-        rowCount: 0
+        rowCount: 0,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.searchBusinesses(searchParams)
 
       expect(mockQuery).toHaveBeenCalledWith(
@@ -293,7 +296,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           searchParams.city,
           searchParams.state,
           searchParams.zipCode,
-          searchParams.minConfidence
+          searchParams.minConfidence,
         ])
       )
       expect(result).toEqual([])
@@ -302,12 +305,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
     test('should handle search with no results', async () => {
       mockQuery.mockResolvedValueOnce({
         rows: [],
-        rowCount: 0
+        rowCount: 0,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
-      const result = await businessDatabase.searchBusinessesByIndustry('nonexistent', 'Nowhere', 'XX')
+
+      const result = await businessDatabase.searchBusinessesByIndustry(
+        'nonexistent',
+        'Nowhere',
+        'XX'
+      )
 
       expect(result).toEqual([])
     })
@@ -317,11 +324,11 @@ describe('Database Operations Comprehensive Integration Tests', () => {
 
       mockQuery.mockResolvedValueOnce({
         rows: [],
-        rowCount: 0
+        rowCount: 0,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.searchBusinessesByIndustry(maliciousInput, 'City', 'ST')
 
       // Should use parameterized queries to prevent injection
@@ -349,7 +356,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           industry: 'Industry 1',
           confidence: 0.9,
           source: 'scraper',
-          scrapedAt: new Date().toISOString()
+          scrapedAt: new Date().toISOString(),
         },
         {
           id: '2',
@@ -364,24 +371,24 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           industry: 'Industry 2',
           confidence: 0.8,
           source: 'scraper',
-          scrapedAt: new Date().toISOString()
-        }
+          scrapedAt: new Date().toISOString(),
+        },
       ]
 
-      mockTransaction.mockImplementation(async (callback) => {
+      mockTransaction.mockImplementation(async callback => {
         const client = {
-          query: mockQuery
+          query: mockQuery,
         }
         return await callback(client)
       })
 
       mockQuery.mockResolvedValue({
         rows: businessesData,
-        rowCount: businessesData.length
+        rowCount: businessesData.length,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusinessesBatch(businessesData)
 
       expect(mockTransaction).toHaveBeenCalled()
@@ -403,7 +410,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           industry: 'Industry 1',
           confidence: 0.9,
           source: 'scraper',
-          scrapedAt: new Date().toISOString()
+          scrapedAt: new Date().toISOString(),
         },
         {
           id: '2',
@@ -418,21 +425,22 @@ describe('Database Operations Comprehensive Integration Tests', () => {
           industry: 'Industry 2',
           confidence: 0.8,
           source: 'scraper',
-          scrapedAt: new Date().toISOString()
-        }
+          scrapedAt: new Date().toISOString(),
+        },
       ]
 
-      mockTransaction.mockImplementation(async (callback) => {
+      mockTransaction.mockImplementation(async callback => {
         const client = {
-          query: jest.fn()
+          query: jest
+            .fn()
             .mockResolvedValueOnce({ rows: [businessesData[0]], rowCount: 1 })
-            .mockRejectedValueOnce({ code: '23505' }) // Duplicate key error
+            .mockRejectedValueOnce({ code: '23505' }), // Duplicate key error
         }
         return await callback(client)
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusinessesBatch(businessesData)
 
       expect(result).toHaveLength(1) // Only one successful
@@ -440,7 +448,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
 
     test('should handle empty batch operation', async () => {
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusinessesBatch([])
 
       expect(result).toEqual([])
@@ -453,7 +461,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
       mockQuery.mockRejectedValueOnce(new Error('Connection failed'))
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.getBusinessById('1')
 
       expect(result).toBeNull()
@@ -463,7 +471,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
       mockQuery.mockRejectedValueOnce(new Error('Query timeout'))
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.searchBusinessesByIndustry('restaurants', 'City', 'ST')
 
       expect(result).toEqual([])
@@ -472,24 +480,26 @@ describe('Database Operations Comprehensive Integration Tests', () => {
     test('should handle transaction rollback', async () => {
       mockTransaction.mockRejectedValueOnce(new Error('Transaction failed'))
 
-      const businessesData: BusinessRecord[] = [{
-        id: '1',
-        businessName: 'Test Business',
-        url: 'https://example.com',
-        phone: '555-1234',
-        email: 'test@example.com',
-        address: '123 Main St',
-        city: 'Test City',
-        state: 'TS',
-        zipCode: '12345',
-        industry: 'Test Industry',
-        confidence: 0.9,
-        source: 'scraper',
-        scrapedAt: new Date().toISOString()
-      }]
+      const businessesData: BusinessRecord[] = [
+        {
+          id: '1',
+          businessName: 'Test Business',
+          url: 'https://example.com',
+          phone: '555-1234',
+          email: 'test@example.com',
+          address: '123 Main St',
+          city: 'Test City',
+          state: 'TS',
+          zipCode: '12345',
+          industry: 'Test Industry',
+          confidence: 0.9,
+          source: 'scraper',
+          scrapedAt: new Date().toISOString(),
+        },
+      ]
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusinessesBatch(businessesData)
 
       expect(result).toEqual([])
@@ -502,13 +512,13 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         businessName: null,
         url: 'not-a-url',
         phone: 12345, // Should be string
-        confidence: 'high' // Should be number
+        confidence: 'high', // Should be number
       }
 
       mockQuery.mockRejectedValueOnce(new Error('Invalid data type'))
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusiness(invalidData as any)
 
       expect(result).toBeNull()
@@ -528,16 +538,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         industry: 'Test Industry',
         confidence: 1.5, // Invalid confidence > 1
         source: 'scraper',
-        scrapedAt: new Date().toISOString()
+        scrapedAt: new Date().toISOString(),
       }
 
       mockQuery.mockRejectedValueOnce({
         code: '23514', // Check constraint violation
-        constraint: 'businesses_confidence_check'
+        constraint: 'businesses_confidence_check',
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusiness(businessData)
 
       expect(result).toBeNull()
@@ -558,16 +568,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
         confidence: 0.9,
         source: 'scraper',
         scrapedAt: new Date().toISOString(),
-        categoryId: 'non-existent-category' // Foreign key that doesn't exist
+        categoryId: 'non-existent-category', // Foreign key that doesn't exist
       }
 
       mockQuery.mockRejectedValueOnce({
         code: '23503', // Foreign key violation
-        constraint: 'businesses_category_id_fkey'
+        constraint: 'businesses_category_id_fkey',
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.createBusiness(businessData)
 
       expect(result).toBeNull()
@@ -579,16 +589,16 @@ describe('Database Operations Comprehensive Integration Tests', () => {
       const largeResultSet = Array.from({ length: 10000 }, (_, i) => ({
         id: i.toString(),
         business_name: `Business ${i}`,
-        url: `https://example${i}.com`
+        url: `https://example${i}.com`,
       }))
 
       mockQuery.mockResolvedValueOnce({
         rows: largeResultSet,
-        rowCount: largeResultSet.length
+        rowCount: largeResultSet.length,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.searchBusinessesByIndustry('restaurants', 'City', 'ST')
 
       expect(result).toHaveLength(10000)
@@ -597,11 +607,11 @@ describe('Database Operations Comprehensive Integration Tests', () => {
     test('should handle concurrent database operations', async () => {
       mockQuery.mockResolvedValue({
         rows: [{ id: '1', business_name: 'Test' }],
-        rowCount: 1
+        rowCount: 1,
       })
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       // Simulate concurrent operations
       const promises = Array.from({ length: 10 }, (_, i) =>
         businessDatabase.getBusinessById(i.toString())
@@ -617,7 +627,7 @@ describe('Database Operations Comprehensive Integration Tests', () => {
       mockQuery.mockRejectedValueOnce(new Error('Connection pool exhausted'))
 
       const { businessDatabase } = await import('@/model/businessDatabase')
-      
+
       const result = await businessDatabase.getBusinessById('1')
 
       expect(result).toBeNull()

@@ -12,7 +12,7 @@ jest.mock('@/utils/logger', () => ({
 
 describe('QueryOptimizer', () => {
   let optimizer: QueryOptimizer
-  
+
   beforeEach(() => {
     optimizer = new QueryOptimizer()
     jest.clearAllMocks()
@@ -32,7 +32,7 @@ describe('QueryOptimizer', () => {
       expect(result).toHaveProperty('templates')
       expect(result).toHaveProperty('confidence')
       expect(result).toHaveProperty('estimatedResults')
-      
+
       expect(result.confidence).toBeGreaterThan(0)
       expect(result.confidence).toBeLessThanOrEqual(1)
       expect(result.estimatedResults).toBeGreaterThan(0)
@@ -87,7 +87,7 @@ describe('QueryOptimizer', () => {
 
       expect(variations.length).toBeGreaterThan(1)
       expect(variations[0]).toHaveProperty('optimized')
-      
+
       // Should be sorted by confidence
       for (let i = 1; i < variations.length; i++) {
         expect(variations[i - 1]?.confidence).toBeGreaterThanOrEqual(variations[i]?.confidence ?? 0)
@@ -95,14 +95,10 @@ describe('QueryOptimizer', () => {
     })
 
     it('should include template-based variations', async () => {
-      const variations = await optimizer.generateQueryVariations(
-        'pizza',
-        'Chicago',
-        'restaurants'
-      )
+      const variations = await optimizer.generateQueryVariations('pizza', 'Chicago', 'restaurants')
 
-      const hasTemplateVariation = variations.some(v => 
-        v.optimized.includes('dining') || v.optimized.includes('food service')
+      const hasTemplateVariation = variations.some(
+        v => v.optimized.includes('dining') || v.optimized.includes('food service')
       )
       expect(hasTemplateVariation).toBe(true)
     })
@@ -121,7 +117,7 @@ describe('QueryOptimizer', () => {
       }
 
       optimizer.recordPerformance(metrics)
-      
+
       const stats = optimizer.getStats()
       expect(stats.performanceMetricsCount).toBe(1)
     })
@@ -152,7 +148,7 @@ describe('QueryOptimizer', () => {
       metrics.forEach(m => optimizer.recordPerformance(m))
 
       const analytics = optimizer.getPerformanceAnalytics(24)
-      
+
       expect(analytics.totalQueries).toBe(2)
       expect(analytics.averageSearchTime).toBe(650)
       expect(analytics.averageResultCount).toBe(17.5)
@@ -165,7 +161,7 @@ describe('QueryOptimizer', () => {
 
     it('should handle empty performance data', () => {
       const analytics = optimizer.getPerformanceAnalytics(24)
-      
+
       expect(analytics.totalQueries).toBe(0)
       expect(analytics.averageSearchTime).toBe(0)
       expect(analytics.topPerformingQueries).toEqual([])
@@ -188,7 +184,7 @@ describe('QueryOptimizer', () => {
       optimizer.recordPerformance(metrics)
 
       const suggestions = optimizer.getQuerySuggestions('italian', 'NYC', 'restaurants')
-      
+
       expect(Array.isArray(suggestions)).toBe(true)
       expect(suggestions.length).toBeGreaterThanOrEqual(0)
     })
@@ -198,12 +194,16 @@ describe('QueryOptimizer', () => {
 
       // Should include healthcare-related business types
       expect(suggestions.length).toBeGreaterThan(0)
-      expect(suggestions.some(s => s.includes('medical') || s.includes('clinic') || s.includes('hospital'))).toBe(true)
+      expect(
+        suggestions.some(
+          s => s.includes('medical') || s.includes('clinic') || s.includes('hospital')
+        )
+      ).toBe(true)
     })
 
     it('should limit suggestion count', () => {
       const suggestions = optimizer.getQuerySuggestions('business', 'Seattle')
-      
+
       expect(suggestions.length).toBeLessThanOrEqual(10)
     })
   })
@@ -211,19 +211,19 @@ describe('QueryOptimizer', () => {
   describe('location normalization', () => {
     it('should normalize ZIP codes correctly', async () => {
       const result = await optimizer.optimizeQuery('shops', '12345')
-      
+
       expect(result.normalizedLocation).toBe('12345')
     })
 
     it('should normalize city, state format', async () => {
       const result = await optimizer.optimizeQuery('services', 'San Francisco, CA')
-      
+
       expect(result.normalizedLocation).toBe('San Francisco, CA')
     })
 
     it('should handle malformed locations', async () => {
       const result = await optimizer.optimizeQuery('business', 'invalid location format')
-      
+
       expect(result.normalizedLocation).toBe('invalid location format')
     })
   })
@@ -231,20 +231,20 @@ describe('QueryOptimizer', () => {
   describe('industry templates', () => {
     it('should use restaurant templates', async () => {
       const result = await optimizer.optimizeQuery('pizza', 'NYC', 'restaurants')
-      
+
       expect(result.templates.length).toBeGreaterThan(1)
       expect(result.templates.some(t => t.includes('dining'))).toBe(true)
     })
 
     it('should use healthcare templates', async () => {
       const result = await optimizer.optimizeQuery('dentist', 'LA', 'healthcare')
-      
+
       expect(result.templates.some(t => t.includes('medical'))).toBe(true)
     })
 
     it('should handle unknown industries', async () => {
       const result = await optimizer.optimizeQuery('business', 'NYC', 'unknown')
-      
+
       expect(result.templates).toEqual(['business'])
     })
   })
@@ -252,7 +252,7 @@ describe('QueryOptimizer', () => {
   describe('cache management', () => {
     it('should provide statistics', () => {
       const stats = optimizer.getStats()
-      
+
       expect(stats).toHaveProperty('performanceMetricsCount')
       expect(stats).toHaveProperty('synonymCacheSize')
       expect(stats).toHaveProperty('locationCacheSize')
@@ -276,7 +276,7 @@ describe('QueryOptimizer', () => {
       })
 
       optimizer.clearCache()
-      
+
       const stats = optimizer.getStats()
       expect(stats.performanceMetricsCount).toBe(0)
       expect(stats.synonymCacheSize).toBe(0)
@@ -298,7 +298,7 @@ describe('QueryOptimizer', () => {
 
     it('should use default configuration when none provided', () => {
       const defaultOptimizer = new QueryOptimizer()
-      
+
       expect(defaultOptimizer).toBeInstanceOf(QueryOptimizer)
     })
   })

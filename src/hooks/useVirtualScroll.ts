@@ -26,7 +26,7 @@ export interface VirtualScrollResult<T> {
 /**
  * Custom hook for virtual scrolling large datasets efficiently
  * Renders only visible items plus overscan buffer for performance
- * 
+ *
  * @param items Array of items to virtualize
  * @param options Configuration for virtual scrolling
  * @returns Virtual scroll utilities and visible items
@@ -35,12 +35,7 @@ export function useVirtualScroll<T>(
   items: T[],
   options: VirtualScrollOptions
 ): VirtualScrollResult<T> {
-  const {
-    itemHeight,
-    containerHeight,
-    overscan = 5,
-    scrollThreshold = 16
-  } = options
+  const { itemHeight, containerHeight, overscan = 5, scrollThreshold = 16 } = options
 
   const [scrollTop, setScrollTop] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
@@ -74,42 +69,48 @@ export function useVirtualScroll<T>(
   }, [items, startIndex, endIndex, itemHeight])
 
   // Scroll event handler with throttling
-  const handleScroll = useCallback((event: Event) => {
-    const target = event.target as HTMLElement
-    const newScrollTop = target.scrollTop
+  const handleScroll = useCallback(
+    (event: Event) => {
+      const target = event.target as HTMLElement
+      const newScrollTop = target.scrollTop
 
-    setScrollTop(newScrollTop)
-    setIsScrolling(true)
+      setScrollTop(newScrollTop)
+      setIsScrolling(true)
 
-    // Debounce scrolling state
-    const timeoutId = setTimeout(() => {
-      setIsScrolling(false)
-    }, scrollThreshold)
+      // Debounce scrolling state
+      const timeoutId = setTimeout(() => {
+        setIsScrolling(false)
+      }, scrollThreshold)
 
-    return () => clearTimeout(timeoutId)
-  }, [scrollThreshold])
+      return () => clearTimeout(timeoutId)
+    },
+    [scrollThreshold]
+  )
 
   // Attach scroll listener
   useEffect(() => {
     if (!scrollElement) return
 
     scrollElement.addEventListener('scroll', handleScroll, { passive: true })
-    
+
     return () => {
       scrollElement.removeEventListener('scroll', handleScroll)
     }
   }, [scrollElement, handleScroll])
 
   // Scroll to specific index
-  const scrollToIndex = useCallback((index: number) => {
-    if (!scrollElement) return
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      if (!scrollElement) return
 
-    const targetScrollTop = Math.max(0, index * itemHeight)
-    scrollElement.scrollTo({
-      top: targetScrollTop,
-      behavior: 'smooth'
-    })
-  }, [scrollElement, itemHeight])
+      const targetScrollTop = Math.max(0, index * itemHeight)
+      scrollElement.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth',
+      })
+    },
+    [scrollElement, itemHeight]
+  )
 
   // Scroll to top
   const scrollToTop = useCallback(() => {
@@ -117,7 +118,7 @@ export function useVirtualScroll<T>(
 
     scrollElement.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
   }, [scrollElement])
 
@@ -157,10 +158,7 @@ export function useInfiniteVirtualScroll<T>(
   // Check if we need to load more items
   useEffect(() => {
     const { endIndex } = virtualScroll
-    const shouldLoadMore = 
-      hasMore && 
-      !isLoading && 
-      endIndex >= items.length - threshold
+    const shouldLoadMore = hasMore && !isLoading && endIndex >= items.length - threshold
 
     if (shouldLoadMore) {
       loadMore()
@@ -195,7 +193,7 @@ export function useVirtualGrid<T>(
     containerWidth,
     containerHeight,
     columnsCount,
-    overscan = 5
+    overscan = 5,
   } = options
 
   const [scrollTop, setScrollTop] = useState(0)
@@ -218,7 +216,17 @@ export function useVirtualGrid<T>(
     )
 
     return { startRowIndex, endRowIndex, startColIndex, endColIndex }
-  }, [scrollTop, scrollLeft, itemHeight, itemWidth, containerHeight, containerWidth, rowCount, columnsCount, overscan])
+  }, [
+    scrollTop,
+    scrollLeft,
+    itemHeight,
+    itemWidth,
+    containerHeight,
+    containerWidth,
+    rowCount,
+    columnsCount,
+    overscan,
+  ])
 
   // Generate virtual grid items
   const virtualGridItems = useMemo(() => {
@@ -239,7 +247,16 @@ export function useVirtualGrid<T>(
       }
     }
     return result
-  }, [items, startRowIndex, endRowIndex, startColIndex, endColIndex, columnsCount, itemHeight, itemWidth])
+  }, [
+    items,
+    startRowIndex,
+    endRowIndex,
+    startColIndex,
+    endColIndex,
+    columnsCount,
+    itemHeight,
+    itemWidth,
+  ])
 
   return {
     virtualGridItems,

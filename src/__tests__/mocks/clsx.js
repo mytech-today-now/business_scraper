@@ -5,10 +5,10 @@
 
 function clsxImpl(...args) {
   const classes = []
-  
+
   args.forEach(arg => {
     if (!arg) return
-    
+
     if (typeof arg === 'string' || typeof arg === 'number') {
       classes.push(arg)
     } else if (Array.isArray(arg)) {
@@ -19,7 +19,7 @@ function clsxImpl(...args) {
       })
     }
   })
-  
+
   return classes.join(' ')
 }
 

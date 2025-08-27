@@ -32,14 +32,14 @@ export class CRMServiceRegistry {
   async initialize(): Promise<void> {
     try {
       logger.info('CRMRegistry', 'Initializing CRM service registry')
-      
+
       // Load providers from database
       const providers = await this.loadProvidersFromDatabase()
-      
+
       for (const provider of providers) {
         await this.registerProvider(provider)
       }
-      
+
       logger.info('CRMRegistry', `Initialized ${providers.length} CRM providers`)
     } catch (error) {
       logger.error('CRMRegistry', 'Failed to initialize CRM registry', error)
@@ -54,7 +54,7 @@ export class CRMServiceRegistry {
     try {
       logger.info('CRMRegistry', `Registering CRM provider: ${provider.name}`, {
         providerId: provider.id,
-        type: provider.type
+        type: provider.type,
       })
 
       // Store provider configuration
@@ -62,14 +62,14 @@ export class CRMServiceRegistry {
 
       // Create service instance based on provider type
       const service = this.createServiceInstance(provider)
-      
+
       if (service) {
         // Initialize the service
         await service.initialize()
-        
+
         // Store service instance
         this.services.set(provider.id, service)
-        
+
         logger.info('CRMRegistry', `Successfully registered CRM provider: ${provider.name}`)
       } else {
         logger.warn('CRMRegistry', `Unsupported CRM provider type: ${provider.type}`)
@@ -94,13 +94,13 @@ export class CRMServiceRegistry {
 
       // Remove service instance
       this.services.delete(providerId)
-      
+
       // Remove provider configuration
       this.providers.delete(providerId)
-      
+
       // Remove from database
       await this.removeProviderFromDatabase(providerId)
-      
+
       logger.info('CRMRegistry', `Successfully unregistered CRM provider: ${provider.name}`)
     } catch (error) {
       logger.error('CRMRegistry', `Failed to unregister CRM provider: ${providerId}`, error)
@@ -126,18 +126,14 @@ export class CRMServiceRegistry {
    * Get all active CRM services
    */
   getActiveServices(): BaseCRMService[] {
-    return Array.from(this.services.values()).filter(service => 
-      service.getProvider().isActive
-    )
+    return Array.from(this.services.values()).filter(service => service.getProvider().isActive)
   }
 
   /**
    * Get CRM services by type
    */
   getServicesByType(type: string): BaseCRMService[] {
-    return Array.from(this.services.values()).filter(service => 
-      service.getProvider().type === type
-    )
+    return Array.from(this.services.values()).filter(service => service.getProvider().type === type)
   }
 
   /**
@@ -205,7 +201,7 @@ export class CRMServiceRegistry {
    */
   async testAllConnections(): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {}
-    
+
     for (const [providerId, service] of this.services) {
       if (service.getProvider().isActive) {
         try {
@@ -215,7 +211,7 @@ export class CRMServiceRegistry {
         }
       }
     }
-    
+
     return results
   }
 
@@ -313,7 +309,7 @@ export class CRMServiceRegistry {
   } {
     const providers = Array.from(this.providers.values())
     const activeProviders = providers.filter(p => p.isActive)
-    
+
     const providersByType: Record<string, number> = {}
     for (const provider of providers) {
       providersByType[provider.type] = (providersByType[provider.type] || 0) + 1
@@ -323,7 +319,7 @@ export class CRMServiceRegistry {
       totalProviders: providers.length,
       activeProviders: activeProviders.length,
       providersByType,
-      servicesReady: this.services.size
+      servicesReady: this.services.size,
     }
   }
 }

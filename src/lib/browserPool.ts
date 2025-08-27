@@ -6,7 +6,6 @@
 import puppeteer, { Browser, Page } from 'puppeteer'
 import { logger } from '@/utils/logger'
 
-
 export interface BrowserPoolConfig {
   maxBrowsers: number
   maxPagesPerBrowser: number
@@ -59,12 +58,12 @@ export class BrowserPool {
 
   constructor(config?: Partial<BrowserPoolConfig>) {
     this.config = {
-      maxBrowsers: 6,              // Increased from 3 to 6 for better concurrency
-      maxPagesPerBrowser: 4,       // Reduced from 5 to 4 to balance load
-      browserTimeout: 180000,      // Reduced from 300000 (3 minutes)
-      pageTimeout: 30000,          // Reduced from 60000 (30 seconds)
+      maxBrowsers: 6, // Increased from 3 to 6 for better concurrency
+      maxPagesPerBrowser: 4, // Reduced from 5 to 4 to balance load
+      browserTimeout: 180000, // Reduced from 300000 (3 minutes)
+      pageTimeout: 30000, // Reduced from 60000 (30 seconds)
       headless: true,
-      enableProxy: true,           // Enabled for better distribution
+      enableProxy: true, // Enabled for better distribution
       userAgents: [
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -90,10 +89,10 @@ export class BrowserPool {
    */
   async initialize(): Promise<void> {
     logger.info('BrowserPool', 'Initializing browser pool')
-    
+
     // Create initial browser instance
     await this.createBrowser()
-    
+
     logger.info('BrowserPool', `Browser pool initialized with ${this.browsers.size} browsers`)
   }
 
@@ -107,7 +106,7 @@ export class BrowserPool {
 
     // Try to get an available page
     let pageInstance = this.getAvailablePage()
-    
+
     if (!pageInstance) {
       // Create new page if possible
       pageInstance = await this.createPage()
@@ -132,7 +131,7 @@ export class BrowserPool {
     try {
       // Reset page state
       await this.resetPage(pageInstance.page)
-      
+
       pageInstance.isActive = false
       pageInstance.lastUsed = new Date()
       this.activePagesCount--
@@ -170,7 +169,7 @@ export class BrowserPool {
    */
   async shutdown(): Promise<void> {
     this.isShuttingDown = true
-    
+
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval)
     }
@@ -178,7 +177,7 @@ export class BrowserPool {
     logger.info('BrowserPool', 'Shutting down browser pool')
 
     // Close all browsers
-    const closePromises = Array.from(this.browsers.values()).map(async (browserInstance) => {
+    const closePromises = Array.from(this.browsers.values()).map(async browserInstance => {
       try {
         await browserInstance.browser.close()
       } catch (error) {
@@ -187,7 +186,7 @@ export class BrowserPool {
     })
 
     await Promise.allSettled(closePromises)
-    
+
     this.browsers.clear()
     this.availablePages = []
     this.activePagesCount = 0
@@ -206,7 +205,7 @@ export class BrowserPool {
 
     try {
       const browserId = `browser-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-      
+
       const browser = await puppeteer.launch({
         headless: this.config.headless,
         args: [
@@ -250,7 +249,7 @@ export class BrowserPool {
       }
 
       this.browsers.set(browserId, browserInstance)
-      
+
       // Handle browser disconnect
       browser.on('disconnected', () => {
         logger.warn('BrowserPool', `Browser ${browserId} disconnected`)
@@ -271,7 +270,7 @@ export class BrowserPool {
   private async createPage(): Promise<PageInstance | null> {
     // Find browser with available capacity
     let targetBrowser: BrowserInstance | null = null
-    
+
     for (const browser of Array.from(this.browsers.values())) {
       if (browser.isHealthy && browser.pages.size < this.config.maxPagesPerBrowser) {
         targetBrowser = browser
@@ -290,10 +289,10 @@ export class BrowserPool {
 
     try {
       const page = await targetBrowser.browser.newPage()
-      
+
       // Configure page
       await this.configurePage(page)
-      
+
       targetBrowser.pages.add(page)
       targetBrowser.lastUsed = new Date()
 
@@ -324,39 +323,43 @@ export class BrowserPool {
         enableIPSpoofing: true,
         enableMACAddressSpoofing: true,
         enableFingerprintSpoofing: true,
-        requestDelay: { min: 1000, max: 4000 }
+        requestDelay: { min: 1000, max: 4000 },
       })
 
       await spoofingService.applyNetworkSpoofing(page)
 
       // Fallback: Set random user agent if spoofing service fails
-      const userAgent = this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
+      const userAgent =
+        this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
       if (userAgent) {
         await page.setUserAgent(userAgent)
       }
 
       // Fallback: Set random viewport if spoofing service fails
-      const viewport = this.config.viewports[Math.floor(Math.random() * this.config.viewports.length)]
+      const viewport =
+        this.config.viewports[Math.floor(Math.random() * this.config.viewports.length)]
       if (viewport) {
         await page.setViewport(viewport)
       }
 
       // Enhanced request interception with anti-detection
       await page.setRequestInterception(true)
-      page.on('request', (request) => {
+      page.on('request', request => {
         const resourceType = request.resourceType()
         const url = request.url()
 
         // Block unnecessary resources and tracking
         if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
           request.abort()
-        } else if (url.includes('google-analytics') ||
-                   url.includes('googletagmanager') ||
-                   url.includes('facebook.com') ||
-                   url.includes('doubleclick') ||
-                   url.includes('adsystem') ||
-                   url.includes('hotjar') ||
-                   url.includes('mixpanel')) {
+        } else if (
+          url.includes('google-analytics') ||
+          url.includes('googletagmanager') ||
+          url.includes('facebook.com') ||
+          url.includes('doubleclick') ||
+          url.includes('adsystem') ||
+          url.includes('hotjar') ||
+          url.includes('mixpanel')
+        ) {
           request.abort()
         } else {
           // Add random delays to appear more human
@@ -384,7 +387,7 @@ export class BrowserPool {
           get: () => [
             { name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer' },
             { name: 'Chrome PDF Viewer', filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai' },
-            { name: 'Native Client', filename: 'internal-nacl-plugin' }
+            { name: 'Native Client', filename: 'internal-nacl-plugin' },
           ],
         })
 
@@ -395,20 +398,20 @@ export class BrowserPool {
 
         // Override permissions
         const originalQuery = window.navigator.permissions.query
-        window.navigator.permissions.query = (parameters) => (
-          parameters.name === 'notifications' ?
-            Promise.resolve({ state: Notification.permission }) :
-            originalQuery(parameters)
-        )
+        window.navigator.permissions.query = parameters =>
+          parameters.name === 'notifications'
+            ? Promise.resolve({ state: Notification.permission })
+            : originalQuery(parameters)
 
         // Override battery API
         Object.defineProperty(navigator, 'getBattery', {
-          get: () => () => Promise.resolve({
-            charging: true,
-            chargingTime: 0,
-            dischargingTime: Infinity,
-            level: 1
-          }),
+          get: () => () =>
+            Promise.resolve({
+              charging: true,
+              chargingTime: 0,
+              dischargingTime: Infinity,
+              level: 1,
+            }),
         })
       })
 
@@ -417,7 +420,8 @@ export class BrowserPool {
       logger.warn('BrowserPool', 'Failed to apply some anti-detection measures', error)
 
       // Fallback configuration
-      const userAgent = this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
+      const userAgent =
+        this.config.userAgents[Math.floor(Math.random() * this.config.userAgents.length)]
       if (userAgent) {
         await page.setUserAgent(userAgent)
       }
@@ -433,7 +437,7 @@ export class BrowserPool {
       const client = await page.target().createCDPSession()
       await client.send('Network.clearBrowserCookies')
       await client.send('Network.clearBrowserCache')
-      
+
       // Navigate to blank page
       await page.goto('about:blank')
     } catch (error) {
@@ -461,7 +465,7 @@ export class BrowserPool {
     if (browser) {
       browser.isHealthy = false
       this.browsers.delete(browserId)
-      
+
       // Remove pages from this browser
       this.availablePages = this.availablePages.filter(p => p.browserId !== browserId)
     }
@@ -481,7 +485,7 @@ export class BrowserPool {
    */
   private async performHealthCheck(): Promise<void> {
     const now = new Date()
-    
+
     for (const [browserId, browser] of Array.from(this.browsers.entries())) {
       try {
         // Check if browser is still connected
@@ -532,11 +536,11 @@ export class BrowserPool {
       // Get browser metrics (simplified - in real implementation would use browser.metrics())
       const healthData: BrowserHealthMetrics = {
         memoryUsage: 0, // Would get from browser.metrics()
-        cpuUsage: 0,    // Would get from browser.metrics()
+        cpuUsage: 0, // Would get from browser.metrics()
         activePages: browser.pages.size,
         responseTime: Date.now() - browser.lastUsed.getTime(),
         errorRate: this.calculateErrorRate(browserId),
-        lastHealthCheck: new Date()
+        lastHealthCheck: new Date(),
       }
 
       this.healthMetrics.set(browserId, healthData)
@@ -600,18 +604,22 @@ export class BrowserPool {
       metrics => metrics.errorRate < 5 && metrics.memoryUsage < 256 * 1024 * 1024
     ).length
 
-    const avgResponseTime = Array.from(this.healthMetrics.values())
-      .reduce((sum, metrics) => sum + metrics.responseTime, 0) / this.healthMetrics.size || 0
+    const avgResponseTime =
+      Array.from(this.healthMetrics.values()).reduce(
+        (sum, metrics) => sum + metrics.responseTime,
+        0
+      ) / this.healthMetrics.size || 0
 
-    const avgErrorRate = Array.from(this.healthMetrics.values())
-      .reduce((sum, metrics) => sum + metrics.errorRate, 0) / this.healthMetrics.size || 0
+    const avgErrorRate =
+      Array.from(this.healthMetrics.values()).reduce((sum, metrics) => sum + metrics.errorRate, 0) /
+        this.healthMetrics.size || 0
 
     return {
       totalBrowsers: this.browsers.size,
       healthyBrowsers,
       totalPages: this.activePagesCount,
       averageResponseTime: avgResponseTime,
-      averageErrorRate: avgErrorRate
+      averageErrorRate: avgErrorRate,
     }
   }
 }

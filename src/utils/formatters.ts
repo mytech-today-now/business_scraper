@@ -9,17 +9,17 @@ import { BusinessRecord } from '@/types/business'
  */
 export function formatPhoneNumber(phone: string): string {
   if (!phone) return ''
-  
+
   // Remove all non-digit characters
   const digits = phone.replace(/\D/g, '')
-  
+
   // Handle different phone number lengths
   if (digits.length === 10) {
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
   } else if (digits.length === 11 && digits[0] === '1') {
     return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`
   }
-  
+
   return phone // Return original if can't format
 }
 
@@ -30,10 +30,10 @@ export function formatPhoneNumber(phone: string): string {
  */
 export function formatEmail(email: string): string | null {
   if (!email) return null
-  
+
   const trimmed = email.trim().toLowerCase()
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  
+
   return emailRegex.test(trimmed) ? trimmed : null
 }
 
@@ -44,25 +44,23 @@ export function formatEmail(email: string): string | null {
  */
 export function formatAddress(address: BusinessRecord['address']): string {
   if (!address) return ''
-  
+
   const parts: string[] = []
-  
+
   if (address.street) {
     parts.push(address.street)
   }
-  
+
   if (address.suite) {
     parts.push(address.suite)
   }
-  
-  const cityStateZip = [address.city, address.state, address.zipCode]
-    .filter(Boolean)
-    .join(', ')
-  
+
+  const cityStateZip = [address.city, address.state, address.zipCode].filter(Boolean).join(', ')
+
   if (cityStateZip) {
     parts.push(cityStateZip)
   }
-  
+
   return parts.join(', ')
 }
 
@@ -73,7 +71,7 @@ export function formatAddress(address: BusinessRecord['address']): string {
  */
 export function formatBusinessName(name: string): string {
   if (!name) return ''
-  
+
   return name
     .trim()
     .split(' ')
@@ -83,7 +81,7 @@ export function formatBusinessName(name: string): string {
       if (upperWords.includes(word.toUpperCase())) {
         return word.toUpperCase()
       }
-      
+
       // Title case for regular words
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
     })
@@ -98,7 +96,7 @@ export function formatBusinessName(name: string): string {
  */
 export function formatDate(date: Date, format: 'short' | 'long' | 'time' = 'short'): string {
   if (!date || !(date instanceof Date)) return ''
-  
+
   switch (format) {
     case 'short':
       return date.toLocaleDateString('en-US', {
@@ -131,11 +129,11 @@ export function formatDate(date: Date, format: 'short' | 'long' | 'time' = 'shor
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes'
-  
+
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
@@ -148,11 +146,11 @@ export function formatDuration(milliseconds: number): string {
   if (milliseconds < 1000) {
     return `${milliseconds}ms`
   }
-  
+
   const seconds = Math.floor(milliseconds / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
-  
+
   if (hours > 0) {
     return `${hours}h ${minutes % 60}m ${seconds % 60}s`
   } else if (minutes > 0) {
@@ -225,7 +223,7 @@ export function formatCoordinates(lat: number, lng: number, precision: number = 
  */
 export function formatIndustry(industry: string): string {
   if (!industry) return 'Unknown'
-  
+
   return industry
     .split(/[-_\s]+/)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -239,16 +237,16 @@ export function formatIndustry(industry: string): string {
  */
 export function formatUrl(url: string): string {
   if (!url) return ''
-  
+
   try {
     const urlObj = new URL(url)
     let hostname = urlObj.hostname
-    
+
     // Remove www prefix
     if (hostname.startsWith('www.')) {
       hostname = hostname.slice(4)
     }
-    
+
     return hostname
   } catch {
     return url
@@ -263,7 +261,7 @@ export function formatUrl(url: string): string {
  */
 export function formatSearchQuery(query: string, maxLength: number = 50): string {
   if (!query) return ''
-  
+
   const formatted = query.trim().replace(/\s+/g, ' ')
   return truncateText(formatted, maxLength)
 }
@@ -290,14 +288,14 @@ export function formatValidationErrors(errors: string[]): string {
  */
 export function formatCsvCell(value: any): string {
   if (value === null || value === undefined) return ''
-  
+
   const str = String(value)
-  
+
   // If contains comma, quote, or newline, wrap in quotes and escape quotes
   if (str.includes(',') || str.includes('"') || str.includes('\n')) {
     return `"${str.replace(/"/g, '""')}"`
   }
-  
+
   return str
 }
 
@@ -309,13 +307,13 @@ export function formatCsvCell(value: any): string {
 export function formatBusinessForExport(business: BusinessRecord): Record<string, any> {
   return {
     'Business Name': formatBusinessName(business.businessName),
-    'Email': business.email.join('; '),
-    'Phone': business.phone ? formatPhoneNumber(business.phone) : '',
-    'Website': business.websiteUrl,
-    'Address': formatAddress(business.address),
+    Email: business.email.join('; '),
+    Phone: business.phone ? formatPhoneNumber(business.phone) : '',
+    Website: business.websiteUrl,
+    Address: formatAddress(business.address),
     'Contact Person': business.contactPerson || '',
-    'Industry': formatIndustry(business.industry),
-    'Coordinates': business.coordinates
+    Industry: formatIndustry(business.industry),
+    Coordinates: business.coordinates
       ? formatCoordinates(business.coordinates.lat, business.coordinates.lng)
       : '',
     'Scraped Date': formatDate(business.scrapedAt),

@@ -38,7 +38,7 @@ export class DatabaseSecurityValidator {
           user: config.username,
           password: config.password,
           ssl: config.ssl,
-          max: 1 // Only need one connection for validation
+          max: 1, // Only need one connection for validation
         })
       }
     } catch (error) {
@@ -58,30 +58,29 @@ export class DatabaseSecurityValidator {
         checkName: 'Database Connection',
         status: 'FAIL',
         message: 'No database connection available for validation',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
 
     try {
       // Run all security checks
-      results.push(...await this.checkUserPermissions())
-      results.push(...await this.checkSSLConfiguration())
-      results.push(...await this.checkPasswordSecurity())
-      results.push(...await this.checkRowLevelSecurity())
-      results.push(...await this.checkAuditLogging())
-      results.push(...await this.checkConnectionLimits())
-      results.push(...await this.checkDangerousExtensions())
-      results.push(...await this.checkTablePermissions())
-      results.push(...await this.checkSensitiveDataProtection())
-
+      results.push(...(await this.checkUserPermissions()))
+      results.push(...(await this.checkSSLConfiguration()))
+      results.push(...(await this.checkPasswordSecurity()))
+      results.push(...(await this.checkRowLevelSecurity()))
+      results.push(...(await this.checkAuditLogging()))
+      results.push(...(await this.checkConnectionLimits()))
+      results.push(...(await this.checkDangerousExtensions()))
+      results.push(...(await this.checkTablePermissions()))
+      results.push(...(await this.checkSensitiveDataProtection()))
     } catch (error) {
       logger.error('DatabaseSecurityValidator', 'Validation failed', error)
       results.push({
         checkName: 'Security Validation',
         status: 'FAIL',
         message: `Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        severity: 'HIGH'
+        severity: 'HIGH',
       })
     }
 
@@ -99,7 +98,7 @@ export class DatabaseSecurityValidator {
         checkName: 'User Permissions Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -112,21 +111,21 @@ export class DatabaseSecurityValidator {
         WHERE rolname = current_user
       `
       const superuserResult = await this.pool.query(superuserQuery)
-      
+
       if (superuserResult.rows[0]?.rolsuper) {
         results.push({
           checkName: 'Superuser Privileges',
           status: 'FAIL',
           message: 'Application is running with superuser privileges',
           recommendation: 'Create dedicated application user with minimal required permissions',
-          severity: 'CRITICAL'
+          severity: 'CRITICAL',
         })
       } else {
         results.push({
           checkName: 'Superuser Privileges',
           status: 'PASS',
           message: 'Application is not running with superuser privileges',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       }
 
@@ -137,30 +136,30 @@ export class DatabaseSecurityValidator {
         WHERE rolname IN ('business_scraper_app', 'business_scraper_readonly')
       `
       const appUserResult = await this.pool.query(appUserQuery)
-      
+
       if (appUserResult.rows[0]?.count < 2) {
         results.push({
           checkName: 'Dedicated Application Users',
           status: 'WARNING',
           message: 'Dedicated application users not found',
-          recommendation: 'Create dedicated users: business_scraper_app and business_scraper_readonly',
-          severity: 'MEDIUM'
+          recommendation:
+            'Create dedicated users: business_scraper_app and business_scraper_readonly',
+          severity: 'MEDIUM',
         })
       } else {
         results.push({
           checkName: 'Dedicated Application Users',
           status: 'PASS',
           message: 'Dedicated application users are configured',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'User Permissions Check',
         status: 'FAIL',
         message: `Failed to check user permissions: ${error}`,
-        severity: 'HIGH'
+        severity: 'HIGH',
       })
     }
 
@@ -178,7 +177,7 @@ export class DatabaseSecurityValidator {
         checkName: 'SSL Configuration Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -186,13 +185,13 @@ export class DatabaseSecurityValidator {
     try {
       const sslQuery = `SHOW ssl`
       const sslResult = await this.pool.query(sslQuery)
-      
+
       if (sslResult.rows[0]?.ssl === 'on') {
         results.push({
           checkName: 'SSL Configuration',
           status: 'PASS',
           message: 'SSL is enabled',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         results.push({
@@ -200,16 +199,15 @@ export class DatabaseSecurityValidator {
           status: 'FAIL',
           message: 'SSL is not enabled',
           recommendation: 'Enable SSL for encrypted connections',
-          severity: 'HIGH'
+          severity: 'HIGH',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'SSL Configuration Check',
         status: 'WARNING',
         message: `Could not verify SSL configuration: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -227,7 +225,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Password Security Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -249,20 +247,20 @@ export class DatabaseSecurityValidator {
           status: 'WARNING',
           message: 'Ensure strong passwords are set for all database users',
           recommendation: 'Use strong, unique passwords for all database accounts',
-          severity: 'HIGH'
+          severity: 'HIGH',
         })
       }
 
       // Check password encryption
       const encryptionQuery = `SHOW password_encryption`
       const encryptionResult = await this.pool.query(encryptionQuery)
-      
+
       if (encryptionResult.rows[0]?.password_encryption === 'scram-sha-256') {
         results.push({
           checkName: 'Password Encryption',
           status: 'PASS',
           message: 'Strong password encryption (SCRAM-SHA-256) is enabled',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         results.push({
@@ -270,16 +268,15 @@ export class DatabaseSecurityValidator {
           status: 'WARNING',
           message: 'Consider upgrading to SCRAM-SHA-256 password encryption',
           recommendation: 'Set password_encryption = scram-sha-256',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Password Security Check',
         status: 'WARNING',
         message: `Could not verify password security: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -297,7 +294,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Row Level Security Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -310,16 +307,16 @@ export class DatabaseSecurityValidator {
           AND tablename IN ('businesses', 'app_settings')
       `
       const rlsResult = await this.pool.query(rlsQuery)
-      
+
       const tablesWithRLS = rlsResult.rows.filter(row => row.rowsecurity).length
       const totalSensitiveTables = rlsResult.rows.length
-      
+
       if (tablesWithRLS === totalSensitiveTables && totalSensitiveTables > 0) {
         results.push({
           checkName: 'Row Level Security',
           status: 'PASS',
           message: 'RLS is enabled on sensitive tables',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else if (tablesWithRLS > 0) {
         results.push({
@@ -327,7 +324,7 @@ export class DatabaseSecurityValidator {
           status: 'WARNING',
           message: `RLS enabled on ${tablesWithRLS}/${totalSensitiveTables} sensitive tables`,
           recommendation: 'Enable RLS on all sensitive tables',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         })
       } else {
         results.push({
@@ -335,16 +332,15 @@ export class DatabaseSecurityValidator {
           status: 'FAIL',
           message: 'RLS is not enabled on sensitive tables',
           recommendation: 'Enable Row Level Security on tables containing sensitive data',
-          severity: 'HIGH'
+          severity: 'HIGH',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Row Level Security Check',
         status: 'WARNING',
         message: `Could not verify RLS configuration: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -362,7 +358,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Audit Logging Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -377,13 +373,13 @@ export class DatabaseSecurityValidator {
         ) as exists
       `
       const auditTableResult = await this.pool.query(auditTableQuery)
-      
+
       if (auditTableResult.rows[0]?.exists) {
         results.push({
           checkName: 'Audit Logging',
           status: 'PASS',
           message: 'Security audit logging is configured',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         results.push({
@@ -391,16 +387,15 @@ export class DatabaseSecurityValidator {
           status: 'FAIL',
           message: 'Security audit logging is not configured',
           recommendation: 'Create security_audit_log table and implement audit triggers',
-          severity: 'HIGH'
+          severity: 'HIGH',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Audit Logging Check',
         status: 'WARNING',
         message: `Could not verify audit logging: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -418,7 +413,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Connection Limits Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -430,11 +425,14 @@ export class DatabaseSecurityValidator {
         WHERE name IN ('max_connections', 'statement_timeout', 'idle_in_transaction_session_timeout')
       `
       const settingsResult = await this.pool.query(settingsQuery)
-      
-      const settings = settingsResult.rows.reduce((acc, row) => {
-        acc[row.name] = row.setting
-        return acc
-      }, {} as Record<string, string>)
+
+      const settings = settingsResult.rows.reduce(
+        (acc, row) => {
+          acc[row.name] = row.setting
+          return acc
+        },
+        {} as Record<string, string>
+      )
 
       // Check max_connections
       const maxConnections = parseInt(settings.max_connections || '0')
@@ -443,7 +441,7 @@ export class DatabaseSecurityValidator {
           checkName: 'Connection Limits',
           status: 'PASS',
           message: `Connection limit is appropriately set to ${maxConnections}`,
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         results.push({
@@ -451,7 +449,7 @@ export class DatabaseSecurityValidator {
           status: 'WARNING',
           message: `Connection limit may be too high: ${maxConnections}`,
           recommendation: 'Set reasonable connection limits to prevent resource exhaustion',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         })
       }
 
@@ -462,7 +460,7 @@ export class DatabaseSecurityValidator {
           checkName: 'Statement Timeout',
           status: 'PASS',
           message: `Statement timeout is configured: ${statementTimeout}`,
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         results.push({
@@ -470,16 +468,15 @@ export class DatabaseSecurityValidator {
           status: 'WARNING',
           message: 'Statement timeout is not configured',
           recommendation: 'Set statement_timeout to prevent long-running queries',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Connection Limits Check',
         status: 'WARNING',
         message: `Could not verify connection settings: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -497,7 +494,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Dangerous Extensions Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -509,13 +506,13 @@ export class DatabaseSecurityValidator {
         WHERE extname IN ('dblink', 'postgres_fdw', 'file_fdw', 'plpythonu', 'plperlu')
       `
       const extensionsResult = await this.pool.query(extensionsQuery)
-      
+
       if (extensionsResult.rows.length === 0) {
         results.push({
           checkName: 'Dangerous Extensions',
           status: 'PASS',
           message: 'No potentially dangerous extensions detected',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         const dangerousExtensions = extensionsResult.rows.map(row => row.extname).join(', ')
@@ -524,16 +521,15 @@ export class DatabaseSecurityValidator {
           status: 'WARNING',
           message: `Potentially dangerous extensions found: ${dangerousExtensions}`,
           recommendation: 'Review and remove unnecessary extensions that could pose security risks',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Dangerous Extensions Check',
         status: 'WARNING',
         message: `Could not check extensions: ${error}`,
-        severity: 'LOW'
+        severity: 'LOW',
       })
     }
 
@@ -551,7 +547,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Table Permissions Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -566,13 +562,13 @@ export class DatabaseSecurityValidator {
           AND privilege_type IN ('INSERT', 'UPDATE', 'DELETE')
       `
       const publicPermsResult = await this.pool.query(publicPermsQuery)
-      
+
       if (publicPermsResult.rows[0]?.count === 0) {
         results.push({
           checkName: 'Public Table Permissions',
           status: 'PASS',
           message: 'No dangerous public permissions found',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       } else {
         results.push({
@@ -580,16 +576,15 @@ export class DatabaseSecurityValidator {
           status: 'FAIL',
           message: 'Dangerous public permissions detected',
           recommendation: 'Revoke unnecessary public permissions on tables',
-          severity: 'HIGH'
+          severity: 'HIGH',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Table Permissions Check',
         status: 'WARNING',
         message: `Could not verify table permissions: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -607,7 +602,7 @@ export class DatabaseSecurityValidator {
         checkName: 'Sensitive Data Protection Check',
         status: 'FAIL',
         message: 'No database connection available',
-        severity: 'CRITICAL'
+        severity: 'CRITICAL',
       })
       return results
     }
@@ -621,30 +616,29 @@ export class DatabaseSecurityValidator {
           AND column_name IN ('email', 'phone', 'password', 'api_key', 'secret')
       `
       const sensitiveColumnsResult = await this.pool.query(sensitiveColumnsQuery)
-      
+
       if (sensitiveColumnsResult.rows.length > 0) {
         results.push({
           checkName: 'Sensitive Data Protection',
           status: 'WARNING',
           message: `Found ${sensitiveColumnsResult.rows.length} potentially sensitive columns`,
           recommendation: 'Ensure sensitive data is properly encrypted and access is logged',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         })
       } else {
         results.push({
           checkName: 'Sensitive Data Protection',
           status: 'PASS',
           message: 'No obviously sensitive column names detected',
-          severity: 'LOW'
+          severity: 'LOW',
         })
       }
-
     } catch (error) {
       results.push({
         checkName: 'Sensitive Data Protection Check',
         status: 'WARNING',
         message: `Could not check sensitive data protection: ${error}`,
-        severity: 'MEDIUM'
+        severity: 'MEDIUM',
       })
     }
 
@@ -669,7 +663,7 @@ export class DatabaseSecurityValidator {
       total: results.length,
       passed: results.filter(r => r.status === 'PASS').length,
       warnings: results.filter(r => r.status === 'WARNING').length,
-      failed: results.filter(r => r.status === 'FAIL').length
+      failed: results.filter(r => r.status === 'FAIL').length,
     }
 
     let report = '=== DATABASE SECURITY VALIDATION REPORT ===\n\n'

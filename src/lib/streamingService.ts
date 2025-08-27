@@ -81,7 +81,7 @@ class StreamingService {
    */
   async startStreaming(params: StreamingSearchParams): Promise<string> {
     const sessionId = this.generateSessionId()
-    
+
     const session: StreamingSession = {
       id: sessionId,
       params,
@@ -95,19 +95,19 @@ class StreamingService {
         estimatedTimeRemaining: 0,
         searchSpeed: 0,
         errors: 0,
-        warnings: 0
+        warnings: 0,
       },
       connectionHealth: {
         isConnected: false,
         lastHeartbeat: Date.now(),
         reconnectAttempts: 0,
-        latency: 0
+        latency: 0,
       },
-      errorHistory: []
+      errorHistory: [],
     }
 
     this.sessions.set(sessionId, session)
-    
+
     try {
       await this.establishWebSocketConnection(sessionId)
       logger.info('Streaming session started', { sessionId, params })
@@ -141,14 +141,16 @@ class StreamingService {
       this.startHeartbeat(sessionId)
 
       // Send initial search parameters
-      websocket.send(JSON.stringify({
-        type: 'start_search',
-        sessionId,
-        params: session.params
-      }))
+      websocket.send(
+        JSON.stringify({
+          type: 'start_search',
+          sessionId,
+          params: session.params,
+        })
+      )
     }
 
-    websocket.onmessage = (event) => {
+    websocket.onmessage = event => {
       try {
         const message: StreamingMessage = JSON.parse(event.data)
         this.handleStreamingMessage(sessionId, message)
@@ -157,12 +159,16 @@ class StreamingService {
       }
     }
 
-    websocket.onclose = (event) => {
-      logger.warn('WebSocket connection closed', { sessionId, code: event.code, reason: event.reason })
+    websocket.onclose = event => {
+      logger.warn('WebSocket connection closed', {
+        sessionId,
+        code: event.code,
+        reason: event.reason,
+      })
       this.handleConnectionClose(sessionId, event.code)
     }
 
-    websocket.onerror = (error) => {
+    websocket.onerror = error => {
       logger.error('WebSocket error', { sessionId, error })
       this.handleConnectionError(sessionId, error)
     }
@@ -247,7 +253,7 @@ class StreamingService {
    */
   private async attemptReconnection(sessionId: string): Promise<void> {
     const attempts = this.reconnectAttempts.get(sessionId) || 0
-    
+
     if (attempts >= this.maxReconnectAttempts) {
       logger.error('Max reconnection attempts reached', { sessionId })
       const session = this.sessions.get(sessionId)
@@ -258,11 +264,11 @@ class StreamingService {
     }
 
     this.reconnectAttempts.set(sessionId, attempts + 1)
-    
+
     const delay = this.reconnectDelay * Math.pow(2, attempts) // Exponential backoff
-    
+
     logger.info('Attempting WebSocket reconnection', { sessionId, attempt: attempts + 1, delay })
-    
+
     setTimeout(async () => {
       try {
         await this.establishWebSocketConnection(sessionId)
@@ -279,10 +285,12 @@ class StreamingService {
     const session = this.sessions.get(sessionId)
     if (!session || !session.websocket) return
 
-    session.websocket.send(JSON.stringify({
-      type: 'pause',
-      sessionId
-    }))
+    session.websocket.send(
+      JSON.stringify({
+        type: 'pause',
+        sessionId,
+      })
+    )
   }
 
   /**
@@ -292,10 +300,12 @@ class StreamingService {
     const session = this.sessions.get(sessionId)
     if (!session || !session.websocket) return
 
-    session.websocket.send(JSON.stringify({
-      type: 'resume',
-      sessionId
-    }))
+    session.websocket.send(
+      JSON.stringify({
+        type: 'resume',
+        sessionId,
+      })
+    )
   }
 
   /**
@@ -306,12 +316,14 @@ class StreamingService {
     if (!session) return
 
     session.status = 'cancelled'
-    
+
     if (session.websocket) {
-      session.websocket.send(JSON.stringify({
-        type: 'cancel',
-        sessionId
-      }))
+      session.websocket.send(
+        JSON.stringify({
+          type: 'cancel',
+          sessionId,
+        })
+      )
       session.websocket.close()
     }
 
@@ -325,9 +337,9 @@ class StreamingService {
     if (!this.eventHandlers.has(sessionId)) {
       this.eventHandlers.set(sessionId, [])
     }
-    
+
     this.eventHandlers.get(sessionId)!.push(handler)
-    
+
     // Return unsubscribe function
     return () => {
       const handlers = this.eventHandlers.get(sessionId)
@@ -399,11 +411,13 @@ class StreamingService {
 
       // Send ping
       const pingTime = Date.now()
-      session.websocket.send(JSON.stringify({
-        type: 'ping',
-        sessionId,
-        timestamp: pingTime
-      }))
+      session.websocket.send(
+        JSON.stringify({
+          type: 'ping',
+          sessionId,
+          timestamp: pingTime,
+        })
+      )
 
       // Check for missed heartbeats
       const timeSinceLastHeartbeat = Date.now() - session.connectionHealth.lastHeartbeat
@@ -438,7 +452,7 @@ class StreamingService {
     session.errorHistory.push({
       timestamp: Date.now(),
       error,
-      severity
+      severity,
     })
 
     // Keep only last 50 errors
@@ -501,15 +515,15 @@ class StreamingService {
                 city: session.params.location || 'Fallback City',
                 state: 'CA',
                 zipCode: String(Math.floor(Math.random() * 90000) + 10000),
-                country: 'USA'
+                country: 'USA',
               },
               scrapedAt: new Date(),
               source: 'Fallback Batch',
-              confidence: 0.7
+              confidence: 0.7,
             },
             source: 'Fallback Batch',
             confidence: 0.7,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           })
         }
 
@@ -528,7 +542,7 @@ class StreamingService {
             type: 'result',
             sessionId,
             timestamp: Date.now(),
-            result
+            result,
           })
         })
 
@@ -536,7 +550,7 @@ class StreamingService {
           type: 'progress',
           sessionId,
           timestamp: Date.now(),
-          progress: session.progress
+          progress: session.progress,
         })
       }
 
@@ -545,9 +559,8 @@ class StreamingService {
       this.notifyEventHandlers(sessionId, {
         type: 'complete',
         sessionId,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
-
     } catch (error) {
       logger.error('Fallback batch loading failed', { sessionId, error })
       this.addError(sessionId, 'Fallback batch loading failed', 'high')

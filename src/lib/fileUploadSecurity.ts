@@ -43,12 +43,10 @@ export class FileUploadSecurityService {
     const allowedBasePaths = [
       path.resolve('./quarantine'),
       path.resolve('./temp'),
-      path.resolve(process.cwd(), 'quarantine')
+      path.resolve(process.cwd(), 'quarantine'),
     ]
 
-    const isAllowedPath = allowedBasePaths.some(basePath =>
-      this.quarantineDir.startsWith(basePath)
-    )
+    const isAllowedPath = allowedBasePaths.some(basePath => this.quarantineDir.startsWith(basePath))
 
     if (!isAllowedPath) {
       throw new Error('Quarantine directory path not allowed')
@@ -65,7 +63,7 @@ export class FileUploadSecurityService {
    * @returns Promise resolving to security scan result
    */
   async scanFile(
-    file: File | Buffer, 
+    file: File | Buffer,
     filename: string,
     options: FileUploadSecurityOptions = {}
   ): Promise<FileSecurityScanResult> {
@@ -76,7 +74,7 @@ export class FileUploadSecurityService {
       warnings: [],
       quarantined: false,
       scanDuration: 0,
-      fileHash: ''
+      fileHash: '',
     }
 
     try {
@@ -88,12 +86,12 @@ export class FileUploadSecurityService {
       if (options.enableHashChecking && this.knownMalwareHashes.has(result.fileHash)) {
         result.isSecure = false
         result.threats.push('File matches known malware signature')
-        
+
         if (options.enableQuarantine) {
           await this.quarantineFile(buffer, filename, 'Known malware hash')
           result.quarantined = true
         }
-        
+
         result.scanDuration = Date.now() - startTime
         return result
       }
@@ -102,7 +100,7 @@ export class FileUploadSecurityService {
       const fileInfo = {
         name: filename,
         size: buffer.length,
-        type: this.detectMimeType(buffer, filename)
+        type: this.detectMimeType(buffer, filename),
       }
 
       const validationResult = validationService.validateFileUpload(fileInfo, options)
@@ -117,7 +115,7 @@ export class FileUploadSecurityService {
         const contentAnalysis = await this.analyzeFileContent(buffer, filename)
         result.threats.push(...contentAnalysis.threats)
         result.warnings.push(...contentAnalysis.warnings)
-        
+
         if (contentAnalysis.threats.length > 0) {
           result.isSecure = false
         }
@@ -128,7 +126,6 @@ export class FileUploadSecurityService {
         await this.quarantineFile(buffer, filename, result.threats.join(', '))
         result.quarantined = true
       }
-
     } catch (error) {
       logger.error('FileUploadSecurity', 'File scan failed', error)
       result.isSecure = false
@@ -145,7 +142,10 @@ export class FileUploadSecurityService {
    * @param filename - Original filename
    * @returns Analysis result
    */
-  private async analyzeFileContent(buffer: Buffer, _filename: string): Promise<{ threats: string[], warnings: string[] }> {
+  private async analyzeFileContent(
+    buffer: Buffer,
+    _filename: string
+  ): Promise<{ threats: string[]; warnings: string[] }> {
     const threats: string[] = []
     const warnings: string[] = []
 
@@ -154,10 +154,10 @@ export class FileUploadSecurityService {
 
       // Check for embedded executables
       const executableSignatures = [
-        Buffer.from([0x4D, 0x5A]), // PE executable
-        Buffer.from([0x7F, 0x45, 0x4C, 0x46]), // ELF executable
-        Buffer.from([0xCA, 0xFE, 0xBA, 0xBE]), // Java class file
-        Buffer.from([0xFE, 0xED, 0xFA, 0xCE]), // Mach-O executable
+        Buffer.from([0x4d, 0x5a]), // PE executable
+        Buffer.from([0x7f, 0x45, 0x4c, 0x46]), // ELF executable
+        Buffer.from([0xca, 0xfe, 0xba, 0xbe]), // Java class file
+        Buffer.from([0xfe, 0xed, 0xfa, 0xce]), // Mach-O executable
       ]
 
       for (const signature of executableSignatures) {
@@ -175,7 +175,7 @@ export class FileUploadSecurityService {
         /on\w+\s*=/gi,
         /eval\s*\(/gi,
         /document\.write/gi,
-        /window\.location/gi
+        /window\.location/gi,
       ]
 
       for (const pattern of scriptPatterns) {
@@ -194,7 +194,7 @@ export class FileUploadSecurityService {
         /system\(/gi,
         /exec\(/gi,
         /shell_exec/gi,
-        /passthru/gi
+        /passthru/gi,
       ]
 
       for (const pattern of commandPatterns) {
@@ -210,7 +210,7 @@ export class FileUploadSecurityService {
         /wget\s+.*http/gi,
         /fetch\s*\(/gi,
         /XMLHttpRequest/gi,
-        /sendBeacon/gi
+        /sendBeacon/gi,
       ]
 
       for (const pattern of exfiltrationPatterns) {
@@ -232,7 +232,6 @@ export class FileUploadSecurityService {
       if (entropy > 7.5) {
         warnings.push('File has high entropy - possible obfuscation or encryption')
       }
-
     } catch (error) {
       warnings.push('Could not analyze file content')
     }
@@ -247,7 +246,7 @@ export class FileUploadSecurityService {
    */
   private calculateEntropy(content: string): number {
     const frequencies: Record<string, number> = {}
-    
+
     for (const char of content) {
       frequencies[char] = (frequencies[char] || 0) + 1
     }
@@ -281,18 +280,18 @@ export class FileUploadSecurityService {
   private detectMimeType(buffer: Buffer, filename: string): string {
     // Check magic numbers
     const magicNumbers: Record<string, string> = {
-      'ffd8ff': 'image/jpeg',
+      ffd8ff: 'image/jpeg',
       '89504e47': 'image/png',
       '474946383761': 'image/gif',
       '474946383961': 'image/gif',
       '255044462d': 'application/pdf',
       '504b0304': 'application/zip',
       '504b0506': 'application/zip',
-      'd0cf11e0': 'application/msword'
+      d0cf11e0: 'application/msword',
     }
 
     const hex = buffer.toString('hex', 0, 8).toLowerCase()
-    
+
     for (const [signature, mimeType] of Object.entries(magicNumbers)) {
       if (hex.startsWith(signature)) {
         return mimeType
@@ -305,7 +304,7 @@ export class FileUploadSecurityService {
       '.txt': 'text/plain',
       '.json': 'application/json',
       '.csv': 'text/csv',
-      '.xml': 'application/xml'
+      '.xml': 'application/xml',
     }
 
     return extensionMap[ext] || 'application/octet-stream'
@@ -340,14 +339,14 @@ export class FileUploadSecurityService {
 
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       await fs.promises.writeFile(quarantinePath, buffer)
-      
+
       // Create metadata file
       const metadata = {
         originalFilename: filename,
         quarantineReason: reason,
         timestamp: new Date().toISOString(),
         fileSize: buffer.length,
-        fileHash: this.generateFileHash(buffer)
+        fileHash: this.generateFileHash(buffer),
       }
 
       const metaPath = path.resolve(quarantinePath + '.meta')
@@ -358,10 +357,7 @@ export class FileUploadSecurityService {
       }
 
       // eslint-disable-next-line security/detect-non-literal-fs-filename
-      await fs.promises.writeFile(
-        metaPath,
-        JSON.stringify(metadata, null, 2)
-      )
+      await fs.promises.writeFile(metaPath, JSON.stringify(metadata, null, 2))
 
       logger.warn('FileUploadSecurity', `File quarantined: ${filename}`, { reason, quarantinePath })
     } catch (error) {
@@ -407,12 +403,10 @@ export class FileUploadSecurityService {
         path.resolve('./config'),
         path.resolve('./data'),
         path.resolve(process.cwd(), 'config'),
-        path.resolve(process.cwd(), 'data')
+        path.resolve(process.cwd(), 'data'),
       ]
 
-      const isAllowedPath = allowedBasePaths.some(basePath =>
-        resolvedPath.startsWith(basePath)
-      )
+      const isAllowedPath = allowedBasePaths.some(basePath => resolvedPath.startsWith(basePath))
 
       if (!isAllowedPath) {
         throw new Error('Malware hash file path not allowed')
@@ -420,12 +414,15 @@ export class FileUploadSecurityService {
 
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       const content = await fs.promises.readFile(resolvedPath, 'utf8')
-      const hashes = content.split('\n').map(line => line.trim()).filter(line => line)
-      
+      const hashes = content
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line)
+
       for (const hash of hashes) {
         this.addMalwareHash(hash)
       }
-      
+
       logger.info('FileUploadSecurity', `Loaded ${hashes.length} malware hashes`)
     } catch (error) {
       logger.error('FileUploadSecurity', 'Failed to load malware hashes', error)

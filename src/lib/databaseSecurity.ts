@@ -43,15 +43,24 @@ const SQL_INJECTION_PATTERNS = [
   /(['"]%.*%['"]|['"]_.*_['"])/,
 
   // Suspicious string concatenation
-  /(\|\||CONCAT\s*\(.*\+.*\))/i
+  /(\|\||CONCAT\s*\(.*\+.*\))/i,
 ]
 
 /**
  * Dangerous SQL keywords that should be escaped or blocked
  */
 const DANGEROUS_SQL_KEYWORDS = [
-  'EXEC', 'EXECUTE', 'SP_', 'XP_', 'OPENROWSET', 'OPENDATASOURCE',
-  'BULK', 'BACKUP', 'RESTORE', 'SHUTDOWN', 'RECONFIGURE'
+  'EXEC',
+  'EXECUTE',
+  'SP_',
+  'XP_',
+  'OPENROWSET',
+  'OPENDATASOURCE',
+  'BULK',
+  'BACKUP',
+  'RESTORE',
+  'SHUTDOWN',
+  'RECONFIGURE',
 ]
 
 /**
@@ -65,7 +74,7 @@ const SAFE_INFORMATION_SCHEMA_PATTERNS = [
   // Basic table listing
   /SELECT\s+table_name\s+FROM\s+information_schema\.tables/i,
   // Schema information
-  /SELECT\s+.*\s+FROM\s+information_schema\.schemata/i
+  /SELECT\s+.*\s+FROM\s+information_schema\.schemata/i,
 ]
 
 /**
@@ -93,7 +102,7 @@ export const defaultDatabaseSecurityConfig: DatabaseSecurityConfig = {
   queryTimeoutMs: 30000,
   enableParameterValidation: true,
   logSuspiciousQueries: true,
-  blockDangerousKeywords: true
+  blockDangerousKeywords: true,
 }
 
 /**
@@ -143,7 +152,7 @@ export class DatabaseSecurityService {
           /(--|\/\*|\*\/|#)/,
           /;\s*(DROP|CREATE|ALTER|EXEC)/i,
           /(\bUNION\b.*\bSELECT\b)/i,
-          /(\b1\s*=\s*1\b|\b0\s*=\s*0\b)/i
+          /(\b1\s*=\s*1\b|\b0\s*=\s*0\b)/i,
         ]
 
         for (const pattern of dangerousPatterns) {
@@ -204,20 +213,24 @@ export class DatabaseSecurityService {
       isValid: errors.length === 0,
       errors,
       warnings,
-      sanitizedQuery: this.sanitizeQuery(query)
+      sanitizedQuery: this.sanitizeQuery(query),
     }
   }
 
   /**
    * Validate query parameters
    */
-  private validateParameters(parameters: any[]): { isValid: boolean; errors: string[]; warnings: string[] } {
+  private validateParameters(parameters: any[]): {
+    isValid: boolean
+    errors: string[]
+    warnings: string[]
+  } {
     const errors: string[] = []
     const warnings: string[] = []
 
     for (let i = 0; i < parameters.length; i++) {
       const param = parameters.at(i)
-      
+
       // Check for null/undefined
       if (param === null || param === undefined) {
         continue // Allow null values
@@ -259,10 +272,10 @@ export class DatabaseSecurityService {
   private containsUnparameterizedInput(query: string): boolean {
     // Look for string concatenation patterns that might indicate unparameterized input
     const suspiciousPatterns = [
-      /'\s*\+\s*'/,  // String concatenation
-      /"\s*\+\s*"/,  // String concatenation
-      /\$\{[^}]+\}/,  // Template literals
-      /`[^`]*\$\{[^}]+\}[^`]*`/  // Template strings
+      /'\s*\+\s*'/, // String concatenation
+      /"\s*\+\s*"/, // String concatenation
+      /\$\{[^}]+\}/, // Template literals
+      /`[^`]*\$\{[^}]+\}[^`]*`/, // Template strings
     ]
 
     return suspiciousPatterns.some(pattern => pattern.test(query))
@@ -275,10 +288,10 @@ export class DatabaseSecurityService {
     // Remove comments
     let sanitized = query.replace(/--.*/g, '')
     sanitized = sanitized.replace(/\/\*.*?\*\//gs, '')
-    
+
     // Normalize whitespace
     sanitized = sanitized.replace(/\s+/g, ' ').trim()
-    
+
     return sanitized
   }
 
@@ -297,14 +310,14 @@ export class DatabaseSecurityService {
       reason,
       query: query.substring(0, 200), // Log first 200 chars only
       timestamp: new Date().toISOString(),
-      suspiciousQueryCount: this.suspiciousQueryCount
+      suspiciousQueryCount: this.suspiciousQueryCount,
     })
 
     // Alert if too many suspicious queries in short time
     if (this.suspiciousQueryCount > 5) {
       logger.error('DatabaseSecurity', 'Multiple suspicious queries detected - possible attack', {
         count: this.suspiciousQueryCount,
-        timeWindow: Date.now() - this.lastSuspiciousQueryTime
+        timeWindow: Date.now() - this.lastSuspiciousQueryTime,
       })
     }
   }
@@ -321,12 +334,15 @@ export class DatabaseSecurityService {
         rejectUnauthorized: true,
         ca: process.env.DB_SSL_CA,
         cert: process.env.DB_SSL_CERT,
-        key: process.env.DB_SSL_KEY
+        key: process.env.DB_SSL_KEY,
       }
     }
 
     // Set secure connection timeouts
-    secureConfig.connectionTimeoutMillis = Math.min(secureConfig.connectionTimeoutMillis || 5000, 10000)
+    secureConfig.connectionTimeoutMillis = Math.min(
+      secureConfig.connectionTimeoutMillis || 5000,
+      10000
+    )
     secureConfig.idleTimeoutMillis = Math.min(secureConfig.idleTimeoutMillis || 30000, 60000)
     secureConfig.query_timeout = Math.min(secureConfig.query_timeout || 30000, 60000)
 
@@ -343,22 +359,33 @@ export class DatabaseSecurityService {
   static escapeIdentifier(identifier: string): string {
     // Remove any non-alphanumeric characters except underscore
     const cleaned = identifier.replace(/[^a-zA-Z0-9_]/g, '')
-    
+
     // Ensure it doesn't start with a number
     if (/^\d/.test(cleaned)) {
       throw new Error('SQL identifier cannot start with a number')
     }
-    
+
     // Check against reserved words
     const reservedWords = [
-      'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER',
-      'TABLE', 'INDEX', 'VIEW', 'TRIGGER', 'FUNCTION', 'PROCEDURE'
+      'SELECT',
+      'INSERT',
+      'UPDATE',
+      'DELETE',
+      'DROP',
+      'CREATE',
+      'ALTER',
+      'TABLE',
+      'INDEX',
+      'VIEW',
+      'TRIGGER',
+      'FUNCTION',
+      'PROCEDURE',
     ]
-    
+
     if (reservedWords.includes(cleaned.toUpperCase())) {
       throw new Error(`"${cleaned}" is a reserved SQL keyword`)
     }
-    
+
     return `"${cleaned}"`
   }
 
@@ -375,7 +402,7 @@ export class DatabaseSecurityService {
   static hashSensitiveData(data: string, salt?: string): { hash: string; salt: string } {
     const actualSalt = salt || crypto.randomBytes(32).toString('hex')
     const hash = crypto.pbkdf2Sync(data, actualSalt, 100000, 64, 'sha512').toString('hex')
-    
+
     return { hash, salt: actualSalt }
   }
 
@@ -398,7 +425,7 @@ export class DatabaseSecurityService {
     return {
       suspiciousQueryCount: this.suspiciousQueryCount,
       lastSuspiciousQueryTime: this.lastSuspiciousQueryTime,
-      securityConfig: { ...this.config }
+      securityConfig: { ...this.config },
     }
   }
 

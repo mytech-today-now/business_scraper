@@ -15,10 +15,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
-      { url: '/favicon.png', sizes: '32x32', type: 'image/png' }
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
-    apple: '/favicon.png'
+    apple: '/favicon.png',
   },
 }
 
@@ -31,16 +31,15 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}): JSX.Element {
+export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="color-scheme" content="light dark" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover"
+        />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -53,9 +52,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ErrorBoundary level="page" showDetails={process.env.NODE_ENV === 'development'}>
-          <div className="min-h-screen bg-background font-sans antialiased">
-            {children}
-          </div>
+          <div className="min-h-screen bg-background font-sans antialiased">{children}</div>
           <ServiceWorkerRegistration />
           <Toaster
             position="top-right"

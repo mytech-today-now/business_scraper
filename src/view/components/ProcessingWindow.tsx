@@ -12,7 +12,7 @@ import {
   EyeOff,
   Zap,
   Activity,
-  Wifi
+  Wifi,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
@@ -78,15 +78,17 @@ export function ProcessingWindow({
   onToggleVisibility,
   onClear,
   progress,
-  currentUrl
+  currentUrl,
 }: ProcessingWindowProps): JSX.Element {
   const [autoScroll, setAutoScroll] = useState(true)
-  const [consoleLogs, setConsoleLogs] = useState<Array<{
-    timestamp: Date
-    level: 'log' | 'info' | 'warn' | 'error' | 'debug'
-    message: string
-    args: any[]
-  }>>([])
+  const [consoleLogs, setConsoleLogs] = useState<
+    Array<{
+      timestamp: Date
+      level: 'log' | 'info' | 'warn' | 'error' | 'debug'
+      message: string
+      args: any[]
+    }>
+  >([])
   const [showConsole, setShowConsole] = useState(false)
 
   // Auto-scroll to latest step when new steps are added
@@ -106,7 +108,7 @@ export function ProcessingWindow({
       info: console.info,
       warn: console.warn,
       error: console.error,
-      debug: console.debug
+      debug: console.debug,
     }
 
     const captureConsole = (level: 'log' | 'info' | 'warn' | 'error' | 'debug') => {
@@ -115,17 +117,21 @@ export function ProcessingWindow({
         originalConsole[level](...args)
 
         // Capture for our display - use setTimeout to avoid setState during render
-        const message = args.map(arg =>
-          typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-        ).join(' ')
+        const message = args
+          .map(arg => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)))
+          .join(' ')
 
         setTimeout(() => {
-          setConsoleLogs(prev => [...prev.slice(-999), { // Keep last 1000 logs
-            timestamp: new Date(),
-            level,
-            message,
-            args
-          }])
+          setConsoleLogs(prev => [
+            ...prev.slice(-999),
+            {
+              // Keep last 1000 logs
+              timestamp: new Date(),
+              level,
+              message,
+              args,
+            },
+          ])
         }, 0)
       }
     }
@@ -211,16 +217,10 @@ export function ProcessingWindow({
   if (!isVisible) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
-        <Button
-          onClick={onToggleVisibility}
-          className="rounded-full shadow-lg"
-          size="sm"
-        >
+        <Button onClick={onToggleVisibility} className="rounded-full shadow-lg" size="sm">
           <Eye className="h-4 w-4 mr-2" />
           Show Processing
-          {isActive && (
-            <div className="ml-2 h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
-          )}
+          {isActive && <div className="ml-2 h-2 w-2 bg-blue-500 rounded-full animate-pulse" />}
         </Button>
       </div>
     )
@@ -232,20 +232,21 @@ export function ProcessingWindow({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <CardTitle className="text-lg">Processing Status</CardTitle>
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              currentStep === 'Stopping scraping...'
-                ? 'bg-yellow-100 text-yellow-800'
-                : isActive
-                ? 'bg-green-100 text-green-800'
-                : 'bg-gray-100 text-gray-800'
-            }`}>
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                currentStep === 'Stopping scraping...'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : isActive
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-800'
+              }`}
+            >
               <Wifi className="h-4 w-4 mr-1" />
               {currentStep === 'Stopping scraping...'
                 ? 'Stopping'
                 : isActive
-                ? 'Live Scraping'
-                : 'Idle'
-              }
+                  ? 'Live Scraping'
+                  : 'Idle'}
             </span>
           </div>
           <div className="flex items-center space-x-2">
@@ -257,19 +258,10 @@ export function ProcessingWindow({
             >
               <Zap className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClear}
-              disabled={isActive}
-            >
+            <Button variant="ghost" size="sm" onClick={onClear} disabled={isActive}>
               Clear
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggleVisibility}
-            >
+            <Button variant="ghost" size="sm" onClick={onToggleVisibility}>
               <EyeOff className="h-4 w-4" />
             </Button>
           </div>
@@ -281,7 +273,9 @@ export function ProcessingWindow({
           <div className="bg-blue-50 p-3 rounded-lg">
             <div className="text-sm font-medium text-blue-600">Progress</div>
             <div className="text-2xl font-bold text-blue-700">{progress.percentage}%</div>
-            <div className="text-xs text-blue-500">{progress.current} of {progress.total}</div>
+            <div className="text-xs text-blue-500">
+              {progress.current} of {progress.total}
+            </div>
           </div>
           <div className="bg-green-50 p-3 rounded-lg">
             <div className="text-sm font-medium text-green-600">Completed</div>
@@ -307,7 +301,7 @@ export function ProcessingWindow({
             <span>{progress.percentage}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress.percentage}%` }}
             />
@@ -326,7 +320,7 @@ export function ProcessingWindow({
         )}
 
         {/* Processing Steps */}
-        <div 
+        <div
           id="processing-steps-container"
           className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-2"
         >
@@ -338,10 +332,7 @@ export function ProcessingWindow({
             </div>
           ) : (
             steps.map((step, index) => (
-              <div
-                key={step.id}
-                className={`p-3 border-l-4 rounded-r-lg ${getStepColor(step)}`}
-              >
+              <div key={step.id} className={`p-3 border-l-4 rounded-r-lg ${getStepColor(step)}`}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-2 flex-1">
                     {getStepIcon(step)}
@@ -361,9 +352,7 @@ export function ProcessingWindow({
                         </div>
                       )}
                       {step.details && (
-                        <div className="text-xs text-gray-600 mb-1">
-                          {step.details}
-                        </div>
+                        <div className="text-xs text-gray-600 mb-1">{step.details}</div>
                       )}
                       {step.error && (
                         <div className="text-xs text-red-600 bg-red-100 p-2 rounded mt-1">
@@ -422,9 +411,7 @@ export function ProcessingWindow({
                       <span className={`flex-shrink-0 ${getConsoleLogColor(log.level)}`}>
                         [{log.level.toUpperCase()}]
                       </span>
-                      <span className="flex-1 break-all whitespace-pre-wrap">
-                        {log.message}
-                      </span>
+                      <span className="flex-1 break-all whitespace-pre-wrap">{log.message}</span>
                     </div>
                   ))
                 )}

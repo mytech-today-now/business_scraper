@@ -5,18 +5,22 @@
 
 ## 📋 Overview
 
-This comprehensive troubleshooting guide covers common issues, solutions, and debugging procedures for the Business Scraper Application v3.6.0. Use this guide to quickly resolve problems and maintain optimal application performance.
+This comprehensive troubleshooting guide covers common issues, solutions, and
+debugging procedures for the Business Scraper Application v3.6.0. Use this guide
+to quickly resolve problems and maintain optimal application performance.
 
 ## 🔍 Quick Diagnosis
 
 ### **Application Won't Start**
 
 #### Symptoms
+
 - Application fails to start
 - Port already in use errors
 - Module not found errors
 
 #### Solutions
+
 ```bash
 # Check if port 3000 is in use
 lsof -i :3000
@@ -36,11 +40,13 @@ PORT=3001 npm run dev
 ### **Search Not Returning Results**
 
 #### Symptoms
+
 - Empty search results
 - "No businesses found" messages
 - Search timeouts
 
 #### Solutions
+
 ```bash
 # Check search engine configuration
 curl http://localhost:3000/api/config
@@ -57,11 +63,13 @@ curl -X POST http://localhost:3000/api/search \
 ### **CRM Export Failures**
 
 #### Symptoms
+
 - Export button not working
 - Validation errors during export
 - Empty export files
 
 #### Solutions
+
 ```bash
 # Validate CRM template
 curl -X POST http://localhost:3000/api/crm/validate \
@@ -80,14 +88,17 @@ curl http://localhost:3000/api/crm/templates
 ### **"Module not found" Errors**
 
 #### Error Message
+
 ```
 Error: Cannot find module 'package-name'
 ```
 
 #### Cause
+
 Missing dependencies or corrupted node_modules
 
 #### Solution
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules package-lock.json
@@ -103,14 +114,17 @@ npm ls
 ### **"Port 3000 is already in use"**
 
 #### Error Message
+
 ```
 Error: listen EADDRINUSE: address already in use :::3000
 ```
 
 #### Cause
+
 Another process is using port 3000
 
 #### Solution
+
 ```bash
 # Find process using port 3000
 lsof -i :3000
@@ -125,14 +139,17 @@ PORT=3001 npm run dev
 ### **"Database connection failed"**
 
 #### Error Message
+
 ```
 Error: Connection to database failed
 ```
 
 #### Cause
+
 Database not running or misconfigured
 
 #### Solution
+
 ```bash
 # Check PostgreSQL status
 pg_ctl status
@@ -150,14 +167,17 @@ psql $DATABASE_URL -c "SELECT 1;"
 ### **"Search engine API key invalid"**
 
 #### Error Message
+
 ```
 Error: Invalid API key for search engine
 ```
 
 #### Cause
+
 Missing or incorrect API keys
 
 #### Solution
+
 ```bash
 # Check environment variables
 cat .env | grep API_KEY
@@ -172,11 +192,13 @@ cat .env | grep API_KEY
 ### **Slow Search Performance**
 
 #### Symptoms
+
 - Search takes longer than 30 seconds
 - Browser becomes unresponsive
 - High CPU usage
 
 #### Diagnosis
+
 ```bash
 # Check system resources
 top
@@ -190,6 +212,7 @@ psql $DATABASE_URL -c "SELECT * FROM pg_stat_activity;"
 ```
 
 #### Solutions
+
 ```bash
 # Reduce search limit
 # Use smaller radius
@@ -204,11 +227,13 @@ free -h
 ### **Memory Issues**
 
 #### Symptoms
+
 - Application crashes with out of memory errors
 - Slow performance with large datasets
 - Browser tabs become unresponsive
 
 #### Solutions
+
 ```bash
 # Increase Node.js memory limit
 NODE_OPTIONS="--max-old-space-size=4096" npm start
@@ -224,28 +249,31 @@ node --inspect app.js
 ### **Database Performance**
 
 #### Symptoms
+
 - Slow query execution
 - Database timeouts
 - High disk usage
 
 #### Diagnosis
+
 ```sql
 -- Check slow queries
-SELECT query, mean_time, calls 
-FROM pg_stat_statements 
-ORDER BY mean_time DESC 
+SELECT query, mean_time, calls
+FROM pg_stat_statements
+ORDER BY mean_time DESC
 LIMIT 10;
 
 -- Check database size
 SELECT pg_size_pretty(pg_database_size('business_scraper'));
 
 -- Check table sizes
-SELECT schemaname,tablename,attname,n_distinct,correlation 
-FROM pg_stats 
+SELECT schemaname,tablename,attname,n_distinct,correlation
+FROM pg_stats
 WHERE tablename = 'businesses';
 ```
 
 #### Solutions
+
 ```sql
 -- Analyze tables
 ANALYZE businesses;
@@ -262,11 +290,13 @@ VACUUM ANALYZE;
 ### **Scraping Timeouts**
 
 #### Symptoms
+
 - Frequent timeout errors
 - Incomplete scraping results
 - "Request failed" messages
 
 #### Solutions
+
 ```bash
 # Increase timeout settings
 # Check network connectivity
@@ -283,11 +313,13 @@ echo $HTTPS_PROXY
 ### **CORS Errors**
 
 #### Symptoms
+
 - Browser console shows CORS errors
 - API requests blocked
 - Cross-origin request failures
 
 #### Solutions
+
 ```javascript
 // Check CORS configuration in next.config.js
 // Verify API endpoint URLs
@@ -301,11 +333,13 @@ echo $HTTPS_PROXY
 ### **SSL/TLS Issues**
 
 #### Symptoms
+
 - Certificate errors
 - HTTPS connection failures
 - "Insecure connection" warnings
 
 #### Solutions
+
 ```bash
 # Check certificate validity
 openssl s_client -connect domain.com:443
@@ -323,11 +357,13 @@ curl -I https://your-domain.com
 ### **Session Expired Errors**
 
 #### Symptoms
+
 - Frequent login prompts
 - "Session expired" messages
 - Authentication failures
 
 #### Solutions
+
 ```bash
 # Clear browser cookies and localStorage
 # Check session configuration
@@ -340,11 +376,13 @@ curl -I https://your-domain.com
 ### **Permission Denied Errors**
 
 #### Symptoms
+
 - File access errors
 - Database permission errors
 - API access denied
 
 #### Solutions
+
 ```bash
 # Check file permissions
 ls -la
@@ -364,11 +402,13 @@ psql $DATABASE_URL -c "\du"
 ### **Chrome Issues**
 
 #### Common Problems
+
 - Memory leaks with large datasets
 - Extension conflicts
 - Cache issues
 
 #### Solutions
+
 ```bash
 # Clear Chrome cache
 # Disable extensions
@@ -379,11 +419,13 @@ psql $DATABASE_URL -c "\du"
 ### **Firefox Issues**
 
 #### Common Problems
+
 - JavaScript performance
 - Local storage limits
 - CORS handling differences
 
 #### Solutions
+
 ```bash
 # Clear Firefox cache
 # Check about:config settings
@@ -394,11 +436,13 @@ psql $DATABASE_URL -c "\du"
 ### **Safari Issues**
 
 #### Common Problems
+
 - Local storage restrictions
 - WebSocket connection issues
 - Date/time formatting differences
 
 #### Solutions
+
 ```bash
 # Enable developer tools
 # Check Safari preferences
@@ -411,11 +455,13 @@ psql $DATABASE_URL -c "\du"
 ### **Export File Corruption**
 
 #### Symptoms
+
 - Downloaded files won't open
 - Incomplete export data
 - Encoding issues
 
 #### Solutions
+
 ```bash
 # Check file size
 ls -la downloads/
@@ -433,11 +479,13 @@ file -i export.csv
 ### **Data Validation Errors**
 
 #### Symptoms
+
 - CRM import failures
 - Invalid data format errors
 - Missing required fields
 
 #### Solutions
+
 ```bash
 # Use CRM template validation
 # Check field mappings
@@ -488,8 +536,8 @@ SET log_statement = 'all';
 SELECT * FROM pg_stat_activity;
 
 -- Monitor query performance
-SELECT query, total_time, calls 
-FROM pg_stat_statements 
+SELECT query, total_time, calls
+FROM pg_stat_statements
 ORDER BY total_time DESC;
 ```
 
@@ -607,4 +655,5 @@ psql $DATABASE_URL -c "VACUUM ANALYZE;"
 rm -rf tmp/*
 ```
 
-This troubleshooting guide is regularly updated. For the latest version, check the documentation repository.
+This troubleshooting guide is regularly updated. For the latest version, check
+the documentation repository.

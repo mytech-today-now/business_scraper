@@ -8,7 +8,7 @@ import {
   ApiFrameworkConfig,
   ApiRequestContext,
   ApiResponse,
-  ApiPermission
+  ApiPermission,
 } from '@/types/integrations'
 import { logger } from '@/utils/logger'
 import { getClientIP } from '@/lib/security'
@@ -22,35 +22,35 @@ const defaultConfig: ApiFrameworkConfig = {
   baseUrl: '/api/v1',
   authentication: {
     methods: ['oauth2', 'api_key'],
-    defaultMethod: 'api_key'
+    defaultMethod: 'api_key',
   },
   rateLimit: {
     global: {
       requestsPerMinute: 1000,
-      requestsPerHour: 10000
+      requestsPerHour: 10000,
     },
     perClient: {
       requestsPerMinute: 100,
-      requestsPerHour: 1000
-    }
+      requestsPerHour: 1000,
+    },
   },
   cors: {
     enabled: true,
     origins: ['*'], // Configure based on environment
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    headers: ['Content-Type', 'Authorization', 'X-API-Key']
+    headers: ['Content-Type', 'Authorization', 'X-API-Key'],
   },
   logging: {
     level: 'info',
     includeRequestBody: false,
     includeResponseBody: false,
-    sensitiveFields: ['password', 'token', 'key', 'secret']
+    sensitiveFields: ['password', 'token', 'key', 'secret'],
   },
   monitoring: {
     enabled: true,
     metricsEndpoint: '/api/v1/metrics',
-    healthEndpoint: '/api/v1/health'
-  }
+    healthEndpoint: '/api/v1/health',
+  },
 }
 
 /**
@@ -101,15 +101,15 @@ export class ApiFramework {
           permissions: [],
           rateLimit: {
             remaining: 0,
-            resetTime: 0
+            resetTime: 0,
           },
           startTime,
           metadata: {
             ip,
             method,
             pathname,
-            userAgent: request.headers.get('user-agent') || ''
-          }
+            userAgent: request.headers.get('user-agent') || '',
+          },
         }
 
         // Apply CORS
@@ -120,7 +120,11 @@ export class ApiFramework {
         // Authentication
         const authResult = await this.authenticate(request)
         if (!authResult.success) {
-          return this.createErrorResponse(authResult.error || 'Authentication failed', 401, requestId)
+          return this.createErrorResponse(
+            authResult.error || 'Authentication failed',
+            401,
+            requestId
+          )
         }
 
         context.clientId = authResult.clientId
@@ -129,10 +133,10 @@ export class ApiFramework {
 
         // Authorization
         if (options.permissions && options.permissions.length > 0) {
-          const hasPermission = options.permissions.some(permission => 
+          const hasPermission = options.permissions.some(permission =>
             context.permissions.includes(permission)
           )
-          
+
           if (!hasPermission) {
             return this.createErrorResponse('Insufficient permissions', 403, requestId)
           }
@@ -154,13 +158,13 @@ export class ApiFramework {
 
           return this.createErrorResponse('Rate limit exceeded', 429, requestId, {
             'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': rateLimitResult.resetTime.toString()
+            'X-RateLimit-Reset': rateLimitResult.resetTime.toString(),
           })
         }
 
         context.rateLimit = {
           remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime
+          resetTime: rateLimitResult.resetTime,
         }
 
         // Input validation
@@ -168,8 +172,8 @@ export class ApiFramework {
           const validationResult = await this.validateInput(request, options.validation)
           if (!validationResult.valid) {
             return this.createErrorResponse(
-              `Validation failed: ${validationResult.errors.join(', ')}`, 
-              400, 
+              `Validation failed: ${validationResult.errors.join(', ')}`,
+              400,
               requestId
             )
           }
@@ -198,9 +202,8 @@ export class ApiFramework {
         // Create response
         return this.createSuccessResponse(result, requestId, {
           'X-RateLimit-Remaining': context.rateLimit.remaining.toString(),
-          'X-RateLimit-Reset': context.rateLimit.resetTime.toString()
+          'X-RateLimit-Reset': context.rateLimit.resetTime.toString(),
         })
-
       } catch (error) {
         const duration = Date.now() - startTime
         const statusCode = 500
@@ -211,7 +214,7 @@ export class ApiFramework {
           pathname,
           ip,
           duration,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         })
 
         // Record error metrics with enhanced analytics
@@ -226,7 +229,11 @@ export class ApiFramework {
         )
 
         // Record legacy error metrics
-        this.recordMetrics({ requestId, metadata: { ip, method, pathname } } as ApiRequestContext, duration, 'error')
+        this.recordMetrics(
+          { requestId, metadata: { ip, method, pathname } } as ApiRequestContext,
+          duration,
+          'error'
+        )
 
         return this.createErrorResponse(
           error instanceof Error ? error.message : 'Internal server error',
@@ -242,14 +249,14 @@ export class ApiFramework {
    */
   private handleCors(request: NextRequest): NextResponse {
     const response = new NextResponse(null, { status: 200 })
-    
+
     if (this.config.cors.enabled) {
       response.headers.set('Access-Control-Allow-Origin', this.config.cors.origins.join(', '))
       response.headers.set('Access-Control-Allow-Methods', this.config.cors.methods.join(', '))
       response.headers.set('Access-Control-Allow-Headers', this.config.cors.headers.join(', '))
       response.headers.set('Access-Control-Max-Age', '86400')
     }
-    
+
     return response
   }
 
@@ -282,7 +289,7 @@ export class ApiFramework {
       success: true,
       clientId: 'anonymous',
       userId: 'anonymous',
-      permissions: ['read:businesses']
+      permissions: ['read:businesses'],
     }
   }
 
@@ -302,7 +309,7 @@ export class ApiFramework {
       success: true,
       clientId: 'api-client',
       userId: 'api-user',
-      permissions: ['read:businesses', 'write:businesses', 'read:exports', 'write:exports']
+      permissions: ['read:businesses', 'write:businesses', 'read:exports', 'write:exports'],
     }
   }
 
@@ -322,7 +329,7 @@ export class ApiFramework {
       success: true,
       clientId: 'oauth-client',
       userId: 'oauth-user',
-      permissions: ['read:businesses', 'write:businesses', 'read:exports', 'write:exports']
+      permissions: ['read:businesses', 'write:businesses', 'read:exports', 'write:exports'],
     }
   }
 
@@ -340,8 +347,10 @@ export class ApiFramework {
     const clientId = context.clientId || context.metadata.ip || 'anonymous'
 
     const limits = {
-      requestsPerMinute: customLimits?.requestsPerMinute || this.config.rateLimit.perClient.requestsPerMinute,
-      requestsPerHour: customLimits?.requestsPerHour || this.config.rateLimit.perClient.requestsPerHour
+      requestsPerMinute:
+        customLimits?.requestsPerMinute || this.config.rateLimit.perClient.requestsPerMinute,
+      requestsPerHour:
+        customLimits?.requestsPerHour || this.config.rateLimit.perClient.requestsPerHour,
     }
 
     // Use enhanced metrics service for rate limiting
@@ -350,7 +359,7 @@ export class ApiFramework {
     return {
       allowed: rateLimitResult.allowed,
       remaining: Math.min(rateLimitResult.remaining.minute, rateLimitResult.remaining.hour),
-      resetTime: Math.min(rateLimitResult.resetTime.minute, rateLimitResult.resetTime.hour)
+      resetTime: Math.min(rateLimitResult.resetTime.minute, rateLimitResult.resetTime.hour),
     }
   }
 
@@ -378,7 +387,7 @@ export class ApiFramework {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     }
   }
 
@@ -391,11 +400,11 @@ export class ApiFramework {
     headers: Record<string, string> = {}
   ): NextResponse {
     const response = NextResponse.json(data)
-    
+
     // Add standard headers
     response.headers.set('X-Request-ID', requestId)
     response.headers.set('X-API-Version', this.config.version)
-    
+
     // Add custom headers
     Object.entries(headers).forEach(([key, value]) => {
       response.headers.set(key, value)
@@ -422,21 +431,21 @@ export class ApiFramework {
       success: false,
       error: {
         code: `HTTP_${status}`,
-        message
+        message,
       },
       metadata: {
         requestId,
         timestamp: new Date().toISOString(),
-        version: this.config.version
-      }
+        version: this.config.version,
+      },
     }
 
     const response = NextResponse.json(errorResponse, { status })
-    
+
     // Add standard headers
     response.headers.set('X-Request-ID', requestId)
     response.headers.set('X-API-Version', this.config.version)
-    
+
     // Add custom headers
     Object.entries(headers).forEach(([key, value]) => {
       response.headers.set(key, value)
@@ -470,12 +479,12 @@ export class ApiFramework {
       count: 0,
       totalDuration: 0,
       successCount: 0,
-      errorCount: 0
+      errorCount: 0,
     }
 
     existing.count++
     existing.totalDuration += duration
-    
+
     if (status === 'success') {
       existing.successCount++
     } else {
@@ -490,12 +499,12 @@ export class ApiFramework {
    */
   getMetrics(): any {
     const metrics: any = {}
-    
+
     for (const [endpoint, data] of this.requestMetrics.entries()) {
       metrics[endpoint] = {
         ...data,
         averageDuration: data.totalDuration / data.count,
-        successRate: (data.successCount / data.count) * 100
+        successRate: (data.successCount / data.count) * 100,
       }
     }
 
@@ -512,7 +521,7 @@ export class ApiFramework {
       version: this.config.version,
       uptime: process.uptime(),
       memory: process.memoryUsage(),
-      metrics: this.getMetrics()
+      metrics: this.getMetrics(),
     }
   }
 }

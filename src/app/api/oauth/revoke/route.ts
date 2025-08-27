@@ -40,7 +40,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate client credentials
     const clientValidation = clientService.validateClient(clientId, clientSecret)
-    
+
     if (!clientValidation.valid || !clientValidation.client) {
       return createErrorResponse({
         error: 'invalid_client',
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate the token before revocation
     const tokenValidation = tokenService.validateToken(token)
-    
+
     if (tokenValidation.valid && tokenValidation.payload) {
       // Security check: Only allow revocation of tokens issued to the same client
       // or if the client has admin privileges
@@ -74,13 +74,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     } else {
       // Even if revocation fails (e.g., token already expired/invalid),
       // we return success as per RFC 7009
-      logger.info('OAuth', `Token revocation attempted by client ${clientId} (token may have been invalid)`)
+      logger.info(
+        'OAuth',
+        `Token revocation attempted by client ${clientId} (token may have been invalid)`
+      )
     }
 
     // RFC 7009: The authorization server responds with HTTP status code 200
     // regardless of whether the token was successfully revoked or invalid
     return NextResponse.json({}, { status: 200 })
-
   } catch (error) {
     logger.error('OAuth', 'Token revocation error', error)
     return createErrorResponse({
@@ -94,10 +96,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  * GET /api/oauth/revoke - Not allowed (revocation must use POST)
  */
 export async function GET(): Promise<NextResponse> {
-  return createErrorResponse({
-    error: 'invalid_request',
-    errorDescription: 'Token revocation must use POST method',
-  }, 405)
+  return createErrorResponse(
+    {
+      error: 'invalid_request',
+      errorDescription: 'Token revocation must use POST method',
+    },
+    405
+  )
 }
 
 /**

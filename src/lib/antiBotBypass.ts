@@ -103,7 +103,7 @@ export class AntiBotBypass {
         enableIPSpoofing: true,
         enableMACAddressSpoofing: true,
         enableFingerprintSpoofing: true,
-        requestDelay: { min: 2000, max: 6000 }
+        requestDelay: { min: 2000, max: 6000 },
       })
 
       await spoofingService.applyNetworkSpoofing(page)
@@ -133,7 +133,6 @@ export class AntiBotBypass {
 
       // Simulate human-like behavior after page load
       await this.simulateHumanBehavior(page)
-
     } catch (error) {
       logger.error('AntiBotBypass', `Failed to navigate to ${url}`, error)
       throw error
@@ -168,8 +167,11 @@ export class AntiBotBypass {
           if (element) {
             return {
               detected: true,
-              type: selector.includes('recaptcha') ? 'recaptcha' : 
-                    selector.includes('hcaptcha') ? 'hcaptcha' : 'unknown',
+              type: selector.includes('recaptcha')
+                ? 'recaptcha'
+                : selector.includes('hcaptcha')
+                  ? 'hcaptcha'
+                  : 'unknown',
               selector,
             }
           }
@@ -177,9 +179,11 @@ export class AntiBotBypass {
 
         // Check for challenge pages
         const bodyText = document.body.textContent?.toLowerCase() || ''
-        if (bodyText.includes('verify you are human') || 
-            bodyText.includes('security check') ||
-            bodyText.includes('please complete the security check')) {
+        if (
+          bodyText.includes('verify you are human') ||
+          bodyText.includes('security check') ||
+          bodyText.includes('please complete the security check')
+        ) {
           return {
             detected: true,
             type: 'challenge',
@@ -239,18 +243,17 @@ export class AntiBotBypass {
 
       // Override permissions
       const originalQuery = window.navigator.permissions.query
-      window.navigator.permissions.query = (parameters) => (
-        parameters.name === 'notifications' ?
-          Promise.resolve({
-            state: Notification.permission,
-            name: 'notifications',
-            onchange: null,
-            addEventListener: () => {},
-            removeEventListener: () => {},
-            dispatchEvent: () => false
-          } as PermissionStatus) :
-          originalQuery(parameters)
-      )
+      window.navigator.permissions.query = parameters =>
+        parameters.name === 'notifications'
+          ? Promise.resolve({
+              state: Notification.permission,
+              name: 'notifications',
+              onchange: null,
+              addEventListener: () => {},
+              removeEventListener: () => {},
+              dispatchEvent: () => false,
+            } as PermissionStatus)
+          : originalQuery(parameters)
 
       // Override screen properties
       Object.defineProperty(screen, 'colorDepth', {
@@ -259,7 +262,7 @@ export class AntiBotBypass {
 
       // Override timezone
       Object.defineProperty(Intl.DateTimeFormat.prototype, 'resolvedOptions', {
-        value: function() {
+        value: function () {
           return {
             ...Intl.DateTimeFormat.prototype.resolvedOptions.call(this),
             timeZone: 'America/New_York',
@@ -293,7 +296,7 @@ export class AntiBotBypass {
       // Mock realistic browser behavior
       ;(window as any).chrome = {
         runtime: {},
-        loadTimes: function() {
+        loadTimes: function () {
           return {
             commitLoadTime: Date.now() / 1000 - Math.random(),
             finishDocumentLoadTime: Date.now() / 1000 - Math.random(),
@@ -318,11 +321,11 @@ export class AntiBotBypass {
    */
   private async randomizeHeaders(page: Page): Promise<void> {
     const headers = {
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
       'Accept-Language': 'en-US,en;q=0.5',
       'Accept-Encoding': 'gzip, deflate, br',
-      'DNT': '1',
-      'Connection': 'keep-alive',
+      DNT: '1',
+      Connection: 'keep-alive',
       'Upgrade-Insecure-Requests': '1',
       'Sec-Fetch-Dest': 'document',
       'Sec-Fetch-Mode': 'navigate',
@@ -339,12 +342,12 @@ export class AntiBotBypass {
   private async setupRequestInterception(page: Page): Promise<void> {
     await page.setRequestInterception(true)
 
-    page.on('request', (request) => {
+    page.on('request', request => {
       const headers = request.headers()
-      
+
       // Remove automation headers
       delete headers['x-devtools-emulate-network-conditions-client-id']
-      
+
       // Add realistic headers
       headers['sec-ch-ua'] = '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"'
       headers['sec-ch-ua-mobile'] = '?0'
@@ -383,13 +386,13 @@ export class AntiBotBypass {
    */
   private async simulateScrolling(page: Page): Promise<void> {
     const scrollSteps = Math.floor(Math.random() * 5) + 2
-    
+
     for (let i = 0; i < scrollSteps; i++) {
       const scrollY = Math.floor(Math.random() * 500) + 100
-      await page.evaluate((y) => {
+      await page.evaluate(y => {
         window.scrollBy(0, y)
       }, scrollY)
-      
+
       await this.randomDelay(200, 800)
     }
   }
@@ -402,7 +405,7 @@ export class AntiBotBypass {
     if (!viewport) return
 
     const movements = this.generateMousePath(viewport.width, viewport.height)
-    
+
     for (const movement of movements) {
       await page.mouse.move(movement.x, movement.y)
       await this.randomDelay(50, 200)
@@ -415,32 +418,32 @@ export class AntiBotBypass {
   private generateMousePath(width: number, height: number): MouseMovement[] {
     const movements: MouseMovement[] = []
     const numMovements = Math.floor(Math.random() * 5) + 3
-    
+
     let currentX = Math.floor(Math.random() * width)
     let currentY = Math.floor(Math.random() * height)
-    
+
     for (let i = 0; i < numMovements; i++) {
       const targetX = Math.floor(Math.random() * width)
       const targetY = Math.floor(Math.random() * height)
-      
+
       // Create smooth movement
       const steps = Math.floor(Math.random() * 10) + 5
       for (let step = 0; step <= steps; step++) {
         const progress = step / steps
         const x = currentX + (targetX - currentX) * progress
         const y = currentY + (targetY - currentY) * progress
-        
+
         movements.push({
           x: Math.floor(x),
           y: Math.floor(y),
           duration: Math.floor(Math.random() * 100) + 50,
         })
       }
-      
+
       currentX = targetX
       currentY = targetY
     }
-    
+
     return movements
   }
 
@@ -451,7 +454,7 @@ export class AntiBotBypass {
     const minDelay = min || this.config.minDelay
     const maxDelay = max || this.config.maxDelay
     const delay = Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay
-    
+
     await new Promise(resolve => setTimeout(resolve, delay))
   }
 
@@ -462,7 +465,7 @@ export class AntiBotBypass {
     try {
       const content = await page.content()
       const title = await page.title()
-      
+
       const blockIndicators = [
         'access denied',
         'blocked',
@@ -474,12 +477,12 @@ export class AntiBotBypass {
         'cloudflare',
         'ddos protection',
       ]
-      
+
       const contentLower = content.toLowerCase()
       const titleLower = title.toLowerCase()
-      
-      return blockIndicators.some(indicator => 
-        contentLower.includes(indicator) || titleLower.includes(indicator)
+
+      return blockIndicators.some(
+        indicator => contentLower.includes(indicator) || titleLower.includes(indicator)
       )
     } catch (error) {
       logger.error('AntiBotBypass', 'Failed to check if page is blocked', error)
@@ -496,7 +499,7 @@ export class AntiBotBypass {
         () => {
           // Check if page is still loading
           if (document.readyState !== 'complete') return false
-          
+
           // Check for common loading indicators
           const loadingSelectors = [
             '.loading',
@@ -505,14 +508,14 @@ export class AntiBotBypass {
             '[class*="loading"]',
             '[class*="spinner"]',
           ]
-          
+
           for (const selector of loadingSelectors) {
             const element = document.querySelector(selector)
             if (element && getComputedStyle(element).display !== 'none') {
               return false
             }
           }
-          
+
           return true
         },
         { timeout }

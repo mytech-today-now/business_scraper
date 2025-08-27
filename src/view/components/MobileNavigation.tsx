@@ -92,10 +92,10 @@ export function MobileNavigation({
             Scraping
           </Button>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className="min-h-touch min-w-touch"
             title="Documentation"
@@ -242,9 +242,7 @@ export function MobileNavigation({
 
         {/* Drawer Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-muted/30">
-          <p className="text-xs text-muted-foreground text-center">
-            Business Scraper v1.0.0
-          </p>
+          <p className="text-xs text-muted-foreground text-center">Business Scraper v1.0.0</p>
         </div>
       </div>
     </>

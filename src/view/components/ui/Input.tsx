@@ -22,7 +22,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 /**
  * Get validation state type from validation state
  */
-function getValidationStateType(validationState?: ValidationState, error?: string): ValidationStateType {
+function getValidationStateType(
+  validationState?: ValidationState,
+  error?: string
+): ValidationStateType {
   if (error || validationState?.error) return 'error'
   if (validationState?.warning) return 'warning'
   if (validationState?.success) return 'success'
@@ -55,7 +58,12 @@ function getValidationIcon(stateType: ValidationStateType): JSX.Element | null {
           viewBox="0 0 24 24"
           aria-hidden="true"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       )
     case 'warning':
@@ -67,7 +75,12 @@ function getValidationIcon(stateType: ValidationStateType): JSX.Element | null {
           viewBox="0 0 24 24"
           aria-hidden="true"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+          />
         </svg>
       )
     default:
@@ -79,18 +92,21 @@ function getValidationIcon(stateType: ValidationStateType): JSX.Element | null {
  * Input component with label, error handling, and real-time validation
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({
-    className,
-    type = 'text',
-    error,
-    label,
-    helperText,
-    id,
-    validationState,
-    showValidationIcon = true,
-    'aria-describedby': ariaDescribedBy,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      type = 'text',
+      error,
+      label,
+      helperText,
+      id,
+      validationState,
+      showValidationIcon = true,
+      'aria-describedby': ariaDescribedBy,
+      ...props
+    },
+    ref
+  ) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
     const errorId = `${inputId}-error`
     const helperTextId = `${inputId}-helper`
@@ -176,20 +192,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         {/* Success message */}
         {displaySuccess && !displayError && !displayWarning && (
-          <p
-            className="text-sm text-green-600 dark:text-green-400"
-            aria-live="polite"
-          >
+          <p className="text-sm text-green-600 dark:text-green-400" aria-live="polite">
             {displaySuccess}
           </p>
         )}
 
         {/* Helper text */}
         {displayHelper && (
-          <p
-            id={helperTextId}
-            className="text-sm text-muted-foreground"
-          >
+          <p id={helperTextId} className="text-sm text-muted-foreground">
             {helperText}
           </p>
         )}

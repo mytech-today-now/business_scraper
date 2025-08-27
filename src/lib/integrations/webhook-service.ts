@@ -3,11 +3,11 @@
  * Comprehensive webhook system for real-time data delivery
  */
 
-import { 
-  WebhookConfig, 
-  WebhookEvent, 
-  WebhookPayload, 
-  WebhookDeliveryResult 
+import {
+  WebhookConfig,
+  WebhookEvent,
+  WebhookPayload,
+  WebhookDeliveryResult,
 } from '@/types/integrations'
 import { logger } from '@/utils/logger'
 import crypto from 'crypto'
@@ -34,7 +34,10 @@ export class WebhookService {
    * Create webhook
    */
   async createWebhook(
-    webhookData: Omit<WebhookConfig, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'successCount' | 'failureCount'>
+    webhookData: Omit<
+      WebhookConfig,
+      'id' | 'status' | 'createdAt' | 'updatedAt' | 'successCount' | 'failureCount'
+    >
   ): Promise<WebhookConfig> {
     const webhookId = this.generateWebhookId()
 
@@ -51,14 +54,14 @@ export class WebhookService {
         retryDelay: 1000,
         backoffMultiplier: 2,
         maxDelay: 30000,
-        ...webhookData.retryPolicy
+        ...webhookData.retryPolicy,
       },
       timeout: webhookData.timeout || 30000,
       status: 'active',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       successCount: 0,
-      failureCount: 0
+      failureCount: 0,
     }
 
     this.webhooks.set(webhookId, webhook)
@@ -68,7 +71,7 @@ export class WebhookService {
       webhookId,
       name: webhook.name,
       url: webhook.url,
-      events: webhook.events
+      events: webhook.events,
     })
 
     return webhook
@@ -77,10 +80,7 @@ export class WebhookService {
   /**
    * Update webhook
    */
-  async updateWebhook(
-    webhookId: string, 
-    updates: Partial<WebhookConfig>
-  ): Promise<WebhookConfig> {
+  async updateWebhook(webhookId: string, updates: Partial<WebhookConfig>): Promise<WebhookConfig> {
     const webhook = this.webhooks.get(webhookId)
     if (!webhook) {
       throw new Error('Webhook not found')
@@ -90,14 +90,14 @@ export class WebhookService {
       ...webhook,
       ...updates,
       id: webhookId, // Prevent ID changes
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     }
 
     this.webhooks.set(webhookId, updatedWebhook)
 
     logger.info('WebhookService', `Updated webhook: ${webhookId}`, {
       webhookId,
-      updates: Object.keys(updates)
+      updates: Object.keys(updates),
     })
 
     return updatedWebhook
@@ -149,8 +149,8 @@ export class WebhookService {
    * Trigger webhook
    */
   async triggerWebhook(
-    webhookId: string, 
-    event: WebhookEvent, 
+    webhookId: string,
+    event: WebhookEvent,
     data: any
   ): Promise<WebhookDeliveryResult> {
     const webhook = this.webhooks.get(webhookId)
@@ -174,14 +174,14 @@ export class WebhookService {
       metadata: {
         source: 'business-scraper',
         version: 'v1',
-        requestId: this.generateRequestId()
-      }
+        requestId: this.generateRequestId(),
+      },
     }
 
     logger.info('WebhookService', `Triggering webhook: ${webhookId}`, {
       webhookId,
       event,
-      payloadId: payload.id
+      payloadId: payload.id,
     })
 
     return this.deliverWebhook(webhook, payload)
@@ -208,14 +208,14 @@ export class WebhookService {
       metadata: {
         source: 'business-scraper',
         version: 'v1',
-        requestId: this.generateRequestId()
-      }
+        requestId: this.generateRequestId(),
+      },
     }
 
     logger.info('WebhookService', `Triggering event for ${subscribedWebhooks.length} webhooks`, {
       event,
       payloadId: payload.id,
-      webhookCount: subscribedWebhooks.length
+      webhookCount: subscribedWebhooks.length,
     })
 
     const results: WebhookDeliveryResult[] = []
@@ -226,7 +226,7 @@ export class WebhookService {
         results.push(result)
       } catch (error) {
         logger.error('WebhookService', `Failed to deliver webhook: ${webhook.id}`, error)
-        
+
         const errorResult: WebhookDeliveryResult = {
           id: this.generateDeliveryId(),
           webhookId: webhook.id,
@@ -236,9 +236,9 @@ export class WebhookService {
           responseTime: 0,
           attempts: 1,
           lastAttempt: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         }
-        
+
         results.push(errorResult)
       }
     }
@@ -250,7 +250,7 @@ export class WebhookService {
    * Deliver webhook payload
    */
   private async deliverWebhook(
-    webhook: WebhookConfig, 
+    webhook: WebhookConfig,
     payload: WebhookPayload
   ): Promise<WebhookDeliveryResult> {
     const deliveryId = this.generateDeliveryId()
@@ -265,7 +265,7 @@ export class WebhookService {
         'X-Event-Type': payload.event,
         'X-Delivery-ID': deliveryId,
         'X-Timestamp': payload.timestamp,
-        ...webhook.headers
+        ...webhook.headers,
       }
 
       // Add signature if secret is provided
@@ -282,7 +282,7 @@ export class WebhookService {
         method: 'POST',
         headers,
         body: JSON.stringify(payload),
-        signal: controller.signal
+        signal: controller.signal,
       })
 
       clearTimeout(timeoutId)
@@ -300,7 +300,7 @@ export class WebhookService {
         responseTime,
         attempts: 1,
         lastAttempt: new Date().toISOString(),
-        response: responseText.substring(0, 1000) // Limit response size
+        response: responseText.substring(0, 1000), // Limit response size
       }
 
       if (!response.ok) {
@@ -313,7 +313,7 @@ export class WebhookService {
         webhook.lastTriggered = new Date().toISOString()
       } else {
         webhook.failureCount++
-        
+
         // Queue for retry if configured
         if (webhook.retryPolicy.maxRetries > 0) {
           this.queueForRetry(webhook, payload, 1)
@@ -328,11 +328,10 @@ export class WebhookService {
         deliveryId,
         status: result.status,
         httpStatus: result.httpStatus,
-        responseTime: result.responseTime
+        responseTime: result.responseTime,
       })
 
       return result
-
     } catch (error) {
       const responseTime = Date.now() - startTime
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -346,7 +345,7 @@ export class WebhookService {
         responseTime,
         attempts: 1,
         lastAttempt: new Date().toISOString(),
-        error: errorMessage
+        error: errorMessage,
       }
 
       // Update webhook statistics
@@ -364,7 +363,7 @@ export class WebhookService {
         webhookId: webhook.id,
         deliveryId,
         error: errorMessage,
-        responseTime
+        responseTime,
       })
 
       return result
@@ -374,11 +373,7 @@ export class WebhookService {
   /**
    * Queue webhook for retry
    */
-  private queueForRetry(
-    webhook: WebhookConfig, 
-    payload: WebhookPayload, 
-    attempt: number
-  ): void {
+  private queueForRetry(webhook: WebhookConfig, payload: WebhookPayload, attempt: number): void {
     if (attempt >= webhook.retryPolicy.maxRetries) {
       return
     }
@@ -394,14 +389,14 @@ export class WebhookService {
       webhookId: webhook.id,
       payload,
       attempt: attempt + 1,
-      nextRetry
+      nextRetry,
     })
 
     logger.debug('WebhookService', `Queued webhook for retry: ${webhook.id}`, {
       webhookId: webhook.id,
       attempt: attempt + 1,
       delay,
-      nextRetry: new Date(nextRetry).toISOString()
+      nextRetry: new Date(nextRetry).toISOString(),
     })
   }
 
@@ -463,7 +458,7 @@ export class WebhookService {
    * Get delivery history
    */
   async getDeliveryHistory(
-    webhookId: string, 
+    webhookId: string,
     limit: number = 50
   ): Promise<WebhookDeliveryResult[]> {
     const history = this.deliveryHistory.get(webhookId) || []
@@ -475,11 +470,8 @@ export class WebhookService {
    */
   private generateSignature(payload: WebhookPayload, secret: string): string {
     const payloadString = JSON.stringify(payload)
-    const signature = crypto
-      .createHmac('sha256', secret)
-      .update(payloadString)
-      .digest('hex')
-    
+    const signature = crypto.createHmac('sha256', secret).update(payloadString).digest('hex')
+
     return `sha256=${signature}`
   }
 
@@ -487,13 +479,10 @@ export class WebhookService {
    * Verify webhook signature
    */
   verifySignature(payload: string, signature: string, secret: string): boolean {
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('hex')
-    
+    const expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+
     const providedSignature = signature.replace('sha256=', '')
-    
+
     return crypto.timingSafeEqual(
       Buffer.from(expectedSignature, 'hex'),
       Buffer.from(providedSignature, 'hex')
@@ -546,7 +535,7 @@ export class WebhookService {
       totalDeliveries: totalSuccessful + totalFailed,
       successfulDeliveries: totalSuccessful,
       failedDeliveries: totalFailed,
-      queuedRetries: this.deliveryQueue.length
+      queuedRetries: this.deliveryQueue.length,
     }
   }
 }

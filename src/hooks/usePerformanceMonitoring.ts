@@ -65,7 +65,7 @@ const DEFAULT_CONFIG: PerformanceMonitoringConfig = {
  */
 export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringConfig> = {}) {
   const finalConfig = { ...DEFAULT_CONFIG, ...config }
-  
+
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     memoryUsage: 0,
     memoryUsageMB: 0,
@@ -108,47 +108,59 @@ export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringCo
   /**
    * Calculate memory trend
    */
-  const calculateMemoryTrend = useCallback((current: number, previous: number): 'increasing' | 'decreasing' | 'stable' => {
-    const diff = current - previous
-    const threshold = 10 * 1024 * 1024 // 10MB threshold
-    
-    if (diff > threshold) return 'increasing'
-    if (diff < -threshold) return 'decreasing'
-    return 'stable'
-  }, [])
+  const calculateMemoryTrend = useCallback(
+    (current: number, previous: number): 'increasing' | 'decreasing' | 'stable' => {
+      const diff = current - previous
+      const threshold = 10 * 1024 * 1024 // 10MB threshold
+
+      if (diff > threshold) return 'increasing'
+      if (diff < -threshold) return 'decreasing'
+      return 'stable'
+    },
+    []
+  )
 
   /**
    * Calculate performance score
    */
-  const calculatePerformanceScore = useCallback((metrics: Partial<PerformanceMetrics>): number => {
-    let score = 100
+  const calculatePerformanceScore = useCallback(
+    (metrics: Partial<PerformanceMetrics>): number => {
+      let score = 100
 
-    // Memory score (0-40 points)
-    if (metrics.memoryUsage) {
-      const memoryScore = Math.max(0, 40 - (metrics.memoryUsage / finalConfig.memoryThreshold) * 40)
-      score -= (40 - memoryScore)
-    }
+      // Memory score (0-40 points)
+      if (metrics.memoryUsage) {
+        const memoryScore = Math.max(
+          0,
+          40 - (metrics.memoryUsage / finalConfig.memoryThreshold) * 40
+        )
+        score -= 40 - memoryScore
+      }
 
-    // Render time score (0-30 points)
-    if (metrics.averageRenderTime) {
-      const renderScore = Math.max(0, 30 - (metrics.averageRenderTime / finalConfig.renderTimeThreshold) * 30)
-      score -= (30 - renderScore)
-    }
+      // Render time score (0-30 points)
+      if (metrics.averageRenderTime) {
+        const renderScore = Math.max(
+          0,
+          30 - (metrics.averageRenderTime / finalConfig.renderTimeThreshold) * 30
+        )
+        score -= 30 - renderScore
+      }
 
-    // FPS score (0-20 points)
-    if (metrics.fps !== undefined) {
-      const fpsScore = Math.max(0, Math.min(20, (metrics.fps / 60) * 20))
-      score -= (20 - fpsScore)
-    }
+      // FPS score (0-20 points)
+      if (metrics.fps !== undefined) {
+        const fpsScore = Math.max(0, Math.min(20, (metrics.fps / 60) * 20))
+        score -= 20 - fpsScore
+      }
 
-    // DOM node count score (0-10 points)
-    if (metrics.domNodeCount) {
-      const domScore = Math.max(0, 10 - Math.max(0, (metrics.domNodeCount - 1000) / 100))
-      score -= (10 - domScore)
-    }
+      // DOM node count score (0-10 points)
+      if (metrics.domNodeCount) {
+        const domScore = Math.max(0, 10 - Math.max(0, (metrics.domNodeCount - 1000) / 100))
+        score -= 10 - domScore
+      }
 
-    return Math.round(Math.max(0, Math.min(100, score)))
-  }, [finalConfig])
+      return Math.round(Math.max(0, Math.min(100, score)))
+    },
+    [finalConfig]
+  )
 
   /**
    * Update FPS counter
@@ -160,7 +172,9 @@ export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringCo
     fpsCounterRef.current.frames++
 
     if (now - fpsCounterRef.current.lastTime >= 1000) {
-      const fps = Math.round((fpsCounterRef.current.frames * 1000) / (now - fpsCounterRef.current.lastTime))
+      const fps = Math.round(
+        (fpsCounterRef.current.frames * 1000) / (now - fpsCounterRef.current.lastTime)
+      )
       fpsCounterRef.current.frames = 0
       fpsCounterRef.current.lastTime = now
 
@@ -175,24 +189,28 @@ export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringCo
   /**
    * Record render time
    */
-  const recordRenderTime = useCallback((renderTime: number) => {
-    if (!finalConfig.enableRenderTimeMonitoring) return
+  const recordRenderTime = useCallback(
+    (renderTime: number) => {
+      if (!finalConfig.enableRenderTimeMonitoring) return
 
-    renderTimesRef.current.push(renderTime)
-    
-    // Keep only last 10 render times
-    if (renderTimesRef.current.length > 10) {
-      renderTimesRef.current.shift()
-    }
+      renderTimesRef.current.push(renderTime)
 
-    const averageRenderTime = renderTimesRef.current.reduce((sum, time) => sum + time, 0) / renderTimesRef.current.length
+      // Keep only last 10 render times
+      if (renderTimesRef.current.length > 10) {
+        renderTimesRef.current.shift()
+      }
 
-    setMetrics(prev => ({
-      ...prev,
-      renderTime,
-      averageRenderTime: Math.round(averageRenderTime),
-    }))
-  }, [finalConfig.enableRenderTimeMonitoring])
+      const averageRenderTime =
+        renderTimesRef.current.reduce((sum, time) => sum + time, 0) / renderTimesRef.current.length
+
+      setMetrics(prev => ({
+        ...prev,
+        renderTime,
+        averageRenderTime: Math.round(averageRenderTime),
+      }))
+    },
+    [finalConfig.enableRenderTimeMonitoring]
+  )
 
   /**
    * Update metrics
@@ -232,7 +250,13 @@ export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringCo
       domNodeCount,
       isHighMemoryUsage: memoryUsage > finalConfig.memoryThreshold,
     })
-  }, [finalConfig, getMemoryUsage, calculateMemoryTrend, getDomNodeCount, calculatePerformanceScore])
+  }, [
+    finalConfig,
+    getMemoryUsage,
+    calculateMemoryTrend,
+    getDomNodeCount,
+    calculatePerformanceScore,
+  ])
 
   /**
    * Start monitoring
@@ -241,10 +265,10 @@ export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringCo
     if (isMonitoring) return
 
     setIsMonitoring(true)
-    
+
     // Start metrics collection
     intervalRef.current = setInterval(updateMetrics, finalConfig.interval)
-    
+
     // Start FPS monitoring
     if (finalConfig.enableFpsMonitoring) {
       fpsCounterRef.current = { frames: 0, lastTime: performance.now() }

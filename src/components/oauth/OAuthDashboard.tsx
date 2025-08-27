@@ -23,7 +23,7 @@ import {
   RefreshCw,
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
 } from 'lucide-react'
 import { ClientRegistrationForm } from './ClientRegistrationForm'
 
@@ -69,7 +69,7 @@ export default function OAuthDashboard(): JSX.Element {
   const loadDashboardData = async (): Promise<void> => {
     try {
       setLoading(true)
-      
+
       // In a real implementation, these would be API calls
       // For now, we'll use mock data
       const mockClients: OAuthClient[] = [
@@ -82,7 +82,7 @@ export default function OAuthDashboard(): JSX.Element {
           allowedScopes: ['openid', 'profile', 'email', 'read', 'write'],
           isActive: true,
           createdAt: new Date().toISOString(),
-          metadata: { description: 'Default web application client', isDefault: true }
+          metadata: { description: 'Default web application client', isDefault: true },
         },
         {
           id: 'business-scraper-mobile',
@@ -92,7 +92,7 @@ export default function OAuthDashboard(): JSX.Element {
           allowedScopes: ['openid', 'profile', 'email', 'read'],
           isActive: true,
           createdAt: new Date().toISOString(),
-          metadata: { description: 'Default mobile and SPA client', requiresPkce: true }
+          metadata: { description: 'Default mobile and SPA client', requiresPkce: true },
         },
         {
           id: 'business-scraper-api',
@@ -103,8 +103,8 @@ export default function OAuthDashboard(): JSX.Element {
           allowedScopes: ['read', 'write', 'admin'],
           isActive: true,
           createdAt: new Date().toISOString(),
-          metadata: { description: 'Default API client for server-to-server communication' }
-        }
+          metadata: { description: 'Default API client for server-to-server communication' },
+        },
       ]
 
       const mockTokenStats: TokenStats = {
@@ -112,14 +112,14 @@ export default function OAuthDashboard(): JSX.Element {
         activeAccessTokens: 23,
         totalRefreshTokens: 38,
         activeRefreshTokens: 19,
-        blacklistedTokens: 7
+        blacklistedTokens: 7,
       }
 
       const mockClientStats: ClientStats = {
         totalClients: 3,
         activeClients: 3,
         publicClients: 1,
-        confidentialClients: 2
+        confidentialClients: 2,
       }
 
       setClients(mockClients)
@@ -135,7 +135,7 @@ export default function OAuthDashboard(): JSX.Element {
   const toggleSecretVisibility = (clientId: string): void => {
     setShowSecrets(prev => ({
       ...prev,
-      [clientId]: !prev[clientId]
+      [clientId]: !prev[clientId],
     }))
   }
 
@@ -152,9 +152,9 @@ export default function OAuthDashboard(): JSX.Element {
   const revokeClient = async (clientId: string): Promise<void> => {
     try {
       // In a real implementation, make API call to revoke client
-      setClients(prev => prev.map(client => 
-        client.id === clientId ? { ...client, isActive: false } : client
-      ))
+      setClients(prev =>
+        prev.map(client => (client.id === clientId ? { ...client, isActive: false } : client))
+      )
       console.log(`Client ${clientId} revoked`)
     } catch (error) {
       console.error('Failed to revoke client:', error)
@@ -233,9 +233,7 @@ export default function OAuthDashboard(): JSX.Element {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{tokenStats?.blacklistedTokens}</div>
-            <p className="text-xs text-muted-foreground">
-              Revoked tokens
-            </p>
+            <p className="text-xs text-muted-foreground">Revoked tokens</p>
           </CardContent>
         </Card>
       </div>
@@ -253,13 +251,11 @@ export default function OAuthDashboard(): JSX.Element {
           <Card>
             <CardHeader>
               <CardTitle>Registered OAuth Clients</CardTitle>
-              <CardDescription>
-                Manage OAuth 2.0 clients and their configurations
-              </CardDescription>
+              <CardDescription>Manage OAuth 2.0 clients and their configurations</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {clients.map((client) => (
+                {clients.map(client => (
                   <div key={client.id} className="border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
@@ -286,9 +282,9 @@ export default function OAuthDashboard(): JSX.Element {
                         <label className="font-medium">Client ID:</label>
                         <div className="flex items-center space-x-2 mt-1">
                           <code className="bg-muted px-2 py-1 rounded text-xs">{client.id}</code>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => copyToClipboard(client.id)}
                           >
                             <Copy className="h-3 w-3" />
@@ -303,16 +299,20 @@ export default function OAuthDashboard(): JSX.Element {
                             <code className="bg-muted px-2 py-1 rounded text-xs">
                               {showSecrets[client.id] ? client.secret : '••••••••••••••••'}
                             </code>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => toggleSecretVisibility(client.id)}
                             >
-                              {showSecrets[client.id] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                              {showSecrets[client.id] ? (
+                                <EyeOff className="h-3 w-3" />
+                              ) : (
+                                <Eye className="h-3 w-3" />
+                              )}
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => copyToClipboard(client.secret!)}
                             >
                               <Copy className="h-3 w-3" />
@@ -326,7 +326,7 @@ export default function OAuthDashboard(): JSX.Element {
                       <div>
                         <label className="font-medium">Allowed Scopes:</label>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {client.allowedScopes.map((scope) => (
+                          {client.allowedScopes.map(scope => (
                             <Badge key={scope} variant="outline" className="text-xs">
                               {scope}
                             </Badge>
@@ -339,7 +339,10 @@ export default function OAuthDashboard(): JSX.Element {
                           <label className="font-medium">Redirect URIs:</label>
                           <div className="space-y-1 mt-1">
                             {client.redirectUris.map((uri, index) => (
-                              <code key={index} className="block bg-muted px-2 py-1 rounded text-xs">
+                              <code
+                                key={index}
+                                className="block bg-muted px-2 py-1 rounded text-xs"
+                              >
                                 {uri}
                               </code>
                             ))}
@@ -419,18 +422,21 @@ export default function OAuthDashboard(): JSX.Element {
       <ClientRegistrationForm
         open={showRegistrationForm}
         onClose={() => setShowRegistrationForm(false)}
-        onClientRegistered={(client) => {
+        onClientRegistered={client => {
           // Add new client to the list
-          setClients(prev => [...prev, {
-            id: client.clientId,
-            name: client.clientName,
-            type: client.clientType,
-            secret: client.clientSecret,
-            redirectUris: client.redirectUris,
-            allowedScopes: client.scope.split(' '),
-            isActive: true,
-            createdAt: new Date().toISOString(),
-          }])
+          setClients(prev => [
+            ...prev,
+            {
+              id: client.clientId,
+              name: client.clientName,
+              type: client.clientType,
+              secret: client.clientSecret,
+              redirectUris: client.redirectUris,
+              allowedScopes: client.scope.split(' '),
+              isActive: true,
+              createdAt: new Date().toISOString(),
+            },
+          ])
           setShowRegistrationForm(false)
         }}
       />

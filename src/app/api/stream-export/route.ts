@@ -11,9 +11,7 @@ import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { BusinessRecord } from '@/types/business'
 
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for') || 
-             request.headers.get('x-real-ip') || 
-             'unknown'
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
 
   try {
     // Rate limiting
@@ -25,9 +23,9 @@ export async function POST(request: NextRequest) {
 
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
-        { 
+        {
           error: 'Rate limit exceeded for streaming export',
-          retryAfter: rateLimitResult.retryAfter
+          retryAfter: rateLimitResult.retryAfter,
         },
         { status: 429 }
       )
@@ -39,10 +37,7 @@ export async function POST(request: NextRequest) {
 
     // Validate inputs
     if (!businesses || !Array.isArray(businesses)) {
-      return NextResponse.json(
-        { error: 'Invalid businesses data' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid businesses data' }, { status: 400 })
     }
 
     if (!['csv', 'json'].includes(format)) {
@@ -53,16 +48,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Sanitize filename
-    const sanitizedFilename = filename ? 
-      validationService.sanitizeInput(filename) : 
-      `businesses_export_${Date.now()}.${format}`
+    const sanitizedFilename = filename
+      ? validationService.sanitizeInput(filename)
+      : `businesses_export_${Date.now()}.${format}`
 
-    logger.info('StreamExportAPI', `Starting streaming export: ${businesses.length} records as ${format}`)
+    logger.info(
+      'StreamExportAPI',
+      `Starting streaming export: ${businesses.length} records as ${format}`
+    )
 
     // Create streaming export
-    const stream = format === 'csv' 
-      ? streamingExportService.createStreamingCSV(businesses as BusinessRecord[])
-      : streamingExportService.createStreamingJSON(businesses as BusinessRecord[])
+    const stream =
+      format === 'csv'
+        ? streamingExportService.createStreamingCSV(businesses as BusinessRecord[])
+        : streamingExportService.createStreamingJSON(businesses as BusinessRecord[])
 
     // Set appropriate headers
     const headers = new Headers({
@@ -73,14 +72,13 @@ export async function POST(request: NextRequest) {
     })
 
     return new Response(stream, { headers })
-
   } catch (error) {
     logger.error('StreamExportAPI', 'Streaming export error', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
-        message: 'Failed to create streaming export'
+        message: 'Failed to create streaming export',
       },
       { status: 500 }
     )
@@ -107,7 +105,7 @@ export async function GET(request: NextRequest) {
       industry: 'Sample Industry',
       description: `This is a sample business description for business ${i + 1}`,
       latitude: 40.7128 + (Math.random() - 0.5) * 0.1,
-      longitude: -74.0060 + (Math.random() - 0.5) * 0.1,
+      longitude: -74.006 + (Math.random() - 0.5) * 0.1,
       rating: Math.round((Math.random() * 4 + 1) * 10) / 10,
       reviewCount: Math.floor(Math.random() * 100),
       isVerified: Math.random() > 0.5,
@@ -116,7 +114,7 @@ export async function GET(request: NextRequest) {
       socialMedia: {
         facebook: `https://facebook.com/samplebusiness${i + 1}`,
         twitter: `https://twitter.com/samplebiz${i + 1}`,
-        linkedin: `https://linkedin.com/company/sample-business-${i + 1}`
+        linkedin: `https://linkedin.com/company/sample-business-${i + 1}`,
       },
       businessHours: {
         monday: '9:00 AM - 5:00 PM',
@@ -125,16 +123,17 @@ export async function GET(request: NextRequest) {
         thursday: '9:00 AM - 5:00 PM',
         friday: '9:00 AM - 5:00 PM',
         saturday: 'Closed',
-        sunday: 'Closed'
-      }
+        sunday: 'Closed',
+      },
     }))
 
     logger.info('StreamExportAPI', `Generating sample export: ${sampleSize} records as ${format}`)
 
     // Create streaming export for sample data
-    const stream = format === 'csv' 
-      ? streamingExportService.createStreamingCSV(sampleBusinesses)
-      : streamingExportService.createStreamingJSON(sampleBusinesses)
+    const stream =
+      format === 'csv'
+        ? streamingExportService.createStreamingCSV(sampleBusinesses)
+        : streamingExportService.createStreamingJSON(sampleBusinesses)
 
     const filename = `sample_businesses_${sampleSize}.${format}`
 
@@ -146,14 +145,13 @@ export async function GET(request: NextRequest) {
     })
 
     return new Response(stream, { headers })
-
   } catch (error) {
     logger.error('StreamExportAPI', 'Sample export error', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
-        message: 'Failed to generate sample export'
+        message: 'Failed to generate sample export',
       },
       { status: 500 }
     )

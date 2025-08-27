@@ -2,26 +2,32 @@
 
 ## 📋 Overview
 
-This document establishes comprehensive standards for all documentation in the Business Scraper application to ensure consistency, accuracy, and maintainability across all documentation artifacts.
+This document establishes comprehensive standards for all documentation in the
+Business Scraper application to ensure consistency, accuracy, and
+maintainability across all documentation artifacts.
 
 ## 🎯 Documentation Principles
 
 ### 1. **Accuracy First**
+
 - All documentation must accurately reflect the current state of the application
 - Cross-reference documentation against live implementation regularly
 - Update documentation immediately when code changes
 
 ### 2. **Consistency**
+
 - Use standardized formatting, tone, and structure
 - Follow established templates and patterns
 - Maintain uniform terminology throughout
 
 ### 3. **Living Documentation**
+
 - Documentation evolves with the codebase
 - Version documentation alongside code releases
 - Implement automated validation where possible
 
 ### 4. **User-Centric**
+
 - Write for the intended audience (developers, users, stakeholders)
 - Provide clear, actionable instructions
 - Include examples and troubleshooting guidance
@@ -29,30 +35,37 @@ This document establishes comprehensive standards for all documentation in the B
 ## 📝 Formatting Standards
 
 ### File Structure
+
 ```markdown
 # Title (H1 - Only one per document)
 
 ## Overview (H2)
+
 Brief description of the document's purpose and scope.
 
 ## Table of Contents (H2 - For documents >100 lines)
+
 - [Section 1](#section-1)
 - [Section 2](#section-2)
 
 ## Main Sections (H2)
+
 ### Subsections (H3)
+
 #### Sub-subsections (H4)
 ```
 
 ### Markdown Conventions
 
 #### Headers
+
 - **H1 (`#`)**: Document title only
 - **H2 (`##`)**: Main sections
 - **H3 (`###`)**: Subsections
 - **H4 (`####`)**: Sub-subsections (avoid deeper nesting)
 
 #### Code Blocks
+
 ```typescript
 // Use language-specific syntax highlighting
 interface BusinessRecord {
@@ -63,6 +76,7 @@ interface BusinessRecord {
 ```
 
 #### Lists
+
 - Use **bullet points** for unordered lists
 - Use **numbered lists** for sequential steps
 - Use **task lists** for checklists:
@@ -70,42 +84,51 @@ interface BusinessRecord {
   - [ ] Pending item
 
 #### Links
+
 - Use **descriptive link text**: [API Documentation](./API_DOCUMENTATION.md)
 - Avoid generic text like "click here" or "read more"
 - Use relative paths for internal links
 
 #### Emphasis
+
 - **Bold** for important terms and UI elements
-- *Italic* for emphasis and variable names
+- _Italic_ for emphasis and variable names
 - `Code` for inline code, filenames, and commands
 
 #### Tables
+
 | Column 1 | Column 2 | Column 3 |
-|----------|----------|----------|
+| -------- | -------- | -------- |
 | Data 1   | Data 2   | Data 3   |
 
 #### Alerts and Callouts
+
 > ⚠️ **Warning**: Important warning information
-> 
+>
 > 💡 **Tip**: Helpful tip or best practice
-> 
+>
 > 📝 **Note**: Additional information
-> 
+>
 > ❌ **Error**: Error or problem description
 
 ### Version Information
-- Include version badges: ![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
+
+- Include version badges:
+  ![Version](https://img.shields.io/badge/version-3.10.1-blue.svg)
 - Reference specific versions when documenting features
 - Maintain version compatibility information
 
 ## 📁 File Organization
 
 ### Naming Conventions
+
 - Use **UPPERCASE** for main documentation files: `README.md`, `CHANGELOG.md`
 - Use **descriptive names** with underscores: `API_DOCUMENTATION.md`
-- Use **consistent prefixes** for related files: `FEATURE_`, `API_`, `DEPLOYMENT_`
+- Use **consistent prefixes** for related files: `FEATURE_`, `API_`,
+  `DEPLOYMENT_`
 
 ### Directory Structure
+
 ```
 docs/
 ├── README.md                    # Documentation index
@@ -126,21 +149,25 @@ docs/
 ## 🔄 Content Standards
 
 ### API Documentation
-```markdown
+
+````markdown
 ### Endpoint Name
-**Method**: `POST`
-**URL**: `/api/endpoint`
-**Description**: Brief description of what this endpoint does
+
+**Method**: `POST` **URL**: `/api/endpoint` **Description**: Brief description
+of what this endpoint does
 
 #### Request
+
 ```json
 {
   "parameter": "value",
   "required": true
 }
 ```
+````
 
 #### Response
+
 ```json
 {
   "success": true,
@@ -150,17 +177,20 @@ docs/
 ```
 
 #### Error Responses
+
 - `400 Bad Request`: Invalid parameters
 - `401 Unauthorized`: Authentication required
 - `500 Internal Server Error`: Server error
 
 #### Example
+
 ```bash
 curl -X POST http://localhost:3000/api/endpoint \
   -H "Content-Type: application/json" \
   -d '{"parameter": "value"}'
 ```
-```
+
+````
 
 ### Feature Documentation
 ```markdown
@@ -184,33 +214,40 @@ Common issues and solutions.
 
 ### Related Features
 Links to related documentation.
-```
+````
 
 ### Deployment Documentation
+
 ```markdown
 ## Deployment Method
 
 ### Prerequisites
+
 System requirements and dependencies.
 
 ### Step-by-Step Instructions
+
 1. Detailed step with code examples
 2. Next step with expected output
 3. Verification steps
 
 ### Configuration
+
 Environment variables and settings.
 
 ### Troubleshooting
+
 Common deployment issues and solutions.
 
 ### Rollback Procedures
+
 How to rollback if deployment fails.
 ```
 
 ## 🔍 Quality Assurance
 
 ### Documentation Review Checklist
+
 - [ ] **Accuracy**: Information matches current implementation
 - [ ] **Completeness**: All necessary information included
 - [ ] **Clarity**: Instructions are clear and actionable
@@ -220,6 +257,7 @@ How to rollback if deployment fails.
 - [ ] **Version**: Version information is current and accurate
 
 ### Automated Validation
+
 - **Markdown Linting**: Use markdownlint for formatting consistency
 - **Link Checking**: Automated link validation in CI/CD
 - **Spell Checking**: Automated spell checking for content quality
@@ -228,16 +266,19 @@ How to rollback if deployment fails.
 ## 📊 Maintenance Practices
 
 ### Regular Updates
+
 - **Weekly**: Review and update documentation for recent changes
 - **Monthly**: Comprehensive documentation audit
 - **Per Release**: Update all version references and feature documentation
 
 ### Version Tracking
+
 - Tag documentation updates with corresponding code releases
 - Maintain documentation changelog
 - Archive outdated documentation versions
 
 ### Contribution Guidelines
+
 - All code changes must include documentation updates
 - Documentation changes require review and approval
 - Use pull request templates for documentation changes
@@ -245,12 +286,14 @@ How to rollback if deployment fails.
 ## 🛠️ Tools and Automation
 
 ### Recommended Tools
+
 - **Markdown Editor**: VS Code with Markdown extensions
 - **Linting**: markdownlint-cli for consistency
 - **Link Checking**: markdown-link-check for validation
 - **Spell Checking**: cspell for content quality
 
 ### CI/CD Integration
+
 ```yaml
 # Example GitHub Actions workflow
 name: Documentation Quality Check
@@ -271,54 +314,68 @@ jobs:
 ## 📋 Templates
 
 ### New Feature Documentation Template
+
 ```markdown
 # Feature Name
 
 ## Overview
+
 Brief description and purpose.
 
 ## Prerequisites
+
 Requirements and dependencies.
 
 ## Installation/Setup
+
 Step-by-step setup instructions.
 
 ## Usage
+
 How to use the feature with examples.
 
 ## Configuration
+
 Available options and settings.
 
 ## API Reference (if applicable)
+
 Detailed API documentation.
 
 ## Troubleshooting
+
 Common issues and solutions.
 
 ## Related Documentation
+
 Links to related features and guides.
 ```
 
 ### API Endpoint Template
-```markdown
+
+````markdown
 ### Endpoint Name
-**Method**: `METHOD`
-**URL**: `/api/path`
-**Description**: What this endpoint does
+
+**Method**: `METHOD` **URL**: `/api/path` **Description**: What this endpoint
+does
 
 #### Parameters
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| param1    | string | Yes    | Description |
+
+| Parameter | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| param1    | string | Yes      | Description |
 
 #### Request Example
+
 ```json
 {
   "example": "request"
 }
 ```
+````
 
 #### Response Example
+
 ```json
 {
   "example": "response"
@@ -326,9 +383,11 @@ Links to related features and guides.
 ```
 
 #### Error Codes
+
 - `400`: Bad Request
 - `401`: Unauthorized
 - `500`: Internal Server Error
+
 ```
 
 ## 🎯 Success Metrics
@@ -344,3 +403,4 @@ Links to related features and guides.
 - 100% markdown linting compliance
 - Zero spelling errors in published documentation
 - All code examples pass validation tests
+```

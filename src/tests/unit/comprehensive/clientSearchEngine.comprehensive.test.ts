@@ -19,11 +19,11 @@ global.fetch = jest.fn()
 const mockGeocoder = {
   getCoordinates: jest.fn(),
   reverseGeocode: jest.fn(),
-  calculateDistance: jest.fn()
+  calculateDistance: jest.fn(),
 }
 
 jest.doMock('@/model/geocoder', () => ({
-  geocoder: mockGeocoder
+  geocoder: mockGeocoder,
 }))
 
 // Mock industry config
@@ -32,14 +32,14 @@ const mockIndustryConfig = {
     restaurants: {
       name: 'Restaurants',
       keywords: ['restaurant', 'dining', 'food'],
-      searchTerms: ['restaurant', 'cafe', 'diner']
+      searchTerms: ['restaurant', 'cafe', 'diner'],
     },
     hotels: {
       name: 'Hotels',
       keywords: ['hotel', 'motel', 'inn'],
-      searchTerms: ['hotel', 'accommodation', 'lodging']
-    }
-  }
+      searchTerms: ['hotel', 'accommodation', 'lodging'],
+    },
+  },
 }
 
 jest.doMock('@/lib/industry-config', () => mockIndustryConfig)
@@ -48,7 +48,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(fetch as jest.Mock).mockClear()
-    mockGeocoder.getCoordinates.mockResolvedValue({ lat: 40.7128, lng: -74.0060 })
+    mockGeocoder.getCoordinates.mockResolvedValue({ lat: 40.7128, lng: -74.006 })
   })
 
   describe('Search Business Functionality', () => {
@@ -63,10 +63,10 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
               url: 'https://example.com',
               address: '123 Main St',
               phone: '555-1234',
-              rating: 4.5
-            }
-          ]
-        })
+              rating: 4.5,
+            },
+          ],
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -77,7 +77,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
       expect(results[0]).toMatchObject({
         id: '1',
         name: 'Test Restaurant',
-        url: 'https://example.com'
+        url: 'https://example.com',
       })
     })
 
@@ -97,7 +97,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle invalid response format', async () => {
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ invalid: 'format' })
+        json: jest.fn().mockResolvedValue({ invalid: 'format' }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -112,7 +112,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         ok: false,
         status: 500,
         statusText: 'Internal Server Error',
-        json: jest.fn().mockResolvedValue({ error: 'Server error' })
+        json: jest.fn().mockResolvedValue({ error: 'Server error' }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -130,7 +130,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle malformed JSON response', async () => {
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockRejectedValue(new Error('Invalid JSON'))
+        json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -144,10 +144,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
       const results = await clientSearchEngine.searchBusinesses('', '10001', 10)
 
       expect(results).toEqual([])
-      expect(logger.warn).toHaveBeenCalledWith(
-        'ClientSearchEngine',
-        'Empty search query provided'
-      )
+      expect(logger.warn).toHaveBeenCalledWith('ClientSearchEngine', 'Empty search query provided')
     })
 
     test('should handle invalid ZIP code', async () => {
@@ -182,7 +179,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should set and retrieve API credentials', () => {
       const credentials = {
         google: { apiKey: 'test-key', searchEngineId: 'test-id' },
-        azure: { apiKey: 'azure-key', endpoint: 'azure-endpoint' }
+        azure: { apiKey: 'azure-key', endpoint: 'azure-endpoint' },
       }
 
       clientSearchEngine.setApiCredentials(credentials)
@@ -193,7 +190,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
     test('should clear API credentials', () => {
       const credentials = {
-        google: { apiKey: 'test-key', searchEngineId: 'test-id' }
+        google: { apiKey: 'test-key', searchEngineId: 'test-id' },
       }
 
       clientSearchEngine.setApiCredentials(credentials)
@@ -205,7 +202,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
     test('should handle partial credentials', () => {
       const partialCredentials = {
-        google: { apiKey: 'test-key' } // Missing searchEngineId
+        google: { apiKey: 'test-key' }, // Missing searchEngineId
       }
 
       clientSearchEngine.setApiCredentials(partialCredentials)
@@ -231,7 +228,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should process industry-specific search terms', async () => {
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -243,9 +240,9 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           }),
-          body: expect.stringContaining('restaurants')
+          body: expect.stringContaining('restaurants'),
         })
       )
     })
@@ -253,7 +250,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle unknown industry', async () => {
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -267,7 +264,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle special characters in query', async () => {
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -281,7 +278,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
       const longQuery = 'a'.repeat(1000)
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -294,11 +291,11 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
   describe('Geographic Processing', () => {
     test('should handle geocoding success', async () => {
-      mockGeocoder.getCoordinates.mockResolvedValue({ lat: 40.7128, lng: -74.0060 })
+      mockGeocoder.getCoordinates.mockResolvedValue({ lat: 40.7128, lng: -74.006 })
 
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -313,7 +310,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -329,7 +326,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -344,7 +341,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -370,14 +367,14 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         rating: 4.5,
         reviewCount: 100,
         category: 'Restaurant',
-        description: 'Great food'
+        description: 'Great food',
       }
 
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({
-          results: [mockBusinessData]
-        })
+          results: [mockBusinessData],
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -390,15 +387,15 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle incomplete business data', async () => {
       const incompleteData = {
         id: '1',
-        name: 'Incomplete Business'
+        name: 'Incomplete Business',
         // Missing other fields
       }
 
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({
-          results: [incompleteData]
-        })
+          results: [incompleteData],
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -407,7 +404,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
       expect(results[0]).toMatchObject({
         id: '1',
-        name: 'Incomplete Business'
+        name: 'Incomplete Business',
       })
     })
 
@@ -418,14 +415,14 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         undefined,
         { id: '', name: '', url: '' }, // Empty data
         { invalidField: 'invalid' }, // No required fields
-        { id: '2', name: 'Another Valid Business', url: 'https://example2.com' }
+        { id: '2', name: 'Another Valid Business', url: 'https://example2.com' },
       ]
 
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({
-          results: mixedData
-        })
+          results: mixedData,
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -442,14 +439,14 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
       const largeResultSet = Array.from({ length: 1000 }, (_, i) => ({
         id: i.toString(),
         name: `Business ${i}`,
-        url: `https://example${i}.com`
+        url: `https://example${i}.com`,
       }))
 
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({
-          results: largeResultSet
-        })
+          results: largeResultSet,
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -464,14 +461,14 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
       const duplicateData = [
         { id: '1', name: 'Business A', url: 'https://example.com' },
         { id: '1', name: 'Business A', url: 'https://example.com' }, // Exact duplicate
-        { id: '2', name: 'Business B', url: 'https://example2.com' }
+        { id: '2', name: 'Business B', url: 'https://example2.com' },
       ]
 
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({
-          results: duplicateData
-        })
+          results: duplicateData,
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -485,10 +482,9 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
   describe('Error Recovery and Resilience', () => {
     test('should handle network timeouts', async () => {
-      ;(fetch as jest.Mock).mockImplementation(() => 
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timeout')), 100)
-        )
+      ;(fetch as jest.Mock).mockImplementation(
+        () =>
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 100))
       )
 
       const results = await clientSearchEngine.searchBusinesses('restaurants', '10001', 10)
@@ -502,14 +498,14 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         id: i.toString(),
         name: `Business ${i}`,
         url: `https://example${i}.com`,
-        description: 'A'.repeat(1000) // Large description
+        description: 'A'.repeat(1000), // Large description
       }))
 
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({
-          results: hugeResultSet
-        })
+          results: hugeResultSet,
+        }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -523,7 +519,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle concurrent search requests', async () => {
       const mockResponse = {
         ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] })
+        json: jest.fn().mockResolvedValue({ results: [] }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -544,7 +540,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         ok: false,
         status: 429,
         statusText: 'Too Many Requests',
-        json: jest.fn().mockResolvedValue({ error: 'Rate limit exceeded' })
+        json: jest.fn().mockResolvedValue({ error: 'Rate limit exceeded' }),
       }
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)

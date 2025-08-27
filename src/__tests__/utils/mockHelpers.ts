@@ -66,7 +66,7 @@ export const createMockFileSystem = () => {
     reset: () => {
       Object.keys(mockFiles).forEach(key => delete mockFiles[key])
       mockDirectories.clear()
-    }
+    },
   }
 }
 
@@ -100,7 +100,7 @@ export const createMockEnvironment = (initialEnv: Record<string, string> = {}) =
       })
     },
 
-    getAll: () => ({ ...mockEnv })
+    getAll: () => ({ ...mockEnv }),
   }
 }
 
@@ -111,17 +111,15 @@ export const createMockLogger = () => ({
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
-  
+
   // Helper to check if specific messages were logged
   hasLoggedInfo: (message: string) => {
-    return (createMockLogger().info as jest.Mock).mock.calls.some(
-      call => call[0].includes(message)
-    )
+    return (createMockLogger().info as jest.Mock).mock.calls.some(call => call[0].includes(message))
   },
 
   hasLoggedError: (message: string) => {
-    return (createMockLogger().error as jest.Mock).mock.calls.some(
-      call => call[0].includes(message)
+    return (createMockLogger().error as jest.Mock).mock.calls.some(call =>
+      call[0].includes(message)
     )
   },
 
@@ -131,7 +129,7 @@ export const createMockLogger = () => ({
     ;(createMockLogger().error as jest.Mock).mockClear()
     ;(createMockLogger().debug as jest.Mock).mockClear()
     ;(createMockLogger().trace as jest.Mock).mockClear()
-  }
+  },
 })
 
 // Mock database operations
@@ -145,13 +143,13 @@ export const createMockDatabase = () => {
         rows: mockData[sql] || [],
         rowCount: mockData[sql]?.length || 0,
         command: sql.split(' ')[0].toUpperCase(),
-        executionTime: Math.random() * 100
+        executionTime: Math.random() * 100,
       }
     }),
 
     connect: jest.fn(async () => ({
       query: jest.fn(),
-      release: jest.fn()
+      release: jest.fn(),
     })),
 
     // Helper methods
@@ -161,7 +159,7 @@ export const createMockDatabase = () => {
 
     reset: () => {
       Object.keys(mockData).forEach(key => delete mockData[key])
-    }
+    },
   }
 }
 
@@ -202,9 +200,9 @@ export const createMockNextRequest = (
     headers: new Headers(headers),
     body,
     json: jest.fn(async () => ({})),
-    formData: jest.fn(async () => body instanceof FormData ? body : new FormData()),
-    text: jest.fn(async () => typeof body === 'string' ? body : ''),
-    nextUrl: new URL(url)
+    formData: jest.fn(async () => (body instanceof FormData ? body : new FormData())),
+    text: jest.fn(async () => (typeof body === 'string' ? body : '')),
+    nextUrl: new URL(url),
   } as any
 }
 
@@ -220,7 +218,7 @@ export const createTestIsolation = () => {
     reset: () => {
       mocks.forEach(resetFn => resetFn())
       mocks.length = 0
-    }
+    },
   }
 }
 
@@ -234,6 +232,6 @@ export const generateSafeTestData = {
     street: `${index}00 Test Street`,
     city: 'Test City',
     state: 'TS',
-    zipCode: String(10000 + index).padStart(5, '0')
-  })
+    zipCode: String(10000 + index).padStart(5, '0'),
+  }),
 }

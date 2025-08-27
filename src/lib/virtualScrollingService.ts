@@ -74,7 +74,7 @@ export class VirtualScrollingService {
     filters?: VirtualScrollingFilters
   ): Promise<PaginatedResponse> {
     const cacheKey = this.generateCacheKey(cursor, limit, sortConfig, filters)
-    
+
     // Check cache first
     const cachedData = this.getCachedData(cacheKey)
     if (cachedData) {
@@ -86,7 +86,7 @@ export class VirtualScrollingService {
           hasMore: cachedData.hasMore,
           totalCount: -1, // Not available from cache
           currentPage: -1, // Not applicable for cursor pagination
-          pageSize: limit
+          pageSize: limit,
         },
         metadata: {
           processingTime: 0,
@@ -94,31 +94,33 @@ export class VirtualScrollingService {
           appliedFilters: filters || {},
           sortConfig: {
             field: sortConfig?.field || 'scrapedAt',
-            order: sortConfig?.order || 'desc'
-          }
-        }
+            order: sortConfig?.order || 'desc',
+          },
+        },
       }
     }
 
     try {
       // Build query parameters
       const queryParams = new URLSearchParams()
-      
+
       if (cursor) queryParams.set('cursor', cursor)
       queryParams.set('limit', limit.toString())
-      
+
       if (sortConfig) {
         queryParams.set('sortField', sortConfig.field)
         queryParams.set('sortOrder', sortConfig.order)
       }
-      
+
       if (filters) {
         if (filters.search) queryParams.set('search', filters.search)
         if (filters.industry) queryParams.set('industry', filters.industry)
         if (filters.hasEmail !== undefined) queryParams.set('hasEmail', filters.hasEmail.toString())
         if (filters.hasPhone !== undefined) queryParams.set('hasPhone', filters.hasPhone.toString())
-        if (filters.qualityScore?.min !== undefined) queryParams.set('qualityScoreMin', filters.qualityScore.min.toString())
-        if (filters.qualityScore?.max !== undefined) queryParams.set('qualityScoreMax', filters.qualityScore.max.toString())
+        if (filters.qualityScore?.min !== undefined)
+          queryParams.set('qualityScoreMin', filters.qualityScore.min.toString())
+        if (filters.qualityScore?.max !== undefined)
+          queryParams.set('qualityScoreMax', filters.qualityScore.max.toString())
         if (filters.dateRange?.start) queryParams.set('dateStart', filters.dateRange.start)
         if (filters.dateRange?.end) queryParams.set('dateEnd', filters.dateRange.end)
       }
@@ -136,12 +138,11 @@ export class VirtualScrollingService {
         data: result.data,
         timestamp: Date.now(),
         cursor: result.pagination.nextCursor,
-        hasMore: result.pagination.hasMore
+        hasMore: result.pagination.hasMore,
       })
 
       logger.info('VirtualScrollingService', `Fetched ${result.data.length} businesses`)
       return result
-
     } catch (error) {
       logger.error('VirtualScrollingService', 'Failed to fetch businesses', error)
       throw error
@@ -181,9 +182,9 @@ export class VirtualScrollingService {
     const expiredKeys = Object.keys(this.cache).filter(
       key => now - this.cache[key].timestamp > this.cacheTimeout
     )
-    
+
     expiredKeys.forEach(key => delete this.cache[key])
-    
+
     if (expiredKeys.length > 0) {
       logger.info('VirtualScrollingService', `Cleared ${expiredKeys.length} expired cache entries`)
     }
@@ -195,11 +196,11 @@ export class VirtualScrollingService {
   getCacheStats(): { size: number; oldestEntry: number; newestEntry: number } {
     const entries = Object.values(this.cache)
     const timestamps = entries.map(entry => entry.timestamp)
-    
+
     return {
       size: entries.length,
       oldestEntry: timestamps.length > 0 ? Math.min(...timestamps) : 0,
-      newestEntry: timestamps.length > 0 ? Math.max(...timestamps) : 0
+      newestEntry: timestamps.length > 0 ? Math.max(...timestamps) : 0,
     }
   }
 
@@ -216,9 +217,9 @@ export class VirtualScrollingService {
       cursor || 'start',
       limit?.toString() || this.defaultPageSize.toString(),
       sortConfig ? `${sortConfig.field}-${sortConfig.order}` : 'scrapedAt-desc',
-      filters ? JSON.stringify(filters) : 'no-filters'
+      filters ? JSON.stringify(filters) : 'no-filters',
     ]
-    
+
     return keyParts.join('|')
   }
 
@@ -228,13 +229,13 @@ export class VirtualScrollingService {
   private getCachedData(key: string): VirtualScrollingCache[string] | null {
     const cached = this.cache[key]
     if (!cached) return null
-    
+
     const isExpired = Date.now() - cached.timestamp > this.cacheTimeout
     if (isExpired) {
       delete this.cache[key]
       return null
     }
-    
+
     return cached
   }
 
@@ -243,7 +244,7 @@ export class VirtualScrollingService {
    */
   private setCachedData(key: string, data: VirtualScrollingCache[string]): void {
     this.cache[key] = data
-    
+
     // Clean up expired entries periodically
     if (Object.keys(this.cache).length % 10 === 0) {
       this.clearExpiredCache()
@@ -262,7 +263,7 @@ export function useVirtualScrolling() {
     fetchBusinesses: virtualScrollingService.fetchBusinesses.bind(virtualScrollingService),
     prefetchNextPage: virtualScrollingService.prefetchNextPage.bind(virtualScrollingService),
     clearCache: virtualScrollingService.clearCache.bind(virtualScrollingService),
-    getCacheStats: virtualScrollingService.getCacheStats.bind(virtualScrollingService)
+    getCacheStats: virtualScrollingService.getCacheStats.bind(virtualScrollingService),
   }
 }
 
@@ -303,7 +304,6 @@ export function useVirtualScrollingState(
       if (result.pagination.nextCursor) {
         prefetchNextPage(result.pagination.nextCursor, 100, sortConfig, filters)
       }
-
     } catch (error) {
       logger.error('useVirtualScrollingState', 'Failed to load initial data', error)
       throw error
@@ -328,7 +328,6 @@ export function useVirtualScrollingState(
       if (result.pagination.nextCursor) {
         prefetchNextPage(result.pagination.nextCursor, 100, sortConfig, filters)
       }
-
     } catch (error) {
       logger.error('useVirtualScrollingState', 'Failed to load more items', error)
       throw error
@@ -337,15 +336,21 @@ export function useVirtualScrollingState(
     }
   }, [fetchBusinesses, prefetchNextPage, hasNextPage, isLoading, nextCursor, sortConfig, filters])
 
-  const updateFilters = React.useCallback((newFilters: VirtualScrollingFilters) => {
-    setFilters(newFilters)
-    clearCache() // Clear cache when filters change
-  }, [clearCache])
+  const updateFilters = React.useCallback(
+    (newFilters: VirtualScrollingFilters) => {
+      setFilters(newFilters)
+      clearCache() // Clear cache when filters change
+    },
+    [clearCache]
+  )
 
-  const updateSort = React.useCallback((newSort: VirtualScrollingSortConfig) => {
-    setSortConfig(newSort)
-    clearCache() // Clear cache when sort changes
-  }, [clearCache])
+  const updateSort = React.useCallback(
+    (newSort: VirtualScrollingSortConfig) => {
+      setSortConfig(newSort)
+      clearCache() // Clear cache when sort changes
+    },
+    [clearCache]
+  )
 
   // Load initial data when filters or sort change
   React.useEffect(() => {
@@ -362,7 +367,7 @@ export function useVirtualScrollingState(
     loadInitialData,
     loadMoreItems,
     updateFilters,
-    updateSort
+    updateSort,
   }
 }
 
@@ -383,23 +388,59 @@ export async function calculateAILeadScore(business: BusinessRecord) {
       confidence: 0.5,
       rank: 'C' as const,
       factors: {
-        contactability: { score: 50, weight: 0.3, details: { emailQuality: 50, phonePresence: 50, websiteAccessibility: 50, multiChannelAvailability: 50 } },
-        businessMaturity: { score: 50, weight: 0.25, details: { dataCompleteness: 50, establishedPresence: 50, professionalWebsite: 50, businessInformation: 50 } },
-        marketPotential: { score: 50, weight: 0.25, details: { industryGrowth: 50, locationAdvantage: 50, competitivePosition: 50, marketSize: 50 } },
-        engagementLikelihood: { score: 50, weight: 0.2, details: { responsiveness: 50, digitalPresence: 50, businessActivity: 50, communicationChannels: 50 } }
+        contactability: {
+          score: 50,
+          weight: 0.3,
+          details: {
+            emailQuality: 50,
+            phonePresence: 50,
+            websiteAccessibility: 50,
+            multiChannelAvailability: 50,
+          },
+        },
+        businessMaturity: {
+          score: 50,
+          weight: 0.25,
+          details: {
+            dataCompleteness: 50,
+            establishedPresence: 50,
+            professionalWebsite: 50,
+            businessInformation: 50,
+          },
+        },
+        marketPotential: {
+          score: 50,
+          weight: 0.25,
+          details: {
+            industryGrowth: 50,
+            locationAdvantage: 50,
+            competitivePosition: 50,
+            marketSize: 50,
+          },
+        },
+        engagementLikelihood: {
+          score: 50,
+          weight: 0.2,
+          details: {
+            responsiveness: 50,
+            digitalPresence: 50,
+            businessActivity: 50,
+            communicationChannels: 50,
+          },
+        },
       },
       predictions: {
         conversionProbability: 0.5,
         responseTime: 'moderate' as const,
         bestContactMethod: 'email' as const,
-        optimalContactTime: { dayOfWeek: ['Tuesday', 'Wednesday'], timeOfDay: ['10:00 AM'] }
+        optimalContactTime: { dayOfWeek: ['Tuesday', 'Wednesday'], timeOfDay: ['10:00 AM'] },
       },
       badges: [],
       warnings: [],
       recommendations: [],
       scoringVersion: '2.0.0',
       lastUpdated: new Date(),
-      processingTime: 0
+      processingTime: 0,
     }
   }
 }

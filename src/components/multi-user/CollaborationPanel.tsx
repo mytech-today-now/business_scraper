@@ -26,7 +26,7 @@ interface ActiveUser {
 export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
   currentUser,
   workspaceId,
-  onCollaborationEvent
+  onCollaborationEvent,
 }) => {
   const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([])
   const [notifications, setNotifications] = useState<NotificationMessage[]>([])
@@ -62,12 +62,12 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
       wsRef.current.onopen = () => {
         setIsConnected(true)
         console.log('WebSocket connected')
-        
+
         // Send heartbeat with workspace context
         sendHeartbeat()
       }
 
-      wsRef.current.onmessage = (event) => {
+      wsRef.current.onmessage = event => {
         try {
           const message = JSON.parse(event.data)
           handleWebSocketMessage(message)
@@ -79,7 +79,7 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
       wsRef.current.onclose = () => {
         setIsConnected(false)
         console.log('WebSocket disconnected')
-        
+
         // Attempt to reconnect after 3 seconds
         setTimeout(() => {
           if (wsRef.current?.readyState === WebSocket.CLOSED) {
@@ -88,7 +88,7 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
         }, 3000)
       }
 
-      wsRef.current.onerror = (error) => {
+      wsRef.current.onerror = error => {
         console.error('WebSocket error:', error)
         setIsConnected(false)
       }
@@ -99,17 +99,19 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
 
   const sendHeartbeat = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'heartbeat',
-        payload: {
+      wsRef.current.send(
+        JSON.stringify({
+          type: 'heartbeat',
+          payload: {
+            userId: currentUser.id,
+            workspaceId,
+            timestamp: new Date(),
+          },
+          timestamp: new Date(),
           userId: currentUser.id,
           workspaceId,
-          timestamp: new Date()
-        },
-        timestamp: new Date(),
-        userId: currentUser.id,
-        workspaceId
-      }))
+        })
+      )
     }
   }
 
@@ -149,30 +151,29 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
         setActiveUsers(prev => {
           const existing = prev.find(u => u.id === event.userId)
           if (existing) {
-            return prev.map(u => 
-              u.id === event.userId 
-                ? { ...u, isOnline: true, lastSeen: new Date() }
-                : u
+            return prev.map(u =>
+              u.id === event.userId ? { ...u, isOnline: true, lastSeen: new Date() } : u
             )
           } else {
-            return [...prev, {
-              id: event.userId!,
-              username: event.username!,
-              firstName: event.username!.split(' ')[0] || '',
-              lastName: event.username!.split(' ')[1] || '',
-              lastSeen: new Date(),
-              isOnline: true
-            }]
+            return [
+              ...prev,
+              {
+                id: event.userId!,
+                username: event.username!,
+                firstName: event.username!.split(' ')[0] || '',
+                lastName: event.username!.split(' ')[1] || '',
+                lastSeen: new Date(),
+                isOnline: true,
+              },
+            ]
           }
         })
         break
 
       case 'user_left':
-        setActiveUsers(prev => 
-          prev.map(u => 
-            u.id === event.userId 
-              ? { ...u, isOnline: false, lastSeen: new Date() }
-              : u
+        setActiveUsers(prev =>
+          prev.map(u =>
+            u.id === event.userId ? { ...u, isOnline: false, lastSeen: new Date() } : u
           )
         )
         break
@@ -193,40 +194,36 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
 
   const handleNotification = (notification: NotificationMessage) => {
     setNotifications(prev => [notification, ...prev.slice(0, 19)])
-    
+
     // Show browser notification if permission granted
     if (Notification.permission === 'granted') {
       new Notification(notification.title, {
         body: notification.message,
-        icon: '/favicon.ico'
+        icon: '/favicon.ico',
       })
     }
   }
 
   const sendCollaborationEvent = (event: Omit<CollaborationEvent, 'userId' | 'timestamp'>) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'collaboration_event',
-        payload: {
-          ...event,
+      wsRef.current.send(
+        JSON.stringify({
+          type: 'collaboration_event',
+          payload: {
+            ...event,
+            userId: currentUser.id,
+            timestamp: new Date(),
+          },
+          timestamp: new Date(),
           userId: currentUser.id,
-          timestamp: new Date()
-        },
-        timestamp: new Date(),
-        userId: currentUser.id,
-        workspaceId
-      }))
+          workspaceId,
+        })
+      )
     }
   }
 
   const markNotificationAsRead = (notificationId: string) => {
-    setNotifications(prev => 
-      prev.map(n => 
-        n.id === notificationId 
-          ? { ...n, isRead: true }
-          : n
-      )
-    )
+    setNotifications(prev => prev.map(n => (n.id === notificationId ? { ...n, isRead: true } : n)))
   }
 
   const clearAllNotifications = () => {
@@ -279,7 +276,8 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
                 <div key={user.id} className="flex items-center space-x-2">
                   <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium text-green-800">
-                      {user.firstName[0]}{user.lastName[0]}
+                      {user.firstName[0]}
+                      {user.lastName[0]}
                     </span>
                   </div>
                   <span className="text-sm text-gray-700">{user.username}</span>
@@ -328,13 +326,13 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
                 <div
                   key={notification.id}
                   className={`p-2 rounded text-xs border-l-4 ${
-                    notification.type === 'error' 
+                    notification.type === 'error'
                       ? 'bg-red-50 border-red-400 text-red-700'
                       : notification.type === 'warning'
-                      ? 'bg-yellow-50 border-yellow-400 text-yellow-700'
-                      : notification.type === 'success'
-                      ? 'bg-green-50 border-green-400 text-green-700'
-                      : 'bg-blue-50 border-blue-400 text-blue-700'
+                        ? 'bg-yellow-50 border-yellow-400 text-yellow-700'
+                        : notification.type === 'success'
+                          ? 'bg-green-50 border-green-400 text-green-700'
+                          : 'bg-blue-50 border-blue-400 text-blue-700'
                   } ${!notification.isRead ? 'font-medium' : ''}`}
                   onClick={() => markNotificationAsRead(notification.id)}
                 >
@@ -380,13 +378,15 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
       <div className="pt-2 border-t border-gray-200">
         <div className="flex space-x-2">
           <button
-            onClick={() => sendCollaborationEvent({
-              type: 'data_updated',
-              workspaceId,
-              resourceType: 'workspace',
-              resourceId: workspaceId,
-              data: { action: 'refresh_requested' }
-            })}
+            onClick={() =>
+              sendCollaborationEvent({
+                type: 'data_updated',
+                workspaceId,
+                resourceType: 'workspace',
+                resourceId: workspaceId,
+                data: { action: 'refresh_requested' },
+              })
+            }
             className="flex-1 bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-200 transition-colors"
           >
             Refresh Data

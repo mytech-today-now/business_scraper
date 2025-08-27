@@ -1,62 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Setup Guide - Business Scraper Application - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Database Setup Guide - Business Scraper Application - Business Scraper Documentation
+    </title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Database Setup Guide - Business Scraper Application</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Database Setup Guide - Business Scraper Application</h1>
-<p>This guide provides step-by-step instructions for setting up the PostgreSQL database for the Business Scraper application.</p>
-<h2>Overview</h2>
-<p>The application supports two database backends:</p>
-<ul>
-<li><strong>PostgreSQL</strong> (recommended for production)</li>
-<li><strong>IndexedDB</strong> (client-side storage, development/offline use)</li>
-</ul>
-<h2>Prerequisites</h2>
-<h3>For PostgreSQL Setup</h3>
-<ul>
-<li>PostgreSQL 12 or higher installed</li>
-<li>Node.js 16 or higher</li>
-<li>npm or yarn package manager</li>
-</ul>
-<h3>Required PostgreSQL Extensions</h3>
-<ul>
-<li><code>uuid-ossp</code> (for UUID generation)</li>
-<li><code>pg_trgm</code> (for full-text search optimization)</li>
-</ul>
-<h2>Quick Start</h2>
-<h3>1. Install Dependencies</h3>
-<p>The PostgreSQL client library has already been installed:</p>
-<pre><code class="language-bash">npm install pg @types/pg
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Database Setup Guide - Business Scraper Application
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Database Setup Guide - Business Scraper Application</h1>
+        <p>
+          This guide provides step-by-step instructions for setting up the PostgreSQL database for
+          the Business Scraper application.
+        </p>
+        <h2>Overview</h2>
+        <p>The application supports two database backends:</p>
+        <ul>
+          <li><strong>PostgreSQL</strong> (recommended for production)</li>
+          <li><strong>IndexedDB</strong> (client-side storage, development/offline use)</li>
+        </ul>
+        <h2>Prerequisites</h2>
+        <h3>For PostgreSQL Setup</h3>
+        <ul>
+          <li>PostgreSQL 12 or higher installed</li>
+          <li>Node.js 16 or higher</li>
+          <li>npm or yarn package manager</li>
+        </ul>
+        <h3>Required PostgreSQL Extensions</h3>
+        <ul>
+          <li><code>uuid-ossp</code> (for UUID generation)</li>
+          <li><code>pg_trgm</code> (for full-text search optimization)</li>
+        </ul>
+        <h2>Quick Start</h2>
+        <h3>1. Install Dependencies</h3>
+        <p>The PostgreSQL client library has already been installed:</p>
+        <pre><code class="language-bash">npm install pg @types/pg
 </code></pre>
-<h3>2. Create Database</h3>
-<p>Connect to PostgreSQL as a superuser and create the database:</p>
-<pre><code class="language-sql">-- Connect to PostgreSQL
+        <h3>2. Create Database</h3>
+        <p>Connect to PostgreSQL as a superuser and create the database:</p>
+        <pre><code class="language-sql">-- Connect to PostgreSQL
 psql -U postgres
 
 -- Create database
@@ -73,12 +83,12 @@ GRANT CREATE ON SCHEMA public TO business_scraper_user;
 -- Exit psql
 \q
 </code></pre>
-<h3>3. Configure Environment Variables</h3>
-<p>Copy the example environment file and update with your database credentials:</p>
-<pre><code class="language-bash">cp .env.example .env.local
+        <h3>3. Configure Environment Variables</h3>
+        <p>Copy the example environment file and update with your database credentials:</p>
+        <pre><code class="language-bash">cp .env.example .env.local
 </code></pre>
-<p>Edit <code>.env.local</code> and uncomment/update the database configuration:</p>
-<pre><code class="language-env"># Database Configuration
+        <p>Edit <code>.env.local</code> and uncomment/update the database configuration:</p>
+        <pre><code class="language-env"># Database Configuration
 DATABASE_URL=postgresql://business_scraper_user:your_secure_password@localhost:5432/business_scraper_db
 DB_HOST=localhost
 DB_PORT=5432
@@ -92,33 +102,33 @@ DB_POOL_MAX=10
 DB_POOL_IDLE_TIMEOUT=30000
 DB_CONNECTION_TIMEOUT=5000
 </code></pre>
-<h3>4. Run Database Setup</h3>
-<p>Use the automated setup script:</p>
-<pre><code class="language-bash"># Option 1: Using npm script (requires psql in PATH)
+        <h3>4. Run Database Setup</h3>
+        <p>Use the automated setup script:</p>
+        <pre><code class="language-bash"># Option 1: Using npm script (requires psql in PATH)
 npm run db:setup
 
 # Option 2: Manual setup
 psql -d business_scraper_db -f database/setup.sql
 </code></pre>
-<h3>5. Verify Installation</h3>
-<p>Check migration status:</p>
-<pre><code class="language-bash">npm run db:status
+        <h3>5. Verify Installation</h3>
+        <p>Check migration status:</p>
+        <pre><code class="language-bash">npm run db:status
 </code></pre>
-<p>You should see output showing the initial migration as applied.</p>
-<h2>Manual Setup Steps</h2>
-<p>If you prefer to set up the database manually:</p>
-<h3>1. Initialize Migration Tracking</h3>
-<pre><code class="language-bash">psql -d business_scraper_db -f database/migrations/migration_tracker.sql
+        <p>You should see output showing the initial migration as applied.</p>
+        <h2>Manual Setup Steps</h2>
+        <p>If you prefer to set up the database manually:</p>
+        <h3>1. Initialize Migration Tracking</h3>
+        <pre><code class="language-bash">psql -d business_scraper_db -f database/migrations/migration_tracker.sql
 </code></pre>
-<h3>2. Apply Initial Schema</h3>
-<pre><code class="language-bash">psql -d business_scraper_db -f database/schema/001_initial_schema.sql
+        <h3>2. Apply Initial Schema</h3>
+        <pre><code class="language-bash">psql -d business_scraper_db -f database/schema/001_initial_schema.sql
 </code></pre>
-<h3>3. Record Migration</h3>
-<pre><code class="language-sql">psql -d business_scraper_db -c &quot;SELECT record_migration(&#39;001&#39;, &#39;initial_schema&#39;, &#39;manual&#39;, NULL);&quot;
+        <h3>3. Record Migration</h3>
+        <pre><code class="language-sql">psql -d business_scraper_db -c &quot;SELECT record_migration(&#39;001&#39;, &#39;initial_schema&#39;, &#39;manual&#39;, NULL);&quot;
 </code></pre>
-<h2>Database Management</h2>
-<h3>Migration Commands</h3>
-<pre><code class="language-bash"># Apply all pending migrations
+        <h2>Database Management</h2>
+        <h3>Migration Commands</h3>
+        <pre><code class="language-bash"># Apply all pending migrations
 npm run db:migrate
 
 # Rollback to specific version
@@ -130,9 +140,9 @@ npm run db:status
 # Reset database (WARNING: destroys all data)
 npm run db:reset
 </code></pre>
-<h3>Alternative Migration Scripts</h3>
-<p>For different environments:</p>
-<pre><code class="language-bash"># Linux/macOS
+        <h3>Alternative Migration Scripts</h3>
+        <p>For different environments:</p>
+        <pre><code class="language-bash"># Linux/macOS
 ./database/scripts/migrate.sh up
 
 # Windows
@@ -141,33 +151,35 @@ database\scripts\migrate.bat up
 # Node.js (cross-platform)
 node database/scripts/migrate.js up
 </code></pre>
-<h2>Database Schema Overview</h2>
-<h3>Tables Created</h3>
-<ol>
-<li><strong>campaigns</strong> - Scraping campaign configurations</li>
-<li><strong>businesses</strong> - Scraped business data</li>
-<li><strong>scraping_sessions</strong> - Session tracking and progress</li>
-<li><strong>app_settings</strong> - Application configuration and API keys</li>
-<li><strong>schema_migrations</strong> - Migration tracking</li>
-</ol>
-<h3>Views Created</h3>
-<ol>
-<li><strong>campaign_summary</strong> - Aggregated campaign statistics</li>
-<li><strong>recent_scraping_activity</strong> - Recent session activity</li>
-<li><strong>business_search</strong> - Full-text search optimized view</li>
-</ol>
-<h3>Indexes</h3>
-<p>Comprehensive indexing for:</p>
-<ul>
-<li>Primary/foreign key relationships</li>
-<li>Status and date-based queries</li>
-<li>Full-text search (GIN indexes)</li>
-<li>JSON field queries</li>
-</ul>
-<h2>Application Integration</h2>
-<h3>Using the Database</h3>
-<p>The application automatically detects the database type based on environment variables:</p>
-<pre><code class="language-typescript">import { getDatabase } from &#39;@/lib/database&#39;
+        <h2>Database Schema Overview</h2>
+        <h3>Tables Created</h3>
+        <ol>
+          <li><strong>campaigns</strong> - Scraping campaign configurations</li>
+          <li><strong>businesses</strong> - Scraped business data</li>
+          <li><strong>scraping_sessions</strong> - Session tracking and progress</li>
+          <li><strong>app_settings</strong> - Application configuration and API keys</li>
+          <li><strong>schema_migrations</strong> - Migration tracking</li>
+        </ol>
+        <h3>Views Created</h3>
+        <ol>
+          <li><strong>campaign_summary</strong> - Aggregated campaign statistics</li>
+          <li><strong>recent_scraping_activity</strong> - Recent session activity</li>
+          <li><strong>business_search</strong> - Full-text search optimized view</li>
+        </ol>
+        <h3>Indexes</h3>
+        <p>Comprehensive indexing for:</p>
+        <ul>
+          <li>Primary/foreign key relationships</li>
+          <li>Status and date-based queries</li>
+          <li>Full-text search (GIN indexes)</li>
+          <li>JSON field queries</li>
+        </ul>
+        <h2>Application Integration</h2>
+        <h3>Using the Database</h3>
+        <p>
+          The application automatically detects the database type based on environment variables:
+        </p>
+        <pre><code class="language-typescript">import { getDatabase } from &#39;@/lib/database&#39;
 
 // Get database instance (auto-detects PostgreSQL vs IndexedDB)
 const db = await getDatabase()
@@ -176,106 +188,120 @@ const db = await getDatabase()
 const campaigns = await db.listCampaigns()
 const businesses = await db.listBusinesses(campaignId)
 </code></pre>
-<h3>Environment-Based Configuration</h3>
-<ul>
-<li><strong>Production</strong>: Set <code>DATABASE_URL</code> to use PostgreSQL</li>
-<li><strong>Development</strong>: Leave <code>DATABASE_URL</code> unset to use IndexedDB</li>
-<li><strong>Testing</strong>: Use separate test database</li>
-</ul>
-<h2>Troubleshooting</h2>
-<h3>Common Issues</h3>
-<ol>
-<li><p><strong>Connection Refused</strong></p>
-<ul>
-<li>Verify PostgreSQL is running</li>
-<li>Check host/port configuration</li>
-<li>Ensure database exists</li>
-</ul>
-</li>
-<li><p><strong>Permission Denied</strong></p>
-<ul>
-<li>Verify user has correct permissions</li>
-<li>Check password in environment variables</li>
-</ul>
-</li>
-<li><p><strong>Extension Not Found</strong></p>
-<ul>
-<li>Install required extensions as superuser:<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS &quot;uuid-ossp&quot;;
+        <h3>Environment-Based Configuration</h3>
+        <ul>
+          <li><strong>Production</strong>: Set <code>DATABASE_URL</code> to use PostgreSQL</li>
+          <li>
+            <strong>Development</strong>: Leave <code>DATABASE_URL</code> unset to use IndexedDB
+          </li>
+          <li><strong>Testing</strong>: Use separate test database</li>
+        </ul>
+        <h2>Troubleshooting</h2>
+        <h3>Common Issues</h3>
+        <ol>
+          <li>
+            <p><strong>Connection Refused</strong></p>
+            <ul>
+              <li>Verify PostgreSQL is running</li>
+              <li>Check host/port configuration</li>
+              <li>Ensure database exists</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Permission Denied</strong></p>
+            <ul>
+              <li>Verify user has correct permissions</li>
+              <li>Check password in environment variables</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Extension Not Found</strong></p>
+            <ul>
+              <li>
+                Install required extensions as superuser:
+                <pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS &quot;uuid-ossp&quot;;
 CREATE EXTENSION IF NOT EXISTS &quot;pg_trgm&quot;;
 </code></pre>
-</li>
-</ul>
-</li>
-<li><p><strong>Migration Errors</strong></p>
-<ul>
-<li>Check migration status: <code>npm run db:status</code></li>
-<li>Verify database schema manually</li>
-<li>Check logs for specific error messages</li>
-</ul>
-</li>
-</ol>
-<h3>Debugging</h3>
-<p>Enable debug logging by setting:</p>
-<pre><code class="language-env">NEXT_PUBLIC_DEBUG=true
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Migration Errors</strong></p>
+            <ul>
+              <li>Check migration status: <code>npm run db:status</code></li>
+              <li>Verify database schema manually</li>
+              <li>Check logs for specific error messages</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>Debugging</h3>
+        <p>Enable debug logging by setting:</p>
+        <pre><code class="language-env">NEXT_PUBLIC_DEBUG=true
 </code></pre>
-<p>Check application logs for database connection and query information.</p>
-<h2>Production Deployment</h2>
-<h3>Security Considerations</h3>
-<ol>
-<li><p><strong>Use Strong Passwords</strong></p>
-<ul>
-<li>Generate secure passwords for database users</li>
-<li>Store credentials securely (environment variables, secrets management)</li>
-</ul>
-</li>
-<li><p><strong>Network Security</strong></p>
-<ul>
-<li>Use SSL connections in production</li>
-<li>Restrict database access to application servers only</li>
-<li>Configure firewall rules</li>
-</ul>
-</li>
-<li><p><strong>User Permissions</strong></p>
-<ul>
-<li>Create dedicated application user with minimal required permissions</li>
-<li>Avoid using superuser accounts for application connections</li>
-</ul>
-</li>
-</ol>
-<h3>Performance Optimization</h3>
-<ol>
-<li><p><strong>Connection Pooling</strong></p>
-<ul>
-<li>Configure appropriate pool sizes based on load</li>
-<li>Monitor connection usage</li>
-</ul>
-</li>
-<li><p><strong>Monitoring</strong></p>
-<ul>
-<li>Set up database monitoring</li>
-<li>Track query performance</li>
-<li>Monitor disk usage and growth</li>
-</ul>
-</li>
-<li><p><strong>Backups</strong></p>
-<ul>
-<li>Implement regular automated backups</li>
-<li>Test backup restoration procedures</li>
-<li>Consider point-in-time recovery</li>
-</ul>
-</li>
-</ol>
-<h3>Example Production Configuration</h3>
-<pre><code class="language-env"># Production Database Configuration
+        <p>Check application logs for database connection and query information.</p>
+        <h2>Production Deployment</h2>
+        <h3>Security Considerations</h3>
+        <ol>
+          <li>
+            <p><strong>Use Strong Passwords</strong></p>
+            <ul>
+              <li>Generate secure passwords for database users</li>
+              <li>Store credentials securely (environment variables, secrets management)</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Network Security</strong></p>
+            <ul>
+              <li>Use SSL connections in production</li>
+              <li>Restrict database access to application servers only</li>
+              <li>Configure firewall rules</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>User Permissions</strong></p>
+            <ul>
+              <li>Create dedicated application user with minimal required permissions</li>
+              <li>Avoid using superuser accounts for application connections</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>Performance Optimization</h3>
+        <ol>
+          <li>
+            <p><strong>Connection Pooling</strong></p>
+            <ul>
+              <li>Configure appropriate pool sizes based on load</li>
+              <li>Monitor connection usage</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Monitoring</strong></p>
+            <ul>
+              <li>Set up database monitoring</li>
+              <li>Track query performance</li>
+              <li>Monitor disk usage and growth</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Backups</strong></p>
+            <ul>
+              <li>Implement regular automated backups</li>
+              <li>Test backup restoration procedures</li>
+              <li>Consider point-in-time recovery</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>Example Production Configuration</h3>
+        <pre><code class="language-env"># Production Database Configuration
 DATABASE_URL=postgresql://app_user:secure_password@db.example.com:5432/business_scraper_prod?ssl=true
 DB_POOL_MIN=5
 DB_POOL_MAX=20
 DB_POOL_IDLE_TIMEOUT=30000
 DB_CONNECTION_TIMEOUT=5000
 </code></pre>
-<h2>Backup and Recovery</h2>
-<h3>Creating Backups</h3>
-<pre><code class="language-bash"># Full database backup
+        <h2>Backup and Recovery</h2>
+        <h3>Creating Backups</h3>
+        <pre><code class="language-bash"># Full database backup
 pg_dump business_scraper_db &gt; backup_$(date +%Y%m%d_%H%M%S).sql
 
 # Schema only
@@ -284,46 +310,46 @@ pg_dump --schema-only business_scraper_db &gt; schema_backup.sql
 # Data only
 pg_dump --data-only business_scraper_db &gt; data_backup.sql
 </code></pre>
-<h3>Restoring Backups</h3>
-<pre><code class="language-bash"># Restore full backup
+        <h3>Restoring Backups</h3>
+        <pre><code class="language-bash"># Restore full backup
 psql business_scraper_db &lt; backup_file.sql
 
 # Restore to new database
 createdb business_scraper_restored
 psql business_scraper_restored &lt; backup_file.sql
 </code></pre>
-<h2>Support</h2>
-<p>For additional help:</p>
-<ol>
-<li>Check the database README: <code>database/README.md</code></li>
-<li>Review migration files in <code>database/schema/</code></li>
-<li>Check application logs for specific error messages</li>
-</ol>
-<h2>Next Steps</h2>
-<p>After setting up the database:</p>
-<ol>
-<li>Start the development server: <code>npm run dev</code></li>
-<li>Test database connectivity through the application</li>
-<li>Create your first scraping campaign</li>
-<li>Monitor database performance and optimize as needed</li>
-</ol>
+        <h2>Support</h2>
+        <p>For additional help:</p>
+        <ol>
+          <li>Check the database README: <code>database/README.md</code></li>
+          <li>Review migration files in <code>database/schema/</code></li>
+          <li>Check application logs for specific error messages</li>
+        </ol>
+        <h2>Next Steps</h2>
+        <p>After setting up the database:</p>
+        <ol>
+          <li>Start the development server: <code>npm run dev</code></li>
+          <li>Test database connectivity through the application</li>
+          <li>Create your first scraping campaign</li>
+          <li>Monitor database performance and optimize as needed</li>
+        </ol>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

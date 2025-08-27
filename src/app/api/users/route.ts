@@ -98,7 +98,7 @@ export const GET = withRBAC(
         const { total_count, ...cleanUser } = user
         return {
           ...cleanUser,
-          fullName: `${cleanUser.first_name} ${cleanUser.last_name}`
+          fullName: `${cleanUser.first_name} ${cleanUser.last_name}`,
         }
       })
 
@@ -107,7 +107,7 @@ export const GET = withRBAC(
         page,
         limit,
         totalCount,
-        filters: { search, role, isActive, workspaceId }
+        filters: { search, role, isActive, workspaceId },
       })
 
       return NextResponse.json({
@@ -119,15 +119,12 @@ export const GET = withRBAC(
           total: totalCount,
           totalPages,
           hasNext: page < totalPages,
-          hasPrev: page > 1
-        }
+          hasPrev: page > 1,
+        },
       })
     } catch (error) {
       logger.error('Users API', 'Error listing users', error)
-      return NextResponse.json(
-        { error: 'Failed to list users' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to list users' }, { status: 500 })
     }
   },
   { permissions: ['users.view'] }
@@ -143,19 +140,18 @@ export const POST = withRBAC(
       const userData: CreateUserRequest = body
 
       // Validate required fields
-      if (!userData.username || !userData.email || !userData.password || 
-          !userData.firstName || !userData.lastName) {
-        return NextResponse.json(
-          { error: 'Missing required fields' },
-          { status: 400 }
-        )
+      if (
+        !userData.username ||
+        !userData.email ||
+        !userData.password ||
+        !userData.firstName ||
+        !userData.lastName
+      ) {
+        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
       }
 
       // Create user
-      const { user } = await UserManagementService.createUser(
-        userData,
-        context.user.id
-      )
+      const { user } = await UserManagementService.createUser(userData, context.user.id)
 
       // Remove sensitive information from response
       const { roles, teams, workspaces, ...safeUser } = user
@@ -164,28 +160,25 @@ export const POST = withRBAC(
         createdBy: context.user.id,
         newUserId: user.id,
         username: user.username,
-        email: user.email
+        email: user.email,
       })
 
-      return NextResponse.json({
-        success: true,
-        data: safeUser,
-        message: 'User created successfully'
-      }, { status: 201 })
+      return NextResponse.json(
+        {
+          success: true,
+          data: safeUser,
+          message: 'User created successfully',
+        },
+        { status: 201 }
+      )
     } catch (error) {
       logger.error('Users API', 'Error creating user', error)
-      
+
       if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: error.message }, { status: 400 })
       }
-      
-      return NextResponse.json(
-        { error: 'Failed to create user' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Failed to create user' }, { status: 500 })
     }
   },
   { permissions: ['users.manage'] }
@@ -201,17 +194,11 @@ export const PUT = withRBAC(
       const { userIds, updateData } = body
 
       if (!Array.isArray(userIds) || userIds.length === 0) {
-        return NextResponse.json(
-          { error: 'User IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'User IDs array is required' }, { status: 400 })
       }
 
       if (!updateData || typeof updateData !== 'object') {
-        return NextResponse.json(
-          { error: 'Update data is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Update data is required' }, { status: 400 })
       }
 
       const updatedUsers = []
@@ -229,7 +216,7 @@ export const PUT = withRBAC(
         } catch (error) {
           errors.push({
             userId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
         }
       }
@@ -238,7 +225,7 @@ export const PUT = withRBAC(
         updatedBy: context.user.id,
         successCount: updatedUsers.length,
         errorCount: errors.length,
-        userIds
+        userIds,
       })
 
       return NextResponse.json({
@@ -247,16 +234,13 @@ export const PUT = withRBAC(
           updated: updatedUsers.length,
           errors: errors.length,
           results: updatedUsers,
-          errors: errors
+          errors: errors,
         },
-        message: `Updated ${updatedUsers.length} users successfully`
+        message: `Updated ${updatedUsers.length} users successfully`,
       })
     } catch (error) {
       logger.error('Users API', 'Error in bulk user update', error)
-      return NextResponse.json(
-        { error: 'Failed to update users' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update users' }, { status: 500 })
     }
   },
   { permissions: ['users.manage'] }
@@ -272,18 +256,12 @@ export const DELETE = withRBAC(
       const { userIds, permanent = false } = body
 
       if (!Array.isArray(userIds) || userIds.length === 0) {
-        return NextResponse.json(
-          { error: 'User IDs array is required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'User IDs array is required' }, { status: 400 })
       }
 
       // Prevent self-deletion
       if (userIds.includes(context.user.id)) {
-        return NextResponse.json(
-          { error: 'Cannot delete your own account' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 })
       }
 
       let query: string
@@ -315,23 +293,20 @@ export const DELETE = withRBAC(
         deletedBy: context.user.id,
         userIds: affectedUsers.map(u => u.id),
         usernames: affectedUsers.map(u => u.username),
-        permanent
+        permanent,
       })
 
       return NextResponse.json({
         success: true,
         data: {
           affected: affectedUsers.length,
-          users: affectedUsers
+          users: affectedUsers,
         },
-        message: successMessage
+        message: successMessage,
       })
     } catch (error) {
       logger.error('Users API', 'Error deleting users', error)
-      return NextResponse.json(
-        { error: 'Failed to delete users' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete users' }, { status: 500 })
     }
   },
   { permissions: ['users.delete'] }

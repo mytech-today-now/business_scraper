@@ -11,7 +11,6 @@ import { BusinessRecord } from '@/types/business'
  * HubSpot CRM export template
  */
 export class HubSpotExportTemplate extends BaseExportTemplate {
-  
   constructor() {
     super(HubSpotExportTemplate.createTemplate())
   }
@@ -26,7 +25,7 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
       platform: 'hubspot',
       description: 'Export business data as HubSpot Company records',
       version: '1.0.0',
-      
+
       fieldMappings: [
         {
           type: 'direct',
@@ -36,66 +35,66 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
           validation: [
             {
               type: 'required',
-              message: 'Company name is required for HubSpot companies'
-            }
-          ]
+              message: 'Company name is required for HubSpot companies',
+            },
+          ],
         },
         {
           type: 'format',
           sourceFields: ['website'],
           targetField: 'Domain',
           options: {
-            format: 'domain'
+            format: 'domain',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'format',
           sourceFields: ['website'],
           targetField: 'Website URL',
           options: {
-            format: 'url'
+            format: 'url',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'format',
           sourceFields: ['phone.0'],
           targetField: 'Phone Number',
           options: {
-            format: 'phone'
+            format: 'phone',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'concatenate',
           sourceFields: ['address.street', 'address.city', 'address.state', 'address.zipCode'],
           targetField: 'Address',
           options: {
-            separator: ', '
+            separator: ', ',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.city'],
           targetField: 'City',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.state'],
           targetField: 'State/Region',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.zipCode'],
           targetField: 'Postal Code',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
@@ -104,10 +103,10 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
           options: {
             conditions: [
               { condition: 'empty', value: 'United States' },
-              { condition: 'default', value: 'address.country' }
-            ]
+              { condition: 'default', value: 'address.country' },
+            ],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'lookup',
@@ -115,145 +114,151 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
           targetField: 'Industry',
           options: {
             lookupTable: {
-              'technology': 'COMPUTER_SOFTWARE',
-              'software': 'COMPUTER_SOFTWARE',
-              'healthcare': 'HOSPITAL_HEALTH_CARE',
-              'finance': 'FINANCIAL_SERVICES',
-              'retail': 'RETAIL',
-              'manufacturing': 'MANUFACTURING',
-              'education': 'EDUCATION_MANAGEMENT',
+              technology: 'COMPUTER_SOFTWARE',
+              software: 'COMPUTER_SOFTWARE',
+              healthcare: 'HOSPITAL_HEALTH_CARE',
+              finance: 'FINANCIAL_SERVICES',
+              retail: 'RETAIL',
+              manufacturing: 'MANUFACTURING',
+              education: 'EDUCATION_MANAGEMENT',
               'real estate': 'REAL_ESTATE',
-              'construction': 'CONSTRUCTION',
-              'automotive': 'AUTOMOTIVE',
+              construction: 'CONSTRUCTION',
+              automotive: 'AUTOMOTIVE',
               'food service': 'RESTAURANTS',
-              'default': 'OTHER'
-            }
+              default: 'OTHER',
+            },
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['description'],
           targetField: 'Description',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Lead Status',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'NEW' }
-            ]
+            conditions: [{ condition: 'exists', value: 'NEW' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Lifecycle Stage',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'lead' }
-            ]
+            conditions: [{ condition: 'exists', value: 'lead' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Original Source',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'WEB_SCRAPING' }
-            ]
+            conditions: [{ condition: 'exists', value: 'WEB_SCRAPING' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['website', 'email', 'phone', 'address'],
           targetField: 'Company size',
           options: {
-            calculation: 'estimateCompanySize'
+            calculation: 'estimateCompanySize',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['website', 'email', 'address'],
           targetField: 'Annual revenue',
           options: {
-            calculation: 'estimateAnnualRevenue'
+            calculation: 'estimateAnnualRevenue',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['businessName'],
           targetField: 'Create date',
           options: {
-            calculation: 'currentTimestamp'
+            calculation: 'currentTimestamp',
           },
-          validation: []
-        }
+          validation: [],
+        },
       ],
-      
+
       requiredFields: ['Name'],
       optionalFields: [
-        'Domain', 'Website URL', 'Phone Number', 'Address', 'City', 
-        'State/Region', 'Postal Code', 'Country', 'Industry', 'Description',
-        'Lead Status', 'Lifecycle Stage', 'Original Source', 'Company size',
-        'Annual revenue', 'Create date'
+        'Domain',
+        'Website URL',
+        'Phone Number',
+        'Address',
+        'City',
+        'State/Region',
+        'Postal Code',
+        'Country',
+        'Industry',
+        'Description',
+        'Lead Status',
+        'Lifecycle Stage',
+        'Original Source',
+        'Company size',
+        'Annual revenue',
+        'Create date',
       ],
-      
+
       platformConfig: {
         fileFormat: 'csv',
         headers: {
-          'Name': 'Name',
-          'Domain': 'Domain',
+          Name: 'Name',
+          Domain: 'Domain',
           'Website URL': 'Website URL',
           'Phone Number': 'Phone Number',
-          'Address': 'Address',
-          'City': 'City',
+          Address: 'Address',
+          City: 'City',
           'State/Region': 'State/Region',
           'Postal Code': 'Postal Code',
-          'Country': 'Country',
-          'Industry': 'Industry',
-          'Description': 'Description',
+          Country: 'Country',
+          Industry: 'Industry',
+          Description: 'Description',
           'Lead Status': 'Lead Status',
           'Lifecycle Stage': 'Lifecycle Stage',
           'Original Source': 'Original Source',
           'Company size': 'Company size',
           'Annual revenue': 'Annual revenue',
-          'Create date': 'Create date'
+          'Create date': 'Create date',
         },
         delimiter: ',',
         encoding: 'utf-8',
         dateFormat: 'MM/DD/YYYY',
         booleanFormat: { true: 'true', false: 'false' },
-        nullValue: ''
+        nullValue: '',
       },
-      
+
       metadata: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         createdBy: 'system',
         tags: ['crm', 'hubspot', 'companies'],
-        category: 'crm'
+        category: 'crm',
       },
-      
+
       qualityRules: {
         minimumFields: 2,
         duplicateHandling: 'merge',
         dataValidation: [
           {
             type: 'required',
-            message: 'Company name is required'
-          }
-        ]
-      }
+            message: 'Company name is required',
+          },
+        ],
+      },
     }
   }
 
@@ -262,13 +267,13 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   protected async preprocessData(businesses: BusinessRecord[]): Promise<BusinessRecord[]> {
     const baseProcessed = await super.preprocessData(businesses)
-    
+
     return baseProcessed.map(business => {
       return {
         ...business,
         businessName: this.normalizeCompanyName(business.businessName),
         website: this.normalizeWebsite(business.website),
-        industry: this.normalizeIndustry(business.industry)
+        industry: this.normalizeIndustry(business.industry),
       }
     })
   }
@@ -276,7 +281,10 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
   /**
    * HubSpot-specific field mapping for calculated fields
    */
-  protected async applyFieldMapping(business: BusinessRecord, mapping: FieldTransformation): Promise<any> {
+  protected async applyFieldMapping(
+    business: BusinessRecord,
+    mapping: FieldTransformation
+  ): Promise<any> {
     if (mapping.type === 'calculate') {
       switch (mapping.options?.calculation) {
         case 'estimateCompanySize':
@@ -289,11 +297,11 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
           return super.applyFieldMapping(business, mapping)
       }
     }
-    
+
     if (mapping.type === 'format' && mapping.options?.format === 'domain') {
       return this.extractDomain(this.extractFieldValue(business, mapping.sourceFields[0]))
     }
-    
+
     return super.applyFieldMapping(business, mapping)
   }
 
@@ -334,11 +342,11 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   private normalizeCompanyName(name: string): string {
     if (!name) return ''
-    
+
     return name
       .trim()
       .replace(/\s+/g, ' ')
-      .replace(/\b(inc|llc|corp|ltd|co)\b\.?/gi, (match) => match.toUpperCase())
+      .replace(/\b(inc|llc|corp|ltd|co)\b\.?/gi, match => match.toUpperCase())
   }
 
   /**
@@ -346,13 +354,13 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   private normalizeWebsite(website: string): string {
     if (!website) return ''
-    
+
     let normalized = website.trim().toLowerCase()
-    
+
     if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
       normalized = 'https://' + normalized
     }
-    
+
     return normalized
   }
 
@@ -361,7 +369,7 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   private extractDomain(website: string): string {
     if (!website) return ''
-    
+
     try {
       const url = new URL(website.startsWith('http') ? website : `https://${website}`)
       return url.hostname.replace('www.', '')
@@ -375,28 +383,28 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   private normalizeIndustry(industry: string): string {
     if (!industry) return ''
-    
+
     // HubSpot uses specific industry codes
     const industryMap: Record<string, string> = {
-      'technology': 'COMPUTER_SOFTWARE',
-      'tech': 'COMPUTER_SOFTWARE',
-      'software': 'COMPUTER_SOFTWARE',
-      'it': 'COMPUTER_SOFTWARE',
-      'healthcare': 'HOSPITAL_HEALTH_CARE',
-      'medical': 'HOSPITAL_HEALTH_CARE',
-      'finance': 'FINANCIAL_SERVICES',
-      'banking': 'FINANCIAL_SERVICES',
-      'retail': 'RETAIL',
-      'ecommerce': 'RETAIL',
-      'manufacturing': 'MANUFACTURING',
-      'education': 'EDUCATION_MANAGEMENT',
-      'realestate': 'REAL_ESTATE',
-      'construction': 'CONSTRUCTION',
-      'automotive': 'AUTOMOTIVE',
-      'food': 'RESTAURANTS',
-      'restaurant': 'RESTAURANTS'
+      technology: 'COMPUTER_SOFTWARE',
+      tech: 'COMPUTER_SOFTWARE',
+      software: 'COMPUTER_SOFTWARE',
+      it: 'COMPUTER_SOFTWARE',
+      healthcare: 'HOSPITAL_HEALTH_CARE',
+      medical: 'HOSPITAL_HEALTH_CARE',
+      finance: 'FINANCIAL_SERVICES',
+      banking: 'FINANCIAL_SERVICES',
+      retail: 'RETAIL',
+      ecommerce: 'RETAIL',
+      manufacturing: 'MANUFACTURING',
+      education: 'EDUCATION_MANAGEMENT',
+      realestate: 'REAL_ESTATE',
+      construction: 'CONSTRUCTION',
+      automotive: 'AUTOMOTIVE',
+      food: 'RESTAURANTS',
+      restaurant: 'RESTAURANTS',
     }
-    
+
     const normalized = industry.toLowerCase().replace(/\s+/g, '')
     return industryMap[normalized] || 'OTHER'
   }
@@ -406,17 +414,17 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   private estimateCompanySize(business: BusinessRecord): string {
     let score = 0
-    
+
     if (business.website) score += 2
     if (business.email?.length && business.email.length > 1) score += 2
     if (business.phone?.length && business.phone.length > 1) score += 1
     if (business.address?.street) score += 1
     if (business.description && business.description.length > 100) score += 1
-    
+
     if (score >= 6) return '51-200'
     if (score >= 4) return '11-50'
     if (score >= 2) return '2-10'
-    
+
     return '1'
   }
 
@@ -425,18 +433,19 @@ export class HubSpotExportTemplate extends BaseExportTemplate {
    */
   private estimateAnnualRevenue(business: BusinessRecord): string {
     let score = 0
-    
+
     if (business.website) score += 2
-    if (business.email?.some(email => !email.includes('gmail') && !email.includes('yahoo'))) score += 2
+    if (business.email?.some(email => !email.includes('gmail') && !email.includes('yahoo')))
+      score += 2
     if (business.address?.street && business.address?.city && business.address?.state) score += 2
     if (business.phone?.length && business.phone.length > 1) score += 1
     if (business.description && business.description.length > 100) score += 1
-    
+
     if (score >= 7) return '$5M-$10M'
     if (score >= 5) return '$1M-$5M'
     if (score >= 3) return '$500K-$1M'
     if (score >= 1) return '$100K-$500K'
-    
+
     return 'Less than $100K'
   }
 }

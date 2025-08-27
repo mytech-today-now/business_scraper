@@ -152,107 +152,111 @@ interface ValidationRule {
 
 const configSchema: Record<string, ValidationRule> = {
   // Application
-  'NEXT_PUBLIC_APP_NAME': { type: 'string', default: 'Business Scraper App' },
-  'NEXT_PUBLIC_APP_VERSION': { type: 'string', default: '3.0.1' },
-  'NODE_ENV': { type: 'string', choices: ['development', 'production', 'test'], default: 'development' },
-  'NEXT_PUBLIC_DEBUG': { type: 'boolean', default: false },
-  'PORT': { type: 'port', default: 3000 },
+  NEXT_PUBLIC_APP_NAME: { type: 'string', default: 'Business Scraper App' },
+  NEXT_PUBLIC_APP_VERSION: { type: 'string', default: '3.0.1' },
+  NODE_ENV: {
+    type: 'string',
+    choices: ['development', 'production', 'test'],
+    default: 'development',
+  },
+  NEXT_PUBLIC_DEBUG: { type: 'boolean', default: false },
+  PORT: { type: 'port', default: 3000 },
 
   // Database
-  'DATABASE_URL': { type: 'url', required: false },
-  'DB_TYPE': { type: 'string', choices: ['postgresql', 'indexeddb'], default: 'indexeddb' },
-  'DB_HOST': { type: 'string', default: 'localhost' },
-  'DB_PORT': { type: 'port', default: 5432 },
-  'DB_NAME': { type: 'string', default: 'business_scraper_db' },
-  'DB_USER': { type: 'string', default: 'postgres' },
-  'DB_PASSWORD': { type: 'string', default: '' },
-  'DB_POOL_MIN': { type: 'number', min: 1, default: 2 },
-  'DB_POOL_MAX': { type: 'number', min: 1, default: 10 },
-  'DB_POOL_IDLE_TIMEOUT': { type: 'number', min: 1000, default: 30000 },
-  'DB_CONNECTION_TIMEOUT': { type: 'number', min: 1000, default: 5000 },
-  'DB_SSL': { type: 'boolean', default: false },
+  DATABASE_URL: { type: 'url', required: false },
+  DB_TYPE: { type: 'string', choices: ['postgresql', 'indexeddb'], default: 'indexeddb' },
+  DB_HOST: { type: 'string', default: 'localhost' },
+  DB_PORT: { type: 'port', default: 5432 },
+  DB_NAME: { type: 'string', default: 'business_scraper_db' },
+  DB_USER: { type: 'string', default: 'postgres' },
+  DB_PASSWORD: { type: 'string', default: '' },
+  DB_POOL_MIN: { type: 'number', min: 1, default: 2 },
+  DB_POOL_MAX: { type: 'number', min: 1, default: 10 },
+  DB_POOL_IDLE_TIMEOUT: { type: 'number', min: 1000, default: 30000 },
+  DB_CONNECTION_TIMEOUT: { type: 'number', min: 1000, default: 5000 },
+  DB_SSL: { type: 'boolean', default: false },
 
   // Security
-  'ENABLE_AUTH': { type: 'boolean', default: false },
-  'SESSION_TIMEOUT': { type: 'number', min: 60000, default: 3600000 },
-  'MAX_LOGIN_ATTEMPTS': { type: 'number', min: 1, max: 20, default: 5 },
-  'LOCKOUT_DURATION': { type: 'number', min: 60000, default: 900000 },
-  'RATE_LIMIT_WINDOW': { type: 'number', min: 1000, default: 60000 },
-  'RATE_LIMIT_MAX': { type: 'number', min: 1, default: 100 },
-  'SCRAPING_RATE_LIMIT': { type: 'number', min: 1, default: 10 },
-  'ADMIN_USERNAME': { type: 'string', default: 'admin' },
-  'ADMIN_PASSWORD': { type: 'string', required: false },
-  'ADMIN_PASSWORD_HASH': { type: 'string', required: false },
-  'ADMIN_PASSWORD_SALT': { type: 'string', required: false },
+  ENABLE_AUTH: { type: 'boolean', default: false },
+  SESSION_TIMEOUT: { type: 'number', min: 60000, default: 3600000 },
+  MAX_LOGIN_ATTEMPTS: { type: 'number', min: 1, max: 20, default: 5 },
+  LOCKOUT_DURATION: { type: 'number', min: 60000, default: 900000 },
+  RATE_LIMIT_WINDOW: { type: 'number', min: 1000, default: 60000 },
+  RATE_LIMIT_MAX: { type: 'number', min: 1, default: 100 },
+  SCRAPING_RATE_LIMIT: { type: 'number', min: 1, default: 10 },
+  ADMIN_USERNAME: { type: 'string', default: 'admin' },
+  ADMIN_PASSWORD: { type: 'string', required: false },
+  ADMIN_PASSWORD_HASH: { type: 'string', required: false },
+  ADMIN_PASSWORD_SALT: { type: 'string', required: false },
 
   // Scraping
-  'SCRAPING_TIMEOUT': { type: 'number', min: 1000, default: 30000 },
-  'SCRAPING_MAX_RETRIES': { type: 'number', min: 0, max: 10, default: 3 },
-  'SCRAPING_DELAY_MS': { type: 'number', min: 0, default: 1000 },
-  'SEARCH_ENGINE_TIMEOUT': { type: 'number', min: 1000, default: 10000 },
-  'MAX_SEARCH_RESULTS': { type: 'number', min: 1, default: 10000 }, // No upper limit - gather as many as possible
+  SCRAPING_TIMEOUT: { type: 'number', min: 1000, default: 30000 },
+  SCRAPING_MAX_RETRIES: { type: 'number', min: 0, max: 10, default: 3 },
+  SCRAPING_DELAY_MS: { type: 'number', min: 0, default: 1000 },
+  SEARCH_ENGINE_TIMEOUT: { type: 'number', min: 1000, default: 10000 },
+  MAX_SEARCH_RESULTS: { type: 'number', min: 1, default: 10000 }, // No upper limit - gather as many as possible
 
   // Network Spoofing
-  'ENABLE_NETWORK_SPOOFING': { type: 'boolean', default: true },
-  'ENABLE_PROXY_ROTATION': { type: 'boolean', default: false }, // Disabled by default to avoid connection issues
-  'ENABLE_IP_SPOOFING': { type: 'boolean', default: true },
-  'ENABLE_MAC_ADDRESS_SPOOFING': { type: 'boolean', default: true },
-  'ENABLE_FINGERPRINT_SPOOFING': { type: 'boolean', default: true },
-  'REQUEST_DELAY_MIN': { type: 'number', min: 1000, default: 3000 },
-  'REQUEST_DELAY_MAX': { type: 'number', min: 2000, default: 8000 },
+  ENABLE_NETWORK_SPOOFING: { type: 'boolean', default: true },
+  ENABLE_PROXY_ROTATION: { type: 'boolean', default: false }, // Disabled by default to avoid connection issues
+  ENABLE_IP_SPOOFING: { type: 'boolean', default: true },
+  ENABLE_MAC_ADDRESS_SPOOFING: { type: 'boolean', default: true },
+  ENABLE_FINGERPRINT_SPOOFING: { type: 'boolean', default: true },
+  REQUEST_DELAY_MIN: { type: 'number', min: 1000, default: 3000 },
+  REQUEST_DELAY_MAX: { type: 'number', min: 2000, default: 8000 },
 
   // API Keys (optional)
-  'GOOGLE_MAPS_API_KEY': { type: 'string', required: false },
-  'GOOGLE_SEARCH_API_KEY': { type: 'string', required: false },
-  'GOOGLE_SEARCH_ENGINE_ID': { type: 'string', required: false },
-  'OPENCAGE_API_KEY': { type: 'string', required: false },
-  'BING_SEARCH_API_KEY': { type: 'string', required: false },
-  'YANDEX_SEARCH_API_KEY': { type: 'string', required: false },
+  GOOGLE_MAPS_API_KEY: { type: 'string', required: false },
+  GOOGLE_SEARCH_API_KEY: { type: 'string', required: false },
+  GOOGLE_SEARCH_ENGINE_ID: { type: 'string', required: false },
+  OPENCAGE_API_KEY: { type: 'string', required: false },
+  BING_SEARCH_API_KEY: { type: 'string', required: false },
+  YANDEX_SEARCH_API_KEY: { type: 'string', required: false },
 
   // Cache
-  'CACHE_TYPE': { type: 'string', choices: ['memory', 'redis'], default: 'memory' },
-  'REDIS_HOST': { type: 'string', default: 'localhost' },
-  'REDIS_PORT': { type: 'port', default: 6379 },
-  'REDIS_PASSWORD': { type: 'string', required: false },
-  'REDIS_DB': { type: 'number', min: 0, max: 15, default: 0 },
-  'REDIS_KEY_PREFIX': { type: 'string', default: 'business_scraper:' },
-  'REDIS_MAX_MEMORY': { type: 'string', default: '256mb' },
-  'REDIS_EVICTION_POLICY': { type: 'string', default: 'allkeys-lru' },
-  'CACHE_MAX_SIZE': { type: 'number', min: 1, default: 2000 },
-  'CACHE_TTL': { type: 'number', min: 1000, default: 1800000 },
+  CACHE_TYPE: { type: 'string', choices: ['memory', 'redis'], default: 'memory' },
+  REDIS_HOST: { type: 'string', default: 'localhost' },
+  REDIS_PORT: { type: 'port', default: 6379 },
+  REDIS_PASSWORD: { type: 'string', required: false },
+  REDIS_DB: { type: 'number', min: 0, max: 15, default: 0 },
+  REDIS_KEY_PREFIX: { type: 'string', default: 'business_scraper:' },
+  REDIS_MAX_MEMORY: { type: 'string', default: '256mb' },
+  REDIS_EVICTION_POLICY: { type: 'string', default: 'allkeys-lru' },
+  CACHE_MAX_SIZE: { type: 'number', min: 1, default: 2000 },
+  CACHE_TTL: { type: 'number', min: 1000, default: 1800000 },
 
   // Advanced Cache Settings
-  'CACHE_L1_MAX_SIZE': { type: 'number', min: 1, default: 1000 },
-  'CACHE_L1_TTL': { type: 'number', min: 1000, default: 1800000 },
-  'CACHE_L2_TTL': { type: 'number', min: 1000, default: 7200000 },
-  'CACHE_L3_TTL': { type: 'number', min: 1000, default: 86400000 },
-  'ENABLE_CACHE_WARMING': { type: 'boolean', default: false },
+  CACHE_L1_MAX_SIZE: { type: 'number', min: 1, default: 1000 },
+  CACHE_L1_TTL: { type: 'number', min: 1000, default: 1800000 },
+  CACHE_L2_TTL: { type: 'number', min: 1000, default: 7200000 },
+  CACHE_L3_TTL: { type: 'number', min: 1000, default: 86400000 },
+  ENABLE_CACHE_WARMING: { type: 'boolean', default: false },
 
   // Logging
-  'LOG_LEVEL': { type: 'string', choices: ['error', 'warn', 'info', 'debug'], default: 'info' },
-  'LOG_FORMAT': { type: 'string', choices: ['json', 'text'], default: 'text' },
-  'LOG_ENABLE_CONSOLE': { type: 'boolean', default: true },
-  'LOG_ENABLE_FILE': { type: 'boolean', default: false },
-  'LOG_FILE_PATH': { type: 'string', default: './logs/app.log' },
-  'LOG_MAX_FILE_SIZE': { type: 'number', min: 1024, default: 10485760 }, // 10MB
-  'LOG_MAX_FILES': { type: 'number', min: 1, default: 5 },
+  LOG_LEVEL: { type: 'string', choices: ['error', 'warn', 'info', 'debug'], default: 'info' },
+  LOG_FORMAT: { type: 'string', choices: ['json', 'text'], default: 'text' },
+  LOG_ENABLE_CONSOLE: { type: 'boolean', default: true },
+  LOG_ENABLE_FILE: { type: 'boolean', default: false },
+  LOG_FILE_PATH: { type: 'string', default: './logs/app.log' },
+  LOG_MAX_FILE_SIZE: { type: 'number', min: 1024, default: 10485760 }, // 10MB
+  LOG_MAX_FILES: { type: 'number', min: 1, default: 5 },
 
   // Feature Flags
-  'FEATURE_ENABLE_CACHING': { type: 'boolean', default: true },
-  'FEATURE_ENABLE_RATE_LIMITING': { type: 'boolean', default: true },
-  'FEATURE_ENABLE_METRICS': { type: 'boolean', default: false },
-  'FEATURE_ENABLE_EXPERIMENTAL': { type: 'boolean', default: false },
+  FEATURE_ENABLE_CACHING: { type: 'boolean', default: true },
+  FEATURE_ENABLE_RATE_LIMITING: { type: 'boolean', default: true },
+  FEATURE_ENABLE_METRICS: { type: 'boolean', default: false },
+  FEATURE_ENABLE_EXPERIMENTAL: { type: 'boolean', default: false },
 
   // File Upload Configuration
-  'MAX_FILE_SIZE': { type: 'number', min: 1024, default: 10485760 }, // 10MB
-  'UPLOAD_DIR': { type: 'string', default: './uploads' },
-  'TEMP_DIR': { type: 'string', default: './temp' },
-  'QUARANTINE_DIR': { type: 'string', default: './quarantine' },
-  'ENABLE_FILE_QUARANTINE': { type: 'boolean', default: true },
-  'ENABLE_MALWARE_SCANNING': { type: 'boolean', default: true },
-  'ENABLE_MAGIC_NUMBER_VALIDATION': { type: 'boolean', default: true },
-  'FILE_SCAN_TIMEOUT': { type: 'number', min: 1000, default: 30000 },
-  'MAX_UPLOAD_FILES': { type: 'number', min: 1, max: 100, default: 10 },
+  MAX_FILE_SIZE: { type: 'number', min: 1024, default: 10485760 }, // 10MB
+  UPLOAD_DIR: { type: 'string', default: './uploads' },
+  TEMP_DIR: { type: 'string', default: './temp' },
+  QUARANTINE_DIR: { type: 'string', default: './quarantine' },
+  ENABLE_FILE_QUARANTINE: { type: 'boolean', default: true },
+  ENABLE_MALWARE_SCANNING: { type: 'boolean', default: true },
+  ENABLE_MAGIC_NUMBER_VALIDATION: { type: 'boolean', default: true },
+  FILE_SCAN_TIMEOUT: { type: 'number', min: 1000, default: 30000 },
+  MAX_UPLOAD_FILES: { type: 'number', min: 1, max: 100, default: 10 },
 }
 
 /**
@@ -342,7 +346,7 @@ export function loadConfig(): AppConfig {
           value: validatedValue,
           writable: true,
           enumerable: true,
-          configurable: true
+          configurable: true,
         })
       } else {
         errors.push(`Invalid configuration key: ${key}`)
@@ -358,11 +362,15 @@ export function loadConfig(): AppConfig {
     const hasHashedPassword = config.ADMIN_PASSWORD_HASH && config.ADMIN_PASSWORD_SALT
 
     if (!hasPlainPassword && !hasHashedPassword) {
-      errors.push('Authentication is enabled but no password is configured (ADMIN_PASSWORD or ADMIN_PASSWORD_HASH/ADMIN_PASSWORD_SALT)')
+      errors.push(
+        'Authentication is enabled but no password is configured (ADMIN_PASSWORD or ADMIN_PASSWORD_HASH/ADMIN_PASSWORD_SALT)'
+      )
     }
 
     if (hasPlainPassword && process.env.NODE_ENV === 'production') {
-      warnings.push('Using plain text password in production is not recommended. Use ADMIN_PASSWORD_HASH and ADMIN_PASSWORD_SALT instead.')
+      warnings.push(
+        'Using plain text password in production is not recommended. Use ADMIN_PASSWORD_HASH and ADMIN_PASSWORD_SALT instead.'
+      )
     }
   }
 
@@ -443,15 +451,18 @@ export function loadConfig(): AppConfig {
     },
     cache: {
       type: config.CACHE_TYPE,
-      redis: config.CACHE_TYPE === 'redis' ? {
-        host: config.REDIS_HOST,
-        port: config.REDIS_PORT,
-        password: config.REDIS_PASSWORD,
-        db: config.REDIS_DB,
-        keyPrefix: config.REDIS_KEY_PREFIX,
-        maxMemory: config.REDIS_MAX_MEMORY,
-        evictionPolicy: config.REDIS_EVICTION_POLICY,
-      } : undefined,
+      redis:
+        config.CACHE_TYPE === 'redis'
+          ? {
+              host: config.REDIS_HOST,
+              port: config.REDIS_PORT,
+              password: config.REDIS_PASSWORD,
+              db: config.REDIS_DB,
+              keyPrefix: config.REDIS_KEY_PREFIX,
+              maxMemory: config.REDIS_MAX_MEMORY,
+              evictionPolicy: config.REDIS_EVICTION_POLICY,
+            }
+          : undefined,
       memory: {
         maxSize: config.CACHE_MAX_SIZE,
         ttl: config.CACHE_TTL,
@@ -496,19 +507,34 @@ export function loadConfig(): AppConfig {
       fileScanTimeout: config.FILE_SCAN_TIMEOUT,
       maxUploadFiles: config.MAX_UPLOAD_FILES,
       allowedTypes: [
-        'image/jpeg', 'image/png', 'image/gif',
-        'text/plain', 'application/pdf', 'application/json',
-        'text/csv', 'application/vnd.ms-excel'
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'text/plain',
+        'application/pdf',
+        'application/json',
+        'text/csv',
+        'application/vnd.ms-excel',
       ],
       allowedExtensions: [
-        '.jpg', '.jpeg', '.png', '.gif',
-        '.txt', '.pdf', '.json', '.csv', '.xlsx'
+        '.jpg',
+        '.jpeg',
+        '.png',
+        '.gif',
+        '.txt',
+        '.pdf',
+        '.json',
+        '.csv',
+        '.xlsx',
       ],
     },
   }
 
-  logger.info('Config', `Configuration loaded successfully for ${appConfig.app.environment} environment`)
-  
+  logger.info(
+    'Config',
+    `Configuration loaded successfully for ${appConfig.app.environment} environment`
+  )
+
   if (appConfig.app.debug) {
     logger.debug('Config', 'Configuration details:', {
       app: appConfig.app,

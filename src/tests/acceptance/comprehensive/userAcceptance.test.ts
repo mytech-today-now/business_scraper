@@ -41,7 +41,7 @@ class UserAcceptanceTester {
         console.log(`  ${i + 1}. ${step.action}`)
 
         await this.executeStep(page, step)
-        
+
         // Small delay between steps for realistic user behavior
         await page.waitForTimeout(500)
       }
@@ -49,7 +49,6 @@ class UserAcceptanceTester {
       this.results.set(scenario.name, { passed: true })
       console.log(`✅ Scenario passed: ${scenario.name}`)
       return true
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       this.results.set(scenario.name, { passed: false, error: errorMessage })
@@ -63,25 +62,25 @@ class UserAcceptanceTester {
       case 'navigate':
         await page.goto(step.target || BASE_URL)
         break
-        
+
       case 'click':
         if (step.target) {
           await page.click(step.target)
         }
         break
-        
+
       case 'fill':
         if (step.target && step.input) {
           await page.fill(step.target, step.input)
         }
         break
-        
+
       case 'select':
         if (step.target && step.input) {
           await page.selectOption(step.target, step.input)
         }
         break
-        
+
       case 'wait':
         if (step.target) {
           await page.waitForSelector(step.target, { timeout: 30000 })
@@ -89,7 +88,7 @@ class UserAcceptanceTester {
           await page.waitForTimeout(parseInt(step.input || '1000'))
         }
         break
-        
+
       case 'validate':
         if (step.target && step.validation) {
           const element = page.locator(step.target)
@@ -106,7 +105,7 @@ class UserAcceptanceTester {
           }
         }
         break
-        
+
       default:
         throw new Error(`Unknown action: ${step.action}`)
     }
@@ -140,12 +139,24 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
         steps: [
           { action: 'navigate', target: `${BASE_URL}/search` },
           { action: 'validate', target: 'form', validation: 'visible' },
-          { action: 'fill', target: 'input[name="industry"], [data-testid="industry-input"]', input: 'restaurants' },
-          { action: 'fill', target: 'input[name="zipCode"], [data-testid="zipcode-input"]', input: '10001' },
+          {
+            action: 'fill',
+            target: 'input[name="industry"], [data-testid="industry-input"]',
+            input: 'restaurants',
+          },
+          {
+            action: 'fill',
+            target: 'input[name="zipCode"], [data-testid="zipcode-input"]',
+            input: '10001',
+          },
           { action: 'click', target: 'button[type="submit"], [data-testid="search-button"]' },
           { action: 'wait', target: '[data-testid="results"], .results, table' },
-          { action: 'validate', target: '[data-testid="results"], .results, table', validation: 'visible' }
-        ]
+          {
+            action: 'validate',
+            target: '[data-testid="results"], .results, table',
+            validation: 'visible',
+          },
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -162,11 +173,19 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'navigate', target: `${BASE_URL}/search` },
           { action: 'fill', target: 'input[name="industry"]', input: 'hotels' },
           { action: 'fill', target: 'input[name="zipCode"]', input: '90210' },
-          { action: 'fill', target: 'input[name="maxResults"], [data-testid="max-results"]', input: '20' },
+          {
+            action: 'fill',
+            target: 'input[name="maxResults"], [data-testid="max-results"]',
+            input: '20',
+          },
           { action: 'click', target: 'button[type="submit"]' },
           { action: 'wait', target: '[data-testid="results"], .results' },
-          { action: 'validate', target: '[data-testid="results"], .results', validation: 'visible' }
-        ]
+          {
+            action: 'validate',
+            target: '[data-testid="results"], .results',
+            validation: 'visible',
+          },
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -187,9 +206,13 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'fill', target: 'input[name="zipCode"]', input: '12345' },
           { action: 'click', target: 'button[type="submit"]' },
           { action: 'wait', target: '[data-testid="results"]' },
-          { action: 'click', target: '[data-testid="export-button"], button:has-text("Export"), button:has-text("Download")' },
-          { action: 'wait', input: '2000' } // Wait for download to initiate
-        ]
+          {
+            action: 'click',
+            target:
+              '[data-testid="export-button"], button:has-text("Export"), button:has-text("Download")',
+          },
+          { action: 'wait', input: '2000' }, // Wait for download to initiate
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -209,8 +232,12 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'click', target: 'button[type="submit"]' },
           { action: 'wait', target: '[data-testid="results"]' },
           { action: 'click', target: '[data-testid="export-button"]' },
-          { action: 'validate', target: '[data-testid="export-options"], .export-options', validation: 'visible' }
-        ]
+          {
+            action: 'validate',
+            target: '[data-testid="export-options"], .export-options',
+            validation: 'visible',
+          },
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -229,11 +256,14 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'navigate', target: BASE_URL },
           { action: 'validate', target: 'body', validation: 'visible' },
           { action: 'validate', target: 'h1, [data-testid="main-heading"]', validation: 'visible' },
-          { action: 'click', target: 'a[href*="/search"], button:has-text("Search"), [data-testid="search-nav"]' },
+          {
+            action: 'click',
+            target: 'a[href*="/search"], button:has-text("Search"), [data-testid="search-nav"]',
+          },
           { action: 'validate', target: 'form', validation: 'visible' },
           { action: 'validate', target: 'input[name="industry"]', validation: 'visible' },
-          { action: 'validate', target: 'input[name="zipCode"]', validation: 'visible' }
-        ]
+          { action: 'validate', target: 'input[name="zipCode"]', validation: 'visible' },
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -251,8 +281,12 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'fill', target: 'input[name="zipCode"]', input: 'invalid-zip' },
           { action: 'click', target: 'button[type="submit"]' },
           { action: 'wait', input: '2000' },
-          { action: 'validate', target: '[data-testid="error-message"], .error-message, .validation-error', validation: 'visible' }
-        ]
+          {
+            action: 'validate',
+            target: '[data-testid="error-message"], .error-message, .validation-error',
+            validation: 'visible',
+          },
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -272,8 +306,8 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'fill', target: 'input[name="industry"]', input: 'restaurants' },
           { action: 'fill', target: 'input[name="zipCode"]', input: '10001' },
           { action: 'click', target: 'button[type="submit"]' },
-          { action: 'wait', target: '[data-testid="results"], .results', input: '30000' } // 30 second timeout
-        ]
+          { action: 'wait', target: '[data-testid="results"], .results', input: '30000' }, // 30 second timeout
+        ],
       })
 
       const startTime = Date.now()
@@ -297,8 +331,8 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           { action: 'validate', target: 'html[lang]', validation: 'visible' },
           { action: 'validate', target: 'h1', validation: 'visible' },
           { action: 'navigate', target: `${BASE_URL}/search` },
-          { action: 'validate', target: 'label, [aria-label]', validation: 'visible' }
-        ]
+          { action: 'validate', target: 'label, [aria-label]', validation: 'visible' },
+        ],
       })
 
       const success = await acceptanceTester.executeScenario(page, acceptanceTester['scenarios'][0])
@@ -326,9 +360,13 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
             { action: 'fill', target: 'input[name="zipCode"]', input: '10001' },
             { action: 'click', target: 'button[type="submit"]' },
             { action: 'wait', target: '[data-testid="results"], .results' },
-            { action: 'validate', target: '[data-testid="results"], .results', validation: 'visible' }
-          ]
-        }
+            {
+              action: 'validate',
+              target: '[data-testid="results"], .results',
+              validation: 'visible',
+            },
+          ],
+        },
       ]
 
       let totalSuccess = 0
@@ -339,11 +377,11 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
       }
 
       const passRate = acceptanceTester.getPassRate()
-      
+
       // Business value requirements
       expect(passRate).toBeGreaterThanOrEqual(0.9) // 90% success rate minimum
       expect(totalSuccess).toBeGreaterThan(0) // At least one successful scenario
-      
+
       console.log(`\n📊 User Acceptance Test Results:`)
       console.log(`✅ Pass Rate: ${(passRate * 100).toFixed(1)}%`)
       console.log(`📈 Successful Scenarios: ${totalSuccess}/${scenarios.length}`)
@@ -358,13 +396,13 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
         'Application provides intuitive user experience',
         'Application handles errors gracefully',
         'Application performs within acceptable time limits',
-        'Application is accessible to all users'
+        'Application is accessible to all users',
       ]
 
       // Validate each criterion through user scenarios
       for (let i = 0; i < stakeholderCriteria.length; i++) {
         const criterion = stakeholderCriteria[i]
-        
+
         acceptanceTester.addScenario({
           name: `Stakeholder Criterion ${i + 1}`,
           description: criterion,
@@ -372,8 +410,8 @@ test.describe('User Acceptance Tests - Business Requirements', () => {
           expectedOutcome: 'Criterion is satisfied through user interaction',
           steps: [
             { action: 'navigate', target: BASE_URL },
-            { action: 'validate', target: 'body', validation: 'visible' }
-          ]
+            { action: 'validate', target: 'body', validation: 'visible' },
+          ],
         })
       }
 

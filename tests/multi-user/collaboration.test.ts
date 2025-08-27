@@ -13,27 +13,27 @@ const mockWebSocket = {
   close: jest.fn(),
   readyState: WebSocket.OPEN,
   on: jest.fn(),
-  removeAllListeners: jest.fn()
+  removeAllListeners: jest.fn(),
 }
 
 // Mock database
 const mockDatabase = {
-  query: jest.fn()
+  query: jest.fn(),
 }
 
 // Mock logger
 const mockLogger = {
   info: jest.fn(),
   error: jest.fn(),
-  warn: jest.fn()
+  warn: jest.fn(),
 }
 
 jest.mock('@/utils/logger', () => ({
-  logger: mockLogger
+  logger: mockLogger,
 }))
 
 jest.mock('./postgresql-database', () => ({
-  database: mockDatabase
+  database: mockDatabase,
 }))
 
 describe('Collaboration WebSocket Service', () => {
@@ -43,19 +43,19 @@ describe('Collaboration WebSocket Service', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     collaborationService = new CollaborationWebSocketService()
-    
+
     mockUser = {
       id: 'user-123',
       username: 'testuser',
       firstName: 'Test',
-      lastName: 'User'
+      lastName: 'User',
     }
 
     // Mock UserManagementService
     jest.doMock('@/lib/user-management', () => ({
       UserManagementService: {
-        getUserById: jest.fn().mockResolvedValue(mockUser)
-      }
+        getUserById: jest.fn().mockResolvedValue(mockUser),
+      },
     }))
   })
 
@@ -80,7 +80,7 @@ describe('Collaboration WebSocket Service', () => {
         expect.objectContaining({
           clientId,
           userId: 'user-123',
-          username: 'testuser'
+          username: 'testuser',
         })
       )
     })
@@ -89,8 +89,8 @@ describe('Collaboration WebSocket Service', () => {
       // Mock getUserById to return null
       jest.doMock('@/lib/user-management', () => ({
         UserManagementService: {
-          getUserById: jest.fn().mockResolvedValue(null)
-        }
+          getUserById: jest.fn().mockResolvedValue(null),
+        },
       }))
 
       await expect(
@@ -113,7 +113,7 @@ describe('Collaboration WebSocket Service', () => {
         expect.objectContaining({
           clientId,
           userId: 'user-123',
-          username: 'testuser'
+          username: 'testuser',
         })
       )
     })
@@ -143,14 +143,14 @@ describe('Collaboration WebSocket Service', () => {
         payload: {
           userId: 'user-123',
           workspaceId: 'workspace-123',
-          timestamp: new Date()
+          timestamp: new Date(),
         },
         timestamp: new Date(),
-        userId: 'user-123'
+        userId: 'user-123',
       }
 
       const messageBuffer = Buffer.from(JSON.stringify(heartbeatMessage))
-      
+
       // Simulate message handling
       const handleMessage = jest.fn()
       mockWebSocket.on.mockImplementation((event, callback) => {
@@ -174,17 +174,17 @@ describe('Collaboration WebSocket Service', () => {
           workspaceId: 'workspace-123',
           resourceType: 'campaign',
           resourceId: 'campaign-123',
-          timestamp: new Date()
+          timestamp: new Date(),
         },
         timestamp: new Date(),
         userId: 'user-123',
-        workspaceId: 'workspace-123'
+        workspaceId: 'workspace-123',
       }
 
       mockDatabase.query.mockResolvedValue({ rows: [] })
 
       const messageBuffer = Buffer.from(JSON.stringify(collaborationEvent))
-      
+
       // This would be handled by the actual message handler
       // For testing, we'll verify the database interaction
       expect(mockDatabase.query).toBeDefined()
@@ -192,7 +192,7 @@ describe('Collaboration WebSocket Service', () => {
 
     it('should handle malformed message gracefully', async () => {
       const invalidMessage = Buffer.from('invalid json')
-      
+
       // Should not throw error, but should log it
       const handleMessage = jest.fn()
       mockWebSocket.on.mockImplementation((event, callback) => {
@@ -206,7 +206,10 @@ describe('Collaboration WebSocket Service', () => {
         try {
           JSON.parse(invalidMessage.toString())
         } catch (error) {
-          mockLogger.error('Collaboration WebSocket', 'Error parsing WebSocket message', { clientId, error })
+          mockLogger.error('Collaboration WebSocket', 'Error parsing WebSocket message', {
+            clientId,
+            error,
+          })
         }
       }).not.toThrow()
 
@@ -228,7 +231,7 @@ describe('Collaboration WebSocket Service', () => {
     it('should create resource lock successfully', () => {
       const lockKey = 'campaign:campaign-123'
       const workspaceId = 'workspace-123'
-      
+
       // Get workspace locks (should be empty initially)
       const initialLocks = collaborationService.getWorkspaceLocks(workspaceId)
       expect(initialLocks).toHaveLength(0)
@@ -254,7 +257,7 @@ describe('Collaboration WebSocket Service', () => {
   describe('Workspace Management', () => {
     it('should track workspace client count', async () => {
       const workspaceId = 'workspace-123'
-      
+
       // Initially no clients
       expect(collaborationService.getWorkspaceClientCount(workspaceId)).toBe(0)
 
@@ -271,7 +274,7 @@ describe('Collaboration WebSocket Service', () => {
 
     it('should broadcast messages to workspace clients', () => {
       const workspaceId = 'workspace-123'
-      
+
       // This would be tested through the actual broadcast mechanism
       // The service should send messages to all clients in a workspace
       expect(true).toBe(true) // Placeholder for actual implementation test
@@ -337,10 +340,7 @@ describe('Collaboration WebSocket Service', () => {
     it('should initialize heartbeat monitoring', () => {
       collaborationService.initialize()
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Collaboration WebSocket',
-        'Service initialized'
-      )
+      expect(mockLogger.info).toHaveBeenCalledWith('Collaboration WebSocket', 'Service initialized')
     })
 
     it('should detect and remove inactive clients', () => {
@@ -359,7 +359,7 @@ describe('Collaboration WebSocket Service', () => {
       )
 
       const error = new Error('WebSocket error')
-      
+
       // Simulate error handling
       expect(() => {
         mockLogger.error('Collaboration WebSocket', 'Client error', { clientId, error })
@@ -373,7 +373,11 @@ describe('Collaboration WebSocket Service', () => {
 
       // Database errors should be logged but not crash the service
       expect(() => {
-        mockLogger.error('Collaboration WebSocket', 'Error storing lock in database', expect.any(Error))
+        mockLogger.error(
+          'Collaboration WebSocket',
+          'Error storing lock in database',
+          expect.any(Error)
+        )
       }).not.toThrow()
     })
   })
@@ -382,19 +386,13 @@ describe('Collaboration WebSocket Service', () => {
     it('should initialize service correctly', () => {
       collaborationService.initialize()
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Collaboration WebSocket',
-        'Service initialized'
-      )
+      expect(mockLogger.info).toHaveBeenCalledWith('Collaboration WebSocket', 'Service initialized')
     })
 
     it('should shutdown service gracefully', () => {
       collaborationService.shutdown()
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Collaboration WebSocket',
-        'Service shutdown'
-      )
+      expect(mockLogger.info).toHaveBeenCalledWith('Collaboration WebSocket', 'Service shutdown')
     })
 
     it('should clean up resources on shutdown', async () => {

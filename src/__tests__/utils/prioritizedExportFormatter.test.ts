@@ -27,14 +27,14 @@ describe('PrioritizedExportFormatter', () => {
     additionalEmails: ['contact@test.com'],
     additionalPhones: ['5559876543'],
     confidence: 0.85,
-    sources: ['https://test.com', 'https://directory.com']
+    sources: ['https://test.com', 'https://directory.com'],
   }
 
   describe('formatForCSV', () => {
     it('should format records for CSV export with priority-based columns', () => {
       const records = [mockRecord]
       const csv = formatter.formatForCSV(records)
-      
+
       expect(csv).toContain('Email,Phone,Street Address,City,ZIP') // Priority headers first
       expect(csv).toContain('info@test.com,(555) 123-4567,123 Main St,Test City,12345')
     })
@@ -48,9 +48,9 @@ describe('PrioritizedExportFormatter', () => {
       const recordWithCommas: PrioritizedBusinessRecord = {
         ...mockRecord,
         businessName: 'Test, Company & Associates',
-        streetAddress: '123 Main St, Suite 100'
+        streetAddress: '123 Main St, Suite 100',
       }
-      
+
       const csv = formatter.formatForCSV([recordWithCommas])
       expect(csv).toContain('"Test, Company & Associates"')
       expect(csv).toContain('"123 Main St, Suite 100"')
@@ -61,7 +61,7 @@ describe('PrioritizedExportFormatter', () => {
     it('should format records for Excel export', () => {
       const records = [mockRecord]
       const excelData = formatter.formatForExcel(records)
-      
+
       expect(excelData).toHaveLength(2) // Header + 1 data row
       expect(excelData[0]).toHaveProperty('Email', 'Email') // Header row
       expect(excelData[1]).toHaveProperty('Email', 'info@test.com') // Data row
@@ -78,7 +78,7 @@ describe('PrioritizedExportFormatter', () => {
     it('should format records for JSON export with metadata', () => {
       const records = [mockRecord]
       const jsonData = formatter.formatForJSON(records)
-      
+
       expect(jsonData).toHaveProperty('metadata')
       expect(jsonData).toHaveProperty('records')
       expect(jsonData.metadata.totalRecords).toBe(1)
@@ -90,7 +90,7 @@ describe('PrioritizedExportFormatter', () => {
     it('should include column metadata', () => {
       const records = [mockRecord]
       const jsonData = formatter.formatForJSON(records)
-      
+
       expect(jsonData.metadata.columns).toBeDefined()
       expect(jsonData.metadata.columns[0]).toHaveProperty('key', 'email')
       expect(jsonData.metadata.columns[0]).toHaveProperty('header', 'Email')
@@ -107,7 +107,7 @@ describe('PrioritizedExportFormatter', () => {
     it('should include all industries as separate segments', () => {
       const context = {
         industries: ['Technology', 'Healthcare'],
-        totalRecords: 150
+        totalRecords: 150,
       }
 
       const filename = formatter.generateFilename(context)
@@ -117,7 +117,7 @@ describe('PrioritizedExportFormatter', () => {
     it('should include all industries without limiting', () => {
       const context = {
         industries: ['Technology', 'Healthcare', 'Finance', 'Education'],
-        totalRecords: 100
+        totalRecords: 100,
       }
 
       const filename = formatter.generateFilename(context)
@@ -127,7 +127,7 @@ describe('PrioritizedExportFormatter', () => {
     it('should sanitize industry names properly', () => {
       const context = {
         industries: ['Legal & Law Services', 'Medical/Health Care'],
-        totalRecords: 50
+        totalRecords: 50,
       }
 
       const filename = formatter.generateFilename(context)
@@ -137,11 +137,13 @@ describe('PrioritizedExportFormatter', () => {
     it('should handle custom industry names', () => {
       const context = {
         industries: ['My Custom Industry', 'Another Custom Business Type'],
-        totalRecords: 25
+        totalRecords: 25,
       }
 
       const filename = formatter.generateFilename(context)
-      expect(filename).toMatch(/^\d{4}-\d{2}-\d{2}_My-Custom-Industry_Another-Custom-Business-Type_25$/)
+      expect(filename).toMatch(
+        /^\d{4}-\d{2}-\d{2}_My-Custom-Industry_Another-Custom-Business-Type_25$/
+      )
     })
   })
 
@@ -155,12 +157,12 @@ describe('PrioritizedExportFormatter', () => {
           email: '',
           phone: '',
           contactName: '',
-          confidence: 0.6
-        }
+          confidence: 0.6,
+        },
       ]
-      
+
       const summary = formatter.generateExportSummary(records)
-      
+
       expect(summary.totalRecords).toBe(2)
       expect(summary.recordsWithEmail).toBe(1)
       expect(summary.recordsWithPhone).toBe(1)
@@ -172,7 +174,7 @@ describe('PrioritizedExportFormatter', () => {
 
     it('should handle empty records array', () => {
       const summary = formatter.generateExportSummary([])
-      
+
       expect(summary.totalRecords).toBe(0)
       expect(summary.recordsWithEmail).toBe(0)
       expect(summary.averageConfidence).toBe(0)
@@ -183,11 +185,11 @@ describe('PrioritizedExportFormatter', () => {
       const records = [
         { ...mockRecord, sources: ['https://source1.com'] },
         { ...mockRecord, id: '2', sources: ['https://source1.com', 'https://source2.com'] },
-        { ...mockRecord, id: '3', sources: ['https://source2.com'] }
+        { ...mockRecord, id: '3', sources: ['https://source2.com'] },
       ]
-      
+
       const summary = formatter.generateExportSummary(records)
-      
+
       expect(summary.topSources[0]).toBe('https://source1.com') // 2 occurrences
       expect(summary.topSources[1]).toBe('https://source2.com') // 2 occurrences
     })
@@ -218,7 +220,7 @@ describe('PrioritizedExportFormatter', () => {
       const csv = formatter.formatForCSV([mockRecord])
       const lines = csv.split('\n')
       const headers = lines[0].split(',')
-      
+
       // Check that priority fields come first
       expect(headers[0]).toBe('Email')
       expect(headers[1]).toBe('Phone')

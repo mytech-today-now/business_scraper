@@ -6,11 +6,11 @@
 /**
  * Performance rendering modes
  */
-export type PerformanceMode = 
-  | 'normal'        // Standard rendering for small datasets
-  | 'advisory'      // Show performance advisory banner
-  | 'pagination'    // Paginated view for medium datasets
-  | 'virtualized'   // Virtualized rendering for large datasets
+export type PerformanceMode =
+  | 'normal' // Standard rendering for small datasets
+  | 'advisory' // Show performance advisory banner
+  | 'pagination' // Paginated view for medium datasets
+  | 'virtualized' // Virtualized rendering for large datasets
 
 /**
  * Performance thresholds configuration

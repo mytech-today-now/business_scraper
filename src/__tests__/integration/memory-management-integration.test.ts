@@ -23,7 +23,7 @@ describe('Memory Management Integration Tests', () => {
   })
 
   describe('Monitor and Cleanup Integration', () => {
-    test('should trigger cleanup when memory thresholds are exceeded', (done) => {
+    test('should trigger cleanup when memory thresholds are exceeded', done => {
       let cleanupTriggered = false
 
       // Listen for cleanup events
@@ -44,10 +44,10 @@ describe('Memory Management Integration Tests', () => {
           used: 950000000,
           total: 1000000000,
           percentage: 95,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         },
         timestamp: Date.now(),
-        action: 'emergency-cleanup'
+        action: 'emergency-cleanup',
       })
     })
 
@@ -57,7 +57,7 @@ describe('Memory Management Integration Tests', () => {
         maxSessions: 1,
         maxAge: 1000, // 1 second
         maxSize: 1024, // 1KB
-        autoCleanup: true
+        autoCleanup: true,
       })
 
       // Start auto cleanup
@@ -98,10 +98,10 @@ describe('Memory Management Integration Tests', () => {
             used: 850000000,
             total: 1000000000,
             percentage: 85,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           },
           timestamp: Date.now(),
-          action: 'cleanup-suggested'
+          action: 'cleanup-suggested',
         })
       }
 
@@ -116,25 +116,27 @@ describe('Memory Management Integration Tests', () => {
 
   describe('Compression and Storage Integration', () => {
     test('should compress data before storage and decompress on retrieval', () => {
-      const mockBusinesses: BusinessRecord[] = Array(50).fill(null).map((_, i) => ({
-        id: `test-${i}`,
-        businessName: `Test Business ${i}`,
-        email: [`test${i}@example.com`],
-        phone: `555-010${i}`,
-        websiteUrl: `https://test${i}.com`,
-        address: {
-          street: `${i} Test St`,
-          city: 'Test City',
-          state: 'TS',
-          zipCode: '12345'
-        },
-        industry: 'Testing',
-        scrapedAt: new Date()
-      }))
+      const mockBusinesses: BusinessRecord[] = Array(50)
+        .fill(null)
+        .map((_, i) => ({
+          id: `test-${i}`,
+          businessName: `Test Business ${i}`,
+          email: [`test${i}@example.com`],
+          phone: `555-010${i}`,
+          websiteUrl: `https://test${i}.com`,
+          address: {
+            street: `${i} Test St`,
+            city: 'Test City',
+            state: 'TS',
+            zipCode: '12345',
+          },
+          industry: 'Testing',
+          scrapedAt: new Date(),
+        }))
 
       // Compress data
       const compressed = DataCompression.batchCompress(mockBusinesses)
-      
+
       // Verify compression occurred for large dataset
       const hasCompressed = compressed.some(item => DataCompression.isCompressed(item))
       if (hasCompressed) {
@@ -146,7 +148,7 @@ describe('Memory Management Integration Tests', () => {
       // Decompress and verify integrity
       const decompressed = DataCompression.batchDecompress(compressed)
       expect(decompressed).toHaveLength(mockBusinesses.length)
-      
+
       // Verify first and last items
       expect(decompressed[0].businessName).toBe('Test Business 0')
       expect(decompressed[49].businessName).toBe('Test Business 49')
@@ -161,7 +163,7 @@ describe('Memory Management Integration Tests', () => {
 
       // Small data likely won't be compressed
       expect(compressedSmall).toEqual(smallData)
-      
+
       // Large data should be compressed
       if (DataCompression.isCompressed(compressedLarge)) {
         const stats = DataCompression.getCompressionStats(compressedLarge)
@@ -182,7 +184,7 @@ describe('Memory Management Integration Tests', () => {
       monitor.on('monitoring-started', () => events.push('monitoring-started'))
       monitor.on('monitoring-stopped', () => events.push('monitoring-stopped'))
       monitor.on('memory-alert', () => events.push('memory-alert'))
-      
+
       cleanup.on('auto-cleanup-started', () => events.push('auto-cleanup-started'))
       cleanup.on('auto-cleanup-stopped', () => events.push('auto-cleanup-stopped'))
       cleanup.on('cleanup-completed', () => events.push('cleanup-completed'))
@@ -214,7 +216,7 @@ describe('Memory Management Integration Tests', () => {
       monitor.updateThresholds({
         warning: 60,
         critical: 75,
-        emergency: 90
+        emergency: 90,
       })
 
       // Set corresponding cleanup policy
@@ -222,7 +224,7 @@ describe('Memory Management Integration Tests', () => {
         maxSessions: 2,
         maxAge: 5000,
         maxSize: 10 * 1024 * 1024, // 10MB
-        autoCleanup: true
+        autoCleanup: true,
       })
 
       const thresholds = monitor.getThresholds()
@@ -242,7 +244,7 @@ describe('Memory Management Integration Tests', () => {
       let cleanupSuccess = false
 
       monitor.on('error', () => monitorErrors++)
-      cleanup.on('cleanup-completed', () => cleanupSuccess = true)
+      cleanup.on('cleanup-completed', () => (cleanupSuccess = true))
 
       // Start both services
       monitor.startMonitoring()
@@ -259,7 +261,7 @@ describe('Memory Management Integration Tests', () => {
       let monitorActive = false
       let cleanupErrors = 0
 
-      monitor.on('monitoring-started', () => monitorActive = true)
+      monitor.on('monitoring-started', () => (monitorActive = true))
       cleanup.on('error', () => cleanupErrors++)
 
       // Start monitoring
@@ -286,26 +288,28 @@ describe('Memory Management Integration Tests', () => {
         cleanup.performManualCleanup(),
         DataCompression.compress(Array(1000).fill('test')),
         DataCompression.compress(Array(1000).fill('test')),
-        monitor.forceGarbageCollection()
+        monitor.forceGarbageCollection(),
       ]
 
       await Promise.all(operations)
 
       const duration = Date.now() - startTime
-      
+
       // Should complete within reasonable time (5 seconds)
       expect(duration).toBeLessThan(5000)
     })
 
     test('should handle memory operations with large datasets efficiently', () => {
-      const largeDataset = Array(10000).fill(null).map((_, i) => ({
-        id: i,
-        data: 'x'.repeat(100),
-        nested: {
-          value: i,
-          array: Array(10).fill(i)
-        }
-      }))
+      const largeDataset = Array(10000)
+        .fill(null)
+        .map((_, i) => ({
+          id: i,
+          data: 'x'.repeat(100),
+          nested: {
+            value: i,
+            array: Array(10).fill(i),
+          },
+        }))
 
       const startTime = Date.now()
 

@@ -40,7 +40,7 @@ export interface BreadcrumbProps {
  * Breadcrumb separator component
  */
 const BreadcrumbSeparator: React.FC<{ children?: React.ReactNode }> = ({
-  children = <ChevronRight className="h-4 w-4" />
+  children = <ChevronRight className="h-4 w-4" />,
 }) => (
   <span
     className="flex items-center text-muted-foreground mx-2"
@@ -77,14 +77,12 @@ const BreadcrumbItemComponent: React.FC<{
     }
   }
 
-  const itemClasses = clsx(
-    'flex items-center gap-1.5 text-sm font-medium transition-colors',
-    {
-      'text-muted-foreground hover:text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-sm px-1 py-0.5': isClickable,
-      'text-foreground': isLast,
-      'text-muted-foreground': !isLast && !isClickable,
-    }
-  )
+  const itemClasses = clsx('flex items-center gap-1.5 text-sm font-medium transition-colors', {
+    'text-muted-foreground hover:text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-sm px-1 py-0.5':
+      isClickable,
+    'text-foreground': isLast,
+    'text-muted-foreground': !isLast && !isClickable,
+  })
 
   const content = (
     <>
@@ -109,10 +107,7 @@ const BreadcrumbItemComponent: React.FC<{
   }
 
   return (
-    <span 
-      className={itemClasses}
-      aria-current={isLast ? 'page' : undefined}
-    >
+    <span className={itemClasses} aria-current={isLast ? 'page' : undefined}>
       {content}
     </span>
   )
@@ -120,7 +115,7 @@ const BreadcrumbItemComponent: React.FC<{
 
 /**
  * Breadcrumb component with navigation support
- * 
+ *
  * Provides accessible breadcrumb navigation with support for:
  * - Custom icons and separators
  * - Click handlers for navigation
@@ -163,15 +158,15 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   }
 
   return (
-    <nav 
+    <nav
       aria-label="Breadcrumb navigation"
       className={clsx('flex items-center space-x-1', className)}
     >
       <ol className="flex items-center space-x-1">
         {displayItems.map((item, index) => {
           const isLast = index === displayItems.length - 1
-          const originalIndex = item.label.includes('...') 
-            ? -1 
+          const originalIndex = item.label.includes('...')
+            ? -1
             : items.findIndex(originalItem => originalItem.label === item.label)
 
           return (
@@ -183,11 +178,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 onItemClick={onItemClick}
                 showHomeIcon={showHomeIcon}
               />
-              {!isLast && (
-                <BreadcrumbSeparator>
-                  {separator}
-                </BreadcrumbSeparator>
-              )}
+              {!isLast && <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>}
             </li>
           )
         })}

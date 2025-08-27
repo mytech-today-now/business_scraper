@@ -107,33 +107,30 @@ export class QueryOptimizer {
    * @param industry - Optional industry context
    * @returns Optimized query with metadata
    */
-  async optimizeQuery(
-    query: string,
-    location: string,
-    industry?: string
-  ): Promise<OptimizedQuery> {
+  async optimizeQuery(query: string, location: string, industry?: string): Promise<OptimizedQuery> {
     const startTime = Date.now()
-    
+
     try {
       // Normalize and validate inputs
       const cleanQuery = this.cleanQuery(query)
       const normalizedLocation = await this.normalizeLocation(location)
-      
+
       // Generate synonyms
-      const synonyms = this.config.enableSynonymExpansion 
+      const synonyms = this.config.enableSynonymExpansion
         ? await this.generateSynonyms(cleanQuery, industry)
         : []
-      
+
       // Get industry-specific templates
-      const templates = this.config.enableIndustryTemplates && industry
-        ? this.generateIndustryTemplates(cleanQuery, industry)
-        : [cleanQuery]
-      
+      const templates =
+        this.config.enableIndustryTemplates && industry
+          ? this.generateIndustryTemplates(cleanQuery, industry)
+          : [cleanQuery]
+
       // Generate negative keywords
       const negativeKeywords = this.config.enableNegativeKeywords
         ? this.generateNegativeKeywords(cleanQuery, industry)
         : []
-      
+
       // Build optimized query
       const optimizedQuery = this.buildOptimizedQuery(
         cleanQuery,
@@ -141,7 +138,7 @@ export class QueryOptimizer {
         negativeKeywords,
         normalizedLocation.normalized
       )
-      
+
       // Calculate confidence score
       const confidence = this.calculateConfidence(
         cleanQuery,
@@ -149,14 +146,14 @@ export class QueryOptimizer {
         templates,
         normalizedLocation.confidence
       )
-      
+
       // Estimate result count
       const estimatedResults = this.estimateResultCount(
         optimizedQuery,
         normalizedLocation.normalized,
         industry
       )
-      
+
       const result: OptimizedQuery = {
         original: query,
         optimized: optimizedQuery,
@@ -169,18 +166,18 @@ export class QueryOptimizer {
         confidence,
         estimatedResults,
       }
-      
+
       const processingTime = Date.now() - startTime
       logger.info('QueryOptimizer', `Query optimized in ${processingTime}ms`, {
         original: query,
         optimized: optimizedQuery,
         confidence,
       })
-      
+
       return result
     } catch (error) {
       logger.error('QueryOptimizer', 'Query optimization failed', error)
-      
+
       // Return basic optimization as fallback
       return {
         original: query,
@@ -211,31 +208,28 @@ export class QueryOptimizer {
   ): Promise<OptimizedQuery[]> {
     const baseOptimization = await this.optimizeQuery(query, location, industry)
     const variations: OptimizedQuery[] = [baseOptimization]
-    
+
     // Generate template-based variations
     if (industry && this.searchTemplates.has(industry)) {
       const template = this.searchTemplates.get(industry)!
-      
+
       for (const templatePattern of template.templates.slice(0, this.config.maxTemplates)) {
         const variationQuery = templatePattern
           .replace('{query}', query)
           .replace('{location}', location)
-        
+
         if (variationQuery !== baseOptimization.optimized) {
           const variation = await this.optimizeQuery(variationQuery, location, industry)
           variations.push(variation)
         }
       }
     }
-    
+
     // Generate synonym-based variations
     for (const synonym of baseOptimization.synonyms.slice(0, 3)) {
       const firstWord = query.split(' ')[0]
       if (firstWord) {
-        const synonymQuery = query.replace(
-          new RegExp(firstWord, 'gi'),
-          synonym
-        )
+        const synonymQuery = query.replace(new RegExp(firstWord, 'gi'), synonym)
 
         if (synonymQuery !== query) {
           const variation = await this.optimizeQuery(synonymQuery, location, industry)
@@ -243,10 +237,10 @@ export class QueryOptimizer {
         }
       }
     }
-    
+
     // Sort by confidence score
     variations.sort((a, b) => b.confidence - a.confidence)
-    
+
     return variations.slice(0, this.config.maxTemplates)
   }
 
@@ -256,14 +250,14 @@ export class QueryOptimizer {
    */
   recordPerformance(metrics: QueryPerformance): void {
     if (!this.config.enableAnalytics) return
-    
+
     this.performanceMetrics.push(metrics)
-    
+
     // Keep only recent metrics (last 1000)
     if (this.performanceMetrics.length > 1000) {
       this.performanceMetrics = this.performanceMetrics.slice(-1000)
     }
-    
+
     logger.debug('QueryOptimizer', 'Performance metrics recorded', metrics)
   }
 
@@ -283,7 +277,7 @@ export class QueryOptimizer {
   } {
     const cutoffTime = new Date(Date.now() - timeframe * 60 * 60 * 1000)
     const recentMetrics = this.performanceMetrics.filter(m => m.timestamp >= cutoffTime)
-    
+
     if (recentMetrics.length === 0) {
       return {
         totalQueries: 0,
@@ -295,22 +289,28 @@ export class QueryOptimizer {
         providerPerformance: {},
       }
     }
-    
+
     const totalQueries = recentMetrics.length
     const averageSearchTime = recentMetrics.reduce((sum, m) => sum + m.searchTime, 0) / totalQueries
-    const averageResultCount = recentMetrics.reduce((sum, m) => sum + m.resultCount, 0) / totalQueries
-    const averageRelevanceScore = recentMetrics.reduce((sum, m) => sum + m.relevanceScore, 0) / totalQueries
-    
+    const averageResultCount =
+      recentMetrics.reduce((sum, m) => sum + m.resultCount, 0) / totalQueries
+    const averageRelevanceScore =
+      recentMetrics.reduce((sum, m) => sum + m.relevanceScore, 0) / totalQueries
+
     // Top performing queries (high relevance, good result count)
     const topPerformingQueries = [...recentMetrics]
-      .sort((a, b) => (b.relevanceScore * Math.log(b.resultCount + 1)) - (a.relevanceScore * Math.log(a.resultCount + 1)))
+      .sort(
+        (a, b) =>
+          b.relevanceScore * Math.log(b.resultCount + 1) -
+          a.relevanceScore * Math.log(a.resultCount + 1)
+      )
       .slice(0, 10)
-    
+
     // Slowest queries
     const slowestQueries = [...recentMetrics]
       .sort((a, b) => b.searchTime - a.searchTime)
       .slice(0, 10)
-    
+
     // Provider performance
     const providerPerformance: { [provider: string]: { count: number; avgTime: number } } = {}
     for (const metric of recentMetrics) {
@@ -323,7 +323,7 @@ export class QueryOptimizer {
         performance.avgTime += metric.searchTime
       }
     }
-    
+
     // Calculate averages
     for (const provider in providerPerformance) {
       const performance = providerPerformance[provider]
@@ -331,7 +331,7 @@ export class QueryOptimizer {
         performance.avgTime /= performance.count
       }
     }
-    
+
     return {
       totalQueries,
       averageSearchTime,
@@ -350,37 +350,33 @@ export class QueryOptimizer {
    * @param industry - Industry context
    * @returns Array of suggested queries
    */
-  getQuerySuggestions(
-    partialQuery: string,
-    location?: string,
-    industry?: string
-  ): string[] {
+  getQuerySuggestions(partialQuery: string, location?: string, industry?: string): string[] {
     const suggestions: string[] = []
     const queryLower = partialQuery.toLowerCase()
-    
+
     // Get suggestions from performance history
     const historicalQueries = this.performanceMetrics
       .filter(m => m.query.toLowerCase().includes(queryLower))
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 5)
       .map(m => m.query)
-    
+
     suggestions.push(...historicalQueries)
-    
+
     // Get suggestions from industry templates
     if (industry && this.searchTemplates.has(industry)) {
       const template = this.searchTemplates.get(industry)!
       const templateSuggestions = template.businessTypes
         .filter(type => type.toLowerCase().includes(queryLower))
         .slice(0, 3)
-      
+
       suggestions.push(...templateSuggestions)
     }
-    
+
     // Get synonym-based suggestions
     const synonyms = this.getSynonymsFromCache(partialQuery)
     suggestions.push(...synonyms.slice(0, 3))
-    
+
     // Remove duplicates and return
     return Array.from(new Set(suggestions)).slice(0, 10)
   }
@@ -620,14 +616,14 @@ export class QueryOptimizer {
 
     // General business synonyms
     const generalSynonyms: { [key: string]: string[] } = {
-      'business': ['company', 'firm', 'enterprise', 'organization'],
-      'service': ['services', 'solutions', 'support', 'assistance'],
-      'shop': ['store', 'retail', 'outlet', 'boutique'],
-      'office': ['location', 'branch', 'facility', 'center'],
-      'professional': ['expert', 'specialist', 'consultant', 'advisor'],
-      'local': ['nearby', 'area', 'regional', 'community'],
-      'best': ['top', 'leading', 'premier', 'quality'],
-      'cheap': ['affordable', 'budget', 'discount', 'low-cost'],
+      business: ['company', 'firm', 'enterprise', 'organization'],
+      service: ['services', 'solutions', 'support', 'assistance'],
+      shop: ['store', 'retail', 'outlet', 'boutique'],
+      office: ['location', 'branch', 'facility', 'center'],
+      professional: ['expert', 'specialist', 'consultant', 'advisor'],
+      local: ['nearby', 'area', 'regional', 'community'],
+      best: ['top', 'leading', 'premier', 'quality'],
+      cheap: ['affordable', 'budget', 'discount', 'low-cost'],
     }
 
     for (const term of queryTerms) {
@@ -680,11 +676,27 @@ export class QueryOptimizer {
 
     // General negative keywords
     const generalNegative = [
-      'jobs', 'careers', 'employment', 'hiring', 'apply',
-      'reviews', 'ratings', 'complaints', 'scam',
-      'wikipedia', 'wiki', 'definition', 'meaning',
-      'news', 'article', 'blog', 'forum',
-      'free', 'download', 'software', 'app',
+      'jobs',
+      'careers',
+      'employment',
+      'hiring',
+      'apply',
+      'reviews',
+      'ratings',
+      'complaints',
+      'scam',
+      'wikipedia',
+      'wiki',
+      'definition',
+      'meaning',
+      'news',
+      'article',
+      'blog',
+      'forum',
+      'free',
+      'download',
+      'software',
+      'app',
     ]
 
     negativeKeywords.push(...generalNegative)
@@ -767,11 +779,7 @@ export class QueryOptimizer {
    * @param industry - Industry context
    * @returns Estimated result count
    */
-  private estimateResultCount(
-    query: string,
-    location: string,
-    industry?: string
-  ): number {
+  private estimateResultCount(query: string, location: string, industry?: string): number {
     // Base estimate
     let estimate = 100
 
@@ -781,11 +789,11 @@ export class QueryOptimizer {
 
     // Adjust based on industry popularity
     const industryMultipliers: { [key: string]: number } = {
-      'restaurants': 1.5,
-      'retail': 1.3,
-      'healthcare': 1.2,
-      'professional': 1.0,
-      'construction': 0.8,
+      restaurants: 1.5,
+      retail: 1.3,
+      healthcare: 1.2,
+      professional: 1.0,
+      construction: 0.8,
     }
 
     if (industry && industryMultipliers[industry]) {
@@ -793,7 +801,8 @@ export class QueryOptimizer {
     }
 
     // Location factor (more populated areas have more businesses)
-    if (location.match(/\d{5}/)) { // ZIP code
+    if (location.match(/\d{5}/)) {
+      // ZIP code
       estimate *= 1.2
     }
 

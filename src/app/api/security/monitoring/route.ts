@@ -61,7 +61,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     logger.info('SecurityMonitoring', 'Dashboard accessed', {
       clientIP,
       timeWindow,
-      includeDetails
+      includeDetails,
     })
 
     // Get security metrics
@@ -96,12 +96,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         criticalAlerts: alertStats.alertsBySeverity.CRITICAL || 0,
         authenticationAttempts: authStats.totalAttempts,
         failedLogins: authStats.failedLogins,
-        blockedIPs: authStats.blockedIPs
+        blockedIPs: authStats.blockedIPs,
       },
       metrics: {
         security: securityMetrics,
         authentication: authStats,
-        alerts: alertStats
+        alerts: alertStats,
       },
       ...(includeDetails && {
         details: {
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             source: event.source,
             ip: event.ip,
             blocked: event.blocked,
-            riskScore: event.riskScore
+            riskScore: event.riskScore,
           })),
           recentAlerts: recentAlerts.map(alert => ({
             id: alert.id,
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             severity: alert.severity,
             title: alert.title,
             acknowledged: alert.acknowledged,
-            resolved: alert.resolved
+            resolved: alert.resolved,
           })),
           authPatterns: authPatterns.map(pattern => ({
             ip: pattern.ip,
@@ -130,24 +130,20 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             riskScore: pattern.riskScore,
             isBlocked: pattern.isBlocked,
             usernames: pattern.usernames.size,
-            userAgents: pattern.userAgents.size
-          }))
-        }
-      })
+            userAgents: pattern.userAgents.size,
+          })),
+        },
+      }),
     }
 
     return NextResponse.json(dashboardData)
-
   } catch (error) {
     logger.error('SecurityMonitoring', 'Dashboard error', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      clientIP: getClientIP(request)
+      clientIP: getClientIP(request),
     })
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -163,7 +159,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.info('SecurityMonitoring', 'Alert action requested', {
       clientIP,
       action,
-      alertId
+      alertId,
     })
 
     let result = false
@@ -182,31 +178,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         break
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
 
     if (result) {
       return NextResponse.json({ success: true })
     } else {
-      return NextResponse.json(
-        { error: 'Action failed' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Action failed' }, { status: 400 })
     }
-
   } catch (error) {
     logger.error('SecurityMonitoring', 'Alert action error', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      clientIP: getClientIP(request)
+      clientIP: getClientIP(request),
     })
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -232,7 +218,7 @@ function calculateSecurityScore(
     factors.push({
       factor: 'High Risk Events',
       impact,
-      description: `Average risk score is ${securityMetrics.averageRiskScore}/10`
+      description: `Average risk score is ${securityMetrics.averageRiskScore}/10`,
     })
   } else if (securityMetrics.averageRiskScore > 5) {
     const impact = -10
@@ -240,14 +226,15 @@ function calculateSecurityScore(
     factors.push({
       factor: 'Medium Risk Events',
       impact,
-      description: `Average risk score is ${securityMetrics.averageRiskScore}/10`
+      description: `Average risk score is ${securityMetrics.averageRiskScore}/10`,
     })
   }
 
   // Factor 2: Blocked events ratio
-  const blockedRatio = securityMetrics.totalEvents > 0 
-    ? securityMetrics.blockedEvents / securityMetrics.totalEvents 
-    : 0
+  const blockedRatio =
+    securityMetrics.totalEvents > 0
+      ? securityMetrics.blockedEvents / securityMetrics.totalEvents
+      : 0
 
   if (blockedRatio > 0.1) {
     const impact = -15
@@ -255,14 +242,13 @@ function calculateSecurityScore(
     factors.push({
       factor: 'High Block Rate',
       impact,
-      description: `${(blockedRatio * 100).toFixed(1)}% of events were blocked`
+      description: `${(blockedRatio * 100).toFixed(1)}% of events were blocked`,
     })
   }
 
   // Factor 3: Failed login ratio
-  const failedLoginRatio = authStats.totalAttempts > 0 
-    ? authStats.failedLogins / authStats.totalAttempts 
-    : 0
+  const failedLoginRatio =
+    authStats.totalAttempts > 0 ? authStats.failedLogins / authStats.totalAttempts : 0
 
   if (failedLoginRatio > 0.5) {
     const impact = -15
@@ -270,7 +256,7 @@ function calculateSecurityScore(
     factors.push({
       factor: 'High Failed Login Rate',
       impact,
-      description: `${(failedLoginRatio * 100).toFixed(1)}% of login attempts failed`
+      description: `${(failedLoginRatio * 100).toFixed(1)}% of login attempts failed`,
     })
   }
 
@@ -282,7 +268,7 @@ function calculateSecurityScore(
     factors.push({
       factor: 'Critical Alerts',
       impact,
-      description: `${criticalAlerts} critical security alerts`
+      description: `${criticalAlerts} critical security alerts`,
     })
   }
 
@@ -293,7 +279,7 @@ function calculateSecurityScore(
     factors.push({
       factor: 'Many Blocked IPs',
       impact,
-      description: `${authStats.blockedIPs} IP addresses are currently blocked`
+      description: `${authStats.blockedIPs} IP addresses are currently blocked`,
     })
   }
 
@@ -304,7 +290,7 @@ function calculateSecurityScore(
     factors.push({
       factor: 'Suspicious Activity',
       impact,
-      description: `${authStats.suspiciousPatterns} suspicious authentication patterns detected`
+      description: `${authStats.suspiciousPatterns} suspicious authentication patterns detected`,
     })
   }
 

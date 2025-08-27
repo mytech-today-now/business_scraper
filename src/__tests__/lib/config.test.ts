@@ -11,7 +11,7 @@ const mockEnv = {
   NEXT_PUBLIC_APP_VERSION: '1.0.0-test',
   NEXT_PUBLIC_DEBUG: 'false',
   PORT: '3001',
-  
+
   // Database
   DB_HOST: 'localhost',
   DB_PORT: '5432',
@@ -19,7 +19,7 @@ const mockEnv = {
   DB_USER: 'test_user',
   DB_PASSWORD: 'test_pass',
   DB_SSL: 'false',
-  
+
   // Security
   ENABLE_AUTH: 'false',
   SESSION_TIMEOUT: '1800000',
@@ -30,30 +30,30 @@ const mockEnv = {
   SCRAPING_RATE_LIMIT: '100',
   ADMIN_USERNAME: 'testuser',
   ADMIN_PASSWORD: 'testpass',
-  
+
   // Scraping
   SCRAPING_TIMEOUT: '5000',
   SCRAPING_MAX_RETRIES: '1',
   SCRAPING_DELAY_MS: '100',
   SEARCH_ENGINE_TIMEOUT: '5000',
   MAX_SEARCH_RESULTS: '10',
-  
+
   // Cache
   CACHE_TYPE: 'memory',
   CACHE_MAX_SIZE: '100',
   CACHE_TTL: '60000',
-  
+
   // Logging
   LOG_LEVEL: 'warn',
   LOG_FORMAT: 'text',
   LOG_ENABLE_CONSOLE: 'false',
   LOG_ENABLE_FILE: 'false',
-  
+
   // Features
   FEATURE_ENABLE_CACHING: 'false',
   FEATURE_ENABLE_RATE_LIMITING: 'false',
   FEATURE_ENABLE_METRICS: 'false',
-  FEATURE_ENABLE_EXPERIMENTAL: 'true'
+  FEATURE_ENABLE_EXPERIMENTAL: 'true',
 }
 
 describe('Configuration Management', () => {
@@ -62,17 +62,28 @@ describe('Configuration Management', () => {
   beforeEach(() => {
     // Save original environment
     originalEnv = { ...process.env }
-    
+
     // Clear environment
     Object.keys(process.env).forEach(key => {
-      if (key.startsWith('DB_') || key.startsWith('ENABLE_') || key.startsWith('LOG_') || 
-          key.startsWith('CACHE_') || key.startsWith('FEATURE_') || key.startsWith('SCRAPING_') ||
-          key.startsWith('RATE_') || key.startsWith('SESSION_') || key.startsWith('MAX_') ||
-          key.startsWith('ADMIN_') || key.startsWith('NEXT_PUBLIC_') || key === 'NODE_ENV' || key === 'PORT') {
+      if (
+        key.startsWith('DB_') ||
+        key.startsWith('ENABLE_') ||
+        key.startsWith('LOG_') ||
+        key.startsWith('CACHE_') ||
+        key.startsWith('FEATURE_') ||
+        key.startsWith('SCRAPING_') ||
+        key.startsWith('RATE_') ||
+        key.startsWith('SESSION_') ||
+        key.startsWith('MAX_') ||
+        key.startsWith('ADMIN_') ||
+        key.startsWith('NEXT_PUBLIC_') ||
+        key === 'NODE_ENV' ||
+        key === 'PORT'
+      ) {
         delete process.env[key]
       }
     })
-    
+
     // Set test environment
     Object.assign(process.env, mockEnv)
   })
@@ -85,7 +96,7 @@ describe('Configuration Management', () => {
   describe('loadConfig', () => {
     it('should load configuration from environment variables', () => {
       const config = loadConfig()
-      
+
       expect(config.app.name).toBe('Test App')
       expect(config.app.version).toBe('1.0.0-test')
       expect(config.app.environment).toBe('test')
@@ -95,7 +106,7 @@ describe('Configuration Management', () => {
 
     it('should load database configuration', () => {
       const config = loadConfig()
-      
+
       expect(config.database.host).toBe('localhost')
       expect(config.database.port).toBe(5432)
       expect(config.database.name).toBe('test_db')
@@ -106,7 +117,7 @@ describe('Configuration Management', () => {
 
     it('should load security configuration', () => {
       const config = loadConfig()
-      
+
       expect(config.security.enableAuth).toBe(false)
       expect(config.security.sessionTimeout).toBe(1800000)
       expect(config.security.maxLoginAttempts).toBe(10)
@@ -116,7 +127,7 @@ describe('Configuration Management', () => {
 
     it('should load feature flags', () => {
       const config = loadConfig()
-      
+
       expect(config.features.enableAuth).toBe(false)
       expect(config.features.enableCaching).toBe(false)
       expect(config.features.enableRateLimiting).toBe(false)
@@ -127,9 +138,9 @@ describe('Configuration Management', () => {
       // Remove some environment variables
       delete process.env.SCRAPING_TIMEOUT
       delete process.env.CACHE_MAX_SIZE
-      
+
       const config = loadConfig()
-      
+
       expect(config.scraping.timeout).toBe(30000) // Default value
       expect(config.cache.memory.maxSize).toBe(1000) // Default value
     })
@@ -139,7 +150,7 @@ describe('Configuration Management', () => {
       const originalEnv = process.env.NODE_ENV
       Object.defineProperty(process.env, 'NODE_ENV', {
         value: 'invalid_environment',
-        configurable: true
+        configurable: true,
       })
 
       try {
@@ -147,7 +158,7 @@ describe('Configuration Management', () => {
       } finally {
         Object.defineProperty(process.env, 'NODE_ENV', {
           value: originalEnv,
-          configurable: true
+          configurable: true,
         })
       }
     })
@@ -178,7 +189,7 @@ describe('Configuration Management', () => {
       const originalEnv = process.env.NODE_ENV
       Object.defineProperty(process.env, 'NODE_ENV', {
         value: 'invalid',
-        configurable: true
+        configurable: true,
       })
 
       try {
@@ -186,7 +197,7 @@ describe('Configuration Management', () => {
       } finally {
         Object.defineProperty(process.env, 'NODE_ENV', {
           value: originalEnv,
-          configurable: true
+          configurable: true,
         })
       }
     })
@@ -206,7 +217,7 @@ describe('Configuration Management', () => {
 
     it('should handle invalid DATABASE_URL', () => {
       process.env.DATABASE_URL = 'invalid-url'
-      
+
       expect(() => loadConfig()).toThrow(/Configuration validation failed/)
     })
   })
@@ -215,7 +226,7 @@ describe('Configuration Management', () => {
     beforeEach(() => {
       Object.defineProperty(process.env, 'NODE_ENV', {
         value: 'production',
-        configurable: true
+        configurable: true,
       })
       process.env.ENABLE_AUTH = 'true'
     })
@@ -225,7 +236,7 @@ describe('Configuration Management', () => {
       process.env.ADMIN_PASSWORD = 'plaintext'
       delete process.env.ADMIN_PASSWORD_HASH
       delete process.env.ADMIN_PASSWORD_SALT
-      
+
       const config = loadConfig()
       // Should load but with warnings (warnings are logged, not thrown)
       expect(config.security.adminPassword).toBe('plaintext')
@@ -235,7 +246,7 @@ describe('Configuration Management', () => {
       delete process.env.ADMIN_PASSWORD
       process.env.ADMIN_PASSWORD_HASH = 'hashed_password'
       process.env.ADMIN_PASSWORD_SALT = 'salt_value'
-      
+
       const config = loadConfig()
       expect(config.security.adminPasswordHash).toBe('hashed_password')
       expect(config.security.adminPasswordSalt).toBe('salt_value')
@@ -247,9 +258,9 @@ describe('Configuration Management', () => {
       process.env.CACHE_TYPE = 'memory'
       process.env.CACHE_MAX_SIZE = '500'
       process.env.CACHE_TTL = '120000'
-      
+
       const config = loadConfig()
-      
+
       expect(config.cache.type).toBe('memory')
       expect(config.cache.memory.maxSize).toBe(500)
       expect(config.cache.memory.ttl).toBe(120000)
@@ -262,9 +273,9 @@ describe('Configuration Management', () => {
       process.env.REDIS_PASSWORD = 'redis-pass'
       process.env.REDIS_DB = '1'
       process.env.REDIS_KEY_PREFIX = 'test:'
-      
+
       const config = loadConfig()
-      
+
       expect(config.cache.type).toBe('redis')
       expect(config.cache.redis?.host).toBe('redis-server')
       expect(config.cache.redis?.port).toBe(6380)
@@ -285,18 +296,18 @@ describe('Configuration Management', () => {
     it('should return cached configuration', () => {
       const config1 = getConfig()
       const config2 = getConfig()
-      
+
       expect(config1).toBe(config2) // Same instance
     })
 
     it('should reload configuration when requested', () => {
       const config1 = getConfig()
-      
+
       // Change environment
       process.env.NEXT_PUBLIC_APP_NAME = 'Updated App'
-      
+
       const config2 = reloadConfig()
-      
+
       expect(config1).not.toBe(config2) // Different instances
       expect(config2.app.name).toBe('Updated App')
     })

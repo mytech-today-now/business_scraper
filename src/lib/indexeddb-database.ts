@@ -44,7 +44,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
   // Campaign operations
   async createCampaign(campaign: any): Promise<string> {
     await this.ensureInitialized()
-    
+
     const campaignData = {
       id: campaign.id || crypto.randomUUID(),
       name: campaign.name,
@@ -72,7 +72,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
     }
 
     await storage.saveConfig(config)
-    
+
     // Also save campaign metadata in a session-like structure
     await storage.saveSession({
       id: `campaign_${campaignData.id}`,
@@ -120,7 +120,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
 
   async updateCampaign(id: string, updates: any): Promise<void> {
     await this.ensureInitialized()
-    
+
     const existing = await this.getCampaign(id)
     if (!existing) {
       throw new Error(`Campaign ${id} not found`)
@@ -152,7 +152,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
 
   async deleteCampaign(id: string): Promise<void> {
     await this.ensureInitialized()
-    
+
     // Delete associated businesses
     const businesses = await this.listBusinesses(id)
     for (const business of businesses) {
@@ -168,7 +168,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
 
   async listCampaigns(_filters?: any): Promise<any[]> {
     await this.ensureInitialized()
-    
+
     try {
       const configs = await storage.getAllConfigs()
       const campaigns = []
@@ -204,7 +204,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
   // Business operations
   async createBusiness(business: any): Promise<string> {
     await this.ensureInitialized()
-    
+
     const businessRecord: BusinessRecord = {
       id: business.id || crypto.randomUUID(),
       businessName: business.name,
@@ -230,7 +230,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
 
   async updateBusiness(id: string, updates: any): Promise<void> {
     await this.ensureInitialized()
-    
+
     const existing = await storage.getBusiness(id)
     if (!existing) {
       throw new Error(`Business ${id} not found`)
@@ -254,16 +254,16 @@ export class IndexedDBDatabase implements DatabaseInterface {
 
   async listBusinesses(_campaignId?: string, _filters?: any): Promise<any[]> {
     await this.ensureInitialized()
-    
+
     const businesses = await storage.getAllBusinesses()
-    
+
     // Apply filters if provided
     let filtered = businesses
-    
+
     if (filters?.industry) {
       filtered = filtered.filter(b => b.industry === filters.industry)
     }
-    
+
     if (filters?.minConfidenceScore) {
       // IndexedDB doesn't have confidence score, so we'll skip this filter
     }
@@ -274,7 +274,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
   // Scraping session operations (using existing session structure)
   async createSession(session: any): Promise<string> {
     await this.ensureInitialized()
-    
+
     const sessionData = {
       id: session.id || crypto.randomUUID(),
       name: session.name || 'Scraping Session',
@@ -322,12 +322,12 @@ export class IndexedDBDatabase implements DatabaseInterface {
 
   async listSessions(_campaignId?: string, _filters?: any): Promise<any[]> {
     await this.ensureInitialized()
-    
+
     const sessions = await storage.getAllSessions()
-    
+
     // Filter out campaign sessions if needed
     const filtered = sessions.filter(s => !s.id.startsWith('campaign_'))
-    
+
     if (campaignId) {
       // For now, return all sessions since we don't have campaign association
       // In a real implementation, you'd filter by campaign_id
@@ -339,7 +339,7 @@ export class IndexedDBDatabase implements DatabaseInterface {
   // Settings operations (using app_settings equivalent)
   async getSetting(key: string): Promise<any | null> {
     await this.ensureInitialized()
-    
+
     // For IndexedDB, we'll store settings as special configs
     try {
       const config = await storage.getConfig(`setting_${key}`)

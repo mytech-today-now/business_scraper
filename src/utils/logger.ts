@@ -111,12 +111,11 @@ export class Logger {
       // Create write stream
       this.fileWriteStream = fs.createWriteStream(this.config.filePath, { flags: 'a' })
 
-      this.fileWriteStream.on('error', (error) => {
+      this.fileWriteStream.on('error', error => {
         console.error('Logger: File write error:', error)
         this.config.enableFile = false
         this.fileWriteStream = null
       })
-
     } catch (error) {
       console.error('Logger: Failed to initialize file logging:', error)
       this.config.enableFile = false
@@ -161,7 +160,13 @@ export class Logger {
    */
   error(component: string, message: string, error?: Error | unknown): void {
     const isError = error instanceof Error
-    this.log(LogLevel.ERROR, component, message, isError ? undefined : error, isError ? error : undefined)
+    this.log(
+      LogLevel.ERROR,
+      component,
+      message,
+      isError ? undefined : error,
+      isError ? error : undefined
+    )
   }
 
   /**
@@ -172,7 +177,13 @@ export class Logger {
    * @param data - Additional data
    * @param error - Error object
    */
-  private log(level: LogLevel, component: string, message: string, data?: unknown, error?: Error): void {
+  private log(
+    level: LogLevel,
+    component: string,
+    message: string,
+    data?: unknown,
+    error?: Error
+  ): void {
     // Check if log level meets threshold
     if (level < this.config.level) {
       return
@@ -267,12 +278,12 @@ export class Logger {
         error: {
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name
-        }
+          name: entry.error.name,
+        },
       }),
       ...(entry.pid && { pid: entry.pid }),
       ...(entry.hostname && { hostname: entry.hostname }),
-      ...(entry.requestId && { requestId: entry.requestId })
+      ...(entry.requestId && { requestId: entry.requestId }),
     }
 
     const jsonString = JSON.stringify(jsonEntry)
@@ -329,12 +340,12 @@ export class Logger {
             error: {
               message: entry.error.message,
               stack: entry.error.stack,
-              name: entry.error.name
-            }
+              name: entry.error.name,
+            },
           }),
           ...(entry.pid && { pid: entry.pid }),
           ...(entry.hostname && { hostname: entry.hostname }),
-          ...(entry.requestId && { requestId: entry.requestId })
+          ...(entry.requestId && { requestId: entry.requestId }),
         }
         logLine = JSON.stringify(jsonEntry) + '\n'
       } else {
@@ -364,7 +375,6 @@ export class Logger {
       if (this.currentFileSize >= this.config.maxFileSize) {
         this.rotateLogFile()
       }
-
     } catch (error) {
       console.error('Logger: Failed to write to log file:', error)
     }
@@ -411,12 +421,11 @@ export class Logger {
       this.currentFileSize = 0
       this.fileWriteStream = fs.createWriteStream(this.config.filePath, { flags: 'a' })
 
-      this.fileWriteStream.on('error', (error) => {
+      this.fileWriteStream.on('error', error => {
         console.error('Logger: File write error after rotation:', error)
         this.config.enableFile = false
         this.fileWriteStream = null
       })
-
     } catch (error) {
       console.error('Logger: Failed to rotate log file:', error)
     } finally {
@@ -438,7 +447,7 @@ export class Logger {
     }
 
     if (component) {
-      filteredLogs = filteredLogs.filter(log => 
+      filteredLogs = filteredLogs.filter(log =>
         log.component.toLowerCase().includes(component.toLowerCase())
       )
     }
@@ -471,24 +480,24 @@ export class Logger {
    */
   exportLogs(level?: LogLevel, component?: string): string {
     const logs = this.getLogs(level, component)
-    
+
     return logs
       .map(entry => {
         const timestamp = this.config.formatTimestamp(entry.timestamp)
         const levelName = LogLevel[entry.level]
         let line = `[${timestamp}] <${entry.component}> ${levelName}: ${entry.message}`
-        
+
         if (entry.data) {
           line += ` | Data: ${JSON.stringify(entry.data)}`
         }
-        
+
         if (entry.error) {
           line += ` | Error: ${entry.error.message}`
           if (entry.error.stack) {
             line += `\nStack: ${entry.error.stack}`
           }
         }
-        
+
         return line
       })
       .join('\n')
@@ -556,7 +565,7 @@ export class Logger {
    */
   async close(): Promise<void> {
     if (this.fileWriteStream) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.fileWriteStream!.end(() => {
           this.fileWriteStream = null
           resolve()
@@ -580,14 +589,13 @@ export class Logger {
         enableFile: loggingConfig.enableFile,
         filePath: loggingConfig.filePath,
         maxFileSize: loggingConfig.maxFileSize,
-        maxFiles: loggingConfig.maxFiles
+        maxFiles: loggingConfig.maxFiles,
       })
 
       // Initialize file logging if it wasn't already initialized
       if (loggingConfig.enableFile && loggingConfig.filePath && !this.fileWriteStream) {
         this.initializeFileLogging()
       }
-
     } catch (error) {
       // Fallback to environment variables
       const envLogLevel = process.env.LOG_LEVEL?.toLowerCase()
@@ -615,11 +623,16 @@ export class Logger {
    */
   private mapStringToLogLevel(level: string): LogLevel {
     switch (level.toLowerCase()) {
-      case 'debug': return LogLevel.DEBUG
-      case 'info': return LogLevel.INFO
-      case 'warn': return LogLevel.WARN
-      case 'error': return LogLevel.ERROR
-      default: return LogLevel.INFO
+      case 'debug':
+        return LogLevel.DEBUG
+      case 'info':
+        return LogLevel.INFO
+      case 'warn':
+        return LogLevel.WARN
+      case 'error':
+        return LogLevel.ERROR
+      default:
+        return LogLevel.INFO
     }
   }
 }

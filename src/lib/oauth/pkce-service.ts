@@ -23,7 +23,7 @@ export class PKCEService {
    * Generate a cryptographically secure code verifier
    */
   generateCodeVerifier(): string {
-    const buffer = crypto.randomBytes(Math.ceil(pkceConfig.codeVerifierLength * 3 / 4))
+    const buffer = crypto.randomBytes(Math.ceil((pkceConfig.codeVerifierLength * 3) / 4))
     return buffer
       .toString('base64')
       .replace(/\+/g, '-')
@@ -104,7 +104,7 @@ export class PKCEService {
     expirationMinutes: number = 10
   ): void {
     const expiresAt = new Date(Date.now() + expirationMinutes * 60 * 1000)
-    
+
     this.challenges.set(authorizationCode, {
       challenge,
       expiresAt,
@@ -118,7 +118,7 @@ export class PKCEService {
    */
   retrievePKCEChallenge(authorizationCode: string): PKCEChallenge | null {
     const stored = this.challenges.get(authorizationCode)
-    
+
     if (!stored) {
       logger.warn('PKCEService', 'PKCE challenge not found for authorization code')
       return null
@@ -133,7 +133,7 @@ export class PKCEService {
 
     // Remove challenge (one-time use)
     this.challenges.delete(authorizationCode)
-    
+
     logger.debug('PKCEService', 'Retrieved PKCE challenge for authorization code')
     return stored.challenge
   }
@@ -157,7 +157,10 @@ export class PKCEService {
     // If PKCE is provided, validate parameters
     if (codeChallenge) {
       // Validate code challenge method
-      if (codeChallengeMethod && !pkceConfig.supportedMethods.includes(codeChallengeMethod as any)) {
+      if (
+        codeChallengeMethod &&
+        !pkceConfig.supportedMethods.includes(codeChallengeMethod as any)
+      ) {
         return {
           valid: false,
           error: `Unsupported code_challenge_method: ${codeChallengeMethod}`,
@@ -277,7 +280,7 @@ export class PKCEService {
   ): { valid: boolean; error?: string } {
     // Retrieve stored challenge
     const storedChallenge = this.retrievePKCEChallenge(authorizationCode)
-    
+
     if (!storedChallenge) {
       return {
         valid: false,

@@ -3,16 +3,16 @@
  * Provides comprehensive permission checking and role management
  */
 
-import { 
-  Permission, 
-  RoleName, 
-  User, 
-  Role, 
-  UserRole, 
-  WorkspaceRole, 
+import {
+  Permission,
+  RoleName,
+  User,
+  Role,
+  UserRole,
+  WorkspaceRole,
   TeamRole,
   WorkspaceMembership,
-  TeamMembership 
+  TeamMembership,
 } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
 
@@ -21,14 +21,14 @@ const PERMISSION_HIERARCHY: Record<Permission, Permission[]> = {
   // System permissions
   'system.manage': ['system.view', 'users.manage', 'teams.manage', 'workspaces.manage'],
   'system.view': [],
-  
+
   // User management permissions
   'users.manage': ['users.view', 'users.edit', 'users.delete', 'users.invite'],
   'users.invite': ['users.view'],
   'users.view': [],
   'users.edit': ['users.view'],
   'users.delete': ['users.view'],
-  
+
   // Team management permissions
   'teams.manage': ['teams.create', 'teams.edit', 'teams.delete', 'teams.view', 'teams.invite'],
   'teams.create': ['teams.view'],
@@ -36,47 +36,66 @@ const PERMISSION_HIERARCHY: Record<Permission, Permission[]> = {
   'teams.delete': ['teams.view'],
   'teams.view': [],
   'teams.invite': ['teams.view'],
-  
+
   // Workspace management permissions
-  'workspaces.manage': ['workspaces.create', 'workspaces.edit', 'workspaces.delete', 'workspaces.view', 'workspaces.invite'],
+  'workspaces.manage': [
+    'workspaces.create',
+    'workspaces.edit',
+    'workspaces.delete',
+    'workspaces.view',
+    'workspaces.invite',
+  ],
   'workspaces.create': ['workspaces.view'],
   'workspaces.edit': ['workspaces.view'],
   'workspaces.delete': ['workspaces.view'],
   'workspaces.view': [],
   'workspaces.invite': ['workspaces.view'],
-  
+
   // Campaign management permissions
-  'campaigns.manage': ['campaigns.create', 'campaigns.edit', 'campaigns.delete', 'campaigns.view', 'campaigns.run'],
+  'campaigns.manage': [
+    'campaigns.create',
+    'campaigns.edit',
+    'campaigns.delete',
+    'campaigns.view',
+    'campaigns.run',
+  ],
   'campaigns.create': ['campaigns.view'],
   'campaigns.edit': ['campaigns.view'],
   'campaigns.delete': ['campaigns.view'],
   'campaigns.view': [],
   'campaigns.run': ['campaigns.view'],
-  
+
   // Data management permissions
-  'data.manage': ['data.view', 'data.edit', 'data.delete', 'data.validate', 'data.enrich', 'data.export'],
+  'data.manage': [
+    'data.view',
+    'data.edit',
+    'data.delete',
+    'data.validate',
+    'data.enrich',
+    'data.export',
+  ],
   'data.view': [],
   'data.edit': ['data.view'],
   'data.delete': ['data.view'],
   'data.validate': ['data.view'],
   'data.enrich': ['data.view'],
   'data.export': ['data.view'],
-  
+
   // Scraping permissions
   'scraping.manage': ['scraping.run', 'scraping.view'],
   'scraping.run': ['scraping.view'],
   'scraping.view': [],
-  
+
   // Analytics permissions
   'analytics.manage': ['analytics.view', 'reports.create', 'reports.view', 'reports.export'],
   'analytics.view': [],
   'reports.create': ['reports.view'],
   'reports.view': [],
   'reports.export': ['reports.view'],
-  
+
   // Audit permissions
   'audit.manage': ['audit.view'],
-  'audit.view': []
+  'audit.view': [],
 }
 
 // Default role permissions
@@ -90,7 +109,7 @@ const DEFAULT_ROLE_PERMISSIONS: Record<RoleName, Permission[]> = {
     'data.manage',
     'scraping.manage',
     'analytics.manage',
-    'audit.manage'
+    'audit.manage',
   ],
   manager: [
     'teams.manage',
@@ -99,7 +118,7 @@ const DEFAULT_ROLE_PERMISSIONS: Record<RoleName, Permission[]> = {
     'data.manage',
     'analytics.view',
     'users.invite',
-    'scraping.run'
+    'scraping.run',
   ],
   analyst: [
     'campaigns.view',
@@ -107,7 +126,7 @@ const DEFAULT_ROLE_PERMISSIONS: Record<RoleName, Permission[]> = {
     'analytics.view',
     'reports.create',
     'data.export',
-    'scraping.view'
+    'scraping.view',
   ],
   contributor: [
     'campaigns.create',
@@ -116,13 +135,9 @@ const DEFAULT_ROLE_PERMISSIONS: Record<RoleName, Permission[]> = {
     'data.enrich',
     'scraping.run',
     'campaigns.view',
-    'data.view'
-  ],
-  viewer: [
-    'campaigns.view',
     'data.view',
-    'reports.view'
-  ]
+  ],
+  viewer: ['campaigns.view', 'data.view', 'reports.view'],
 }
 
 /**
@@ -144,20 +159,20 @@ export class RBACService {
     try {
       // Get all user permissions from roles and workspace memberships
       const userPermissions = this.getUserPermissions(user, context)
-      
+
       // Check direct permission
       if (userPermissions.includes(permission)) {
         return true
       }
-      
+
       // Check inherited permissions through hierarchy
       return this.hasInheritedPermission(userPermissions, permission)
     } catch (error) {
-      logger.error('RBAC', 'Error checking permission', { 
-        userId: user.id, 
-        permission, 
+      logger.error('RBAC', 'Error checking permission', {
+        userId: user.id,
+        permission,
         context,
-        error 
+        error,
       })
       return false
     }
@@ -175,9 +190,7 @@ export class RBACService {
       resourceId?: string
     }
   ): boolean {
-    return permissions.some(permission => 
-      this.hasPermission(user, permission, context)
-    )
+    return permissions.some(permission => this.hasPermission(user, permission, context))
   }
 
   /**
@@ -192,9 +205,7 @@ export class RBACService {
       resourceId?: string
     }
   ): boolean {
-    return permissions.every(permission => 
-      this.hasPermission(user, permission, context)
-    )
+    return permissions.every(permission => this.hasPermission(user, permission, context))
   }
 
   /**
@@ -229,7 +240,7 @@ export class RBACService {
         workspaceMembership.permissions.forEach(permission => {
           permissions.add(permission)
         })
-        
+
         // Add role-based permissions for workspace
         const rolePermissions = this.getWorkspaceRolePermissions(workspaceMembership.role)
         rolePermissions.forEach(permission => {
@@ -280,7 +291,7 @@ export class RBACService {
           'data.manage',
           'scraping.manage',
           'analytics.view',
-          'users.invite'
+          'users.invite',
         ]
       case 'manager':
         return [
@@ -288,30 +299,20 @@ export class RBACService {
           'data.manage',
           'scraping.run',
           'analytics.view',
-          'workspaces.view'
+          'workspaces.view',
         ]
       case 'analyst':
-        return [
-          'campaigns.view',
-          'data.view',
-          'analytics.view',
-          'reports.create',
-          'data.export'
-        ]
+        return ['campaigns.view', 'data.view', 'analytics.view', 'reports.create', 'data.export']
       case 'contributor':
         return [
           'campaigns.create',
           'campaigns.edit',
           'data.validate',
           'data.enrich',
-          'scraping.run'
+          'scraping.run',
         ]
       case 'viewer':
-        return [
-          'campaigns.view',
-          'data.view',
-          'reports.view'
-        ]
+        return ['campaigns.view', 'data.view', 'reports.view']
       default:
         return []
     }
@@ -323,26 +324,13 @@ export class RBACService {
   static getTeamRolePermissions(role: TeamRole): Permission[] {
     switch (role) {
       case 'owner':
-        return [
-          'teams.manage',
-          'workspaces.manage',
-          'users.invite'
-        ]
+        return ['teams.manage', 'workspaces.manage', 'users.invite']
       case 'admin':
-        return [
-          'teams.edit',
-          'workspaces.create',
-          'users.invite'
-        ]
+        return ['teams.edit', 'workspaces.create', 'users.invite']
       case 'member':
-        return [
-          'teams.view',
-          'workspaces.view'
-        ]
+        return ['teams.view', 'workspaces.view']
       case 'viewer':
-        return [
-          'teams.view'
-        ]
+        return ['teams.view']
       default:
         return []
     }
@@ -367,17 +355,17 @@ export class RBACService {
 
     // Check if user has permission to manage users
     if (!this.hasPermission(assignerUser, 'users.manage', context)) {
-      return { 
-        valid: false, 
-        reason: 'Insufficient permissions to assign roles' 
+      return {
+        valid: false,
+        reason: 'Insufficient permissions to assign roles',
       }
     }
 
     // Prevent non-admins from assigning admin roles
     if (role === 'admin' && !this.hasPermission(assignerUser, 'system.manage')) {
-      return { 
-        valid: false, 
-        reason: 'Only system administrators can assign admin roles' 
+      return {
+        valid: false,
+        reason: 'Only system administrators can assign admin roles',
       }
     }
 
@@ -421,40 +409,40 @@ export class RBACService {
         view: 'campaigns.view',
         edit: 'campaigns.edit',
         delete: 'campaigns.delete',
-        manage: 'campaigns.manage'
+        manage: 'campaigns.manage',
       },
       business: {
         view: 'data.view',
         edit: 'data.edit',
         delete: 'data.delete',
-        manage: 'data.manage'
+        manage: 'data.manage',
       },
       workspace: {
         view: 'workspaces.view',
         edit: 'workspaces.edit',
         delete: 'workspaces.delete',
-        manage: 'workspaces.manage'
+        manage: 'workspaces.manage',
       },
       team: {
         view: 'teams.view',
         edit: 'teams.edit',
         delete: 'teams.delete',
-        manage: 'teams.manage'
-      }
+        manage: 'teams.manage',
+      },
     }
 
     const permission = permissionMap[resourceType]?.[action]
     if (!permission) {
-      logger.warn('RBAC', 'Unknown resource type or action', { 
-        resourceType, 
-        action 
+      logger.warn('RBAC', 'Unknown resource type or action', {
+        resourceType,
+        action,
       })
       return false
     }
 
-    return this.hasPermission(user, permission, { 
-      ...context, 
-      resourceId 
+    return this.hasPermission(user, permission, {
+      ...context,
+      resourceId,
     })
   }
 }

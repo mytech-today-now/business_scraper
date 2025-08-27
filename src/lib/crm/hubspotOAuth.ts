@@ -52,7 +52,7 @@ export class HubSpotOAuth {
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
       scope: this.config.scopes.join(' '),
-      response_type: 'code'
+      response_type: 'code',
     })
 
     if (state) {
@@ -72,15 +72,15 @@ export class HubSpotOAuth {
       const response = await fetch(`${this.apiBaseUrl}/oauth/v1/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
           grant_type: 'authorization_code',
           client_id: this.config.clientId,
           client_secret: this.config.clientSecret,
           redirect_uri: this.config.redirectUri,
-          code: code
-        })
+          code: code,
+        }),
       })
 
       if (!response.ok) {
@@ -88,12 +88,12 @@ export class HubSpotOAuth {
         throw new Error(`Token exchange failed: ${response.status} ${errorText}`)
       }
 
-      const tokenData = await response.json() as HubSpotTokenResponse
-      
+      const tokenData = (await response.json()) as HubSpotTokenResponse
+
       logger.info('HubSpotOAuth', 'Successfully exchanged code for token', {
         tokenType: tokenData.token_type,
         expiresIn: tokenData.expires_in,
-        scopes: tokenData.scope
+        scopes: tokenData.scope,
       })
 
       return tokenData
@@ -113,14 +113,14 @@ export class HubSpotOAuth {
       const response = await fetch(`${this.apiBaseUrl}/oauth/v1/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
           grant_type: 'refresh_token',
           client_id: this.config.clientId,
           client_secret: this.config.clientSecret,
-          refresh_token: refreshToken
-        })
+          refresh_token: refreshToken,
+        }),
       })
 
       if (!response.ok) {
@@ -128,11 +128,11 @@ export class HubSpotOAuth {
         throw new Error(`Token refresh failed: ${response.status} ${errorText}`)
       }
 
-      const tokenData = await response.json() as HubSpotTokenResponse
-      
+      const tokenData = (await response.json()) as HubSpotTokenResponse
+
       logger.info('HubSpotOAuth', 'Successfully refreshed access token', {
         tokenType: tokenData.token_type,
-        expiresIn: tokenData.expires_in
+        expiresIn: tokenData.expires_in,
       })
 
       return tokenData
@@ -152,8 +152,8 @@ export class HubSpotOAuth {
       const response = await fetch(`${this.apiBaseUrl}/oauth/v1/access-tokens/${accessToken}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       })
 
       if (!response.ok) {
@@ -161,12 +161,12 @@ export class HubSpotOAuth {
         throw new Error(`Get token info failed: ${response.status} ${errorText}`)
       }
 
-      const tokenInfo = await response.json() as HubSpotTokenInfo
-      
+      const tokenInfo = (await response.json()) as HubSpotTokenInfo
+
       logger.info('HubSpotOAuth', 'Successfully retrieved token information', {
         hubId: tokenInfo.hub_id,
         userId: tokenInfo.user_id,
-        scopes: tokenInfo.scopes
+        scopes: tokenInfo.scopes,
       })
 
       return tokenInfo
@@ -184,7 +184,7 @@ export class HubSpotOAuth {
       logger.info('HubSpotOAuth', 'Revoking access token')
 
       const response = await fetch(`${this.apiBaseUrl}/oauth/v1/refresh-tokens/${accessToken}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       })
 
       if (!response.ok) {
@@ -205,11 +205,11 @@ export class HubSpotOAuth {
   async validateToken(accessToken: string): Promise<boolean> {
     try {
       const tokenInfo = await this.getTokenInfo(accessToken)
-      
+
       // Check if token is expired
       const now = Date.now() / 1000
       const expiresAt = tokenInfo.expires_in
-      
+
       if (expiresAt && now >= expiresAt) {
         logger.warn('HubSpotOAuth', 'Access token has expired')
         return false
@@ -244,7 +244,7 @@ export class HubSpotOAuth {
       'crm.schemas.companies.read',
       'crm.schemas.deals.read',
       'settings.users.read',
-      'oauth'
+      'oauth',
     ]
   }
 
@@ -261,7 +261,7 @@ export class HubSpotOAuth {
       clientId,
       clientSecret,
       redirectUri,
-      scopes: customScopes || HubSpotOAuth.getRequiredScopes()
+      scopes: customScopes || HubSpotOAuth.getRequiredScopes(),
     }
   }
 
@@ -281,7 +281,7 @@ export class HubSpotOAuth {
       code: params.get('code') || undefined,
       state: params.get('state') || undefined,
       error: params.get('error') || undefined,
-      error_description: params.get('error_description') || undefined
+      error_description: params.get('error_description') || undefined,
     }
   }
 

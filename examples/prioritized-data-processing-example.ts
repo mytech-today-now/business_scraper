@@ -1,6 +1,6 @@
 /**
  * Example: Prioritized Data Processing for Business Contact Exports
- * 
+ *
  * This example demonstrates the new prioritized data processing system that:
  * 1. Prioritizes email addresses, phone numbers, and address information
  * 2. Eliminates duplicates based on key contact fields
@@ -26,12 +26,12 @@ async function demonstratePrioritizedProcessing() {
         street: '123 Main Street',
         city: 'New York',
         state: 'NY',
-        zipCode: '10001'
+        zipCode: '10001',
       },
       contactPerson: 'John Smith',
-      coordinates: { lat: 40.7128, lng: -74.0060 },
+      coordinates: { lat: 40.7128, lng: -74.006 },
       industry: 'Financial Services',
-      scrapedAt: new Date()
+      scrapedAt: new Date(),
     },
     {
       id: '2',
@@ -43,11 +43,11 @@ async function demonstratePrioritizedProcessing() {
         street: '123 Main Street', // Same address
         city: 'New York',
         state: 'NY',
-        zipCode: '10001'
+        zipCode: '10001',
       },
       contactPerson: 'Jane Doe', // Different contact
       industry: 'Financial Services',
-      scrapedAt: new Date()
+      scrapedAt: new Date(),
     },
     {
       id: '3',
@@ -59,11 +59,11 @@ async function demonstratePrioritizedProcessing() {
         street: '456 Broadway',
         city: 'New York',
         state: 'NY',
-        zipCode: '10002'
+        zipCode: '10002',
       },
       contactPerson: 'Sarah Johnson',
       industry: 'Event Planning',
-      scrapedAt: new Date()
+      scrapedAt: new Date(),
     },
     {
       id: '4',
@@ -75,10 +75,10 @@ async function demonstratePrioritizedProcessing() {
         street: '', // No address
         city: '',
         state: '',
-        zipCode: ''
+        zipCode: '',
       },
       industry: 'Unknown',
-      scrapedAt: new Date()
+      scrapedAt: new Date(),
     },
     {
       id: '5',
@@ -90,12 +90,12 @@ async function demonstratePrioritizedProcessing() {
         street: '  789   Oak   Street  ',
         city: '  Los   Angeles  ',
         state: 'ca',
-        zipCode: '90210-1234'
+        zipCode: '90210-1234',
       },
       contactPerson: '  Bob   Wilson  ',
       industry: 'Technology',
-      scrapedAt: new Date()
-    }
+      scrapedAt: new Date(),
+    },
   ]
 
   console.log(`📊 Original Data: ${rawScrapedData.length} records`)
@@ -107,7 +107,8 @@ async function demonstratePrioritizedProcessing() {
 
   // Process data with prioritized system
   console.log('🔄 Processing with prioritized data processor...')
-  const { processedRecords, stats } = await prioritizedDataProcessor.processBusinessRecords(rawScrapedData)
+  const { processedRecords, stats } =
+    await prioritizedDataProcessor.processBusinessRecords(rawScrapedData)
 
   console.log('\n📈 Processing Results:')
   console.log(`- Original records: ${stats.totalRecords}`)
@@ -123,7 +124,9 @@ async function demonstratePrioritizedProcessing() {
     console.log(`\nRecord ${index + 1}:`)
     console.log(`  📧 Primary Email: ${record.email}`)
     console.log(`  📞 Phone: ${record.phone}`)
-    console.log(`  🏠 Address: ${record.streetAddress}, ${record.city}, ${record.state} ${record.zipCode}`)
+    console.log(
+      `  🏠 Address: ${record.streetAddress}, ${record.city}, ${record.state} ${record.zipCode}`
+    )
     console.log(`  🏢 Business: ${record.businessName}`)
     console.log(`  👤 Contact: ${record.contactName}`)
     console.log(`  ⭐ Quality Score: ${Math.round(record.confidence * 100)}%`)
@@ -137,7 +140,7 @@ async function demonstratePrioritizedProcessing() {
 
   // Generate export formats
   console.log('\n📄 Export Examples:')
-  
+
   // CSV Export
   console.log('\n1. CSV Export (Priority-based columns):')
   const csvContent = prioritizedExportFormatter.formatForCSV(processedRecords)
@@ -162,7 +165,7 @@ async function demonstratePrioritizedProcessing() {
   const filename = prioritizedExportFormatter.generateFilename({
     industries: ['Financial Services', 'Event Planning'],
     location: 'New York, NY',
-    totalRecords: processedRecords.length
+    totalRecords: processedRecords.length,
   })
   console.log(`   Generated filename: ${filename}.xlsx`)
 

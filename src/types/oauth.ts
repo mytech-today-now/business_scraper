@@ -136,7 +136,7 @@ export interface OAuthError {
   state?: string
 }
 
-export type OAuthErrorType = 
+export type OAuthErrorType =
   | 'invalid_request'
   | 'invalid_client'
   | 'invalid_grant'
@@ -148,10 +148,7 @@ export type OAuthErrorType =
   | 'server_error'
   | 'temporarily_unavailable'
 
-export type GrantType = 
-  | 'authorization_code'
-  | 'refresh_token'
-  | 'client_credentials'
+export type GrantType = 'authorization_code' | 'refresh_token' | 'client_credentials'
 
 export interface OAuthConfig {
   issuer: string

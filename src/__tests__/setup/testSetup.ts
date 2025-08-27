@@ -10,7 +10,7 @@ import { createMockFileSystem, createMockEnvironment, createMockLogger } from '.
 export const testConfig = {
   timeout: 10000,
   maxRetries: 3,
-  isolateModules: true
+  isolateModules: true,
 }
 
 // Global mocks that should be available in all tests
@@ -18,9 +18,9 @@ export const globalMocks = {
   fileSystem: createMockFileSystem(),
   environment: createMockEnvironment({
     NODE_ENV: 'test',
-    TEST_MODE: 'true'
+    TEST_MODE: 'true',
   }),
-  logger: createMockLogger()
+  logger: createMockLogger(),
 }
 
 // Setup function to be called before each test
@@ -39,7 +39,7 @@ export const setupTest = () => {
     rmdir: jest.fn(),
     unlink: jest.fn(),
     access: jest.fn(),
-    stat: jest.fn()
+    stat: jest.fn(),
   }))
 
   // Mock path operations to use safe test paths
@@ -51,7 +51,7 @@ export const setupTest = () => {
     extname: jest.fn((path: string) => {
       const parts = path.split('.')
       return parts.length > 1 ? '.' + parts.pop() : ''
-    })
+    }),
   }))
 
   // Mock os module for safe temporary directory operations
@@ -59,7 +59,7 @@ export const setupTest = () => {
     tmpdir: jest.fn(() => '/tmp/test'),
     homedir: jest.fn(() => '/home/test'),
     platform: jest.fn(() => 'test'),
-    arch: jest.fn(() => 'test')
+    arch: jest.fn(() => 'test'),
   }))
 
   // Mock crypto for consistent test results
@@ -67,17 +67,17 @@ export const setupTest = () => {
     randomBytes: jest.fn((size: number) => Buffer.alloc(size, 'test')),
     createHash: jest.fn(() => ({
       update: jest.fn().mockReturnThis(),
-      digest: jest.fn(() => 'test-hash-12345')
+      digest: jest.fn(() => 'test-hash-12345'),
     })),
     createHmac: jest.fn(() => ({
       update: jest.fn().mockReturnThis(),
-      digest: jest.fn(() => 'test-hmac-12345')
-    }))
+      digest: jest.fn(() => 'test-hmac-12345'),
+    })),
   }))
 
   // Mock logger to prevent console spam during tests
   jest.mock('@/utils/logger', () => ({
-    logger: globalMocks.logger
+    logger: globalMocks.logger,
   }))
 }
 
@@ -85,7 +85,7 @@ export const setupTest = () => {
 export const cleanupTest = () => {
   // Clear all mocks
   jest.clearAllMocks()
-  
+
   // Reset global state
   globalMocks.fileSystem.reset()
   globalMocks.environment.restore()
@@ -136,10 +136,10 @@ export const securityTestHelpers = {
       xss: 'PHNjcmlwdD5hbGVydCgiWFNTIik8L3NjcmlwdD4=', // base64 encoded
       sql: 'U0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSBpZCA9IDEgT1IgMT0x',
       path: 'Li4vLi4vLi4vZXRjL3Bhc3N3ZA==',
-      command: 'RVhFQyB4cF9jbWRzaGVsbCgnZGlyJyk='
+      command: 'RVhFQyB4cF9jbWRzaGVsbCgnZGlyJyk=',
     }
     return Buffer.from(patterns[type], 'base64').toString('utf-8')
-  }
+  },
 }
 
 // Export default setup for Jest configuration
@@ -149,5 +149,5 @@ export default {
   createIsolatedTest,
   globalMocks,
   testConfig,
-  securityTestHelpers
+  securityTestHelpers,
 }

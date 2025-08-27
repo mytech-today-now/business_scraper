@@ -21,15 +21,13 @@ export const GET = apiFramework.createHandler(
     const includeDetails = searchParams.get('details') === 'true'
 
     try {
-      let templates = platform 
+      let templates = platform
         ? enhancedExportService.listTemplates(platform)
         : enhancedExportService.listTemplates()
 
       // Filter by category
       if (category) {
-        templates = templates.filter(template => 
-          template.metadata.category === category
-        )
+        templates = templates.filter(template => template.metadata.category === category)
       }
 
       // Search functionality
@@ -47,7 +45,7 @@ export const GET = apiFramework.createHandler(
           category: template.metadata.category,
           tags: template.metadata.tags,
           createdAt: template.metadata.createdAt,
-          updatedAt: template.metadata.updatedAt
+          updatedAt: template.metadata.updatedAt,
         }
 
         if (includeDetails) {
@@ -59,14 +57,14 @@ export const GET = apiFramework.createHandler(
               type: mapping.type,
               sourceFields: mapping.sourceFields,
               targetField: mapping.targetField,
-              hasValidation: mapping.validation && mapping.validation.length > 0
+              hasValidation: mapping.validation && mapping.validation.length > 0,
             })),
             platformConfig: {
               fileFormat: template.platformConfig.fileFormat,
               delimiter: template.platformConfig.delimiter,
-              encoding: template.platformConfig.encoding
+              encoding: template.platformConfig.encoding,
             },
-            qualityRules: template.qualityRules
+            qualityRules: template.qualityRules,
           }
         }
 
@@ -83,23 +81,22 @@ export const GET = apiFramework.createHandler(
           statistics,
           filters: {
             platforms: Object.keys(statistics.templatesByPlatform),
-            categories: Object.keys(statistics.templatesByCategory)
-          }
+            categories: Object.keys(statistics.templatesByCategory),
+          },
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('TemplatesAPI', 'Failed to list templates', error)
       throw error
     }
   },
   {
-    permissions: ['read:templates']
+    permissions: ['read:templates'],
   }
 )
 
@@ -118,7 +115,7 @@ export const getTemplate = apiFramework.createHandler(
       }
 
       const template = enhancedExportService.getTemplate(templateId)
-      
+
       if (!template) {
         throw new Error('Template not found')
       }
@@ -140,24 +137,23 @@ export const getTemplate = apiFramework.createHandler(
             fieldMappings: template.fieldMappings,
             platformConfig: template.platformConfig,
             metadata: template.metadata,
-            qualityRules: template.qualityRules
+            qualityRules: template.qualityRules,
           },
-          validation
+          validation,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('TemplatesAPI', 'Failed to get template', error)
       throw error
     }
   },
   {
-    permissions: ['read:templates']
+    permissions: ['read:templates'],
   }
 )
 
@@ -193,28 +189,27 @@ export const validate = apiFramework.createHandler(
             errors: validation.errors,
             warnings: validation.warnings,
             suggestions: validation.suggestions,
-            compatibility: validation.compatibility
+            compatibility: validation.compatibility,
           },
           template: {
             id: templateToValidate.id,
             name: templateToValidate.name,
-            platform: templateToValidate.platform
-          }
+            platform: templateToValidate.platform,
+          },
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('TemplatesAPI', 'Template validation failed', error)
       throw error
     }
   },
   {
-    permissions: ['read:templates']
+    permissions: ['read:templates'],
   }
 )
 
@@ -225,41 +220,42 @@ export const platforms = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const statistics = enhancedExportService.getExportStatistics()
-      
-      const platformDetails = Object.entries(statistics.templatesByPlatform).map(([platform, count]) => {
-        const templates = enhancedExportService.listTemplates(platform as any)
-        const categories = [...new Set(templates.map(t => t.metadata.category))]
-        
-        return {
-          platform,
-          templateCount: count,
-          categories,
-          description: this.getPlatformDescription(platform),
-          features: this.getPlatformFeatures(platform)
+
+      const platformDetails = Object.entries(statistics.templatesByPlatform).map(
+        ([platform, count]) => {
+          const templates = enhancedExportService.listTemplates(platform as any)
+          const categories = [...new Set(templates.map(t => t.metadata.category))]
+
+          return {
+            platform,
+            templateCount: count,
+            categories,
+            description: this.getPlatformDescription(platform),
+            features: this.getPlatformFeatures(platform),
+          }
         }
-      })
+      )
 
       return {
         success: true,
         data: {
           platforms: platformDetails,
           totalPlatforms: platformDetails.length,
-          totalTemplates: statistics.availableTemplates
+          totalTemplates: statistics.availableTemplates,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('TemplatesAPI', 'Failed to get platforms', error)
       throw error
     }
   },
   {
-    permissions: ['read:templates']
+    permissions: ['read:templates'],
   }
 )
 
@@ -268,13 +264,13 @@ export const platforms = apiFramework.createHandler(
  */
 function getPlatformDescription(platform: string): string {
   const descriptions: Record<string, string> = {
-    'salesforce': 'Leading CRM platform for sales and customer management',
-    'hubspot': 'Inbound marketing and sales platform with CRM capabilities',
-    'pipedrive': 'Sales-focused CRM designed for small to medium businesses',
-    'mailchimp': 'Email marketing platform with automation and analytics',
-    'constant-contact': 'Email marketing and digital marketing platform'
+    salesforce: 'Leading CRM platform for sales and customer management',
+    hubspot: 'Inbound marketing and sales platform with CRM capabilities',
+    pipedrive: 'Sales-focused CRM designed for small to medium businesses',
+    mailchimp: 'Email marketing platform with automation and analytics',
+    'constant-contact': 'Email marketing and digital marketing platform',
   }
-  
+
   // Use safe property access to prevent object injection
   return Object.prototype.hasOwnProperty.call(descriptions, platform)
     ? descriptions[platform as keyof typeof descriptions]
@@ -286,13 +282,13 @@ function getPlatformDescription(platform: string): string {
  */
 function getPlatformFeatures(platform: string): string[] {
   const features: Record<string, string[]> = {
-    'salesforce': ['Lead Management', 'Account Management', 'Custom Fields', 'Workflow Automation'],
-    'hubspot': ['Company Records', 'Contact Management', 'Marketing Automation', 'Analytics'],
-    'pipedrive': ['Deal Pipeline', 'Organization Management', 'Activity Tracking', 'Reporting'],
-    'mailchimp': ['Email Campaigns', 'List Segmentation', 'Automation', 'Analytics'],
-    'constant-contact': ['Email Marketing', 'Contact Lists', 'Event Management', 'Social Media']
+    salesforce: ['Lead Management', 'Account Management', 'Custom Fields', 'Workflow Automation'],
+    hubspot: ['Company Records', 'Contact Management', 'Marketing Automation', 'Analytics'],
+    pipedrive: ['Deal Pipeline', 'Organization Management', 'Activity Tracking', 'Reporting'],
+    mailchimp: ['Email Campaigns', 'List Segmentation', 'Automation', 'Analytics'],
+    'constant-contact': ['Email Marketing', 'Contact Lists', 'Event Management', 'Social Media'],
   }
-  
+
   // Use safe property access to prevent object injection
   return Object.prototype.hasOwnProperty.call(features, platform)
     ? features[platform as keyof typeof features]

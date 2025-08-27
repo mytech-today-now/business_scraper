@@ -3,10 +3,7 @@
  * Automated export scheduling with configurable intervals and delivery methods
  */
 
-import { 
-  ExportScheduleConfig, 
-  ScheduledExportResult 
-} from '@/types/integrations'
+import { ExportScheduleConfig, ScheduledExportResult } from '@/types/integrations'
 import { BusinessRecord } from '@/types/business'
 import { enhancedExportService } from '@/lib/enhanced-export-service'
 import { webhookService } from './webhook-service'
@@ -30,18 +27,24 @@ export class ExportSchedulingService {
    */
   private initializeService(): void {
     logger.info('SchedulingService', 'Initializing export scheduling service')
-    
+
     // Start cleanup interval for old execution history
-    setInterval(() => {
-      this.cleanupExecutionHistory()
-    }, 24 * 60 * 60 * 1000) // Daily cleanup
+    setInterval(
+      () => {
+        this.cleanupExecutionHistory()
+      },
+      24 * 60 * 60 * 1000
+    ) // Daily cleanup
   }
 
   /**
    * Create export schedule
    */
   async createSchedule(
-    scheduleData: Omit<ExportScheduleConfig, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'runCount' | 'successCount' | 'failureCount'>
+    scheduleData: Omit<
+      ExportScheduleConfig,
+      'id' | 'status' | 'createdAt' | 'updatedAt' | 'runCount' | 'successCount' | 'failureCount'
+    >
   ): Promise<ExportScheduleConfig> {
     const scheduleId = this.generateScheduleId()
 
@@ -58,7 +61,7 @@ export class ExportSchedulingService {
       updatedAt: new Date().toISOString(),
       runCount: 0,
       successCount: 0,
-      failureCount: 0
+      failureCount: 0,
     }
 
     // Validate schedule expression
@@ -82,7 +85,7 @@ export class ExportSchedulingService {
       scheduleId,
       name: schedule.name,
       templateId: schedule.templateId,
-      expression: schedule.schedule.expression
+      expression: schedule.schedule.expression,
     })
 
     return schedule
@@ -109,7 +112,7 @@ export class ExportSchedulingService {
       ...schedule,
       ...updates,
       id: scheduleId, // Prevent ID changes
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     }
 
     // Validate new schedule expression if provided
@@ -128,7 +131,7 @@ export class ExportSchedulingService {
 
     logger.info('SchedulingService', `Updated export schedule: ${scheduleId}`, {
       scheduleId,
-      updates: Object.keys(updates)
+      updates: Object.keys(updates),
     })
 
     return updatedSchedule
@@ -206,12 +209,16 @@ export class ExportSchedulingService {
         cronExpression = this.intervalToCron(schedule.schedule.expression)
       }
 
-      const cronJob = cron.schedule(cronExpression, async () => {
-        await this.executeScheduledExport(scheduleId)
-      }, {
-        scheduled: true,
-        timezone: schedule.schedule.timezone || 'UTC'
-      })
+      const cronJob = cron.schedule(
+        cronExpression,
+        async () => {
+          await this.executeScheduledExport(scheduleId)
+        },
+        {
+          scheduled: true,
+          timezone: schedule.schedule.timezone || 'UTC',
+        }
+      )
 
       this.cronJobs.set(scheduleId, cronJob)
 
@@ -222,9 +229,8 @@ export class ExportSchedulingService {
       logger.info('SchedulingService', `Started schedule: ${scheduleId}`, {
         scheduleId,
         cronExpression,
-        nextRun: schedule.nextRun
+        nextRun: schedule.nextRun,
       })
-
     } catch (error) {
       logger.error('SchedulingService', `Failed to start schedule: ${scheduleId}`, error)
       throw error
@@ -261,7 +267,7 @@ export class ExportSchedulingService {
     logger.info('SchedulingService', `Executing scheduled export: ${scheduleId}`, {
       scheduleId,
       executionId,
-      templateId: schedule.templateId
+      templateId: schedule.templateId,
     })
 
     try {
@@ -274,8 +280,11 @@ export class ExportSchedulingService {
       const businesses = await this.getBusinessDataForExport(schedule.filters)
 
       if (businesses.length === 0) {
-        logger.warn('SchedulingService', `No business data found for scheduled export: ${scheduleId}`)
-        
+        logger.warn(
+          'SchedulingService',
+          `No business data found for scheduled export: ${scheduleId}`
+        )
+
         const result: ScheduledExportResult = {
           id: executionId,
           scheduleId,
@@ -287,7 +296,7 @@ export class ExportSchedulingService {
           recordsProcessed: 0,
           recordsExported: 0,
           errors: ['No business data found matching filters'],
-          deliveryStatus: 'pending'
+          deliveryStatus: 'pending',
         }
 
         this.recordExecutionResult(scheduleId, result)
@@ -301,7 +310,7 @@ export class ExportSchedulingService {
         {
           validateData: true,
           skipErrors: true,
-          includeMetadata: true
+          includeMetadata: true,
         }
       )
 
@@ -319,7 +328,7 @@ export class ExportSchedulingService {
         recordsProcessed: exportResult.recordsProcessed,
         recordsExported: exportResult.recordsExported,
         errors: exportResult.errors.map(e => e.error),
-        deliveryStatus: 'pending'
+        deliveryStatus: 'pending',
       }
 
       // Handle delivery
@@ -333,7 +342,7 @@ export class ExportSchedulingService {
           result.deliveryDetails = {
             method: schedule.delivery.method,
             destination: schedule.delivery.destination,
-            error: deliveryError instanceof Error ? deliveryError.message : 'Delivery failed'
+            error: deliveryError instanceof Error ? deliveryError.message : 'Delivery failed',
           }
           schedule.failureCount++
         }
@@ -350,7 +359,7 @@ export class ExportSchedulingService {
         executionId,
         templateId: schedule.templateId,
         status: result.status,
-        recordsExported: result.recordsExported
+        recordsExported: result.recordsExported,
       })
 
       logger.info('SchedulingService', `Completed scheduled export: ${scheduleId}`, {
@@ -358,9 +367,8 @@ export class ExportSchedulingService {
         executionId,
         status: result.status,
         recordsExported: result.recordsExported,
-        duration: result.duration
+        duration: result.duration,
       })
-
     } catch (error) {
       const endTime = new Date().toISOString()
       const duration = new Date(endTime).getTime() - new Date(startTime).getTime()
@@ -376,7 +384,7 @@ export class ExportSchedulingService {
         recordsProcessed: 0,
         recordsExported: 0,
         errors: [error instanceof Error ? error.message : 'Unknown error'],
-        deliveryStatus: 'failed'
+        deliveryStatus: 'failed',
       }
 
       schedule.failureCount++
@@ -388,7 +396,7 @@ export class ExportSchedulingService {
         scheduleId,
         executionId,
         templateId: schedule.templateId,
-        error: result.errors[0]
+        error: result.errors[0],
       })
 
       logger.error('SchedulingService', `Scheduled export failed: ${scheduleId}`, error)
@@ -398,13 +406,15 @@ export class ExportSchedulingService {
   /**
    * Get business data for export based on filters
    */
-  private async getBusinessDataForExport(filters?: ExportScheduleConfig['filters']): Promise<BusinessRecord[]> {
+  private async getBusinessDataForExport(
+    filters?: ExportScheduleConfig['filters']
+  ): Promise<BusinessRecord[]> {
     // This is a placeholder implementation
     // In a real application, this would query your business data source
     // with the provided filters (industries, locations, date range, etc.)
-    
+
     logger.info('SchedulingService', 'Getting business data for scheduled export', { filters })
-    
+
     // Return empty array for now - this would be replaced with actual data fetching
     return []
   }
@@ -450,12 +460,12 @@ export class ExportSchedulingService {
       headers: {
         'Content-Type': 'application/json',
         'X-Export-ID': executionResult.id,
-        'X-Schedule-ID': executionResult.scheduleId
+        'X-Schedule-ID': executionResult.scheduleId,
       },
       body: JSON.stringify({
         executionResult,
-        exportData: exportResult.exportData
-      })
+        exportData: exportResult.exportData,
+      }),
     })
 
     if (!response.ok) {
@@ -465,7 +475,7 @@ export class ExportSchedulingService {
     executionResult.deliveryDetails = {
       method: 'webhook',
       destination: webhookUrl,
-      deliveredAt: new Date().toISOString()
+      deliveredAt: new Date().toISOString(),
     }
   }
 
@@ -483,13 +493,13 @@ export class ExportSchedulingService {
     logger.info('SchedulingService', 'Email delivery not yet implemented', {
       email,
       format,
-      compression
+      compression,
     })
-    
+
     executionResult.deliveryDetails = {
       method: 'email',
       destination: email,
-      deliveredAt: new Date().toISOString()
+      deliveredAt: new Date().toISOString(),
     }
   }
 
@@ -507,13 +517,13 @@ export class ExportSchedulingService {
     logger.info('SchedulingService', 'FTP delivery not yet implemented', {
       ftpUrl,
       format,
-      compression
+      compression,
     })
-    
+
     executionResult.deliveryDetails = {
       method: 'ftp',
       destination: ftpUrl,
-      deliveredAt: new Date().toISOString()
+      deliveredAt: new Date().toISOString(),
     }
   }
 
@@ -527,13 +537,13 @@ export class ExportSchedulingService {
   ): Promise<void> {
     // Placeholder for API delivery implementation
     logger.info('SchedulingService', 'API delivery not yet implemented', {
-      apiUrl
+      apiUrl,
     })
-    
+
     executionResult.deliveryDetails = {
       method: 'api',
       destination: apiUrl,
-      deliveredAt: new Date().toISOString()
+      deliveredAt: new Date().toISOString(),
     }
   }
 
@@ -622,13 +632,14 @@ export class ExportSchedulingService {
     cutoffDate.setDate(cutoffDate.getDate() - 30) // Keep 30 days
 
     for (const [scheduleId, history] of this.executionHistory.entries()) {
-      const filteredHistory = history.filter(result => 
-        new Date(result.startTime) > cutoffDate
-      )
-      
+      const filteredHistory = history.filter(result => new Date(result.startTime) > cutoffDate)
+
       if (filteredHistory.length !== history.length) {
         this.executionHistory.set(scheduleId, filteredHistory)
-        logger.debug('SchedulingService', `Cleaned up execution history for schedule: ${scheduleId}`)
+        logger.debug(
+          'SchedulingService',
+          `Cleaned up execution history for schedule: ${scheduleId}`
+        )
       }
     }
   }
@@ -665,7 +676,7 @@ export class ExportSchedulingService {
       activeSchedules,
       totalExecutions: totalSuccessful + totalFailed,
       successfulExecutions: totalSuccessful,
-      failedExecutions: totalFailed
+      failedExecutions: totalFailed,
     }
   }
 }

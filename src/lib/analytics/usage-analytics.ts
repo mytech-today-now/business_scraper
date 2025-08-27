@@ -31,11 +31,14 @@ interface ClientUsage {
   rateLimitHits: number
   firstSeen: string
   lastSeen: string
-  endpoints: Map<string, {
-    requests: number
-    averageResponseTime: number
-    errorRate: number
-  }>
+  endpoints: Map<
+    string,
+    {
+      requests: number
+      averageResponseTime: number
+      errorRate: number
+    }
+  >
 }
 
 /**
@@ -58,11 +61,14 @@ export class UsageAnalyticsService {
    */
   private initializeService(): void {
     logger.info('UsageAnalytics', 'Initializing usage analytics service')
-    
+
     // Start periodic cleanup
-    this.cleanupInterval = setInterval(() => {
-      this.cleanupOldMetrics()
-    }, 60 * 60 * 1000) // Cleanup every hour
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanupOldMetrics()
+      },
+      60 * 60 * 1000
+    ) // Cleanup every hour
 
     // Initialize health checks
     this.initializeHealthChecks()
@@ -96,13 +102,21 @@ export class UsageAnalyticsService {
       responseTime,
       dataTransferred,
       userAgent: metadata?.userAgent,
-      ip: metadata?.ip
+      ip: metadata?.ip,
     }
 
     this.metrics.push(metric)
 
     // Update client usage statistics
-    this.updateClientUsage(clientId, endpoint, method, statusCode, responseTime, dataTransferred, metadata?.rateLimitHit)
+    this.updateClientUsage(
+      clientId,
+      endpoint,
+      method,
+      statusCode,
+      responseTime,
+      dataTransferred,
+      metadata?.rateLimitHit
+    )
 
     // Update endpoint statistics
     this.updateEndpointStats(endpoint, method, statusCode, responseTime)
@@ -126,7 +140,7 @@ export class UsageAnalyticsService {
     rateLimitHit?: boolean
   ): void {
     let clientUsage = this.clientUsage.get(clientId)
-    
+
     if (!clientUsage) {
       clientUsage = {
         clientId,
@@ -138,7 +152,7 @@ export class UsageAnalyticsService {
         rateLimitHits: 0,
         firstSeen: new Date().toISOString(),
         lastSeen: new Date().toISOString(),
-        endpoints: new Map()
+        endpoints: new Map(),
       }
     }
 
@@ -158,34 +172,31 @@ export class UsageAnalyticsService {
     }
 
     // Update average response time
-    clientUsage.averageResponseTime = (
-      (clientUsage.averageResponseTime * (clientUsage.totalRequests - 1) + responseTime) / 
+    clientUsage.averageResponseTime =
+      (clientUsage.averageResponseTime * (clientUsage.totalRequests - 1) + responseTime) /
       clientUsage.totalRequests
-    )
 
     // Update endpoint-specific statistics
     const endpointKey = `${method}:${endpoint}`
     let endpointStats = clientUsage.endpoints.get(endpointKey)
-    
+
     if (!endpointStats) {
       endpointStats = {
         requests: 0,
         averageResponseTime: 0,
-        errorRate: 0
+        errorRate: 0,
       }
     }
 
     endpointStats.requests++
-    endpointStats.averageResponseTime = (
-      (endpointStats.averageResponseTime * (endpointStats.requests - 1) + responseTime) / 
+    endpointStats.averageResponseTime =
+      (endpointStats.averageResponseTime * (endpointStats.requests - 1) + responseTime) /
       endpointStats.requests
-    )
 
     const errors = statusCode >= 400 ? 1 : 0
-    endpointStats.errorRate = (
-      (endpointStats.errorRate * (endpointStats.requests - 1) + errors) / 
-      endpointStats.requests
-    ) * 100
+    endpointStats.errorRate =
+      ((endpointStats.errorRate * (endpointStats.requests - 1) + errors) / endpointStats.requests) *
+      100
 
     clientUsage.endpoints.set(endpointKey, endpointStats)
     this.clientUsage.set(clientId, clientUsage)
@@ -202,14 +213,14 @@ export class UsageAnalyticsService {
   ): void {
     const endpointKey = `${method}:${endpoint}`
     let stats = this.endpointStats.get(endpointKey)
-    
+
     if (!stats) {
       stats = {
         requests: 0,
         averageResponseTime: 0,
         errorRate: 0,
         p95ResponseTime: 0,
-        responseTimes: []
+        responseTimes: [],
       }
     }
 
@@ -222,17 +233,12 @@ export class UsageAnalyticsService {
     }
 
     // Calculate average response time
-    stats.averageResponseTime = (
-      (stats.averageResponseTime * (stats.requests - 1) + responseTime) / 
-      stats.requests
-    )
+    stats.averageResponseTime =
+      (stats.averageResponseTime * (stats.requests - 1) + responseTime) / stats.requests
 
     // Calculate error rate
     const errors = statusCode >= 400 ? 1 : 0
-    stats.errorRate = (
-      (stats.errorRate * (stats.requests - 1) + errors) / 
-      stats.requests
-    ) * 100
+    stats.errorRate = ((stats.errorRate * (stats.requests - 1) + errors) / stats.requests) * 100
 
     // Calculate P95 response time
     const sortedTimes = [...stats.responseTimes].sort((a, b) => a - b)
@@ -245,53 +251,51 @@ export class UsageAnalyticsService {
   /**
    * Get usage analytics for a client
    */
-  getClientAnalytics(
-    clientId: string,
-    period: { start: string; end: string }
-  ): ApiUsageAnalytics {
+  getClientAnalytics(clientId: string, period: { start: string; end: string }): ApiUsageAnalytics {
     const startTime = new Date(period.start).getTime()
     const endTime = new Date(period.end).getTime()
 
     // Filter metrics for the client and period
-    const clientMetrics = this.metrics.filter(m => 
-      m.clientId === clientId && 
-      m.timestamp >= startTime && 
-      m.timestamp <= endTime
+    const clientMetrics = this.metrics.filter(
+      m => m.clientId === clientId && m.timestamp >= startTime && m.timestamp <= endTime
     )
 
     const totalRequests = clientMetrics.length
-    const successfulRequests = clientMetrics.filter(m => m.statusCode >= 200 && m.statusCode < 400).length
+    const successfulRequests = clientMetrics.filter(
+      m => m.statusCode >= 200 && m.statusCode < 400
+    ).length
     const failedRequests = totalRequests - successfulRequests
-    const averageResponseTime = totalRequests > 0 
-      ? clientMetrics.reduce((sum, m) => sum + m.responseTime, 0) / totalRequests 
-      : 0
+    const averageResponseTime =
+      totalRequests > 0
+        ? clientMetrics.reduce((sum, m) => sum + m.responseTime, 0) / totalRequests
+        : 0
     const dataTransferred = clientMetrics.reduce((sum, m) => sum + m.dataTransferred, 0)
     const rateLimitHits = this.clientUsage.get(clientId)?.rateLimitHits || 0
 
     // Group by endpoint
     const endpointMap = new Map<string, any>()
-    
+
     for (const metric of clientMetrics) {
       const key = `${metric.method}:${metric.endpoint}`
       let endpointData = endpointMap.get(key)
-      
+
       if (!endpointData) {
         endpointData = {
           path: metric.endpoint,
           method: metric.method,
           requests: 0,
           totalResponseTime: 0,
-          errors: 0
+          errors: 0,
         }
       }
-      
+
       endpointData.requests++
       endpointData.totalResponseTime += metric.responseTime
-      
+
       if (metric.statusCode >= 400) {
         endpointData.errors++
       }
-      
+
       endpointMap.set(key, endpointData)
     }
 
@@ -300,13 +304,13 @@ export class UsageAnalyticsService {
       method: data.method,
       requests: data.requests,
       averageResponseTime: data.requests > 0 ? data.totalResponseTime / data.requests : 0,
-      errorRate: data.requests > 0 ? (data.errors / data.requests) * 100 : 0
+      errorRate: data.requests > 0 ? (data.errors / data.requests) * 100 : 0,
     }))
 
     // Get error details
     const errorMetrics = clientMetrics.filter(m => m.statusCode >= 400)
     const errorMap = new Map<string, number>()
-    
+
     for (const metric of errorMetrics) {
       const errorKey = `${metric.endpoint}:${metric.statusCode}`
       errorMap.set(errorKey, (errorMap.get(errorKey) || 0) + 1)
@@ -318,7 +322,7 @@ export class UsageAnalyticsService {
         timestamp: new Date().toISOString(), // Simplified - would track actual error times
         endpoint,
         error: `HTTP ${statusCode}`,
-        count
+        count,
       }
     })
 
@@ -331,10 +335,10 @@ export class UsageAnalyticsService {
         failedRequests,
         averageResponseTime,
         dataTransferred,
-        rateLimitHits
+        rateLimitHits,
       },
       endpoints,
-      errors
+      errors,
     }
   }
 
@@ -361,15 +365,16 @@ export class UsageAnalyticsService {
     const startTime = new Date(period.start).getTime()
     const endTime = new Date(period.end).getTime()
 
-    const periodMetrics = this.metrics.filter(m => 
-      m.timestamp >= startTime && m.timestamp <= endTime
+    const periodMetrics = this.metrics.filter(
+      m => m.timestamp >= startTime && m.timestamp <= endTime
     )
 
     const uniqueClients = new Set(periodMetrics.map(m => m.clientId))
     const totalRequests = periodMetrics.length
-    const averageResponseTime = totalRequests > 0 
-      ? periodMetrics.reduce((sum, m) => sum + m.responseTime, 0) / totalRequests 
-      : 0
+    const averageResponseTime =
+      totalRequests > 0
+        ? periodMetrics.reduce((sum, m) => sum + m.responseTime, 0) / totalRequests
+        : 0
     const errorCount = periodMetrics.filter(m => m.statusCode >= 400).length
     const errorRate = totalRequests > 0 ? (errorCount / totalRequests) * 100 : 0
 
@@ -378,20 +383,20 @@ export class UsageAnalyticsService {
     for (const metric of periodMetrics) {
       const key = `${metric.method}:${metric.endpoint}`
       let data = endpointMap.get(key)
-      
+
       if (!data) {
         data = {
           endpoint: `${metric.method} ${metric.endpoint}`,
           requests: 0,
           totalResponseTime: 0,
-          errors: 0
+          errors: 0,
         }
       }
-      
+
       data.requests++
       data.totalResponseTime += metric.responseTime
       if (metric.statusCode >= 400) data.errors++
-      
+
       endpointMap.set(key, data)
     }
 
@@ -400,7 +405,7 @@ export class UsageAnalyticsService {
         endpoint: data.endpoint,
         requests: data.requests,
         averageResponseTime: data.requests > 0 ? data.totalResponseTime / data.requests : 0,
-        errorRate: data.requests > 0 ? (data.errors / data.requests) * 100 : 0
+        errorRate: data.requests > 0 ? (data.errors / data.requests) * 100 : 0,
       }))
       .sort((a, b) => b.requests - a.requests)
       .slice(0, 10)
@@ -409,18 +414,18 @@ export class UsageAnalyticsService {
     const clientMap = new Map<string, any>()
     for (const metric of periodMetrics) {
       let data = clientMap.get(metric.clientId)
-      
+
       if (!data) {
         data = {
           clientId: metric.clientId,
           requests: 0,
-          dataTransferred: 0
+          dataTransferred: 0,
         }
       }
-      
+
       data.requests++
       data.dataTransferred += metric.dataTransferred
-      
+
       clientMap.set(metric.clientId, data)
     }
 
@@ -434,7 +439,7 @@ export class UsageAnalyticsService {
       averageResponseTime,
       errorRate,
       topEndpoints,
-      topClients
+      topClients,
     }
   }
 
@@ -451,7 +456,7 @@ export class UsageAnalyticsService {
   updateHealthStatus(service: string, status: Omit<IntegrationHealthStatus, 'service'>): void {
     this.healthChecks.set(service, {
       service,
-      ...status
+      ...status,
     })
   }
 
@@ -459,8 +464,14 @@ export class UsageAnalyticsService {
    * Initialize health checks
    */
   private initializeHealthChecks(): void {
-    const services = ['api-framework', 'oauth2-service', 'webhook-service', 'export-service', 'scheduling-service']
-    
+    const services = [
+      'api-framework',
+      'oauth2-service',
+      'webhook-service',
+      'export-service',
+      'scheduling-service',
+    ]
+
     for (const service of services) {
       this.healthChecks.set(service, {
         service,
@@ -469,7 +480,7 @@ export class UsageAnalyticsService {
         responseTime: 0,
         uptime: process.uptime(),
         errors: [],
-        metrics: {}
+        metrics: {},
       })
     }
   }
@@ -478,11 +489,11 @@ export class UsageAnalyticsService {
    * Cleanup old metrics
    */
   private cleanupOldMetrics(): void {
-    const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000) // 7 days
+    const cutoffTime = Date.now() - 7 * 24 * 60 * 60 * 1000 // 7 days
     const originalLength = this.metrics.length
-    
+
     this.metrics = this.metrics.filter(m => m.timestamp > cutoffTime)
-    
+
     const cleaned = originalLength - this.metrics.length
     if (cleaned > 0) {
       logger.info('UsageAnalytics', `Cleaned up ${cleaned} old metrics`)
@@ -498,13 +509,14 @@ export class UsageAnalyticsService {
     errorRate: number
     activeClients: number
   } {
-    const oneMinuteAgo = Date.now() - (60 * 1000)
+    const oneMinuteAgo = Date.now() - 60 * 1000
     const recentMetrics = this.metrics.filter(m => m.timestamp > oneMinuteAgo)
-    
+
     const requestsPerMinute = recentMetrics.length
-    const averageResponseTime = recentMetrics.length > 0 
-      ? recentMetrics.reduce((sum, m) => sum + m.responseTime, 0) / recentMetrics.length 
-      : 0
+    const averageResponseTime =
+      recentMetrics.length > 0
+        ? recentMetrics.reduce((sum, m) => sum + m.responseTime, 0) / recentMetrics.length
+        : 0
     const errorCount = recentMetrics.filter(m => m.statusCode >= 400).length
     const errorRate = recentMetrics.length > 0 ? (errorCount / recentMetrics.length) * 100 : 0
     const activeClients = new Set(recentMetrics.map(m => m.clientId)).size
@@ -513,7 +525,7 @@ export class UsageAnalyticsService {
       requestsPerMinute,
       averageResponseTime,
       errorRate,
-      activeClients
+      activeClients,
     }
   }
 
@@ -522,7 +534,15 @@ export class UsageAnalyticsService {
    */
   exportAnalytics(format: 'json' | 'csv' = 'json'): string {
     if (format === 'csv') {
-      const headers = ['timestamp', 'clientId', 'endpoint', 'method', 'statusCode', 'responseTime', 'dataTransferred']
+      const headers = [
+        'timestamp',
+        'clientId',
+        'endpoint',
+        'method',
+        'statusCode',
+        'responseTime',
+        'dataTransferred',
+      ]
       const rows = this.metrics.map(m => [
         new Date(m.timestamp).toISOString(),
         m.clientId,
@@ -530,18 +550,22 @@ export class UsageAnalyticsService {
         m.method,
         m.statusCode,
         m.responseTime,
-        m.dataTransferred
+        m.dataTransferred,
       ])
-      
+
       return [headers, ...rows].map(row => row.join(',')).join('\n')
     } else {
-      return JSON.stringify({
-        metrics: this.metrics,
-        clientUsage: Object.fromEntries(this.clientUsage),
-        endpointStats: Object.fromEntries(this.endpointStats),
-        healthChecks: Object.fromEntries(this.healthChecks),
-        exportedAt: new Date().toISOString()
-      }, null, 2)
+      return JSON.stringify(
+        {
+          metrics: this.metrics,
+          clientUsage: Object.fromEntries(this.clientUsage),
+          endpointStats: Object.fromEntries(this.endpointStats),
+          healthChecks: Object.fromEntries(this.healthChecks),
+          exportedAt: new Date().toISOString(),
+        },
+        null,
+        2
+      )
     }
   }
 

@@ -56,7 +56,7 @@ function TestComponent({ datasetSize = 0 }: { datasetSize?: number }) {
       <div data-testid="show-advisory">{showAdvisoryBanner.toString()}</div>
       <div data-testid="show-pagination-prompt">{showPaginationPrompt.toString()}</div>
       <div data-testid="auto-detection">{preferences.autoDetection.toString()}</div>
-      
+
       <button onClick={() => updatePreferences({ autoDetection: false })}>
         Disable Auto Detection
       </button>
@@ -129,7 +129,7 @@ describe('PerformanceContext', () => {
   describe('User interactions', () => {
     it('should allow disabling auto-detection', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <PerformanceProvider datasetSize={1500}>
           <TestComponent />
@@ -145,7 +145,7 @@ describe('PerformanceContext', () => {
 
     it('should allow manual mode switching', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <PerformanceProvider datasetSize={100}>
           <TestComponent />
@@ -161,7 +161,7 @@ describe('PerformanceContext', () => {
 
     it('should allow dismissing advisory banner', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <PerformanceProvider datasetSize={1500}>
           <TestComponent />
@@ -181,7 +181,7 @@ describe('PerformanceContext', () => {
 
     it('should handle pagination acceptance', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <PerformanceProvider datasetSize={3000}>
           <TestComponent />
@@ -202,7 +202,7 @@ describe('PerformanceContext', () => {
 
     it('should handle pagination decline', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <PerformanceProvider datasetSize={3000}>
           <TestComponent />
@@ -224,7 +224,7 @@ describe('PerformanceContext', () => {
   describe('Preferences persistence', () => {
     it('should save preferences to localStorage', async () => {
       const user = userEvent.setup()
-      
+
       render(
         <PerformanceProvider datasetSize={100}>
           <TestComponent />
@@ -247,7 +247,7 @@ describe('PerformanceContext', () => {
         pageSize: 100,
         enableMonitoring: false,
       }
-      
+
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedPreferences))
 
       render(

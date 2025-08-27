@@ -6,7 +6,10 @@
 
 ## 📋 Overview
 
-This document provides comprehensive API documentation for the Business Scraper Application v3.7.0. The API follows REST principles and provides endpoints for business search, data scraping, configuration management, and CRM export functionality.
+This document provides comprehensive API documentation for the Business Scraper
+Application v3.7.0. The API follows REST principles and provides endpoints for
+business search, data scraping, configuration management, and CRM export
+functionality.
 
 ## 🔗 Base URL
 
@@ -17,7 +20,8 @@ Production: https://your-domain.com/api
 
 ## 🔐 Authentication
 
-Currently, the API uses session-based authentication. Future versions will include API key authentication for programmatic access.
+Currently, the API uses session-based authentication. Future versions will
+include API key authentication for programmatic access.
 
 ```typescript
 // Authentication headers (when implemented)
@@ -43,10 +47,13 @@ interface APIResponse<T> {
 ```
 
 ### Success Response
+
 ```json
 {
   "success": true,
-  "data": { /* response data */ },
+  "data": {
+    /* response data */
+  },
   "message": "Operation completed successfully",
   "timestamp": "2025-08-25T10:00:00.000Z",
   "version": "3.7.0"
@@ -54,6 +61,7 @@ interface APIResponse<T> {
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -67,30 +75,33 @@ interface APIResponse<T> {
 ## 🔍 Business Search API
 
 ### Search Businesses
-**Endpoint**: `POST /api/search`
-**Description**: Search for businesses using various search engines and criteria
+
+**Endpoint**: `POST /api/search` **Description**: Search for businesses using
+various search engines and criteria
 
 #### Request Body
+
 ```typescript
 interface SearchRequest {
-  query: string              // Search query (e.g., "restaurants")
-  location: string           // Location (ZIP code or city, state)
-  radius?: number           // Search radius in miles (default: 25)
-  limit?: number            // Maximum results (default: 50, max: 500)
-  engines?: string[]        // Search engines to use
-  filters?: SearchFilters   // Additional search filters
+  query: string // Search query (e.g., "restaurants")
+  location: string // Location (ZIP code or city, state)
+  radius?: number // Search radius in miles (default: 25)
+  limit?: number // Maximum results (default: 50, max: 500)
+  engines?: string[] // Search engines to use
+  filters?: SearchFilters // Additional search filters
 }
 
 interface SearchFilters {
-  industry?: string[]       // Industry categories
-  minRating?: number       // Minimum business rating
-  hasWebsite?: boolean     // Filter for businesses with websites
-  hasPhone?: boolean       // Filter for businesses with phone numbers
-  hasEmail?: boolean       // Filter for businesses with email addresses
+  industry?: string[] // Industry categories
+  minRating?: number // Minimum business rating
+  hasWebsite?: boolean // Filter for businesses with websites
+  hasPhone?: boolean // Filter for businesses with phone numbers
+  hasEmail?: boolean // Filter for businesses with email addresses
 }
 ```
 
 #### Example Request
+
 ```bash
 curl -X POST http://localhost:3000/api/search \
   -H "Content-Type: application/json" \
@@ -107,6 +118,7 @@ curl -X POST http://localhost:3000/api/search \
 ```
 
 #### Response
+
 ```typescript
 interface SearchResponse {
   results: BusinessRecord[]
@@ -124,6 +136,7 @@ interface SearchResponse {
 ```
 
 #### Example Response
+
 ```json
 {
   "success": true,
@@ -165,27 +178,30 @@ interface SearchResponse {
 ## 🕷️ Web Scraping API
 
 ### Scrape Business Details
-**Endpoint**: `POST /api/scrape`
-**Description**: Scrape detailed information from business websites
+
+**Endpoint**: `POST /api/scrape` **Description**: Scrape detailed information
+from business websites
 
 #### Request Body
+
 ```typescript
 interface ScrapeRequest {
-  urls: string[]            // URLs to scrape
-  options?: ScrapeOptions   // Scraping options
+  urls: string[] // URLs to scrape
+  options?: ScrapeOptions // Scraping options
 }
 
 interface ScrapeOptions {
-  timeout?: number          // Request timeout in milliseconds
-  waitFor?: string         // CSS selector to wait for
-  extractEmails?: boolean  // Extract email addresses
-  extractPhones?: boolean  // Extract phone numbers
-  extractSocial?: boolean  // Extract social media links
-  screenshot?: boolean     // Take screenshot
+  timeout?: number // Request timeout in milliseconds
+  waitFor?: string // CSS selector to wait for
+  extractEmails?: boolean // Extract email addresses
+  extractPhones?: boolean // Extract phone numbers
+  extractSocial?: boolean // Extract social media links
+  screenshot?: boolean // Take screenshot
 }
 ```
 
 #### Example Request
+
 ```bash
 curl -X POST http://localhost:3000/api/scrape \
   -H "Content-Type: application/json" \
@@ -200,6 +216,7 @@ curl -X POST http://localhost:3000/api/scrape \
 ```
 
 #### Response
+
 ```typescript
 interface ScrapeResponse {
   results: ScrapedData[]
@@ -212,7 +229,7 @@ interface ScrapedData {
   emails: string[]
   phones: string[]
   socialLinks: string[]
-  screenshot?: string      // Base64 encoded image
+  screenshot?: string // Base64 encoded image
   error?: string
   scrapedAt: string
 }
@@ -221,10 +238,12 @@ interface ScrapedData {
 ## ⚙️ Configuration API
 
 ### Get Configuration
-**Endpoint**: `GET /api/config`
-**Description**: Retrieve current application configuration
+
+**Endpoint**: `GET /api/config` **Description**: Retrieve current application
+configuration
 
 #### Response
+
 ```typescript
 interface ConfigResponse {
   searchEngines: SearchEngineConfig[]
@@ -234,10 +253,12 @@ interface ConfigResponse {
 ```
 
 ### Update Configuration
-**Endpoint**: `PUT /api/config`
-**Description**: Update application configuration
+
+**Endpoint**: `PUT /api/config` **Description**: Update application
+configuration
 
 #### Request Body
+
 ```typescript
 interface ConfigUpdateRequest {
   searchEngines?: SearchEngineConfig[]
@@ -249,14 +270,17 @@ interface ConfigUpdateRequest {
 ## 🔗 CRM Export API
 
 ### Get CRM Templates
-**Endpoint**: `GET /api/crm/templates`
-**Description**: Retrieve available CRM export templates
+
+**Endpoint**: `GET /api/crm/templates` **Description**: Retrieve available CRM
+export templates
 
 #### Query Parameters
+
 - `platform`: Filter by CRM platform (salesforce, hubspot, pipedrive)
 - `format`: Filter by export format (csv, json, xml)
 
 #### Response
+
 ```typescript
 interface CRMTemplatesResponse {
   templates: CRMTemplate[]
@@ -265,14 +289,16 @@ interface CRMTemplatesResponse {
 ```
 
 ### Export to CRM
-**Endpoint**: `POST /api/crm/export`
-**Description**: Export business data using CRM templates
+
+**Endpoint**: `POST /api/crm/export` **Description**: Export business data using
+CRM templates
 
 #### Request Body
+
 ```typescript
 interface CRMExportRequest {
   templateId: string
-  businessIds: string[]    // IDs of businesses to export
+  businessIds: string[] // IDs of businesses to export
   options?: {
     includeHeaders?: boolean
     validateData?: boolean
@@ -282,9 +308,10 @@ interface CRMExportRequest {
 ```
 
 #### Response
+
 ```typescript
 interface CRMExportResponse {
-  downloadUrl: string      // URL to download the export file
+  downloadUrl: string // URL to download the export file
   statistics: {
     totalRecords: number
     exportedRecords: number
@@ -298,10 +325,12 @@ interface CRMExportResponse {
 ```
 
 ### Validate CRM Data
-**Endpoint**: `POST /api/crm/validate`
-**Description**: Validate business data against CRM template requirements
+
+**Endpoint**: `POST /api/crm/validate` **Description**: Validate business data
+against CRM template requirements
 
 #### Request Body
+
 ```typescript
 interface CRMValidateRequest {
   templateId: string
@@ -310,6 +339,7 @@ interface CRMValidateRequest {
 ```
 
 #### Response
+
 ```typescript
 interface CRMValidateResponse {
   validCount: number
@@ -322,10 +352,12 @@ interface CRMValidateResponse {
 ## 📊 Health and Status API
 
 ### Health Check
-**Endpoint**: `GET /api/health`
-**Description**: Check application health and status
+
+**Endpoint**: `GET /api/health` **Description**: Check application health and
+status
 
 #### Response
+
 ```json
 {
   "success": true,
@@ -351,10 +383,12 @@ interface CRMValidateResponse {
 ```
 
 ### System Metrics
-**Endpoint**: `GET /api/metrics`
-**Description**: Retrieve system performance metrics
+
+**Endpoint**: `GET /api/metrics` **Description**: Retrieve system performance
+metrics
 
 #### Response
+
 ```typescript
 interface MetricsResponse {
   performance: {
@@ -377,18 +411,19 @@ interface MetricsResponse {
 
 ## ❌ Error Codes
 
-| Code | Description | Common Causes |
-|------|-------------|---------------|
-| 400 | Bad Request | Invalid request parameters or body |
-| 401 | Unauthorized | Missing or invalid authentication |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource not found |
-| 422 | Unprocessable Entity | Validation errors |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server-side error |
-| 503 | Service Unavailable | Service temporarily unavailable |
+| Code | Description           | Common Causes                      |
+| ---- | --------------------- | ---------------------------------- |
+| 400  | Bad Request           | Invalid request parameters or body |
+| 401  | Unauthorized          | Missing or invalid authentication  |
+| 403  | Forbidden             | Insufficient permissions           |
+| 404  | Not Found             | Resource not found                 |
+| 422  | Unprocessable Entity  | Validation errors                  |
+| 429  | Too Many Requests     | Rate limit exceeded                |
+| 500  | Internal Server Error | Server-side error                  |
+| 503  | Service Unavailable   | Service temporarily unavailable    |
 
 ### Error Response Details
+
 ```json
 {
   "success": false,
@@ -414,6 +449,7 @@ The API implements rate limiting to ensure fair usage:
 - **CRM Export API**: 20 exports per hour per user
 
 Rate limit headers are included in responses:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -423,6 +459,7 @@ X-RateLimit-Reset: 1640995200
 ## 📝 Request/Response Examples
 
 ### Complete Search Workflow
+
 ```bash
 # 1. Search for businesses
 curl -X POST http://localhost:3000/api/search \
@@ -460,25 +497,26 @@ curl -X POST http://localhost:3000/api/crm/export \
 ## 🔧 SDK and Client Libraries
 
 ### JavaScript/TypeScript SDK
+
 ```typescript
 import { BusinessScraperAPI } from 'business-scraper-sdk'
 
 const api = new BusinessScraperAPI({
   baseURL: 'http://localhost:3000/api',
-  apiKey: 'your-api-key' // When authentication is implemented
+  apiKey: 'your-api-key', // When authentication is implemented
 })
 
 // Search for businesses
 const results = await api.search({
   query: 'restaurants',
   location: '90210',
-  limit: 25
+  limit: 25,
 })
 
 // Export to CRM
 const exportResult = await api.exportToCRM({
   templateId: 'salesforce-lead-basic',
-  businessIds: results.data.results.map(b => b.id)
+  businessIds: results.data.results.map(b => b.id),
 })
 ```
 
@@ -492,17 +530,20 @@ const exportResult = await api.exportToCRM({
 ## 🔄 Changelog
 
 ### v3.6.0
+
 - Added CRM export API endpoints
 - Enhanced search API with advanced filtering
 - Improved error handling and validation
 - Added comprehensive metrics and health endpoints
 
 ### v3.5.0
+
 - Enhanced testing coverage and quality assurance
 - Improved API response consistency
 - Added comprehensive validation
 
 ### v3.4.0
+
 - Added performance monitoring endpoints
 - Enhanced metrics collection
 - Improved error reporting

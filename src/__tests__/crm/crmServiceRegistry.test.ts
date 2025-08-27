@@ -19,7 +19,7 @@ describe('CRMServiceRegistry', () => {
 
   beforeEach(() => {
     registry = CRMServiceRegistry.getInstance()
-    
+
     mockProvider = {
       id: 'test-provider-1',
       name: 'Test CRM Provider',
@@ -31,8 +31,8 @@ describe('CRMServiceRegistry', () => {
         authentication: {
           type: 'api_key',
           credentials: {
-            apiKey: 'test-api-key'
-          }
+            apiKey: 'test-api-key',
+          },
         },
         syncSettings: {
           direction: 'bidirectional',
@@ -40,22 +40,22 @@ describe('CRMServiceRegistry', () => {
           batchSize: 10,
           conflictResolution: 'source_wins',
           enableDeduplication: true,
-          enableValidation: true
+          enableValidation: true,
         },
         fieldMappings: [
           {
             sourceField: 'businessName',
             targetField: 'name',
             required: true,
-            dataType: 'string'
-          }
+            dataType: 'string',
+          },
         ],
         rateLimits: {
           requestsPerMinute: 60,
           requestsPerHour: 1000,
           requestsPerDay: 10000,
-          burstLimit: 10
-        }
+          burstLimit: 10,
+        },
       },
       capabilities: {
         bidirectionalSync: true,
@@ -64,8 +64,8 @@ describe('CRMServiceRegistry', () => {
         customFields: false,
         webhookSupport: false,
         deduplication: true,
-        validation: true
-      }
+        validation: true,
+      },
     }
   })
 
@@ -77,24 +77,24 @@ describe('CRMServiceRegistry', () => {
   describe('Provider Registration', () => {
     it('should register a new CRM provider successfully', async () => {
       await registry.registerProvider(mockProvider)
-      
+
       const retrievedProvider = registry.getProvider(mockProvider.id)
       expect(retrievedProvider).toEqual(mockProvider)
     })
 
     it('should create service instance for registered provider', async () => {
       await registry.registerProvider(mockProvider)
-      
+
       const service = registry.getService(mockProvider.id)
       expect(service).toBeDefined()
     })
 
     it('should handle registration of multiple providers', async () => {
       const provider2 = { ...mockProvider, id: 'test-provider-2', name: 'Test CRM Provider 2' }
-      
+
       await registry.registerProvider(mockProvider)
       await registry.registerProvider(provider2)
-      
+
       const allProviders = registry.getAllProviders()
       expect(allProviders).toHaveLength(2)
       expect(allProviders.map(p => p.id)).toContain(mockProvider.id)
@@ -103,7 +103,7 @@ describe('CRMServiceRegistry', () => {
 
     it('should throw error for invalid provider configuration', async () => {
       const invalidProvider = { ...mockProvider, configuration: undefined as any }
-      
+
       await expect(registry.registerProvider(invalidProvider)).rejects.toThrow()
     })
   })
@@ -116,11 +116,11 @@ describe('CRMServiceRegistry', () => {
     it('should update provider configuration', async () => {
       const updates = {
         name: 'Updated CRM Provider',
-        isActive: false
+        isActive: false,
       }
-      
+
       await registry.updateProvider(mockProvider.id, updates)
-      
+
       const updatedProvider = registry.getProvider(mockProvider.id)
       expect(updatedProvider?.name).toBe(updates.name)
       expect(updatedProvider?.isActive).toBe(updates.isActive)
@@ -128,20 +128,24 @@ describe('CRMServiceRegistry', () => {
 
     it('should unregister provider successfully', async () => {
       await registry.unregisterProvider(mockProvider.id)
-      
+
       const retrievedProvider = registry.getProvider(mockProvider.id)
       expect(retrievedProvider).toBeUndefined()
-      
+
       const service = registry.getService(mockProvider.id)
       expect(service).toBeUndefined()
     })
 
     it('should throw error when updating non-existent provider', async () => {
-      await expect(registry.updateProvider('non-existent', {})).rejects.toThrow('Provider not found')
+      await expect(registry.updateProvider('non-existent', {})).rejects.toThrow(
+        'Provider not found'
+      )
     })
 
     it('should throw error when unregistering non-existent provider', async () => {
-      await expect(registry.unregisterProvider('non-existent')).rejects.toThrow('Provider not found')
+      await expect(registry.unregisterProvider('non-existent')).rejects.toThrow(
+        'Provider not found'
+      )
     })
   })
 
@@ -165,14 +169,14 @@ describe('CRMServiceRegistry', () => {
       const customServices = registry.getServicesByType('custom')
       expect(customServices).toHaveLength(1)
       expect(customServices[0].getProvider().type).toBe('custom')
-      
+
       const salesforceServices = registry.getServicesByType('salesforce')
       expect(salesforceServices).toHaveLength(0)
     })
 
     it('should return empty array for inactive services when provider is inactive', async () => {
       await registry.updateProvider(mockProvider.id, { isActive: false })
-      
+
       const activeServices = registry.getActiveServices()
       expect(activeServices).toHaveLength(0)
     })
@@ -189,7 +193,7 @@ describe('CRMServiceRegistry', () => {
       if (service) {
         jest.spyOn(service, 'validateConnection').mockResolvedValue(true)
       }
-      
+
       const isConnected = await registry.testConnection(mockProvider.id)
       expect(isConnected).toBe(true)
     })
@@ -200,7 +204,7 @@ describe('CRMServiceRegistry', () => {
       if (service) {
         jest.spyOn(service, 'validateConnection').mockResolvedValue(true)
       }
-      
+
       const results = await registry.testAllConnections()
       expect(results[mockProvider.id]).toBe(true)
     })
@@ -211,7 +215,7 @@ describe('CRMServiceRegistry', () => {
       if (service) {
         jest.spyOn(service, 'validateConnection').mockRejectedValue(new Error('Connection failed'))
       }
-      
+
       const isConnected = await registry.testConnection(mockProvider.id)
       expect(isConnected).toBe(false)
     })
@@ -225,7 +229,7 @@ describe('CRMServiceRegistry', () => {
   describe('Statistics', () => {
     it('should return correct statistics for empty registry', () => {
       const stats = registry.getStatistics()
-      
+
       expect(stats.totalProviders).toBe(0)
       expect(stats.activeProviders).toBe(0)
       expect(stats.servicesReady).toBe(0)
@@ -234,23 +238,23 @@ describe('CRMServiceRegistry', () => {
 
     it('should return correct statistics with providers', async () => {
       await registry.registerProvider(mockProvider)
-      
-      const provider2 = { 
-        ...mockProvider, 
-        id: 'test-provider-2', 
+
+      const provider2 = {
+        ...mockProvider,
+        id: 'test-provider-2',
         type: 'salesforce' as const,
-        isActive: false 
+        isActive: false,
       }
       await registry.registerProvider(provider2)
-      
+
       const stats = registry.getStatistics()
-      
+
       expect(stats.totalProviders).toBe(2)
       expect(stats.activeProviders).toBe(1)
       expect(stats.servicesReady).toBe(2)
       expect(stats.providersByType).toEqual({
         custom: 1,
-        salesforce: 1
+        salesforce: 1,
       })
     })
   })
@@ -259,12 +263,12 @@ describe('CRMServiceRegistry', () => {
     it('should handle service creation failures gracefully', async () => {
       const invalidProvider = {
         ...mockProvider,
-        type: 'unsupported' as any
+        type: 'unsupported' as any,
       }
-      
+
       // Should not throw, but should log warning
       await registry.registerProvider(invalidProvider)
-      
+
       const service = registry.getService(invalidProvider.id)
       expect(service).toBeUndefined()
     })
@@ -273,9 +277,9 @@ describe('CRMServiceRegistry', () => {
       // Mock service initialization to fail
       const mockService = {
         initialize: jest.fn().mockRejectedValue(new Error('Init failed')),
-        getProvider: jest.fn().mockReturnValue(mockProvider)
+        getProvider: jest.fn().mockReturnValue(mockProvider),
       }
-      
+
       // This would require mocking the service creation, which is complex
       // For now, we'll test that the registry handles the error appropriately
       await expect(registry.registerProvider(mockProvider)).resolves.not.toThrow()
@@ -287,11 +291,11 @@ describe('CRMServiceRegistry', () => {
       // Register
       await registry.registerProvider(mockProvider)
       expect(registry.getProvider(mockProvider.id)).toBeDefined()
-      
+
       // Update
       await registry.updateProvider(mockProvider.id, { name: 'Updated Name' })
       expect(registry.getProvider(mockProvider.id)?.name).toBe('Updated Name')
-      
+
       // Test connection
       const service = registry.getService(mockProvider.id)
       if (service) {
@@ -299,7 +303,7 @@ describe('CRMServiceRegistry', () => {
       }
       const isConnected = await registry.testConnection(mockProvider.id)
       expect(isConnected).toBe(true)
-      
+
       // Unregister
       await registry.unregisterProvider(mockProvider.id)
       expect(registry.getProvider(mockProvider.id)).toBeUndefined()
@@ -309,19 +313,19 @@ describe('CRMServiceRegistry', () => {
       const provider1 = mockProvider
       const provider2 = { ...mockProvider, id: 'provider-2', type: 'hubspot' as const }
       const provider3 = { ...mockProvider, id: 'provider-3', type: 'pipedrive' as const }
-      
+
       // Register multiple providers
       await registry.registerProvider(provider1)
       await registry.registerProvider(provider2)
       await registry.registerProvider(provider3)
-      
+
       // Verify state
       expect(registry.getAllProviders()).toHaveLength(3)
       expect(registry.getAllServices()).toHaveLength(3)
-      
+
       // Remove one provider
       await registry.unregisterProvider(provider2.id)
-      
+
       // Verify state consistency
       expect(registry.getAllProviders()).toHaveLength(2)
       expect(registry.getAllServices()).toHaveLength(2)

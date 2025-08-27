@@ -11,7 +11,7 @@ import {
   BatchTransformationResult,
   ValidationError,
   CRMExportOptions,
-  CommonTransformers
+  CommonTransformers,
 } from '../types'
 import { CRMTransformationEngine } from '../transformationEngine'
 import { logger } from '@/utils/logger'
@@ -41,10 +41,12 @@ export class SalesforceAdapter implements CRMAdapter {
     },
 
     /** Format Salesforce picklist values */
-    formatPicklist: (allowedValues: string[]) => (value: any): string => {
-      const stringValue = String(value || '').trim()
-      return allowedValues.includes(stringValue) ? stringValue : allowedValues[0] || ''
-    },
+    formatPicklist:
+      (allowedValues: string[]) =>
+      (value: any): string => {
+        const stringValue = String(value || '').trim()
+        return allowedValues.includes(stringValue) ? stringValue : allowedValues[0] || ''
+      },
 
     /** Format Salesforce currency */
     formatSalesforceCurrency: (value: any): number => {
@@ -66,25 +68,25 @@ export class SalesforceAdapter implements CRMAdapter {
     /** Format industry for Salesforce */
     formatSalesforceIndustry: (value: any): string => {
       const industryMap: Record<string, string> = {
-        'restaurants': 'Food & Beverage',
-        'retail': 'Retail',
-        'healthcare': 'Healthcare',
-        'technology': 'Technology',
-        'finance': 'Financial Services',
+        restaurants: 'Food & Beverage',
+        retail: 'Retail',
+        healthcare: 'Healthcare',
+        technology: 'Technology',
+        finance: 'Financial Services',
         'real estate': 'Real Estate',
-        'education': 'Education',
-        'manufacturing': 'Manufacturing',
-        'construction': 'Construction',
-        'automotive': 'Automotive',
-        'hospitality': 'Hospitality',
-        'legal': 'Legal',
-        'consulting': 'Consulting',
-        'nonprofit': 'Nonprofit'
+        education: 'Education',
+        manufacturing: 'Manufacturing',
+        construction: 'Construction',
+        automotive: 'Automotive',
+        hospitality: 'Hospitality',
+        legal: 'Legal',
+        consulting: 'Consulting',
+        nonprofit: 'Nonprofit',
       }
-      
+
       const industry = String(value || '').toLowerCase()
       return industryMap[industry] || 'Other'
-    }
+    },
   }
 
   /**
@@ -103,58 +105,58 @@ export class SalesforceAdapter implements CRMAdapter {
           targetField: 'Company',
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Company name for the lead'
+          description: 'Company name for the lead',
         },
         {
           sourceField: 'email',
           targetField: 'Email',
           transformer: CommonTransformers.formatEmail,
           validation: { required: false, type: 'email' },
-          description: 'Primary email address'
+          description: 'Primary email address',
         },
         {
           sourceField: 'phone',
           targetField: 'Phone',
           transformer: CommonTransformers.formatPhone,
           validation: { required: false, type: 'phone' },
-          description: 'Primary phone number'
+          description: 'Primary phone number',
         },
         {
           sourceField: 'websiteUrl',
           targetField: 'Website',
           validation: { required: false, type: 'url' },
-          description: 'Company website URL'
+          description: 'Company website URL',
         },
         {
           sourceField: 'address.street',
           targetField: 'Street',
           validation: { required: false, type: 'string', maxLength: 255 },
-          description: 'Street address'
+          description: 'Street address',
         },
         {
           sourceField: 'address.city',
           targetField: 'City',
           validation: { required: false, type: 'string', maxLength: 40 },
-          description: 'City'
+          description: 'City',
         },
         {
           sourceField: 'address.state',
           targetField: 'State',
           validation: { required: false, type: 'string', maxLength: 80 },
-          description: 'State or province'
+          description: 'State or province',
         },
         {
           sourceField: 'address.zipCode',
           targetField: 'PostalCode',
           validation: { required: false, type: 'string', maxLength: 20 },
-          description: 'Postal or ZIP code'
+          description: 'Postal or ZIP code',
         },
         {
           sourceField: 'industry',
           targetField: 'Industry',
           transformer: this.salesforceTransformers.formatSalesforceIndustry,
           validation: { required: false, type: 'string' },
-          description: 'Industry classification'
+          description: 'Industry classification',
         },
         {
           sourceField: 'businessName',
@@ -162,7 +164,7 @@ export class SalesforceAdapter implements CRMAdapter {
           transformer: (value: any) => `${value} Contact`,
           required: true,
           validation: { required: true, type: 'string', maxLength: 80 },
-          description: 'Contact last name (derived from business name)'
+          description: 'Contact last name (derived from business name)',
         },
         {
           sourceField: 'source',
@@ -170,34 +172,34 @@ export class SalesforceAdapter implements CRMAdapter {
           transformer: this.salesforceTransformers.formatLeadSource,
           defaultValue: 'Web',
           validation: { required: false, type: 'string' },
-          description: 'Source of the lead'
-        }
+          description: 'Source of the lead',
+        },
       ],
       customHeaders: {
-        'Company': 'Company',
-        'Email': 'Email',
-        'Phone': 'Phone',
-        'Website': 'Website',
-        'Street': 'Street',
-        'City': 'City',
-        'State': 'State/Province',
-        'PostalCode': 'Zip/Postal Code',
-        'Industry': 'Industry',
-        'LastName': 'Last Name',
-        'LeadSource': 'Lead Source'
+        Company: 'Company',
+        Email: 'Email',
+        Phone: 'Phone',
+        Website: 'Website',
+        Street: 'Street',
+        City: 'City',
+        State: 'State/Province',
+        PostalCode: 'Zip/Postal Code',
+        Industry: 'Industry',
+        LastName: 'Last Name',
+        LeadSource: 'Lead Source',
       },
       metadata: {
         version: '1.0.0',
         author: 'Business Scraper',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['salesforce', 'lead', 'basic']
+        tags: ['salesforce', 'lead', 'basic'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
+        maxErrors: 100,
+      },
     },
     {
       id: 'salesforce-account-contact',
@@ -213,51 +215,51 @@ export class SalesforceAdapter implements CRMAdapter {
           transformer: this.salesforceTransformers.formatAccountName,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Account name'
+          description: 'Account name',
         },
         {
           sourceField: 'websiteUrl',
           targetField: 'Account Website',
           validation: { required: false, type: 'url' },
-          description: 'Account website'
+          description: 'Account website',
         },
         {
           sourceField: 'phone',
           targetField: 'Account Phone',
           transformer: CommonTransformers.formatPhone,
           validation: { required: false, type: 'phone' },
-          description: 'Account main phone'
+          description: 'Account main phone',
         },
         {
           sourceField: 'industry',
           targetField: 'Account Industry',
           transformer: this.salesforceTransformers.formatSalesforceIndustry,
           validation: { required: false, type: 'string' },
-          description: 'Account industry'
+          description: 'Account industry',
         },
         {
           sourceField: 'address.street',
           targetField: 'Account Billing Street',
           validation: { required: false, type: 'string', maxLength: 255 },
-          description: 'Account billing street'
+          description: 'Account billing street',
         },
         {
           sourceField: 'address.city',
           targetField: 'Account Billing City',
           validation: { required: false, type: 'string', maxLength: 40 },
-          description: 'Account billing city'
+          description: 'Account billing city',
         },
         {
           sourceField: 'address.state',
           targetField: 'Account Billing State',
           validation: { required: false, type: 'string', maxLength: 80 },
-          description: 'Account billing state'
+          description: 'Account billing state',
         },
         {
           sourceField: 'address.zipCode',
           targetField: 'Account Billing Postal Code',
           validation: { required: false, type: 'string', maxLength: 20 },
-          description: 'Account billing postal code'
+          description: 'Account billing postal code',
         },
         // Contact fields
         {
@@ -266,22 +268,22 @@ export class SalesforceAdapter implements CRMAdapter {
           transformer: (value: any) => `${value} Contact`,
           required: true,
           validation: { required: true, type: 'string', maxLength: 80 },
-          description: 'Contact last name'
+          description: 'Contact last name',
         },
         {
           sourceField: 'email',
           targetField: 'Contact Email',
           transformer: CommonTransformers.formatEmail,
           validation: { required: false, type: 'email' },
-          description: 'Contact email'
+          description: 'Contact email',
         },
         {
           sourceField: 'phone',
           targetField: 'Contact Phone',
           transformer: CommonTransformers.formatPhone,
           validation: { required: false, type: 'phone' },
-          description: 'Contact phone'
-        }
+          description: 'Contact phone',
+        },
       ],
       customHeaders: {
         'Account Name': 'Account Name',
@@ -294,21 +296,21 @@ export class SalesforceAdapter implements CRMAdapter {
         'Account Billing Postal Code': 'Billing Zip/Postal Code',
         'Contact Last Name': 'Contact Last Name',
         'Contact Email': 'Contact Email',
-        'Contact Phone': 'Contact Phone'
+        'Contact Phone': 'Contact Phone',
       },
       metadata: {
         version: '1.0.0',
         author: 'Business Scraper',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['salesforce', 'account', 'contact', 'b2b']
+        tags: ['salesforce', 'account', 'contact', 'b2b'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
-    }
+        maxErrors: 100,
+      },
+    },
   ]
 
   /**
@@ -319,15 +321,18 @@ export class SalesforceAdapter implements CRMAdapter {
     template: CRMTemplate,
     options?: CRMExportOptions
   ): Promise<BatchTransformationResult> {
-    logger.info('SalesforceAdapter', `Transforming ${records.length} records using template: ${template.name}`)
-    
+    logger.info(
+      'SalesforceAdapter',
+      `Transforming ${records.length} records using template: ${template.name}`
+    )
+
     const mergedOptions: CRMExportOptions = {
       ...options,
       template,
       customTransformers: {
         ...this.salesforceTransformers,
-        ...options?.customTransformers
-      }
+        ...options?.customTransformers,
+      },
     }
 
     return await this.transformationEngine.transformBatch(records, template, mergedOptions)
@@ -345,7 +350,7 @@ export class SalesforceAdapter implements CRMAdapter {
         field: 'Company',
         message: 'Company name is required for Salesforce Leads',
         value: record.businessName,
-        rule: 'salesforce-lead-required'
+        rule: 'salesforce-lead-required',
       })
     }
 
@@ -354,7 +359,7 @@ export class SalesforceAdapter implements CRMAdapter {
         field: 'Account Name',
         message: 'Account name is required for Salesforce Accounts',
         value: record.businessName,
-        rule: 'salesforce-account-required'
+        rule: 'salesforce-account-required',
       })
     }
 
@@ -389,14 +394,14 @@ export class SalesforceAdapter implements CRMAdapter {
         author: 'User',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['salesforce', 'custom']
+        tags: ['salesforce', 'custom'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
         maxErrors: 100,
-        ...options?.validation
-      }
+        ...options?.validation,
+      },
     }
   }
 }

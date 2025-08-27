@@ -18,7 +18,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Parse request body
     const body = await request.json()
-    
+
     const tokenRequest: TokenRequest = {
       grantType: body.grant_type as GrantType,
       clientId: body.client_id,
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       tokenRequest.clientId,
       tokenRequest.clientSecret
     )
-    
+
     if (!clientValidation.valid || !clientValidation.client) {
       return createErrorResponse({
         error: 'invalid_client',
@@ -65,20 +65,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     switch (tokenRequest.grantType) {
       case 'authorization_code':
         return handleAuthorizationCodeGrant(tokenRequest, client)
-      
+
       case 'refresh_token':
         return handleRefreshTokenGrant(tokenRequest, client)
-      
+
       case 'client_credentials':
         return handleClientCredentialsGrant(tokenRequest, client)
-      
+
       default:
         return createErrorResponse({
           error: 'unsupported_grant_type',
           errorDescription: `Unsupported grant type: ${tokenRequest.grantType}`,
         })
     }
-
   } catch (error) {
     logger.error('OAuth', 'Token endpoint error', error)
     return createErrorResponse({
@@ -174,7 +173,7 @@ async function handleRefreshTokenGrant(
 
   // Validate refresh token
   const tokenValidation = tokenService.validateToken(tokenRequest.refreshToken)
-  
+
   if (!tokenValidation.valid || !tokenValidation.payload) {
     return createErrorResponse({
       error: 'invalid_grant',
@@ -253,7 +252,7 @@ async function handleClientCredentialsGrant(
 
   // Parse requested scopes
   const requestedScopes = tokenRequest.scope ? tokenRequest.scope.split(' ') : ['read']
-  
+
   // Validate scopes
   if (!clientService.hasScope(client.id, requestedScopes)) {
     return createErrorResponse({

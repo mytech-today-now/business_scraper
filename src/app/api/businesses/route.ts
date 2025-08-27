@@ -14,12 +14,18 @@ const BusinessQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   search: z.string().optional(),
   industry: z.string().optional(),
-  hasEmail: z.enum(['true', 'false']).optional().transform(val => val === 'true' ? true : val === 'false' ? false : undefined),
-  hasPhone: z.enum(['true', 'false']).optional().transform(val => val === 'true' ? true : val === 'false' ? false : undefined),
+  hasEmail: z
+    .enum(['true', 'false'])
+    .optional()
+    .transform(val => (val === 'true' ? true : val === 'false' ? false : undefined)),
+  hasPhone: z
+    .enum(['true', 'false'])
+    .optional()
+    .transform(val => (val === 'true' ? true : val === 'false' ? false : undefined)),
   qualityScoreMin: z.coerce.number().min(0).max(100).optional(),
   qualityScoreMax: z.coerce.number().min(0).max(100).optional(),
   dateStart: z.string().optional(),
-  dateEnd: z.string().optional()
+  dateEnd: z.string().optional(),
 })
 
 /**
@@ -50,42 +56,42 @@ interface PaginatedBusinessResponse {
  */
 function calculateQualityScore(business: BusinessRecord): number {
   let score = 0
-  
+
   // Business name (required) - 20 points
   if (business.businessName && business.businessName.trim().length > 0) {
     score += 20
   }
-  
+
   // Email - 25 points
   if (business.email && business.email.includes('@')) {
     score += 25
   }
-  
+
   // Phone - 20 points
   if (business.phone && business.phone.length >= 10) {
     score += 20
   }
-  
+
   // Website - 15 points
   if (business.website && business.website.startsWith('http')) {
     score += 15
   }
-  
+
   // Address - 10 points
   if (business.address && business.address.trim().length > 10) {
     score += 10
   }
-  
+
   // Industry - 5 points
   if (business.industry && business.industry.trim().length > 0) {
     score += 5
   }
-  
+
   // Description - 5 points
   if (business.description && business.description.trim().length > 20) {
     score += 5
   }
-  
+
   return Math.min(score, 100)
 }
 
@@ -94,41 +100,38 @@ function calculateQualityScore(business: BusinessRecord): number {
  */
 function applyFilters(businesses: BusinessRecord[], filters: any): BusinessRecord[] {
   let filtered = businesses
-  
+
   // Search filter
   if (filters.search) {
     const searchLower = filters.search.toLowerCase()
-    filtered = filtered.filter(business =>
-      business.businessName?.toLowerCase().includes(searchLower) ||
-      business.email?.toLowerCase().includes(searchLower) ||
-      business.phone?.includes(filters.search) ||
-      business.website?.toLowerCase().includes(searchLower) ||
-      business.address?.toLowerCase().includes(searchLower) ||
-      business.industry?.toLowerCase().includes(searchLower)
+    filtered = filtered.filter(
+      business =>
+        business.businessName?.toLowerCase().includes(searchLower) ||
+        business.email?.toLowerCase().includes(searchLower) ||
+        business.phone?.includes(filters.search) ||
+        business.website?.toLowerCase().includes(searchLower) ||
+        business.address?.toLowerCase().includes(searchLower) ||
+        business.industry?.toLowerCase().includes(searchLower)
     )
   }
-  
+
   // Industry filter
   if (filters.industry) {
     filtered = filtered.filter(business =>
       business.industry?.toLowerCase().includes(filters.industry.toLowerCase())
     )
   }
-  
+
   // Email filter
   if (filters.hasEmail !== undefined) {
-    filtered = filtered.filter(business =>
-      filters.hasEmail ? !!business.email : !business.email
-    )
+    filtered = filtered.filter(business => (filters.hasEmail ? !!business.email : !business.email))
   }
-  
+
   // Phone filter
   if (filters.hasPhone !== undefined) {
-    filtered = filtered.filter(business =>
-      filters.hasPhone ? !!business.phone : !business.phone
-    )
+    filtered = filtered.filter(business => (filters.hasPhone ? !!business.phone : !business.phone))
   }
-  
+
   // Quality score filter
   if (filters.qualityScoreMin !== undefined || filters.qualityScoreMax !== undefined) {
     filtered = filtered.filter(business => {
@@ -138,31 +141,35 @@ function applyFilters(businesses: BusinessRecord[], filters: any): BusinessRecor
       return score >= min && score <= max
     })
   }
-  
+
   // Date range filter
   if (filters.dateStart || filters.dateEnd) {
     filtered = filtered.filter(business => {
       if (!business.scrapedAt) return false
-      
+
       const businessDate = new Date(business.scrapedAt)
       const startDate = filters.dateStart ? new Date(filters.dateStart) : new Date(0)
       const endDate = filters.dateEnd ? new Date(filters.dateEnd) : new Date()
-      
+
       return businessDate >= startDate && businessDate <= endDate
     })
   }
-  
+
   return filtered
 }
 
 /**
  * Apply sorting to business records
  */
-function applySorting(businesses: BusinessRecord[], sortField: string, sortOrder: string): BusinessRecord[] {
+function applySorting(
+  businesses: BusinessRecord[],
+  sortField: string,
+  sortOrder: string
+): BusinessRecord[] {
   return businesses.sort((a, b) => {
     let aValue: any
     let bValue: any
-    
+
     switch (sortField) {
       case 'businessName':
         aValue = a.businessName || ''
@@ -184,7 +191,7 @@ function applySorting(businesses: BusinessRecord[], sortField: string, sortOrder
         aValue = a.businessName || ''
         bValue = b.businessName || ''
     }
-    
+
     if (sortOrder === 'asc') {
       return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
     } else {
@@ -212,7 +219,7 @@ function parseCursor(cursor: string): { timestamp: number; value: string; id: st
     return {
       timestamp: parseInt(timestamp),
       value,
-      id
+      id,
     }
   } catch {
     return null
@@ -224,28 +231,32 @@ function parseCursor(cursor: string): { timestamp: number; value: string; id: st
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now()
-  
+
   try {
     // Parse and validate query parameters
     const { searchParams } = new URL(request.url)
     const queryParams = Object.fromEntries(searchParams.entries())
-    
+
     const validatedParams = BusinessQuerySchema.parse(queryParams)
-    
+
     logger.info('BusinessAPI', 'Fetching paginated businesses', {
       params: validatedParams,
-      ip: request.ip
+      ip: request.ip,
     })
-    
+
     // Get all businesses from storage
     const allBusinesses = await storage.getAllBusinesses()
-    
+
     // Apply filters
     const filteredBusinesses = applyFilters(allBusinesses, validatedParams)
-    
+
     // Apply sorting
-    const sortedBusinesses = applySorting(filteredBusinesses, validatedParams.sortField, validatedParams.sortOrder)
-    
+    const sortedBusinesses = applySorting(
+      filteredBusinesses,
+      validatedParams.sortField,
+      validatedParams.sortOrder
+    )
+
     // Handle cursor-based pagination
     let startIndex = 0
     if (validatedParams.cursor) {
@@ -255,28 +266,36 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         startIndex = sortedBusinesses.findIndex(business => {
           const businessTimestamp = business.scrapedAt ? new Date(business.scrapedAt).getTime() : 0
           const businessValue = business[validatedParams.sortField as keyof BusinessRecord] || ''
-          
+
           if (validatedParams.sortOrder === 'desc') {
-            return businessTimestamp < cursorData.timestamp || 
-                   (businessTimestamp === cursorData.timestamp && businessValue < cursorData.value) ||
-                   (businessTimestamp === cursorData.timestamp && businessValue === cursorData.value && business.id === cursorData.id)
+            return (
+              businessTimestamp < cursorData.timestamp ||
+              (businessTimestamp === cursorData.timestamp && businessValue < cursorData.value) ||
+              (businessTimestamp === cursorData.timestamp &&
+                businessValue === cursorData.value &&
+                business.id === cursorData.id)
+            )
           } else {
-            return businessTimestamp > cursorData.timestamp || 
-                   (businessTimestamp === cursorData.timestamp && businessValue > cursorData.value) ||
-                   (businessTimestamp === cursorData.timestamp && businessValue === cursorData.value && business.id === cursorData.id)
+            return (
+              businessTimestamp > cursorData.timestamp ||
+              (businessTimestamp === cursorData.timestamp && businessValue > cursorData.value) ||
+              (businessTimestamp === cursorData.timestamp &&
+                businessValue === cursorData.value &&
+                business.id === cursorData.id)
+            )
           }
         })
-        
+
         if (startIndex === -1) {
           startIndex = sortedBusinesses.length
         }
       }
     }
-    
+
     // Get the page of results
     const endIndex = Math.min(startIndex + validatedParams.limit, sortedBusinesses.length)
     const pageBusinesses = sortedBusinesses.slice(startIndex, endIndex)
-    
+
     // Generate next cursor
     let nextCursor: string | null = null
     if (endIndex < sortedBusinesses.length) {
@@ -285,12 +304,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         nextCursor = generateCursor(lastBusiness, validatedParams.sortField)
       }
     }
-    
+
     // Calculate current page number (approximate)
     const currentPage = Math.floor(startIndex / validatedParams.limit) + 1
-    
+
     const processingTime = Date.now() - startTime
-    
+
     const response: PaginatedBusinessResponse = {
       data: pageBusinesses,
       pagination: {
@@ -298,7 +317,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         hasMore: endIndex < sortedBusinesses.length,
         totalCount: filteredBusinesses.length,
         currentPage,
-        pageSize: validatedParams.limit
+        pageSize: validatedParams.limit,
       },
       metadata: {
         processingTime,
@@ -311,41 +330,37 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           qualityScoreMin: validatedParams.qualityScoreMin,
           qualityScoreMax: validatedParams.qualityScoreMax,
           dateStart: validatedParams.dateStart,
-          dateEnd: validatedParams.dateEnd
+          dateEnd: validatedParams.dateEnd,
         },
         sortConfig: {
           field: validatedParams.sortField,
-          order: validatedParams.sortOrder
-        }
-      }
+          order: validatedParams.sortOrder,
+        },
+      },
     }
-    
+
     logger.info('BusinessAPI', 'Successfully fetched paginated businesses', {
       totalCount: filteredBusinesses.length,
       pageSize: pageBusinesses.length,
       processingTime,
-      hasMore: response.pagination.hasMore
+      hasMore: response.pagination.hasMore,
     })
-    
+
     return NextResponse.json(response)
-    
   } catch (error) {
     logger.error('BusinessAPI', 'Failed to fetch businesses', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid query parameters',
-          details: error.errors
+          details: error.errors,
         },
         { status: 400 }
       )
     }
-    
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -355,33 +370,26 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json()
-    
+
     if (!Array.isArray(body.businesses)) {
-      return NextResponse.json(
-        { error: 'Expected array of businesses' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Expected array of businesses' }, { status: 400 })
     }
-    
+
     const businesses: BusinessRecord[] = body.businesses
-    
+
     // Save businesses to storage
     for (const business of businesses) {
       await storage.saveBusiness(business)
     }
-    
+
     logger.info('BusinessAPI', `Saved ${businesses.length} businesses`)
-    
+
     return NextResponse.json({
       success: true,
-      count: businesses.length
+      count: businesses.length,
     })
-    
   } catch (error) {
     logger.error('BusinessAPI', 'Failed to save businesses', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

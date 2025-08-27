@@ -42,7 +42,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (responseType !== 'code') {
       return NextResponse.json(
-        { error: 'unsupported_response_type', error_description: 'Only code response type is supported' },
+        {
+          error: 'unsupported_response_type',
+          error_description: 'Only code response type is supported',
+        },
         { status: 400 }
       )
     }
@@ -58,7 +61,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       clientId,
       redirectUri,
       scope,
-      hasPKCE: !!codeChallenge
+      hasPKCE: !!codeChallenge,
     })
 
     // Get client
@@ -89,7 +92,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const invalidScopes = scope.filter(s => !client.config.scopes.includes(s))
     if (invalidScopes.length > 0) {
       return NextResponse.json(
-        { error: 'invalid_scope', error_description: `Invalid scopes: ${invalidScopes.join(', ')}` },
+        {
+          error: 'invalid_scope',
+          error_description: `Invalid scopes: ${invalidScopes.join(', ')}`,
+        },
         { status: 400 }
       )
     }
@@ -124,11 +130,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       logger.info('OAuth2Authorize', `Authorization granted for client: ${clientId}`, {
         clientId,
         scope,
-        redirectUri
+        redirectUri,
       })
 
       return NextResponse.redirect(redirectUrl.toString())
-
     } catch (error) {
       logger.error('OAuth2Authorize', `Authorization failed for client: ${clientId}`, error)
 
@@ -141,14 +146,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
       return NextResponse.redirect(redirectUrl.toString())
     }
-
   } catch (error) {
     logger.error('OAuth2Authorize', `Authorization endpoint error from IP: ${ip}`, error)
 
     return NextResponse.json(
-      { 
-        error: 'server_error', 
-        error_description: 'Internal server error' 
+      {
+        error: 'server_error',
+        error_description: 'Internal server error',
       },
       { status: 500 }
     )
@@ -163,13 +167,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const body = await request.json()
-    const { 
-      client_id: clientId, 
-      redirect_uri: redirectUri, 
-      scope, 
-      state, 
-      approved 
-    } = body
+    const { client_id: clientId, redirect_uri: redirectUri, scope, state, approved } = body
 
     if (!approved) {
       // User denied authorization
@@ -211,18 +209,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.info('OAuth2Authorize', `Authorization approved via POST for client: ${clientId}`, {
       clientId,
       scope,
-      ip
+      ip,
     })
 
     return NextResponse.redirect(redirectUrl.toString())
-
   } catch (error) {
     logger.error('OAuth2Authorize', `POST authorization error from IP: ${ip}`, error)
 
     return NextResponse.json(
-      { 
-        error: 'server_error', 
-        error_description: 'Internal server error' 
+      {
+        error: 'server_error',
+        error_description: 'Internal server error',
       },
       { status: 500 }
     )

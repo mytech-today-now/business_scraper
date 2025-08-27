@@ -132,7 +132,12 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     setupKeyboardListeners()
     setupAccessibilityFeatures()
     requestNotificationPermission()
-  }, [loadPreferences, setupKeyboardListeners, setupAccessibilityFeatures, requestNotificationPermission])
+  }, [
+    loadPreferences,
+    setupKeyboardListeners,
+    setupAccessibilityFeatures,
+    requestNotificationPermission,
+  ])
 
   // Apply theme changes
   useEffect(() => {
@@ -176,7 +181,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     setState(prev => ({
       ...prev,
       loadingStates: { ...prev.loadingStates, [key]: loading },
-      isLoading: loading || Object.values({ ...prev.loadingStates, [key]: loading }).some(Boolean)
+      isLoading: loading || Object.values({ ...prev.loadingStates, [key]: loading }).some(Boolean),
     }))
   }, [])
 
@@ -193,7 +198,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
       }
       return {
         ...prev,
-        errors: newErrors
+        errors: newErrors,
       }
     })
   }, [])
@@ -209,16 +214,16 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   const undo = useCallback(() => {
     setState(prev => {
       if (prev.undoStack.length === 0) return prev
-      
+
       const lastAction = prev.undoStack[prev.undoStack.length - 1]
       const newUndoStack = prev.undoStack.slice(0, -1)
       const newRedoStack = [...prev.redoStack, lastAction]
-      
+
       // Execute undo action
       if (lastAction.undo) {
         lastAction.undo()
       }
-      
+
       return {
         ...prev,
         undoStack: newUndoStack,
@@ -230,16 +235,16 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   const redo = useCallback(() => {
     setState(prev => {
       if (prev.redoStack.length === 0) return prev
-      
+
       const lastAction = prev.redoStack[prev.redoStack.length - 1]
       const newRedoStack = prev.redoStack.slice(0, -1)
       const newUndoStack = [...prev.undoStack, lastAction]
-      
+
       // Execute redo action
       if (lastAction.redo) {
         lastAction.redo()
       }
-      
+
       return {
         ...prev,
         undoStack: newUndoStack,
@@ -259,40 +264,43 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   const registerShortcut = useCallback((key: string, action: () => void) => {
     setState(prev => ({
       ...prev,
-      keyboardShortcuts: { ...prev.keyboardShortcuts, [key]: action }
+      keyboardShortcuts: { ...prev.keyboardShortcuts, [key]: action },
     }))
   }, [])
 
-  const showToast = useCallback((message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
-    // This would integrate with a toast notification system
-    logger.info('UXProvider', `Toast: ${type} - ${message}`)
-    
-    // Create a simple toast notification
-    const toast = document.createElement('div')
-    toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${getToastStyles(type)}`
-    toast.textContent = message
-    
-    document.body.appendChild(toast)
-    
-    // Animate in
-    toast.style.transform = 'translateX(100%)'
-    toast.style.transition = 'transform 0.3s ease-in-out'
-    setTimeout(() => {
-      toast.style.transform = 'translateX(0)'
-    }, 10)
-    
-    // Remove after 5 seconds
-    setTimeout(() => {
+  const showToast = useCallback(
+    (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
+      // This would integrate with a toast notification system
+      logger.info('UXProvider', `Toast: ${type} - ${message}`)
+
+      // Create a simple toast notification
+      const toast = document.createElement('div')
+      toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${getToastStyles(type)}`
+      toast.textContent = message
+
+      document.body.appendChild(toast)
+
+      // Animate in
       toast.style.transform = 'translateX(100%)'
+      toast.style.transition = 'transform 0.3s ease-in-out'
       setTimeout(() => {
-        document.body.removeChild(toast)
-      }, 300)
-    }, 5000)
-  }, [])
+        toast.style.transform = 'translateX(0)'
+      }, 10)
+
+      // Remove after 5 seconds
+      setTimeout(() => {
+        toast.style.transform = 'translateX(100%)'
+        setTimeout(() => {
+          document.body.removeChild(toast)
+        }, 300)
+      }, 5000)
+    },
+    []
+  )
 
   const applyTheme = (theme: 'light' | 'dark' | 'system') => {
     const root = document.documentElement
-    
+
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       root.classList.toggle('dark', prefersDark)
@@ -303,11 +311,11 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
 
   const applyAccessibilitySettings = (accessibility: UserPreferences['accessibility']) => {
     const root = document.documentElement
-    
+
     root.classList.toggle('high-contrast', accessibility.highContrast)
     root.classList.toggle('large-text', accessibility.largeText)
     root.classList.toggle('reduced-motion', accessibility.reducedMotion)
-    
+
     // Update CSS custom properties
     root.style.setProperty('--font-size-multiplier', accessibility.largeText ? '1.2' : '1')
     root.style.setProperty('--animation-duration', accessibility.reducedMotion ? '0s' : '0.3s')
@@ -316,9 +324,9 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   const setupKeyboardListeners = useCallback(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!state.preferences.interface.keyboardNavigation) return
-      
+
       const key = `${event.ctrlKey ? 'ctrl+' : ''}${event.shiftKey ? 'shift+' : ''}${event.altKey ? 'alt+' : ''}${event.key.toLowerCase()}`
-      
+
       const shortcut = Object.prototype.hasOwnProperty.call(state.keyboardShortcuts, key)
         ? state.keyboardShortcuts[key as keyof typeof state.keyboardShortcuts]
         : null
@@ -326,7 +334,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
         event.preventDefault()
         shortcut()
       }
-      
+
       // Built-in shortcuts
       switch (key) {
         case 'ctrl+z':
@@ -344,20 +352,21 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
           break
       }
     }
-    
+
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [state.preferences.interface.keyboardNavigation])
 
   const setupAccessibilityFeatures = useCallback(() => {
     // Detect screen reader
-    const hasScreenReader = window.navigator.userAgent.includes('NVDA') || 
-                           window.navigator.userAgent.includes('JAWS') || 
-                           window.speechSynthesis !== undefined
+    const hasScreenReader =
+      window.navigator.userAgent.includes('NVDA') ||
+      window.navigator.userAgent.includes('JAWS') ||
+      window.speechSynthesis !== undefined
 
     if (hasScreenReader) {
       updatePreferences({
-        accessibility: { ...state.preferences.accessibility, screenReader: true }
+        accessibility: { ...state.preferences.accessibility, screenReader: true },
       })
     }
 
@@ -365,7 +374,7 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) {
       updatePreferences({
-        accessibility: { ...state.preferences.accessibility, reducedMotion: true }
+        accessibility: { ...state.preferences.accessibility, reducedMotion: true },
       })
     }
   }, [state.preferences.accessibility])
@@ -384,10 +393,14 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
 
   const getToastStyles = (type: string) => {
     switch (type) {
-      case 'success': return 'bg-green-500 text-white'
-      case 'error': return 'bg-red-500 text-white'
-      case 'warning': return 'bg-yellow-500 text-black'
-      default: return 'bg-blue-500 text-white'
+      case 'success':
+        return 'bg-green-500 text-white'
+      case 'error':
+        return 'bg-red-500 text-white'
+      case 'warning':
+        return 'bg-yellow-500 text-black'
+      default:
+        return 'bg-blue-500 text-white'
     }
   }
 
@@ -434,18 +447,18 @@ function GlobalLoadingIndicator() {
 // Onboarding tour component
 function OnboardingTour({ step }: { step: number }) {
   const { nextOnboardingStep } = useUserExperience()
-  
+
   const tourSteps = [
-    { title: 'Welcome!', content: 'Let\'s take a quick tour of the application.' },
+    { title: 'Welcome!', content: "Let's take a quick tour of the application." },
     { title: 'Campaign Management', content: 'Create and manage your scraping campaigns here.' },
     { title: 'Results Dashboard', content: 'View and analyze your scraped data.' },
     { title: 'Monitoring', content: 'Monitor system health and performance.' },
   ]
-  
+
   const currentStep = tourSteps.at(step)
-  
+
   if (!currentStep) return null
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 max-w-md">

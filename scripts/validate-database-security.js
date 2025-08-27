@@ -18,7 +18,7 @@ const colors = {
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
   magenta: '\x1b[35m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
 }
 
 /**
@@ -42,15 +42,16 @@ function printHeader(title) {
  */
 function printStatus(status, message) {
   const statusColors = {
-    'PASS': 'green',
-    'FAIL': 'red',
-    'WARNING': 'yellow',
-    'INFO': 'blue'
+    PASS: 'green',
+    FAIL: 'red',
+    WARNING: 'yellow',
+    INFO: 'blue',
   }
-  
+
   const color = statusColors[status] || 'reset'
-  const icon = status === 'PASS' ? '✅' : status === 'FAIL' ? '❌' : status === 'WARNING' ? '⚠️' : 'ℹ️'
-  
+  const icon =
+    status === 'PASS' ? '✅' : status === 'FAIL' ? '❌' : status === 'WARNING' ? '⚠️' : 'ℹ️'
+
   colorLog(`${icon} [${status}] ${message}`, color)
 }
 
@@ -59,10 +60,10 @@ function printStatus(status, message) {
  */
 function checkDependencies() {
   printHeader('CHECKING DEPENDENCIES')
-  
+
   const requiredPackages = ['pg', 'dotenv']
   let allDependenciesOk = true
-  
+
   for (const pkg of requiredPackages) {
     try {
       require.resolve(pkg)
@@ -72,7 +73,7 @@ function checkDependencies() {
       allDependenciesOk = false
     }
   }
-  
+
   return allDependenciesOk
 }
 
@@ -81,27 +82,16 @@ function checkDependencies() {
  */
 function checkEnvironmentConfig() {
   printHeader('CHECKING ENVIRONMENT CONFIGURATION')
-  
+
   // Load environment variables
   require('dotenv').config()
-  
-  const requiredEnvVars = [
-    'DB_HOST',
-    'DB_PORT', 
-    'DB_NAME',
-    'DB_USER',
-    'DB_PASSWORD'
-  ]
-  
-  const optionalEnvVars = [
-    'DB_SSL',
-    'DB_POOL_MIN',
-    'DB_POOL_MAX',
-    'DATABASE_URL'
-  ]
-  
+
+  const requiredEnvVars = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']
+
+  const optionalEnvVars = ['DB_SSL', 'DB_POOL_MIN', 'DB_POOL_MAX', 'DATABASE_URL']
+
   let configOk = true
-  
+
   // Check required variables
   for (const envVar of requiredEnvVars) {
     if (process.env[envVar]) {
@@ -111,7 +101,7 @@ function checkEnvironmentConfig() {
       configOk = false
     }
   }
-  
+
   // Check optional variables
   for (const envVar of optionalEnvVars) {
     if (process.env[envVar]) {
@@ -120,7 +110,7 @@ function checkEnvironmentConfig() {
       printStatus('WARNING', `${envVar} is not configured (optional)`)
     }
   }
-  
+
   // Check for weak passwords
   if (process.env.DB_PASSWORD) {
     const password = process.env.DB_PASSWORD
@@ -133,12 +123,12 @@ function checkEnvironmentConfig() {
       printStatus('PASS', 'Database password meets complexity requirements')
     }
   }
-  
+
   // Check SSL configuration
   if (process.env.NODE_ENV === 'production' && process.env.DB_SSL !== 'true') {
     printStatus('WARNING', 'SSL is not enabled in production environment')
   }
-  
+
   return configOk
 }
 
@@ -147,10 +137,10 @@ function checkEnvironmentConfig() {
  */
 async function testDatabaseConnection() {
   printHeader('TESTING DATABASE CONNECTION')
-  
+
   try {
     const { Pool } = require('pg')
-    
+
     const pool = new Pool({
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT || '5432'),
@@ -158,34 +148,38 @@ async function testDatabaseConnection() {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       ssl: process.env.DB_SSL === 'true',
-      connectionTimeoutMillis: 5000
+      connectionTimeoutMillis: 5000,
     })
-    
+
     // Test basic connection
     const client = await pool.connect()
     printStatus('PASS', 'Database connection successful')
-    
+
     // Test basic query
     const result = await client.query('SELECT version()')
     printStatus('PASS', `PostgreSQL version: ${result.rows[0].version.split(' ')[1]}`)
-    
+
     // Check current user
     const userResult = await client.query('SELECT current_user, session_user')
     printStatus('INFO', `Connected as: ${userResult.rows[0].current_user}`)
-    
+
     // Check if user has superuser privileges
-    const superuserResult = await client.query('SELECT usesuper FROM pg_user WHERE usename = current_user')
+    const superuserResult = await client.query(
+      'SELECT usesuper FROM pg_user WHERE usename = current_user'
+    )
     if (superuserResult.rows[0]?.usesuper) {
-      printStatus('WARNING', 'Connected user has superuser privileges - consider using dedicated app user')
+      printStatus(
+        'WARNING',
+        'Connected user has superuser privileges - consider using dedicated app user'
+      )
     } else {
       printStatus('PASS', 'Connected user does not have superuser privileges')
     }
-    
+
     client.release()
     await pool.end()
-    
+
     return true
-    
   } catch (error) {
     printStatus('FAIL', `Database connection failed: ${error.message}`)
     return false
@@ -197,19 +191,19 @@ async function testDatabaseConnection() {
  */
 async function runSecurityValidation() {
   printHeader('RUNNING SECURITY VALIDATION')
-  
+
   try {
     // Import the validation module
     const validatorPath = path.join(__dirname, '../src/lib/databaseSecurityValidator.ts')
-    
+
     if (!fs.existsSync(validatorPath)) {
       printStatus('FAIL', 'Database security validator not found')
       return false
     }
-    
+
     // Since we can't directly import TypeScript in Node.js, we'll run a simplified validation
     printStatus('INFO', 'Running simplified security checks...')
-    
+
     const { Pool } = require('pg')
     const pool = new Pool({
       host: process.env.DB_HOST,
@@ -217,11 +211,11 @@ async function runSecurityValidation() {
       database: process.env.DB_NAME,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      ssl: process.env.DB_SSL === 'true'
+      ssl: process.env.DB_SSL === 'true',
     })
-    
+
     const client = await pool.connect()
-    
+
     // Check SSL status
     try {
       const sslResult = await client.query('SHOW ssl')
@@ -233,7 +227,7 @@ async function runSecurityValidation() {
     } catch (error) {
       printStatus('WARNING', 'Could not check SSL status')
     }
-    
+
     // Check for security audit table
     try {
       const auditResult = await client.query(`
@@ -243,7 +237,7 @@ async function runSecurityValidation() {
             AND table_name = 'security_audit_log'
         ) as exists
       `)
-      
+
       if (auditResult.rows[0]?.exists) {
         printStatus('PASS', 'Security audit logging table exists')
       } else {
@@ -252,7 +246,7 @@ async function runSecurityValidation() {
     } catch (error) {
       printStatus('WARNING', 'Could not check audit logging configuration')
     }
-    
+
     // Check for RLS on sensitive tables
     try {
       const rlsResult = await client.query(`
@@ -261,10 +255,10 @@ async function runSecurityValidation() {
         WHERE schemaname = 'public' 
           AND tablename IN ('businesses', 'app_settings')
       `)
-      
+
       const tablesWithRLS = rlsResult.rows.filter(row => row.rowsecurity).length
       const totalTables = rlsResult.rows.length
-      
+
       if (totalTables === 0) {
         printStatus('INFO', 'No sensitive tables found to check RLS')
       } else if (tablesWithRLS === totalTables) {
@@ -275,7 +269,7 @@ async function runSecurityValidation() {
     } catch (error) {
       printStatus('WARNING', 'Could not check Row Level Security configuration')
     }
-    
+
     // Check connection limits
     try {
       const limitsResult = await client.query(`
@@ -283,19 +277,19 @@ async function runSecurityValidation() {
         FROM pg_settings 
         WHERE name IN ('max_connections', 'statement_timeout')
       `)
-      
+
       const settings = limitsResult.rows.reduce((acc, row) => {
         acc[row.name] = row.setting
         return acc
       }, {})
-      
+
       const maxConnections = parseInt(settings.max_connections || '0')
       if (maxConnections > 0 && maxConnections <= 200) {
         printStatus('PASS', `Connection limit appropriately set: ${maxConnections}`)
       } else {
         printStatus('WARNING', `Connection limit may be too high: ${maxConnections}`)
       }
-      
+
       if (settings.statement_timeout && settings.statement_timeout !== '0') {
         printStatus('PASS', `Statement timeout configured: ${settings.statement_timeout}`)
       } else {
@@ -304,12 +298,11 @@ async function runSecurityValidation() {
     } catch (error) {
       printStatus('WARNING', 'Could not check connection limits')
     }
-    
+
     client.release()
     await pool.end()
-    
+
     return true
-    
   } catch (error) {
     printStatus('FAIL', `Security validation failed: ${error.message}`)
     return false
@@ -321,16 +314,16 @@ async function runSecurityValidation() {
  */
 function checkSecurityFiles() {
   printHeader('CHECKING SECURITY CONFIGURATION FILES')
-  
+
   const securityFiles = [
     'database/security/database-security-config.sql',
     'src/lib/databaseSecurity.ts',
     'src/lib/secureDatabase.ts',
-    'src/lib/databaseSecurityValidator.ts'
+    'src/lib/databaseSecurityValidator.ts',
   ]
-  
+
   let allFilesExist = true
-  
+
   for (const file of securityFiles) {
     const filePath = path.join(__dirname, '..', file)
     if (fs.existsSync(filePath)) {
@@ -340,7 +333,7 @@ function checkSecurityFiles() {
       allFilesExist = false
     }
   }
-  
+
   return allFilesExist
 }
 
@@ -349,10 +342,10 @@ function checkSecurityFiles() {
  */
 function generateRecommendations() {
   printHeader('SECURITY RECOMMENDATIONS')
-  
+
   colorLog('📋 Database Security Checklist:', 'bright')
   console.log('')
-  
+
   const recommendations = [
     '1. Use dedicated application user with minimal privileges',
     '2. Enable SSL/TLS encryption for all connections',
@@ -363,13 +356,13 @@ function generateRecommendations() {
     '7. Regularly update PostgreSQL to latest stable version',
     '8. Use parameterized queries to prevent SQL injection',
     '9. Implement database backup and recovery procedures',
-    '10. Monitor database logs for suspicious activity'
+    '10. Monitor database logs for suspicious activity',
   ]
-  
+
   recommendations.forEach(rec => {
     colorLog(`   ${rec}`, 'yellow')
   })
-  
+
   console.log('')
   colorLog('🔧 Next Steps:', 'bright')
   colorLog('   • Run: npm run db:security-setup (to apply security configuration)', 'cyan')
@@ -384,19 +377,19 @@ function generateRecommendations() {
 async function main() {
   colorLog('🔒 Database Security Validation Tool', 'bright')
   colorLog('Business Scraper Application', 'blue')
-  
+
   let overallStatus = true
-  
+
   // Run all checks
   overallStatus &= checkDependencies()
   overallStatus &= checkEnvironmentConfig()
   overallStatus &= checkSecurityFiles()
   overallStatus &= await testDatabaseConnection()
   overallStatus &= await runSecurityValidation()
-  
+
   // Generate final report
   printHeader('VALIDATION SUMMARY')
-  
+
   if (overallStatus) {
     printStatus('PASS', 'All critical security checks passed')
     colorLog('🎉 Database security validation completed successfully!', 'green')
@@ -404,9 +397,9 @@ async function main() {
     printStatus('WARNING', 'Some security issues were found')
     colorLog('⚠️  Please review and address the issues above', 'yellow')
   }
-  
+
   generateRecommendations()
-  
+
   process.exit(overallStatus ? 0 : 1)
 }
 
@@ -423,5 +416,5 @@ module.exports = {
   checkEnvironmentConfig,
   testDatabaseConnection,
   runSecurityValidation,
-  checkSecurityFiles
+  checkSecurityFiles,
 }

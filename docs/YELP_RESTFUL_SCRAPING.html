@@ -1,151 +1,186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yelp RESTful Scraping with Deep Website Analysis - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Yelp RESTful Scraping with Deep Website Analysis</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Yelp RESTful Scraping with Deep Website Analysis</h1>
-<h2>Overview</h2>
-<p>The Yelp processing system has been completely refactored to use <strong>RESTful URLs</strong> for searching Yelp and implement <strong>deep website scraping</strong> of discovered business websites. This provides more reliable search results and comprehensive contact information extraction.</p>
-<h2>Key Features</h2>
-<h3>🔗 <strong>RESTful URL Search</strong></h3>
-<ul>
-<li>Uses direct Yelp search URLs: <code>https://www.yelp.com/search?find_desc=Business+Consulting&amp;find_loc=90274</code></li>
-<li>More reliable than form-based searching</li>
-<li>Better compatibility with headless browsers</li>
-<li>Consistent URL structure for all searches</li>
-</ul>
-<h3>🎯 <strong>YERP Processing</strong></h3>
-<ul>
-<li><strong>YERP</strong>: Yelp Engine Results Pages</li>
-<li>Identifies business entries using specific CSS selector: <code>div.businessName__09f24__HG_pC.y-css-mhg9c5[data-traffic-crawl-id=&quot;SearchResultBizName&quot;]</code></li>
-<li>Extracts business profile URLs from search results</li>
-<li>Processes multiple businesses per search</li>
-</ul>
-<h3>🌐 <strong>Business Website Extraction</strong></h3>
-<ul>
-<li>Navigates to individual Yelp business profile pages</li>
-<li>Extracts actual business website URLs using the pattern:<pre><code class="language-html">&lt;div class=&quot;y-css-1ilqd8r&quot;&gt;
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Yelp RESTful Scraping with Deep Website Analysis
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Yelp RESTful Scraping with Deep Website Analysis</h1>
+        <h2>Overview</h2>
+        <p>
+          The Yelp processing system has been completely refactored to use
+          <strong>RESTful URLs</strong> for searching Yelp and implement
+          <strong>deep website scraping</strong> of discovered business websites. This provides more
+          reliable search results and comprehensive contact information extraction.
+        </p>
+        <h2>Key Features</h2>
+        <h3>🔗 <strong>RESTful URL Search</strong></h3>
+        <ul>
+          <li>
+            Uses direct Yelp search URLs:
+            <code
+              >https://www.yelp.com/search?find_desc=Business+Consulting&amp;find_loc=90274</code
+            >
+          </li>
+          <li>More reliable than form-based searching</li>
+          <li>Better compatibility with headless browsers</li>
+          <li>Consistent URL structure for all searches</li>
+        </ul>
+        <h3>🎯 <strong>YERP Processing</strong></h3>
+        <ul>
+          <li><strong>YERP</strong>: Yelp Engine Results Pages</li>
+          <li>
+            Identifies business entries using specific CSS selector:
+            <code
+              >div.businessName__09f24__HG_pC.y-css-mhg9c5[data-traffic-crawl-id=&quot;SearchResultBizName&quot;]</code
+            >
+          </li>
+          <li>Extracts business profile URLs from search results</li>
+          <li>Processes multiple businesses per search</li>
+        </ul>
+        <h3>🌐 <strong>Business Website Extraction</strong></h3>
+        <ul>
+          <li>Navigates to individual Yelp business profile pages</li>
+          <li>
+            Extracts actual business website URLs using the pattern:
+            <pre><code class="language-html">&lt;div class=&quot;y-css-1ilqd8r&quot;&gt;
   &lt;a href=&quot;/biz_redir?url=https%3A%2F%2Fwww.rscbusinessgroup.com&amp;amp;cachebuster=1753494273&amp;amp;website_link_type=website&amp;amp;src_bizid=eUpRo6nbHjcljDWfBywe5w&amp;amp;s=59cd957b85fab6b8d7bc735840330c0796095d7bad24a1d0cbbc13f95a716a3a&quot; 
      class=&quot; y-css-14ckas3&quot; target=&quot;_blank&quot;&gt;
 </code></pre>
-</li>
-<li>Decodes <code>biz_redir</code> URLs to extract actual business websites</li>
-<li>Handles both redirect URLs and direct website links</li>
-</ul>
-<h3>🔍 <strong>Deep Website Scraping</strong></h3>
-<ul>
-<li>Scrapes up to <strong>20 pages per business website</strong> (configurable)</li>
-<li>Extracts comprehensive contact information</li>
-<li>Follows internal links for thorough coverage</li>
-<li>Uses enhanced scraping engine with anti-bot detection</li>
-<li>Collects business records with full contact details</li>
-</ul>
-<h2>Technical Implementation</h2>
-<h3>RESTful URL Construction</h3>
-<pre><code class="language-typescript">const yelpSearchUrl = new URL(&#39;https://www.yelp.com/search&#39;)
+          </li>
+          <li>Decodes <code>biz_redir</code> URLs to extract actual business websites</li>
+          <li>Handles both redirect URLs and direct website links</li>
+        </ul>
+        <h3>🔍 <strong>Deep Website Scraping</strong></h3>
+        <ul>
+          <li>Scrapes up to <strong>20 pages per business website</strong> (configurable)</li>
+          <li>Extracts comprehensive contact information</li>
+          <li>Follows internal links for thorough coverage</li>
+          <li>Uses enhanced scraping engine with anti-bot detection</li>
+          <li>Collects business records with full contact details</li>
+        </ul>
+        <h2>Technical Implementation</h2>
+        <h3>RESTful URL Construction</h3>
+        <pre><code class="language-typescript">const yelpSearchUrl = new URL(&#39;https://www.yelp.com/search&#39;)
 yelpSearchUrl.searchParams.set(&#39;find_desc&#39;, query.replace(/\s+/g, &#39;+&#39;))
 yelpSearchUrl.searchParams.set(&#39;find_loc&#39;, location)
 </code></pre>
-<p><strong>Example URLs:</strong></p>
-<ul>
-<li>Business Consulting in 90274: <code>https://www.yelp.com/search?find_desc=Business+Consulting&amp;find_loc=90274</code></li>
-<li>Legal Services in 10001: <code>https://www.yelp.com/search?find_desc=Legal+Services&amp;find_loc=10001</code></li>
-<li>Medical Clinics in 90210: <code>https://www.yelp.com/search?find_desc=Medical+Clinics&amp;find_loc=90210</code></li>
-</ul>
-<h3>YERP Business Extraction</h3>
-<pre><code class="language-typescript">// Primary selector for business entries
+        <p><strong>Example URLs:</strong></p>
+        <ul>
+          <li>
+            Business Consulting in 90274:
+            <code
+              >https://www.yelp.com/search?find_desc=Business+Consulting&amp;find_loc=90274</code
+            >
+          </li>
+          <li>
+            Legal Services in 10001:
+            <code>https://www.yelp.com/search?find_desc=Legal+Services&amp;find_loc=10001</code>
+          </li>
+          <li>
+            Medical Clinics in 90210:
+            <code>https://www.yelp.com/search?find_desc=Medical+Clinics&amp;find_loc=90210</code>
+          </li>
+        </ul>
+        <h3>YERP Business Extraction</h3>
+        <pre><code class="language-typescript">// Primary selector for business entries
 const businessNameSelectors = [
   &#39;div.businessName__09f24__HG_pC.y-css-mhg9c5[data-traffic-crawl-id=&quot;SearchResultBizName&quot;]&#39;,
   &#39;.businessName__09f24__HG_pC[data-traffic-crawl-id=&quot;SearchResultBizName&quot;]&#39;,
   &#39;[data-traffic-crawl-id=&quot;SearchResultBizName&quot;]&#39;
 ]
 </code></pre>
-<h3>Website URL Extraction</h3>
-<pre><code class="language-typescript">// Extract business website from biz_redir URLs
+        <h3>Website URL Extraction</h3>
+        <pre><code class="language-typescript">// Extract business website from biz_redir URLs
 if (link.href.includes(&#39;biz_redir?url=&#39;)) {
   const urlParams = new URLSearchParams(link.href.split(&#39;?&#39;)[1])
   const actualUrl = decodeURIComponent(urlParams.get(&#39;url&#39;) || &#39;&#39;)
   return actualUrl
 }
 </code></pre>
-<h3>Deep Scraping Integration</h3>
-<pre><code class="language-typescript">// Perform deep scraping of business websites
+        <h3>Deep Scraping Integration</h3>
+        <pre><code class="language-typescript">// Perform deep scraping of business websites
 const scrapingResult = await scraperService.scrapeWebsiteEnhanced(
   business.url,
   2, // depth
   maxPagesPerSite // up to 20 pages
 )
 </code></pre>
-<h2>Configuration Options</h2>
-<h3>Search Parameters</h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>query</code></td>
-<td>string</td>
-<td>-</td>
-<td>Search terms (e.g., &quot;Business Consulting&quot;)</td>
-</tr>
-<tr>
-<td><code>location</code></td>
-<td>string</td>
-<td>-</td>
-<td>ZIP code or location (e.g., &quot;90274&quot;)</td>
-</tr>
-<tr>
-<td><code>zipRadius</code></td>
-<td>number</td>
-<td>25</td>
-<td>Search radius in miles</td>
-</tr>
-<tr>
-<td><code>maxResults</code></td>
-<td>number</td>
-<td>10</td>
-<td>Maximum businesses to process</td>
-</tr>
-<tr>
-<td><code>maxPagesPerSite</code></td>
-<td>number</td>
-<td>20</td>
-<td>Maximum pages to scrape per website</td>
-</tr>
-</tbody></table>
-<h3>API Request Format</h3>
-<pre><code class="language-json">{
+        <h2>Configuration Options</h2>
+        <h3>Search Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>query</code></td>
+              <td>string</td>
+              <td>-</td>
+              <td>Search terms (e.g., &quot;Business Consulting&quot;)</td>
+            </tr>
+            <tr>
+              <td><code>location</code></td>
+              <td>string</td>
+              <td>-</td>
+              <td>ZIP code or location (e.g., &quot;90274&quot;)</td>
+            </tr>
+            <tr>
+              <td><code>zipRadius</code></td>
+              <td>number</td>
+              <td>25</td>
+              <td>Search radius in miles</td>
+            </tr>
+            <tr>
+              <td><code>maxResults</code></td>
+              <td>number</td>
+              <td>10</td>
+              <td>Maximum businesses to process</td>
+            </tr>
+            <tr>
+              <td><code>maxPagesPerSite</code></td>
+              <td>number</td>
+              <td>20</td>
+              <td>Maximum pages to scrape per website</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>API Request Format</h3>
+        <pre><code class="language-json">{
   &quot;provider&quot;: &quot;yelp-discovery&quot;,
   &quot;query&quot;: &quot;Business Consulting&quot;,
   &quot;location&quot;: &quot;90274&quot;,
@@ -154,30 +189,30 @@ const scrapingResult = await scraperService.scrapeWebsiteEnhanced(
   &quot;maxPagesPerSite&quot;: 20
 }
 </code></pre>
-<h2>Data Flow</h2>
-<h3>1. <strong>RESTful Search</strong></h3>
-<pre><code>Query: &quot;Business Consulting&quot; + Location: &quot;90274&quot;
+        <h2>Data Flow</h2>
+        <h3>1. <strong>RESTful Search</strong></h3>
+        <pre><code>Query: &quot;Business Consulting&quot; + Location: &quot;90274&quot;
 ↓
 URL: https://www.yelp.com/search?find_desc=Business+Consulting&amp;find_loc=90274
 ↓
 Navigate to YERP (Yelp Engine Results Page)
 </code></pre>
-<h3>2. <strong>Business Discovery</strong></h3>
-<pre><code>YERP → Extract business entries using CSS selector
+        <h3>2. <strong>Business Discovery</strong></h3>
+        <pre><code>YERP → Extract business entries using CSS selector
 ↓
 For each business: Extract Yelp profile URL
 ↓
 Navigate to business profile page
 </code></pre>
-<h3>3. <strong>Website Extraction</strong></h3>
-<pre><code>Business Profile Page → Find website link
+        <h3>3. <strong>Website Extraction</strong></h3>
+        <pre><code>Business Profile Page → Find website link
 ↓
 Extract from biz_redir URL or direct link
 ↓
 Decode actual business website URL
 </code></pre>
-<h3>4. <strong>Deep Scraping</strong></h3>
-<pre><code>Business Website → Enhanced scraping engine
+        <h3>4. <strong>Deep Scraping</strong></h3>
+        <pre><code>Business Website → Enhanced scraping engine
 ↓
 Scrape up to 20 pages per site
 ↓
@@ -185,9 +220,9 @@ Extract contact information and business details
 ↓
 Return comprehensive business records
 </code></pre>
-<h2>Response Format</h2>
-<h3>YelpBusinessResult</h3>
-<pre><code class="language-typescript">interface YelpBusinessResult {
+        <h2>Response Format</h2>
+        <h3>YelpBusinessResult</h3>
+        <pre><code class="language-typescript">interface YelpBusinessResult {
   url: string                    // Business website URL
   title: string                  // Business name from Yelp
   snippet: string               // Business description
@@ -198,8 +233,8 @@ Return comprehensive business records
   businessRecords?: BusinessRecord[]  // Deep scraped data
 }
 </code></pre>
-<h3>BusinessRecord (from Deep Scraping)</h3>
-<pre><code class="language-typescript">interface BusinessRecord {
+        <h3>BusinessRecord (from Deep Scraping)</h3>
+        <pre><code class="language-typescript">interface BusinessRecord {
   id: string
   businessName: string
   email: string[]               // All found email addresses
@@ -221,44 +256,47 @@ Return comprehensive business records
   scrapedAt: Date
 }
 </code></pre>
-<h2>Error Handling</h2>
-<h3>Robust Fallback System</h3>
-<ol>
-<li><strong>Primary Selector Fails</strong>: Falls back to alternative CSS selectors</li>
-<li><strong>biz_redir Parsing Fails</strong>: Attempts direct URL extraction</li>
-<li><strong>Deep Scraping Fails</strong>: Returns basic business info without detailed records</li>
-<li><strong>Rate Limiting</strong>: Implements delays and retry mechanisms</li>
-<li><strong>Anti-Bot Detection</strong>: Uses browser pool and user agent rotation</li>
-</ol>
-<h3>Logging and Monitoring</h3>
-<ul>
-<li>Detailed logging at each step of the process</li>
-<li>Performance metrics for deep scraping</li>
-<li>Success/failure rates for website extraction</li>
-<li>Rate limiting compliance monitoring</li>
-</ul>
-<h2>Performance Optimizations</h2>
-<h3>1. <strong>Concurrent Processing</strong></h3>
-<ul>
-<li>Browser pool management for multiple simultaneous scrapes</li>
-<li>Parallel processing of business websites</li>
-<li>Resource cleanup and memory management</li>
-</ul>
-<h3>2. <strong>Smart Rate Limiting</strong></h3>
-<ul>
-<li>Respects Yelp&#39;s rate limits</li>
-<li>Implements delays between requests</li>
-<li>Uses multiple user agents and viewports</li>
-</ul>
-<h3>3. <strong>Efficient Scraping</strong></h3>
-<ul>
-<li>Stops scraping when sufficient contact info is found</li>
-<li>Prioritizes contact pages and about pages</li>
-<li>Skips irrelevant pages (images, downloads, etc.)</li>
-</ul>
-<h2>Usage Examples</h2>
-<h3>Basic Search</h3>
-<pre><code class="language-typescript">const results = await yelpScrapingService.searchBusinesses({
+        <h2>Error Handling</h2>
+        <h3>Robust Fallback System</h3>
+        <ol>
+          <li><strong>Primary Selector Fails</strong>: Falls back to alternative CSS selectors</li>
+          <li><strong>biz_redir Parsing Fails</strong>: Attempts direct URL extraction</li>
+          <li>
+            <strong>Deep Scraping Fails</strong>: Returns basic business info without detailed
+            records
+          </li>
+          <li><strong>Rate Limiting</strong>: Implements delays and retry mechanisms</li>
+          <li><strong>Anti-Bot Detection</strong>: Uses browser pool and user agent rotation</li>
+        </ol>
+        <h3>Logging and Monitoring</h3>
+        <ul>
+          <li>Detailed logging at each step of the process</li>
+          <li>Performance metrics for deep scraping</li>
+          <li>Success/failure rates for website extraction</li>
+          <li>Rate limiting compliance monitoring</li>
+        </ul>
+        <h2>Performance Optimizations</h2>
+        <h3>1. <strong>Concurrent Processing</strong></h3>
+        <ul>
+          <li>Browser pool management for multiple simultaneous scrapes</li>
+          <li>Parallel processing of business websites</li>
+          <li>Resource cleanup and memory management</li>
+        </ul>
+        <h3>2. <strong>Smart Rate Limiting</strong></h3>
+        <ul>
+          <li>Respects Yelp&#39;s rate limits</li>
+          <li>Implements delays between requests</li>
+          <li>Uses multiple user agents and viewports</li>
+        </ul>
+        <h3>3. <strong>Efficient Scraping</strong></h3>
+        <ul>
+          <li>Stops scraping when sufficient contact info is found</li>
+          <li>Prioritizes contact pages and about pages</li>
+          <li>Skips irrelevant pages (images, downloads, etc.)</li>
+        </ul>
+        <h2>Usage Examples</h2>
+        <h3>Basic Search</h3>
+        <pre><code class="language-typescript">const results = await yelpScrapingService.searchBusinesses({
   query: &quot;Business Consulting&quot;,
   location: &quot;90274&quot;,
   zipRadius: 25,
@@ -266,8 +304,8 @@ Return comprehensive business records
   maxPagesPerSite: 20
 })
 </code></pre>
-<h3>Industry-Specific Search</h3>
-<pre><code class="language-typescript">const results = await yelpScrapingService.searchBusinesses({
+        <h3>Industry-Specific Search</h3>
+        <pre><code class="language-typescript">const results = await yelpScrapingService.searchBusinesses({
   query: &quot;Legal Services&quot;,
   location: &quot;10001&quot;,
   zipRadius: 15,
@@ -275,49 +313,52 @@ Return comprehensive business records
   maxPagesPerSite: 15
 })
 </code></pre>
-<h2>Benefits of the Refactored System</h2>
-<h3>🎯 <strong>Improved Reliability</strong></h3>
-<ul>
-<li>RESTful URLs are more stable than form-based searches</li>
-<li>Specific CSS selectors reduce parsing errors</li>
-<li>Better handling of Yelp&#39;s dynamic content</li>
-</ul>
-<h3>📊 <strong>Enhanced Data Quality</strong></h3>
-<ul>
-<li>Deep website scraping provides comprehensive contact information</li>
-<li>Multiple email addresses and phone numbers per business</li>
-<li>Complete address and contact person details</li>
-</ul>
-<h3>⚡ <strong>Better Performance</strong></h3>
-<ul>
-<li>Concurrent processing of multiple businesses</li>
-<li>Efficient resource management with browser pooling</li>
-<li>Smart rate limiting prevents blocking</li>
-</ul>
-<h3>🔧 <strong>Maintainability</strong></h3>
-<ul>
-<li>Clear separation of concerns (search → extract → scrape)</li>
-<li>Modular design allows easy updates</li>
-<li>Comprehensive error handling and logging</li>
-</ul>
-<p>This refactored Yelp processing system provides a robust, scalable solution for discovering and deeply analyzing business websites found through Yelp search results.</p>
+        <h2>Benefits of the Refactored System</h2>
+        <h3>🎯 <strong>Improved Reliability</strong></h3>
+        <ul>
+          <li>RESTful URLs are more stable than form-based searches</li>
+          <li>Specific CSS selectors reduce parsing errors</li>
+          <li>Better handling of Yelp&#39;s dynamic content</li>
+        </ul>
+        <h3>📊 <strong>Enhanced Data Quality</strong></h3>
+        <ul>
+          <li>Deep website scraping provides comprehensive contact information</li>
+          <li>Multiple email addresses and phone numbers per business</li>
+          <li>Complete address and contact person details</li>
+        </ul>
+        <h3>⚡ <strong>Better Performance</strong></h3>
+        <ul>
+          <li>Concurrent processing of multiple businesses</li>
+          <li>Efficient resource management with browser pooling</li>
+          <li>Smart rate limiting prevents blocking</li>
+        </ul>
+        <h3>🔧 <strong>Maintainability</strong></h3>
+        <ul>
+          <li>Clear separation of concerns (search → extract → scrape)</li>
+          <li>Modular design allows easy updates</li>
+          <li>Comprehensive error handling and logging</li>
+        </ul>
+        <p>
+          This refactored Yelp processing system provides a robust, scalable solution for
+          discovering and deeply analyzing business websites found through Yelp search results.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

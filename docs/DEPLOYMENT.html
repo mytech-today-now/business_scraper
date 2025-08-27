@@ -1,65 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deployment Guide - Business Scraper App - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Deployment Guide - Business Scraper App</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Deployment Guide - Business Scraper App</h1>
-<p>This guide covers deployment options and configurations for the Business Scraper App.</p>
-<h2>Table of Contents</h2>
-<ol>
-<li><a href="#prerequisites">Prerequisites</a></li>
-<li><a href="#build-process">Build Process</a></li>
-<li><a href="#environment-configuration">Environment Configuration</a></li>
-<li><a href="#deployment-platforms">Deployment Platforms</a></li>
-<li><a href="#performance-optimization">Performance Optimization</a></li>
-<li><a href="#security-considerations">Security Considerations</a></li>
-<li><a href="#monitoring-and-maintenance">Monitoring and Maintenance</a></li>
-</ol>
-<h2>Prerequisites</h2>
-<h3>System Requirements</h3>
-<ul>
-<li><strong>Node.js</strong>: Version 18.0 or higher</li>
-<li><strong>npm</strong>: Version 8.0 or higher (or yarn 1.22+)</li>
-<li><strong>Memory</strong>: Minimum 2GB RAM for build process</li>
-<li><strong>Storage</strong>: At least 1GB free space for dependencies and build artifacts</li>
-</ul>
-<h3>Browser Support</h3>
-<ul>
-<li><strong>Chrome</strong>: Version 90+</li>
-<li><strong>Firefox</strong>: Version 88+</li>
-<li><strong>Safari</strong>: Version 14+</li>
-<li><strong>Edge</strong>: Version 90+</li>
-<li><strong>Mobile</strong>: iOS Safari 14+, Chrome Mobile 90+</li>
-</ul>
-<h2>Build Process</h2>
-<h3>Development Build</h3>
-<pre><code class="language-bash"># Install dependencies
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Deployment Guide - Business Scraper App
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Deployment Guide - Business Scraper App</h1>
+        <p>This guide covers deployment options and configurations for the Business Scraper App.</p>
+        <h2>Table of Contents</h2>
+        <ol>
+          <li><a href="#prerequisites">Prerequisites</a></li>
+          <li><a href="#build-process">Build Process</a></li>
+          <li><a href="#environment-configuration">Environment Configuration</a></li>
+          <li><a href="#deployment-platforms">Deployment Platforms</a></li>
+          <li><a href="#performance-optimization">Performance Optimization</a></li>
+          <li><a href="#security-considerations">Security Considerations</a></li>
+          <li><a href="#monitoring-and-maintenance">Monitoring and Maintenance</a></li>
+        </ol>
+        <h2>Prerequisites</h2>
+        <h3>System Requirements</h3>
+        <ul>
+          <li><strong>Node.js</strong>: Version 18.0 or higher</li>
+          <li><strong>npm</strong>: Version 8.0 or higher (or yarn 1.22+)</li>
+          <li><strong>Memory</strong>: Minimum 2GB RAM for build process</li>
+          <li>
+            <strong>Storage</strong>: At least 1GB free space for dependencies and build artifacts
+          </li>
+        </ul>
+        <h3>Browser Support</h3>
+        <ul>
+          <li><strong>Chrome</strong>: Version 90+</li>
+          <li><strong>Firefox</strong>: Version 88+</li>
+          <li><strong>Safari</strong>: Version 14+</li>
+          <li><strong>Edge</strong>: Version 90+</li>
+          <li><strong>Mobile</strong>: iOS Safari 14+, Chrome Mobile 90+</li>
+        </ul>
+        <h2>Build Process</h2>
+        <h3>Development Build</h3>
+        <pre><code class="language-bash"># Install dependencies
 npm install
 
 # Start development server
@@ -67,8 +74,8 @@ npm run dev
 
 # Access at http://localhost:3000
 </code></pre>
-<h3>Production Build</h3>
-<pre><code class="language-bash"># Install dependencies
+        <h3>Production Build</h3>
+        <pre><code class="language-bash"># Install dependencies
 npm ci --only=production
 
 # Build for production
@@ -77,18 +84,21 @@ npm run build
 # Start production server
 npm start
 </code></pre>
-<h3>Build Optimization</h3>
-<p>The build process includes:</p>
-<ul>
-<li><strong>Code Splitting</strong>: Automatic route-based splitting</li>
-<li><strong>Tree Shaking</strong>: Removal of unused code</li>
-<li><strong>Minification</strong>: JavaScript and CSS compression</li>
-<li><strong>Image Optimization</strong>: Next.js Image component optimization</li>
-<li><strong>Bundle Analysis</strong>: Use <code>npm run analyze</code> to inspect bundle size</li>
-</ul>
-<h3>Build Configuration</h3>
-<p><strong>next.config.js</strong>:</p>
-<pre><code class="language-javascript">/** @type {import(&#39;next&#39;).NextConfig} */
+        <h3>Build Optimization</h3>
+        <p>The build process includes:</p>
+        <ul>
+          <li><strong>Code Splitting</strong>: Automatic route-based splitting</li>
+          <li><strong>Tree Shaking</strong>: Removal of unused code</li>
+          <li><strong>Minification</strong>: JavaScript and CSS compression</li>
+          <li><strong>Image Optimization</strong>: Next.js Image component optimization</li>
+          <li>
+            <strong>Bundle Analysis</strong>: Use <code>npm run analyze</code> to inspect bundle
+            size
+          </li>
+        </ul>
+        <h3>Build Configuration</h3>
+        <p><strong>next.config.js</strong>:</p>
+        <pre><code class="language-javascript">/** @type {import(&#39;next&#39;).NextConfig} */
 const nextConfig = {
   experimental: {
     serverActions: true,
@@ -109,10 +119,13 @@ const nextConfig = {
 
 module.exports = nextConfig;
 </code></pre>
-<h2>Environment Configuration</h2>
-<h3>Environment Variables</h3>
-<p>Create <code>.env.local</code> for local development or <code>.env.production</code> for production:</p>
-<pre><code class="language-env"># Application Settings
+        <h2>Environment Configuration</h2>
+        <h3>Environment Variables</h3>
+        <p>
+          Create <code>.env.local</code> for local development or <code>.env.production</code> for
+          production:
+        </p>
+        <pre><code class="language-env"># Application Settings
 NEXT_PUBLIC_APP_NAME=Business Scraper App
 NEXT_PUBLIC_APP_VERSION=1.0.0
 NODE_ENV=production
@@ -137,9 +150,9 @@ NEXT_PUBLIC_CSP_NONCE=auto-generated
 NEXT_PUBLIC_ENABLE_SW=true
 NEXT_PUBLIC_CACHE_DURATION=3600000
 </code></pre>
-<h3>Configuration Validation</h3>
-<p>Validate environment variables at build time:</p>
-<pre><code class="language-javascript">// config/env.js
+        <h3>Configuration Validation</h3>
+        <p>Validate environment variables at build time:</p>
+        <pre><code class="language-javascript">// config/env.js
 const requiredEnvVars = [
   &#39;NODE_ENV&#39;,
   &#39;NEXT_PUBLIC_APP_NAME&#39;,
@@ -164,42 +177,46 @@ function validateEnv() {
 
 module.exports = { validateEnv };
 </code></pre>
-<h2>Deployment Platforms</h2>
-<h3>Vercel (Recommended)</h3>
-<p><strong>Advantages:</strong></p>
-<ul>
-<li>Zero-configuration deployment</li>
-<li>Automatic HTTPS</li>
-<li>Global CDN</li>
-<li>Serverless functions support</li>
-<li>Built-in analytics</li>
-</ul>
-<p><strong>Deployment Steps:</strong></p>
-<ol>
-<li><p><strong>Install Vercel CLI</strong>:</p>
-<pre><code class="language-bash">npm i -g vercel
+        <h2>Deployment Platforms</h2>
+        <h3>Vercel (Recommended)</h3>
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Zero-configuration deployment</li>
+          <li>Automatic HTTPS</li>
+          <li>Global CDN</li>
+          <li>Serverless functions support</li>
+          <li>Built-in analytics</li>
+        </ul>
+        <p><strong>Deployment Steps:</strong></p>
+        <ol>
+          <li>
+            <p><strong>Install Vercel CLI</strong>:</p>
+            <pre><code class="language-bash">npm i -g vercel
 </code></pre>
-</li>
-<li><p><strong>Deploy</strong>:</p>
-<pre><code class="language-bash">vercel
+          </li>
+          <li>
+            <p><strong>Deploy</strong>:</p>
+            <pre><code class="language-bash">vercel
 </code></pre>
-</li>
-<li><p><strong>Configure Environment Variables</strong>:</p>
-<ul>
-<li>Go to Vercel Dashboard</li>
-<li>Navigate to Project Settings &gt; Environment Variables</li>
-<li>Add production environment variables</li>
-</ul>
-</li>
-<li><p><strong>Custom Domain</strong> (Optional):</p>
-<ul>
-<li>Add domain in Vercel Dashboard</li>
-<li>Configure DNS records</li>
-</ul>
-</li>
-</ol>
-<p><strong>vercel.json Configuration</strong>:</p>
-<pre><code class="language-json">{
+          </li>
+          <li>
+            <p><strong>Configure Environment Variables</strong>:</p>
+            <ul>
+              <li>Go to Vercel Dashboard</li>
+              <li>Navigate to Project Settings &gt; Environment Variables</li>
+              <li>Add production environment variables</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Custom Domain</strong> (Optional):</p>
+            <ul>
+              <li>Add domain in Vercel Dashboard</li>
+              <li>Configure DNS records</li>
+            </ul>
+          </li>
+        </ol>
+        <p><strong>vercel.json Configuration</strong>:</p>
+        <pre><code class="language-json">{
   &quot;framework&quot;: &quot;nextjs&quot;,
   &quot;buildCommand&quot;: &quot;npm run build&quot;,
   &quot;devCommand&quot;: &quot;npm run dev&quot;,
@@ -230,11 +247,12 @@ module.exports = { validateEnv };
   ]
 }
 </code></pre>
-<h3>Netlify</h3>
-<p><strong>Deployment Steps:</strong></p>
-<ol>
-<li><p><strong>Build Configuration</strong> (<code>netlify.toml</code>):</p>
-<pre><code class="language-toml">[build]
+        <h3>Netlify</h3>
+        <p><strong>Deployment Steps:</strong></p>
+        <ol>
+          <li>
+            <p><strong>Build Configuration</strong> (<code>netlify.toml</code>):</p>
+            <pre><code class="language-toml">[build]
   command = &quot;npm run build&quot;
   publish = &quot;out&quot;
 
@@ -248,36 +266,43 @@ module.exports = { validateEnv };
     X-XSS-Protection = &quot;1; mode=block&quot;
     X-Content-Type-Options = &quot;nosniff&quot;
 </code></pre>
-</li>
-<li><p><strong>Deploy</strong>:</p>
-<pre><code class="language-bash"># Build static export
+          </li>
+          <li>
+            <p><strong>Deploy</strong>:</p>
+            <pre><code class="language-bash"># Build static export
 npm run build
 npm run export
 
 # Deploy to Netlify
 npx netlify deploy --prod --dir=out
 </code></pre>
-</li>
-</ol>
-<h3>Docker Deployment (Production Ready)</h3>
-<div class="alert alert-info">
-    <strong>Current Version:</strong> The application includes comprehensive Docker configurations for production deployment with PostgreSQL, Redis, Elasticsearch, and monitoring.
-</div>
+          </li>
+        </ol>
+        <h3>Docker Deployment (Production Ready)</h3>
+        <div class="alert alert-info">
+          <strong>Current Version:</strong> The application includes comprehensive Docker
+          configurations for production deployment with PostgreSQL, Redis, Elasticsearch, and
+          monitoring.
+        </div>
 
-<h4>Production Docker Compose</h4>
-<p>The application provides a complete production environment with the following services:</p>
-<ul>
-<li><strong>Application Server:</strong> Next.js application with production optimizations</li>
-<li><strong>PostgreSQL Database:</strong> Persistent data storage with encryption</li>
-<li><strong>Redis Cache:</strong> Session management and performance optimization</li>
-<li><strong>Elasticsearch:</strong> Advanced search capabilities</li>
-<li><strong>Prometheus:</strong> Metrics collection and monitoring</li>
-<li><strong>Grafana:</strong> Performance dashboards and visualization</li>
-<li><strong>Nginx:</strong> Reverse proxy with SSL termination</li>
-</ul>
+        <h4>Production Docker Compose</h4>
+        <p>
+          The application provides a complete production environment with the following services:
+        </p>
+        <ul>
+          <li>
+            <strong>Application Server:</strong> Next.js application with production optimizations
+          </li>
+          <li><strong>PostgreSQL Database:</strong> Persistent data storage with encryption</li>
+          <li><strong>Redis Cache:</strong> Session management and performance optimization</li>
+          <li><strong>Elasticsearch:</strong> Advanced search capabilities</li>
+          <li><strong>Prometheus:</strong> Metrics collection and monitoring</li>
+          <li><strong>Grafana:</strong> Performance dashboards and visualization</li>
+          <li><strong>Nginx:</strong> Reverse proxy with SSL termination</li>
+        </ul>
 
-<h4>Quick Production Deployment</h4>
-<pre><code class="language-bash"># Clone repository
+        <h4>Quick Production Deployment</h4>
+        <pre><code class="language-bash"># Clone repository
 git clone &lt;repository-url&gt;
 cd business-scraper-app
 
@@ -293,9 +318,9 @@ docker-compose -f docker-compose.production.yml logs -f
 # Prometheus: http://localhost:9090
 </code></pre>
 
-<h4>Environment Configuration</h4>
-<p>Create a <code>.env.production</code> file with the following variables:</p>
-<pre><code class="language-bash"># Database Configuration
+        <h4>Environment Configuration</h4>
+        <p>Create a <code>.env.production</code> file with the following variables:</p>
+        <pre><code class="language-bash"># Database Configuration
 POSTGRES_PASSWORD=your_secure_password
 POSTGRES_DB=business_scraper
 
@@ -325,51 +350,58 @@ LOG_LEVEL=info
 MONITORING_ENABLED=true
 </code></pre>
 
-<h4>Production Services</h4>
-<p>The production deployment includes:</p>
-<ul>
-<li><strong>PostgreSQL:</strong> Primary database with persistent volumes</li>
-<li><strong>Redis:</strong> Caching and session storage</li>
-<li><strong>Elasticsearch:</strong> Search indexing and analytics</li>
-<li><strong>Prometheus:</strong> Metrics collection from application</li>
-<li><strong>Grafana:</strong> Monitoring dashboards and alerting</li>
-<li><strong>Nginx:</strong> Load balancing and SSL termination</li>
-</ul>
-<h3>AWS Deployment</h3>
-<p><strong>Using AWS Amplify:</strong></p>
-<ol>
-<li><p><strong>Install Amplify CLI</strong>:</p>
-<pre><code class="language-bash">npm install -g @aws-amplify/cli
+        <h4>Production Services</h4>
+        <p>The production deployment includes:</p>
+        <ul>
+          <li><strong>PostgreSQL:</strong> Primary database with persistent volumes</li>
+          <li><strong>Redis:</strong> Caching and session storage</li>
+          <li><strong>Elasticsearch:</strong> Search indexing and analytics</li>
+          <li><strong>Prometheus:</strong> Metrics collection from application</li>
+          <li><strong>Grafana:</strong> Monitoring dashboards and alerting</li>
+          <li><strong>Nginx:</strong> Load balancing and SSL termination</li>
+        </ul>
+        <h3>AWS Deployment</h3>
+        <p><strong>Using AWS Amplify:</strong></p>
+        <ol>
+          <li>
+            <p><strong>Install Amplify CLI</strong>:</p>
+            <pre><code class="language-bash">npm install -g @aws-amplify/cli
 </code></pre>
-</li>
-<li><p><strong>Initialize Project</strong>:</p>
-<pre><code class="language-bash">amplify init
+          </li>
+          <li>
+            <p><strong>Initialize Project</strong>:</p>
+            <pre><code class="language-bash">amplify init
 </code></pre>
-</li>
-<li><p><strong>Deploy</strong>:</p>
-<pre><code class="language-bash">amplify add hosting
+          </li>
+          <li>
+            <p><strong>Deploy</strong>:</p>
+            <pre><code class="language-bash">amplify add hosting
 amplify publish
 </code></pre>
-</li>
-</ol>
-<p><strong>Using AWS EC2:</strong></p>
-<ol>
-<li><p><strong>Launch EC2 Instance</strong> (Ubuntu 20.04 LTS)</p>
-</li>
-<li><p><strong>Install Dependencies</strong>:</p>
-<pre><code class="language-bash">sudo apt update
+          </li>
+        </ol>
+        <p><strong>Using AWS EC2:</strong></p>
+        <ol>
+          <li>
+            <p><strong>Launch EC2 Instance</strong> (Ubuntu 20.04 LTS)</p>
+          </li>
+          <li>
+            <p><strong>Install Dependencies</strong>:</p>
+            <pre><code class="language-bash">sudo apt update
 sudo apt install nodejs npm nginx
 </code></pre>
-</li>
-<li><p><strong>Deploy Application</strong>:</p>
-<pre><code class="language-bash">git clone &lt;repository&gt;
+          </li>
+          <li>
+            <p><strong>Deploy Application</strong>:</p>
+            <pre><code class="language-bash">git clone &lt;repository&gt;
 cd business-scraper-app
 npm install
 npm run build
 </code></pre>
-</li>
-<li><p><strong>Configure Nginx</strong>:</p>
-<pre><code class="language-nginx">server {
+          </li>
+          <li>
+            <p><strong>Configure Nginx</strong>:</p>
+            <pre><code class="language-nginx">server {
     listen 80;
     server_name your-domain.com;
     
@@ -383,24 +415,27 @@ npm run build
     }
 }
 </code></pre>
-</li>
-</ol>
-<h2>Performance Optimization</h2>
-<h3>Build Optimizations</h3>
-<ol>
-<li><p><strong>Bundle Analysis</strong>:</p>
-<pre><code class="language-bash">npm run analyze
+          </li>
+        </ol>
+        <h2>Performance Optimization</h2>
+        <h3>Build Optimizations</h3>
+        <ol>
+          <li>
+            <p><strong>Bundle Analysis</strong>:</p>
+            <pre><code class="language-bash">npm run analyze
 </code></pre>
-</li>
-<li><p><strong>Code Splitting</strong>:</p>
-<pre><code class="language-javascript">// Dynamic imports for large components
+          </li>
+          <li>
+            <p><strong>Code Splitting</strong>:</p>
+            <pre><code class="language-javascript">// Dynamic imports for large components
 const ResultsTable = dynamic(() =&gt; import(&#39;./ResultsTable&#39;), {
   loading: () =&gt; &lt;Skeleton /&gt;,
 });
 </code></pre>
-</li>
-<li><p><strong>Image Optimization</strong>:</p>
-<pre><code class="language-javascript">import Image from &#39;next/image&#39;;
+          </li>
+          <li>
+            <p><strong>Image Optimization</strong>:</p>
+            <pre><code class="language-javascript">import Image from &#39;next/image&#39;;
 
 &lt;Image
   src=&quot;/logo.png&quot;
@@ -410,12 +445,13 @@ const ResultsTable = dynamic(() =&gt; import(&#39;./ResultsTable&#39;), {
   priority
 /&gt;
 </code></pre>
-</li>
-</ol>
-<h3>Runtime Optimizations</h3>
-<ol>
-<li><p><strong>Service Worker</strong> (if enabled):</p>
-<pre><code class="language-javascript">// public/sw.js
+          </li>
+        </ol>
+        <h3>Runtime Optimizations</h3>
+        <ol>
+          <li>
+            <p><strong>Service Worker</strong> (if enabled):</p>
+            <pre><code class="language-javascript">// public/sw.js
 self.addEventListener(&#39;fetch&#39;, (event) =&gt; {
   if (event.request.destination === &#39;document&#39;) {
     event.respondWith(
@@ -425,9 +461,10 @@ self.addEventListener(&#39;fetch&#39;, (event) =&gt; {
   }
 });
 </code></pre>
-</li>
-<li><p><strong>Caching Strategy</strong>:</p>
-<pre><code class="language-javascript">// Cache API responses
+          </li>
+          <li>
+            <p><strong>Caching Strategy</strong>:</p>
+            <pre><code class="language-javascript">// Cache API responses
 const cache = new Map();
 
 async function fetchWithCache(url, ttl = 3600000) {
@@ -441,19 +478,19 @@ async function fetchWithCache(url, ttl = 3600000) {
   return data;
 }
 </code></pre>
-</li>
-</ol>
-<h3>CDN Configuration</h3>
-<p><strong>Cloudflare Settings:</strong></p>
-<ul>
-<li>Enable Auto Minify (CSS, JS, HTML)</li>
-<li>Enable Brotli compression</li>
-<li>Set Browser Cache TTL to 4 hours</li>
-<li>Enable Always Online</li>
-</ul>
-<h2>Security Considerations</h2>
-<h3>Content Security Policy</h3>
-<pre><code class="language-javascript">// next.config.js
+          </li>
+        </ol>
+        <h3>CDN Configuration</h3>
+        <p><strong>Cloudflare Settings:</strong></p>
+        <ul>
+          <li>Enable Auto Minify (CSS, JS, HTML)</li>
+          <li>Enable Brotli compression</li>
+          <li>Set Browser Cache TTL to 4 hours</li>
+          <li>Enable Always Online</li>
+        </ul>
+        <h2>Security Considerations</h2>
+        <h3>Content Security Policy</h3>
+        <pre><code class="language-javascript">// next.config.js
 const securityHeaders = [
   {
     key: &#39;Content-Security-Policy&#39;,
@@ -479,26 +516,28 @@ module.exports = {
   },
 };
 </code></pre>
-<h3>Environment Security</h3>
-<ol>
-<li><p><strong>Secrets Management</strong>:</p>
-<ul>
-<li>Use platform-specific secret management</li>
-<li>Never commit API keys to version control</li>
-<li>Rotate API keys regularly</li>
-</ul>
-</li>
-<li><p><strong>HTTPS Enforcement</strong>:</p>
-<pre><code class="language-javascript">// Redirect HTTP to HTTPS
+        <h3>Environment Security</h3>
+        <ol>
+          <li>
+            <p><strong>Secrets Management</strong>:</p>
+            <ul>
+              <li>Use platform-specific secret management</li>
+              <li>Never commit API keys to version control</li>
+              <li>Rotate API keys regularly</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>HTTPS Enforcement</strong>:</p>
+            <pre><code class="language-javascript">// Redirect HTTP to HTTPS
 if (process.env.NODE_ENV === &#39;production&#39; &amp;&amp; !req.secure) {
   return res.redirect(301, `https://${req.headers.host}${req.url}`);
 }
 </code></pre>
-</li>
-</ol>
-<h2>Monitoring and Maintenance</h2>
-<h3>Health Checks</h3>
-<pre><code class="language-javascript">// pages/api/health.js
+          </li>
+        </ol>
+        <h2>Monitoring and Maintenance</h2>
+        <h3>Health Checks</h3>
+        <pre><code class="language-javascript">// pages/api/health.js
 export default function handler(req, res) {
   const healthcheck = {
     uptime: process.uptime(),
@@ -515,9 +554,9 @@ export default function handler(req, res) {
   }
 }
 </code></pre>
-<h3>Error Tracking</h3>
-<p><strong>Sentry Integration</strong>:</p>
-<pre><code class="language-javascript">// sentry.client.config.js
+        <h3>Error Tracking</h3>
+        <p><strong>Sentry Integration</strong>:</p>
+        <pre><code class="language-javascript">// sentry.client.config.js
 import * as Sentry from &#39;@sentry/nextjs&#39;;
 
 Sentry.init({
@@ -526,62 +565,69 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 </code></pre>
-<h3>Performance Monitoring</h3>
-<ol>
-<li><p><strong>Web Vitals</strong>:</p>
-<pre><code class="language-javascript">// pages/_app.js
+        <h3>Performance Monitoring</h3>
+        <ol>
+          <li>
+            <p><strong>Web Vitals</strong>:</p>
+            <pre><code class="language-javascript">// pages/_app.js
 export function reportWebVitals(metric) {
   console.log(metric);
   // Send to analytics service
 }
 </code></pre>
-</li>
-<li><p><strong>Custom Metrics</strong>:</p>
-<pre><code class="language-javascript">// Track scraping performance
+          </li>
+          <li>
+            <p><strong>Custom Metrics</strong>:</p>
+            <pre><code class="language-javascript">// Track scraping performance
 const startTime = performance.now();
 await scraperService.scrapeWebsite(url);
 const duration = performance.now() - startTime;
 
 analytics.track(&#39;scraping_duration&#39;, { duration, url });
 </code></pre>
-</li>
-</ol>
-<h3>Backup and Recovery</h3>
-<ol>
-<li><p><strong>Data Backup</strong>:</p>
-<ul>
-<li>IndexedDB data is stored locally</li>
-<li>Implement export functionality for user data</li>
-<li>Regular configuration backups</li>
-</ul>
-</li>
-<li><p><strong>Disaster Recovery</strong>:</p>
-<ul>
-<li>Multiple deployment environments</li>
-<li>Automated rollback procedures</li>
-<li>Database replication (if using external DB)</li>
-</ul>
-</li>
-</ol>
-<hr>
-<p>For platform-specific deployment instructions, refer to the respective platform documentation.</p>
+          </li>
+        </ol>
+        <h3>Backup and Recovery</h3>
+        <ol>
+          <li>
+            <p><strong>Data Backup</strong>:</p>
+            <ul>
+              <li>IndexedDB data is stored locally</li>
+              <li>Implement export functionality for user data</li>
+              <li>Regular configuration backups</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Disaster Recovery</strong>:</p>
+            <ul>
+              <li>Multiple deployment environments</li>
+              <li>Automated rollback procedures</li>
+              <li>Database replication (if using external DB)</li>
+            </ul>
+          </li>
+        </ol>
+        <hr />
+        <p>
+          For platform-specific deployment instructions, refer to the respective platform
+          documentation.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

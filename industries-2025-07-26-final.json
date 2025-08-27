@@ -68,10 +68,7 @@
         "urban design studio"
       ],
       "isCustom": false,
-      "domainBlacklist": [
-        "*.archdaily.*",
-        "*.houzz.*"
-      ]
+      "domainBlacklist": ["*.archdaily.*", "*.houzz.*"]
     },
     {
       "id": "medical-clinics",
@@ -110,11 +107,7 @@
         "teeth whitening services"
       ],
       "isCustom": false,
-      "domainBlacklist": [
-        "*.1-800-dentist.*",
-        "*.zocdoc.*",
-        "*.healthgrades.*"
-      ]
+      "domainBlacklist": ["*.1-800-dentist.*", "*.zocdoc.*", "*.healthgrades.*"]
     },
     {
       "id": "real-estate",
@@ -196,10 +189,7 @@
         "grant-funded organization"
       ],
       "isCustom": false,
-      "domainBlacklist": [
-        "*.guidestar.*",
-        "*.charitynavigator.*"
-      ]
+      "domainBlacklist": ["*.guidestar.*", "*.charitynavigator.*"]
     },
     {
       "id": "staffing",
@@ -236,11 +226,7 @@
         "nonprofit event organizer"
       ],
       "isCustom": false,
-      "domainBlacklist": [
-        "*.theknot.*",
-        "*.weddingwire.*",
-        "*.eventbrite.*"
-      ]
+      "domainBlacklist": ["*.theknot.*", "*.weddingwire.*", "*.eventbrite.*"]
     },
     {
       "id": "hospitality",
@@ -291,10 +277,7 @@
         "STEM private education"
       ],
       "isCustom": false,
-      "domainBlacklist": [
-        "*.greatschools.*",
-        "*.niche.*"
-      ]
+      "domainBlacklist": ["*.greatschools.*", "*.niche.*"]
     },
     {
       "id": "marketing-agency",
@@ -332,12 +315,7 @@
         "niche product shop"
       ],
       "isCustom": true,
-      "domainBlacklist": [
-        "*.amazon.*",
-        "*.etsy.*",
-        "*.ebay.*",
-        "*.shopify.*"
-      ]
+      "domainBlacklist": ["*.amazon.*", "*.etsy.*", "*.ebay.*", "*.shopify.*"]
     },
     {
       "id": "manufacturing",
@@ -367,11 +345,7 @@
         "freight forwarding firm"
       ],
       "isCustom": false,
-      "domainBlacklist": [
-        "*.ups.*",
-        "*.fedex.*",
-        "*.dhl.*"
-      ]
+      "domainBlacklist": ["*.ups.*", "*.fedex.*", "*.dhl.*"]
     },
     {
       "id": "legal-saas",
@@ -386,11 +360,7 @@
         "legal workflow automation"
       ],
       "isCustom": true,
-      "domainBlacklist": [
-        "*.clio.*",
-        "*.mycase.*",
-        "*.practicepanther.*"
-      ]
+      "domainBlacklist": ["*.clio.*", "*.mycase.*", "*.practicepanther.*"]
     }
   ]
 }

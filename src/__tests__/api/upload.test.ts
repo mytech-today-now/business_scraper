@@ -14,16 +14,16 @@ jest.mock('next/server', () => ({
       json: jest.fn().mockResolvedValue({}),
       text: jest.fn().mockResolvedValue(''),
       formData: jest.fn().mockResolvedValue(new FormData()),
-      clone: jest.fn().mockReturnThis()
+      clone: jest.fn().mockReturnThis(),
     }
   }),
   NextResponse: {
     json: jest.fn().mockImplementation((data, init) => ({
       status: init?.status || 200,
       headers: new Map(Object.entries(init?.headers || {})),
-      json: jest.fn().mockResolvedValue(data)
-    }))
-  }
+      json: jest.fn().mockResolvedValue(data),
+    })),
+  },
 }))
 
 import { NextRequest } from 'next/server'
@@ -32,13 +32,13 @@ import {
   createMockFileSystem,
   createMockEnvironment,
   createMockFile,
-  createMockNextRequest
+  createMockNextRequest,
 } from '../utils/mockHelpers'
 import {
   testPaths,
   testFileContents,
   encodedSecurityPatterns,
-  decodeSecurityPattern
+  decodeSecurityPattern,
 } from '../fixtures/testData'
 import { setupTest, cleanupTest, securityTestHelpers } from '../setup/testSetup'
 
@@ -51,15 +51,15 @@ jest.mock('fs', () => mockFs)
 // Mock dependencies
 jest.mock('@/lib/security', () => ({
   getClientIP: jest.fn(() => '127.0.0.1'),
-  getSession: jest.fn(() => ({ user: { id: 'test-user' } }))
+  getSession: jest.fn(() => ({ user: { id: 'test-user' } })),
 }))
 
 jest.mock('@/utils/logger', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }))
 
 describe('/api/upload', () => {
@@ -75,11 +75,11 @@ describe('/api/upload', () => {
       // Fallback mock implementations if import fails
       POST = jest.fn().mockResolvedValue({
         status: 200,
-        json: jest.fn().mockResolvedValue({ success: true })
+        json: jest.fn().mockResolvedValue({ success: true }),
       })
       GET = jest.fn().mockResolvedValue({
         status: 200,
-        json: jest.fn().mockResolvedValue({ success: true })
+        json: jest.fn().mockResolvedValue({ success: true }),
       })
     }
   })
@@ -145,7 +145,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -166,7 +166,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -183,7 +183,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -200,7 +200,7 @@ describe('/api/upload', () => {
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -214,13 +214,13 @@ describe('/api/upload', () => {
       const formData = new FormData()
       const file1 = new File(['Content 1'], 'file1.txt', { type: 'text/plain' })
       const file2 = new File(['Content 2'], 'file2.txt', { type: 'text/plain' })
-      
+
       formData.append('file1', file1)
       formData.append('file2', file2)
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -234,7 +234,7 @@ describe('/api/upload', () => {
 
     test('should enforce file count limits', async () => {
       const formData = new FormData()
-      
+
       // Add more files than allowed for backup type (limit: 1)
       for (let i = 0; i < 3; i++) {
         const file = new File([`Content ${i}`], `file${i}.txt`, { type: 'text/plain' })
@@ -243,7 +243,7 @@ describe('/api/upload', () => {
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=backup', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -258,10 +258,13 @@ describe('/api/upload', () => {
       const testFile = createMockFile(testFileContents.plainText, 'test.txt', 'text/plain')
       formData.append('file', testFile)
 
-      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents&save=true', {
-        method: 'POST',
-        body: formData
-      })
+      const request = createMockNextRequest(
+        'http://localhost:3000/api/upload?type=documents&save=true',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
 
       // Set upload directory for test using mock environment
       mockEnv.set('UPLOAD_DIR', testPaths.uploadsDir)
@@ -282,7 +285,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -300,7 +303,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=backup', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -317,7 +320,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=backup', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -334,7 +337,7 @@ describe('/api/upload', () => {
 
       const request = createMockNextRequest('http://localhost:3000/api/upload?type=dataImport', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -351,7 +354,7 @@ describe('/api/upload', () => {
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -373,10 +376,13 @@ describe('/api/upload', () => {
       // Mock a processing error by setting invalid path
       mockEnv.set('UPLOAD_DIR', '/invalid/path/that/does/not/exist')
 
-      const request = createMockNextRequest('http://localhost:3000/api/upload?type=documents&save=true', {
-        method: 'POST',
-        body: formData
-      })
+      const request = createMockNextRequest(
+        'http://localhost:3000/api/upload?type=documents&save=true',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -392,12 +398,14 @@ describe('/api/upload', () => {
   describe('Security Features', () => {
     test('should quarantine malicious files', async () => {
       const formData = new FormData()
-      const maliciousFile = new File(['<script>alert("XSS")</script>'], 'malicious.html', { type: 'text/html' })
+      const maliciousFile = new File(['<script>alert("XSS")</script>'], 'malicious.html', {
+        type: 'text/html',
+      })
       formData.append('file', maliciousFile)
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -414,7 +422,7 @@ describe('/api/upload', () => {
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=documents', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)
@@ -426,12 +434,14 @@ describe('/api/upload', () => {
 
     test('should handle different upload types with appropriate security', async () => {
       const formData = new FormData()
-      const imageFile = new File([new Uint8Array([0xFF, 0xD8, 0xFF])], 'image.jpg', { type: 'image/jpeg' })
+      const imageFile = new File([new Uint8Array([0xff, 0xd8, 0xff])], 'image.jpg', {
+        type: 'image/jpeg',
+      })
       formData.append('file', imageFile)
 
       const request = new NextRequest('http://localhost:3000/api/upload?type=images', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
 
       const response = await POST(request)

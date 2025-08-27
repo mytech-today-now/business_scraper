@@ -59,19 +59,19 @@ export function getClientCSPNonce(): string | null {
   if (typeof window === 'undefined') {
     return null
   }
-  
+
   // Try to get nonce from meta tag
   const metaTag = document.querySelector('meta[name="csp-nonce"]')
   if (metaTag) {
     return metaTag.getAttribute('content')
   }
-  
+
   // Try to get from existing script tag
   const scriptTag = document.querySelector('script[nonce]')
   if (scriptTag) {
     return scriptTag.getAttribute('nonce')
   }
-  
+
   return null
 }
 
@@ -88,9 +88,9 @@ export function isCSPSafe(content: string): boolean {
     /javascript:/,
     /data:.*script/i,
     /vbscript:/i,
-    /on\w+\s*=/i // inline event handlers
+    /on\w+\s*=/i, // inline event handlers
   ]
-  
+
   return !unsafePatterns.some(pattern => pattern.test(content))
 }
 
@@ -107,7 +107,7 @@ export function sanitizeForCSP(content: string): string {
     .replace(/javascript:/gi, '/* javascript: removed */')
     .replace(/vbscript:/gi, '/* vbscript: removed */')
     .replace(/on\w+\s*=/gi, '/* inline handler removed */')
-  
+
   return sanitized
 }
 
@@ -121,14 +121,14 @@ export class CSPReporter {
     blockedUri: string
     timestamp: number
   }> = []
-  
+
   static getInstance(): CSPReporter {
     if (!CSPReporter.instance) {
       CSPReporter.instance = new CSPReporter()
     }
     return CSPReporter.instance
   }
-  
+
   /**
    * Report CSP violation manually
    */
@@ -136,35 +136,35 @@ export class CSPReporter {
     const violation = {
       directive,
       blockedUri,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }
-    
+
     this.violations.push(violation)
-    
+
     // Send to reporting endpoint (only in browser environment)
     if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
       try {
         fetch('/api/csp-report', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             'csp-report': {
               'document-uri': window.location.href,
-              'referrer': document.referrer,
+              referrer: document.referrer,
               'violated-directive': directive,
               'effective-directive': directive,
               'original-policy': 'manual-report',
-              'disposition': 'enforce',
+              disposition: 'enforce',
               'blocked-uri': blockedUri,
               'line-number': 0,
               'column-number': 0,
               'source-file': window.location.href,
               'status-code': 200,
-              'script-sample': ''
-            }
-          })
+              'script-sample': '',
+            },
+          }),
         }).catch(error => {
           console.warn('Failed to report CSP violation:', error)
         })
@@ -173,7 +173,7 @@ export class CSPReporter {
       }
     }
   }
-  
+
   /**
    * Get recent violations
    */
@@ -182,10 +182,10 @@ export class CSPReporter {
     blockedUri: string
     timestamp: number
   }> {
-    const cutoff = since || (Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
+    const cutoff = since || Date.now() - 24 * 60 * 60 * 1000 // Last 24 hours
     return this.violations.filter(v => v.timestamp >= cutoff)
   }
-  
+
   /**
    * Clear violation history
    */
@@ -201,9 +201,9 @@ export function initializeCSPReporting(): void {
   if (typeof window === 'undefined') {
     return
   }
-  
+
   // Listen for CSP violations
-  document.addEventListener('securitypolicyviolation', (event) => {
+  document.addEventListener('securitypolicyviolation', event => {
     const reporter = CSPReporter.getInstance()
     reporter.reportViolation(event.violatedDirective, event.blockedURI)
   })
@@ -218,17 +218,17 @@ export function loadScriptSafely(src: string, nonce?: string): Promise<void> {
       reject(new Error('loadScriptSafely can only be used client-side'))
       return
     }
-    
+
     const script = document.createElement('script')
     script.src = src
-    
+
     if (nonce) {
       script.nonce = nonce
     }
-    
+
     script.onload = () => resolve()
     script.onerror = () => reject(new Error(`Failed to load script: ${src}`))
-    
+
     document.head.appendChild(script)
   })
 }
@@ -242,18 +242,18 @@ export function loadStyleSafely(href: string, nonce?: string): Promise<void> {
       reject(new Error('loadStyleSafely can only be used client-side'))
       return
     }
-    
+
     const link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = href
-    
+
     if (nonce) {
       link.nonce = nonce
     }
-    
+
     link.onload = () => resolve()
     link.onerror = () => reject(new Error(`Failed to load stylesheet: ${href}`))
-    
+
     document.head.appendChild(link)
   })
 }

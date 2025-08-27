@@ -9,7 +9,7 @@ import { BusinessRecord } from './business'
  * Source field reference
  */
 export interface SourceField {
-  path: string              // Dot notation path (e.g., 'contact.email', 'address.street')
+  path: string // Dot notation path (e.g., 'contact.email', 'address.street')
   type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'date'
   required: boolean
   defaultValue?: any
@@ -23,7 +23,7 @@ export interface TargetField {
   name: string
   type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'date'
   required: boolean
-  format?: string           // Format specification (e.g., 'YYYY-MM-DD', '(###) ###-####')
+  format?: string // Format specification (e.g., 'YYYY-MM-DD', '(###) ###-####')
   maxLength?: number
   validation?: FieldValidator[]
   description?: string
@@ -39,7 +39,7 @@ export interface FieldValidator {
     max?: number
     pattern?: string | RegExp
     message?: string
-    customFn?: string       // Serialized function for custom validation
+    customFn?: string // Serialized function for custom validation
   }
   errorMessage: string
 }
@@ -66,7 +66,7 @@ export interface FieldMappingRule {
   targetField: TargetField
   transformation: DataTransformation
   conditions?: MappingCondition[]
-  priority: number          // Higher priority rules are applied first
+  priority: number // Higher priority rules are applied first
   enabled: boolean
 }
 
@@ -75,7 +75,16 @@ export interface FieldMappingRule {
  */
 export interface MappingCondition {
   field: string
-  operator: 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with' | 'regex' | 'exists' | 'not_exists'
+  operator:
+    | 'equals'
+    | 'not_equals'
+    | 'contains'
+    | 'not_contains'
+    | 'starts_with'
+    | 'ends_with'
+    | 'regex'
+    | 'exists'
+    | 'not_exists'
   value: any
   caseSensitive?: boolean
 }
@@ -162,16 +171,19 @@ export interface FieldMappingEngine {
   registerSchema(schema: FieldMappingSchema): void
   getSchema(id: string): FieldMappingSchema | null
   validateSchema(schema: FieldMappingSchema): SchemaValidationResult
-  
+
   // Transformation management
   registerTransformation(transformation: DataTransformation): void
   getTransformation(id: string): DataTransformation | null
   listTransformations(): DataTransformation[]
-  
+
   // Mapping execution
   executeMapping(schemaId: string, sourceData: any[]): Promise<MappingExecutionResult>
-  executeMappingWithSchema(schema: FieldMappingSchema, sourceData: any[]): Promise<MappingExecutionResult>
-  
+  executeMappingWithSchema(
+    schema: FieldMappingSchema,
+    sourceData: any[]
+  ): Promise<MappingExecutionResult>
+
   // Validation and testing
   validateMapping(schema: FieldMappingSchema, sampleData: any[]): Promise<MappingValidationResult>
   testMapping(schema: FieldMappingSchema, testData: any[]): Promise<MappingTestResult>
@@ -235,7 +247,7 @@ export interface MappingTestResult {
 /**
  * Built-in transformation types
  */
-export type BuiltInTransformation = 
+export type BuiltInTransformation =
   | 'direct_copy'
   | 'concatenate'
   | 'split'
@@ -257,19 +269,19 @@ export interface TransformationParams {
   separator?: string
   prefix?: string
   suffix?: string
-  
+
   // Splitting
   delimiter?: string
   index?: number
-  
+
   // Formatting
   format?: string
   locale?: string
-  
+
   // Lookup
   lookupTable?: Record<string, any>
   defaultValue?: any
-  
+
   // Conditional
   conditions?: Array<{
     condition: string

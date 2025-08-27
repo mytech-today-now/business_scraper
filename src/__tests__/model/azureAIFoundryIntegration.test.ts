@@ -18,7 +18,7 @@ jest.mock('@/utils/logger', () => ({
 // Mock the secure storage
 jest.mock('@/utils/secureStorage', () => ({
   retrieveApiCredentials: jest.fn(),
-  ApiCredentials: {}
+  ApiCredentials: {},
 }))
 
 // Mock fetch for API calls
@@ -32,15 +32,15 @@ describe('Azure AI Foundry Integration', () => {
     mockCredentials = {
       azureSearchApiKey: 'test-azure-key',
       azureSearchEndpoint: 'https://businessscraper.cognitiveservices.azure.com/',
-      azureSearchRegion: 'eastus'
+      azureSearchRegion: 'eastus',
     }
-    
+
     // Mock the retrieveApiCredentials to return our test credentials
     const { retrieveApiCredentials } = require('@/utils/secureStorage')
     retrieveApiCredentials.mockResolvedValue(mockCredentials)
-    
+
     searchEngine = new ClientSearchEngine()
-    
+
     // Clear all mocks
     jest.clearAllMocks()
   })
@@ -53,19 +53,19 @@ describe('Azure AI Foundry Integration', () => {
             {
               url: 'https://example-business.com',
               name: 'Example Business',
-              snippet: 'A great business in the area'
-            }
-          ]
-        }
+              snippet: 'A great business in the area',
+            },
+          ],
+        },
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => mockResponse,
       })
 
       await searchEngine.initialize()
-      
+
       // Access the private method for testing
       const results = await (searchEngine as any).searchWithAzure('restaurants', 'New York', 10)
 
@@ -76,9 +76,9 @@ describe('Azure AI Foundry Integration', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'Ocp-Apim-Subscription-Key': 'test-azure-key',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           }),
-          body: expect.stringContaining('"q":"restaurants New York"')
+          body: expect.stringContaining('"q":"restaurants New York"'),
         })
       )
 
@@ -87,7 +87,7 @@ describe('Azure AI Foundry Integration', () => {
         url: 'https://example-business.com',
         title: 'Example Business',
         snippet: 'A great business in the area',
-        domain: 'example-business.com'
+        domain: 'example-business.com',
       })
     })
 
@@ -95,7 +95,7 @@ describe('Azure AI Foundry Integration', () => {
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         status: 401,
-        text: async () => 'Unauthorized'
+        text: async () => 'Unauthorized',
       })
 
       await searchEngine.initialize()
@@ -108,7 +108,7 @@ describe('Azure AI Foundry Integration', () => {
     it('should handle missing credentials', async () => {
       const { retrieveApiCredentials } = require('@/utils/secureStorage')
       retrieveApiCredentials.mockResolvedValue({})
-      
+
       const searchEngineNoCredentials = new ClientSearchEngine()
       await searchEngineNoCredentials.initialize()
 
@@ -124,15 +124,15 @@ describe('Azure AI Foundry Integration', () => {
             {
               url: 'https://restaurant1.com',
               name: 'Restaurant One',
-              snippet: 'Great food and service'
+              snippet: 'Great food and service',
             },
             {
               url: 'https://restaurant2.com',
               name: 'Restaurant Two',
-              snippet: 'Amazing atmosphere'
-            }
-          ]
-        }
+              snippet: 'Amazing atmosphere',
+            },
+          ],
+        },
       }
 
       const results = (searchEngine as any).parseAzureGroundingResults(mockData, 10)
@@ -142,21 +142,21 @@ describe('Azure AI Foundry Integration', () => {
         url: 'https://restaurant1.com',
         title: 'Restaurant One',
         snippet: 'Great food and service',
-        domain: 'restaurant1.com'
+        domain: 'restaurant1.com',
       })
       expect(results[1]).toEqual({
         url: 'https://restaurant2.com',
         title: 'Restaurant Two',
         snippet: 'Amazing atmosphere',
-        domain: 'restaurant2.com'
+        domain: 'restaurant2.com',
       })
     })
 
     it('should handle empty response gracefully', () => {
       const mockData = {}
-      
+
       const results = (searchEngine as any).parseAzureGroundingResults(mockData, 10)
-      
+
       expect(results).toHaveLength(0)
     })
 
@@ -167,20 +167,20 @@ describe('Azure AI Foundry Integration', () => {
             {
               url: 'https://valid-business.com',
               name: 'Valid Business',
-              snippet: 'A valid business'
+              snippet: 'A valid business',
             },
             {
               url: 'invalid-url',
               name: 'Invalid URL',
-              snippet: 'This should be filtered out'
+              snippet: 'This should be filtered out',
             },
             {
               url: '',
               name: 'Empty URL',
-              snippet: 'This should also be filtered out'
-            }
-          ]
-        }
+              snippet: 'This should also be filtered out',
+            },
+          ],
+        },
       }
 
       const results = (searchEngine as any).parseAzureGroundingResults(mockData, 10)
@@ -195,9 +195,9 @@ describe('Azure AI Foundry Integration', () => {
           value: Array.from({ length: 20 }, (_, i) => ({
             url: `https://business${i}.com`,
             name: `Business ${i}`,
-            snippet: `Description for business ${i}`
-          }))
-        }
+            snippet: `Description for business ${i}`,
+          })),
+        },
       }
 
       const results = (searchEngine as any).parseAzureGroundingResults(mockData, 5)
@@ -214,10 +214,10 @@ describe('Azure AI Foundry Integration', () => {
             {
               url: 'https://legacy-test.com',
               name: 'Legacy Test',
-              snippet: 'Testing backward compatibility'
-            }
-          ]
-        }
+              snippet: 'Testing backward compatibility',
+            },
+          ],
+        },
       }
 
       const results = (searchEngine as any).parseAzureResults(mockData, 10)
@@ -227,7 +227,7 @@ describe('Azure AI Foundry Integration', () => {
         url: 'https://legacy-test.com',
         title: 'Legacy Test',
         snippet: 'Testing backward compatibility',
-        domain: 'legacy-test.com'
+        domain: 'legacy-test.com',
       })
     })
   })

@@ -15,7 +15,7 @@ import {
   MappingValidationResult,
   MappingTestResult,
   BuiltInTransformation,
-  TransformationParams
+  TransformationParams,
 } from '@/types/field-mapping'
 
 /**
@@ -37,7 +37,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
     if (!validation.isValid) {
       throw new Error(`Invalid schema: ${validation.errors.join(', ')}`)
     }
-    
+
     this.schemas.set(schema.id, schema)
     logger.info('FieldMapping', `Registered schema: ${schema.name} (${schema.id})`)
   }
@@ -98,7 +98,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
     // Check coverage
     const requiredTargetFields = schema.targetSchema.fields.filter(f => f.required)
     const mappedTargetFields = schema.mappingRules.map(r => r.targetField.name)
-    
+
     for (const requiredField of requiredTargetFields) {
       if (!mappedTargetFields.includes(requiredField.name)) {
         warnings.push(`Required target field '${requiredField.name}' is not mapped`)
@@ -113,10 +113,10 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       compatibility: {
         sourceCompatible: true,
         targetCompatible: true,
-        transformationsSupported: schema.mappingRules.every(r => 
+        transformationsSupported: schema.mappingRules.every(r =>
           this.transformations.has(r.transformation.id)
-        )
-      }
+        ),
+      },
     }
   }
 
@@ -125,7 +125,10 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
    */
   registerTransformation(transformation: DataTransformation): void {
     this.transformations.set(transformation.id, transformation)
-    logger.info('FieldMapping', `Registered transformation: ${transformation.name} (${transformation.id})`)
+    logger.info(
+      'FieldMapping',
+      `Registered transformation: ${transformation.name} (${transformation.id})`
+    )
   }
 
   /**
@@ -150,14 +153,17 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
     if (!schema) {
       throw new Error(`Schema not found: ${schemaId}`)
     }
-    
+
     return this.executeMappingWithSchema(schema, sourceData)
   }
 
   /**
    * Execute field mapping with schema object
    */
-  async executeMappingWithSchema(schema: FieldMappingSchema, sourceData: any[]): Promise<MappingExecutionResult> {
+  async executeMappingWithSchema(
+    schema: FieldMappingSchema,
+    sourceData: any[]
+  ): Promise<MappingExecutionResult> {
     const startTime = Date.now()
     const mappedData: any[] = []
     const errors: MappingError[] = []
@@ -165,7 +171,10 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
     let recordsSuccessful = 0
     let transformationsApplied = 0
 
-    logger.info('FieldMapping', `Starting mapping execution for ${sourceData.length} records with schema: ${schema.name}`)
+    logger.info(
+      'FieldMapping',
+      `Starting mapping execution for ${sourceData.length} records with schema: ${schema.name}`
+    )
 
     for (let recordIndex = 0; recordIndex < sourceData.length; recordIndex++) {
       const sourceRecord = sourceData[recordIndex]
@@ -185,7 +194,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
           }
 
           // Extract source values
-          const sourceValues = rule.sourceFields.map(field => 
+          const sourceValues = rule.sourceFields.map(field =>
             this.extractFieldValue(sourceRecord, field.path, field.defaultValue)
           )
 
@@ -199,7 +208,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
               targetField: rule.targetField.name,
               errorType: 'transformation',
               message: `Transformation not found: ${rule.transformation.id}`,
-              originalValue: sourceValues
+              originalValue: sourceValues,
             })
             recordHasErrors = true
             continue
@@ -211,10 +220,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
           )
 
           // Validate transformed value
-          const validationResult = this.validateFieldValue(
-            transformedValue,
-            rule.targetField
-          )
+          const validationResult = this.validateFieldValue(transformedValue, rule.targetField)
 
           if (!validationResult.isValid) {
             errors.push({
@@ -225,7 +231,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
               errorType: 'validation',
               message: validationResult.error || 'Validation failed',
               originalValue: sourceValues,
-              suggestedFix: validationResult.suggestedFix
+              suggestedFix: validationResult.suggestedFix,
             })
             recordHasErrors = true
             continue
@@ -237,18 +243,19 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
 
           // Check for warnings
           if (validationResult.warnings) {
-            warnings.push(...validationResult.warnings.map(warning => ({
-              recordIndex,
-              ruleId: rule.id,
-              sourceField: rule.sourceFields[0]?.path || 'unknown',
-              targetField: rule.targetField.name,
-              warningType: warning.type as any,
-              message: warning.message,
-              originalValue: sourceValues,
-              mappedValue: transformedValue
-            })))
+            warnings.push(
+              ...validationResult.warnings.map(warning => ({
+                recordIndex,
+                ruleId: rule.id,
+                sourceField: rule.sourceFields[0]?.path || 'unknown',
+                targetField: rule.targetField.name,
+                warningType: warning.type as any,
+                message: warning.message,
+                originalValue: sourceValues,
+                mappedValue: transformedValue,
+              }))
+            )
           }
-
         } catch (error) {
           errors.push({
             recordIndex,
@@ -257,9 +264,9 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
             targetField: rule.targetField.name,
             errorType: 'transformation',
             message: error instanceof Error ? error.message : 'Unknown error',
-            originalValue: rule.sourceFields.map(field => 
+            originalValue: rule.sourceFields.map(field =>
               this.extractFieldValue(sourceRecord, field.path)
-            )
+            ),
           })
           recordHasErrors = true
         }
@@ -287,8 +294,8 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
         executionTime,
         averageRecordTime: executionTime / sourceData.length,
         memoryUsage: process.memoryUsage().heapUsed,
-        transformationsApplied
-      }
+        transformationsApplied,
+      },
     }
 
     logger.info('FieldMapping', `Mapping execution completed`, {
@@ -296,7 +303,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       recordsSuccessful: result.recordsSuccessful,
       recordsFailed: result.recordsFailed,
       executionTime: result.statistics.executionTime,
-      transformationsApplied: result.statistics.transformationsApplied
+      transformationsApplied: result.statistics.transformationsApplied,
     })
 
     return result
@@ -305,9 +312,12 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
   /**
    * Validate mapping configuration
    */
-  async validateMapping(schema: FieldMappingSchema, sampleData: any[]): Promise<MappingValidationResult> {
+  async validateMapping(
+    schema: FieldMappingSchema,
+    sampleData: any[]
+  ): Promise<MappingValidationResult> {
     const schemaValidation = this.validateSchema(schema)
-    
+
     if (!schemaValidation.isValid) {
       return {
         isValid: false,
@@ -315,13 +325,13 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
           sourceFieldsCovered: 0,
           targetFieldsMapped: 0,
           requiredFieldsMapped: 0,
-          coveragePercentage: 0
+          coveragePercentage: 0,
         },
         issues: schemaValidation.errors.map(error => ({
           type: 'error',
-          message: error
+          message: error,
         })),
-        recommendations: []
+        recommendations: [],
       }
     }
 
@@ -330,7 +340,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
     const targetFields = schema.targetSchema.fields
     const requiredTargetFields = targetFields.filter(f => f.required)
     const mappedTargetFields = schema.mappingRules.map(r => r.targetField.name)
-    const requiredFieldsMapped = requiredTargetFields.filter(f => 
+    const requiredFieldsMapped = requiredTargetFields.filter(f =>
       mappedTargetFields.includes(f.name)
     ).length
 
@@ -338,20 +348,20 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       sourceFieldsCovered: sourceFields.length,
       targetFieldsMapped: mappedTargetFields.length,
       requiredFieldsMapped,
-      coveragePercentage: (mappedTargetFields.length / targetFields.length) * 100
+      coveragePercentage: (mappedTargetFields.length / targetFields.length) * 100,
     }
 
     const issues = schemaValidation.warnings.map(warning => ({
       type: 'warning' as const,
-      message: warning
+      message: warning,
     }))
 
     const recommendations: string[] = []
-    
+
     if (coverage.coveragePercentage < 80) {
       recommendations.push('Consider mapping more target fields to improve coverage')
     }
-    
+
     if (requiredFieldsMapped < requiredTargetFields.length) {
       recommendations.push('Map all required target fields to ensure data completeness')
     }
@@ -360,7 +370,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       isValid: schemaValidation.isValid && requiredFieldsMapped === requiredTargetFields.length,
       coverage,
       issues,
-      recommendations
+      recommendations,
     }
   }
 
@@ -385,7 +395,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
         expectedOutput: {}, // Would need to be provided for proper testing
         actualOutput,
         passed,
-        errors
+        errors,
       })
     }
 
@@ -396,8 +406,8 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
         totalTests: testCases.length,
         passedTests,
         failedTests: testCases.length - passedTests,
-        successRate: (passedTests / testCases.length) * 100
-      }
+        successRate: (passedTests / testCases.length) * 100,
+      },
     }
   }
 
@@ -412,7 +422,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       description: 'Copy value directly from source to target',
       inputTypes: ['any'],
       outputType: 'any',
-      transform: (input: any) => input
+      transform: (input: any) => input,
     })
 
     // Concatenate transformation
@@ -426,14 +436,14 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
         const separator = params?.separator || ' '
         const prefix = params?.prefix || ''
         const suffix = params?.suffix || ''
-        
+
         const values = Array.isArray(input) ? input : [input]
         const filtered = values.filter(v => v != null && v !== '')
-        
+
         if (filtered.length === 0) return ''
-        
+
         return prefix + filtered.join(separator) + suffix
-      }
+      },
     })
 
     // Format phone transformation
@@ -458,7 +468,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
         }
 
         return input // Return original if can't format
-      }
+      },
     })
 
     // Extract domain transformation
@@ -470,7 +480,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       outputType: 'string',
       transform: (input: string) => {
         if (!input) return ''
-        
+
         try {
           if (input.includes('@')) {
             // Email address
@@ -485,7 +495,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
         } catch {
           return input
         }
-      }
+      },
     })
 
     logger.info('FieldMapping', 'Initialized built-in transformations')
@@ -497,14 +507,14 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
   private extractFieldValue(obj: any, path: string, defaultValue?: any): any {
     const keys = path.split('.')
     let current = obj
-    
+
     for (const key of keys) {
       if (current == null || typeof current !== 'object') {
         return defaultValue
       }
       current = current[key]
     }
-    
+
     return current !== undefined ? current : defaultValue
   }
 
@@ -514,7 +524,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
   private evaluateConditions(conditions: any[], record: any): boolean {
     return conditions.every(condition => {
       const fieldValue = this.extractFieldValue(record, condition.field)
-      
+
       switch (condition.operator) {
         case 'equals':
           return fieldValue === condition.value
@@ -537,7 +547,10 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
   /**
    * Validate field value against target field specification
    */
-  private validateFieldValue(value: any, targetField: any): {
+  private validateFieldValue(
+    value: any,
+    targetField: any
+  ): {
     isValid: boolean
     error?: string
     suggestedFix?: string
@@ -550,7 +563,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       return {
         isValid: false,
         error: `Required field '${targetField.name}' is missing or empty`,
-        suggestedFix: 'Provide a default value or ensure source data contains this field'
+        suggestedFix: 'Provide a default value or ensure source data contains this field',
       }
     }
 
@@ -560,7 +573,7 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       if (targetField.type !== 'any' && actualType !== targetField.type) {
         warnings.push({
           type: 'type_coercion',
-          message: `Type mismatch: expected ${targetField.type}, got ${actualType}`
+          message: `Type mismatch: expected ${targetField.type}, got ${actualType}`,
         })
       }
 
@@ -568,14 +581,14 @@ export class FieldMappingEngineImpl implements FieldMappingEngine {
       if (targetField.maxLength && String(value).length > targetField.maxLength) {
         warnings.push({
           type: 'truncation',
-          message: `Value exceeds maximum length of ${targetField.maxLength}`
+          message: `Value exceeds maximum length of ${targetField.maxLength}`,
         })
       }
     }
 
     return {
       isValid: true,
-      warnings: warnings.length > 0 ? warnings : undefined
+      warnings: warnings.length > 0 ? warnings : undefined,
     }
   }
 }

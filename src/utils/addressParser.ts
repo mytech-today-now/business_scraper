@@ -1,6 +1,6 @@
 /**
  * Enhanced Address Parser
- * 
+ *
  * Provides comprehensive address parsing to isolate street number, street name,
  * city, state, and ZIP code components from raw address strings.
  */
@@ -30,19 +30,57 @@ export class AddressParser {
   // US State abbreviations and full names mapping
   private readonly stateMap = new Map([
     // Standard abbreviations
-    ['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'],
-    ['CA', 'California'], ['CO', 'Colorado'], ['CT', 'Connecticut'], ['DE', 'Delaware'],
-    ['FL', 'Florida'], ['GA', 'Georgia'], ['HI', 'Hawaii'], ['ID', 'Idaho'],
-    ['IL', 'Illinois'], ['IN', 'Indiana'], ['IA', 'Iowa'], ['KS', 'Kansas'],
-    ['KY', 'Kentucky'], ['LA', 'Louisiana'], ['ME', 'Maine'], ['MD', 'Maryland'],
-    ['MA', 'Massachusetts'], ['MI', 'Michigan'], ['MN', 'Minnesota'], ['MS', 'Mississippi'],
-    ['MO', 'Missouri'], ['MT', 'Montana'], ['NE', 'Nebraska'], ['NV', 'Nevada'],
-    ['NH', 'New Hampshire'], ['NJ', 'New Jersey'], ['NM', 'New Mexico'], ['NY', 'New York'],
-    ['NC', 'North Carolina'], ['ND', 'North Dakota'], ['OH', 'Ohio'], ['OK', 'Oklahoma'],
-    ['OR', 'Oregon'], ['PA', 'Pennsylvania'], ['RI', 'Rhode Island'], ['SC', 'South Carolina'],
-    ['SD', 'South Dakota'], ['TN', 'Tennessee'], ['TX', 'Texas'], ['UT', 'Utah'],
-    ['VT', 'Vermont'], ['VA', 'Virginia'], ['WA', 'Washington'], ['WV', 'West Virginia'],
-    ['WI', 'Wisconsin'], ['WY', 'Wyoming'], ['DC', 'District of Columbia']
+    ['AL', 'Alabama'],
+    ['AK', 'Alaska'],
+    ['AZ', 'Arizona'],
+    ['AR', 'Arkansas'],
+    ['CA', 'California'],
+    ['CO', 'Colorado'],
+    ['CT', 'Connecticut'],
+    ['DE', 'Delaware'],
+    ['FL', 'Florida'],
+    ['GA', 'Georgia'],
+    ['HI', 'Hawaii'],
+    ['ID', 'Idaho'],
+    ['IL', 'Illinois'],
+    ['IN', 'Indiana'],
+    ['IA', 'Iowa'],
+    ['KS', 'Kansas'],
+    ['KY', 'Kentucky'],
+    ['LA', 'Louisiana'],
+    ['ME', 'Maine'],
+    ['MD', 'Maryland'],
+    ['MA', 'Massachusetts'],
+    ['MI', 'Michigan'],
+    ['MN', 'Minnesota'],
+    ['MS', 'Mississippi'],
+    ['MO', 'Missouri'],
+    ['MT', 'Montana'],
+    ['NE', 'Nebraska'],
+    ['NV', 'Nevada'],
+    ['NH', 'New Hampshire'],
+    ['NJ', 'New Jersey'],
+    ['NM', 'New Mexico'],
+    ['NY', 'New York'],
+    ['NC', 'North Carolina'],
+    ['ND', 'North Dakota'],
+    ['OH', 'Ohio'],
+    ['OK', 'Oklahoma'],
+    ['OR', 'Oregon'],
+    ['PA', 'Pennsylvania'],
+    ['RI', 'Rhode Island'],
+    ['SC', 'South Carolina'],
+    ['SD', 'South Dakota'],
+    ['TN', 'Tennessee'],
+    ['TX', 'Texas'],
+    ['UT', 'Utah'],
+    ['VT', 'Vermont'],
+    ['VA', 'Virginia'],
+    ['WA', 'Washington'],
+    ['WV', 'West Virginia'],
+    ['WI', 'Wisconsin'],
+    ['WY', 'Wyoming'],
+    ['DC', 'District of Columbia'],
   ])
 
   // Reverse mapping for full state names to abbreviations
@@ -52,26 +90,56 @@ export class AddressParser {
 
   // Street type abbreviations and variations
   private readonly streetTypes = [
-    'street', 'st', 'avenue', 'ave', 'road', 'rd', 'drive', 'dr', 'lane', 'ln',
-    'boulevard', 'blvd', 'circle', 'cir', 'court', 'ct', 'place', 'pl',
-    'way', 'parkway', 'pkwy', 'highway', 'hwy', 'trail', 'trl'
+    'street',
+    'st',
+    'avenue',
+    'ave',
+    'road',
+    'rd',
+    'drive',
+    'dr',
+    'lane',
+    'ln',
+    'boulevard',
+    'blvd',
+    'circle',
+    'cir',
+    'court',
+    'ct',
+    'place',
+    'pl',
+    'way',
+    'parkway',
+    'pkwy',
+    'highway',
+    'hwy',
+    'trail',
+    'trl',
   ]
 
   // Suite/unit indicators
   private readonly suiteIndicators = [
-    'suite', 'ste', 'unit', 'apt', 'apartment', 'floor', 'fl', 'room', 'rm',
-    'building', 'bldg', 'office', 'ofc', '#'
+    'suite',
+    'ste',
+    'unit',
+    'apt',
+    'apartment',
+    'floor',
+    'fl',
+    'room',
+    'rm',
+    'building',
+    'bldg',
+    'office',
+    'ofc',
+    '#',
   ]
 
   /**
    * Parse a raw address string into structured components
    */
   parseAddress(rawAddress: string, options: AddressParsingOptions = {}): ParsedAddress {
-    const {
-      strictMode = false,
-      allowPartialMatches = true,
-      logErrors = false
-    } = options
+    const { strictMode = false, allowPartialMatches = true, logErrors = false } = options
 
     if (!rawAddress || typeof rawAddress !== 'string') {
       return this.createEmptyAddress()
@@ -80,10 +148,10 @@ export class AddressParser {
     try {
       // Clean and normalize the input
       const cleanAddress = this.cleanAddressString(rawAddress)
-      
+
       // Try different parsing strategies
       const result = this.parseWithMultipleStrategies(cleanAddress, strictMode, allowPartialMatches)
-      
+
       if (logErrors && result.confidence < 0.7) {
         logger.warn('AddressParser', `Low confidence address parse: ${rawAddress}`, { result })
       }
@@ -114,8 +182,8 @@ export class AddressParser {
    * Try multiple parsing strategies
    */
   private parseWithMultipleStrategies(
-    address: string, 
-    strictMode: boolean, 
+    address: string,
+    strictMode: boolean,
     allowPartialMatches: boolean
   ): ParsedAddress {
     // Strategy 1: Full structured address (most common)
@@ -217,28 +285,29 @@ export class AddressParser {
    */
   private parseWithPatterns(address: string): ParsedAddress {
     const result = this.createEmptyAddress()
-    
+
     // Extract ZIP code
     const zipMatch = address.match(/\b(\d{5}(?:-\d{4})?)\b/)
     if (zipMatch) {
       result.zipCode = zipMatch[1]
     }
-    
+
     // Extract state (2-letter abbreviation or full name)
     const stateMatch = address.match(/\b([A-Z]{2})\b|\b([A-Za-z\s]{4,20})\s+\d{5}/)
     if (stateMatch) {
       result.state = this.normalizeState(stateMatch[1] || stateMatch[2])
     }
-    
+
     // Extract street number and name from beginning
     const streetMatch = address.match(/^(\d+[A-Za-z]?)\s+(.+?)(?:,|$)/)
     if (streetMatch) {
       result.streetNumber = streetMatch[1]
       result.streetName = streetMatch[2].trim()
     }
-    
-    result.confidence = (result.zipCode ? 0.3 : 0) + (result.state ? 0.2 : 0) + (result.streetName ? 0.2 : 0)
-    
+
+    result.confidence =
+      (result.zipCode ? 0.3 : 0) + (result.state ? 0.2 : 0) + (result.streetName ? 0.2 : 0)
+
     return result
   }
 
@@ -247,27 +316,27 @@ export class AddressParser {
    */
   private parsePartialAddress(address: string): ParsedAddress {
     const result = this.createEmptyAddress()
-    
+
     // Try to extract any recognizable components
     const zipMatch = address.match(/\b(\d{5}(?:-\d{4})?)\b/)
     if (zipMatch) {
       result.zipCode = zipMatch[1]
       result.confidence += 0.3
     }
-    
+
     const stateMatch = address.match(/\b([A-Z]{2})\b/)
     if (stateMatch && this.stateMap.has(stateMatch[1])) {
       result.state = stateMatch[1]
       result.confidence += 0.2
     }
-    
+
     const streetMatch = address.match(/^(\d+[A-Za-z]?)\s+(.+)/)
     if (streetMatch) {
       result.streetNumber = streetMatch[1]
       result.streetName = streetMatch[2].split(',')[0].trim()
       result.confidence += 0.2
     }
-    
+
     return result
   }
 
@@ -287,7 +356,10 @@ export class AddressParser {
       indicator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     )
     // Use a more flexible pattern that handles # without word boundary
-    const suitePattern = new RegExp(`(?:^|\\s)(${escapedIndicators.join('|')})\\s*([A-Za-z0-9-]+)`, 'i')
+    const suitePattern = new RegExp(
+      `(?:^|\\s)(${escapedIndicators.join('|')})\\s*([A-Za-z0-9-]+)`,
+      'i'
+    )
     const suiteMatch = streetPart.match(suitePattern)
 
     let cleanStreet = streetPart.trim()
@@ -317,20 +389,20 @@ export class AddressParser {
    */
   private normalizeState(stateInput: string): string {
     if (!stateInput) return ''
-    
+
     const cleaned = stateInput.trim().toUpperCase()
-    
+
     // Check if it's already a valid abbreviation
     if (this.stateMap.has(cleaned)) {
       return cleaned
     }
-    
+
     // Check if it's a full state name
     const abbrev = this.stateNameToAbbrev.get(stateInput.toLowerCase())
     if (abbrev) {
       return abbrev
     }
-    
+
     return cleaned // Return as-is if not recognized
   }
 
@@ -345,7 +417,7 @@ export class AddressParser {
       city: '',
       state: '',
       zipCode: '',
-      confidence: 0
+      confidence: 0,
     }
   }
 }

@@ -2,19 +2,19 @@
  * Tests for feature flag system
  */
 
-import { 
-  isFeatureEnabled, 
-  getAllFeatureFlags, 
+import {
+  isFeatureEnabled,
+  getAllFeatureFlags,
   clearFeatureFlagCache,
   validateFeatureFlagDependencies,
   Features,
-  FEATURE_FLAGS
+  FEATURE_FLAGS,
 } from '@/lib/feature-flags'
 
 // Mock the config module
 jest.mock('@/lib/config', () => ({
   getConfig: jest.fn(),
-  getFeatureFlags: jest.fn()
+  getFeatureFlags: jest.fn(),
 }))
 
 // Default mock values
@@ -26,8 +26,8 @@ const defaultMockConfig = {
     enableRateLimiting: false,
     enableMetrics: false,
     enableDebugMode: true,
-    enableExperimentalFeatures: true
-  }
+    enableExperimentalFeatures: true,
+  },
 }
 
 const defaultMockFeatureFlags = {
@@ -36,7 +36,7 @@ const defaultMockFeatureFlags = {
   enableRateLimiting: false,
   enableMetrics: false,
   enableDebugMode: true,
-  enableExperimentalFeatures: true
+  enableExperimentalFeatures: true,
 }
 
 describe('Feature Flags System', () => {
@@ -89,7 +89,7 @@ describe('Feature Flags System', () => {
       // REAL_TIME_UPDATES depends on CACHING
       // Since CACHING is enabled, REAL_TIME_UPDATES should be evaluated normally
       expect(isFeatureEnabled('REAL_TIME_UPDATES')).toBe(false) // Default is false
-      
+
       // If we disable CACHING, REAL_TIME_UPDATES should be disabled due to dependency
       const mockGetFeatureFlags = require('@/lib/config').getFeatureFlags
       mockGetFeatureFlags.mockReturnValueOnce({
@@ -98,16 +98,16 @@ describe('Feature Flags System', () => {
         enableRateLimiting: false,
         enableMetrics: false,
         enableDebugMode: true,
-        enableExperimentalFeatures: true
+        enableExperimentalFeatures: true,
       })
-      
+
       clearFeatureFlagCache()
       expect(isFeatureEnabled('REAL_TIME_UPDATES')).toBe(false)
     })
 
     it('should use environment variables for non-core features', () => {
       process.env.FEATURE_ADVANCED_SCRAPING = 'true'
-      
+
       clearFeatureFlagCache()
       expect(isFeatureEnabled('ADVANCED_SCRAPING')).toBe(true)
     })
@@ -120,7 +120,7 @@ describe('Feature Flags System', () => {
     it('should cache results', () => {
       const result1 = isFeatureEnabled('CACHING')
       const result2 = isFeatureEnabled('CACHING')
-      
+
       expect(result1).toBe(result2)
       expect(result1).toBe(true)
     })
@@ -151,7 +151,7 @@ describe('Feature Flags System', () => {
   describe('validateFeatureFlagDependencies', () => {
     it('should validate all dependencies exist', () => {
       const result = validateFeatureFlagDependencies()
-      
+
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -162,13 +162,15 @@ describe('Feature Flags System', () => {
       if (originalFlag) {
         FEATURE_FLAGS.REAL_TIME_UPDATES = {
           ...originalFlag,
-          dependencies: ['CACHING', 'NONEXISTENT_FEATURE']
+          dependencies: ['CACHING', 'NONEXISTENT_FEATURE'],
         }
 
         const result = validateFeatureFlagDependencies()
 
         expect(result.isValid).toBe(false)
-        expect(result.errors).toContain('Feature REAL_TIME_UPDATES depends on unknown feature: NONEXISTENT_FEATURE')
+        expect(result.errors).toContain(
+          'Feature REAL_TIME_UPDATES depends on unknown feature: NONEXISTENT_FEATURE'
+        )
 
         // Restore original flag
         FEATURE_FLAGS.REAL_TIME_UPDATES = originalFlag
@@ -188,7 +190,7 @@ describe('Feature Flags System', () => {
 
     it('should pass context to underlying feature checks', () => {
       const context = { environment: 'production' }
-      
+
       expect(Features.isDebugModeEnabled(context)).toBe(false)
     })
   })
@@ -197,19 +199,19 @@ describe('Feature Flags System', () => {
     it('should clear the cache', () => {
       // Enable a feature via environment variable
       process.env.FEATURE_BULK_OPERATIONS = 'true'
-      
+
       // First call should read from environment
       expect(isFeatureEnabled('BULK_OPERATIONS')).toBe(true)
-      
+
       // Change environment variable
       process.env.FEATURE_BULK_OPERATIONS = 'false'
-      
+
       // Should still return cached result
       expect(isFeatureEnabled('BULK_OPERATIONS')).toBe(true)
-      
+
       // Clear cache
       clearFeatureFlagCache()
-      
+
       // Should now read new value
       expect(isFeatureEnabled('BULK_OPERATIONS')).toBe(false)
     })
@@ -218,21 +220,21 @@ describe('Feature Flags System', () => {
   describe('Environment-specific behavior', () => {
     it('should handle development environment', () => {
       const context = { environment: 'development' }
-      
+
       expect(isFeatureEnabled('DEBUG_MODE', context)).toBe(true)
       expect(isFeatureEnabled('EXPERIMENTAL_FEATURES', context)).toBe(true)
     })
 
     it('should handle production environment', () => {
       const context = { environment: 'production' }
-      
+
       expect(isFeatureEnabled('DEBUG_MODE', context)).toBe(false)
       expect(isFeatureEnabled('METRICS', context)).toBe(false) // Still false due to config
     })
 
     it('should handle test environment', () => {
       const context = { environment: 'test' }
-      
+
       expect(isFeatureEnabled('DEBUG_MODE', context)).toBe(true)
       expect(isFeatureEnabled('RATE_LIMITING', context)).toBe(false)
     })
@@ -245,9 +247,9 @@ describe('Feature Flags System', () => {
       mockGetConfig.mockImplementationOnce(() => {
         throw new Error('Config error')
       })
-      
+
       clearFeatureFlagCache()
-      
+
       // Should return default value on error
       expect(isFeatureEnabled('CACHING')).toBe(true) // Default value for CACHING
     })
@@ -267,7 +269,7 @@ describe('Feature Flags System', () => {
     it('should have unique keys', () => {
       const keys = Object.values(FEATURE_FLAGS).map(flag => flag.key)
       const uniqueKeys = new Set(keys)
-      
+
       expect(keys.length).toBe(uniqueKeys.size)
     })
 

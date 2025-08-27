@@ -28,8 +28,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       // OAuth error
       const errorDescription = url.searchParams.get('error_description')
       logger.error('HubSpot_OAuth_API', `OAuth error: ${error}`, { errorDescription })
-      
-      return NextResponse.redirect(new URL(`/crm/hubspot/oauth/error?error=${error}&description=${errorDescription}`, request.url))
+
+      return NextResponse.redirect(
+        new URL(
+          `/crm/hubspot/oauth/error?error=${error}&description=${errorDescription}`,
+          request.url
+        )
+      )
     }
 
     if (code) {
@@ -41,10 +46,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
   } catch (error) {
     logger.error('HubSpot_OAuth_API', 'OAuth flow failed', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'OAuth flow failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'OAuth flow failed',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -61,10 +69,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { refreshToken, providerId } = body
 
     if (!refreshToken) {
-      return NextResponse.json({
-        success: false,
-        error: 'Refresh token is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Refresh token is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Get OAuth configuration
@@ -87,15 +98,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         accessToken: tokenResponse.access_token,
         refreshToken: tokenResponse.refresh_token,
         expiresIn: tokenResponse.expires_in,
-        tokenType: tokenResponse.token_type
-      }
+        tokenType: tokenResponse.token_type,
+      },
     })
   } catch (error) {
     logger.error('HubSpot_OAuth_API', 'Token refresh failed', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Token refresh failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Token refresh failed',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -113,10 +127,13 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     const providerId = url.searchParams.get('providerId')
 
     if (!accessToken) {
-      return NextResponse.json({
-        success: false,
-        error: 'Access token is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Access token is required',
+        },
+        { status: 400 }
+      )
     }
 
     // Get OAuth configuration
@@ -135,14 +152,17 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       success: true,
-      message: 'Token revoked successfully'
+      message: 'Token revoked successfully',
     })
   } catch (error) {
     logger.error('HubSpot_OAuth_API', 'Token revocation failed', error)
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Token revocation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Token revocation failed',
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -157,7 +177,7 @@ async function initiateOAuthFlow(request: NextRequest): Promise<NextResponse> {
 
     // Generate secure state parameter
     const state = HubSpotOAuth.generateState()
-    
+
     // Store state securely
     await HubSpotOAuth.storeState(state)
 
@@ -209,7 +229,7 @@ async function handleOAuthCallback(
 
     logger.info('HubSpot_OAuth_API', 'OAuth callback handled successfully', {
       hubId: tokenInfo.hub_id,
-      providerId: provider.id
+      providerId: provider.id,
     })
 
     // Redirect to success page with provider information
@@ -220,7 +240,7 @@ async function handleOAuthCallback(
     return NextResponse.redirect(successUrl)
   } catch (error) {
     logger.error('HubSpot_OAuth_API', 'OAuth callback failed', error)
-    
+
     // Redirect to error page
     const errorUrl = new URL('/crm/hubspot/oauth/error', request.url)
     errorUrl.searchParams.set('error', 'callback_failed')
@@ -248,12 +268,9 @@ async function getOAuthConfig(): Promise<HubSpotOAuthConfig> {
 /**
  * Create HubSpot CRM provider from OAuth response
  */
-async function createHubSpotProvider(
-  tokenResponse: any,
-  tokenInfo: any
-): Promise<any> {
+async function createHubSpotProvider(tokenResponse: any, tokenInfo: any): Promise<any> {
   const providerId = `hubspot-${tokenInfo.hub_id}`
-  
+
   return {
     id: providerId,
     name: `HubSpot (${tokenInfo.hub_domain})`,
@@ -268,11 +285,11 @@ async function createHubSpotProvider(
         type: 'oauth2',
         credentials: {
           clientId: process.env.HUBSPOT_CLIENT_ID,
-          clientSecret: process.env.HUBSPOT_CLIENT_SECRET
+          clientSecret: process.env.HUBSPOT_CLIENT_SECRET,
         },
         tokenExpiry: new Date(Date.now() + tokenResponse.expires_in * 1000),
         refreshToken: tokenResponse.refresh_token,
-        scopes: tokenInfo.scopes
+        scopes: tokenInfo.scopes,
       },
       syncSettings: {
         direction: 'bidirectional',
@@ -280,7 +297,7 @@ async function createHubSpotProvider(
         batchSize: 100,
         conflictResolution: 'source_wins',
         enableDeduplication: true,
-        enableValidation: true
+        enableValidation: true,
       },
       fieldMappings: [
         { sourceField: 'businessName', targetField: 'name', required: true, dataType: 'string' },
@@ -290,15 +307,15 @@ async function createHubSpotProvider(
         { sourceField: 'address.city', targetField: 'city', required: false, dataType: 'string' },
         { sourceField: 'address.state', targetField: 'state', required: false, dataType: 'string' },
         { sourceField: 'address.zipCode', targetField: 'zip', required: false, dataType: 'string' },
-        { sourceField: 'industry', targetField: 'industry', required: false, dataType: 'string' }
+        { sourceField: 'industry', targetField: 'industry', required: false, dataType: 'string' },
       ],
       webhookUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/crm/webhook?providerId=${providerId}`,
       rateLimits: {
         requestsPerMinute: 100,
         requestsPerHour: 40000,
         requestsPerDay: 1000000,
-        burstLimit: 10
-      }
+        burstLimit: 10,
+      },
     },
     capabilities: {
       bidirectionalSync: true,
@@ -307,8 +324,8 @@ async function createHubSpotProvider(
       customFields: true,
       webhookSupport: true,
       deduplication: true,
-      validation: true
-    }
+      validation: true,
+    },
   }
 }
 
@@ -328,9 +345,9 @@ async function updateProviderTokens(providerId: string, tokenResponse: any): Pro
         authentication: {
           ...provider.configuration.authentication,
           tokenExpiry: new Date(Date.now() + tokenResponse.expires_in * 1000),
-          refreshToken: tokenResponse.refresh_token
-        }
-      }
+          refreshToken: tokenResponse.refresh_token,
+        },
+      },
     })
 
     logger.info('HubSpot_OAuth_API', `Updated tokens for provider: ${providerId}`)

@@ -17,7 +17,7 @@ interface AnalyticsDashboardProps {
 export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   currentUser,
   workspaceId,
-  teamId
+  teamId,
 }) => {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
   const [realtimeMetrics, setRealtimeMetrics] = useState<any>(null)
@@ -28,7 +28,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
   useEffect(() => {
     fetchMetrics()
-    
+
     if (autoRefresh) {
       const interval = setInterval(fetchMetrics, 30000) // Refresh every 30 seconds
       return () => clearInterval(interval)
@@ -49,7 +49,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       const params = new URLSearchParams({
         period: selectedPeriod,
         ...(workspaceId && { workspaceId }),
-        ...(teamId && { teamId })
+        ...(teamId && { teamId }),
       })
 
       const response = await fetch(`/api/analytics?${params}`)
@@ -70,7 +70,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   const fetchRealtimeMetrics = async () => {
     try {
       const params = new URLSearchParams({
-        ...(workspaceId && { workspaceId })
+        ...(workspaceId && { workspaceId }),
       })
 
       const response = await fetch(`/api/analytics/realtime?${params}`)
@@ -84,7 +84,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     }
   }
 
-  const canViewAnalytics = currentUser.roles?.some(role => 
+  const canViewAnalytics = currentUser.roles?.some(role =>
     role.role.permissions.includes('analytics.view')
   )
 
@@ -132,13 +132,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             <input
               type="checkbox"
               checked={autoRefresh}
-              onChange={(e) => setAutoRefresh(e.target.checked)}
+              onChange={e => setAutoRefresh(e.target.checked)}
               className="rounded"
             />
           </div>
           <select
             value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value as any)}
+            onChange={e => setSelectedPeriod(e.target.value as any)}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="day">Last 24 Hours</option>
@@ -152,10 +152,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-red-600">{error}</p>
-          <button
-            onClick={() => setError(null)}
-            className="text-red-800 hover:text-red-900 ml-2"
-          >
+          <button onClick={() => setError(null)} className="text-red-800 hover:text-red-900 ml-2">
             ×
           </button>
         </div>
@@ -167,9 +164,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           <h3 className="text-lg font-semibold text-blue-800 mb-2">Live Status</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {realtimeMetrics.activeUsers}
-              </div>
+              <div className="text-2xl font-bold text-blue-600">{realtimeMetrics.activeUsers}</div>
               <div className="text-sm text-blue-700">Active Users</div>
             </div>
             <div className="text-center">
@@ -198,9 +193,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                 <p className="text-2xl font-semibold text-gray-900">
                   {metrics.overview.totalUsers}
                 </p>
-                <p className="text-sm text-green-600">
-                  {metrics.overview.activeUsers} active
-                </p>
+                <p className="text-sm text-green-600">{metrics.overview.activeUsers} active</p>
               </div>
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600">👥</span>
@@ -281,9 +274,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Total Actions</span>
-                <span className="text-sm font-medium">
-                  {metrics.performance.totalActions}
-                </span>
+                <span className="text-sm font-medium">{metrics.performance.totalActions}</span>
               </div>
             </div>
           </div>
@@ -299,9 +290,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">High Confidence</span>
-                <span className="text-sm font-medium">
-                  {metrics.dataQuality.highConfidence}
-                </span>
+                <span className="text-sm font-medium">{metrics.dataQuality.highConfidence}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Enrichment Rate</span>
@@ -346,9 +335,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                       <div className="text-sm font-medium text-gray-900">
                         {user.firstName} {user.lastName}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {user.username}
-                      </div>
+                      <div className="text-sm text-gray-500">{user.username}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {user.campaignsCreated}
@@ -360,10 +347,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                       {user.scrapingSessionsRun}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.lastLoginAt 
-                        ? new Date(user.lastLoginAt).toLocaleDateString()
-                        : 'Never'
-                      }
+                      {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString() : 'Never'}
                     </td>
                   </tr>
                 ))}

@@ -12,12 +12,12 @@ import { crmServiceRegistry } from '@/lib/crm/crmServiceRegistry'
 // Mock the CRM service registry
 jest.mock('@/lib/crm/crmServiceRegistry')
 jest.mock('@/lib/security', () => ({
-  getClientIP: jest.fn().mockReturnValue('127.0.0.1')
+  getClientIP: jest.fn().mockReturnValue('127.0.0.1'),
 }))
 
 describe('CRM Sync Integration Tests', () => {
   const mockCrmServiceRegistry = crmServiceRegistry as jest.Mocked<typeof crmServiceRegistry>
-  
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -29,7 +29,7 @@ describe('CRM Sync Integration Tests', () => {
         getProvider: jest.fn().mockReturnValue({
           id: 'test-provider',
           name: 'Test CRM',
-          type: 'custom'
+          type: 'custom',
         }),
         syncBusinessRecord: jest.fn().mockResolvedValue({
           id: 'sync-1',
@@ -42,8 +42,8 @@ describe('CRM Sync Integration Tests', () => {
           lastSyncAt: new Date(),
           syncAttempts: 1,
           errors: [],
-          metadata: {}
-        })
+          metadata: {},
+        }),
       }
 
       mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService as any])
@@ -52,11 +52,11 @@ describe('CRM Sync Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({
           records: [mockBusinessData[0]],
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -74,7 +74,7 @@ describe('CRM Sync Integration Tests', () => {
         getProvider: jest.fn().mockReturnValue({
           id: 'test-provider',
           name: 'Test CRM',
-          type: 'custom'
+          type: 'custom',
         }),
         syncBusinessRecords: jest.fn().mockResolvedValue({
           id: 'batch-1',
@@ -90,7 +90,7 @@ describe('CRM Sync Integration Tests', () => {
             lastSyncAt: new Date(),
             syncAttempts: 1,
             errors: [],
-            metadata: {}
+            metadata: {},
           })),
           status: 'completed',
           startedAt: new Date(),
@@ -98,8 +98,8 @@ describe('CRM Sync Integration Tests', () => {
           totalRecords: mockBusinessData.length,
           successfulRecords: mockBusinessData.length,
           failedRecords: 0,
-          errors: []
-        })
+          errors: [],
+        }),
       }
 
       mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService as any])
@@ -108,11 +108,11 @@ describe('CRM Sync Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({
           records: mockBusinessData,
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -129,9 +129,9 @@ describe('CRM Sync Integration Tests', () => {
         getProvider: jest.fn().mockReturnValue({
           id: 'test-provider',
           name: 'Test CRM',
-          type: 'custom'
+          type: 'custom',
         }),
-        syncBusinessRecord: jest.fn().mockRejectedValue(new Error('Sync failed'))
+        syncBusinessRecord: jest.fn().mockRejectedValue(new Error('Sync failed')),
       }
 
       mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService as any])
@@ -140,11 +140,11 @@ describe('CRM Sync Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({
           records: [mockBusinessData[0]],
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -161,37 +161,40 @@ describe('CRM Sync Integration Tests', () => {
         getProvider: jest.fn().mockReturnValue({
           id: 'provider-1',
           name: 'CRM 1',
-          type: 'salesforce'
+          type: 'salesforce',
         }),
         syncBusinessRecord: jest.fn().mockResolvedValue({
           id: 'sync-1',
-          syncStatus: 'synced'
-        })
+          syncStatus: 'synced',
+        }),
       }
 
       const mockService2 = {
         getProvider: jest.fn().mockReturnValue({
           id: 'provider-2',
           name: 'CRM 2',
-          type: 'hubspot'
+          type: 'hubspot',
         }),
         syncBusinessRecord: jest.fn().mockResolvedValue({
           id: 'sync-2',
-          syncStatus: 'synced'
-        })
+          syncStatus: 'synced',
+        }),
       }
 
-      mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService1 as any, mockService2 as any])
+      mockCrmServiceRegistry.getActiveServices.mockReturnValue([
+        mockService1 as any,
+        mockService2 as any,
+      ])
 
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
           records: [mockBusinessData[0]],
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -210,35 +213,38 @@ describe('CRM Sync Integration Tests', () => {
         getProvider: jest.fn().mockReturnValue({
           id: 'provider-1',
           name: 'CRM 1',
-          type: 'salesforce'
+          type: 'salesforce',
         }),
         syncBusinessRecord: jest.fn().mockResolvedValue({
           id: 'sync-1',
-          syncStatus: 'synced'
-        })
+          syncStatus: 'synced',
+        }),
       }
 
       const mockService2 = {
         getProvider: jest.fn().mockReturnValue({
           id: 'provider-2',
           name: 'CRM 2',
-          type: 'hubspot'
+          type: 'hubspot',
         }),
-        syncBusinessRecord: jest.fn()
+        syncBusinessRecord: jest.fn(),
       }
 
-      mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService1 as any, mockService2 as any])
+      mockCrmServiceRegistry.getActiveServices.mockReturnValue([
+        mockService1 as any,
+        mockService2 as any,
+      ])
 
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
           records: [mockBusinessData[0]],
           providerIds: ['provider-1'],
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -259,7 +265,7 @@ describe('CRM Sync Integration Tests', () => {
         totalProviders: 2,
         activeProviders: 2,
         providersByType: { salesforce: 1, hubspot: 1 },
-        servicesReady: 2
+        servicesReady: 2,
       })
 
       const request = new NextRequest('http://localhost/api/crm/sync?limit=10')
@@ -274,7 +280,9 @@ describe('CRM Sync Integration Tests', () => {
     })
 
     it('should filter sync history by provider', async () => {
-      const request = new NextRequest('http://localhost/api/crm/sync?providerId=test-provider&limit=5')
+      const request = new NextRequest(
+        'http://localhost/api/crm/sync?providerId=test-provider&limit=5'
+      )
 
       const response = await syncGet(request)
       const data = await response.json()
@@ -290,11 +298,11 @@ describe('CRM Sync Integration Tests', () => {
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
-          invalidField: 'invalid'
+          invalidField: 'invalid',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -312,11 +320,11 @@ describe('CRM Sync Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({
           records: [mockBusinessData[0]],
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -332,8 +340,8 @@ describe('CRM Sync Integration Tests', () => {
         method: 'POST',
         body: 'invalid json',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -349,28 +357,28 @@ describe('CRM Sync Integration Tests', () => {
       const largeBatch = Array.from({ length: 100 }, (_, i) => ({
         ...mockBusinessData[0],
         id: `business-${i}`,
-        businessName: `Business ${i}`
+        businessName: `Business ${i}`,
       }))
 
       const mockService = {
         getProvider: jest.fn().mockReturnValue({
           id: 'test-provider',
           name: 'Test CRM',
-          type: 'custom'
+          type: 'custom',
         }),
         syncBusinessRecords: jest.fn().mockResolvedValue({
           id: 'batch-large',
           crmProviderId: 'test-provider',
           records: largeBatch.map((record, index) => ({
             id: `sync-${index}`,
-            syncStatus: 'synced'
+            syncStatus: 'synced',
           })),
           status: 'completed',
           totalRecords: largeBatch.length,
           successfulRecords: largeBatch.length,
           failedRecords: 0,
-          errors: []
-        })
+          errors: [],
+        }),
       }
 
       mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService as any])
@@ -381,11 +389,11 @@ describe('CRM Sync Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({
           records: largeBatch,
-          syncMode: 'push'
+          syncMode: 'push',
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await syncPost(request)
@@ -403,26 +411,27 @@ describe('CRM Sync Integration Tests', () => {
         getProvider: jest.fn().mockReturnValue({
           id: 'test-provider',
           name: 'Test CRM',
-          type: 'custom'
+          type: 'custom',
         }),
         syncBusinessRecord: jest.fn().mockResolvedValue({
           id: 'sync-concurrent',
-          syncStatus: 'synced'
-        })
+          syncStatus: 'synced',
+        }),
       }
 
       mockCrmServiceRegistry.getActiveServices.mockReturnValue([mockService as any])
 
-      const createRequest = () => new NextRequest('http://localhost/api/crm/sync', {
-        method: 'POST',
-        body: JSON.stringify({
-          records: [mockBusinessData[0]],
-          syncMode: 'push'
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const createRequest = () =>
+        new NextRequest('http://localhost/api/crm/sync', {
+          method: 'POST',
+          body: JSON.stringify({
+            records: [mockBusinessData[0]],
+            syncMode: 'push',
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
 
       // Execute multiple concurrent requests
       const promises = Array.from({ length: 5 }, () => syncPost(createRequest()))

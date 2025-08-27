@@ -29,21 +29,17 @@ export function withOAuth(
   config: OAuthConfig = {}
 ) {
   return async (request: NextRequest): Promise<NextResponse> => {
-    const { 
-      requiredScopes = [], 
-      allowPublic = false, 
-      requireAuthentication = true 
-    } = config
+    const { requiredScopes = [], allowPublic = false, requireAuthentication = true } = config
 
     try {
       // Extract access token from Authorization header
       const authHeader = request.headers.get('Authorization')
-      
+
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         if (allowPublic || !requireAuthentication) {
           return handler(request, { authenticated: false })
         }
-        
+
         return createUnauthorizedResponse('Missing or invalid Authorization header')
       }
 
@@ -51,12 +47,12 @@ export function withOAuth(
 
       // Validate access token
       const tokenValidation = tokenService.validateToken(accessToken)
-      
+
       if (!tokenValidation.valid || !tokenValidation.payload) {
         if (allowPublic || !requireAuthentication) {
           return handler(request, { authenticated: false })
         }
-        
+
         return createUnauthorizedResponse('Invalid or expired access token')
       }
 
@@ -73,9 +69,11 @@ export function withOAuth(
       // Check required scopes
       if (requiredScopes.length > 0) {
         const hasRequiredScopes = requiredScopes.every(scope => tokenScopes.includes(scope))
-        
+
         if (!hasRequiredScopes) {
-          return createForbiddenResponse(`Insufficient scope. Required: ${requiredScopes.join(', ')}`)
+          return createForbiddenResponse(
+            `Insufficient scope. Required: ${requiredScopes.join(', ')}`
+          )
         }
       }
 
@@ -90,7 +88,6 @@ export function withOAuth(
 
       // Call handler with OAuth context
       return handler(request, oauthContext)
-
     } catch (error) {
       logger.error('OAuth Middleware', 'Authentication error', error)
       return createServerErrorResponse('Authentication error')
@@ -104,14 +101,14 @@ export function withOAuth(
 export function getOAuthContext(request: NextRequest): OAuthContext | null {
   try {
     const authHeader = request.headers.get('Authorization')
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return null
     }
 
     const accessToken = authHeader.substring(7)
     const tokenValidation = tokenService.validateToken(accessToken)
-    
+
     if (!tokenValidation.valid || !tokenValidation.payload) {
       return null
     }
@@ -148,7 +145,7 @@ export function isOAuthAuthenticated(request: NextRequest): boolean {
  */
 export function hasRequiredScopes(request: NextRequest, requiredScopes: string[]): boolean {
   const context = getOAuthContext(request)
-  
+
   if (!context || !context.scopes) {
     return false
   }
@@ -160,11 +157,11 @@ export function hasRequiredScopes(request: NextRequest, requiredScopes: string[]
  * Require OAuth authentication for API endpoint
  */
 export function requireOAuth(
-  request: NextRequest, 
+  request: NextRequest,
   requiredScopes: string[] = []
 ): NextResponse | null {
   const context = getOAuthContext(request)
-  
+
   if (!context) {
     return createUnauthorizedResponse('OAuth authentication required')
   }
@@ -214,7 +211,7 @@ export function validateScopes(
   requiredScopes: string[]
 ): { valid: boolean; missing?: string[] } {
   const missing = requiredScopes.filter(scope => !tokenScopes.includes(scope))
-  
+
   return {
     valid: missing.length === 0,
     missing: missing.length > 0 ? missing : undefined,
@@ -226,11 +223,11 @@ export function validateScopes(
  */
 function createUnauthorizedResponse(message: string): NextResponse {
   return NextResponse.json(
-    { 
+    {
       error: 'unauthorized',
       error_description: message,
     },
-    { 
+    {
       status: 401,
       headers: {
         'WWW-Authenticate': 'Bearer',
@@ -244,7 +241,7 @@ function createUnauthorizedResponse(message: string): NextResponse {
  */
 function createForbiddenResponse(message: string): NextResponse {
   return NextResponse.json(
-    { 
+    {
       error: 'insufficient_scope',
       error_description: message,
     },
@@ -257,7 +254,7 @@ function createForbiddenResponse(message: string): NextResponse {
  */
 function createServerErrorResponse(message: string): NextResponse {
   return NextResponse.json(
-    { 
+    {
       error: 'server_error',
       error_description: message,
     },

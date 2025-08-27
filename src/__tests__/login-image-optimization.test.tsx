@@ -47,7 +47,7 @@ import LoginPage from '@/app/login/page'
 describe('Login Page Image Optimization', () => {
   test('should render optimized favicon image in login page', () => {
     render(<LoginPage />)
-    
+
     const logoImage = screen.getByAltText('Business Scraper Logo')
     expect(logoImage).toBeInTheDocument()
     expect(logoImage).toHaveAttribute('src', '/favicon.ico')
@@ -60,14 +60,14 @@ describe('Login Page Image Optimization', () => {
 
   test('should have proper alt text for accessibility', () => {
     render(<LoginPage />)
-    
+
     const logoImage = screen.getByAltText('Business Scraper Logo')
     expect(logoImage).toHaveAttribute('alt', 'Business Scraper Logo')
   })
 
   test('should use priority loading for above-the-fold image', () => {
     render(<LoginPage />)
-    
+
     const logoImage = screen.getByAltText('Business Scraper Logo')
     expect(logoImage).toHaveAttribute('data-priority', 'true')
   })

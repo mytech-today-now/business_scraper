@@ -19,7 +19,7 @@ export type BreakpointState = Record<Breakpoint, boolean>
 /**
  * Custom hook for responsive breakpoint detection
  * Provides real-time breakpoint state and utility functions
- * 
+ *
  * @returns Object containing breakpoint states and utility functions
  */
 export function useResponsive() {
@@ -107,13 +107,13 @@ export function useResponsive() {
     // Breakpoint states
     breakpoints,
     windowSize,
-    
+
     // Utility functions
     isAbove,
     isBelow,
     isBetween,
     getCurrentBreakpoint,
-    
+
     // Common patterns
     isMobile,
     isTablet,
@@ -124,7 +124,7 @@ export function useResponsive() {
 
 /**
  * Hook for getting responsive values based on current breakpoint
- * 
+ *
  * @param values Object with breakpoint keys and corresponding values
  * @param defaultValue Fallback value if no breakpoint matches
  * @returns The value for the current breakpoint
@@ -138,7 +138,7 @@ export function useResponsiveValue<T>(
 
   // If no breakpoint is active, check base first
   if (currentBreakpoint === null) {
-    return values.base !== undefined ? values.base as T : defaultValue
+    return values.base !== undefined ? (values.base as T) : defaultValue
   }
 
   // Check current breakpoint first, then fall back to smaller ones

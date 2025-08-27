@@ -161,11 +161,11 @@ export class DataRetentionSystem {
    */
   addPolicy(policy: RetentionPolicy): void {
     this.policies.set(policy.name, policy)
-    
+
     if (policy.enabled) {
       this.schedulePolicy(policy)
     }
-    
+
     logger.info('DataRetention', `Added policy: ${policy.name}`)
   }
 
@@ -178,7 +178,7 @@ export class DataRetentionSystem {
 
     this.unschedulePolicy(policyName)
     this.policies.delete(policyName)
-    
+
     logger.info('DataRetention', `Removed policy: ${policyName}`)
     return true
   }
@@ -191,13 +191,13 @@ export class DataRetentionSystem {
     if (!policy) return false
 
     policy.enabled = enabled
-    
+
     if (enabled) {
       this.schedulePolicy(policy)
     } else {
       this.unschedulePolicy(policyName)
     }
-    
+
     logger.info('DataRetention', `${enabled ? 'Enabled' : 'Disabled'} policy: ${policyName}`)
     return true
   }
@@ -238,7 +238,7 @@ export class DataRetentionSystem {
 
     result.duration = Date.now() - startTime
     logger.info('DataRetention', `Policy execution completed: ${policyName}`, result)
-    
+
     return result
   }
 
@@ -247,7 +247,7 @@ export class DataRetentionSystem {
    */
   async executeAllPolicies(): Promise<CleanupResult[]> {
     const results: CleanupResult[] = []
-    
+
     for (const [name, policy] of Array.from(this.policies.entries())) {
       if (policy.enabled) {
         try {
@@ -258,7 +258,7 @@ export class DataRetentionSystem {
         }
       }
     }
-    
+
     return results
   }
 
@@ -275,7 +275,7 @@ export class DataRetentionSystem {
           SUM(LENGTH(business_name) + LENGTH(COALESCE(email, '')) + LENGTH(COALESCE(phone, ''))) as estimated_size
         FROM businesses
       `
-      
+
       const result = await database.executeQuery(query)
       const row = result.rows[0]
 
@@ -307,7 +307,7 @@ export class DataRetentionSystem {
         ORDER BY count DESC
         LIMIT 10
       `
-      
+
       const industryResult = await database.executeQuery(industryQuery)
       const recordsByIndustry: Record<string, number> = {}
       industryResult.rows.forEach((row: any) => {
@@ -328,7 +328,7 @@ export class DataRetentionSystem {
         WHERE confidence IS NOT NULL
         GROUP BY confidence_group
       `
-      
+
       const confidenceResult = await database.executeQuery(confidenceQuery)
       const recordsByConfidence: Record<string, number> = {}
       confidenceResult.rows.forEach((row: any) => {
@@ -362,9 +362,9 @@ export class DataRetentionSystem {
    */
   private schedulePolicy(policy: RetentionPolicy): void {
     this.unschedulePolicy(policy.name) // Clear existing schedule
-    
+
     const intervalMs = this.getScheduleInterval(policy.schedule.frequency)
-    
+
     const job = setInterval(async () => {
       try {
         await this.executePolicy(policy.name)
@@ -372,7 +372,7 @@ export class DataRetentionSystem {
         logger.error('DataRetention', `Scheduled execution failed for policy ${policy.name}`, error)
       }
     }, intervalMs)
-    
+
     this.scheduledJobs.set(policy.name, job)
     logger.debug('DataRetention', `Scheduled policy: ${policy.name}`)
   }
@@ -436,12 +436,16 @@ export class DataRetentionSystem {
       SELECT id FROM businesses 
       WHERE ${rule.field} < $1
     `
-    
+
     const records = await database.executeQuery(query, [cutoffDate])
     result.recordsProcessed += records.rows.length
 
     if (records.rows.length > 0) {
-      await this.executeAction(rule.action, records.rows.map((r: any) => r.id), result)
+      await this.executeAction(
+        rule.action,
+        records.rows.map((r: any) => r.id),
+        result
+      )
     }
   }
 
@@ -450,25 +454,29 @@ export class DataRetentionSystem {
    */
   private async executeCountRule(rule: RetentionRule, result: CleanupResult): Promise<void> {
     const maxRecords = rule.value
-    
+
     const countQuery = 'SELECT COUNT(*) as total FROM businesses'
     const countResult = await database.executeQuery(countQuery)
     const totalRecords = parseInt(countResult.rows[0].total)
 
     if (totalRecords > maxRecords) {
       const excessRecords = totalRecords - maxRecords
-      
+
       const query = `
         SELECT id FROM businesses 
         ORDER BY scraped_at ASC 
         LIMIT $1
       `
-      
+
       const records = await database.executeQuery(query, [excessRecords])
       result.recordsProcessed += records.rows.length
 
       if (records.rows.length > 0) {
-        await this.executeAction(rule.action, records.rows.map((r: any) => r.id), result)
+        await this.executeAction(
+          rule.action,
+          records.rows.map((r: any) => r.id),
+          result
+        )
       }
     }
   }
@@ -491,14 +499,22 @@ export class DataRetentionSystem {
     result.recordsProcessed += records.rows.length
 
     if (records.rows.length > 0) {
-      await this.executeAction(rule.action, records.rows.map((r: any) => r.id), result)
+      await this.executeAction(
+        rule.action,
+        records.rows.map((r: any) => r.id),
+        result
+      )
     }
   }
 
   /**
    * Execute retention action on records
    */
-  private async executeAction(action: string, recordIds: string[], result: CleanupResult): Promise<void> {
+  private async executeAction(
+    action: string,
+    recordIds: string[],
+    result: CleanupResult
+  ): Promise<void> {
     switch (action) {
       case 'delete':
         await this.deleteRecords(recordIds)
@@ -538,10 +554,13 @@ export class DataRetentionSystem {
     `)
 
     // Move records to archive
-    await database.executeQuery(`
+    await database.executeQuery(
+      `
       INSERT INTO businesses_archive
       SELECT * FROM businesses WHERE id = ANY($1)
-    `, [recordIds])
+    `,
+      [recordIds]
+    )
 
     // Delete from main table
     await this.deleteRecords(recordIds)
@@ -569,12 +588,18 @@ export class DataRetentionSystem {
    */
   private getOperatorSql(operator: string): string {
     switch (operator) {
-      case 'gt': return '>'
-      case 'lt': return '<'
-      case 'eq': return '='
-      case 'gte': return '>='
-      case 'lte': return '<='
-      default: return '='
+      case 'gt':
+        return '>'
+      case 'lt':
+        return '<'
+      case 'eq':
+        return '='
+      case 'gte':
+        return '>='
+      case 'lte':
+        return '<='
+      default:
+        return '='
     }
   }
 

@@ -1,6 +1,6 @@
 /**
  * Search Engine Manager Tests
- * 
+ *
  * Tests for duplicate detection, session management, and engine state management
  */
 
@@ -19,20 +19,20 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {}
-    }
+    },
   }
 })()
 
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
+  value: localStorageMock,
 })
 
 // Mock toast
 jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }))
 
 // Mock logger
@@ -40,8 +40,8 @@ jest.mock('@/utils/logger', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
-  }
+    error: jest.fn(),
+  },
 }))
 
 describe('SearchEngineManager', () => {
@@ -69,7 +69,7 @@ describe('SearchEngineManager', () => {
     test('should end session and reset session state', () => {
       const sessionId = 'test-session-123'
       manager.startSession(sessionId)
-      
+
       // Simulate some session activity
       const engines = manager.getAllEngines()
       engines[0].duplicateCount = 1
@@ -93,7 +93,7 @@ describe('SearchEngineManager', () => {
 
       const results = [
         { url: 'https://example.com', title: 'Example Site', domain: 'example.com' },
-        { url: 'https://test.com', title: 'Test Site', domain: 'test.com' }
+        { url: 'https://test.com', title: 'Test Site', domain: 'test.com' },
       ]
 
       // First call should be fine
@@ -118,11 +118,11 @@ describe('SearchEngineManager', () => {
       manager.startSession(sessionId)
 
       const results1 = [
-        { url: 'https://example.com', title: 'Example Site', domain: 'example.com' }
+        { url: 'https://example.com', title: 'Example Site', domain: 'example.com' },
       ]
 
       const results2 = [
-        { url: 'https://different.com', title: 'Different Site', domain: 'different.com' }
+        { url: 'https://different.com', title: 'Different Site', domain: 'different.com' },
       ]
 
       const firstResult = manager.checkAndUpdateResults('google', results1)
@@ -140,7 +140,7 @@ describe('SearchEngineManager', () => {
   describe('Engine Management', () => {
     test('should enable and disable engines', () => {
       manager.setEngineEnabled('google', false)
-      
+
       const googleEngine = manager.getAllEngines().find(e => e.id === 'google')
       expect(googleEngine?.enabled).toBe(false)
 
@@ -150,10 +150,10 @@ describe('SearchEngineManager', () => {
 
     test('should return only available engines', () => {
       manager.setEngineEnabled('google', false)
-      
+
       const sessionId = 'test-session-123'
       manager.startSession(sessionId)
-      
+
       // Disable azure for session
       const azureEngine = manager.getAllEngines().find(e => e.id === 'azure')
       if (azureEngine) {
@@ -161,7 +161,7 @@ describe('SearchEngineManager', () => {
       }
 
       const availableEngines = manager.getAvailableEngines()
-      
+
       // Should only have duckduckgo available
       expect(availableEngines).toHaveLength(1)
       expect(availableEngines[0].id).toBe('duckduckgo')
@@ -186,7 +186,7 @@ describe('SearchEngineManager', () => {
       // Start session and disable one for session
       const sessionId = 'test-session-123'
       manager.startSession(sessionId)
-      
+
       const duckduckgoEngine = manager.getAllEngines().find(e => e.id === 'duckduckgo')
       if (duckduckgoEngine) {
         duckduckgoEngine.isDisabledForSession = true
@@ -208,10 +208,10 @@ describe('SearchEngineManager', () => {
   describe('State Persistence', () => {
     test('should save and load state from localStorage', () => {
       manager.setEngineEnabled('google', false)
-      
+
       // Create new manager instance to test loading
       const newManager = new SearchEngineManager()
-      
+
       const googleEngine = newManager.getAllEngines().find(e => e.id === 'google')
       expect(googleEngine?.enabled).toBe(false)
     })

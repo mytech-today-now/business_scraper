@@ -25,7 +25,7 @@ export const GET = withRBAC(
       // Get collaboration metrics
       const collaborationMetrics = {
         activeCollaborators: workspaceId ? collaborationWS.getWorkspaceClientCount(workspaceId) : 0,
-        activeLocks: workspaceId ? collaborationWS.getWorkspaceLocks(workspaceId).length : 0
+        activeLocks: workspaceId ? collaborationWS.getWorkspaceLocks(workspaceId).length : 0,
       }
 
       // Get current system status
@@ -35,7 +35,7 @@ export const GET = withRBAC(
         ...realtimeMetrics,
         collaboration: collaborationMetrics,
         system: systemStatus,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
 
       // Log real-time metrics access (but don't spam the logs)
@@ -47,22 +47,23 @@ export const GET = withRBAC(
           details: {
             workspaceId,
             activeUsers: metrics.activeUsers,
-            activeSessions: metrics.activeSessions
+            activeSessions: metrics.activeSessions,
           },
-          context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+          context: AuditService.extractContextFromRequest(
+            request,
+            context.user.id,
+            context.sessionId
+          ),
         })
       }
 
       return NextResponse.json({
         success: true,
-        data: metrics
+        data: metrics,
       })
     } catch (error) {
       logger.error('Real-time Analytics API', 'Error retrieving real-time metrics', error)
-      return NextResponse.json(
-        { error: 'Failed to retrieve real-time metrics' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to retrieve real-time metrics' }, { status: 500 })
     }
   },
   { permissions: ['analytics.view'] }
@@ -79,10 +80,7 @@ export const POST = withRBAC(
 
       // Validate required fields
       if (!metricType || value === undefined) {
-        return NextResponse.json(
-          { error: 'Metric type and value are required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Metric type and value are required' }, { status: 400 })
       }
 
       // Validate metric type
@@ -92,7 +90,7 @@ export const POST = withRBAC(
         'active_sessions',
         'response_time',
         'error_rate',
-        'throughput'
+        'throughput',
       ]
 
       if (!validMetricTypes.includes(metricType)) {
@@ -103,17 +101,20 @@ export const POST = withRBAC(
       }
 
       // Store metric in database for historical tracking
-      await context.database.query(`
+      await context.database.query(
+        `
         INSERT INTO performance_metrics (
           workspace_id, metric_type, value, metadata, timestamp
         ) VALUES ($1, $2, $3, $4, $5)
-      `, [
-        workspaceId || null,
-        metricType,
-        parseFloat(value),
-        JSON.stringify(metadata || {}),
-        new Date()
-      ])
+      `,
+        [
+          workspaceId || null,
+          metricType,
+          parseFloat(value),
+          JSON.stringify(metadata || {}),
+          new Date(),
+        ]
+      )
 
       // Log metric update
       await AuditService.log({
@@ -123,28 +124,29 @@ export const POST = withRBAC(
           metricType,
           value,
           workspaceId,
-          metadata
+          metadata,
         },
-        context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+        context: AuditService.extractContextFromRequest(
+          request,
+          context.user.id,
+          context.sessionId
+        ),
       })
 
       logger.info('Real-time Analytics API', 'Metric updated', {
         metricType,
         value,
         workspaceId,
-        updatedBy: context.user.id
+        updatedBy: context.user.id,
       })
 
       return NextResponse.json({
         success: true,
-        message: 'Metric updated successfully'
+        message: 'Metric updated successfully',
       })
     } catch (error) {
       logger.error('Real-time Analytics API', 'Error updating metric', error)
-      return NextResponse.json(
-        { error: 'Failed to update metric' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update metric' }, { status: 500 })
     }
   },
   { permissions: ['analytics.manage'] }
@@ -167,14 +169,14 @@ async function getCurrentSystemStatus(): Promise<{
 
     // Calculate CPU usage (simplified)
     const cpuUsage = process.cpuUsage()
-    const cpuPercent = (cpuUsage.user + cpuUsage.system) / 1000000 / uptime * 100
+    const cpuPercent = ((cpuUsage.user + cpuUsage.system) / 1000000 / uptime) * 100
 
     // Get active connections (simplified)
     const activeConnections = 0 // Would need to track this separately
 
     // Determine system health
     let systemHealth: 'healthy' | 'warning' | 'critical' = 'healthy'
-    
+
     if (memoryUsage.heapUsed / memoryUsage.heapTotal > 0.9) {
       systemHealth = 'critical'
     } else if (memoryUsage.heapUsed / memoryUsage.heapTotal > 0.7 || cpuPercent > 80) {
@@ -186,7 +188,7 @@ async function getCurrentSystemStatus(): Promise<{
       memoryUsage,
       cpuUsage: cpuPercent,
       activeConnections,
-      systemHealth
+      systemHealth,
     }
   } catch (error) {
     logger.error('Real-time Analytics API', 'Error getting system status', error)
@@ -195,7 +197,7 @@ async function getCurrentSystemStatus(): Promise<{
       memoryUsage: process.memoryUsage(),
       cpuUsage: 0,
       activeConnections: 0,
-      systemHealth: 'critical'
+      systemHealth: 'critical',
     }
   }
 }

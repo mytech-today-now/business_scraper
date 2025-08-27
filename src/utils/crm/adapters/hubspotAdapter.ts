@@ -11,7 +11,7 @@ import {
   BatchTransformationResult,
   ValidationError,
   CRMExportOptions,
-  CommonTransformers
+  CommonTransformers,
 } from '../types'
 import { CRMTransformationEngine } from '../transformationEngine'
 import { logger } from '@/utils/logger'
@@ -30,14 +30,32 @@ export class HubSpotAdapter implements CRMAdapter {
   private hubspotTransformers = {
     /** Format HubSpot lifecycle stage */
     formatLifecycleStage: (value: any): string => {
-      const stages = ['subscriber', 'lead', 'marketingqualifiedlead', 'salesqualifiedlead', 'opportunity', 'customer', 'evangelist', 'other']
+      const stages = [
+        'subscriber',
+        'lead',
+        'marketingqualifiedlead',
+        'salesqualifiedlead',
+        'opportunity',
+        'customer',
+        'evangelist',
+        'other',
+      ]
       const stage = String(value || '').toLowerCase()
       return stages.includes(stage) ? stage : 'lead'
     },
 
     /** Format HubSpot lead status */
     formatLeadStatus: (value: any): string => {
-      const statuses = ['NEW', 'OPEN', 'IN_PROGRESS', 'OPEN_DEAL', 'UNQUALIFIED', 'ATTEMPTED_TO_CONTACT', 'CONNECTED', 'BAD_TIMING']
+      const statuses = [
+        'NEW',
+        'OPEN',
+        'IN_PROGRESS',
+        'OPEN_DEAL',
+        'UNQUALIFIED',
+        'ATTEMPTED_TO_CONTACT',
+        'CONNECTED',
+        'BAD_TIMING',
+      ]
       const status = String(value || '').toUpperCase()
       return statuses.includes(status) ? status : 'NEW'
     },
@@ -50,22 +68,22 @@ export class HubSpotAdapter implements CRMAdapter {
     /** Format HubSpot industry */
     formatHubSpotIndustry: (value: any): string => {
       const industryMap: Record<string, string> = {
-        'restaurants': 'RESTAURANT',
-        'retail': 'RETAIL',
-        'healthcare': 'HEALTH_CARE',
-        'technology': 'COMPUTER_SOFTWARE',
-        'finance': 'FINANCIAL_SERVICES',
+        restaurants: 'RESTAURANT',
+        retail: 'RETAIL',
+        healthcare: 'HEALTH_CARE',
+        technology: 'COMPUTER_SOFTWARE',
+        finance: 'FINANCIAL_SERVICES',
         'real estate': 'REAL_ESTATE',
-        'education': 'EDUCATION_MANAGEMENT',
-        'manufacturing': 'MANUFACTURING',
-        'construction': 'CONSTRUCTION',
-        'automotive': 'AUTOMOTIVE',
-        'hospitality': 'HOSPITALITY',
-        'legal': 'LEGAL_SERVICES',
-        'consulting': 'MANAGEMENT_CONSULTING',
-        'nonprofit': 'NONPROFIT_ORGANIZATION_MANAGEMENT'
+        education: 'EDUCATION_MANAGEMENT',
+        manufacturing: 'MANUFACTURING',
+        construction: 'CONSTRUCTION',
+        automotive: 'AUTOMOTIVE',
+        hospitality: 'HOSPITALITY',
+        legal: 'LEGAL_SERVICES',
+        consulting: 'MANAGEMENT_CONSULTING',
+        nonprofit: 'NONPROFIT_ORGANIZATION_MANAGEMENT',
       }
-      
+
       const industry = String(value || '').toLowerCase()
       return industryMap[industry] || 'OTHER'
     },
@@ -78,7 +96,16 @@ export class HubSpotAdapter implements CRMAdapter {
 
     /** Format HubSpot contact source */
     formatContactSource: (value: any): string => {
-      const sources = ['ORGANIC_SEARCH', 'PAID_SEARCH', 'EMAIL_MARKETING', 'SOCIAL_MEDIA', 'REFERRALS', 'OTHER_CAMPAIGNS', 'DIRECT_TRAFFIC', 'OFFLINE_SOURCES']
+      const sources = [
+        'ORGANIC_SEARCH',
+        'PAID_SEARCH',
+        'EMAIL_MARKETING',
+        'SOCIAL_MEDIA',
+        'REFERRALS',
+        'OTHER_CAMPAIGNS',
+        'DIRECT_TRAFFIC',
+        'OFFLINE_SOURCES',
+      ]
       return sources.includes(value) ? value : 'DIRECT_TRAFFIC'
     },
 
@@ -86,22 +113,22 @@ export class HubSpotAdapter implements CRMAdapter {
     splitBusinessNameToContact: (businessName: string) => {
       const name = String(businessName || '').trim()
       if (!name) return { firstName: '', lastName: 'Contact' }
-      
+
       const parts = name.split(' ')
       if (parts.length === 1) {
         return { firstName: parts[0], lastName: 'Contact' }
       }
-      
+
       return {
         firstName: parts.slice(0, -1).join(' '),
-        lastName: parts[parts.length - 1]
+        lastName: parts[parts.length - 1],
       }
     },
 
     /** Format HubSpot boolean */
     formatHubSpotBoolean: (value: any): string => {
       return CommonTransformers.toBoolean(value) ? 'true' : 'false'
-    }
+    },
   }
 
   /**
@@ -121,72 +148,74 @@ export class HubSpotAdapter implements CRMAdapter {
           transformer: CommonTransformers.formatEmail,
           required: true,
           validation: { required: true, type: 'email' },
-          description: 'Contact email address (required for HubSpot)'
+          description: 'Contact email address (required for HubSpot)',
         },
         {
           sourceField: 'businessName',
           targetField: 'First Name',
-          transformer: (value: any) => this.hubspotTransformers.splitBusinessNameToContact(value).firstName,
+          transformer: (value: any) =>
+            this.hubspotTransformers.splitBusinessNameToContact(value).firstName,
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'Contact first name'
+          description: 'Contact first name',
         },
         {
           sourceField: 'businessName',
           targetField: 'Last Name',
-          transformer: (value: any) => this.hubspotTransformers.splitBusinessNameToContact(value).lastName,
+          transformer: (value: any) =>
+            this.hubspotTransformers.splitBusinessNameToContact(value).lastName,
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'Contact last name'
+          description: 'Contact last name',
         },
         {
           sourceField: 'businessName',
           targetField: 'Company name',
           transformer: this.hubspotTransformers.formatCompanyName,
           validation: { required: false, type: 'string', maxLength: 255 },
-          description: 'Company name'
+          description: 'Company name',
         },
         {
           sourceField: 'phone',
           targetField: 'Phone Number',
           transformer: CommonTransformers.formatPhone,
           validation: { required: false, type: 'phone' },
-          description: 'Primary phone number'
+          description: 'Primary phone number',
         },
         {
           sourceField: 'websiteUrl',
           targetField: 'Website URL',
           validation: { required: false, type: 'url' },
-          description: 'Company website URL'
+          description: 'Company website URL',
         },
         {
           sourceField: 'address.street',
           targetField: 'Street Address',
           validation: { required: false, type: 'string', maxLength: 255 },
-          description: 'Street address'
+          description: 'Street address',
         },
         {
           sourceField: 'address.city',
           targetField: 'City',
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'City'
+          description: 'City',
         },
         {
           sourceField: 'address.state',
           targetField: 'State/Region',
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'State or region'
+          description: 'State or region',
         },
         {
           sourceField: 'address.zipCode',
           targetField: 'Postal Code',
           validation: { required: false, type: 'string', maxLength: 20 },
-          description: 'Postal or ZIP code'
+          description: 'Postal or ZIP code',
         },
         {
           sourceField: 'industry',
           targetField: 'Industry',
           transformer: this.hubspotTransformers.formatHubSpotIndustry,
           validation: { required: false, type: 'string' },
-          description: 'Industry classification'
+          description: 'Industry classification',
         },
         {
           sourceField: 'source',
@@ -194,7 +223,7 @@ export class HubSpotAdapter implements CRMAdapter {
           transformer: this.hubspotTransformers.formatContactSource,
           defaultValue: 'DIRECT_TRAFFIC',
           validation: { required: false, type: 'string' },
-          description: 'Original source of contact'
+          description: 'Original source of contact',
         },
         {
           sourceField: 'confidence',
@@ -207,36 +236,36 @@ export class HubSpotAdapter implements CRMAdapter {
           },
           defaultValue: 'lead',
           validation: { required: false, type: 'string' },
-          description: 'Contact lifecycle stage'
-        }
+          description: 'Contact lifecycle stage',
+        },
       ],
       customHeaders: {
-        'Email': 'Email',
+        Email: 'Email',
         'First Name': 'First Name',
         'Last Name': 'Last Name',
         'Company name': 'Company name',
         'Phone Number': 'Phone Number',
         'Website URL': 'Website URL',
         'Street Address': 'Street Address',
-        'City': 'City',
+        City: 'City',
         'State/Region': 'State/Region',
         'Postal Code': 'Postal Code',
-        'Industry': 'Industry',
+        Industry: 'Industry',
         'Lead Source': 'Lead Source',
-        'Lifecycle Stage': 'Lifecycle Stage'
+        'Lifecycle Stage': 'Lifecycle Stage',
       },
       metadata: {
         version: '1.0.0',
         author: 'Business Scraper',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['hubspot', 'contact', 'basic']
+        tags: ['hubspot', 'contact', 'basic'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
+        maxErrors: 100,
+      },
     },
     {
       id: 'hubspot-company-contact',
@@ -252,7 +281,7 @@ export class HubSpotAdapter implements CRMAdapter {
           transformer: this.hubspotTransformers.formatCompanyName,
           required: true,
           validation: { required: true, type: 'string', maxLength: 255 },
-          description: 'Company name'
+          description: 'Company name',
         },
         {
           sourceField: 'websiteUrl',
@@ -267,45 +296,45 @@ export class HubSpotAdapter implements CRMAdapter {
             }
           },
           validation: { required: false, type: 'string' },
-          description: 'Company domain'
+          description: 'Company domain',
         },
         {
           sourceField: 'phone',
           targetField: 'company.phone',
           transformer: CommonTransformers.formatPhone,
           validation: { required: false, type: 'phone' },
-          description: 'Company phone'
+          description: 'Company phone',
         },
         {
           sourceField: 'industry',
           targetField: 'company.industry',
           transformer: this.hubspotTransformers.formatHubSpotIndustry,
           validation: { required: false, type: 'string' },
-          description: 'Company industry'
+          description: 'Company industry',
         },
         {
           sourceField: 'address.street',
           targetField: 'company.address',
           validation: { required: false, type: 'string', maxLength: 255 },
-          description: 'Company address'
+          description: 'Company address',
         },
         {
           sourceField: 'address.city',
           targetField: 'company.city',
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'Company city'
+          description: 'Company city',
         },
         {
           sourceField: 'address.state',
           targetField: 'company.state',
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'Company state'
+          description: 'Company state',
         },
         {
           sourceField: 'address.zipCode',
           targetField: 'company.zip',
           validation: { required: false, type: 'string', maxLength: 20 },
-          description: 'Company ZIP code'
+          description: 'Company ZIP code',
         },
         // Contact fields
         {
@@ -314,28 +343,30 @@ export class HubSpotAdapter implements CRMAdapter {
           transformer: CommonTransformers.formatEmail,
           required: true,
           validation: { required: true, type: 'email' },
-          description: 'Contact email'
+          description: 'Contact email',
         },
         {
           sourceField: 'businessName',
           targetField: 'contact.firstname',
-          transformer: (value: any) => this.hubspotTransformers.splitBusinessNameToContact(value).firstName,
+          transformer: (value: any) =>
+            this.hubspotTransformers.splitBusinessNameToContact(value).firstName,
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'Contact first name'
+          description: 'Contact first name',
         },
         {
           sourceField: 'businessName',
           targetField: 'contact.lastname',
-          transformer: (value: any) => this.hubspotTransformers.splitBusinessNameToContact(value).lastName,
+          transformer: (value: any) =>
+            this.hubspotTransformers.splitBusinessNameToContact(value).lastName,
           validation: { required: false, type: 'string', maxLength: 100 },
-          description: 'Contact last name'
+          description: 'Contact last name',
         },
         {
           sourceField: 'phone',
           targetField: 'contact.phone',
           transformer: CommonTransformers.formatPhone,
           validation: { required: false, type: 'phone' },
-          description: 'Contact phone'
+          description: 'Contact phone',
         },
         {
           sourceField: 'confidence',
@@ -343,8 +374,8 @@ export class HubSpotAdapter implements CRMAdapter {
           transformer: this.hubspotTransformers.formatLifecycleStage,
           defaultValue: 'lead',
           validation: { required: false, type: 'string' },
-          description: 'Contact lifecycle stage'
-        }
+          description: 'Contact lifecycle stage',
+        },
       ],
       customHeaders: {},
       metadata: {
@@ -352,14 +383,14 @@ export class HubSpotAdapter implements CRMAdapter {
         author: 'Business Scraper',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['hubspot', 'company', 'contact', 'json']
+        tags: ['hubspot', 'company', 'contact', 'json'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
-        maxErrors: 100
-      }
-    }
+        maxErrors: 100,
+      },
+    },
   ]
 
   /**
@@ -370,15 +401,18 @@ export class HubSpotAdapter implements CRMAdapter {
     template: CRMTemplate,
     options?: CRMExportOptions
   ): Promise<BatchTransformationResult> {
-    logger.info('HubSpotAdapter', `Transforming ${records.length} records using template: ${template.name}`)
-    
+    logger.info(
+      'HubSpotAdapter',
+      `Transforming ${records.length} records using template: ${template.name}`
+    )
+
     const mergedOptions: CRMExportOptions = {
       ...options,
       template,
       customTransformers: {
         ...this.hubspotTransformers,
-        ...options?.customTransformers
-      }
+        ...options?.customTransformers,
+      },
     }
 
     return await this.transformationEngine.transformBatch(records, template, mergedOptions)
@@ -396,7 +430,7 @@ export class HubSpotAdapter implements CRMAdapter {
         field: 'Email',
         message: 'Valid email address is required for HubSpot contacts',
         value: record.email,
-        rule: 'hubspot-email-required'
+        rule: 'hubspot-email-required',
       })
     }
 
@@ -431,14 +465,14 @@ export class HubSpotAdapter implements CRMAdapter {
         author: 'User',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        tags: ['hubspot', 'custom']
+        tags: ['hubspot', 'custom'],
       },
       validation: {
         strictMode: false,
         skipInvalidRecords: true,
         maxErrors: 100,
-        ...options?.validation
-      }
+        ...options?.validation,
+      },
     }
   }
 }

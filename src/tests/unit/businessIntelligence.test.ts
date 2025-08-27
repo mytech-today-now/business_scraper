@@ -11,7 +11,7 @@ import { BusinessIntelligence, TechnologyPlatform } from '@/types/business'
 const mockPage = {
   content: jest.fn(),
   evaluate: jest.fn(),
-  url: jest.fn()
+  url: jest.fn(),
 }
 
 describe('BusinessIntelligenceService', () => {
@@ -29,7 +29,9 @@ describe('BusinessIntelligenceService', () => {
 
   describe('Company Size Estimation', () => {
     it('should estimate company size from explicit employee count', async () => {
-      mockPage.content.mockResolvedValue('<html><body>We have 25 employees working hard</body></html>')
+      mockPage.content.mockResolvedValue(
+        '<html><body>We have 25 employees working hard</body></html>'
+      )
       mockPage.evaluate.mockResolvedValue('We have 25 employees working hard')
 
       const result = await businessIntelligenceService.enrichBusinessData(
@@ -137,7 +139,7 @@ describe('BusinessIntelligenceService', () => {
         { year: 2022, expectedStage: 'startup' },
         { year: 2015, expectedStage: 'growth' },
         { year: 2000, expectedStage: 'mature' },
-        { year: 1980, expectedStage: 'enterprise' }
+        { year: 1980, expectedStage: 'enterprise' },
       ]
 
       for (const testCase of testCases) {
@@ -155,7 +157,9 @@ describe('BusinessIntelligenceService', () => {
     })
 
     it('should detect maturity keywords', async () => {
-      mockPage.content.mockResolvedValue('<html><body>We are an established industry leader</body></html>')
+      mockPage.content.mockResolvedValue(
+        '<html><body>We are an established industry leader</body></html>'
+      )
       mockPage.evaluate.mockResolvedValue('We are an established industry leader')
 
       const result = await businessIntelligenceService.enrichBusinessData(
@@ -171,7 +175,9 @@ describe('BusinessIntelligenceService', () => {
 
   describe('Technology Stack Detection', () => {
     it('should detect WordPress', async () => {
-      mockPage.content.mockResolvedValue('<html><head><link rel="stylesheet" href="/wp-content/themes/style.css"></head></html>')
+      mockPage.content.mockResolvedValue(
+        '<html><head><link rel="stylesheet" href="/wp-content/themes/style.css"></head></html>'
+      )
       mockPage.evaluate
         .mockResolvedValueOnce(['/wp-content/themes/script.js']) // scripts
         .mockResolvedValueOnce(['/wp-content/themes/style.css']) // stylesheets
@@ -208,12 +214,16 @@ describe('BusinessIntelligenceService', () => {
     })
 
     it('should detect multiple technologies', async () => {
-      mockPage.content.mockResolvedValue('<html><head><script src="https://www.google-analytics.com/analytics.js"></script></head></html>')
+      mockPage.content.mockResolvedValue(
+        '<html><head><script src="https://www.google-analytics.com/analytics.js"></script></head></html>'
+      )
       mockPage.evaluate
         .mockResolvedValueOnce(['https://www.google-analytics.com/analytics.js'])
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([{ name: 'React', category: 'other', confidence: 80, indicators: ['React detected'] }])
+        .mockResolvedValueOnce([
+          { name: 'React', category: 'other', confidence: 80, indicators: ['React detected'] },
+        ])
 
       const result = await businessIntelligenceService.enrichBusinessData(
         'https://example.com',
@@ -230,7 +240,7 @@ describe('BusinessIntelligenceService', () => {
       mockPage.evaluate.mockResolvedValue([
         { href: 'https://facebook.com/testcompany', text: 'Facebook', title: '' },
         { href: 'https://twitter.com/testcompany', text: 'Twitter', title: '' },
-        { href: 'https://linkedin.com/company/testcompany', text: 'LinkedIn', title: '' }
+        { href: 'https://linkedin.com/company/testcompany', text: 'LinkedIn', title: '' },
       ])
 
       const result = await businessIntelligenceService.enrichBusinessData(
@@ -251,7 +261,7 @@ describe('BusinessIntelligenceService', () => {
 
     it('should extract social media handles', async () => {
       mockPage.evaluate.mockResolvedValue([
-        { href: 'https://twitter.com/testcompany', text: 'Twitter', title: '' }
+        { href: 'https://twitter.com/testcompany', text: 'Twitter', title: '' },
       ])
 
       const result = await businessIntelligenceService.enrichBusinessData(
@@ -260,7 +270,9 @@ describe('BusinessIntelligenceService', () => {
         mockPage as any
       )
 
-      const twitterProfile = result.socialMediaPresence?.profiles.find(p => p.platform === 'Twitter')
+      const twitterProfile = result.socialMediaPresence?.profiles.find(
+        p => p.platform === 'Twitter'
+      )
       expect(twitterProfile?.handle).toBe('@testcompany')
     })
 
@@ -282,7 +294,7 @@ describe('BusinessIntelligenceService', () => {
       mockPage.evaluate
         .mockResolvedValueOnce([
           { href: 'https://facebook.com/testcompany', text: 'Facebook', title: '' },
-          { href: 'https://facebook.com/testcompany', text: 'Facebook Page', title: '' }
+          { href: 'https://facebook.com/testcompany', text: 'Facebook Page', title: '' },
         ])
         .mockResolvedValueOnce([])
 
@@ -292,7 +304,9 @@ describe('BusinessIntelligenceService', () => {
         mockPage as any
       )
 
-      const facebookProfiles = result.socialMediaPresence?.profiles.filter(p => p.platform === 'Facebook')
+      const facebookProfiles = result.socialMediaPresence?.profiles.filter(
+        p => p.platform === 'Facebook'
+      )
       expect(facebookProfiles?.length).toBe(1)
     })
   })
@@ -359,7 +373,9 @@ describe('BusinessIntelligenceService', () => {
 
   describe('Confidence Scoring', () => {
     it('should provide higher confidence for explicit data', async () => {
-      mockPage.content.mockResolvedValue('<html><body>We have 50 employees and $10M revenue</body></html>')
+      mockPage.content.mockResolvedValue(
+        '<html><body>We have 50 employees and $10M revenue</body></html>'
+      )
       mockPage.evaluate.mockResolvedValue('We have 50 employees and $10M revenue')
 
       const result = await businessIntelligenceService.enrichBusinessData(

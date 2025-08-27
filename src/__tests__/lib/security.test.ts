@@ -16,7 +16,7 @@ import {
   isLockedOut,
   sanitizeInput,
   validateInput,
-  getClientIP
+  getClientIP,
 } from '@/lib/security'
 import { NextRequest } from 'next/server'
 
@@ -50,7 +50,7 @@ describe('Security System', () => {
 
     it('should hash a password with salt', () => {
       const result = hashPassword(testPassword)
-      
+
       expect(result.hash).toBeDefined()
       expect(result.salt).toBeDefined()
       expect(result.hash).toHaveLength(128) // 64 bytes = 128 hex characters
@@ -60,14 +60,14 @@ describe('Security System', () => {
     it('should use provided salt', () => {
       const salt = 'predefined_salt_value_here'
       const result = hashPassword(testPassword, salt)
-      
+
       expect(result.salt).toBe(salt)
     })
 
     it('should generate different hashes for different passwords', () => {
       const result1 = hashPassword('password1')
       const result2 = hashPassword('password2')
-      
+
       expect(result1.hash).not.toBe(result2.hash)
     })
 
@@ -75,7 +75,7 @@ describe('Security System', () => {
       const salt = 'consistent_salt'
       const result1 = hashPassword(testPassword, salt)
       const result2 = hashPassword(testPassword, salt)
-      
+
       expect(result1.hash).toBe(result2.hash)
     })
   })
@@ -86,29 +86,29 @@ describe('Security System', () => {
     it('should verify correct password', () => {
       const { hash, salt } = hashPassword(testPassword)
       const isValid = verifyPassword(testPassword, hash, salt)
-      
+
       expect(isValid).toBe(true)
     })
 
     it('should reject incorrect password', () => {
       const { hash, salt } = hashPassword(testPassword)
       const isValid = verifyPassword('wrongPassword', hash, salt)
-      
+
       expect(isValid).toBe(false)
     })
 
     it('should be timing-safe', () => {
       const { hash, salt } = hashPassword(testPassword)
-      
+
       // These should take similar time (timing attack protection)
       const start1 = Date.now()
       verifyPassword('wrongPassword', hash, salt)
       const time1 = Date.now() - start1
-      
+
       const start2 = Date.now()
       verifyPassword(testPassword, hash, salt)
       const time2 = Date.now() - start2
-      
+
       // Times should be relatively similar (within reasonable bounds)
       // This is a basic check - in practice, timing attacks are more sophisticated
       expect(Math.abs(time1 - time2)).toBeLessThan(100)
@@ -122,21 +122,21 @@ describe('Security System', () => {
     it('should encrypt and decrypt data', () => {
       const encrypted = encryptData(testData, testKey)
       const decrypted = decryptData(encrypted.encrypted, testKey, encrypted.iv)
-      
+
       expect(decrypted).toBe(testData)
     })
 
     it('should produce different encrypted output each time', () => {
       const encrypted1 = encryptData(testData, testKey)
       const encrypted2 = encryptData(testData, testKey)
-      
+
       expect(encrypted1.encrypted).not.toBe(encrypted2.encrypted)
       expect(encrypted1.iv).not.toBe(encrypted2.iv)
     })
 
     it('should fail with wrong key', () => {
       const encrypted = encryptData(testData, testKey)
-      
+
       expect(() => {
         decryptData(encrypted.encrypted, 'wrong_key', encrypted.iv)
       }).toThrow()
@@ -146,7 +146,7 @@ describe('Security System', () => {
   describe('Session management', () => {
     it('should create a session', () => {
       const session = createSession()
-      
+
       expect(session.id).toBeDefined()
       expect(session.createdAt).toBeInstanceOf(Date)
       expect(session.lastAccessed).toBeInstanceOf(Date)
@@ -157,7 +157,7 @@ describe('Security System', () => {
     it('should retrieve a session', () => {
       const session = createSession()
       const retrieved = getSession(session.id)
-      
+
       expect(retrieved).toBeDefined()
       expect(retrieved?.id).toBe(session.id)
     })
@@ -170,7 +170,7 @@ describe('Security System', () => {
     it('should invalidate a session', () => {
       const session = createSession()
       invalidateSession(session.id)
-      
+
       const retrieved = getSession(session.id)
       expect(retrieved).toBeNull()
     })
@@ -178,7 +178,7 @@ describe('Security System', () => {
     it('should update last accessed time', () => {
       const session = createSession()
       const originalTime = session.lastAccessed
-      
+
       // Wait a bit
       setTimeout(() => {
         const retrieved = getSession(session.id)
@@ -200,7 +200,7 @@ describe('Security System', () => {
       for (let i = 0; i < 5; i++) {
         checkRateLimit(testIP, 5)
       }
-      
+
       // Next request should be blocked
       const blocked = checkRateLimit(testIP, 5)
       expect(blocked).toBe(false)
@@ -233,7 +233,7 @@ describe('Security System', () => {
       for (let i = 0; i < 5; i++) {
         trackLoginAttempt(testIP, false)
       }
-      
+
       // Should be locked out
       const isLocked = isLockedOut(testIP)
       expect(isLocked).toBe(true)
@@ -241,14 +241,14 @@ describe('Security System', () => {
 
     it('should clear attempts on successful login', () => {
       const newIP = '192.168.1.201'
-      
+
       // Make some failed attempts
       trackLoginAttempt(newIP, false)
       trackLoginAttempt(newIP, false)
-      
+
       // Successful login should clear attempts
       trackLoginAttempt(newIP, true)
-      
+
       // Should not be locked out
       const isLocked = isLockedOut(newIP)
       expect(isLocked).toBe(false)
@@ -291,7 +291,7 @@ describe('Security System', () => {
     it('should pass safe input', () => {
       const input = 'Hello World 123'
       const result = validateInput(input)
-      
+
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
     })
@@ -299,7 +299,7 @@ describe('Security System', () => {
     it('should detect SQL injection', () => {
       const input = "'; DROP TABLE users; --"
       const result = validateInput(input)
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Input contains potentially dangerous SQL patterns')
     })
@@ -307,7 +307,7 @@ describe('Security System', () => {
     it('should detect XSS attempts', () => {
       const input = '<script>alert("xss")</script>'
       const result = validateInput(input)
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Input contains potentially dangerous XSS patterns')
     })
@@ -315,7 +315,7 @@ describe('Security System', () => {
     it('should detect path traversal', () => {
       const input = '../../../etc/passwd'
       const result = validateInput(input)
-      
+
       expect(result.isValid).toBe(false)
       expect(result.errors).toContain('Input contains path traversal patterns')
     })
@@ -328,10 +328,10 @@ describe('Security System', () => {
           get: (name: string) => {
             if (name === 'x-forwarded-for') return '192.168.1.1, 10.0.0.1'
             return null
-          }
-        }
+          },
+        },
       } as NextRequest
-      
+
       const ip = getClientIP(mockRequest)
       expect(ip).toBe('192.168.1.1')
     })
@@ -342,10 +342,10 @@ describe('Security System', () => {
           get: (name: string) => {
             if (name === 'x-real-ip') return '192.168.1.2'
             return null
-          }
-        }
+          },
+        },
       } as NextRequest
-      
+
       const ip = getClientIP(mockRequest)
       expect(ip).toBe('192.168.1.2')
     })
@@ -353,9 +353,9 @@ describe('Security System', () => {
     it('should fallback to request.ip', () => {
       const mockRequest = {
         headers: {
-          get: () => null
+          get: () => null,
         },
-        ip: '192.168.1.3'
+        ip: '192.168.1.3',
       } as unknown as NextRequest
 
       const ip = getClientIP(mockRequest)
@@ -365,8 +365,8 @@ describe('Security System', () => {
     it('should return unknown when no IP available', () => {
       const mockRequest = {
         headers: {
-          get: () => null
-        }
+          get: () => null,
+        },
       } as unknown as NextRequest
 
       const ip = getClientIP(mockRequest)

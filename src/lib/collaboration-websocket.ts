@@ -4,14 +4,14 @@
  */
 
 import { WebSocket } from 'ws'
-import { 
-  WebSocketMessage, 
-  CollaborationEvent, 
-  RealtimeUpdate, 
+import {
+  WebSocketMessage,
+  CollaborationEvent,
+  RealtimeUpdate,
   NotificationMessage,
   HeartbeatMessage,
   User,
-  CollaborationLock
+  CollaborationLock,
 } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
 import { database } from './postgresql-database'
@@ -64,15 +64,15 @@ export class CollaborationWebSocketService {
         user,
         lastHeartbeat: new Date(),
         subscriptions: new Set(),
-        isActive: true
+        isActive: true,
       }
 
       this.clients.set(clientId, client)
 
       // Set up WebSocket event handlers
-      ws.on('message', (data) => this.handleMessage(clientId, data))
+      ws.on('message', data => this.handleMessage(clientId, data))
       ws.on('close', () => this.removeClient(clientId))
-      ws.on('error', (error) => this.handleError(clientId, error))
+      ws.on('error', error => this.handleError(clientId, error))
 
       // Send welcome message
       this.sendToClient(clientId, {
@@ -80,16 +80,16 @@ export class CollaborationWebSocketService {
         payload: {
           userId,
           workspaceId: '',
-          timestamp: new Date()
+          timestamp: new Date(),
         } as HeartbeatMessage,
         timestamp: new Date(),
-        userId
+        userId,
       })
 
       logger.info('Collaboration WebSocket', 'Client added', {
         clientId,
         userId,
-        username: user.username
+        username: user.username,
       })
 
       return clientId
@@ -125,7 +125,7 @@ export class CollaborationWebSocketService {
     logger.info('Collaboration WebSocket', 'Client removed', {
       clientId,
       userId: client.userId,
-      username: client.user.username
+      username: client.user.username,
     })
   }
 
@@ -158,9 +158,9 @@ export class CollaborationWebSocketService {
           break
 
         default:
-          logger.warn('Collaboration WebSocket', 'Unknown message type', { 
-            type: message.type, 
-            clientId 
+          logger.warn('Collaboration WebSocket', 'Unknown message type', {
+            type: message.type,
+            clientId,
           })
       }
     } catch (error) {
@@ -182,7 +182,7 @@ export class CollaborationWebSocketService {
         this.removeClientFromWorkspace(clientId, client.workspaceId)
         this.broadcastUserLeft(client.workspaceId, client.user)
       }
-      
+
       // Add to new workspace
       client.workspaceId = payload.workspaceId
       this.addClientToWorkspace(clientId, payload.workspaceId)
@@ -195,18 +195,21 @@ export class CollaborationWebSocketService {
       payload: {
         userId: client.userId,
         workspaceId: client.workspaceId || '',
-        timestamp: new Date()
+        timestamp: new Date(),
       } as HeartbeatMessage,
       timestamp: new Date(),
       userId: client.userId,
-      workspaceId: client.workspaceId
+      workspaceId: client.workspaceId,
     })
   }
 
   /**
    * Handle collaboration event
    */
-  private async handleCollaborationEvent(clientId: string, event: CollaborationEvent): Promise<void> {
+  private async handleCollaborationEvent(
+    clientId: string,
+    event: CollaborationEvent
+  ): Promise<void> {
     const client = this.clients.get(clientId)
     if (!client || event.userId !== client.userId) return
 
@@ -226,13 +229,17 @@ export class CollaborationWebSocketService {
 
     // Broadcast to workspace
     if (event.workspaceId) {
-      this.broadcastToWorkspace(event.workspaceId, {
-        type: 'collaboration_event',
-        payload: event,
-        timestamp: new Date(),
-        userId: event.userId,
-        workspaceId: event.workspaceId
-      }, clientId)
+      this.broadcastToWorkspace(
+        event.workspaceId,
+        {
+          type: 'collaboration_event',
+          payload: event,
+          timestamp: new Date(),
+          userId: event.userId,
+          workspaceId: event.workspaceId,
+        },
+        clientId
+      )
     }
 
     // Log event
@@ -248,13 +255,17 @@ export class CollaborationWebSocketService {
 
     // Broadcast to workspace
     if (update.workspaceId) {
-      this.broadcastToWorkspace(update.workspaceId, {
-        type: 'realtime_update',
-        payload: update,
-        timestamp: new Date(),
-        userId: update.userId,
-        workspaceId: update.workspaceId
-      }, clientId)
+      this.broadcastToWorkspace(
+        update.workspaceId,
+        {
+          type: 'realtime_update',
+          payload: update,
+          timestamp: new Date(),
+          userId: update.userId,
+          workspaceId: update.workspaceId,
+        },
+        clientId
+      )
     }
 
     // Log update
@@ -264,27 +275,30 @@ export class CollaborationWebSocketService {
   /**
    * Handle notification
    */
-  private async handleNotification(clientId: string, notification: NotificationMessage): Promise<void> {
+  private async handleNotification(
+    clientId: string,
+    notification: NotificationMessage
+  ): Promise<void> {
     // Send notification to specific user or workspace
     if (notification.workspaceId) {
       this.broadcastToWorkspace(notification.workspaceId, {
         type: 'notification',
         payload: notification,
         timestamp: new Date(),
-        workspaceId: notification.workspaceId
+        workspaceId: notification.workspaceId,
       })
     } else {
       // Send to specific user
       const targetClients = Array.from(this.clients.values()).filter(
         client => client.userId === notification.userId
       )
-      
+
       targetClients.forEach(client => {
         this.sendToClient(client.id, {
           type: 'notification',
           payload: notification,
           timestamp: new Date(),
-          userId: notification.userId
+          userId: notification.userId,
         })
       })
     }
@@ -312,11 +326,11 @@ export class CollaborationWebSocketService {
             title: 'Resource Locked',
             message: `This ${event.resourceType} is currently being edited by another user.`,
             userId: event.userId,
-            workspaceId: event.workspaceId
+            workspaceId: event.workspaceId,
           } as NotificationMessage,
           timestamp: new Date(),
           userId: event.userId,
-          workspaceId: event.workspaceId
+          workspaceId: event.workspaceId,
         })
       }
       return
@@ -336,14 +350,15 @@ export class CollaborationWebSocketService {
       isActive: true,
       details: event.data || {},
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     this.resourceLocks.set(lockKey, lock)
 
     // Store in database
     try {
-      await database.query(`
+      await database.query(
+        `
         INSERT INTO collaboration_locks (
           id, resource_type, resource_id, user_id, workspace_id, 
           lock_type, acquired_at, expires_at, details
@@ -354,17 +369,19 @@ export class CollaborationWebSocketService {
           acquired_at = EXCLUDED.acquired_at,
           expires_at = EXCLUDED.expires_at,
           is_active = true
-      `, [
-        lock.id,
-        lock.resourceType,
-        lock.resourceId,
-        lock.userId,
-        lock.workspaceId,
-        lock.lockType,
-        lock.acquiredAt,
-        lock.expiresAt,
-        JSON.stringify(lock.details)
-      ])
+      `,
+        [
+          lock.id,
+          lock.resourceType,
+          lock.resourceId,
+          lock.userId,
+          lock.workspaceId,
+          lock.lockType,
+          lock.acquiredAt,
+          lock.expiresAt,
+          JSON.stringify(lock.details),
+        ]
+      )
     } catch (error) {
       logger.error('Collaboration WebSocket', 'Error storing lock in database', error)
     }
@@ -384,11 +401,14 @@ export class CollaborationWebSocketService {
 
       // Remove from database
       try {
-        await database.query(`
+        await database.query(
+          `
           UPDATE collaboration_locks 
           SET is_active = false 
           WHERE resource_type = $1 AND resource_id = $2 AND user_id = $3
-        `, [event.resourceType, event.resourceId, event.userId])
+        `,
+          [event.resourceType, event.resourceId, event.userId]
+        )
       } catch (error) {
         logger.error('Collaboration WebSocket', 'Error removing lock from database', error)
       }
@@ -404,7 +424,7 @@ export class CollaborationWebSocketService {
       resourceType: event.resourceType,
       resourceId: event.resourceId,
       userId: event.userId,
-      workspaceId: event.workspaceId
+      workspaceId: event.workspaceId,
     })
   }
 
@@ -425,7 +445,11 @@ export class CollaborationWebSocketService {
   /**
    * Broadcast message to workspace
    */
-  private broadcastToWorkspace(workspaceId: string, message: WebSocketMessage, excludeClientId?: string): void {
+  private broadcastToWorkspace(
+    workspaceId: string,
+    message: WebSocketMessage,
+    excludeClientId?: string
+  ): void {
     const workspaceClients = this.workspaceClients.get(workspaceId)
     if (!workspaceClients) return
 
@@ -486,19 +510,23 @@ export class CollaborationWebSocketService {
    * Broadcast user joined event
    */
   private broadcastUserJoined(workspaceId: string, user: User, excludeClientId?: string): void {
-    this.broadcastToWorkspace(workspaceId, {
-      type: 'collaboration_event',
-      payload: {
-        type: 'user_joined',
+    this.broadcastToWorkspace(
+      workspaceId,
+      {
+        type: 'collaboration_event',
+        payload: {
+          type: 'user_joined',
+          userId: user.id,
+          username: user.username,
+          workspaceId,
+          timestamp: new Date(),
+        } as CollaborationEvent,
+        timestamp: new Date(),
         userId: user.id,
-        username: user.username,
         workspaceId,
-        timestamp: new Date()
-      } as CollaborationEvent,
-      timestamp: new Date(),
-      userId: user.id,
-      workspaceId
-    }, excludeClientId)
+      },
+      excludeClientId
+    )
   }
 
   /**
@@ -512,11 +540,11 @@ export class CollaborationWebSocketService {
         userId: user.id,
         username: user.username,
         workspaceId,
-        timestamp: new Date()
+        timestamp: new Date(),
       } as CollaborationEvent,
       timestamp: new Date(),
       userId: user.id,
-      workspaceId
+      workspaceId,
     })
   }
 
@@ -533,11 +561,14 @@ export class CollaborationWebSocketService {
 
     // Remove from database
     try {
-      await database.query(`
+      await database.query(
+        `
         UPDATE collaboration_locks 
         SET is_active = false 
         WHERE user_id = $1 AND is_active = true
-      `, [userId])
+      `,
+        [userId]
+      )
     } catch (error) {
       logger.error('Collaboration WebSocket', 'Error releasing user locks', error)
     }
@@ -555,7 +586,7 @@ export class CollaborationWebSocketService {
         if (now.getTime() - client.lastHeartbeat.getTime() > timeout) {
           logger.warn('Collaboration WebSocket', 'Client heartbeat timeout', {
             clientId,
-            userId: client.userId
+            userId: client.userId,
           })
           this.removeClient(clientId)
         }
@@ -569,13 +600,13 @@ export class CollaborationWebSocketService {
   private startLockCleanup(): void {
     setInterval(() => {
       const now = new Date()
-      
+
       for (const [lockKey, lock] of this.resourceLocks.entries()) {
         if (lock.expiresAt < now) {
           this.resourceLocks.delete(lockKey)
           logger.info('Collaboration WebSocket', 'Expired lock cleaned up', {
             lockKey,
-            userId: lock.userId
+            userId: lock.userId,
           })
         }
       }
@@ -587,21 +618,24 @@ export class CollaborationWebSocketService {
    */
   private async logCollaborationEvent(event: CollaborationEvent): Promise<void> {
     try {
-      await database.query(`
+      await database.query(
+        `
         INSERT INTO audit_logs (
           user_id, action, resource_type, resource_id, workspace_id,
           details, timestamp, severity
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      `, [
-        event.userId,
-        `collaboration.${event.type}`,
-        event.resourceType || 'unknown',
-        event.resourceId,
-        event.workspaceId,
-        JSON.stringify(event.data || {}),
-        event.timestamp,
-        'info'
-      ])
+      `,
+        [
+          event.userId,
+          `collaboration.${event.type}`,
+          event.resourceType || 'unknown',
+          event.resourceId,
+          event.workspaceId,
+          JSON.stringify(event.data || {}),
+          event.timestamp,
+          'info',
+        ]
+      )
     } catch (error) {
       logger.error('Collaboration WebSocket', 'Error logging event', error)
     }
@@ -612,21 +646,24 @@ export class CollaborationWebSocketService {
    */
   private async logRealtimeUpdate(update: RealtimeUpdate): Promise<void> {
     try {
-      await database.query(`
+      await database.query(
+        `
         INSERT INTO audit_logs (
           user_id, action, resource_type, resource_id, workspace_id,
           details, timestamp, severity
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      `, [
-        update.userId,
-        `realtime.${update.action}`,
-        update.type,
-        update.resourceId,
-        update.workspaceId,
-        JSON.stringify(update.data),
-        update.timestamp,
-        'info'
-      ])
+      `,
+        [
+          update.userId,
+          `realtime.${update.action}`,
+          update.type,
+          update.resourceId,
+          update.workspaceId,
+          JSON.stringify(update.data),
+          update.timestamp,
+          'info',
+        ]
+      )
     } catch (error) {
       logger.error('Collaboration WebSocket', 'Error logging update', error)
     }
@@ -679,7 +716,7 @@ export class CollaborationWebSocketService {
       clearInterval(this.heartbeatInterval)
     }
 
-    this.clients.forEach((client) => {
+    this.clients.forEach(client => {
       if (client.ws.readyState === WebSocket.OPEN) {
         client.ws.close(1001, 'Server shutdown')
       }

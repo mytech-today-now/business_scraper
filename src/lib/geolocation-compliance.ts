@@ -9,18 +9,18 @@ import { securityAuditService, AuditEventType } from '@/lib/security-audit'
 
 // Supported regions and their compliance requirements
 export enum ComplianceRegion {
-  EU = 'EU',           // European Union - GDPR
-  EEA = 'EEA',         // European Economic Area - GDPR
-  UK = 'UK',           // United Kingdom - UK GDPR
-  CA = 'CA',           // California - CCPA
-  CCPA = 'CCPA',       // California Consumer Privacy Act
-  BRAZIL = 'BRAZIL',   // Brazil - LGPD
-  CANADA = 'CANADA',   // Canada - PIPEDA
+  EU = 'EU', // European Union - GDPR
+  EEA = 'EEA', // European Economic Area - GDPR
+  UK = 'UK', // United Kingdom - UK GDPR
+  CA = 'CA', // California - CCPA
+  CCPA = 'CCPA', // California Consumer Privacy Act
+  BRAZIL = 'BRAZIL', // Brazil - LGPD
+  CANADA = 'CANADA', // Canada - PIPEDA
   AUSTRALIA = 'AUSTRALIA', // Australia - Privacy Act
   SINGAPORE = 'SINGAPORE', // Singapore - PDPA
-  JAPAN = 'JAPAN',     // Japan - APPI
+  JAPAN = 'JAPAN', // Japan - APPI
   SOUTH_KOREA = 'SOUTH_KOREA', // South Korea - PIPA
-  GLOBAL = 'GLOBAL'    // Global/Default compliance
+  GLOBAL = 'GLOBAL', // Global/Default compliance
 }
 
 // Data processing restrictions by region
@@ -53,7 +53,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['legitimate_business_interest', 'contract_performance', 'legal_obligation'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: true,
-    penaltyRisk: 'CRITICAL'
+    penaltyRisk: 'CRITICAL',
   },
   [ComplianceRegion.EEA]: {
     region: ComplianceRegion.EEA,
@@ -67,7 +67,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['legitimate_business_interest', 'contract_performance', 'legal_obligation'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: true,
-    penaltyRisk: 'CRITICAL'
+    penaltyRisk: 'CRITICAL',
   },
   [ComplianceRegion.UK]: {
     region: ComplianceRegion.UK,
@@ -81,7 +81,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['legitimate_business_interest', 'contract_performance', 'legal_obligation'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'HIGH'
+    penaltyRisk: 'HIGH',
   },
   [ComplianceRegion.CA]: {
     region: ComplianceRegion.CA,
@@ -95,7 +95,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['business_purpose', 'commercial_purpose'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'HIGH'
+    penaltyRisk: 'HIGH',
   },
   [ComplianceRegion.CCPA]: {
     region: ComplianceRegion.CCPA,
@@ -109,7 +109,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['business_purpose', 'commercial_purpose'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'HIGH'
+    penaltyRisk: 'HIGH',
   },
   [ComplianceRegion.BRAZIL]: {
     region: ComplianceRegion.BRAZIL,
@@ -123,7 +123,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['legitimate_interest', 'contract_performance', 'legal_obligation'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: true,
-    penaltyRisk: 'HIGH'
+    penaltyRisk: 'HIGH',
   },
   [ComplianceRegion.CANADA]: {
     region: ComplianceRegion.CANADA,
@@ -137,7 +137,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['identified_purposes', 'business_purposes'],
     requiresLocalStorage: true,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'MEDIUM'
+    penaltyRisk: 'MEDIUM',
   },
   [ComplianceRegion.AUSTRALIA]: {
     region: ComplianceRegion.AUSTRALIA,
@@ -151,7 +151,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['primary_purpose', 'related_secondary_purpose'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'MEDIUM'
+    penaltyRisk: 'MEDIUM',
   },
   [ComplianceRegion.SINGAPORE]: {
     region: ComplianceRegion.SINGAPORE,
@@ -165,7 +165,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['notified_purposes', 'business_purposes'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: true,
-    penaltyRisk: 'HIGH'
+    penaltyRisk: 'HIGH',
   },
   [ComplianceRegion.JAPAN]: {
     region: ComplianceRegion.JAPAN,
@@ -179,7 +179,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['specified_purposes', 'business_purposes'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'MEDIUM'
+    penaltyRisk: 'MEDIUM',
   },
   [ComplianceRegion.SOUTH_KOREA]: {
     region: ComplianceRegion.SOUTH_KOREA,
@@ -193,7 +193,7 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['specified_purposes', 'business_purposes'],
     requiresLocalStorage: true,
     requiresDataProtectionOfficer: true,
-    penaltyRisk: 'HIGH'
+    penaltyRisk: 'HIGH',
   },
   [ComplianceRegion.GLOBAL]: {
     region: ComplianceRegion.GLOBAL,
@@ -207,13 +207,12 @@ const REGION_CONFIGURATIONS: Record<ComplianceRegion, RegionRestrictions> = {
     allowedPurposes: ['business_purposes', 'legitimate_interest'],
     requiresLocalStorage: false,
     requiresDataProtectionOfficer: false,
-    penaltyRisk: 'LOW'
-  }
+    penaltyRisk: 'LOW',
+  },
 }
 
 // Geolocation compliance service
 export class GeolocationComplianceService {
-  
   /**
    * Detect user's region based on IP address or explicit setting
    */
@@ -221,25 +220,24 @@ export class GeolocationComplianceService {
     try {
       // In a real implementation, you would use a geolocation service
       // For now, we'll use a simple IP-based detection
-      
+
       // EU IP ranges (simplified - in production use a proper geolocation service)
       if (this.isEUIP(clientIP)) {
         return ComplianceRegion.EU
       }
-      
+
       // California detection (simplified)
       if (this.isCaliforniaIP(clientIP)) {
         return ComplianceRegion.CA
       }
-      
+
       // UK detection
       if (this.isUKIP(clientIP)) {
         return ComplianceRegion.UK
       }
-      
+
       // Default to global compliance
       return ComplianceRegion.GLOBAL
-      
     } catch (error) {
       logger.error('Geolocation Compliance', 'Failed to detect region', error)
       return ComplianceRegion.GLOBAL // Safe default
@@ -264,12 +262,12 @@ export class GeolocationComplianceService {
   ): Promise<void> {
     try {
       const restrictions = this.getRegionRestrictions(region)
-      
+
       // Set compliance headers
       await page.setExtraHTTPHeaders({
         'X-Compliance-Region': region,
         'X-Data-Minimization': restrictions.requiresDataMinimization ? 'true' : 'false',
-        'X-Consent-Required': restrictions.requiresExplicitConsent ? 'true' : 'false'
+        'X-Consent-Required': restrictions.requiresExplicitConsent ? 'true' : 'false',
       })
 
       // Configure user agent with compliance info
@@ -278,19 +276,19 @@ export class GeolocationComplianceService {
 
       // Set up request interception for compliance
       await page.setRequestInterception(true)
-      
-      page.on('request', async (request) => {
+
+      page.on('request', async request => {
         const url = request.url()
-        
+
         // Check if request is compliant
         const isCompliant = await this.validateRequest(url, restrictions, userConsent)
-        
+
         if (!isCompliant) {
           logger.warn('Geolocation Compliance', `Blocked non-compliant request: ${url}`, {
             region,
-            restrictions: restrictions.restrictedDataTypes
+            restrictions: restrictions.restrictedDataTypes,
           })
-          
+
           // Log compliance violation
           await securityAuditService.logComplianceEvent(
             AuditEventType.SCRAPING_BLOCKED,
@@ -301,31 +299,31 @@ export class GeolocationComplianceService {
               url,
               region,
               reason: 'compliance_violation',
-              sessionId
+              sessionId,
             }
           )
-          
+
           request.abort()
           return
         }
-        
+
         request.continue()
       })
 
       // Inject compliance script into pages
-      await page.evaluateOnNewDocument((regionConfig) => {
+      await page.evaluateOnNewDocument(regionConfig => {
         // Add compliance metadata to window object
         window.__COMPLIANCE__ = {
           region: regionConfig.region,
           restrictions: regionConfig,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
-        
+
         // Override data collection methods if required
         if (regionConfig.requiresDataMinimization) {
           // Minimize data collection
           const originalFetch = window.fetch
-          window.fetch = function(...args) {
+          window.fetch = function (...args) {
             console.log('Compliance: Fetch request intercepted for data minimization')
             return originalFetch.apply(this, args)
           }
@@ -335,9 +333,8 @@ export class GeolocationComplianceService {
       logger.info('Geolocation Compliance', `Puppeteer configured for ${region} compliance`, {
         region,
         requiresConsent: restrictions.requiresExplicitConsent,
-        dataMinimization: restrictions.requiresDataMinimization
+        dataMinimization: restrictions.requiresDataMinimization,
       })
-
     } catch (error) {
       logger.error('Geolocation Compliance', 'Failed to configure Puppeteer compliance', error)
       throw error
@@ -361,8 +358,10 @@ export class GeolocationComplianceService {
       // Check for restricted data types in URL
       const urlLower = url.toLowerCase()
       for (const restrictedType of restrictions.restrictedDataTypes) {
-        if (urlLower.includes(restrictedType.replace('_', '-')) || 
-            urlLower.includes(restrictedType)) {
+        if (
+          urlLower.includes(restrictedType.replace('_', '-')) ||
+          urlLower.includes(restrictedType)
+        ) {
           return false
         }
       }
@@ -375,7 +374,7 @@ export class GeolocationComplianceService {
         '/health/',
         '/medical/',
         '/financial/',
-        '/biometric/'
+        '/biometric/',
       ]
 
       for (const pattern of sensitivePatterns) {
@@ -385,7 +384,6 @@ export class GeolocationComplianceService {
       }
 
       return true
-
     } catch (error) {
       logger.error('Geolocation Compliance', 'Request validation failed', error)
       return false // Fail safe
@@ -432,7 +430,7 @@ export class GeolocationComplianceService {
     if (restrictions.requiresExplicitConsent && !userConsent.scraping) {
       return {
         allowed: false,
-        reason: `Explicit consent required for scraping in ${region}`
+        reason: `Explicit consent required for scraping in ${region}`,
       }
     }
 
@@ -442,7 +440,7 @@ export class GeolocationComplianceService {
       if (targetLower.includes(restrictedType.replace('_', '-'))) {
         return {
           allowed: false,
-          reason: `Target contains restricted data type: ${restrictedType}`
+          reason: `Target contains restricted data type: ${restrictedType}`,
         }
       }
     }

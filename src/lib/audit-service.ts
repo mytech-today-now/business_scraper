@@ -3,12 +3,7 @@
  * Comprehensive audit logging system for all user actions, scraping jobs, and data modifications
  */
 
-import { 
-  AuditLog, 
-  AuditAction, 
-  AuditSeverity, 
-  User 
-} from '@/types/multi-user'
+import { AuditLog, AuditAction, AuditSeverity, User } from '@/types/multi-user'
 import { database } from './postgresql-database'
 import { logger } from '@/utils/logger'
 import { getClientIP } from './security'
@@ -53,38 +48,41 @@ export class AuditService {
         timestamp: new Date(),
         sessionId: entry.context?.sessionId,
         correlationId: entry.context?.correlationId,
-        severity: entry.severity || 'info'
+        severity: entry.severity || 'info',
       }
 
       // Insert into database
-      await database.query(`
+      await database.query(
+        `
         INSERT INTO audit_logs (
           id, user_id, action, resource_type, resource_id, workspace_id, team_id,
           details, ip_address, user_agent, timestamp, session_id, correlation_id, severity
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-      `, [
-        auditLog.id,
-        auditLog.userId,
-        auditLog.action,
-        auditLog.resourceType,
-        auditLog.resourceId,
-        auditLog.workspaceId,
-        auditLog.teamId,
-        JSON.stringify(auditLog.details),
-        auditLog.ipAddress,
-        auditLog.userAgent,
-        auditLog.timestamp,
-        auditLog.sessionId,
-        auditLog.correlationId,
-        auditLog.severity
-      ])
+      `,
+        [
+          auditLog.id,
+          auditLog.userId,
+          auditLog.action,
+          auditLog.resourceType,
+          auditLog.resourceId,
+          auditLog.workspaceId,
+          auditLog.teamId,
+          JSON.stringify(auditLog.details),
+          auditLog.ipAddress,
+          auditLog.userAgent,
+          auditLog.timestamp,
+          auditLog.sessionId,
+          auditLog.correlationId,
+          auditLog.severity,
+        ]
+      )
 
       // Log to application logger for immediate visibility
       logger.info('Audit', `${entry.action} - ${entry.resourceType}`, {
         userId: entry.context?.userId,
         resourceId: entry.resourceId,
         workspaceId: entry.context?.workspaceId,
-        details: entry.details
+        details: entry.details,
       })
     } catch (error) {
       logger.error('Audit Service', 'Error logging audit event', { entry, error })
@@ -107,10 +105,10 @@ export class AuditService {
       resourceId: userId,
       details: {
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action === 'user.login_failed' ? 'warn' : 'info',
-      context
+      context,
     })
   }
 
@@ -131,13 +129,13 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action === 'user.deleted' ? 'warn' : 'info',
       context: {
         ...context,
-        userId: performedBy
-      }
+        userId: performedBy,
+      },
     })
   }
 
@@ -145,7 +143,12 @@ export class AuditService {
    * Log team management events
    */
   static async logTeamManagement(
-    action: 'team.created' | 'team.updated' | 'team.deleted' | 'team.member.added' | 'team.member.removed',
+    action:
+      | 'team.created'
+      | 'team.updated'
+      | 'team.deleted'
+      | 'team.member.added'
+      | 'team.member.removed',
     teamId: string,
     performedBy: string,
     context?: AuditContext,
@@ -158,14 +161,14 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action.includes('deleted') || action.includes('removed') ? 'warn' : 'info',
       context: {
         ...context,
         userId: performedBy,
-        teamId
-      }
+        teamId,
+      },
     })
   }
 
@@ -173,7 +176,12 @@ export class AuditService {
    * Log workspace management events
    */
   static async logWorkspaceManagement(
-    action: 'workspace.created' | 'workspace.updated' | 'workspace.deleted' | 'workspace.member.added' | 'workspace.member.removed',
+    action:
+      | 'workspace.created'
+      | 'workspace.updated'
+      | 'workspace.deleted'
+      | 'workspace.member.added'
+      | 'workspace.member.removed',
     workspaceId: string,
     performedBy: string,
     context?: AuditContext,
@@ -186,14 +194,14 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action.includes('deleted') || action.includes('removed') ? 'warn' : 'info',
       context: {
         ...context,
         userId: performedBy,
-        workspaceId
-      }
+        workspaceId,
+      },
     })
   }
 
@@ -201,7 +209,12 @@ export class AuditService {
    * Log campaign management events
    */
   static async logCampaignManagement(
-    action: 'campaign.created' | 'campaign.updated' | 'campaign.deleted' | 'campaign.started' | 'campaign.completed',
+    action:
+      | 'campaign.created'
+      | 'campaign.updated'
+      | 'campaign.deleted'
+      | 'campaign.started'
+      | 'campaign.completed',
     campaignId: string,
     performedBy: string,
     context?: AuditContext,
@@ -214,13 +227,13 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action === 'campaign.deleted' ? 'warn' : 'info',
       context: {
         ...context,
-        userId: performedBy
-      }
+        userId: performedBy,
+      },
     })
   }
 
@@ -241,13 +254,13 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action === 'scraping.failed' ? 'error' : 'info',
       context: {
         ...context,
-        userId: performedBy
-      }
+        userId: performedBy,
+      },
     })
   }
 
@@ -268,13 +281,13 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: 'info',
       context: {
         ...context,
-        userId: performedBy
-      }
+        userId: performedBy,
+      },
     })
   }
 
@@ -295,13 +308,13 @@ export class AuditService {
       details: {
         performedBy,
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: action.includes('revoked') ? 'warn' : 'info',
       context: {
         ...context,
-        userId: performedBy
-      }
+        userId: performedBy,
+      },
     })
   }
 
@@ -321,10 +334,10 @@ export class AuditService {
       resourceId,
       details: {
         timestamp: new Date().toISOString(),
-        ...details
+        ...details,
       },
       severity: 'warn',
-      context
+      context,
     })
   }
 
@@ -434,29 +447,35 @@ export class AuditService {
       `
 
       const logsResult = await database.query(logsQuery, values)
-      
+
       const logs: AuditLog[] = logsResult.rows.map(row => ({
         id: row.id,
         userId: row.user_id,
-        user: row.user_id ? {
-          id: row.user_id,
-          username: row.username,
-          firstName: row.first_name,
-          lastName: row.last_name
-        } as any : undefined,
+        user: row.user_id
+          ? ({
+              id: row.user_id,
+              username: row.username,
+              firstName: row.first_name,
+              lastName: row.last_name,
+            } as any)
+          : undefined,
         action: row.action,
         resourceType: row.resource_type,
         resourceId: row.resource_id,
         workspaceId: row.workspace_id,
-        workspace: row.workspace_name ? {
-          id: row.workspace_id,
-          name: row.workspace_name
-        } as any : undefined,
+        workspace: row.workspace_name
+          ? ({
+              id: row.workspace_id,
+              name: row.workspace_name,
+            } as any)
+          : undefined,
         teamId: row.team_id,
-        team: row.team_name ? {
-          id: row.team_id,
-          name: row.team_name
-        } as any : undefined,
+        team: row.team_name
+          ? ({
+              id: row.team_id,
+              name: row.team_name,
+            } as any)
+          : undefined,
         details: row.details,
         ipAddress: row.ip_address,
         userAgent: row.user_agent,
@@ -465,14 +484,14 @@ export class AuditService {
         correlationId: row.correlation_id,
         severity: row.severity,
         createdAt: row.timestamp,
-        updatedAt: row.timestamp
+        updatedAt: row.timestamp,
       }))
 
       return {
         logs,
         total,
         page,
-        totalPages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit),
       }
     } catch (error) {
       logger.error('Audit Service', 'Error retrieving audit logs', error)
@@ -530,49 +549,62 @@ export class AuditService {
       const whereClause = `WHERE ${conditions.join(' AND ')}`
 
       // Get total events
-      const totalResult = await database.query(`
+      const totalResult = await database.query(
+        `
         SELECT COUNT(*) as total FROM audit_logs al ${whereClause}
-      `, values)
+      `,
+        values
+      )
       const totalEvents = parseInt(totalResult.rows[0].total)
 
       // Get events by action
-      const actionResult = await database.query(`
+      const actionResult = await database.query(
+        `
         SELECT action, COUNT(*) as count 
         FROM audit_logs al ${whereClause}
         GROUP BY action 
         ORDER BY count DESC
-      `, values)
+      `,
+        values
+      )
       const eventsByAction = actionResult.rows.reduce((acc, row) => {
         acc[row.action] = parseInt(row.count)
         return acc
       }, {})
 
       // Get events by severity
-      const severityResult = await database.query(`
+      const severityResult = await database.query(
+        `
         SELECT severity, COUNT(*) as count 
         FROM audit_logs al ${whereClause}
         GROUP BY severity 
         ORDER BY count DESC
-      `, values)
+      `,
+        values
+      )
       const eventsBySeverity = severityResult.rows.reduce((acc, row) => {
         acc[row.severity] = parseInt(row.count)
         return acc
       }, {})
 
       // Get events by resource type
-      const resourceResult = await database.query(`
+      const resourceResult = await database.query(
+        `
         SELECT resource_type, COUNT(*) as count 
         FROM audit_logs al ${whereClause}
         GROUP BY resource_type 
         ORDER BY count DESC
-      `, values)
+      `,
+        values
+      )
       const eventsByResourceType = resourceResult.rows.reduce((acc, row) => {
         acc[row.resource_type] = parseInt(row.count)
         return acc
       }, {})
 
       // Get top users
-      const usersResult = await database.query(`
+      const usersResult = await database.query(
+        `
         SELECT 
           al.user_id, 
           u.username, 
@@ -584,11 +616,13 @@ export class AuditService {
         GROUP BY al.user_id, u.username 
         ORDER BY count DESC 
         LIMIT 10
-      `, values)
+      `,
+        values
+      )
       const topUsers = usersResult.rows.map(row => ({
         userId: row.user_id,
         username: row.username || 'Unknown',
-        count: parseInt(row.count)
+        count: parseInt(row.count),
       }))
 
       return {
@@ -596,7 +630,7 @@ export class AuditService {
         eventsByAction,
         eventsBySeverity,
         eventsByResourceType,
-        topUsers
+        topUsers,
       }
     } catch (error) {
       logger.error('Audit Service', 'Error retrieving audit statistics', error)
@@ -607,13 +641,17 @@ export class AuditService {
   /**
    * Extract audit context from request
    */
-  static extractContextFromRequest(request: NextRequest, userId?: string, sessionId?: string): AuditContext {
+  static extractContextFromRequest(
+    request: NextRequest,
+    userId?: string,
+    sessionId?: string
+  ): AuditContext {
     return {
       userId,
       ipAddress: getClientIP(request),
       userAgent: request.headers.get('user-agent') || undefined,
       sessionId,
-      correlationId: request.headers.get('x-correlation-id') || this.generateId()
+      correlationId: request.headers.get('x-correlation-id') || this.generateId(),
     }
   }
 
@@ -633,16 +671,16 @@ export function withAuditLogging(
   resourceType: string,
   getResourceId?: (request: NextRequest) => string | undefined
 ) {
-  return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value
 
-    descriptor.value = async function(request: NextRequest, context?: any) {
+    descriptor.value = async function (request: NextRequest, context?: any) {
       const startTime = Date.now()
       let error: Error | undefined
 
       try {
         const result = await originalMethod.call(this, request, context)
-        
+
         // Log successful operation
         await AuditService.log({
           action,
@@ -652,16 +690,18 @@ export function withAuditLogging(
             duration: Date.now() - startTime,
             success: true,
             method: request.method,
-            url: request.url
+            url: request.url,
           },
           severity: 'info',
-          context: context ? AuditService.extractContextFromRequest(request, context.user?.id, context.sessionId) : undefined
+          context: context
+            ? AuditService.extractContextFromRequest(request, context.user?.id, context.sessionId)
+            : undefined,
         })
 
         return result
       } catch (err) {
         error = err as Error
-        
+
         // Log failed operation
         await AuditService.log({
           action,
@@ -672,10 +712,12 @@ export function withAuditLogging(
             success: false,
             error: error.message,
             method: request.method,
-            url: request.url
+            url: request.url,
           },
           severity: 'error',
-          context: context ? AuditService.extractContextFromRequest(request, context.user?.id, context.sessionId) : undefined
+          context: context
+            ? AuditService.extractContextFromRequest(request, context.user?.id, context.sessionId)
+            : undefined,
         })
 
         throw error

@@ -1,7 +1,12 @@
 'use strict'
 
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
-import { BusinessRecord, ScrapingConfig, IndustryCategory, IndustrySubCategory } from '@/types/business'
+import {
+  BusinessRecord,
+  ScrapingConfig,
+  IndustryCategory,
+  IndustrySubCategory,
+} from '@/types/business'
 import { PredictiveAnalytics, AIProcessingJob, AIInsightsSummary } from '@/types/ai'
 import { logger } from '@/utils/logger'
 import { DataCompression, CompressedData } from '@/lib/data-compression'
@@ -623,13 +628,15 @@ export class StorageService {
    * Get all sessions
    * @returns Promise resolving to array of sessions
    */
-  async getAllSessions(): Promise<Array<{
-    id: string
-    name: string
-    businesses: string[]
-    createdAt: Date
-    updatedAt: Date
-  }>> {
+  async getAllSessions(): Promise<
+    Array<{
+      id: string
+      name: string
+      businesses: string[]
+      createdAt: Date
+      updatedAt: Date
+    }>
+  > {
     await this.ensureInitialized()
     try {
       const sessions = await this.db!.getAll('sessions')
@@ -680,7 +687,7 @@ export class StorageService {
         id: 'global-blacklist',
         domains: domains.filter(domain => domain.trim().length > 0),
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       await this.db!.put('domainBlacklist', blacklistData)
@@ -768,7 +775,7 @@ export class StorageService {
         this.db!.count('configs'),
         this.db!.count('industries'),
         this.db!.count('sessions'),
-        this.getDomainBlacklist().then(domains => domains.length)
+        this.getDomainBlacklist().then(domains => domains.length),
       ])
 
       return { businesses, configs, industries, sessions, domainBlacklistEntries: domainBlacklist }
@@ -865,7 +872,16 @@ export class StorageService {
       await this.ensureInitialized()
       const db = await this.getDatabase()
 
-      const [businesses, configs, industries, sessions, domainBlacklistEntries, aiAnalytics, aiJobs, aiInsights] = await Promise.all([
+      const [
+        businesses,
+        configs,
+        industries,
+        sessions,
+        domainBlacklistEntries,
+        aiAnalytics,
+        aiJobs,
+        aiInsights,
+      ] = await Promise.all([
         db.count('businesses'),
         db.count('configs'),
         db.count('industries'),
@@ -873,7 +889,7 @@ export class StorageService {
         db.count('domainBlacklist'),
         db.count('aiAnalytics'),
         db.count('aiJobs'),
-        db.count('aiInsights')
+        db.count('aiInsights'),
       ])
 
       return {
@@ -884,7 +900,7 @@ export class StorageService {
         domainBlacklistEntries,
         aiAnalytics,
         aiJobs,
-        aiInsights
+        aiInsights,
       }
     } catch (error) {
       logger.error('Storage', 'Failed to get database statistics', error)
@@ -896,7 +912,7 @@ export class StorageService {
         domainBlacklistEntries: 0,
         aiAnalytics: 0,
         aiJobs: 0,
-        aiInsights: 0
+        aiInsights: 0,
       }
     }
   }
@@ -1018,7 +1034,12 @@ export class StorageService {
   /**
    * Update AI job status
    */
-  async updateAIJobStatus(jobId: string, status: string, result?: PredictiveAnalytics, error?: string): Promise<void> {
+  async updateAIJobStatus(
+    jobId: string,
+    status: string,
+    result?: PredictiveAnalytics,
+    error?: string
+  ): Promise<void> {
     try {
       const db = await this.getDatabase()
       const job = await db.get('aiJobs', jobId)

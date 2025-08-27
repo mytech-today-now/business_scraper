@@ -41,11 +41,11 @@ class PerformanceMonitor {
     try {
       const data = await fs.readFile(this.baselineFile, 'utf-8')
       const baselines: PerformanceBaseline[] = JSON.parse(data)
-      
+
       baselines.forEach(baseline => {
         this.baselines.set(baseline.testName, baseline)
       })
-      
+
       logger.info('PerformanceMonitor', `Loaded ${baselines.length} performance baselines`)
     } catch (error) {
       logger.warn('PerformanceMonitor', 'No existing baselines found, will create new ones')
@@ -64,7 +64,7 @@ class PerformanceMonitor {
   ): Promise<{ result: T; metrics: PerformanceMetrics }> {
     const startTime = Date.now()
     const startMemory = process.memoryUsage()
-    
+
     let result: T
     let error: Error | null = null
 
@@ -76,16 +76,16 @@ class PerformanceMonitor {
     } finally {
       const endTime = Date.now()
       const endMemory = process.memoryUsage()
-      
+
       const metrics: PerformanceMetrics = {
         responseTime: endTime - startTime,
         memoryUsage: endMemory.heapUsed - startMemory.heapUsed,
         throughput: error ? 0 : 1000 / (endTime - startTime), // operations per second
-        errorRate: error ? 100 : 0
+        errorRate: error ? 100 : 0,
       }
 
       await this.recordMetrics(testName, metrics)
-      
+
       if (!error) {
         return { result: result!, metrics }
       }
@@ -96,7 +96,7 @@ class PerformanceMonitor {
 
   private async recordMetrics(testName: string, metrics: PerformanceMetrics): Promise<void> {
     const baseline = this.baselines.get(testName)
-    
+
     if (!baseline) {
       // Create new baseline
       const newBaseline: PerformanceBaseline = {
@@ -106,9 +106,9 @@ class PerformanceMonitor {
         throughput: metrics.throughput,
         memoryUsage: metrics.memoryUsage,
         errorRate: metrics.errorRate,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
-      
+
       this.baselines.set(testName, newBaseline)
       logger.info('PerformanceMonitor', `Created new baseline for ${testName}`)
     } else {
@@ -127,41 +127,48 @@ class PerformanceMonitor {
 
     // Check response time regression
     if (current.responseTime > baseline.averageResponseTime * regressionThreshold) {
-      logger.warn('PerformanceMonitor', 
+      logger.warn(
+        'PerformanceMonitor',
         `Performance regression detected in ${testName}: ` +
-        `Response time increased from ${baseline.averageResponseTime}ms to ${current.responseTime}ms`
+          `Response time increased from ${baseline.averageResponseTime}ms to ${current.responseTime}ms`
       )
     }
 
     // Check memory usage regression
     if (current.memoryUsage > baseline.memoryUsage * regressionThreshold) {
-      logger.warn('PerformanceMonitor', 
+      logger.warn(
+        'PerformanceMonitor',
         `Memory regression detected in ${testName}: ` +
-        `Memory usage increased from ${baseline.memoryUsage} to ${current.memoryUsage} bytes`
+          `Memory usage increased from ${baseline.memoryUsage} to ${current.memoryUsage} bytes`
       )
     }
 
     // Check throughput regression
     if (current.throughput < baseline.throughput * improvementThreshold) {
-      logger.warn('PerformanceMonitor', 
+      logger.warn(
+        'PerformanceMonitor',
         `Throughput regression detected in ${testName}: ` +
-        `Throughput decreased from ${baseline.throughput} to ${current.throughput} ops/sec`
+          `Throughput decreased from ${baseline.throughput} to ${current.throughput} ops/sec`
       )
     }
 
     // Update baseline if significant improvement
-    if (current.responseTime < baseline.averageResponseTime * improvementThreshold &&
-        current.memoryUsage < baseline.memoryUsage * improvementThreshold) {
-      
+    if (
+      current.responseTime < baseline.averageResponseTime * improvementThreshold &&
+      current.memoryUsage < baseline.memoryUsage * improvementThreshold
+    ) {
       this.baselines.set(testName, {
         ...baseline,
         averageResponseTime: current.responseTime,
         memoryUsage: current.memoryUsage,
         throughput: current.throughput,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
-      
-      logger.info('PerformanceMonitor', `Updated baseline for ${testName} due to performance improvement`)
+
+      logger.info(
+        'PerformanceMonitor',
+        `Updated baseline for ${testName} due to performance improvement`
+      )
     }
   }
 
@@ -201,11 +208,7 @@ describe('Performance Regression Testing', () => {
     }, 30000)
 
     test('multiple website scraping performance', async () => {
-      const urls = [
-        'https://example.com',
-        'https://test.com',
-        'https://demo.com'
-      ]
+      const urls = ['https://example.com', 'https://test.com', 'https://demo.com']
 
       const { result, metrics } = await performanceMonitor.measurePerformance(
         'multiple-website-scraping',
@@ -268,12 +271,11 @@ describe('Performance Regression Testing', () => {
   describe('Memory Leak Detection', () => {
     test('should not leak memory during repeated operations', async () => {
       const initialMemory = process.memoryUsage().heapUsed
-      
+
       // Perform multiple operations
       for (let i = 0; i < 10; i++) {
-        await scraperService.scrapeWebsite('https://example.com', 1, 1)
-          .catch(() => {}) // Ignore errors for this test
-        
+        await scraperService.scrapeWebsite('https://example.com', 1, 1).catch(() => {}) // Ignore errors for this test
+
         // Force garbage collection if available
         if (global.gc) {
           global.gc()
@@ -313,26 +315,26 @@ describe('Performance Regression Testing', () => {
   describe('Baseline Comparison', () => {
     test('should compare against historical baselines', async () => {
       const testName = 'baseline-comparison-test'
-      
-      const { metrics } = await performanceMonitor.measurePerformance(
-        testName,
-        () => scraperService.scrapeWebsite('https://example.com', 1, 1)
+
+      const { metrics } = await performanceMonitor.measurePerformance(testName, () =>
+        scraperService.scrapeWebsite('https://example.com', 1, 1)
       )
 
       const baseline = performanceMonitor.getBaseline(testName)
-      
+
       if (baseline) {
         // Compare against baseline with tolerance
         const responseTimeRatio = metrics.responseTime / baseline.averageResponseTime
         const memoryRatio = metrics.memoryUsage / baseline.memoryUsage
-        
+
         // Performance should not degrade by more than 50%
         expect(responseTimeRatio).toBeLessThan(1.5)
         expect(memoryRatio).toBeLessThan(1.5)
-        
-        logger.info('PerformanceMonitor', 
+
+        logger.info(
+          'PerformanceMonitor',
           `Performance comparison - Response time ratio: ${responseTimeRatio.toFixed(2)}, ` +
-          `Memory ratio: ${memoryRatio.toFixed(2)}`
+            `Memory ratio: ${memoryRatio.toFixed(2)}`
         )
       }
     }, 30000)

@@ -101,7 +101,7 @@ export function ScrapingDashboard() {
         logger.info('ScrapingDashboard', 'WebSocket connected')
       }
 
-      wsRef.current.onmessage = (event) => {
+      wsRef.current.onmessage = event => {
         const data = JSON.parse(event.data)
         handleRealtimeUpdate(data)
       }
@@ -114,12 +114,20 @@ export function ScrapingDashboard() {
         }
       }
 
-      wsRef.current.onerror = (error) => {
-        logger.warn('ScrapingDashboard', 'WebSocket connection failed - real-time updates disabled', error)
+      wsRef.current.onerror = error => {
+        logger.warn(
+          'ScrapingDashboard',
+          'WebSocket connection failed - real-time updates disabled',
+          error
+        )
         // Don't attempt to reconnect immediately on error to avoid spam
       }
     } catch (error) {
-      logger.warn('ScrapingDashboard', 'Failed to connect WebSocket - real-time updates disabled', error)
+      logger.warn(
+        'ScrapingDashboard',
+        'Failed to connect WebSocket - real-time updates disabled',
+        error
+      )
       // WebSocket failure should not block the application
     }
   }
@@ -161,13 +169,13 @@ export function ScrapingDashboard() {
       const [statsResponse, healthResponse, logsResponse] = await Promise.all([
         fetch('/api/enhanced-scrape'),
         fetch('/api/system-health'),
-        fetch('/api/error-logs?limit=50')
+        fetch('/api/error-logs?limit=50'),
       ])
 
       const [statsData, healthData, logsData] = await Promise.all([
         statsResponse.json(),
         healthResponse.json(),
-        logsResponse.json()
+        logsResponse.json(),
       ])
 
       if (statsData.success) {
@@ -193,7 +201,7 @@ export function ScrapingDashboard() {
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(`Critical Alert: ${alert.title}`, {
         body: alert.message,
-        icon: '/favicon.ico'
+        icon: '/favicon.ico',
       })
     }
   }
@@ -207,7 +215,7 @@ export function ScrapingDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'initialize' }),
       })
-      
+
       const data = await response.json()
       if (data.success) {
         await fetchData()
@@ -232,7 +240,7 @@ export function ScrapingDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'shutdown' }),
       })
-      
+
       const data = await response.json()
       if (data.success) {
         setStats(null)
@@ -282,7 +290,7 @@ export function ScrapingDashboard() {
             <input
               type="checkbox"
               checked={autoRefresh}
-              onChange={(e) => setAutoRefresh(e.target.checked)}
+              onChange={e => setAutoRefresh(e.target.checked)}
               className="rounded"
             />
             <span className="text-sm">Auto-refresh</span>
@@ -341,9 +349,7 @@ export function ScrapingDashboard() {
 
           <Card className="p-4">
             <h3 className="text-sm font-medium text-gray-500">Avg Processing Time</h3>
-            <p className="text-2xl font-bold">
-              {formatDuration(stats.averageProcessingTime)}
-            </p>
+            <p className="text-2xl font-bold">{formatDuration(stats.averageProcessingTime)}</p>
           </Card>
 
           <Card className="p-4">
@@ -420,11 +426,7 @@ export function ScrapingDashboard() {
           <Button
             onClick={() => {
               // Add multiple test jobs
-              const testUrls = [
-                'https://example.com',
-                'https://test.com',
-                'https://demo.com',
-              ]
+              const testUrls = ['https://example.com', 'https://test.com', 'https://demo.com']
               fetch('/api/enhanced-scrape', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

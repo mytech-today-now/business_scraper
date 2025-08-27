@@ -50,7 +50,7 @@ export enum AuditEventType {
   BACKUP_CREATED = 'BACKUP_CREATED',
   BACKUP_RESTORED = 'BACKUP_RESTORED',
   MAINTENANCE_STARTED = 'MAINTENANCE_STARTED',
-  MAINTENANCE_COMPLETED = 'MAINTENANCE_COMPLETED'
+  MAINTENANCE_COMPLETED = 'MAINTENANCE_COMPLETED',
 }
 
 // Audit event severity levels
@@ -58,7 +58,7 @@ export enum AuditSeverity {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
+  CRITICAL = 'CRITICAL',
 }
 
 // Audit event interface
@@ -116,42 +116,44 @@ export class AuditService {
       }
 
       // Insert audit event into database
-      await auditPool.query(`
+      await auditPool.query(
+        `
         INSERT INTO audit_log (
           event_type, severity, user_id, session_id, ip_address, user_agent,
           resource, action, details, encrypted_details, timestamp, correlation_id,
           gdpr_relevant, ccpa_relevant, soc2_relevant
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-      `, [
-        event.eventType,
-        event.severity,
-        event.userId,
-        event.sessionId,
-        event.ipAddress,
-        event.userAgent,
-        event.resource,
-        event.action,
-        this.encryptSensitiveData ? null : JSON.stringify(event.details),
-        this.encryptSensitiveData ? JSON.stringify(encryptedDetails) : null,
-        event.timestamp,
-        event.correlationId,
-        event.complianceFlags?.gdprRelevant || false,
-        event.complianceFlags?.ccpaRelevant || false,
-        event.complianceFlags?.soc2Relevant || true // Default to SOC 2 relevant
-      ])
+      `,
+        [
+          event.eventType,
+          event.severity,
+          event.userId,
+          event.sessionId,
+          event.ipAddress,
+          event.userAgent,
+          event.resource,
+          event.action,
+          this.encryptSensitiveData ? null : JSON.stringify(event.details),
+          this.encryptSensitiveData ? JSON.stringify(encryptedDetails) : null,
+          event.timestamp,
+          event.correlationId,
+          event.complianceFlags?.gdprRelevant || false,
+          event.complianceFlags?.ccpaRelevant || false,
+          event.complianceFlags?.soc2Relevant || true, // Default to SOC 2 relevant
+        ]
+      )
 
       // Log to application logger as well
       logger.info('Audit', `${event.eventType}: ${event.action || 'N/A'}`, {
         userId: event.userId,
         severity: event.severity,
-        correlationId: event.correlationId
+        correlationId: event.correlationId,
       })
 
       // Send critical events to monitoring system
       if (event.severity === AuditSeverity.CRITICAL) {
         await this.sendCriticalAlert(event)
       }
-
     } catch (error) {
       logger.error('Audit', 'Failed to log audit event', error)
       // Don't throw error to avoid breaking the main application flow
@@ -238,18 +240,19 @@ export class AuditService {
         userAgent: row.user_agent,
         resource: row.resource,
         action: row.action,
-        details: row.encrypted_details 
-          ? JSON.parse(encryptionService.decrypt(JSON.parse(row.encrypted_details)).toString('utf8'))
+        details: row.encrypted_details
+          ? JSON.parse(
+              encryptionService.decrypt(JSON.parse(row.encrypted_details)).toString('utf8')
+            )
           : JSON.parse(row.details || '{}'),
         timestamp: row.timestamp,
         correlationId: row.correlation_id,
         complianceFlags: {
           gdprRelevant: row.gdpr_relevant,
           ccpaRelevant: row.ccpa_relevant,
-          soc2Relevant: row.soc2_relevant
-        }
+          soc2Relevant: row.soc2_relevant,
+        },
       }))
-
     } catch (error) {
       logger.error('Audit', 'Failed to query audit events', error)
       throw new Error('Failed to retrieve audit events')
@@ -261,8 +264,17 @@ export class AuditService {
    */
   private containsSensitiveData(data: Record<string, any>): boolean {
     const sensitiveKeys = [
-      'password', 'email', 'phone', 'ssn', 'credit_card', 'bank_account',
-      'api_key', 'token', 'secret', 'private_key', 'address'
+      'password',
+      'email',
+      'phone',
+      'ssn',
+      'credit_card',
+      'bank_account',
+      'api_key',
+      'token',
+      'secret',
+      'private_key',
+      'address',
     ]
 
     const dataString = JSON.stringify(data).toLowerCase()
@@ -279,7 +291,7 @@ export class AuditService {
       logger.error('Audit Critical', `Critical audit event: ${event.eventType}`, {
         userId: event.userId,
         details: event.details,
-        correlationId: event.correlationId
+        correlationId: event.correlationId,
       })
     } catch (error) {
       logger.error('Audit', 'Failed to send critical alert', error)
@@ -301,8 +313,9 @@ export class AuditService {
   }> {
     try {
       const relevantField = `${complianceType}_relevant`
-      
-      const result = await auditPool.query(`
+
+      const result = await auditPool.query(
+        `
         SELECT 
           COUNT(*) as total_events,
           event_type,
@@ -313,12 +326,14 @@ export class AuditService {
         AND ${relevantField} = true
         GROUP BY event_type, severity
         ORDER BY event_count DESC
-      `, [startDate, endDate])
+      `,
+        [startDate, endDate]
+      )
 
       const criticalEvents = await this.queryEvents({
         startDate,
         endDate,
-        severity: AuditSeverity.CRITICAL
+        severity: AuditSeverity.CRITICAL,
       })
 
       const eventsByType: Record<string, number> = {}
@@ -335,9 +350,8 @@ export class AuditService {
         totalEvents,
         eventsByType,
         criticalEvents,
-        summary
+        summary,
       }
-
     } catch (error) {
       logger.error('Audit', 'Failed to generate compliance report', error)
       throw new Error('Failed to generate compliance report')
@@ -355,7 +369,12 @@ export const AuditUtils = {
   /**
    * Log user authentication event
    */
-  logAuth: async (eventType: AuditEventType, userId: string, details: Record<string, any>, request?: any) => {
+  logAuth: async (
+    eventType: AuditEventType,
+    userId: string,
+    details: Record<string, any>,
+    request?: any
+  ) => {
     await auditService.logEvent({
       eventType,
       severity: eventType.includes('FAILED') ? AuditSeverity.HIGH : AuditSeverity.MEDIUM,
@@ -367,15 +386,20 @@ export const AuditUtils = {
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
   },
 
   /**
    * Log data access event
    */
-  logDataAccess: async (action: string, resource: string, userId: string, details: Record<string, any>) => {
+  logDataAccess: async (
+    action: string,
+    resource: string,
+    userId: string,
+    details: Record<string, any>
+  ) => {
     await auditService.logEvent({
       eventType: AuditEventType.DATA_ACCESSED,
       severity: AuditSeverity.LOW,
@@ -387,15 +411,19 @@ export const AuditUtils = {
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
   },
 
   /**
    * Log compliance event
    */
-  logCompliance: async (eventType: AuditEventType, userId: string, details: Record<string, any>) => {
+  logCompliance: async (
+    eventType: AuditEventType,
+    userId: string,
+    details: Record<string, any>
+  ) => {
     await auditService.logEvent({
       eventType,
       severity: AuditSeverity.MEDIUM,
@@ -405,8 +433,8 @@ export const AuditUtils = {
       complianceFlags: {
         gdprRelevant: eventType.includes('DSAR') || eventType.includes('CONSENT'),
         ccpaRelevant: eventType.includes('CCPA') || eventType.includes('OPT_OUT'),
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
-  }
+  },
 }

@@ -1,537 +1,804 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UX/UI ToDo - Business Scraper Application</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .category {
-            background: white;
-            margin-bottom: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .category-header {
-            background: #2c3e50;
-            color: white;
-            padding: 15px 20px;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-        .issue {
-            border-bottom: 1px solid #e9ecef;
-            padding: 20px;
-        }
-        .issue:last-child {
-            border-bottom: none;
-        }
-        .issue-title {
-            color: #e74c3c;
-            font-size: 1.1em;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .issue-meta {
-            display: flex;
-            gap: 15px;
-            margin: 10px 0;
-            font-size: 0.9em;
-        }
-        .meta-item {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        .priority-high { background: #ffebee; color: #c62828; }
-        .priority-medium { background: #fff3e0; color: #ef6c00; }
-        .priority-low { background: #e8f5e8; color: #2e7d32; }
-        .severity-critical { background: #ffcdd2; color: #d32f2f; }
-        .severity-high { background: #ffe0b2; color: #f57c00; }
-        .severity-medium { background: #f3e5f5; color: #7b1fa2; }
-        .severity-low { background: #e1f5fe; color: #0277bd; }
-        .prompt-section {
-            background: #f8f9fa;
-            border-left: 4px solid #28a745;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 0 4px 4px 0;
-        }
-        .prompt-title {
-            color: #28a745;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .prompt-text {
-            font-family: 'Monaco', 'Menlo', monospace;
-            background: white;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #dee2e6;
-            white-space: pre-wrap;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .stat-label {
-            color: #6c757d;
-            margin-top: 5px;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .category {
+        background: white;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .category-header {
+        background: #2c3e50;
+        color: white;
+        padding: 15px 20px;
+        font-size: 1.2em;
+        font-weight: 600;
+      }
+      .issue {
+        border-bottom: 1px solid #e9ecef;
+        padding: 20px;
+      }
+      .issue:last-child {
+        border-bottom: none;
+      }
+      .issue-title {
+        color: #e74c3c;
+        font-size: 1.1em;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .issue-meta {
+        display: flex;
+        gap: 15px;
+        margin: 10px 0;
+        font-size: 0.9em;
+      }
+      .meta-item {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+      .priority-high {
+        background: #ffebee;
+        color: #c62828;
+      }
+      .priority-medium {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+      .priority-low {
+        background: #e8f5e8;
+        color: #2e7d32;
+      }
+      .severity-critical {
+        background: #ffcdd2;
+        color: #d32f2f;
+      }
+      .severity-high {
+        background: #ffe0b2;
+        color: #f57c00;
+      }
+      .severity-medium {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
+      .severity-low {
+        background: #e1f5fe;
+        color: #0277bd;
+      }
+      .prompt-section {
+        background: #f8f9fa;
+        border-left: 4px solid #28a745;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 0 4px 4px 0;
+      }
+      .prompt-title {
+        color: #28a745;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .prompt-text {
+        font-family: 'Monaco', 'Menlo', monospace;
+        background: white;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        white-space: pre-wrap;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .stat-number {
+        font-size: 2em;
+        font-weight: bold;
+        color: #667eea;
+      }
+      .stat-label {
+        color: #6c757d;
+        margin-top: 5px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header class="header">
-        <h1>🎨 UX/UI Enhancement Roadmap</h1>
-        <p>Business Scraper Application v3.10.1 - Structured Augment AI Prompts for UX/UI Improvements</p>
-        <p><strong>Generated:</strong> <span id="current-date"></span></p>
+      <h1>🎨 UX/UI Enhancement Roadmap</h1>
+      <p>
+        Business Scraper Application v3.10.1 - Structured Augment AI Prompts for UX/UI Improvements
+      </p>
+      <p><strong>Generated:</strong> <span id="current-date"></span></p>
     </header>
 
     <section class="stats">
-        <div class="stat-card">
-            <div class="stat-number">24</div>
-            <div class="stat-label">Total Issues</div>
+      <div class="stat-card">
+        <div class="stat-number">24</div>
+        <div class="stat-label">Total Issues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">8</div>
+        <div class="stat-label">High Priority</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">6</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">85%</div>
+        <div class="stat-label">Coverage Target</div>
+      </div>
+    </section>
+
+    <section class="category">
+      <header class="category-header">🧭 Navigation & User Flow</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Missing Breadcrumb Navigation</h2>
+        <p>
+          <strong>Description:</strong> The application lacks breadcrumb navigation, making it
+          difficult for users to understand their current location and navigate back to previous
+          sections.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Navigate through Configuration → Scraping → Results.
+          No breadcrumb trail is visible.
+        </p>
+        <p>
+          <strong>Expected:</strong> Clear breadcrumb navigation showing current path and allowing
+          quick navigation to parent sections.
+        </p>
+        <p>
+          <strong>Actual:</strong> No breadcrumb navigation exists, users must rely on tab
+          switching.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-medium">Severity: Medium</span>
+          <span class="meta-item">Labels: Navigation, UX</span>
         </div>
-        <div class="stat-card">
-            <div class="stat-number">8</div>
-            <div class="stat-label">High Priority</div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
+          <div class="prompt-text">
+            PROMPT: "Create a comprehensive breadcrumb navigation system for the Business Scraper
+            application. Implementation requirements: 1. Create Breadcrumb component in
+            src/view/components/ui/Breadcrumb.tsx 2. Add TypeScript interfaces for breadcrumb items
+            and navigation state 3. Integrate breadcrumb into App.tsx header with current path
+            tracking 4. Implement navigation history in ConfigContext.tsx 5. Add breadcrumb styling
+            with Tailwind CSS matching existing design 6. Include hover states, click handlers, and
+            keyboard navigation 7. Add ARIA labels for accessibility compliance Technical
+            specifications: - Use React Context for navigation state management - Implement
+            breadcrumb item interface with label, path, and active state - Add separator styling and
+            responsive behavior for mobile - Include unit tests for breadcrumb functionality -
+            Ensure WCAG 2.1 AA compliance for screen readers"
+          </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number">6</div>
-            <div class="stat-label">Categories</div>
+      </article>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: No Back Button Functionality</h2>
+        <p>
+          <strong>Description:</strong> Users cannot easily navigate back to previous steps or
+          sections without using the tab navigation.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Complete configuration and move to scraping. Try to
+          go back to modify settings.
+        </p>
+        <p>
+          <strong>Expected:</strong> Clear back button or navigation controls to return to previous
+          steps.
+        </p>
+        <p>
+          <strong>Actual:</strong> Users must click tabs or start over to modify previous
+          configurations.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-medium">Priority: Medium</span>
+          <span class="meta-item severity-medium">Severity: Medium</span>
+          <span class="meta-item">Labels: Navigation, UX</span>
         </div>
-        <div class="stat-card">
-            <div class="stat-number">85%</div>
-            <div class="stat-label">Coverage Target</div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
+          <div class="prompt-text">
+            PROMPT: "Implement comprehensive back button functionality with navigation history for
+            the Business Scraper application. Implementation steps: 1. Enhance ConfigContext.tsx
+            with navigation history tracking 2. Create BackButton component in
+            src/view/components/ui/BackButton.tsx 3. Add navigation state management with history
+            stack 4. Implement data preservation during navigation 5. Add back button to relevant
+            pages (scraping panel, results view) 6. Style consistently with existing button design
+            system Features to include: - Navigation history stack with state preservation -
+            Conditional back button visibility based on navigation depth - Data loss prevention with
+            confirmation dialogs - Keyboard shortcut support (Alt+Left Arrow) - Loading states
+            during navigation transitions - Accessibility features with proper ARIA labels Technical
+            requirements: - Use React Context for navigation state - Implement history stack with
+            maximum depth limit - Add TypeScript interfaces for navigation state - Include unit
+            tests for navigation functionality - Ensure mobile-friendly touch targets"
+          </div>
         </div>
+      </article>
     </section>
 
     <section class="category">
-        <header class="category-header">
-            🧭 Navigation & User Flow
-        </header>
-        
-        <article class="issue">
-            <h2 class="issue-title">Issue: Missing Breadcrumb Navigation</h2>
-            <p><strong>Description:</strong> The application lacks breadcrumb navigation, making it difficult for users to understand their current location and navigate back to previous sections.</p>
-            <p><strong>Steps to Reproduce:</strong> Navigate through Configuration → Scraping → Results. No breadcrumb trail is visible.</p>
-            <p><strong>Expected:</strong> Clear breadcrumb navigation showing current path and allowing quick navigation to parent sections.</p>
-            <p><strong>Actual:</strong> No breadcrumb navigation exists, users must rely on tab switching.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-medium">Severity: Medium</span>
-                <span class="meta-item">Labels: Navigation, UX</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
-                <div class="prompt-text">PROMPT: "Create a comprehensive breadcrumb navigation system for the Business Scraper application.
+      <header class="category-header">📝 Forms & Input Validation</header>
 
-Implementation requirements:
-1. Create Breadcrumb component in src/view/components/ui/Breadcrumb.tsx
-2. Add TypeScript interfaces for breadcrumb items and navigation state
-3. Integrate breadcrumb into App.tsx header with current path tracking
-4. Implement navigation history in ConfigContext.tsx
-5. Add breadcrumb styling with Tailwind CSS matching existing design
-6. Include hover states, click handlers, and keyboard navigation
-7. Add ARIA labels for accessibility compliance
-
-Technical specifications:
-- Use React Context for navigation state management
-- Implement breadcrumb item interface with label, path, and active state
-- Add separator styling and responsive behavior for mobile
-- Include unit tests for breadcrumb functionality
-- Ensure WCAG 2.1 AA compliance for screen readers"</div>
-            </div>
-        </article>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: No Back Button Functionality</h2>
-            <p><strong>Description:</strong> Users cannot easily navigate back to previous steps or sections without using the tab navigation.</p>
-            <p><strong>Steps to Reproduce:</strong> Complete configuration and move to scraping. Try to go back to modify settings.</p>
-            <p><strong>Expected:</strong> Clear back button or navigation controls to return to previous steps.</p>
-            <p><strong>Actual:</strong> Users must click tabs or start over to modify previous configurations.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-medium">Priority: Medium</span>
-                <span class="meta-item severity-medium">Severity: Medium</span>
-                <span class="meta-item">Labels: Navigation, UX</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
-                <div class="prompt-text">PROMPT: "Implement comprehensive back button functionality with navigation history for the Business Scraper application.
-
-Implementation steps:
-1. Enhance ConfigContext.tsx with navigation history tracking
-2. Create BackButton component in src/view/components/ui/BackButton.tsx
-3. Add navigation state management with history stack
-4. Implement data preservation during navigation
-5. Add back button to relevant pages (scraping panel, results view)
-6. Style consistently with existing button design system
-
-Features to include:
-- Navigation history stack with state preservation
-- Conditional back button visibility based on navigation depth
-- Data loss prevention with confirmation dialogs
-- Keyboard shortcut support (Alt+Left Arrow)
-- Loading states during navigation transitions
-- Accessibility features with proper ARIA labels
-
-Technical requirements:
-- Use React Context for navigation state
-- Implement history stack with maximum depth limit
-- Add TypeScript interfaces for navigation state
-- Include unit tests for navigation functionality
-- Ensure mobile-friendly touch targets"</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            📝 Forms & Input Validation
-        </header>
-        
-        <article class="issue">
-            <h2 class="issue-title">Issue: Missing Real-time Form Validation</h2>
-            <p><strong>Description:</strong> Form inputs lack real-time validation feedback, causing users to discover errors only after submission.</p>
-            <p><strong>Steps to Reproduce:</strong> Enter invalid data in any form field (API configuration, custom industry creation). No immediate feedback is provided.</p>
-            <p><strong>Expected:</strong> Real-time validation with immediate visual feedback for invalid inputs.</p>
-            <p><strong>Actual:</strong> Validation only occurs on form submission, poor user experience.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-high">Severity: High</span>
-                <span class="meta-item">Labels: Forms, Validation, UX</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
-                <div class="prompt-text">PROMPT: "Implement comprehensive real-time form validation system for the Business Scraper application.
-
-Core validation system:
-1. Enhance Input component in src/view/components/ui/Input.tsx
-2. Create validation hooks in src/utils/validation.ts
-3. Add visual feedback states (error, success, warning, loading)
-4. Implement field-level and form-level validation
-5. Add debounced validation for performance optimization
-
-Validation features:
-- Real-time validation with immediate feedback
-- Custom validation rules and patterns
-- Async validation for API-dependent checks
-- Field dependency validation (conditional fields)
-- Form submission validation with error aggregation
-- Validation state persistence across navigation
-
-Components to update:
-- ApiConfigurationPage.tsx with API key validation
-- IndustryModal.tsx with industry creation validation
-- All form inputs throughout the application
-- Add ValidationMessage component for consistent error display
-
-Technical specifications:
-- Use React Hook Form or similar for form state management
-- Implement Zod schemas for validation rules
-- Add TypeScript interfaces for validation states
-- Include accessibility features (ARIA attributes, screen reader support)
-- Add unit tests for all validation scenarios
-- Ensure mobile-friendly error message display"</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            ♿ Accessibility & Inclusive Design
-        </header>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Missing ARIA Labels and Descriptions</h2>
-            <p><strong>Description:</strong> Interactive elements lack proper ARIA labels, descriptions, and roles, making the application difficult to use with screen readers.</p>
-            <p><strong>Steps to Reproduce:</strong> Use a screen reader to navigate the application. Many buttons, inputs, and interactive elements are not properly announced.</p>
-            <p><strong>Expected:</strong> All interactive elements should have proper ARIA labels, descriptions, and roles for screen reader compatibility.</p>
-            <p><strong>Actual:</strong> Limited accessibility support, poor screen reader experience.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-critical">Severity: Critical</span>
-                <span class="meta-item">Labels: Accessibility, A11y, Compliance</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement comprehensive accessibility features for the Business Scraper application. Add ARIA labels, descriptions, and roles to all interactive elements in components like Button.tsx, Input.tsx, CategorySelector.tsx, and ResultsTable.tsx. Create an accessibility utility in `src/utils/accessibility.ts` with helper functions for common ARIA patterns. Ensure proper heading hierarchy, landmark regions, and focus management. Add keyboard navigation support for all interactive elements. Test with screen readers and update documentation in `docs/ACCESSIBILITY_GUIDE.md`.</div>
-            </div>
-        </article>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Poor Keyboard Navigation Support</h2>
-            <p><strong>Description:</strong> The application lacks comprehensive keyboard navigation, making it difficult for users who rely on keyboard-only navigation.</p>
-            <p><strong>Steps to Reproduce:</strong> Try to navigate the entire application using only the keyboard (Tab, Enter, Arrow keys). Many elements are not reachable or functional.</p>
-            <p><strong>Expected:</strong> Full keyboard navigation support with logical tab order and keyboard shortcuts.</p>
-            <p><strong>Actual:</strong> Limited keyboard support, some elements not accessible via keyboard.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-high">Severity: High</span>
-                <span class="meta-item">Labels: Accessibility, Keyboard, UX</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement comprehensive keyboard navigation for the Business Scraper application. Add keyboard event handlers to all interactive components. Create a focus management system in `src/utils/focusManagement.ts` to handle focus trapping in modals and proper focus restoration. Add keyboard shortcuts for common actions (Ctrl+S for save, Esc for close modals). Ensure logical tab order throughout the application. Update Button.tsx, Input.tsx, and modal components to support keyboard navigation. Add visual focus indicators that meet WCAG contrast requirements.</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            📱 Layout & Responsive Design
-        </header>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Inconsistent Mobile Experience</h2>
-            <p><strong>Description:</strong> The application's mobile experience is inconsistent with poor touch targets, overlapping elements, and difficult navigation on small screens.</p>
-            <p><strong>Steps to Reproduce:</strong> Access the application on mobile devices or resize browser to mobile viewport. Observe layout issues, small touch targets, and navigation difficulties.</p>
-            <p><strong>Expected:</strong> Consistent, mobile-optimized experience with appropriate touch targets and responsive layouts.</p>
-            <p><strong>Actual:</strong> Poor mobile experience with usability issues on small screens.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-high">Severity: High</span>
-                <span class="meta-item">Labels: Mobile, Responsive, UX</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Optimize the Business Scraper application for mobile devices. Review and update all components for mobile-first responsive design. Increase touch target sizes to minimum 44px in Button.tsx and interactive elements. Implement mobile-specific navigation patterns in App.tsx header. Add responsive breakpoints to CategorySelector.tsx grid layout and ResultsTable.tsx for horizontal scrolling. Create mobile-optimized modals and overlays. Test on various device sizes and update Tailwind CSS classes for better mobile experience. Document mobile design patterns in `docs/MOBILE_DESIGN_GUIDE.md`.</div>
-            </div>
-        </article>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Table Overflow on Small Screens</h2>
-            <p><strong>Description:</strong> The ResultsTable component doesn't handle small screen sizes well, causing horizontal overflow and poor readability.</p>
-            <p><strong>Steps to Reproduce:</strong> View the results table on a mobile device or narrow browser window. The table overflows horizontally and is difficult to navigate.</p>
-            <p><strong>Expected:</strong> Responsive table design with proper mobile handling (card view, horizontal scroll, or column hiding).</p>
-            <p><strong>Actual:</strong> Table overflows horizontally, poor mobile experience.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-medium">Priority: Medium</span>
-                <span class="meta-item severity-medium">Severity: Medium</span>
-                <span class="meta-item">Labels: Tables, Mobile, Responsive</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement responsive table design for ResultsTable.tsx in the Business Scraper application. Add mobile-first responsive patterns: card view for mobile devices, horizontal scroll with sticky columns for tablets, and column visibility controls for different screen sizes. Create a responsive table utility in `src/utils/responsiveTable.ts`. Add breakpoint-specific layouts and ensure touch-friendly interactions. Implement column prioritization so most important data is always visible. Add proper horizontal scroll indicators and navigation for mobile users.</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            🎨 Styling & Design System
-        </header>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Inconsistent Component Spacing</h2>
-            <p><strong>Description:</strong> Components throughout the application have inconsistent spacing, margins, and padding, creating a disjointed visual experience.</p>
-            <p><strong>Steps to Reproduce:</strong> Navigate through different sections and observe spacing inconsistencies between cards, buttons, inputs, and layout elements.</p>
-            <p><strong>Expected:</strong> Consistent spacing system based on design tokens with predictable visual rhythm.</p>
-            <p><strong>Actual:</strong> Inconsistent spacing creates visual chaos and poor design cohesion.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-medium">Priority: Medium</span>
-                <span class="meta-item severity-medium">Severity: Medium</span>
-                <span class="meta-item">Labels: Design System, Styling, Consistency</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Create a comprehensive spacing system for the Business Scraper application. Define spacing tokens in `src/styles/tokens.css` and update Tailwind configuration in `tailwind.config.js`. Audit all components (Button.tsx, Input.tsx, Card.tsx, CategorySelector.tsx) for consistent spacing usage. Create spacing utility classes and document the spacing scale in `docs/DESIGN_SYSTEM.md`. Implement consistent margin and padding patterns across all components. Ensure visual rhythm and hierarchy through systematic spacing application.</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            ⚡ Performance & Loading States
-        </header>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Missing Progressive Loading for Large Datasets</h2>
-            <p><strong>Description:</strong> The ResultsTable component loads all data at once, causing performance issues and poor user experience with large datasets.</p>
-            <p><strong>Steps to Reproduce:</strong> Scrape a large number of businesses (500+) and observe the table loading behavior. The interface becomes unresponsive during data loading.</p>
-            <p><strong>Expected:</strong> Progressive loading with pagination, virtualization, or lazy loading for better performance.</p>
-            <p><strong>Actual:</strong> All data loads at once, causing performance degradation and poor UX.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-high">Severity: High</span>
-                <span class="meta-item">Labels: Performance, Tables, UX</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement progressive loading and virtualization for the ResultsTable component in the Business Scraper application. Add pagination controls to ResultsTable.tsx with configurable page sizes. Implement virtual scrolling for large datasets using react-window or similar library. Create loading skeletons and progressive data loading in `src/utils/dataLoading.ts`. Add performance monitoring and optimize rendering for large datasets. Ensure smooth scrolling and responsive interactions even with thousands of records. Update the data management layer to support chunked loading.</div>
-            </div>
-        </article>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Inadequate Loading State Feedback</h2>
-            <p><strong>Description:</strong> Loading states throughout the application provide minimal feedback, leaving users uncertain about progress and system status.</p>
-            <p><strong>Steps to Reproduce:</strong> Initiate any long-running operation (scraping, data export, API configuration). Observe the limited loading feedback provided.</p>
-            <p><strong>Expected:</strong> Rich loading states with progress indicators, estimated time, and clear status messages.</p>
-            <p><strong>Actual:</strong> Basic spinners with minimal context about what's happening or how long it will take.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-medium">Priority: Medium</span>
-                <span class="meta-item severity-medium">Severity: Medium</span>
-                <span class="meta-item">Labels: Loading States, UX, Feedback</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Enhance loading states throughout the Business Scraper application. Create a comprehensive LoadingState component in `src/view/components/ui/LoadingState.tsx` with multiple variants (spinner, skeleton, progress bar, step indicator). Add progress tracking to long-running operations in useScraperController.ts. Implement estimated time remaining and detailed status messages. Create loading skeletons for different content types (tables, cards, forms). Update ProcessingWindow.tsx with richer progress visualization. Ensure loading states are accessible and provide meaningful feedback to users.</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            💬 User Feedback & Error Handling
-        </header>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Poor Error Message Clarity</h2>
-            <p><strong>Description:</strong> Error messages throughout the application are technical and don't provide clear guidance for users to resolve issues.</p>
-            <p><strong>Steps to Reproduce:</strong> Trigger various error conditions (invalid API keys, network failures, validation errors). Observe the error messages presented to users.</p>
-            <p><strong>Expected:</strong> Clear, actionable error messages with specific steps for resolution.</p>
-            <p><strong>Actual:</strong> Technical error messages that confuse users and don't provide clear resolution paths.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-high">Priority: High</span>
-                <span class="meta-item severity-high">Severity: High</span>
-                <span class="meta-item">Labels: Error Handling, UX, Communication</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Improve error messaging throughout the Business Scraper application. Create a user-friendly error message system in `src/utils/errorMessages.ts` that translates technical errors into clear, actionable messages. Update error handling in all components to use human-readable messages with specific resolution steps. Add error recovery suggestions and help links. Implement contextual error messages that relate to the user's current task. Create an ErrorMessage component in `src/view/components/ui/ErrorMessage.tsx` with different severity levels and action buttons. Ensure error messages are accessible and properly announced to screen readers.</div>
-            </div>
-        </article>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Missing Success Feedback</h2>
-            <p><strong>Description:</strong> The application lacks clear success feedback for completed actions, leaving users uncertain about whether operations completed successfully.</p>
-            <p><strong>Steps to Reproduce:</strong> Complete various actions (save configuration, export data, add custom industry). Notice the lack of clear success confirmation.</p>
-            <p><strong>Expected:</strong> Clear success feedback with confirmation messages and visual indicators.</p>
-            <p><strong>Actual:</strong> Minimal or no success feedback, users uncertain about operation completion.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-medium">Priority: Medium</span>
-                <span class="meta-item severity-medium">Severity: Medium</span>
-                <span class="meta-item">Labels: Feedback, UX, Success States</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement comprehensive success feedback for the Business Scraper application. Create a SuccessMessage component in `src/view/components/ui/SuccessMessage.tsx` with various display options (toast, inline, modal). Add success states to all user actions (configuration saves, data exports, industry additions). Implement visual success indicators (checkmarks, color changes, animations). Update the toast notification system to provide richer success feedback with action summaries. Ensure success messages are timed appropriately and don't interfere with user workflow. Add success sound effects for accessibility (optional, user-configurable).</div>
-            </div>
-        </article>
-    </section>
-
-    <section class="category">
-        <header class="category-header">
-            📊 Data Display & Tables
-        </header>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: Limited Data Visualization Options</h2>
-            <p><strong>Description:</strong> The application only displays data in table format, missing opportunities for charts, graphs, and visual data insights.</p>
-            <p><strong>Steps to Reproduce:</strong> View scraped business data in the results section. Only table view is available with no visual analytics or charts.</p>
-            <p><strong>Expected:</strong> Multiple data visualization options including charts, graphs, and summary statistics.</p>
-            <p><strong>Actual:</strong> Only table view available, missing visual insights and analytics.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-low">Priority: Low</span>
-                <span class="meta-item severity-low">Severity: Low</span>
-                <span class="meta-item">Labels: Data Visualization, Analytics, Enhancement</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Add data visualization capabilities to the Business Scraper application. Create a DataVisualization component in `src/view/components/DataVisualization.tsx` using a charting library like Chart.js or Recharts. Implement multiple view modes in ResultsTable.tsx: table view, chart view, and summary view. Add industry distribution charts, geographic distribution maps, and contact information completeness metrics. Create a dashboard view with key statistics and visual insights. Ensure charts are accessible with proper ARIA labels and keyboard navigation. Add export options for charts and visualizations.</div>
-            </div>
-        </article>
-
-        <article class="issue">
-            <h2 class="issue-title">Issue: No Advanced Filtering and Search</h2>
-            <p><strong>Description:</strong> The current filtering system is basic and doesn't support advanced search patterns, multiple criteria, or saved filters.</p>
-            <p><strong>Steps to Reproduce:</strong> Try to filter results by multiple criteria simultaneously or search for complex patterns. Current system is limited to basic text search.</p>
-            <p><strong>Expected:</strong> Advanced filtering with multiple criteria, saved filters, and complex search patterns.</p>
-            <p><strong>Actual:</strong> Basic filtering that doesn't meet power user needs for data analysis.</p>
-            <div class="issue-meta">
-                <span class="meta-item priority-medium">Priority: Medium</span>
-                <span class="meta-item severity-low">Severity: Low</span>
-                <span class="meta-item">Labels: Filtering, Search, Power Users</span>
-            </div>
-            <div class="prompt-section">
-                <div class="prompt-title">🔧 Augment AI Prompt:</div>
-                <div class="prompt-text">Implement advanced filtering and search for the Business Scraper application. Create an AdvancedFilter component in `src/view/components/AdvancedFilter.tsx` with multiple criteria support, date ranges, and complex queries. Add saved filter functionality with local storage persistence. Implement full-text search across all business data fields. Create filter presets for common use cases (businesses with emails, specific industries, geographic regions). Add filter history and quick filter chips. Update ResultsTable.tsx to support advanced filtering with visual filter indicators and easy filter removal.</div>
-            </div>
-        </article>
-    </section>
-
-    <footer style="margin-top: 40px; padding: 20px; background: white; border-radius: 8px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h3>📋 Implementation Guidelines for Augment AI in VS Code</h3>
-        <p><strong>Priority Order:</strong> Address Critical and High severity issues first, focusing on accessibility and core UX problems.</p>
-        <p><strong>Augment AI Usage:</strong> Copy the structured prompts directly into Augment AI in VS Code for guided implementation.</p>
-        <p><strong>Testing:</strong> Each fix should include corresponding tests and accessibility validation using @axe-core/playwright.</p>
-        <p><strong>Documentation:</strong> Update relevant documentation and style guides after implementing fixes.</p>
-        <p><strong>Review Process:</strong> All UX/UI changes require design review and user testing validation.</p>
-
-        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px;">
-            <p><strong>🎯 Success Metrics for v3.10.1+:</strong></p>
-            <ul style="list-style: none; padding: 0;">
-                <li>✅ WCAG 2.1 AA compliance achieved (100% accessibility)</li>
-                <li>✅ Mobile usability score > 90 (responsive design)</li>
-                <li>✅ Page load performance < 3 seconds (optimization)</li>
-                <li>✅ User task completion rate > 95% (usability)</li>
-                <li>✅ 85%+ test coverage for all UX components</li>
-                <li>✅ Zero critical UX/UI issues in production</li>
-            </ul>
+      <article class="issue">
+        <h2 class="issue-title">Issue: Missing Real-time Form Validation</h2>
+        <p>
+          <strong>Description:</strong> Form inputs lack real-time validation feedback, causing
+          users to discover errors only after submission.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Enter invalid data in any form field (API
+          configuration, custom industry creation). No immediate feedback is provided.
+        </p>
+        <p>
+          <strong>Expected:</strong> Real-time validation with immediate visual feedback for invalid
+          inputs.
+        </p>
+        <p>
+          <strong>Actual:</strong> Validation only occurs on form submission, poor user experience.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-high">Severity: High</span>
+          <span class="meta-item">Labels: Forms, Validation, UX</span>
         </div>
-
-        <div style="margin-top: 15px; padding: 15px; background: #e8f5e8; border-radius: 6px;">
-            <p><strong>🤖 Augment AI Integration Notes:</strong></p>
-            <p>All prompts in this document are optimized for Augment AI in VS Code. Each prompt includes specific file paths, technical requirements, and implementation steps for efficient AI-assisted development.</p>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
+          <div class="prompt-text">
+            PROMPT: "Implement comprehensive real-time form validation system for the Business
+            Scraper application. Core validation system: 1. Enhance Input component in
+            src/view/components/ui/Input.tsx 2. Create validation hooks in src/utils/validation.ts
+            3. Add visual feedback states (error, success, warning, loading) 4. Implement
+            field-level and form-level validation 5. Add debounced validation for performance
+            optimization Validation features: - Real-time validation with immediate feedback -
+            Custom validation rules and patterns - Async validation for API-dependent checks - Field
+            dependency validation (conditional fields) - Form submission validation with error
+            aggregation - Validation state persistence across navigation Components to update: -
+            ApiConfigurationPage.tsx with API key validation - IndustryModal.tsx with industry
+            creation validation - All form inputs throughout the application - Add ValidationMessage
+            component for consistent error display Technical specifications: - Use React Hook Form
+            or similar for form state management - Implement Zod schemas for validation rules - Add
+            TypeScript interfaces for validation states - Include accessibility features (ARIA
+            attributes, screen reader support) - Add unit tests for all validation scenarios -
+            Ensure mobile-friendly error message display"
+          </div>
         </div>
+      </article>
+    </section>
+
+    <section class="category">
+      <header class="category-header">♿ Accessibility & Inclusive Design</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Missing ARIA Labels and Descriptions</h2>
+        <p>
+          <strong>Description:</strong> Interactive elements lack proper ARIA labels, descriptions,
+          and roles, making the application difficult to use with screen readers.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Use a screen reader to navigate the application. Many
+          buttons, inputs, and interactive elements are not properly announced.
+        </p>
+        <p>
+          <strong>Expected:</strong> All interactive elements should have proper ARIA labels,
+          descriptions, and roles for screen reader compatibility.
+        </p>
+        <p>
+          <strong>Actual:</strong> Limited accessibility support, poor screen reader experience.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-critical">Severity: Critical</span>
+          <span class="meta-item">Labels: Accessibility, A11y, Compliance</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Implement comprehensive accessibility features for the Business Scraper application. Add
+            ARIA labels, descriptions, and roles to all interactive elements in components like
+            Button.tsx, Input.tsx, CategorySelector.tsx, and ResultsTable.tsx. Create an
+            accessibility utility in `src/utils/accessibility.ts` with helper functions for common
+            ARIA patterns. Ensure proper heading hierarchy, landmark regions, and focus management.
+            Add keyboard navigation support for all interactive elements. Test with screen readers
+            and update documentation in `docs/ACCESSIBILITY_GUIDE.md`.
+          </div>
+        </div>
+      </article>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Poor Keyboard Navigation Support</h2>
+        <p>
+          <strong>Description:</strong> The application lacks comprehensive keyboard navigation,
+          making it difficult for users who rely on keyboard-only navigation.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Try to navigate the entire application using only the
+          keyboard (Tab, Enter, Arrow keys). Many elements are not reachable or functional.
+        </p>
+        <p>
+          <strong>Expected:</strong> Full keyboard navigation support with logical tab order and
+          keyboard shortcuts.
+        </p>
+        <p>
+          <strong>Actual:</strong> Limited keyboard support, some elements not accessible via
+          keyboard.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-high">Severity: High</span>
+          <span class="meta-item">Labels: Accessibility, Keyboard, UX</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Implement comprehensive keyboard navigation for the Business Scraper application. Add
+            keyboard event handlers to all interactive components. Create a focus management system
+            in `src/utils/focusManagement.ts` to handle focus trapping in modals and proper focus
+            restoration. Add keyboard shortcuts for common actions (Ctrl+S for save, Esc for close
+            modals). Ensure logical tab order throughout the application. Update Button.tsx,
+            Input.tsx, and modal components to support keyboard navigation. Add visual focus
+            indicators that meet WCAG contrast requirements.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="category">
+      <header class="category-header">📱 Layout & Responsive Design</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Inconsistent Mobile Experience</h2>
+        <p>
+          <strong>Description:</strong> The application's mobile experience is inconsistent with
+          poor touch targets, overlapping elements, and difficult navigation on small screens.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Access the application on mobile devices or resize
+          browser to mobile viewport. Observe layout issues, small touch targets, and navigation
+          difficulties.
+        </p>
+        <p>
+          <strong>Expected:</strong> Consistent, mobile-optimized experience with appropriate touch
+          targets and responsive layouts.
+        </p>
+        <p>
+          <strong>Actual:</strong> Poor mobile experience with usability issues on small screens.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-high">Severity: High</span>
+          <span class="meta-item">Labels: Mobile, Responsive, UX</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Optimize the Business Scraper application for mobile devices. Review and update all
+            components for mobile-first responsive design. Increase touch target sizes to minimum
+            44px in Button.tsx and interactive elements. Implement mobile-specific navigation
+            patterns in App.tsx header. Add responsive breakpoints to CategorySelector.tsx grid
+            layout and ResultsTable.tsx for horizontal scrolling. Create mobile-optimized modals and
+            overlays. Test on various device sizes and update Tailwind CSS classes for better mobile
+            experience. Document mobile design patterns in `docs/MOBILE_DESIGN_GUIDE.md`.
+          </div>
+        </div>
+      </article>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Table Overflow on Small Screens</h2>
+        <p>
+          <strong>Description:</strong> The ResultsTable component doesn't handle small screen sizes
+          well, causing horizontal overflow and poor readability.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> View the results table on a mobile device or narrow
+          browser window. The table overflows horizontally and is difficult to navigate.
+        </p>
+        <p>
+          <strong>Expected:</strong> Responsive table design with proper mobile handling (card view,
+          horizontal scroll, or column hiding).
+        </p>
+        <p><strong>Actual:</strong> Table overflows horizontally, poor mobile experience.</p>
+        <div class="issue-meta">
+          <span class="meta-item priority-medium">Priority: Medium</span>
+          <span class="meta-item severity-medium">Severity: Medium</span>
+          <span class="meta-item">Labels: Tables, Mobile, Responsive</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Implement responsive table design for ResultsTable.tsx in the Business Scraper
+            application. Add mobile-first responsive patterns: card view for mobile devices,
+            horizontal scroll with sticky columns for tablets, and column visibility controls for
+            different screen sizes. Create a responsive table utility in
+            `src/utils/responsiveTable.ts`. Add breakpoint-specific layouts and ensure
+            touch-friendly interactions. Implement column prioritization so most important data is
+            always visible. Add proper horizontal scroll indicators and navigation for mobile users.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="category">
+      <header class="category-header">🎨 Styling & Design System</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Inconsistent Component Spacing</h2>
+        <p>
+          <strong>Description:</strong> Components throughout the application have inconsistent
+          spacing, margins, and padding, creating a disjointed visual experience.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Navigate through different sections and observe
+          spacing inconsistencies between cards, buttons, inputs, and layout elements.
+        </p>
+        <p>
+          <strong>Expected:</strong> Consistent spacing system based on design tokens with
+          predictable visual rhythm.
+        </p>
+        <p>
+          <strong>Actual:</strong> Inconsistent spacing creates visual chaos and poor design
+          cohesion.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-medium">Priority: Medium</span>
+          <span class="meta-item severity-medium">Severity: Medium</span>
+          <span class="meta-item">Labels: Design System, Styling, Consistency</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Create a comprehensive spacing system for the Business Scraper application. Define
+            spacing tokens in `src/styles/tokens.css` and update Tailwind configuration in
+            `tailwind.config.js`. Audit all components (Button.tsx, Input.tsx, Card.tsx,
+            CategorySelector.tsx) for consistent spacing usage. Create spacing utility classes and
+            document the spacing scale in `docs/DESIGN_SYSTEM.md`. Implement consistent margin and
+            padding patterns across all components. Ensure visual rhythm and hierarchy through
+            systematic spacing application.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="category">
+      <header class="category-header">⚡ Performance & Loading States</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Missing Progressive Loading for Large Datasets</h2>
+        <p>
+          <strong>Description:</strong> The ResultsTable component loads all data at once, causing
+          performance issues and poor user experience with large datasets.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Scrape a large number of businesses (500+) and
+          observe the table loading behavior. The interface becomes unresponsive during data
+          loading.
+        </p>
+        <p>
+          <strong>Expected:</strong> Progressive loading with pagination, virtualization, or lazy
+          loading for better performance.
+        </p>
+        <p>
+          <strong>Actual:</strong> All data loads at once, causing performance degradation and poor
+          UX.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-high">Severity: High</span>
+          <span class="meta-item">Labels: Performance, Tables, UX</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Implement progressive loading and virtualization for the ResultsTable component in the
+            Business Scraper application. Add pagination controls to ResultsTable.tsx with
+            configurable page sizes. Implement virtual scrolling for large datasets using
+            react-window or similar library. Create loading skeletons and progressive data loading
+            in `src/utils/dataLoading.ts`. Add performance monitoring and optimize rendering for
+            large datasets. Ensure smooth scrolling and responsive interactions even with thousands
+            of records. Update the data management layer to support chunked loading.
+          </div>
+        </div>
+      </article>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Inadequate Loading State Feedback</h2>
+        <p>
+          <strong>Description:</strong> Loading states throughout the application provide minimal
+          feedback, leaving users uncertain about progress and system status.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Initiate any long-running operation (scraping, data
+          export, API configuration). Observe the limited loading feedback provided.
+        </p>
+        <p>
+          <strong>Expected:</strong> Rich loading states with progress indicators, estimated time,
+          and clear status messages.
+        </p>
+        <p>
+          <strong>Actual:</strong> Basic spinners with minimal context about what's happening or how
+          long it will take.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-medium">Priority: Medium</span>
+          <span class="meta-item severity-medium">Severity: Medium</span>
+          <span class="meta-item">Labels: Loading States, UX, Feedback</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Enhance loading states throughout the Business Scraper application. Create a
+            comprehensive LoadingState component in `src/view/components/ui/LoadingState.tsx` with
+            multiple variants (spinner, skeleton, progress bar, step indicator). Add progress
+            tracking to long-running operations in useScraperController.ts. Implement estimated time
+            remaining and detailed status messages. Create loading skeletons for different content
+            types (tables, cards, forms). Update ProcessingWindow.tsx with richer progress
+            visualization. Ensure loading states are accessible and provide meaningful feedback to
+            users.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="category">
+      <header class="category-header">💬 User Feedback & Error Handling</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Poor Error Message Clarity</h2>
+        <p>
+          <strong>Description:</strong> Error messages throughout the application are technical and
+          don't provide clear guidance for users to resolve issues.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Trigger various error conditions (invalid API keys,
+          network failures, validation errors). Observe the error messages presented to users.
+        </p>
+        <p>
+          <strong>Expected:</strong> Clear, actionable error messages with specific steps for
+          resolution.
+        </p>
+        <p>
+          <strong>Actual:</strong> Technical error messages that confuse users and don't provide
+          clear resolution paths.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-high">Priority: High</span>
+          <span class="meta-item severity-high">Severity: High</span>
+          <span class="meta-item">Labels: Error Handling, UX, Communication</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Improve error messaging throughout the Business Scraper application. Create a
+            user-friendly error message system in `src/utils/errorMessages.ts` that translates
+            technical errors into clear, actionable messages. Update error handling in all
+            components to use human-readable messages with specific resolution steps. Add error
+            recovery suggestions and help links. Implement contextual error messages that relate to
+            the user's current task. Create an ErrorMessage component in
+            `src/view/components/ui/ErrorMessage.tsx` with different severity levels and action
+            buttons. Ensure error messages are accessible and properly announced to screen readers.
+          </div>
+        </div>
+      </article>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Missing Success Feedback</h2>
+        <p>
+          <strong>Description:</strong> The application lacks clear success feedback for completed
+          actions, leaving users uncertain about whether operations completed successfully.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Complete various actions (save configuration, export
+          data, add custom industry). Notice the lack of clear success confirmation.
+        </p>
+        <p>
+          <strong>Expected:</strong> Clear success feedback with confirmation messages and visual
+          indicators.
+        </p>
+        <p>
+          <strong>Actual:</strong> Minimal or no success feedback, users uncertain about operation
+          completion.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-medium">Priority: Medium</span>
+          <span class="meta-item severity-medium">Severity: Medium</span>
+          <span class="meta-item">Labels: Feedback, UX, Success States</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Implement comprehensive success feedback for the Business Scraper application. Create a
+            SuccessMessage component in `src/view/components/ui/SuccessMessage.tsx` with various
+            display options (toast, inline, modal). Add success states to all user actions
+            (configuration saves, data exports, industry additions). Implement visual success
+            indicators (checkmarks, color changes, animations). Update the toast notification system
+            to provide richer success feedback with action summaries. Ensure success messages are
+            timed appropriately and don't interfere with user workflow. Add success sound effects
+            for accessibility (optional, user-configurable).
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="category">
+      <header class="category-header">📊 Data Display & Tables</header>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: Limited Data Visualization Options</h2>
+        <p>
+          <strong>Description:</strong> The application only displays data in table format, missing
+          opportunities for charts, graphs, and visual data insights.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> View scraped business data in the results section.
+          Only table view is available with no visual analytics or charts.
+        </p>
+        <p>
+          <strong>Expected:</strong> Multiple data visualization options including charts, graphs,
+          and summary statistics.
+        </p>
+        <p>
+          <strong>Actual:</strong> Only table view available, missing visual insights and analytics.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-low">Priority: Low</span>
+          <span class="meta-item severity-low">Severity: Low</span>
+          <span class="meta-item">Labels: Data Visualization, Analytics, Enhancement</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Add data visualization capabilities to the Business Scraper application. Create a
+            DataVisualization component in `src/view/components/DataVisualization.tsx` using a
+            charting library like Chart.js or Recharts. Implement multiple view modes in
+            ResultsTable.tsx: table view, chart view, and summary view. Add industry distribution
+            charts, geographic distribution maps, and contact information completeness metrics.
+            Create a dashboard view with key statistics and visual insights. Ensure charts are
+            accessible with proper ARIA labels and keyboard navigation. Add export options for
+            charts and visualizations.
+          </div>
+        </div>
+      </article>
+
+      <article class="issue">
+        <h2 class="issue-title">Issue: No Advanced Filtering and Search</h2>
+        <p>
+          <strong>Description:</strong> The current filtering system is basic and doesn't support
+          advanced search patterns, multiple criteria, or saved filters.
+        </p>
+        <p>
+          <strong>Steps to Reproduce:</strong> Try to filter results by multiple criteria
+          simultaneously or search for complex patterns. Current system is limited to basic text
+          search.
+        </p>
+        <p>
+          <strong>Expected:</strong> Advanced filtering with multiple criteria, saved filters, and
+          complex search patterns.
+        </p>
+        <p>
+          <strong>Actual:</strong> Basic filtering that doesn't meet power user needs for data
+          analysis.
+        </p>
+        <div class="issue-meta">
+          <span class="meta-item priority-medium">Priority: Medium</span>
+          <span class="meta-item severity-low">Severity: Low</span>
+          <span class="meta-item">Labels: Filtering, Search, Power Users</span>
+        </div>
+        <div class="prompt-section">
+          <div class="prompt-title">🔧 Augment AI Prompt:</div>
+          <div class="prompt-text">
+            Implement advanced filtering and search for the Business Scraper application. Create an
+            AdvancedFilter component in `src/view/components/AdvancedFilter.tsx` with multiple
+            criteria support, date ranges, and complex queries. Add saved filter functionality with
+            local storage persistence. Implement full-text search across all business data fields.
+            Create filter presets for common use cases (businesses with emails, specific industries,
+            geographic regions). Add filter history and quick filter chips. Update ResultsTable.tsx
+            to support advanced filtering with visual filter indicators and easy filter removal.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer
+      style="
+        margin-top: 40px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <h3>📋 Implementation Guidelines for Augment AI in VS Code</h3>
+      <p>
+        <strong>Priority Order:</strong> Address Critical and High severity issues first, focusing
+        on accessibility and core UX problems.
+      </p>
+      <p>
+        <strong>Augment AI Usage:</strong> Copy the structured prompts directly into Augment AI in
+        VS Code for guided implementation.
+      </p>
+      <p>
+        <strong>Testing:</strong> Each fix should include corresponding tests and accessibility
+        validation using @axe-core/playwright.
+      </p>
+      <p>
+        <strong>Documentation:</strong> Update relevant documentation and style guides after
+        implementing fixes.
+      </p>
+      <p>
+        <strong>Review Process:</strong> All UX/UI changes require design review and user testing
+        validation.
+      </p>
+
+      <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px">
+        <p><strong>🎯 Success Metrics for v3.10.1+:</strong></p>
+        <ul style="list-style: none; padding: 0">
+          <li>✅ WCAG 2.1 AA compliance achieved (100% accessibility)</li>
+          <li>✅ Mobile usability score > 90 (responsive design)</li>
+          <li>✅ Page load performance < 3 seconds (optimization)</li>
+          <li>✅ User task completion rate > 95% (usability)</li>
+          <li>✅ 85%+ test coverage for all UX components</li>
+          <li>✅ Zero critical UX/UI issues in production</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 15px; padding: 15px; background: #e8f5e8; border-radius: 6px">
+        <p><strong>🤖 Augment AI Integration Notes:</strong></p>
+        <p>
+          All prompts in this document are optimized for Augment AI in VS Code. Each prompt includes
+          specific file paths, technical requirements, and implementation steps for efficient
+          AI-assisted development.
+        </p>
+      </div>
     </footer>
 
     <script>
-        // Set current date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+      // Set current date
+      document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
 
-        // Add issue counter
-        const issues = document.querySelectorAll('.issue');
-        const totalIssues = issues.length;
-        const highPriorityIssues = document.querySelectorAll('.priority-high').length;
+      // Add issue counter
+      const issues = document.querySelectorAll('.issue')
+      const totalIssues = issues.length
+      const highPriorityIssues = document.querySelectorAll('.priority-high').length
 
-        // Update stats
-        document.querySelector('.stat-number').textContent = totalIssues;
-        document.querySelectorAll('.stat-number')[1].textContent = highPriorityIssues;
+      // Update stats
+      document.querySelector('.stat-number').textContent = totalIssues
+      document.querySelectorAll('.stat-number')[1].textContent = highPriorityIssues
     </script>
-</body>
+  </body>
 </html>

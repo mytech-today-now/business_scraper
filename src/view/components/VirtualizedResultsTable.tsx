@@ -20,7 +20,7 @@ import {
   Shield,
   Globe,
   Activity,
-  Monitor
+  Monitor,
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { Button } from './ui/Button'
@@ -31,7 +31,7 @@ import {
   formatAddress,
   formatPhoneNumber,
   formatDate,
-  formatUrl
+  formatUrl,
 } from '@/utils/formatters'
 import { clsx } from 'clsx'
 import toast from 'react-hot-toast'
@@ -39,17 +39,14 @@ import {
   useVirtualScrolling,
   VirtualScrollingFilters,
   VirtualScrollingSortConfig,
-  calculateAILeadScore
+  calculateAILeadScore,
 } from '@/lib/virtualScrollingService'
-import {
-  AILeadScore,
-  AIBadge
-} from '@/lib/aiLeadScoringService'
+import { AILeadScore, AIBadge } from '@/lib/aiLeadScoringService'
 import { logger } from '@/utils/logger'
 import {
   performanceMonitoringService,
   PerformanceMetrics,
-  ScrollMetrics
+  ScrollMetrics,
 } from '@/lib/performanceMonitoringService'
 
 interface VirtualizedResultsTableProps {
@@ -84,7 +81,7 @@ export function VirtualizedResultsTable({
   isExporting = false,
   height = 600,
   initialFilters,
-  initialSort
+  initialSort,
 }: VirtualizedResultsTableProps): JSX.Element {
   // Virtual scrolling service
   const { fetchBusinesses, prefetchNextPage, clearCache } = useVirtualScrolling()
@@ -112,7 +109,7 @@ export function VirtualizedResultsTable({
     location: true,
     quality: true,
     aiScore: true,
-    actions: true
+    actions: true,
   })
 
   // Performance monitoring state
@@ -121,9 +118,11 @@ export function VirtualizedResultsTable({
     position: 0,
     velocity: 0,
     direction: 'none',
-    timestamp: Date.now()
+    timestamp: Date.now(),
   })
-  const [showPerformancePanel, setShowPerformancePanel] = useState(process.env.NODE_ENV === 'development')
+  const [showPerformancePanel, setShowPerformancePanel] = useState(
+    process.env.NODE_ENV === 'development'
+  )
   const [scrollPosition, setScrollPosition] = useState(0)
 
   // Refs
@@ -153,32 +152,35 @@ export function VirtualizedResultsTable({
   /**
    * Record performance metrics using the monitoring service
    */
-  const recordPerformanceMetric = useCallback((operation: string = 'render', additionalData: Partial<PerformanceMetrics> = {}) => {
-    const renderTime = performance.now() - performanceStartTime.current
-    const memoryInfo = (performance as any).memory
-    const componentName = 'VirtualizedResultsTable'
+  const recordPerformanceMetric = useCallback(
+    (operation: string = 'render', additionalData: Partial<PerformanceMetrics> = {}) => {
+      const renderTime = performance.now() - performanceStartTime.current
+      const memoryInfo = (performance as any).memory
+      const componentName = 'VirtualizedResultsTable'
 
-    const metric: PerformanceMetrics = {
-      renderTime,
-      scrollPosition,
-      visibleItemsCount: Math.min(items.length, Math.ceil(height / ROW_HEIGHT)),
-      totalItemsCount: totalCount,
-      memoryUsage: memoryInfo?.usedJSHeapSize,
-      timestamp: Date.now(),
-      componentName,
-      operation,
-      ...additionalData
-    }
+      const metric: PerformanceMetrics = {
+        renderTime,
+        scrollPosition,
+        visibleItemsCount: Math.min(items.length, Math.ceil(height / ROW_HEIGHT)),
+        totalItemsCount: totalCount,
+        memoryUsage: memoryInfo?.usedJSHeapSize,
+        timestamp: Date.now(),
+        componentName,
+        operation,
+        ...additionalData,
+      }
 
-    // Record metric using the service
-    performanceMonitoringService.recordMetric(metric)
+      // Record metric using the service
+      performanceMonitoringService.recordMetric(metric)
 
-    // Update local state for UI display
-    setPerformanceMetrics(prev => {
-      const newMetrics = [...prev, metric]
-      return newMetrics.slice(-100)
-    })
-  }, [scrollPosition, items.length, height, totalCount])
+      // Update local state for UI display
+      setPerformanceMetrics(prev => {
+        const newMetrics = [...prev, metric]
+        return newMetrics.slice(-100)
+      })
+    },
+    [scrollPosition, items.length, height, totalCount]
+  )
 
   /**
    * Load initial data
@@ -202,7 +204,7 @@ export function VirtualizedResultsTable({
 
       const itemsWithAI = result.data.map(business => ({
         business,
-        aiScore: calculateAILeadScore(business)
+        aiScore: calculateAILeadScore(business),
       }))
 
       setItems(itemsWithAI)
@@ -212,14 +214,13 @@ export function VirtualizedResultsTable({
 
       // Record performance metrics
       recordPerformanceMetric('loadInitialData', {
-        scrollVelocity: 0
+        scrollVelocity: 0,
       })
 
       // Prefetch next page
       if (result.pagination.nextCursor) {
         prefetchNextPage(result.pagination.nextCursor, 100, sortConfig, filters)
       }
-
     } catch (error) {
       console.error('Failed to load initial data:', error)
       toast.error('Failed to load business data')
@@ -242,7 +243,7 @@ export function VirtualizedResultsTable({
 
       const newItemsWithAI = result.data.map(business => ({
         business,
-        aiScore: calculateAILeadScore(business)
+        aiScore: calculateAILeadScore(business),
       }))
 
       setItems(prev => [...prev, ...newItemsWithAI])
@@ -251,28 +252,40 @@ export function VirtualizedResultsTable({
 
       // Record performance metrics for loading more items
       recordPerformanceMetric('loadMoreItems', {
-        scrollVelocity: scrollMetrics.velocity
+        scrollVelocity: scrollMetrics.velocity,
       })
 
       // Prefetch next page
       if (result.pagination.nextCursor) {
         prefetchNextPage(result.pagination.nextCursor, 100, sortConfig, filters)
       }
-
     } catch (error) {
       console.error('Failed to load more items:', error)
       toast.error('Failed to load more data')
     } finally {
       setIsLoadingMore(false)
     }
-  }, [fetchBusinesses, prefetchNextPage, hasNextPage, isLoadingMore, nextCursor, sortConfig, filters, recordPerformanceMetric, scrollMetrics.velocity])
+  }, [
+    fetchBusinesses,
+    prefetchNextPage,
+    hasNextPage,
+    isLoadingMore,
+    nextCursor,
+    sortConfig,
+    filters,
+    recordPerformanceMetric,
+    scrollMetrics.velocity,
+  ])
 
   /**
    * Check if item is loaded
    */
-  const isItemLoaded = useCallback((index: number) => {
-    return !!items[index]?.business
-  }, [items])
+  const isItemLoaded = useCallback(
+    (index: number) => {
+      return !!items[index]?.business
+    },
+    [items]
+  )
 
   /**
    * Enhanced scroll handling with performance monitoring
@@ -293,7 +306,7 @@ export function VirtualizedResultsTable({
         position: scrollTop,
         velocity,
         direction,
-        timestamp: now
+        timestamp: now,
       })
 
       setScrollPosition(scrollTop)
@@ -318,7 +331,7 @@ export function VirtualizedResultsTable({
   const handleSort = useCallback((field: VirtualScrollingSortConfig['field']) => {
     setSortConfig(prev => ({
       field,
-      order: prev.field === field && prev.order === 'asc' ? 'desc' : 'asc'
+      order: prev.field === field && prev.order === 'asc' ? 'desc' : 'asc',
     }))
   }, [])
 
@@ -340,14 +353,17 @@ export function VirtualizedResultsTable({
   /**
    * Handle select all
    */
-  const handleSelectAll = useCallback((selected: boolean) => {
-    if (selected) {
-      const allIds = items.map(item => item.business?.id).filter(Boolean) as string[]
-      setSelectedRows(new Set(allIds))
-    } else {
-      setSelectedRows(new Set())
-    }
-  }, [items])
+  const handleSelectAll = useCallback(
+    (selected: boolean) => {
+      if (selected) {
+        const allIds = items.map(item => item.business?.id).filter(Boolean) as string[]
+        setSelectedRows(new Set(allIds))
+      } else {
+        setSelectedRows(new Set())
+      }
+    },
+    [items]
+  )
 
   /**
    * Export selected or all businesses using virtualized export with performance tracking
@@ -363,15 +379,15 @@ export function VirtualizedResultsTable({
         includeHeaders: true,
         filters: filters,
         sorting: sortConfig,
-        batchSize: 1000
+        batchSize: 1000,
       }
 
       const response = await fetch('/api/export/virtualized', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(exportOptions)
+        body: JSON.stringify(exportOptions),
       })
 
       if (!response.ok) {
@@ -382,7 +398,7 @@ export function VirtualizedResultsTable({
 
       // Record export performance
       recordPerformanceMetric('export', {
-        scrollVelocity: 0
+        scrollVelocity: 0,
       })
 
       if (result.success) {
@@ -393,7 +409,6 @@ export function VirtualizedResultsTable({
       } else {
         throw new Error(result.error || 'Export failed')
       }
-
     } catch (error) {
       console.error('Export failed:', error)
       toast.error('Failed to start export')
@@ -430,7 +445,6 @@ export function VirtualizedResultsTable({
             console.log(`Export progress: ${progress.percentage}%`)
           }
         }
-
       } catch (error) {
         console.error('Failed to check export progress:', error)
         clearInterval(pollInterval)
@@ -448,34 +462,48 @@ export function VirtualizedResultsTable({
     return (
       <div className="flex items-center gap-1">
         {/* Overall Score Badge */}
-        <div className={clsx(
-          'px-2 py-1 rounded-full text-xs font-medium',
-          aiScore.rank === 'A' ? 'bg-green-100 text-green-800' :
-          aiScore.rank === 'B' ? 'bg-blue-100 text-blue-800' :
-          aiScore.rank === 'C' ? 'bg-yellow-100 text-yellow-800' :
-          aiScore.rank === 'D' ? 'bg-orange-100 text-orange-800' :
-          'bg-red-100 text-red-800'
-        )}>
+        <div
+          className={clsx(
+            'px-2 py-1 rounded-full text-xs font-medium',
+            aiScore.rank === 'A'
+              ? 'bg-green-100 text-green-800'
+              : aiScore.rank === 'B'
+                ? 'bg-blue-100 text-blue-800'
+                : aiScore.rank === 'C'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : aiScore.rank === 'D'
+                    ? 'bg-orange-100 text-orange-800'
+                    : 'bg-red-100 text-red-800'
+          )}
+        >
           {aiScore.rank} ({aiScore.overallScore})
         </div>
 
         {/* Dynamic Badges */}
         {aiScore.badges.slice(0, 3).map((badge: AIBadge, index) => {
-          const IconComponent = badge.type === 'verified-email' ? Shield :
-                               badge.type === 'active-website' ? Globe :
-                               badge.type === 'complete-profile' ? Award :
-                               Star
+          const IconComponent =
+            badge.type === 'verified-email'
+              ? Shield
+              : badge.type === 'active-website'
+                ? Globe
+                : badge.type === 'complete-profile'
+                  ? Award
+                  : Star
 
           return (
             <IconComponent
               key={index}
               className={clsx(
                 'h-3 w-3',
-                badge.color === 'green' ? 'text-green-600' :
-                badge.color === 'blue' ? 'text-blue-600' :
-                badge.color === 'purple' ? 'text-purple-600' :
-                badge.color === 'orange' ? 'text-orange-600' :
-                'text-gray-600'
+                badge.color === 'green'
+                  ? 'text-green-600'
+                  : badge.color === 'blue'
+                    ? 'text-blue-600'
+                    : badge.color === 'purple'
+                      ? 'text-purple-600'
+                      : badge.color === 'orange'
+                        ? 'text-orange-600'
+                        : 'text-gray-600'
               )}
               title={badge.description}
             />
@@ -490,9 +518,11 @@ export function VirtualizedResultsTable({
           <div
             className={clsx(
               'h-full transition-all duration-300',
-              aiScore.confidence > 0.8 ? 'bg-green-500' :
-              aiScore.confidence > 0.6 ? 'bg-yellow-500' :
-              'bg-red-500'
+              aiScore.confidence > 0.8
+                ? 'bg-green-500'
+                : aiScore.confidence > 0.6
+                  ? 'bg-yellow-500'
+                  : 'bg-red-500'
             )}
             style={{ width: `${aiScore.confidence * 100}%` }}
           />
@@ -504,106 +534,110 @@ export function VirtualizedResultsTable({
   /**
    * Row renderer for virtual list
    */
-  const Row = useCallback(({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const item = items[index]
+  const Row = useCallback(
+    ({ index, style }: { index: number; style: React.CSSProperties }) => {
+      const item = items[index]
 
-    if (!item?.business) {
+      if (!item?.business) {
+        return (
+          <div style={style} className="flex items-center justify-center p-4 border-b">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
+          </div>
+        )
+      }
+
+      const { business, aiScore } = item
+
       return (
-        <div style={style} className="flex items-center justify-center p-4 border-b">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
-        </div>
-      )
-    }
-
-    const { business, aiScore } = item
-
-    return (
-      <div
-        style={style}
-        className={clsx(
-          'flex items-center border-b hover:bg-accent/50 transition-colors group px-4',
-          selectedRows.has(business.id) && 'bg-accent/30'
-        )}
-      >
-        {/* Selection checkbox */}
-        <div className="w-12 flex-shrink-0">
-          <input
-            type="checkbox"
-            checked={selectedRows.has(business.id)}
-            onChange={(e) => handleRowSelect(business.id, e.target.checked)}
-            className="rounded"
-          />
-        </div>
-
-        {/* Business Name */}
-        {visibleColumns.businessName && (
-          <div className="flex-1 min-w-0 px-2">
-            <div className="font-medium text-sm truncate">{formatBusinessName(business.businessName)}</div>
-            <div className="text-xs text-muted-foreground truncate">{business.websiteUrl}</div>
+        <div
+          style={style}
+          className={clsx(
+            'flex items-center border-b hover:bg-accent/50 transition-colors group px-4',
+            selectedRows.has(business.id) && 'bg-accent/30'
+          )}
+        >
+          {/* Selection checkbox */}
+          <div className="w-12 flex-shrink-0">
+            <input
+              type="checkbox"
+              checked={selectedRows.has(business.id)}
+              onChange={e => handleRowSelect(business.id, e.target.checked)}
+              className="rounded"
+            />
           </div>
-        )}
 
-        {/* Industry */}
-        {visibleColumns.industry && (
-          <div className="w-32 flex-shrink-0 px-2">
-            <span className="text-sm">{business.industry}</span>
-          </div>
-        )}
-
-        {/* Contact */}
-        {visibleColumns.contact && (
-          <div className="w-48 flex-shrink-0 px-2">
-            <div className="text-sm">{business.email[0] || 'No email'}</div>
-            <div className="text-xs text-muted-foreground">
-              {business.phone ? formatPhoneNumber(business.phone) : 'No phone'}
+          {/* Business Name */}
+          {visibleColumns.businessName && (
+            <div className="flex-1 min-w-0 px-2">
+              <div className="font-medium text-sm truncate">
+                {formatBusinessName(business.businessName)}
+              </div>
+              <div className="text-xs text-muted-foreground truncate">{business.websiteUrl}</div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Location */}
-        {visibleColumns.location && (
-          <div className="w-40 flex-shrink-0 px-2">
-            <div className="text-sm truncate">{formatAddress(business.address)}</div>
-          </div>
-        )}
+          {/* Industry */}
+          {visibleColumns.industry && (
+            <div className="w-32 flex-shrink-0 px-2">
+              <span className="text-sm">{business.industry}</span>
+            </div>
+          )}
 
-        {/* AI Score */}
-        {visibleColumns.aiScore && aiScore && (
-          <div className="w-32 flex-shrink-0 px-2">
-            {renderAIScoreBadges(aiScore)}
-          </div>
-        )}
+          {/* Contact */}
+          {visibleColumns.contact && (
+            <div className="w-48 flex-shrink-0 px-2">
+              <div className="text-sm">{business.email[0] || 'No email'}</div>
+              <div className="text-xs text-muted-foreground">
+                {business.phone ? formatPhoneNumber(business.phone) : 'No phone'}
+              </div>
+            </div>
+          )}
 
-        {/* Actions */}
-        {visibleColumns.actions && (
-          <div className="w-24 flex-shrink-0 flex items-center gap-1 px-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => onEdit?.(business)}
-            >
-              <Edit className="h-3 w-3" />
-            </Button>
-            {onDelete && (
+          {/* Location */}
+          {visibleColumns.location && (
+            <div className="w-40 flex-shrink-0 px-2">
+              <div className="text-sm truncate">{formatAddress(business.address)}</div>
+            </div>
+          )}
+
+          {/* AI Score */}
+          {visibleColumns.aiScore && aiScore && (
+            <div className="w-32 flex-shrink-0 px-2">{renderAIScoreBadges(aiScore)}</div>
+          )}
+
+          {/* Actions */}
+          {visibleColumns.actions && (
+            <div className="w-24 flex-shrink-0 flex items-center gap-1 px-2">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-destructive hover:text-destructive"
-                onClick={() => onDelete(business.id)}
+                className="h-6 w-6"
+                onClick={() => onEdit?.(business)}
               >
-                <Trash2 className="h-3 w-3" />
+                <Edit className="h-3 w-3" />
               </Button>
-            )}
-          </div>
-        )}
-      </div>
-    )
-  }, [items, selectedRows, visibleColumns, handleRowSelect, onEdit, onDelete, renderAIScoreBadges])
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-destructive hover:text-destructive"
+                  onClick={() => onDelete(business.id)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )
+    },
+    [items, selectedRows, visibleColumns, handleRowSelect, onEdit, onDelete, renderAIScoreBadges]
+  )
 
   const itemCount = hasNextPage ? items.length + 1 : items.length
-  const allSelected = items.length > 0 && items.every(item => item.business && selectedRows.has(item.business.id))
+  const allSelected =
+    items.length > 0 && items.every(item => item.business && selectedRows.has(item.business.id))
 
   return (
     <Card className="w-full">
@@ -640,7 +674,7 @@ export function VirtualizedResultsTable({
             <Input
               placeholder="Search businesses..."
               value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={e => handleSearch(e.target.value)}
               icon={Search}
             />
           </div>
@@ -658,11 +692,11 @@ export function VirtualizedResultsTable({
               <input
                 type="checkbox"
                 checked={allSelected}
-                onChange={(e) => handleSelectAll(e.target.checked)}
+                onChange={e => handleSelectAll(e.target.checked)}
                 className="rounded"
               />
             </div>
-            
+
             {visibleColumns.businessName && (
               <div className="flex-1 px-2">
                 <button
@@ -670,9 +704,12 @@ export function VirtualizedResultsTable({
                   onClick={() => handleSort('businessName')}
                 >
                   Business Name
-                  {sortConfig.field === 'businessName' && (
-                    sortConfig.order === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />
-                  )}
+                  {sortConfig.field === 'businessName' &&
+                    (sortConfig.order === 'asc' ? (
+                      <SortAsc className="h-3 w-3" />
+                    ) : (
+                      <SortDesc className="h-3 w-3" />
+                    ))}
                 </button>
               </div>
             )}
@@ -684,9 +721,12 @@ export function VirtualizedResultsTable({
                   onClick={() => handleSort('industry')}
                 >
                   Industry
-                  {sortConfig.field === 'industry' && (
-                    sortConfig.order === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />
-                  )}
+                  {sortConfig.field === 'industry' &&
+                    (sortConfig.order === 'asc' ? (
+                      <SortAsc className="h-3 w-3" />
+                    ) : (
+                      <SortDesc className="h-3 w-3" />
+                    ))}
                 </button>
               </div>
             )}
@@ -730,7 +770,7 @@ export function VirtualizedResultsTable({
               >
                 {({ onItemsRendered, ref }) => (
                   <List
-                    ref={(list) => {
+                    ref={list => {
                       ref(list)
                       listRef.current = list
                     }}
@@ -777,37 +817,57 @@ export function VirtualizedResultsTable({
 
             {(() => {
               const latest = performanceMetrics[performanceMetrics.length - 1]
-              const avgRenderTime = performanceMetrics.reduce((sum, m) => sum + m.renderTime, 0) / performanceMetrics.length
+              const avgRenderTime =
+                performanceMetrics.reduce((sum, m) => sum + m.renderTime, 0) /
+                performanceMetrics.length
               const maxRenderTime = Math.max(...performanceMetrics.map(m => m.renderTime))
 
               return (
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-xs">
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Latest Render</div>
-                    <div className={clsx(
-                      "font-mono",
-                      latest.renderTime > 16.67 ? "text-red-600" : latest.renderTime > 8 ? "text-yellow-600" : "text-green-600"
-                    )}>
+                    <div
+                      className={clsx(
+                        'font-mono',
+                        latest.renderTime > 16.67
+                          ? 'text-red-600'
+                          : latest.renderTime > 8
+                            ? 'text-yellow-600'
+                            : 'text-green-600'
+                      )}
+                    >
                       {latest.renderTime.toFixed(2)}ms
                     </div>
                   </div>
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Avg Render</div>
-                    <div className={clsx(
-                      "font-mono",
-                      avgRenderTime > 16.67 ? "text-red-600" : avgRenderTime > 8 ? "text-yellow-600" : "text-green-600"
-                    )}>
+                    <div
+                      className={clsx(
+                        'font-mono',
+                        avgRenderTime > 16.67
+                          ? 'text-red-600'
+                          : avgRenderTime > 8
+                            ? 'text-yellow-600'
+                            : 'text-green-600'
+                      )}
+                    >
                       {avgRenderTime.toFixed(2)}ms
                     </div>
                   </div>
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Max Render</div>
-                    <div className={clsx(
-                      "font-mono",
-                      maxRenderTime > 16.67 ? "text-red-600" : maxRenderTime > 8 ? "text-yellow-600" : "text-green-600"
-                    )}>
+                    <div
+                      className={clsx(
+                        'font-mono',
+                        maxRenderTime > 16.67
+                          ? 'text-red-600'
+                          : maxRenderTime > 8
+                            ? 'text-yellow-600'
+                            : 'text-green-600'
+                      )}
+                    >
                       {maxRenderTime.toFixed(2)}ms
                     </div>
                   </div>
@@ -815,7 +875,9 @@ export function VirtualizedResultsTable({
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Memory Usage</div>
                     <div className="font-mono text-blue-600">
-                      {latest.memoryUsage ? `${Math.round(latest.memoryUsage / 1024 / 1024)}MB` : 'N/A'}
+                      {latest.memoryUsage
+                        ? `${Math.round(latest.memoryUsage / 1024 / 1024)}MB`
+                        : 'N/A'}
                     </div>
                   </div>
 
@@ -828,10 +890,16 @@ export function VirtualizedResultsTable({
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Frame Rate</div>
-                    <div className={clsx(
-                      "font-mono",
-                      (latest.frameRate || 0) < 30 ? "text-red-600" : (latest.frameRate || 0) < 50 ? "text-yellow-600" : "text-green-600"
-                    )}>
+                    <div
+                      className={clsx(
+                        'font-mono',
+                        (latest.frameRate || 0) < 30
+                          ? 'text-red-600'
+                          : (latest.frameRate || 0) < 50
+                            ? 'text-yellow-600'
+                            : 'text-green-600'
+                      )}
+                    >
                       {latest.frameRate || 0} fps
                     </div>
                   </div>
@@ -845,45 +913,52 @@ export function VirtualizedResultsTable({
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Visible Items</div>
-                    <div className="font-mono text-gray-800">
-                      {latest.visibleItemsCount}
-                    </div>
+                    <div className="font-mono text-gray-800">{latest.visibleItemsCount}</div>
                   </div>
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Scroll Position</div>
-                    <div className="font-mono text-gray-800">
-                      {scrollPosition.toFixed(0)}px
-                    </div>
+                    <div className="font-mono text-gray-800">{scrollPosition.toFixed(0)}px</div>
                   </div>
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Scroll Direction</div>
-                    <div className={clsx(
-                      "font-mono",
-                      scrollMetrics.direction === 'down' ? "text-blue-600" :
-                      scrollMetrics.direction === 'up' ? "text-green-600" : "text-gray-600"
-                    )}>
+                    <div
+                      className={clsx(
+                        'font-mono',
+                        scrollMetrics.direction === 'down'
+                          ? 'text-blue-600'
+                          : scrollMetrics.direction === 'up'
+                            ? 'text-green-600'
+                            : 'text-gray-600'
+                      )}
+                    >
                       {scrollMetrics.direction}
                     </div>
                   </div>
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Metrics Count</div>
-                    <div className="font-mono text-gray-800">
-                      {performanceMetrics.length}
-                    </div>
+                    <div className="font-mono text-gray-800">{performanceMetrics.length}</div>
                   </div>
 
                   <div className="bg-white p-2 rounded border">
                     <div className="font-medium text-gray-600">Performance Score</div>
-                    <div className={clsx(
-                      "font-mono font-bold",
-                      avgRenderTime < 8 && (latest.frameRate || 0) > 50 ? "text-green-600" :
-                      avgRenderTime < 16.67 && (latest.frameRate || 0) > 30 ? "text-yellow-600" : "text-red-600"
-                    )}>
-                      {avgRenderTime < 8 && (latest.frameRate || 0) > 50 ? "Excellent" :
-                       avgRenderTime < 16.67 && (latest.frameRate || 0) > 30 ? "Good" : "Poor"}
+                    <div
+                      className={clsx(
+                        'font-mono font-bold',
+                        avgRenderTime < 8 && (latest.frameRate || 0) > 50
+                          ? 'text-green-600'
+                          : avgRenderTime < 16.67 && (latest.frameRate || 0) > 30
+                            ? 'text-yellow-600'
+                            : 'text-red-600'
+                      )}
+                    >
+                      {avgRenderTime < 8 && (latest.frameRate || 0) > 50
+                        ? 'Excellent'
+                        : avgRenderTime < 16.67 && (latest.frameRate || 0) > 30
+                          ? 'Good'
+                          : 'Poor'}
                     </div>
                   </div>
                 </div>
@@ -891,8 +966,8 @@ export function VirtualizedResultsTable({
             })()}
 
             <div className="mt-3 text-xs text-gray-500">
-              Performance monitoring is enabled in development mode.
-              Green = Good (&lt;8ms), Yellow = Acceptable (&lt;16.67ms), Red = Slow (&gt;16.67ms)
+              Performance monitoring is enabled in development mode. Green = Good (&lt;8ms), Yellow
+              = Acceptable (&lt;16.67ms), Red = Slow (&gt;16.67ms)
             </div>
           </div>
         )}

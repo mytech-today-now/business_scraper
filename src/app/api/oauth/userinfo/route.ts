@@ -15,43 +15,55 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // Extract access token from Authorization header
     const authHeader = request.headers.get('Authorization')
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return createErrorResponse({
-        error: 'invalid_request',
-        errorDescription: 'Missing or invalid Authorization header',
-      }, 401)
+      return createErrorResponse(
+        {
+          error: 'invalid_request',
+          errorDescription: 'Missing or invalid Authorization header',
+        },
+        401
+      )
     }
 
     const accessToken = authHeader.substring(7) // Remove 'Bearer ' prefix
 
     // Validate access token
     const tokenValidation = tokenService.validateToken(accessToken)
-    
+
     if (!tokenValidation.valid || !tokenValidation.payload) {
-      return createErrorResponse({
-        error: 'invalid_token',
-        errorDescription: 'Invalid or expired access token',
-      }, 401)
+      return createErrorResponse(
+        {
+          error: 'invalid_token',
+          errorDescription: 'Invalid or expired access token',
+        },
+        401
+      )
     }
 
     const payload = tokenValidation.payload
 
     // Verify this is an access token
     if (payload.token_type !== 'access_token') {
-      return createErrorResponse({
-        error: 'invalid_token',
-        errorDescription: 'Token is not an access token',
-      }, 401)
+      return createErrorResponse(
+        {
+          error: 'invalid_token',
+          errorDescription: 'Token is not an access token',
+        },
+        401
+      )
     }
 
     // Check if token has required scopes for userinfo
     const scopes = payload.scope.split(' ')
     if (!scopes.includes('openid') && !scopes.includes('profile')) {
-      return createErrorResponse({
-        error: 'insufficient_scope',
-        errorDescription: 'Token does not have required scope for userinfo',
-      }, 403)
+      return createErrorResponse(
+        {
+          error: 'insufficient_scope',
+          errorDescription: 'Token does not have required scope for userinfo',
+        },
+        403
+      )
     }
 
     // Build user info response based on scopes
@@ -63,7 +75,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (scopes.includes('profile')) {
       // In a real implementation, fetch user data from database
       const userData = getUserData(payload.sub)
-      
+
       if (userData) {
         userInfo.name = userData.name
         userInfo.roles = userData.roles
@@ -81,13 +93,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     logger.info('OAuth', `UserInfo requested for user ${payload.sub}`)
     return NextResponse.json(userInfo)
-
   } catch (error) {
     logger.error('OAuth', 'UserInfo endpoint error', error)
-    return createErrorResponse({
-      error: 'server_error',
-      errorDescription: 'Internal server error',
-    }, 500)
+    return createErrorResponse(
+      {
+        error: 'server_error',
+        errorDescription: 'Internal server error',
+      },
+      500
+    )
   }
 }
 
@@ -100,10 +114,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const accessToken = body.access_token
 
     if (!accessToken) {
-      return createErrorResponse({
-        error: 'invalid_request',
-        errorDescription: 'Missing access_token parameter',
-      }, 400)
+      return createErrorResponse(
+        {
+          error: 'invalid_request',
+          errorDescription: 'Missing access_token parameter',
+        },
+        400
+      )
     }
 
     // Create a new request with Authorization header for reuse
@@ -111,18 +128,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       method: 'GET',
       headers: {
         ...Object.fromEntries(request.headers.entries()),
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     })
 
     return GET(newRequest)
-
   } catch (error) {
     logger.error('OAuth', 'UserInfo POST endpoint error', error)
-    return createErrorResponse({
-      error: 'server_error',
-      errorDescription: 'Internal server error',
-    }, 500)
+    return createErrorResponse(
+      {
+        error: 'server_error',
+        errorDescription: 'Internal server error',
+      },
+      500
+    )
   }
 }
 
@@ -138,13 +157,13 @@ function getUserData(userId: string): {
 } | null {
   // Mock user data - in production, fetch from database
   const users: Record<string, any> = {
-    'admin': {
+    admin: {
       name: 'Administrator',
       email: 'admin@businessscraper.com',
       roles: ['admin'],
       permissions: ['read', 'write', 'admin'],
     },
-    'user': {
+    user: {
       name: 'Regular User',
       email: 'user@businessscraper.com',
       roles: ['user'],
@@ -162,11 +181,13 @@ function getUserData(userId: string): {
     }
   }
 
-  return users[userId] || {
-    name: 'Unknown User',
-    roles: ['user'],
-    permissions: ['read'],
-  }
+  return (
+    users[userId] || {
+      name: 'Unknown User',
+      roles: ['user'],
+      permissions: ['read'],
+    }
+  )
 }
 
 /**

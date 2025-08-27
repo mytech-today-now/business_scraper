@@ -16,7 +16,15 @@ export interface TestLogEntry {
     line?: number
     column?: number
     stack?: string
-    category: 'syntax' | 'async' | 'flaky' | 'dependency' | 'mock' | 'timeout' | 'assertion' | 'unknown'
+    category:
+      | 'syntax'
+      | 'async'
+      | 'flaky'
+      | 'dependency'
+      | 'mock'
+      | 'timeout'
+      | 'assertion'
+      | 'unknown'
     severity: 'critical' | 'high' | 'medium' | 'low'
     retryCount?: number
   }
@@ -74,8 +82,8 @@ export class TestLogger {
         category: this.categorizeError(errorString),
         severity: this.determineSeverity(errorString),
         retryCount: metadata.retryCount || 0,
-        ...metadata
-      }
+        ...metadata,
+      },
     }
 
     this.errorLog.push(logEntry)
@@ -122,7 +130,11 @@ export class TestLogger {
    * Determine error severity
    */
   private determineSeverity(error: string): TestLogEntry['metadata']['severity'] {
-    if (error.includes('ReferenceError') || error.includes('TypeError') || error.includes('SyntaxError')) {
+    if (
+      error.includes('ReferenceError') ||
+      error.includes('TypeError') ||
+      error.includes('SyntaxError')
+    ) {
       return 'critical'
     }
     if (error.includes('timeout') || error.includes('failed to run')) {
@@ -195,9 +207,8 @@ export class TestLogger {
     const totalSuites = stats.length
     const passingSuites = stats.filter(s => s.successRate >= 0.96).length
     const failingSuites = totalSuites - passingSuites
-    const overallSuccessRate = totalSuites > 0 
-      ? stats.reduce((sum, s) => sum + s.successRate, 0) / totalSuites 
-      : 0
+    const overallSuccessRate =
+      totalSuites > 0 ? stats.reduce((sum, s) => sum + s.successRate, 0) / totalSuites : 0
 
     return {
       totalSuites,
@@ -205,7 +216,7 @@ export class TestLogger {
       failingSuites,
       overallSuccessRate,
       criticalErrors: this.getErrorsBySeverity('critical').length,
-      highPriorityErrors: this.getErrorsBySeverity('high').length
+      highPriorityErrors: this.getErrorsBySeverity('high').length,
     }
   }
 
@@ -233,7 +244,7 @@ export class TestLogger {
       mock: this.getErrorsByCategory('mock').length,
       timeout: this.getErrorsByCategory('timeout').length,
       assertion: this.getErrorsByCategory('assertion').length,
-      unknown: this.getErrorsByCategory('unknown').length
+      unknown: this.getErrorsByCategory('unknown').length,
     }
 
     return `
@@ -272,7 +283,9 @@ ${this.generateRecommendations(overall, errorsByCategory)}
     const recommendations: string[] = []
 
     if (overall.overallSuccessRate < 0.95) {
-      recommendations.push('- Overall success rate is below 95% target. Focus on critical and high-priority errors first.')
+      recommendations.push(
+        '- Overall success rate is below 95% target. Focus on critical and high-priority errors first.'
+      )
     }
 
     if (errorsByCategory.syntax > 0) {
@@ -280,11 +293,15 @@ ${this.generateRecommendations(overall, errorsByCategory)}
     }
 
     if (errorsByCategory.dependency > 0) {
-      recommendations.push('- Review import/require statements and ensure all dependencies are properly mocked.')
+      recommendations.push(
+        '- Review import/require statements and ensure all dependencies are properly mocked.'
+      )
     }
 
     if (errorsByCategory.async > 0) {
-      recommendations.push('- Review async/await patterns and ensure proper promise handling in tests.')
+      recommendations.push(
+        '- Review async/await patterns and ensure proper promise handling in tests.'
+      )
     }
 
     if (errorsByCategory.timeout > 0) {
@@ -292,14 +309,18 @@ ${this.generateRecommendations(overall, errorsByCategory)}
     }
 
     if (errorsByCategory.flaky > 0) {
-      recommendations.push('- Implement AutoRetry mechanism for flaky tests and improve test isolation.')
+      recommendations.push(
+        '- Implement AutoRetry mechanism for flaky tests and improve test isolation.'
+      )
     }
 
     if (errorsByCategory.mock > 0) {
       recommendations.push('- Review mock implementations and ensure proper cleanup between tests.')
     }
 
-    return recommendations.length > 0 ? recommendations.join('\n') : '- All tests are performing well!'
+    return recommendations.length > 0
+      ? recommendations.join('\n')
+      : '- All tests are performing well!'
   }
 
   /**

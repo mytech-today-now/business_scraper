@@ -45,11 +45,15 @@ export function withValidation(
       if (schema.body && ['POST', 'PUT', 'PATCH'].includes(request.method)) {
         const bodyValidation = await validateRequestBody(request, schema.body)
         if (bodyValidation.errors.length > 0) {
-          logger.warn('Validation', `Body validation failed for ${pathname} from IP: ${ip}`, bodyValidation.errors)
+          logger.warn(
+            'Validation',
+            `Body validation failed for ${pathname} from IP: ${ip}`,
+            bodyValidation.errors
+          )
           return NextResponse.json(
-            { 
+            {
               error: 'Validation failed',
-              details: bodyValidation.errors
+              details: bodyValidation.errors,
             },
             { status: 400 }
           )
@@ -61,11 +65,15 @@ export function withValidation(
       if (schema.query) {
         const queryValidation = validateQueryParams(request, schema.query)
         if (queryValidation.errors.length > 0) {
-          logger.warn('Validation', `Query validation failed for ${pathname} from IP: ${ip}`, queryValidation.errors)
+          logger.warn(
+            'Validation',
+            `Query validation failed for ${pathname} from IP: ${ip}`,
+            queryValidation.errors
+          )
           return NextResponse.json(
-            { 
+            {
               error: 'Invalid query parameters',
-              details: queryValidation.errors
+              details: queryValidation.errors,
             },
             { status: 400 }
           )
@@ -75,13 +83,9 @@ export function withValidation(
 
       // Call handler with validated data
       return handler(request, validatedData)
-
     } catch (error) {
       logger.error('Validation', `Validation error for ${pathname}`, error)
-      return NextResponse.json(
-        { error: 'Validation error' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Validation error' }, { status: 500 })
     }
   }
 }
@@ -98,7 +102,7 @@ async function validateRequestBody(
 
   try {
     const contentType = request.headers.get('content-type')
-    
+
     if (!contentType?.includes('application/json')) {
       errors.push('Content-Type must be application/json')
       return { data, errors }
@@ -106,7 +110,6 @@ async function validateRequestBody(
 
     const body = await request.json()
     data = validateData(body, rules, errors)
-
   } catch (error) {
     errors.push('Invalid JSON in request body')
   }
@@ -234,7 +237,10 @@ function validateData(
 /**
  * Validate and convert types
  */
-function validateType(value: any, rule: ValidationRule): { valid: boolean; value: any; error?: string } {
+function validateType(
+  value: any,
+  rule: ValidationRule
+): { valid: boolean; value: any; error?: string } {
   if (!rule.type) {
     return { valid: true, value }
   }
@@ -325,30 +331,30 @@ export const commonSchemas = {
       { field: 'query', required: true, type: 'string' as const, minLength: 1, maxLength: 500 },
       { field: 'location', type: 'string' as const, maxLength: 200 },
       { field: 'maxResults', type: 'number' as const, min: 1, max: 10000 },
-      { field: 'industry', type: 'string' as const, maxLength: 100 }
-    ]
+      { field: 'industry', type: 'string' as const, maxLength: 100 },
+    ],
   },
-  
+
   scrape: {
     body: [
       { field: 'url', required: true, type: 'url' as const },
       { field: 'depth', type: 'number' as const, min: 1, max: 5 },
-      { field: 'maxPages', type: 'number' as const, min: 1, max: 50 }
-    ]
+      { field: 'maxPages', type: 'number' as const, min: 1, max: 50 },
+    ],
   },
-  
+
   geocode: {
     body: [
-      { field: 'address', required: true, type: 'string' as const, minLength: 3, maxLength: 500 }
-    ]
+      { field: 'address', required: true, type: 'string' as const, minLength: 3, maxLength: 500 },
+    ],
   },
-  
+
   auth: {
     body: [
       { field: 'username', required: true, type: 'string' as const, minLength: 1, maxLength: 50 },
-      { field: 'password', required: true, type: 'string' as const, minLength: 1, maxLength: 200 }
-    ]
-  }
+      { field: 'password', required: true, type: 'string' as const, minLength: 1, maxLength: 200 },
+    ],
+  },
 }
 
 /**
@@ -358,7 +364,7 @@ export function createValidationErrorResponse(errors: string[]): NextResponse {
   return NextResponse.json(
     {
       error: 'Validation failed',
-      details: errors
+      details: errors,
     },
     { status: 400 }
   )

@@ -21,9 +21,18 @@ import { BusinessRecord } from '@/types/business'
  */
 interface DataManagementRequestData {
   body: {
-    action: 'validate-business' | 'validate-batch' | 'quality-score' | 'enrich-data' |
-           'detect-duplicates' | 'compare-records' | 'execute-retention-policy' |
-           'export-data' | 'import-data' | 'backup-data' | 'restore-data'
+    action:
+      | 'validate-business'
+      | 'validate-batch'
+      | 'quality-score'
+      | 'enrich-data'
+      | 'detect-duplicates'
+      | 'compare-records'
+      | 'execute-retention-policy'
+      | 'export-data'
+      | 'import-data'
+      | 'backup-data'
+      | 'restore-data'
     business?: BusinessRecord
     businesses?: BusinessRecord[]
     businessData?: BusinessRecord
@@ -95,7 +104,10 @@ const dataManagementHandler = withApiSecurity(
           case 'compare-records':
             const { record1, record2 } = params
             if (!record1 || !record2) {
-              return NextResponse.json({ error: 'Both records are required for comparison' }, { status: 400 })
+              return NextResponse.json(
+                { error: 'Both records are required for comparison' },
+                { status: 400 }
+              )
             }
             const similarity = await duplicateDetectionSystem.calculateSimilarity(record1, record2)
             return NextResponse.json({ success: true, similarity })
@@ -111,12 +123,15 @@ const dataManagementHandler = withApiSecurity(
           case 'toggle-retention-policy':
             const { togglePolicyName, enabled } = params
             if (!togglePolicyName || typeof enabled !== 'boolean') {
-              return NextResponse.json({ error: 'Policy name and enabled status are required' }, { status: 400 })
+              return NextResponse.json(
+                { error: 'Policy name and enabled status are required' },
+                { status: 400 }
+              )
             }
             await dataRetentionSystem.togglePolicy(togglePolicyName, enabled)
             return NextResponse.json({
               success: true,
-              message: `Policy ${togglePolicyName} ${enabled ? 'enabled' : 'disabled'}`
+              message: `Policy ${togglePolicyName} ${enabled ? 'enabled' : 'disabled'}`,
             })
 
           case 'export-data':
@@ -127,11 +142,11 @@ const dataManagementHandler = withApiSecurity(
             if (!format) {
               return NextResponse.json({ error: 'Export format is required' }, { status: 400 })
             }
-            const exportResult = await exportService.exportBusinesses(
-              exportBusinesses,
-              format,
-              { filters, sorting, customFields }
-            )
+            const exportResult = await exportService.exportBusinesses(exportBusinesses, format, {
+              filters,
+              sorting,
+              customFields,
+            })
             return NextResponse.json({ success: true, export: exportResult })
 
           case 'cleanup-database':
@@ -144,18 +159,21 @@ const dataManagementHandler = withApiSecurity(
             const cleanupStats = {
               before: beforeStats,
               after: afterStats,
-              removed: Object.keys(beforeStats).reduce((acc, key) => {
-                // Validate key to prevent object injection
-                if (typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
-                  acc[key] = beforeStats[key] - afterStats[key]
-                }
-                return acc
-              }, {} as Record<string, number>)
+              removed: Object.keys(beforeStats).reduce(
+                (acc, key) => {
+                  // Validate key to prevent object injection
+                  if (typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+                    acc[key] = beforeStats[key] - afterStats[key]
+                  }
+                  return acc
+                },
+                {} as Record<string, number>
+              ),
             }
             return NextResponse.json({
               success: true,
               stats: cleanupStats,
-              message: dryRun ? 'Dry run completed' : 'Cleanup completed'
+              message: dryRun ? 'Dry run completed' : 'Cleanup completed',
             })
 
           case 'optimize-database':
@@ -164,7 +182,7 @@ const dataManagementHandler = withApiSecurity(
             return NextResponse.json({
               success: true,
               message: 'Database optimization completed',
-              results: optimizationResults
+              results: optimizationResults,
             })
 
           default:
@@ -172,19 +190,35 @@ const dataManagementHandler = withApiSecurity(
         }
       } catch (error) {
         logger.error('DataManagementAPI', 'Request failed', error)
-        return NextResponse.json({
-          error: 'Internal server error',
-          message: error instanceof Error ? error.message : 'Unknown error'
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            error: 'Internal server error',
+            message: error instanceof Error ? error.message : 'Unknown error',
+          },
+          { status: 500 }
+        )
       }
     },
     {
       body: [
-        { field: 'action', required: true, type: 'string' as const, allowedValues: [
-          'validate-business', 'validate-batch', 'quality-score', 'enrich-data',
-          'detect-duplicates', 'compare-records', 'execute-retention-policy',
-          'toggle-retention-policy', 'export-data', 'cleanup-database', 'optimize-database'
-        ]},
+        {
+          field: 'action',
+          required: true,
+          type: 'string' as const,
+          allowedValues: [
+            'validate-business',
+            'validate-batch',
+            'quality-score',
+            'enrich-data',
+            'detect-duplicates',
+            'compare-records',
+            'execute-retention-policy',
+            'toggle-retention-policy',
+            'export-data',
+            'cleanup-database',
+            'optimize-database',
+          ],
+        },
         { field: 'business', type: 'object' as const },
         { field: 'businesses', type: 'array' as const },
         { field: 'businessData', type: 'object' as const },
@@ -196,12 +230,16 @@ const dataManagementHandler = withApiSecurity(
         { field: 'togglePolicyName', type: 'string' as const, maxLength: 100 },
         { field: 'enabled', type: 'boolean' as const },
         { field: 'exportBusinesses', type: 'array' as const },
-        { field: 'format', type: 'string' as const, allowedValues: ['csv', 'xlsx', 'xls', 'ods', 'pdf', 'json', 'xml', 'vcf', 'sql'] },
+        {
+          field: 'format',
+          type: 'string' as const,
+          allowedValues: ['csv', 'xlsx', 'xls', 'ods', 'pdf', 'json', 'xml', 'vcf', 'sql'],
+        },
         { field: 'filters', type: 'object' as const },
         { field: 'sorting', type: 'object' as const },
         { field: 'customFields', type: 'array' as const },
-        { field: 'dryRun', type: 'boolean' as const }
-      ]
+        { field: 'dryRun', type: 'boolean' as const },
+      ],
     }
   ),
   {
@@ -209,7 +247,7 @@ const dataManagementHandler = withApiSecurity(
     requireCSRF: true,
     rateLimit: 'general',
     validateInput: true,
-    logRequests: true
+    logRequests: true,
   }
 )
 
@@ -242,23 +280,23 @@ async function getCleanupStats() {
         SELECT email FROM businesses
         WHERE email IS NOT NULL AND array_length(email, 1) > 0
         GROUP BY email HAVING COUNT(*) > 1
-      ) duplicates`
+      ) duplicates`,
     },
     {
       name: 'incompleteRecords',
       query: `SELECT COUNT(*) as count FROM businesses
         WHERE business_name IS NULL OR business_name = ''
-           OR (email IS NULL OR array_length(email, 1) = 0) AND phone IS NULL`
+           OR (email IS NULL OR array_length(email, 1) = 0) AND phone IS NULL`,
     },
     {
       name: 'lowConfidenceRecords',
-      query: `SELECT COUNT(*) as count FROM businesses WHERE confidence < 0.3`
+      query: `SELECT COUNT(*) as count FROM businesses WHERE confidence < 0.3`,
     },
     {
       name: 'oldRecords',
       query: `SELECT COUNT(*) as count FROM businesses
-        WHERE scraped_at < NOW() - INTERVAL '1 year'`
-    }
+        WHERE scraped_at < NOW() - INTERVAL '1 year'`,
+    },
   ]
 
   const stats: Record<string, number> = {}
@@ -316,16 +354,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         cleanup: cleanupStats,
         retention: retentionPolicies,
         validation: validationStats,
-        duplicates: duplicateStats
+        duplicates: duplicateStats,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
-
   } catch (error) {
     logger.error('DataManagementAPI', 'GET request failed', error)
-    return NextResponse.json({
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }

@@ -16,18 +16,18 @@ export const oauthConfig: OAuthConfig = {
   introspectionEndpoint: '/api/oauth/introspect',
   revocationEndpoint: '/api/oauth/revoke',
   jwksUri: '/api/oauth/.well-known/jwks.json',
-  
+
   supportedGrantTypes: ['authorization_code', 'refresh_token', 'client_credentials'],
   supportedResponseTypes: ['code'],
   supportedScopes: ['openid', 'profile', 'email', 'read', 'write', 'admin'],
   supportedCodeChallengeMethods: ['S256', 'plain'],
   tokenEndpointAuthMethods: ['client_secret_basic', 'client_secret_post', 'none'],
-  
+
   // Token lifetimes (in seconds)
   accessTokenLifetime: parseInt(process.env.OAUTH_ACCESS_TOKEN_LIFETIME || '3600'), // 1 hour
   refreshTokenLifetime: parseInt(process.env.OAUTH_REFRESH_TOKEN_LIFETIME || '2592000'), // 30 days
   authorizationCodeLifetime: parseInt(process.env.OAUTH_AUTH_CODE_LIFETIME || '600'), // 10 minutes
-  
+
   // Security settings
   requirePkce: process.env.OAUTH_REQUIRE_PKCE === 'true' || true,
   allowPublicClients: process.env.OAUTH_ALLOW_PUBLIC_CLIENTS === 'true' || true,
@@ -40,7 +40,7 @@ export const securityConfig: SecurityConfig = {
   requireHttps: process.env.NODE_ENV === 'production',
   allowedOrigins: process.env.OAUTH_ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
   corsEnabled: true,
-  
+
   rateLimiting: {
     authorization: {
       windowMs: 15 * 60 * 1000, // 15 minutes
@@ -63,7 +63,7 @@ export const securityConfig: SecurityConfig = {
       skipSuccessfulRequests: true,
     },
   },
-  
+
   bruteForceProtection: {
     enabled: true,
     maxAttempts: 5,
@@ -161,7 +161,7 @@ export const oauthDatabaseConfig = {
     scopes: 'oauth_scopes',
     users: 'oauth_users',
   },
-  
+
   // Cleanup intervals (in milliseconds)
   cleanup: {
     expiredTokensInterval: 60 * 60 * 1000, // 1 hour
@@ -174,16 +174,24 @@ export const oauthDatabaseConfig = {
  * Error Messages
  */
 export const oauthErrorMessages = {
-  invalid_request: 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.',
-  invalid_client: 'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method).',
-  invalid_grant: 'The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.',
-  unauthorized_client: 'The authenticated client is not authorized to use this authorization grant type.',
-  unsupported_grant_type: 'The authorization grant type is not supported by the authorization server.',
+  invalid_request:
+    'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.',
+  invalid_client:
+    'Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method).',
+  invalid_grant:
+    'The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.',
+  unauthorized_client:
+    'The authenticated client is not authorized to use this authorization grant type.',
+  unsupported_grant_type:
+    'The authorization grant type is not supported by the authorization server.',
   invalid_scope: 'The requested scope is invalid, unknown, or malformed.',
   access_denied: 'The resource owner or authorization server denied the request.',
-  unsupported_response_type: 'The authorization server does not support obtaining an authorization code using this method.',
-  server_error: 'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
-  temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.',
+  unsupported_response_type:
+    'The authorization server does not support obtaining an authorization code using this method.',
+  server_error:
+    'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
+  temporarily_unavailable:
+    'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.',
 }
 
 /**
@@ -198,7 +206,7 @@ export const discoveryDocument = {
   revocation_endpoint: `${oauthConfig.issuer}${oauthConfig.revocationEndpoint}`,
   jwks_uri: `${oauthConfig.issuer}${oauthConfig.jwksUri}`,
   registration_endpoint: `${oauthConfig.issuer}/api/oauth/register`,
-  
+
   response_types_supported: oauthConfig.supportedResponseTypes,
   grant_types_supported: oauthConfig.supportedGrantTypes,
   subject_types_supported: ['public'],
@@ -206,10 +214,10 @@ export const discoveryDocument = {
   scopes_supported: oauthConfig.supportedScopes,
   token_endpoint_auth_methods_supported: oauthConfig.tokenEndpointAuthMethods,
   code_challenge_methods_supported: oauthConfig.supportedCodeChallengeMethods,
-  
+
   claims_supported: ['sub', 'name', 'email', 'roles', 'permissions'],
   response_modes_supported: ['query', 'fragment'],
-  
+
   service_documentation: `${oauthConfig.issuer}/docs/oauth`,
   ui_locales_supported: ['en'],
 }

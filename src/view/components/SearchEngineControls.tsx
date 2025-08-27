@@ -1,6 +1,6 @@
 /**
  * Search Engine Controls Component
- * 
+ *
  * Provides UI controls for managing search engine state including
  * enabling/disabling engines and showing session status.
  */
@@ -8,15 +8,15 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Search, 
-  ToggleLeft, 
-  ToggleRight, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  Search,
+  ToggleLeft,
+  ToggleRight,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   RefreshCw,
-  Info
+  Info,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
@@ -30,7 +30,9 @@ interface SearchEngineControlsProps {
 /**
  * Search Engine Controls Component
  */
-export function SearchEngineControls({ onEngineStateChange }: SearchEngineControlsProps): JSX.Element {
+export function SearchEngineControls({
+  onEngineStateChange,
+}: SearchEngineControlsProps): JSX.Element {
   const [engines, setEngines] = useState<SearchEngineConfig[]>([])
   const [hasAvailableEngines, setHasAvailableEngines] = useState(true)
 
@@ -40,14 +42,17 @@ export function SearchEngineControls({ onEngineStateChange }: SearchEngineContro
   const loadEngines = () => {
     const allEngines = searchEngineManager.getAllEngines()
     const available = searchEngineManager.hasAvailableEngines()
-    
+
     setEngines(allEngines)
     setHasAvailableEngines(available)
-    
+
     // Notify parent component
     onEngineStateChange?.(allEngines)
-    
-    logger.info('SearchEngineControls', `Loaded ${allEngines.length} engines, ${available ? 'has' : 'no'} available engines`)
+
+    logger.info(
+      'SearchEngineControls',
+      `Loaded ${allEngines.length} engines, ${available ? 'has' : 'no'} available engines`
+    )
   }
 
   /**
@@ -111,19 +116,16 @@ export function SearchEngineControls({ onEngineStateChange }: SearchEngineContro
   }, [])
 
   return (
-    <Card className={`${!hasAvailableEngines ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'}`}>
+    <Card
+      className={`${!hasAvailableEngines ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'}`}
+    >
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Search className="h-5 w-5" />
             <span>Search Engine Management</span>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetAll}
-            className="text-xs"
-          >
+          <Button variant="outline" size="sm" onClick={handleResetAll} className="text-xs">
             <RefreshCw className="h-3 w-3 mr-1" />
             Reset All
           </Button>
@@ -148,7 +150,7 @@ export function SearchEngineControls({ onEngineStateChange }: SearchEngineContro
 
         {/* Engine Controls */}
         <div className="space-y-3">
-          {engines.map((engine) => (
+          {engines.map(engine => (
             <div
               key={engine.id}
               className="flex items-center justify-between p-3 border rounded-md bg-white"
@@ -156,9 +158,7 @@ export function SearchEngineControls({ onEngineStateChange }: SearchEngineContro
               <div className="flex items-center space-x-3">
                 {getEngineStatusIcon(engine)}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900">
-                    {engine.name}
-                  </h4>
+                  <h4 className="text-sm font-medium text-gray-900">{engine.name}</h4>
                   <p className={`text-xs ${getEngineStatusColor(engine)}`}>
                     {getEngineStatusText(engine)}
                   </p>
@@ -179,12 +179,12 @@ export function SearchEngineControls({ onEngineStateChange }: SearchEngineContro
                   onClick={() => handleEngineToggle(engine.id, !engine.enabled)}
                   disabled={engine.isDisabledForSession}
                   className={`p-1 rounded transition-colors ${
-                    engine.isDisabledForSession 
-                      ? 'opacity-50 cursor-not-allowed' 
+                    engine.isDisabledForSession
+                      ? 'opacity-50 cursor-not-allowed'
                       : 'hover:bg-gray-100'
                   }`}
                   title={
-                    engine.isDisabledForSession 
+                    engine.isDisabledForSession
                       ? 'Cannot enable - disabled for current session due to duplicate results'
                       : `${engine.enabled ? 'Disable' : 'Enable'} ${engine.name}`
                   }

@@ -24,7 +24,7 @@ export const POST = withRBAC(
         costPerHour = 50,
         estimatedLeadValue = 100,
         conversionData,
-        format = 'json'
+        format = 'json',
       } = body
 
       // Validate required fields
@@ -52,7 +52,7 @@ export const POST = withRBAC(
         endDate: new Date(endDate),
         costPerHour,
         estimatedLeadValue,
-        conversionData
+        conversionData,
       }
 
       // Generate comprehensive ROI report
@@ -72,9 +72,13 @@ export const POST = withRBAC(
           startDate: input.startDate.toISOString(),
           endDate: input.endDate.toISOString(),
           filename: exportResult.filename,
-          roi: report.metrics.roi
+          roi: report.metrics.roi,
         },
-        context: AuditService.extractContextFromRequest(request, context.user.id, context.sessionId)
+        context: AuditService.extractContextFromRequest(
+          request,
+          context.user.id,
+          context.sessionId
+        ),
       })
 
       logger.info('ROI Export API', 'ROI report exported', {
@@ -82,7 +86,7 @@ export const POST = withRBAC(
         workspaceId,
         format,
         filename: exportResult.filename,
-        roi: report.metrics.roi
+        roi: report.metrics.roi,
       })
 
       // Return file for download
@@ -91,15 +95,12 @@ export const POST = withRBAC(
         headers: {
           'Content-Type': exportResult.mimeType,
           'Content-Disposition': `attachment; filename="${exportResult.filename}"`,
-          'Cache-Control': 'no-cache'
-        }
+          'Cache-Control': 'no-cache',
+        },
       })
     } catch (error) {
       logger.error('ROI Export API', 'Error exporting ROI report', error)
-      return NextResponse.json(
-        { error: 'Failed to export ROI report' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to export ROI report' }, { status: 500 })
     }
   },
   { permissions: ['analytics.view'] }
@@ -117,44 +118,41 @@ export const GET = withRBAC(
             format: 'json',
             description: 'JSON format with complete report data',
             mimeType: 'application/json',
-            extension: '.json'
+            extension: '.json',
           },
           {
             format: 'csv',
             description: 'CSV format with key metrics and trends',
             mimeType: 'text/csv',
-            extension: '.csv'
+            extension: '.csv',
           },
           {
             format: 'pdf',
             description: 'PDF format with formatted report (coming soon)',
             mimeType: 'application/pdf',
             extension: '.pdf',
-            available: false
-          }
+            available: false,
+          },
         ],
         periods: ['day', 'week', 'month', 'quarter', 'year'],
         defaultSettings: {
           costPerHour: 50,
           estimatedLeadValue: 100,
-          period: 'month'
+          period: 'month',
         },
         maxDateRange: {
           days: 365,
-          description: 'Maximum date range is 1 year'
-        }
+          description: 'Maximum date range is 1 year',
+        },
       }
 
       return NextResponse.json({
         success: true,
-        data: exportOptions
+        data: exportOptions,
       })
     } catch (error) {
       logger.error('ROI Export API', 'Error getting export options', error)
-      return NextResponse.json(
-        { error: 'Failed to get export options' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to get export options' }, { status: 500 })
     }
   },
   { permissions: ['analytics.view'] }

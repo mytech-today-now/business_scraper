@@ -20,22 +20,19 @@ async function executeRetention(request: NextRequest) {
 
     // Validate required fields
     if (!policyId) {
-      return NextResponse.json(
-        { error: 'Missing required field: policyId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required field: policyId' }, { status: 400 })
     }
 
     if (dryRun) {
       // For dry run, just check what would be affected
       const status = await dataRetentionService.checkRetentionStatus()
-      
+
       return NextResponse.json({
         success: true,
         dryRun: true,
         policyId,
         message: 'Dry run completed - no data was actually deleted',
-        status
+        status,
       })
     }
 
@@ -51,34 +48,30 @@ async function executeRetention(request: NextRequest) {
       details: {
         policyId,
         recordsAffected: purgeRecord.recordsAffected,
-        purgeRecord
+        purgeRecord,
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Retention Execution API', `Retention policy executed: ${policyId}`, {
       recordsAffected: purgeRecord.recordsAffected,
-      status: purgeRecord.status
+      status: purgeRecord.status,
     })
 
     return NextResponse.json({
       success: true,
       policyId,
       purgeRecord,
-      message: `Retention policy executed successfully. ${purgeRecord.recordsAffected} records affected.`
+      message: `Retention policy executed successfully. ${purgeRecord.recordsAffected} records affected.`,
     })
-
   } catch (error) {
     logger.error('Retention Execution API', 'Failed to execute retention policy', error)
-    return NextResponse.json(
-      { error: 'Failed to execute retention policy' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to execute retention policy' }, { status: 500 })
   }
 }
 
@@ -99,15 +92,11 @@ async function getRetentionStatus(request: NextRequest) {
     return NextResponse.json({
       success: true,
       statuses,
-      dataType: dataType || 'all'
+      dataType: dataType || 'all',
     })
-
   } catch (error) {
     logger.error('Retention Status API', 'Failed to get retention status', error)
-    return NextResponse.json(
-      { error: 'Failed to get retention status' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to get retention status' }, { status: 500 })
   }
 }
 
@@ -126,18 +115,20 @@ async function getUpcomingPurges(request: NextRequest) {
       success: true,
       upcomingPurges,
       days,
-      count: upcomingPurges.length
+      count: upcomingPurges.length,
     })
-
   } catch (error) {
     logger.error('Upcoming Purges API', 'Failed to get upcoming purges', error)
-    return NextResponse.json(
-      { error: 'Failed to get upcoming purges' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to get upcoming purges' }, { status: 500 })
   }
 }
 
 // Apply authentication middleware
-export const POST = withAuth(executeRetention, { required: true, roles: ['admin', 'compliance_officer'] })
-export const GET = withAuth(getRetentionStatus, { required: true, roles: ['admin', 'compliance_officer', 'operator'] })
+export const POST = withAuth(executeRetention, {
+  required: true,
+  roles: ['admin', 'compliance_officer'],
+})
+export const GET = withAuth(getRetentionStatus, {
+  required: true,
+  roles: ['admin', 'compliance_officer', 'operator'],
+})

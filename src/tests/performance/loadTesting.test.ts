@@ -18,10 +18,10 @@ jest.mock('puppeteer', () => ({
       evaluate: jest.fn().mockResolvedValue({}),
       close: jest.fn().mockResolvedValue(undefined),
       setUserAgent: jest.fn().mockResolvedValue(undefined),
-      setViewport: jest.fn().mockResolvedValue(undefined)
+      setViewport: jest.fn().mockResolvedValue(undefined),
     }),
-    close: jest.fn().mockResolvedValue(undefined)
-  })
+    close: jest.fn().mockResolvedValue(undefined),
+  }),
 }))
 
 // Mock WebSocket to prevent browser connection issues
@@ -31,8 +31,8 @@ jest.mock('ws', () => ({
     on: jest.fn(),
     send: jest.fn(),
     close: jest.fn(),
-    readyState: 1
-  }))
+    readyState: 1,
+  })),
 }))
 
 // Mock scraper service to avoid real browser operations
@@ -42,10 +42,10 @@ jest.mock('@/model/scraperService', () => ({
     scrapeWebsite: jest.fn().mockResolvedValue({
       success: true,
       data: { businesses: [] },
-      metadata: { processingTime: 100 }
+      metadata: { processingTime: 100 },
     }),
-    cleanup: jest.fn().mockResolvedValue(undefined)
-  }
+    cleanup: jest.fn().mockResolvedValue(undefined),
+  },
 }))
 
 jest.mock('@/lib/enhancedScrapingEngine', () => ({
@@ -53,9 +53,9 @@ jest.mock('@/lib/enhancedScrapingEngine', () => ({
     scrapeWithRetry: jest.fn().mockResolvedValue({
       success: true,
       data: [],
-      metadata: { attempts: 1 }
-    })
-  }
+      metadata: { attempts: 1 },
+    }),
+  },
 }))
 
 import { scraperService } from '@/model/scraperService'
@@ -91,7 +91,7 @@ class LoadTestRunner {
     minResponseTime: Infinity,
     throughput: 0,
     errorRate: 0,
-    memoryUsage: process.memoryUsage()
+    memoryUsage: process.memoryUsage(),
   }
 
   private responseTimes: number[] = []
@@ -105,7 +105,7 @@ class LoadTestRunner {
 
     // Create user simulation promises
     const userPromises: Promise<void>[] = []
-    
+
     for (let i = 0; i < config.concurrentUsers; i++) {
       const userDelay = (config.rampUpTime / config.concurrentUsers) * i
       userPromises.push(this.simulateUser(config, userDelay))
@@ -116,7 +116,7 @@ class LoadTestRunner {
 
     // Calculate final metrics
     this.calculateFinalMetrics()
-    
+
     logger.info('LoadTest', 'Load test completed', this.metrics)
     return this.metrics
   }
@@ -147,10 +147,9 @@ class LoadTestRunner {
     try {
       // Simulate scraping request
       await scraperService.scrapeWebsite(url, 1, 2)
-      
+
       const responseTime = Date.now() - startTime
       this.recordSuccessfulRequest(responseTime)
-      
     } catch (error) {
       this.metrics.failedRequests++
       logger.error('LoadTest', `Request failed for ${url}`, error)
@@ -160,11 +159,11 @@ class LoadTestRunner {
   private recordSuccessfulRequest(responseTime: number): void {
     this.metrics.successfulRequests++
     this.responseTimes.push(responseTime)
-    
+
     if (responseTime > this.metrics.maxResponseTime) {
       this.metrics.maxResponseTime = responseTime
     }
-    
+
     if (responseTime < this.metrics.minResponseTime) {
       this.metrics.minResponseTime = responseTime
     }
@@ -172,10 +171,10 @@ class LoadTestRunner {
 
   private calculateFinalMetrics(): void {
     const totalDuration = Date.now() - this.startTime
-    
+
     // Calculate average response time
     if (this.responseTimes.length > 0) {
-      this.metrics.averageResponseTime = 
+      this.metrics.averageResponseTime =
         this.responseTimes.reduce((sum, time) => sum + time, 0) / this.responseTimes.length
     }
 
@@ -199,7 +198,7 @@ class LoadTestRunner {
       minResponseTime: Infinity,
       throughput: 0,
       errorRate: 0,
-      memoryUsage: process.memoryUsage()
+      memoryUsage: process.memoryUsage(),
     }
     this.responseTimes = []
   }
@@ -228,11 +227,7 @@ describe('Load Testing for Scraping Operations', () => {
         requestsPerUser: 10,
         rampUpTime: 2000,
         testDuration: 30000,
-        targetUrls: [
-          'https://example.com',
-          'https://test.com',
-          'https://demo.com'
-        ]
+        targetUrls: ['https://example.com', 'https://test.com', 'https://demo.com'],
       }
 
       const metrics = await loadTestRunner.runLoadTest(config)
@@ -254,8 +249,8 @@ describe('Load Testing for Scraping Operations', () => {
           'https://example.com',
           'https://test.com',
           'https://demo.com',
-          'https://sample.com'
-        ]
+          'https://sample.com',
+        ],
       }
 
       const metrics = await loadTestRunner.runLoadTest(config)
@@ -278,8 +273,8 @@ describe('Load Testing for Scraping Operations', () => {
           'https://test.com',
           'https://demo.com',
           'https://sample.com',
-          'https://mock.com'
-        ]
+          'https://mock.com',
+        ],
       }
 
       const metrics = await loadTestRunner.runLoadTest(config)
@@ -315,26 +310,25 @@ describe('Load Testing for Scraping Operations', () => {
 
       expect(jobIds).toHaveLength(20)
       expect(addJobsTime).toBeLessThan(5000) // Should add jobs quickly
-      
+
       // Cleanup
       await enhancedScrapingEngine.shutdown()
     }, 30000)
 
     test('should maintain performance under memory pressure', async () => {
       const initialMemory = process.memoryUsage()
-      
+
       // Create memory pressure by running multiple scraping operations
       const promises: Promise<any>[] = []
-      
+
       for (let i = 0; i < 50; i++) {
         promises.push(
-          scraperService.scrapeWebsite(`https://test${i}.com`, 1, 1)
-            .catch(() => {}) // Ignore errors for this test
+          scraperService.scrapeWebsite(`https://test${i}.com`, 1, 1).catch(() => {}) // Ignore errors for this test
         )
       }
 
       await Promise.allSettled(promises)
-      
+
       const finalMemory = process.memoryUsage()
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed
 
@@ -350,7 +344,7 @@ describe('Load Testing for Scraping Operations', () => {
         requestsPerUser: 5,
         rampUpTime: 3000,
         testDuration: 20000,
-        targetUrls: ['https://example.com']
+        targetUrls: ['https://example.com'],
       }
 
       const metrics = await loadTestRunner.runLoadTest(baselineConfig)
@@ -359,7 +353,7 @@ describe('Load Testing for Scraping Operations', () => {
       expect(metrics.averageResponseTime).toBeLessThan(6000) // 6 seconds
       expect(metrics.errorRate).toBeLessThan(20) // 20% error rate
       expect(metrics.throughput).toBeGreaterThan(0.3) // 0.3 requests/second
-      
+
       // Memory usage should be reasonable
       expect(metrics.memoryUsage.heapUsed).toBeLessThan(200 * 1024 * 1024) // 200MB
     }, 45000)

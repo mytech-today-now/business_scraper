@@ -9,7 +9,19 @@ import React, { useState, useEffect } from 'react'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
-import { Plus, Edit, Trash2, Save, X, Settings, Zap, Eye, CheckCircle, AlertCircle, Download } from 'lucide-react'
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X,
+  Settings,
+  Zap,
+  Eye,
+  CheckCircle,
+  AlertCircle,
+  Download,
+} from 'lucide-react'
 import { ExportTemplate } from '@/utils/exportService'
 import { BusinessRecord } from '@/types/business'
 import { CRMTemplate, CRMPlatform, crmTemplateManager, crmExportService } from '@/utils/crm'
@@ -29,30 +41,30 @@ const CRM_PLATFORMS = [
   {
     platform: 'salesforce' as CRMPlatform,
     name: 'Salesforce',
-    description: 'World\'s #1 CRM platform',
+    description: "World's #1 CRM platform",
     color: 'bg-blue-500',
-    icon: '⚡'
+    icon: '⚡',
   },
   {
     platform: 'hubspot' as CRMPlatform,
     name: 'HubSpot',
     description: 'Inbound marketing & sales platform',
     color: 'bg-orange-500',
-    icon: '🧲'
+    icon: '🧲',
   },
   {
     platform: 'pipedrive' as CRMPlatform,
     name: 'Pipedrive',
     description: 'Sales-focused CRM',
     color: 'bg-green-500',
-    icon: '📊'
-  }
+    icon: '📊',
+  },
 ]
 
-export function CRMExportTemplateManager({ 
-  onTemplateSelect, 
-  onClose, 
-  businessRecords = [] 
+export function CRMExportTemplateManager({
+  onTemplateSelect,
+  onClose,
+  businessRecords = [],
 }: CRMExportTemplateManagerProps): JSX.Element {
   const [activeTab, setActiveTab] = useState<'browse' | 'create' | 'preview'>('browse')
   const [selectedPlatform, setSelectedPlatform] = useState<CRMPlatform | null>(null)
@@ -138,9 +150,9 @@ export function CRMExportTemplateManager({
     setIsLoading(true)
     try {
       const validation = await crmExportService.validateRecords(businessRecords, template)
-      
+
       const message = `Validation Results: ${validation.validCount}/${businessRecords.length} valid records`
-      
+
       if (validation.invalidCount > 0) {
         toast.error(`${message}. ${validation.invalidCount} records have errors.`)
       } else {
@@ -165,12 +177,12 @@ export function CRMExportTemplateManager({
           Select your CRM platform to see optimized export templates
         </p>
       </div>
-      
+
       <div className="grid gap-4">
         {CRM_PLATFORMS.map(platform => {
           const templates = getTemplatesForPlatform(platform.platform)
           return (
-            <Card 
+            <Card
               key={platform.platform}
               className="cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => setSelectedPlatform(platform.platform)}
@@ -178,7 +190,9 @@ export function CRMExportTemplateManager({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 rounded-lg ${platform.color} flex items-center justify-center text-white text-lg`}>
+                    <div
+                      className={`w-10 h-10 rounded-lg ${platform.color} flex items-center justify-center text-white text-lg`}
+                    >
                       {platform.icon}
                     </div>
                     <div>
@@ -212,11 +226,7 @@ export function CRMExportTemplateManager({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedPlatform(null)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setSelectedPlatform(null)}>
               ← Back
             </Button>
             <h3 className="text-lg font-semibold">{platformInfo?.name} Templates</h3>
@@ -231,7 +241,9 @@ export function CRMExportTemplateManager({
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <h4 className="font-semibold">{template.name}</h4>
-                      <span className={`px-2 py-1 text-xs rounded-full ${platformInfo?.color} text-white`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${platformInfo?.color} text-white`}
+                      >
                         {template.platform}
                       </span>
                       <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
@@ -243,7 +255,7 @@ export function CRMExportTemplateManager({
                       {template.fieldMappings.length} fields mapped
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <Button
                       variant="outline"
@@ -254,7 +266,7 @@ export function CRMExportTemplateManager({
                       <Eye className="h-4 w-4 mr-1" />
                       Preview
                     </Button>
-                    
+
                     <Button
                       variant="outline"
                       size="sm"
@@ -264,11 +276,8 @@ export function CRMExportTemplateManager({
                       <CheckCircle className="h-4 w-4 mr-1" />
                       Validate
                     </Button>
-                    
-                    <Button
-                      size="sm"
-                      onClick={() => handleTemplateSelect(template)}
-                    >
+
+                    <Button size="sm" onClick={() => handleTemplateSelect(template)}>
                       <Zap className="h-4 w-4 mr-1" />
                       Use Template
                     </Button>
@@ -298,11 +307,7 @@ export function CRMExportTemplateManager({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setActiveTab('browse')}
-            >
+            <Button variant="outline" size="sm" onClick={() => setActiveTab('browse')}>
               ← Back to Templates
             </Button>
             <h3 className="text-lg font-semibold">Preview: {selectedTemplate.name}</h3>
@@ -318,7 +323,9 @@ export function CRMExportTemplateManager({
                 <div className="text-sm text-gray-600">Total Records</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-green-600">{previewData.preview.length}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {previewData.preview.length}
+                </div>
                 <div className="text-sm text-gray-600">Preview Records</div>
               </div>
               <div>
@@ -326,7 +333,9 @@ export function CRMExportTemplateManager({
                 <div className="text-sm text-gray-600">Errors</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-yellow-600">{previewData.warnings.length}</div>
+                <div className="text-2xl font-bold text-yellow-600">
+                  {previewData.warnings.length}
+                </div>
                 <div className="text-sm text-gray-600">Warnings</div>
               </div>
             </div>
@@ -377,7 +386,9 @@ export function CRMExportTemplateManager({
             <CardContent className="space-y-4">
               {previewData.errors.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-red-600 mb-2">Errors ({previewData.errors.length})</h4>
+                  <h4 className="font-medium text-red-600 mb-2">
+                    Errors ({previewData.errors.length})
+                  </h4>
                   <div className="space-y-1">
                     {previewData.errors.slice(0, 5).map((error: any, index: number) => (
                       <div key={index} className="text-sm text-red-600 bg-red-50 p-2 rounded">
@@ -395,7 +406,9 @@ export function CRMExportTemplateManager({
 
               {previewData.warnings.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-yellow-600 mb-2">Warnings ({previewData.warnings.length})</h4>
+                  <h4 className="font-medium text-yellow-600 mb-2">
+                    Warnings ({previewData.warnings.length})
+                  </h4>
                   <div className="space-y-1">
                     {previewData.warnings.slice(0, 5).map((warning: string, index: number) => (
                       <div key={index} className="text-sm text-yellow-600 bg-yellow-50 p-2 rounded">
@@ -446,10 +459,9 @@ export function CRMExportTemplateManager({
         <div className="border-t p-4 bg-gray-50">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              {businessRecords.length > 0 
+              {businessRecords.length > 0
                 ? `${businessRecords.length} business records available for export`
-                : 'No business records available - preview and validation disabled'
-              }
+                : 'No business records available - preview and validation disabled'}
             </div>
             <div className="flex items-center space-x-2">
               <Button variant="outline" onClick={onClose}>

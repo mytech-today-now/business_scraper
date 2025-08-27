@@ -56,7 +56,7 @@ export interface ContactConfidence {
  * Advanced Contact Information Extractor
  */
 export class ContactExtractor {
-  private emailValidationService: EmailValidationService;
+  private emailValidationService: EmailValidationService
 
   private emailPatterns = [
     // Standard email pattern
@@ -108,7 +108,7 @@ export class ContactExtractor {
   }
 
   constructor() {
-    this.emailValidationService = EmailValidationService.getInstance();
+    this.emailValidationService = EmailValidationService.getInstance()
   }
 
   /**
@@ -312,16 +312,20 @@ export class ContactExtractor {
   private async extractBusinessHours(page: Page): Promise<BusinessHours[]> {
     try {
       const hours = await page.evaluate(() => {
-        const hourElements = document.querySelectorAll('[class*="hours"], [class*="time"], [itemProp*="hours"]')
+        const hourElements = document.querySelectorAll(
+          '[class*="hours"], [class*="time"], [itemProp*="hours"]'
+        )
         const results: BusinessHours[] = []
 
         hourElements.forEach(element => {
           const text = element.textContent?.trim()
           if (text) {
             // Parse business hours (simplified)
-            const dayMatch = text.match(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/i)
+            const dayMatch = text.match(
+              /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/i
+            )
             const timeMatch = text.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi)
-            
+
             if (dayMatch && dayMatch[1] && timeMatch) {
               results.push({
                 day: dayMatch[1],
@@ -355,9 +359,9 @@ export class ContactExtractor {
           const action = form.getAttribute('action') || ''
           const method = form.getAttribute('method') || 'GET'
           const inputs = Array.from(form.querySelectorAll('input, textarea, select'))
-          const fields = inputs.map(input => 
-            input.getAttribute('name') || input.getAttribute('id') || ''
-          ).filter(Boolean)
+          const fields = inputs
+            .map(input => input.getAttribute('name') || input.getAttribute('id') || '')
+            .filter(Boolean)
 
           if (fields.length > 0) {
             results.push({ action, method, fields })
@@ -422,7 +426,8 @@ export class ContactExtractor {
     const addressConfidence = Math.min((contact.addresses?.length || 0) * 0.5, 1.0)
     const businessNameConfidence = contact.businessName ? 0.8 : 0.0
 
-    const overall = (emailConfidence + phoneConfidence + addressConfidence + businessNameConfidence) / 4
+    const overall =
+      (emailConfidence + phoneConfidence + addressConfidence + businessNameConfidence) / 4
 
     return {
       email: emailConfidence,
@@ -493,7 +498,7 @@ export class ContactExtractor {
         validationResults: [],
         overallConfidence: 0,
         validEmailCount: 0,
-        totalEmailCount: 0
+        totalEmailCount: 0,
       }
     }
 
@@ -515,7 +520,7 @@ export class ContactExtractor {
         totalEmails: totalEmailCount,
         validEmails: validEmailCount,
         overallConfidence,
-        bestEmail
+        bestEmail,
       })
 
       return {
@@ -523,7 +528,7 @@ export class ContactExtractor {
         overallConfidence,
         bestEmail,
         validEmailCount,
-        totalEmailCount
+        totalEmailCount,
       }
     } catch (error) {
       logger.error('ContactExtractor', 'Email validation failed', error)
@@ -531,7 +536,7 @@ export class ContactExtractor {
         validationResults: [],
         overallConfidence: 0,
         validEmailCount: 0,
-        totalEmailCount: emails.length
+        totalEmailCount: emails.length,
       }
     }
   }
@@ -540,9 +545,7 @@ export class ContactExtractor {
    * Find the best email from validation results
    */
   private findBestEmail(validationResults: EmailValidationResult[]): string | undefined {
-    const validEmails = validationResults.filter(result =>
-      result.isValid && !result.isDisposable
-    )
+    const validEmails = validationResults.filter(result => result.isValid && !result.isDisposable)
 
     if (validEmails.length === 0) return undefined
 
@@ -569,7 +572,8 @@ export class ContactExtractor {
     if (validResults.length === 0) return 0
 
     // Average confidence of valid emails
-    const avgConfidence = validResults.reduce((sum, result) => sum + result.confidence, 0) / validResults.length
+    const avgConfidence =
+      validResults.reduce((sum, result) => sum + result.confidence, 0) / validResults.length
 
     // Bonus for having multiple valid emails
     const countBonus = Math.min(validResults.length * 5, 20)
@@ -587,7 +591,7 @@ export class ContactExtractor {
       // Medium priority - general emails
       general: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       // Low priority - personal or generic
-      personal: /^(noreply|no-reply|donotreply|test|example)@/i
+      personal: /^(noreply|no-reply|donotreply|test|example)@/i,
     }
 
     return emails

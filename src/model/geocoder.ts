@@ -55,7 +55,7 @@ export class GeocoderService {
     }
 
     const normalizedAddress = this.normalizeAddress(address)
-    
+
     // Check cache first
     if (this.cache.has(normalizedAddress)) {
       logger.info('Geocoder', `Cache hit for address: ${normalizedAddress}`)
@@ -65,13 +65,13 @@ export class GeocoderService {
     try {
       // Try multiple geocoding services with fallback
       const result = await this.geocodeWithFallback(normalizedAddress)
-      
+
       if (result) {
         // Cache successful results
         this.cache.set(normalizedAddress, result)
         logger.info('Geocoder', `Successfully geocoded: ${normalizedAddress}`)
       }
-      
+
       return result
     } catch (error) {
       logger.error('Geocoder', `Failed to geocode address: ${normalizedAddress}`, error)
@@ -217,7 +217,7 @@ export class GeocoderService {
         return await fn()
       } catch (error) {
         lastError = error as Error
-        
+
         if (attempt < this.config.maxRetries) {
           const delay = this.config.retryDelay * Math.pow(2, attempt - 1) // Exponential backoff
           await new Promise(resolve => setTimeout(resolve, delay))

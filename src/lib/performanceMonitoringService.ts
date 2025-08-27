@@ -55,20 +55,20 @@ class PerformanceMonitoringService {
   private frameRateCounters: Map<string, number> = new Map()
   private frameRateTimers: Map<string, number> = new Map()
   private isEnabled: boolean = true
-  
+
   private readonly thresholds: PerformanceThresholds = {
     renderTime: {
       good: 8, // 8ms for smooth 60fps
-      acceptable: 16.67 // 16.67ms for 60fps
+      acceptable: 16.67, // 16.67ms for 60fps
     },
     frameRate: {
       good: 50,
-      acceptable: 30
+      acceptable: 30,
     },
     memoryUsage: {
       warning: 100 * 1024 * 1024, // 100MB
-      critical: 200 * 1024 * 1024  // 200MB
-    }
+      critical: 200 * 1024 * 1024, // 200MB
+    },
   }
 
   /**
@@ -88,11 +88,11 @@ class PerformanceMonitoringService {
     if (!this.isEnabled) return
 
     this.frameRateCounters.set(componentName, 0)
-    
+
     const timer = window.setInterval(() => {
       this.frameRateCounters.set(componentName, 0)
     }, 1000)
-    
+
     this.frameRateTimers.set(componentName, timer)
   }
 
@@ -113,7 +113,7 @@ class PerformanceMonitoringService {
    */
   incrementFrameCount(componentName: string): void {
     if (!this.isEnabled) return
-    
+
     const current = this.frameRateCounters.get(componentName) || 0
     this.frameRateCounters.set(componentName, current + 1)
   }
@@ -137,7 +137,7 @@ class PerformanceMonitoringService {
     }
 
     this.metrics.push(metric)
-    
+
     // Keep only last 1000 metrics to prevent memory bloat
     if (this.metrics.length > 1000) {
       this.metrics = this.metrics.slice(-1000)
@@ -153,7 +153,7 @@ class PerformanceMonitoringService {
         componentName: metric.componentName,
         operation: metric.operation,
         totalItems: metric.totalItemsCount,
-        visibleItems: metric.visibleItemsCount
+        visibleItems: metric.visibleItemsCount,
       })
     }
   }
@@ -164,26 +164,62 @@ class PerformanceMonitoringService {
   private checkPerformanceThresholds(metric: PerformanceMetrics): void {
     // Check render time
     if (metric.renderTime > this.thresholds.renderTime.acceptable) {
-      this.createAlert('critical', 'renderTime', metric.renderTime, this.thresholds.renderTime.acceptable, metric.componentName)
+      this.createAlert(
+        'critical',
+        'renderTime',
+        metric.renderTime,
+        this.thresholds.renderTime.acceptable,
+        metric.componentName
+      )
     } else if (metric.renderTime > this.thresholds.renderTime.good) {
-      this.createAlert('warning', 'renderTime', metric.renderTime, this.thresholds.renderTime.good, metric.componentName)
+      this.createAlert(
+        'warning',
+        'renderTime',
+        metric.renderTime,
+        this.thresholds.renderTime.good,
+        metric.componentName
+      )
     }
 
     // Check frame rate
     if (metric.frameRate !== undefined) {
       if (metric.frameRate < this.thresholds.frameRate.acceptable) {
-        this.createAlert('critical', 'frameRate', metric.frameRate, this.thresholds.frameRate.acceptable, metric.componentName)
+        this.createAlert(
+          'critical',
+          'frameRate',
+          metric.frameRate,
+          this.thresholds.frameRate.acceptable,
+          metric.componentName
+        )
       } else if (metric.frameRate < this.thresholds.frameRate.good) {
-        this.createAlert('warning', 'frameRate', metric.frameRate, this.thresholds.frameRate.good, metric.componentName)
+        this.createAlert(
+          'warning',
+          'frameRate',
+          metric.frameRate,
+          this.thresholds.frameRate.good,
+          metric.componentName
+        )
       }
     }
 
     // Check memory usage
     if (metric.memoryUsage !== undefined) {
       if (metric.memoryUsage > this.thresholds.memoryUsage.critical) {
-        this.createAlert('critical', 'memoryUsage', metric.memoryUsage, this.thresholds.memoryUsage.critical, metric.componentName)
+        this.createAlert(
+          'critical',
+          'memoryUsage',
+          metric.memoryUsage,
+          this.thresholds.memoryUsage.critical,
+          metric.componentName
+        )
       } else if (metric.memoryUsage > this.thresholds.memoryUsage.warning) {
-        this.createAlert('warning', 'memoryUsage', metric.memoryUsage, this.thresholds.memoryUsage.warning, metric.componentName)
+        this.createAlert(
+          'warning',
+          'memoryUsage',
+          metric.memoryUsage,
+          this.thresholds.memoryUsage.warning,
+          metric.componentName
+        )
       }
     }
   }
@@ -191,18 +227,24 @@ class PerformanceMonitoringService {
   /**
    * Create a performance alert
    */
-  private createAlert(type: 'warning' | 'critical', metric: string, value: number, threshold: number, componentName?: string): void {
+  private createAlert(
+    type: 'warning' | 'critical',
+    metric: string,
+    value: number,
+    threshold: number,
+    componentName?: string
+  ): void {
     const alert: PerformanceAlert = {
       type,
       metric,
       value,
       threshold,
       timestamp: Date.now(),
-      componentName
+      componentName,
     }
 
     this.alerts.push(alert)
-    
+
     // Keep only last 100 alerts
     if (this.alerts.length > 100) {
       this.alerts = this.alerts.slice(-100)
@@ -213,7 +255,7 @@ class PerformanceMonitoringService {
    * Get performance metrics
    */
   getMetrics(componentName?: string, limit?: number): PerformanceMetrics[] {
-    let filtered = componentName 
+    let filtered = componentName
       ? this.metrics.filter(m => m.componentName === componentName)
       : this.metrics
 
@@ -228,7 +270,7 @@ class PerformanceMonitoringService {
    * Get performance alerts
    */
   getAlerts(componentName?: string, limit?: number): PerformanceAlert[] {
-    let filtered = componentName 
+    let filtered = componentName
       ? this.alerts.filter(a => a.componentName === componentName)
       : this.alerts
 
@@ -262,7 +304,7 @@ class PerformanceMonitoringService {
         avgFrameRate: 0,
         currentMemoryUsage: 0,
         alertCount: alerts.length,
-        metricsCount: 0
+        metricsCount: 0,
       }
     }
 
@@ -274,10 +316,13 @@ class PerformanceMonitoringService {
       avgRenderTime: renderTimes.reduce((sum, time) => sum + time, 0) / renderTimes.length,
       maxRenderTime: Math.max(...renderTimes),
       minRenderTime: Math.min(...renderTimes),
-      avgFrameRate: frameRates.length > 0 ? frameRates.reduce((sum, rate) => sum + rate, 0) / frameRates.length : 0,
+      avgFrameRate:
+        frameRates.length > 0
+          ? frameRates.reduce((sum, rate) => sum + rate, 0) / frameRates.length
+          : 0,
       currentMemoryUsage: latestMetric.memoryUsage || 0,
       alertCount: alerts.length,
-      metricsCount: metrics.length
+      metricsCount: metrics.length,
     }
   }
 
@@ -302,7 +347,7 @@ class PerformanceMonitoringService {
    */
   getPerformanceScore(componentName?: string): number {
     const stats = this.getStatistics(componentName)
-    
+
     if (stats.metricsCount === 0) return 100
 
     let score = 100

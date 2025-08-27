@@ -12,7 +12,7 @@ describe('SalesforceAdapter', () => {
 
   beforeEach(() => {
     adapter = new SalesforceAdapter()
-    
+
     mockBusinessRecord = {
       id: 'test-1',
       businessName: 'Test Restaurant',
@@ -26,7 +26,7 @@ describe('SalesforceAdapter', () => {
       industry: 'restaurants',
       confidence: 0.85,
       source: 'web',
-      scrapedAt: '2024-01-01T00:00:00.000Z'
+      scrapedAt: '2024-01-01T00:00:00.000Z',
     }
   })
 
@@ -40,7 +40,7 @@ describe('SalesforceAdapter', () => {
 
     it('should provide default template', () => {
       const defaultTemplate = adapter.getDefaultTemplate()
-      
+
       expect(defaultTemplate).toBeDefined()
       expect(defaultTemplate.platform).toBe('salesforce')
       expect(defaultTemplate.id).toBe('salesforce-lead-basic')
@@ -50,7 +50,7 @@ describe('SalesforceAdapter', () => {
   describe('templates', () => {
     it('should have Salesforce Lead template', () => {
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')
-      
+
       expect(leadTemplate).toBeDefined()
       expect(leadTemplate?.name).toBe('Salesforce Lead (Basic)')
       expect(leadTemplate?.exportFormat).toBe('csv')
@@ -59,7 +59,7 @@ describe('SalesforceAdapter', () => {
 
     it('should have Salesforce Account & Contact template', () => {
       const accountTemplate = adapter.templates.find(t => t.id === 'salesforce-account-contact')
-      
+
       expect(accountTemplate).toBeDefined()
       expect(accountTemplate?.name).toBe('Salesforce Account & Contact')
       expect(accountTemplate?.exportFormat).toBe('csv')
@@ -68,7 +68,7 @@ describe('SalesforceAdapter', () => {
     it('should have required field mappings', () => {
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')
       const requiredFields = leadTemplate?.fieldMappings.filter(m => m.required)
-      
+
       expect(requiredFields?.length).toBeGreaterThan(0)
       expect(requiredFields?.some(f => f.targetField === 'Company')).toBe(true)
       expect(requiredFields?.some(f => f.targetField === 'LastName')).toBe(true)
@@ -109,7 +109,7 @@ describe('SalesforceAdapter', () => {
     it('should handle missing business name gracefully', async () => {
       const invalidRecord = { ...mockBusinessRecord, businessName: '' }
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
-      
+
       const result = await adapter.transformRecords([invalidRecord], leadTemplate)
 
       expect(result.summary.invalid).toBe(1)
@@ -122,13 +122,13 @@ describe('SalesforceAdapter', () => {
       const result = await adapter.transformRecords([mockBusinessRecord], leadTemplate)
 
       const transformedRecord = result.validRecords[0]
-      
+
       // Industry should be mapped to Salesforce values
       expect(transformedRecord.Industry).toBe('Food & Beverage')
-      
+
       // Phone should be formatted
       expect(transformedRecord.Phone).toBe('(555) 123-4567')
-      
+
       // Lead source should be mapped
       expect(transformedRecord.LeadSource).toBe('Web')
     })
@@ -145,7 +145,7 @@ describe('SalesforceAdapter', () => {
     it('should return errors for missing required fields', () => {
       const invalidRecord = { ...mockBusinessRecord, businessName: '' }
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
-      
+
       const errors = adapter.validateRecord(invalidRecord, leadTemplate)
 
       expect(errors.length).toBeGreaterThan(0)
@@ -167,8 +167,8 @@ describe('SalesforceAdapter', () => {
           sourceField: 'businessName',
           targetField: 'Custom_Company__c',
           required: true,
-          validation: { required: true, type: 'string' as const }
-        }
+          validation: { required: true, type: 'string' as const },
+        },
       ]
 
       const customTemplate = adapter.createCustomTemplate(
@@ -185,10 +185,7 @@ describe('SalesforceAdapter', () => {
     })
 
     it('should set default values for custom template', () => {
-      const customTemplate = adapter.createCustomTemplate(
-        'Test Template',
-        []
-      )
+      const customTemplate = adapter.createCustomTemplate('Test Template', [])
 
       expect(customTemplate.exportFormat).toBe('csv')
       expect(customTemplate.validation.strictMode).toBe(false)
@@ -205,7 +202,7 @@ describe('SalesforceAdapter', () => {
         { input: 'technology', expected: 'Technology' },
         { input: 'healthcare', expected: 'Healthcare' },
         { input: 'finance', expected: 'Financial Services' },
-        { input: 'unknown', expected: 'Other' }
+        { input: 'unknown', expected: 'Other' },
       ]
 
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
@@ -213,7 +210,7 @@ describe('SalesforceAdapter', () => {
       for (const testCase of testCases) {
         const record = { ...mockBusinessRecord, industry: testCase.input }
         const result = await adapter.transformRecords([record], leadTemplate)
-        
+
         expect(result.validRecords[0].Industry).toBe(testCase.expected)
       }
     })
@@ -225,7 +222,7 @@ describe('SalesforceAdapter', () => {
         { input: '5551234567', expected: '(555) 123-4567' },
         { input: '555-123-4567', expected: '(555) 123-4567' },
         { input: '(555) 123-4567', expected: '(555) 123-4567' },
-        { input: 'invalid', expected: 'invalid' }
+        { input: 'invalid', expected: 'invalid' },
       ]
 
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
@@ -233,7 +230,7 @@ describe('SalesforceAdapter', () => {
       for (const testCase of testPhones) {
         const record = { ...mockBusinessRecord, phone: testCase.input }
         const result = await adapter.transformRecords([record], leadTemplate)
-        
+
         expect(result.validRecords[0].Phone).toBe(testCase.expected)
       }
     })
@@ -243,7 +240,7 @@ describe('SalesforceAdapter', () => {
         { input: 'TEST@EXAMPLE.COM', expected: 'test@example.com' },
         { input: '  test@example.com  ', expected: 'test@example.com' },
         { input: 'invalid-email', expected: '' },
-        { input: '', expected: '' }
+        { input: '', expected: '' },
       ]
 
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
@@ -251,7 +248,7 @@ describe('SalesforceAdapter', () => {
       for (const testCase of testEmails) {
         const record = { ...mockBusinessRecord, email: testCase.input }
         const result = await adapter.transformRecords([record], leadTemplate)
-        
+
         expect(result.validRecords[0].Email).toBe(testCase.expected)
       }
     })
@@ -260,7 +257,7 @@ describe('SalesforceAdapter', () => {
   describe('error handling', () => {
     it('should handle transformation errors gracefully', async () => {
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
-      
+
       // Create a template with a transformer that throws an error
       const errorTemplate = {
         ...leadTemplate,
@@ -268,11 +265,13 @@ describe('SalesforceAdapter', () => {
           {
             sourceField: 'businessName',
             targetField: 'Company',
-            transformer: () => { throw new Error('Test error') },
+            transformer: () => {
+              throw new Error('Test error')
+            },
             required: true,
-            validation: { required: true, type: 'string' as const }
-          }
-        ]
+            validation: { required: true, type: 'string' as const },
+          },
+        ],
       }
 
       const result = await adapter.transformRecords([mockBusinessRecord], errorTemplate)
@@ -284,11 +283,11 @@ describe('SalesforceAdapter', () => {
     it('should continue processing other records when one fails', async () => {
       const records = [
         mockBusinessRecord,
-        { ...mockBusinessRecord, id: 'test-2', businessName: 'Valid Business' }
+        { ...mockBusinessRecord, id: 'test-2', businessName: 'Valid Business' },
       ]
 
       const leadTemplate = adapter.templates.find(t => t.id === 'salesforce-lead-basic')!
-      
+
       // Make first record invalid
       records[0].businessName = ''
 

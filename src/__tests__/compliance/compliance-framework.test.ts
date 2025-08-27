@@ -6,7 +6,8 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals'
 
 // Set up environment variables before importing modules
-process.env.ENCRYPTION_MASTER_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+process.env.ENCRYPTION_MASTER_KEY =
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test'
 
 import { EncryptionService } from '@/lib/compliance/encryption'
@@ -18,11 +19,11 @@ import { DataRetentionService } from '@/lib/compliance/retention'
 const mockPool = {
   query: jest.fn(),
   connect: jest.fn(),
-  end: jest.fn()
+  end: jest.fn(),
 }
 
 jest.mock('pg', () => ({
-  Pool: jest.fn(() => mockPool)
+  Pool: jest.fn(() => mockPool),
 }))
 
 describe('Enterprise Compliance & Security Framework', () => {
@@ -39,7 +40,8 @@ describe('Enterprise Compliance & Security Framework', () => {
 
     beforeEach(() => {
       // Ensure environment variable is set before creating service
-      process.env.ENCRYPTION_MASTER_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+      process.env.ENCRYPTION_MASTER_KEY =
+        '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
       encryptionService = new EncryptionService()
     })
 
@@ -126,8 +128,8 @@ describe('Enterprise Compliance & Security Framework', () => {
         complianceFlags: {
           gdprRelevant: true,
           ccpaRelevant: true,
-          soc2Relevant: true
-        }
+          soc2Relevant: true,
+        },
       }
 
       expect(testEvent.eventType).toBe(AuditEventType.USER_LOGIN)
@@ -187,7 +189,7 @@ describe('Enterprise Compliance & Security Framework', () => {
         purpose: 'Data collection for business scraping',
         dataCategories: ['contact_info', 'business_info'],
         timestamp: new Date(),
-        version: '1.0.0'
+        version: '1.0.0',
       }
 
       expect(consentRecord.consentType).toBe(ConsentType.DATA_COLLECTION)
@@ -216,7 +218,7 @@ describe('Enterprise Compliance & Security Framework', () => {
         autoDelete: true,
         archiveBeforeDelete: true,
         notificationDays: [30, 7, 1],
-        isActive: true
+        isActive: true,
       }
 
       expect(policy.name).toBe('Test Policy')
@@ -258,7 +260,7 @@ describe('Enterprise Compliance & Security Framework', () => {
       const sensitiveData = {
         email: 'test@example.com',
         phone: '+1234567890',
-        businessName: 'Test Business'
+        businessName: 'Test Business',
       }
 
       try {
@@ -283,14 +285,14 @@ describe('Enterprise Compliance & Security Framework', () => {
         userId: 'test-user',
         details: {
           consentType: ConsentType.DATA_COLLECTION,
-          status: ConsentStatus.GRANTED
+          status: ConsentStatus.GRANTED,
         },
         timestamp: new Date(),
         complianceFlags: {
           gdprRelevant: true,
           ccpaRelevant: true,
-          soc2Relevant: true
-        }
+          soc2Relevant: true,
+        },
       }
 
       expect(complianceEvent.eventType).toBe(AuditEventType.CONSENT_GIVEN)

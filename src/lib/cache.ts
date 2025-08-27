@@ -61,9 +61,12 @@ class MemoryCache implements CacheInterface {
     this.defaultTtl = defaultTtl
 
     // Start cleanup interval (every 5 minutes)
-    this.cleanupInterval = setInterval(() => {
-      this.cleanup()
-    }, 5 * 60 * 1000)
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanup()
+      },
+      5 * 60 * 1000
+    )
 
     logger.info('Cache', 'Memory cache initialized', { maxSize, defaultTtl })
   }
@@ -81,10 +84,7 @@ class MemoryCache implements CacheInterface {
         // Record cache miss
         metrics.cacheMisses.inc({ cache_type: 'memory', key_prefix: keyPrefix })
         const duration = (Date.now() - startTime) / 1000
-        metrics.cacheOperationDuration.observe(
-          { operation: 'get', cache_type: 'memory' },
-          duration
-        )
+        metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'memory' }, duration)
         return null
       }
 
@@ -94,28 +94,19 @@ class MemoryCache implements CacheInterface {
         // Record cache miss for expired entry
         metrics.cacheMisses.inc({ cache_type: 'memory', key_prefix: keyPrefix })
         const duration = (Date.now() - startTime) / 1000
-        metrics.cacheOperationDuration.observe(
-          { operation: 'get', cache_type: 'memory' },
-          duration
-        )
+        metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'memory' }, duration)
         return null
       }
 
       // Record cache hit
       metrics.cacheHits.inc({ cache_type: 'memory', key_prefix: keyPrefix })
       const duration = (Date.now() - startTime) / 1000
-      metrics.cacheOperationDuration.observe(
-        { operation: 'get', cache_type: 'memory' },
-        duration
-      )
+      metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'memory' }, duration)
 
       return entry.value as T
     } catch (error) {
       const duration = (Date.now() - startTime) / 1000
-      metrics.cacheOperationDuration.observe(
-        { operation: 'get', cache_type: 'memory' },
-        duration
-      )
+      metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'memory' }, duration)
       throw error
     }
   }
@@ -138,16 +129,10 @@ class MemoryCache implements CacheInterface {
 
       // Record cache operation metrics
       const duration = (Date.now() - startTime) / 1000
-      metrics.cacheOperationDuration.observe(
-        { operation: 'set', cache_type: 'memory' },
-        duration
-      )
+      metrics.cacheOperationDuration.observe({ operation: 'set', cache_type: 'memory' }, duration)
     } catch (error) {
       const duration = (Date.now() - startTime) / 1000
-      metrics.cacheOperationDuration.observe(
-        { operation: 'set', cache_type: 'memory' },
-        duration
-      )
+      metrics.cacheOperationDuration.observe({ operation: 'set', cache_type: 'memory' }, duration)
       throw error
     }
   }
@@ -162,27 +147,27 @@ class MemoryCache implements CacheInterface {
 
   async exists(key: string): Promise<boolean> {
     const entry = this.cache.get(key)
-    
+
     if (!entry) {
       return false
     }
-    
+
     // Check if expired
     if (Date.now() > entry.expiry) {
       this.cache.delete(key)
       return false
     }
-    
+
     return true
   }
 
   async keys(pattern?: string): Promise<string[]> {
     const allKeys = Array.from(this.cache.keys())
-    
+
     if (!pattern) {
       return allKeys
     }
-    
+
     // Simple pattern matching (supports * wildcard) - secure implementation
     // Use a safe pattern matching approach instead of dynamic RegExp
     const normalizedPattern = pattern.toLowerCase()
@@ -257,17 +242,17 @@ class MemoryCache implements CacheInterface {
     // Simple LRU: remove entries that expire soonest
     const entries = Array.from(this.cache.entries())
     entries.sort((a, b) => a[1].expiry - b[1].expiry)
-    
+
     // Remove 10% of entries
     const toRemove = Math.max(1, Math.floor(entries.length * 0.1))
-    
+
     for (let i = 0; i < toRemove && i < entries.length; i++) {
       const entry = entries.at(i)
       if (entry) {
         this.cache.delete(entry[0])
       }
     }
-    
+
     logger.debug('Cache', `Evicted ${toRemove} cache entries due to size limit`)
   }
 
@@ -277,7 +262,7 @@ class MemoryCache implements CacheInterface {
   getStats() {
     const now = Date.now()
     let expiredCount = 0
-    
+
     // Convert values to array to avoid iterator issues
     const values = Array.from(this.cache.values())
     for (const entry of values) {
@@ -285,12 +270,12 @@ class MemoryCache implements CacheInterface {
         expiredCount++
       }
     }
-    
+
     return {
       size: this.cache.size,
       maxSize: this.maxSize,
       expired: expiredCount,
-      active: this.cache.size - expiredCount
+      active: this.cache.size - expiredCount,
     }
   }
 }
@@ -322,7 +307,8 @@ class RedisCache implements CacheInterface {
       const Redis = redisModule.default || redisModule
 
       // Type assertion for the Redis client factory
-      const createClient = (Redis as { createClient: (config: unknown) => RedisClient }).createClient
+      const createClient = (Redis as { createClient: (config: unknown) => RedisClient })
+        .createClient
 
       this.client = createClient({
         host: this.config.host,
@@ -350,7 +336,6 @@ class RedisCache implements CacheInterface {
       })
 
       await this.client.connect()
-
     } catch (error) {
       logger.error('Cache', 'Failed to connect to Redis', error)
       throw new Error('Redis connection failed')
@@ -374,19 +359,13 @@ class RedisCache implements CacheInterface {
       if (value === null) {
         // Record cache miss
         metrics.cacheMisses.inc({ cache_type: 'redis', key_prefix: keyPrefix })
-        metrics.cacheOperationDuration.observe(
-          { operation: 'get', cache_type: 'redis' },
-          duration
-        )
+        metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'redis' }, duration)
         return null
       }
 
       // Record cache hit
       metrics.cacheHits.inc({ cache_type: 'redis', key_prefix: keyPrefix })
-      metrics.cacheOperationDuration.observe(
-        { operation: 'get', cache_type: 'redis' },
-        duration
-      )
+      metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'redis' }, duration)
 
       return JSON.parse(value) as T
     } catch (error) {
@@ -395,10 +374,7 @@ class RedisCache implements CacheInterface {
 
       // Record cache miss on error
       metrics.cacheMisses.inc({ cache_type: 'redis', key_prefix: keyPrefix })
-      metrics.cacheOperationDuration.observe(
-        { operation: 'get', cache_type: 'redis' },
-        duration
-      )
+      metrics.cacheOperationDuration.observe({ operation: 'get', cache_type: 'redis' }, duration)
 
       logger.error('Cache', `Failed to get key ${key} from Redis`, error)
       return null
@@ -491,11 +467,11 @@ class CacheManager {
     if (!this.initialized) {
       await this.initialize()
     }
-    
+
     if (!this.cache) {
       throw new Error('Cache not initialized')
     }
-    
+
     return this.cache
   }
 
@@ -508,30 +484,27 @@ class CacheManager {
     }
 
     const config = getCacheConfig()
-    
+
     try {
       if (config.type === 'redis' && config.redis) {
         logger.info('Cache', 'Initializing Redis cache')
         this.cache = new RedisCache(config.redis)
-        
+
         // Test Redis connection
         await this.cache.set('test', 'connection', 1000)
         await this.cache.delete('test')
-        
+
         logger.info('Cache', 'Redis cache initialized successfully')
       } else {
         throw new Error('Redis not configured or not available')
       }
     } catch (error) {
       logger.warn('Cache', 'Failed to initialize Redis cache, falling back to memory cache', error)
-      
+
       // Fallback to memory cache
-      this.cache = new MemoryCache(
-        config.memory.maxSize,
-        config.memory.ttl
-      )
+      this.cache = new MemoryCache(config.memory.maxSize, config.memory.ttl)
     }
-    
+
     this.initialized = true
   }
 
@@ -600,7 +573,6 @@ export function cached(ttl: number = 3600000, keyPrefix: string = '') {
 
         logger.debug('Cache', `Cache miss for ${key}, result cached`)
         return result
-
       } catch (error) {
         logger.error('Cache', `Cache error for ${propertyName}`, error)
         // Fallback to executing method without cache
@@ -667,11 +639,7 @@ export const CacheHelper = {
   /**
    * Get or set pattern - get value, or set it if not exists
    */
-  async getOrSet<T>(
-    key: string,
-    factory: () => Promise<T>,
-    ttl?: number
-  ): Promise<T> {
+  async getOrSet<T>(key: string, factory: () => Promise<T>, ttl?: number): Promise<T> {
     try {
       const cache = await getCache()
 
@@ -706,7 +674,7 @@ export const CacheHelper = {
     } catch (error) {
       logger.error('Cache', 'Failed to clear cache', error)
     }
-  }
+  },
 }
 
 // Export cache types

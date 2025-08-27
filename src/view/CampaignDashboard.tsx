@@ -21,7 +21,7 @@ import {
   Search,
   MoreVertical,
   Download,
-  Share2
+  Share2,
 } from 'lucide-react'
 import { Card } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
@@ -191,19 +191,25 @@ export function CampaignDashboard() {
 
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesStatus = filterStatus === 'all' || campaign.status === filterStatus
-    const matchesSearch = campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         campaign.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         campaign.location.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      campaign.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      campaign.location.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesStatus && matchesSearch
   })
 
   const getStatusColor = (status: Campaign['status']) => {
     switch (status) {
-      case 'active': return 'text-green-600 bg-green-100'
-      case 'paused': return 'text-yellow-600 bg-yellow-100'
-      case 'completed': return 'text-blue-600 bg-blue-100'
-      case 'failed': return 'text-red-600 bg-red-100'
-      default: return 'text-gray-600 bg-gray-100'
+      case 'active':
+        return 'text-green-600 bg-green-100'
+      case 'paused':
+        return 'text-yellow-600 bg-yellow-100'
+      case 'completed':
+        return 'text-blue-600 bg-blue-100'
+      case 'failed':
+        return 'text-red-600 bg-red-100'
+      default:
+        return 'text-gray-600 bg-gray-100'
     }
   }
 
@@ -211,7 +217,7 @@ export function CampaignDashboard() {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     }).format(date)
   }
 
@@ -224,10 +230,7 @@ export function CampaignDashboard() {
           <p className="text-gray-600 mt-1">Create, manage, and monitor your scraping campaigns</p>
         </div>
         <div className="flex items-center space-x-3">
-          <Button
-            onClick={() => setShowCreateWizard(true)}
-            icon={Plus}
-          >
+          <Button onClick={() => setShowCreateWizard(true)} icon={Plus}>
             New Campaign
           </Button>
           <Button variant="outline" icon={Download}>
@@ -277,7 +280,11 @@ export function CampaignDashboard() {
             <div>
               <p className="text-sm font-medium text-gray-500">Avg Quality Score</p>
               <p className="text-2xl font-bold text-orange-600">
-                {(campaigns.reduce((sum, c) => sum + c.results.quality, 0) / campaigns.length * 100).toFixed(0)}%
+                {(
+                  (campaigns.reduce((sum, c) => sum + c.results.quality, 0) / campaigns.length) *
+                  100
+                ).toFixed(0)}
+                %
               </p>
             </div>
             <TrendingUp className="h-8 w-8 text-orange-500" />
@@ -293,14 +300,14 @@ export function CampaignDashboard() {
             <Input
               placeholder="Search campaigns..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10 w-64"
             />
           </div>
-          
+
           <select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            onChange={e => setFilterStatus(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md text-sm"
           >
             <option value="all">All Status</option>
@@ -343,17 +350,22 @@ export function CampaignDashboard() {
           <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No campaigns found</h3>
           <p className="text-gray-500 mb-6">
-            {searchQuery || filterStatus !== 'all' 
+            {searchQuery || filterStatus !== 'all'
               ? 'Try adjusting your search or filters'
-              : 'Get started by creating your first campaign'
-            }
+              : 'Get started by creating your first campaign'}
           </p>
           <Button onClick={() => setShowCreateWizard(true)} icon={Plus}>
             Create Campaign
           </Button>
         </Card>
       ) : (
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+        <div
+          className={
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              : 'space-y-4'
+          }
+        >
           {filteredCampaigns.map(campaign => (
             <CampaignCard
               key={campaign.id}
@@ -397,7 +409,9 @@ function CampaignCard({ campaign, viewMode, onAction }: CampaignCardProps) {
             <div className="flex-1">
               <div className="flex items-center space-x-3">
                 <h3 className="font-semibold">{campaign.name}</h3>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(campaign.status)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(campaign.status)}`}
+                >
                   {campaign.status}
                 </span>
               </div>
@@ -412,13 +426,15 @@ function CampaignCard({ campaign, viewMode, onAction }: CampaignCardProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="text-right">
               <p className="text-sm font-medium">{campaign.results.businesses} businesses</p>
-              <p className="text-xs text-gray-500">{(campaign.results.quality * 100).toFixed(0)}% quality</p>
+              <p className="text-xs text-gray-500">
+                {(campaign.results.quality * 100).toFixed(0)}% quality
+              </p>
             </div>
-            
+
             <div className="w-24">
               <div className="flex justify-between text-xs text-gray-500 mb-1">
                 <span>{campaign.progress.percentage}%</span>
@@ -444,12 +460,14 @@ function CampaignCard({ campaign, viewMode, onAction }: CampaignCardProps) {
         <div className="flex-1">
           <div className="flex items-center space-x-2 mb-2">
             <h3 className="font-semibold text-lg">{campaign.name}</h3>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(campaign.status)}`}>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(campaign.status)}`}
+            >
               {campaign.status}
             </span>
           </div>
           <p className="text-gray-600 text-sm mb-3">{campaign.description}</p>
-          
+
           <div className="space-y-2 text-sm text-gray-500">
             <div className="flex items-center">
               <MapPin className="h-4 w-4 mr-2" />
@@ -473,7 +491,9 @@ function CampaignCard({ campaign, viewMode, onAction }: CampaignCardProps) {
       <div className="mb-4">
         <div className="flex justify-between text-sm text-gray-600 mb-2">
           <span>Progress</span>
-          <span>{campaign.progress.current} / {campaign.progress.total}</span>
+          <span>
+            {campaign.progress.current} / {campaign.progress.total}
+          </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
@@ -512,11 +532,7 @@ function CampaignActions({ campaign, onAction }: CampaignActionsProps) {
 
   return (
     <div className="relative">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setShowMenu(!showMenu)}
-      >
+      <Button variant="ghost" size="icon" onClick={() => setShowMenu(!showMenu)}>
         <MoreVertical className="h-4 w-4" />
       </Button>
 
@@ -535,7 +551,7 @@ function CampaignActions({ campaign, onAction }: CampaignActionsProps) {
                 Start Campaign
               </button>
             ) : null}
-            
+
             {campaign.status === 'active' ? (
               <button
                 onClick={() => {
@@ -602,7 +618,11 @@ function CampaignActions({ campaign, onAction }: CampaignActionsProps) {
 }
 
 // Placeholder for Campaign Wizard component
-function CampaignWizard({ templates, onClose, onSuccess }: {
+function CampaignWizard({
+  templates,
+  onClose,
+  onSuccess,
+}: {
   templates: CampaignTemplate[]
   onClose: () => void
   onSuccess: () => void
@@ -616,9 +636,7 @@ function CampaignWizard({ templates, onClose, onSuccess }: {
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={onSuccess}>
-            Create Campaign
-          </Button>
+          <Button onClick={onSuccess}>Create Campaign</Button>
         </div>
       </div>
     </div>
@@ -627,10 +645,15 @@ function CampaignWizard({ templates, onClose, onSuccess }: {
 
 function getStatusColor(status: Campaign['status']) {
   switch (status) {
-    case 'active': return 'text-green-600 bg-green-100'
-    case 'paused': return 'text-yellow-600 bg-yellow-100'
-    case 'completed': return 'text-blue-600 bg-blue-100'
-    case 'failed': return 'text-red-600 bg-red-100'
-    default: return 'text-gray-600 bg-gray-100'
+    case 'active':
+      return 'text-green-600 bg-green-100'
+    case 'paused':
+      return 'text-yellow-600 bg-yellow-100'
+    case 'completed':
+      return 'text-blue-600 bg-blue-100'
+    case 'failed':
+      return 'text-red-600 bg-red-100'
+    default:
+      return 'text-gray-600 bg-gray-100'
   }
 }

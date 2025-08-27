@@ -21,7 +21,7 @@ export const GET = apiFramework.createHandler(
     try {
       const schedules = await exportSchedulingService.listSchedules({
         status,
-        templateId: templateId || undefined
+        templateId: templateId || undefined,
       })
 
       const statistics = exportSchedulingService.getSchedulingStatistics()
@@ -41,25 +41,24 @@ export const GET = apiFramework.createHandler(
             nextRun: schedule.nextRun,
             runCount: schedule.runCount,
             successCount: schedule.successCount,
-            failureCount: schedule.failureCount
+            failureCount: schedule.failureCount,
           })),
           count: schedules.length,
-          statistics
+          statistics,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('SchedulesAPI', 'Failed to list schedules', error)
       throw error
     }
   },
   {
-    permissions: ['read:exports']
+    permissions: ['read:exports'],
   }
 )
 
@@ -70,14 +69,7 @@ export const POST = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const body = await request.json()
-      const {
-        name,
-        description,
-        templateId,
-        schedule,
-        filters,
-        delivery
-      } = body
+      const { name, description, templateId, schedule, filters, delivery } = body
 
       // Validation
       if (!name || !templateId || !schedule || !delivery) {
@@ -98,7 +90,7 @@ export const POST = apiFramework.createHandler(
         templateId,
         scheduleType: schedule.type,
         deliveryMethod: delivery.method,
-        clientId: context.clientId
+        clientId: context.clientId,
       })
 
       const newSchedule = await exportSchedulingService.createSchedule({
@@ -108,15 +100,15 @@ export const POST = apiFramework.createHandler(
         schedule: {
           type: schedule.type,
           expression: schedule.expression,
-          timezone: schedule.timezone || 'UTC'
+          timezone: schedule.timezone || 'UTC',
         },
         filters: filters || {},
         delivery: {
           method: delivery.method,
           destination: delivery.destination,
           format: delivery.format || 'csv',
-          compression: delivery.compression
-        }
+          compression: delivery.compression,
+        },
       })
 
       return {
@@ -132,20 +124,19 @@ export const POST = apiFramework.createHandler(
             delivery: newSchedule.delivery,
             status: newSchedule.status,
             createdAt: newSchedule.createdAt,
-            nextRun: newSchedule.nextRun
-          }
+            nextRun: newSchedule.nextRun,
+          },
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('SchedulesAPI', 'Schedule creation failed', {
         requestId: context.requestId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }
@@ -154,8 +145,8 @@ export const POST = apiFramework.createHandler(
     permissions: ['write:exports'],
     rateLimit: {
       requestsPerMinute: 10,
-      requestsPerHour: 50
-    }
+      requestsPerHour: 50,
+    },
   }
 )
 
@@ -174,7 +165,7 @@ export const getSchedule = apiFramework.createHandler(
       }
 
       const schedule = await exportSchedulingService.getSchedule(scheduleId)
-      
+
       if (!schedule) {
         throw new Error('Schedule not found')
       }
@@ -195,23 +186,22 @@ export const getSchedule = apiFramework.createHandler(
             recordsProcessed: exec.recordsProcessed,
             recordsExported: exec.recordsExported,
             deliveryStatus: exec.deliveryStatus,
-            errors: exec.errors
-          }))
+            errors: exec.errors,
+          })),
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('SchedulesAPI', 'Failed to get schedule', error)
       throw error
     }
   },
   {
-    permissions: ['read:exports']
+    permissions: ['read:exports'],
   }
 )
 
@@ -236,7 +226,7 @@ export const updateSchedule = apiFramework.createHandler(
         requestId: context.requestId,
         scheduleId,
         updates: Object.keys(updates),
-        clientId: context.clientId
+        clientId: context.clientId,
       })
 
       const updatedSchedule = await exportSchedulingService.updateSchedule(scheduleId, updates)
@@ -244,25 +234,24 @@ export const updateSchedule = apiFramework.createHandler(
       return {
         success: true,
         data: {
-          schedule: updatedSchedule
+          schedule: updatedSchedule,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('SchedulesAPI', 'Schedule update failed', {
         requestId: context.requestId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }
   },
   {
-    permissions: ['write:exports']
+    permissions: ['write:exports'],
   }
 )
 
@@ -283,7 +272,7 @@ export const deleteSchedule = apiFramework.createHandler(
       logger.info('SchedulesAPI', `Deleting schedule: ${scheduleId}`, {
         requestId: context.requestId,
         scheduleId,
-        clientId: context.clientId
+        clientId: context.clientId,
       })
 
       await exportSchedulingService.deleteSchedule(scheduleId)
@@ -292,31 +281,30 @@ export const deleteSchedule = apiFramework.createHandler(
         success: true,
         data: {
           message: 'Schedule deleted successfully',
-          scheduleId
+          scheduleId,
         },
         metadata: {
           requestId: context.requestId,
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
-
     } catch (error) {
       logger.error('SchedulesAPI', 'Schedule deletion failed', {
         requestId: context.requestId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }
   },
   {
-    permissions: ['write:exports']
+    permissions: ['write:exports'],
   }
 )
 
 // Export named functions for specific endpoints
-export { 
-  getSchedule as GET_schedule, 
-  updateSchedule as PUT_schedule, 
-  deleteSchedule as DELETE_schedule 
+export {
+  getSchedule as GET_schedule,
+  updateSchedule as PUT_schedule,
+  deleteSchedule as DELETE_schedule,
 }

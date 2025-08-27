@@ -63,28 +63,28 @@ export class ROIService {
       const campaignData = await this.getCampaignData(input)
       const scrapingData = await this.getScrapingData(input)
       const businessData = await this.getBusinessData(input)
-      
+
       // Calculate input costs
       const totalTimeSpent = scrapingData.totalTimeHours
       const totalCosts = this.calculateTotalCosts(totalTimeSpent, input.costPerHour || 50)
-      
+
       // Calculate output metrics
       const totalBusinessesFound = businessData.totalBusinesses
       const validatedBusinesses = businessData.validatedBusinesses
       const highQualityLeads = businessData.highQualityLeads
       const contactsEnriched = businessData.enrichedBusinesses
-      
+
       // Calculate quality metrics
       const avgConfidenceScore = businessData.avgConfidenceScore
       const dataAccuracyRate = businessData.dataAccuracyRate
       const duplicateRate = businessData.duplicateRate
-      
+
       // Calculate conversion metrics
       const conversionMetrics = this.calculateConversionMetrics(
         validatedBusinesses,
         input.conversionData
       )
-      
+
       // Calculate ROI
       const costPerLead = totalBusinessesFound > 0 ? totalCosts / totalBusinessesFound : 0
       const costPerValidatedLead = validatedBusinesses > 0 ? totalCosts / validatedBusinesses : 0
@@ -100,34 +100,34 @@ export class ROIService {
         period: input.period,
         startDate: input.startDate,
         endDate: input.endDate,
-        
+
         // Input metrics
         totalCampaigns: campaignData.totalCampaigns,
         totalScrapingSessions: scrapingData.totalSessions,
         totalTimeSpent,
         totalCosts,
-        
+
         // Output metrics
         totalBusinessesFound,
         validatedBusinesses,
         highQualityLeads,
         contactsEnriched,
-        
+
         // Quality metrics
         avgConfidenceScore,
         dataAccuracyRate,
         duplicateRate,
-        
+
         // Conversion metrics
         leadsContacted: conversionMetrics.leadsContacted,
         responseRate: conversionMetrics.responseRate,
         conversionRate: conversionMetrics.conversionRate,
-        
+
         // ROI calculations
         costPerLead,
         costPerValidatedLead,
         estimatedValue,
-        roi
+        roi,
       }
     } catch (error) {
       logger.error('ROI Service', 'Error calculating ROI metrics', error)
@@ -149,7 +149,7 @@ export class ROIService {
         metrics,
         breakdown,
         trends,
-        recommendations
+        recommendations,
       }
     } catch (error) {
       logger.error('ROI Service', 'Error generating ROI report', error)
@@ -165,7 +165,8 @@ export class ROIService {
     activeCampaigns: number
     completedCampaigns: number
   }> {
-    const result = await database.query(`
+    const result = await database.query(
+      `
       SELECT 
         COUNT(*) as total_campaigns,
         COUNT(CASE WHEN status = 'active' THEN 1 END) as active_campaigns,
@@ -173,13 +174,15 @@ export class ROIService {
       FROM campaigns
       WHERE workspace_id = $1
       AND created_at >= $2 AND created_at <= $3
-    `, [input.workspaceId, input.startDate, input.endDate])
+    `,
+      [input.workspaceId, input.startDate, input.endDate]
+    )
 
     const row = result.rows[0]
     return {
       totalCampaigns: parseInt(row.total_campaigns) || 0,
       activeCampaigns: parseInt(row.active_campaigns) || 0,
-      completedCampaigns: parseInt(row.completed_campaigns) || 0
+      completedCampaigns: parseInt(row.completed_campaigns) || 0,
     }
   }
 
@@ -192,7 +195,8 @@ export class ROIService {
     successfulScrapes: number
     failedScrapes: number
   }> {
-    const result = await database.query(`
+    const result = await database.query(
+      `
       SELECT 
         COUNT(*) as total_sessions,
         SUM(EXTRACT(EPOCH FROM (completed_at - started_at)) / 3600) as total_time_hours,
@@ -202,14 +206,16 @@ export class ROIService {
       WHERE workspace_id = $1
       AND started_at >= $2 AND started_at <= $3
       AND completed_at IS NOT NULL
-    `, [input.workspaceId, input.startDate, input.endDate])
+    `,
+      [input.workspaceId, input.startDate, input.endDate]
+    )
 
     const row = result.rows[0]
     return {
       totalSessions: parseInt(row.total_sessions) || 0,
       totalTimeHours: parseFloat(row.total_time_hours) || 0,
       successfulScrapes: parseInt(row.successful_scrapes) || 0,
-      failedScrapes: parseInt(row.failed_scrapes) || 0
+      failedScrapes: parseInt(row.failed_scrapes) || 0,
     }
   }
 
@@ -225,7 +231,8 @@ export class ROIService {
     dataAccuracyRate: number
     duplicateRate: number
   }> {
-    const result = await database.query(`
+    const result = await database.query(
+      `
       SELECT 
         COUNT(*) as total_businesses,
         COUNT(CASE WHEN validation_status = 'validated' THEN 1 END) as validated_businesses,
@@ -236,7 +243,9 @@ export class ROIService {
       JOIN campaigns c ON b.campaign_id = c.id
       WHERE c.workspace_id = $1
       AND b.scraped_at >= $2 AND b.scraped_at <= $3
-    `, [input.workspaceId, input.startDate, input.endDate])
+    `,
+      [input.workspaceId, input.startDate, input.endDate]
+    )
 
     const row = result.rows[0]
     const totalBusinesses = parseInt(row.total_businesses) || 0
@@ -255,7 +264,7 @@ export class ROIService {
       enrichedBusinesses: parseInt(row.enriched_businesses) || 0,
       avgConfidenceScore: parseFloat(row.avg_confidence_score) || 0,
       dataAccuracyRate,
-      duplicateRate
+      duplicateRate,
     }
   }
 
@@ -266,7 +275,7 @@ export class ROIService {
     const laborCosts = timeHours * costPerHour
     const toolCosts = 100 // Placeholder for tool/infrastructure costs
     const operationalCosts = 50 // Placeholder for operational overhead
-    
+
     return laborCosts + toolCosts + operationalCosts
   }
 
@@ -285,14 +294,14 @@ export class ROIService {
       return {
         leadsContacted: 0,
         responseRate: 0,
-        conversionRate: 0
+        conversionRate: 0,
       }
     }
 
     return {
       leadsContacted: conversionData.leadsContacted,
       responseRate: conversionData.responseRate,
-      conversionRate: conversionData.conversionRate
+      conversionRate: conversionData.conversionRate,
     }
   }
 
@@ -309,9 +318,10 @@ export class ROIService {
 
     // Adjust for actual conversion data if available
     if (conversionMetrics.leadsContacted > 0) {
-      const actualConversions = conversionMetrics.leadsContacted * 
-                               (conversionMetrics.responseRate / 100) * 
-                               (conversionMetrics.conversionRate / 100)
+      const actualConversions =
+        conversionMetrics.leadsContacted *
+        (conversionMetrics.responseRate / 100) *
+        (conversionMetrics.conversionRate / 100)
       const conversionValue = actualConversions * estimatedLeadValue * 5 // Assume 5x value for actual conversions
       return Math.max(baseValue, conversionValue)
     }
@@ -330,7 +340,8 @@ export class ROIService {
     const toolCosts = 100 // Placeholder
     const operationalCosts = 50 // Placeholder
 
-    const leadsPerHour = metrics.totalTimeSpent > 0 ? metrics.totalBusinessesFound / metrics.totalTimeSpent : 0
+    const leadsPerHour =
+      metrics.totalTimeSpent > 0 ? metrics.totalBusinessesFound / metrics.totalTimeSpent : 0
     const qualityScore = metrics.avgConfidenceScore * 100
     const timeToValue = 24 // Placeholder - hours from start to first qualified lead
 
@@ -339,21 +350,21 @@ export class ROIService {
         timeInvestment,
         toolCosts,
         operationalCosts,
-        total: metrics.totalCosts
+        total: metrics.totalCosts,
       },
       value: {
         leadsGenerated: metrics.totalBusinessesFound,
         qualifiedLeads: metrics.validatedBusinesses,
         estimatedPipelineValue: metrics.estimatedValue,
         actualRevenue: 0, // Would need to be tracked separately
-        total: metrics.estimatedValue
+        total: metrics.estimatedValue,
       },
       efficiency: {
         leadsPerHour,
         costPerLead: metrics.costPerLead,
         qualityScore,
-        timeToValue
-      }
+        timeToValue,
+      },
     }
   }
 
@@ -387,35 +398,43 @@ export class ROIService {
     const trendResult = await database.query(roiTrendQuery, [
       input.workspaceId,
       input.startDate,
-      input.endDate
+      input.endDate,
     ])
 
     const roiTrend = trendResult.rows.map(row => ({
       date: row.date,
-      roi: this.calculateDailyROI(row.businesses_found, row.validated, input.estimatedLeadValue || 100)
+      roi: this.calculateDailyROI(
+        row.businesses_found,
+        row.validated,
+        input.estimatedLeadValue || 100
+      ),
     }))
 
     const costTrend = trendResult.rows.map(row => ({
       date: row.date,
-      cost: row.businesses_found * 2 // Simplified cost calculation
+      cost: row.businesses_found * 2, // Simplified cost calculation
     }))
 
     const valueTrend = trendResult.rows.map(row => ({
       date: row.date,
-      value: row.validated * (input.estimatedLeadValue || 100)
+      value: row.validated * (input.estimatedLeadValue || 100),
     }))
 
     return {
       roiTrend,
       costTrend,
-      valueTrend
+      valueTrend,
     }
   }
 
   /**
    * Calculate daily ROI
    */
-  private static calculateDailyROI(businessesFound: number, validated: number, leadValue: number): number {
+  private static calculateDailyROI(
+    businessesFound: number,
+    validated: number,
+    leadValue: number
+  ): number {
     const cost = businessesFound * 2 // Simplified
     const value = validated * leadValue
     return cost > 0 ? ((value - cost) / cost) * 100 : 0
@@ -424,17 +443,24 @@ export class ROIService {
   /**
    * Generate recommendations
    */
-  private static generateRecommendations(metrics: ROIMetrics, breakdown: ROIReport['breakdown']): string[] {
+  private static generateRecommendations(
+    metrics: ROIMetrics,
+    breakdown: ROIReport['breakdown']
+  ): string[] {
     const recommendations: string[] = []
 
     // ROI-based recommendations
     if (metrics.roi < 50) {
-      recommendations.push('ROI is below target (50%). Consider optimizing search criteria or improving data quality.')
+      recommendations.push(
+        'ROI is below target (50%). Consider optimizing search criteria or improving data quality.'
+      )
     }
 
     // Cost efficiency recommendations
     if (metrics.costPerLead > 10) {
-      recommendations.push('Cost per lead is high. Consider automating more of the validation process.')
+      recommendations.push(
+        'Cost per lead is high. Consider automating more of the validation process.'
+      )
     }
 
     // Quality recommendations
@@ -444,17 +470,23 @@ export class ROIService {
 
     // Volume recommendations
     if (breakdown.efficiency.leadsPerHour < 10) {
-      recommendations.push('Lead generation rate is low. Consider expanding search criteria or improving scraping efficiency.')
+      recommendations.push(
+        'Lead generation rate is low. Consider expanding search criteria or improving scraping efficiency.'
+      )
     }
 
     // Conversion recommendations
     if (metrics.responseRate && metrics.responseRate < 20) {
-      recommendations.push('Response rate is low. Consider improving lead qualification or outreach messaging.')
+      recommendations.push(
+        'Response rate is low. Consider improving lead qualification or outreach messaging.'
+      )
     }
 
     // Default recommendation if all metrics are good
     if (recommendations.length === 0) {
-      recommendations.push('Performance metrics are strong. Consider scaling operations or exploring new markets.')
+      recommendations.push(
+        'Performance metrics are strong. Consider scaling operations or exploring new markets.'
+      )
     }
 
     return recommendations
@@ -475,7 +507,7 @@ export class ROIService {
         return {
           data: JSON.stringify(report, null, 2),
           filename: `${filename}.json`,
-          mimeType: 'application/json'
+          mimeType: 'application/json',
         }
 
       case 'csv':
@@ -483,7 +515,7 @@ export class ROIService {
         return {
           data: csvData,
           filename: `${filename}.csv`,
-          mimeType: 'text/csv'
+          mimeType: 'text/csv',
         }
 
       case 'pdf':
@@ -499,16 +531,16 @@ export class ROIService {
    * Convert ROI report to CSV format
    */
   private static convertToCSV(report: ROIReport): string {
-    const headers = [
-      'Metric',
-      'Value',
-      'Period',
-      'Start Date',
-      'End Date'
-    ]
+    const headers = ['Metric', 'Value', 'Period', 'Start Date', 'End Date']
 
     const rows = [
-      ['Total Campaigns', report.metrics.totalCampaigns, report.metrics.period, report.metrics.startDate.toISOString(), report.metrics.endDate.toISOString()],
+      [
+        'Total Campaigns',
+        report.metrics.totalCampaigns,
+        report.metrics.period,
+        report.metrics.startDate.toISOString(),
+        report.metrics.endDate.toISOString(),
+      ],
       ['Total Businesses Found', report.metrics.totalBusinessesFound, '', '', ''],
       ['Validated Businesses', report.metrics.validatedBusinesses, '', '', ''],
       ['High Quality Leads', report.metrics.highQualityLeads, '', '', ''],
@@ -516,12 +548,12 @@ export class ROIService {
       ['Estimated Value', report.metrics.estimatedValue, '', '', ''],
       ['ROI (%)', report.metrics.roi, '', '', ''],
       ['Cost Per Lead', report.metrics.costPerLead, '', '', ''],
-      ['Data Accuracy Rate (%)', report.metrics.dataAccuracyRate, '', '', '']
+      ['Data Accuracy Rate (%)', report.metrics.dataAccuracyRate, '', '', ''],
     ]
 
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
     ].join('\n')
 
     return csvContent

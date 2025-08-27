@@ -17,7 +17,7 @@ jest.mock('@/utils/logger', () => ({
 
 describe('SearchResultValidator', () => {
   let validator: SearchResultValidator
-  
+
   beforeEach(() => {
     validator = new SearchResultValidator()
     jest.clearAllMocks()
@@ -49,11 +49,7 @@ describe('SearchResultValidator', () => {
       // Mock SSL checks
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const results = await validator.validateResults(
-        mockResults,
-        'restaurant',
-        'New York'
-      )
+      const results = await validator.validateResults(mockResults, 'restaurant', 'New York')
 
       expect(results.length).toBeGreaterThanOrEqual(2) // Some results may be filtered
       expect(results[0]).toHaveProperty('scores')
@@ -88,11 +84,7 @@ describe('SearchResultValidator', () => {
     it('should sort results by overall score', async () => {
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const results = await validator.validateResults(
-        mockResults,
-        'restaurant',
-        'New York'
-      )
+      const results = await validator.validateResults(mockResults, 'restaurant', 'New York')
 
       // Results should be sorted by overall score (highest first)
       for (let i = 1; i < results.length; i++) {
@@ -122,11 +114,7 @@ describe('SearchResultValidator', () => {
 
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const validatedResults = await validator.validateResults(
-        results,
-        'restaurant',
-        'New York'
-      )
+      const validatedResults = await validator.validateResults(results, 'restaurant', 'New York')
 
       // Restaurant result should have higher relevance score
       const restaurantResult = validatedResults.find(r => r.domain === 'restaurant.com')
@@ -152,11 +140,7 @@ describe('SearchResultValidator', () => {
       // Mock SSL check to succeed
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const validatedResults = await validator.validateResults(
-        results,
-        'business',
-        'New York'
-      )
+      const validatedResults = await validator.validateResults(results, 'business', 'New York')
 
       expect(validatedResults.length).toBeGreaterThan(0)
       const result = validatedResults[0]
@@ -187,19 +171,13 @@ describe('SearchResultValidator', () => {
 
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const validatedResults = await validator.validateResults(
-        results,
-        'business',
-        'New York'
-      )
+      const validatedResults = await validator.validateResults(results, 'business', 'New York')
 
       const businessResult = validatedResults.find(r => r.domain === 'business-inc.com')
       const directoryResult = validatedResults.find(r => r.domain === 'directory.com')
 
       // Business should score higher than directory
-      expect(businessResult?.scores.business).toBeGreaterThan(
-        directoryResult?.scores.business || 0
-      )
+      expect(businessResult?.scores.business).toBeGreaterThan(directoryResult?.scores.business || 0)
     })
   })
 
@@ -222,19 +200,13 @@ describe('SearchResultValidator', () => {
 
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const validatedResults = await validator.validateResults(
-        results,
-        'restaurant',
-        'New York'
-      )
+      const validatedResults = await validator.validateResults(results, 'restaurant', 'New York')
 
       const nyResult = validatedResults.find(r => r.domain === 'nyrestaurant.com')
       const laResult = validatedResults.find(r => r.domain === 'larestaurant.com')
 
       // NY restaurant should have higher geographic score for NY search
-      expect(nyResult?.scores.geographic).toBeGreaterThan(
-        laResult?.scores.geographic || 0
-      )
+      expect(nyResult?.scores.geographic).toBeGreaterThan(laResult?.scores.geographic || 0)
     })
   })
 
@@ -263,11 +235,7 @@ describe('SearchResultValidator', () => {
 
       mockedAxios.head.mockResolvedValue({ status: 200 })
 
-      const validatedResults = await validator.validateResults(
-        results,
-        'restaurant',
-        'New York'
-      )
+      const validatedResults = await validator.validateResults(results, 'restaurant', 'New York')
 
       // Should mark duplicates
       const duplicates = validatedResults.filter(r => r.metadata.isDuplicate)
@@ -322,7 +290,7 @@ describe('SearchResultValidator', () => {
   describe('cache management', () => {
     it('should provide validation statistics', () => {
       const stats = validator.getStats()
-      
+
       expect(stats).toHaveProperty('cacheSize')
       expect(stats).toHaveProperty('domainsProcessed')
       expect(stats).toHaveProperty('duplicatesFound')
@@ -334,7 +302,7 @@ describe('SearchResultValidator', () => {
     it('should clear cache', () => {
       validator.clearCache()
       const stats = validator.getStats()
-      
+
       expect(stats.cacheSize).toBe(0)
       expect(stats.domainsProcessed).toBe(0)
     })

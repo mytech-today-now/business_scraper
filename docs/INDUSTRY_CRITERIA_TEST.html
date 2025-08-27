@@ -1,108 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Industry Criteria Fix - Verification Test - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Industry Criteria Fix - Verification Test</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Industry Criteria Fix - Verification Test</h1>
-<h2>Test Objective</h2>
-<p>Verify that the custom &quot;test&quot; industry with &quot;CPA firm&quot; criteria now searches only for CPA firms and does not include unrelated business types from other industries.</p>
-<h2>Pre-Test Setup</h2>
-<h3>1. Application Status</h3>
-<ul>
-<li>✅ Application running at <a href="http://localhost:3000">http://localhost:3000</a></li>
-<li>✅ Industry criteria fix implemented</li>
-<li>✅ Ready for testing</li>
-</ul>
-<h3>2. Test Industry Configuration</h3>
-<ul>
-<li><strong>Industry Name</strong>: &quot;test&quot; (or &quot;Test Industry&quot;)</li>
-<li><strong>Keywords</strong>: [&quot;CPA firm&quot;]</li>
-<li><strong>Expected Behavior</strong>: Search only for CPA firms</li>
-</ul>
-<h2>Test Procedure</h2>
-<h3>Step 1: Create/Verify Custom Industry</h3>
-<ol>
-<li><p><strong>Navigate to Industry Categories</strong></p>
-<ul>
-<li>Go to the main application page</li>
-<li>Locate the &quot;Industry Categories&quot; section</li>
-</ul>
-</li>
-<li><p><strong>Create Custom Industry</strong> (if not exists)</p>
-<ul>
-<li>Click &quot;Add Custom&quot; button</li>
-<li>Enter name: &quot;test&quot;</li>
-<li>Enter keywords: &quot;CPA firm&quot;</li>
-<li>Save the industry</li>
-</ul>
-</li>
-<li><p><strong>Verify Industry Settings</strong></p>
-<ul>
-<li>Confirm industry appears in the list</li>
-<li>Check that keywords show &quot;CPA firm&quot;</li>
-<li>Ensure industry is marked as custom</li>
-</ul>
-</li>
-</ol>
-<h3>Step 2: Configure Search Parameters</h3>
-<ol>
-<li><p><strong>Select Only Test Industry</strong></p>
-<ul>
-<li>Deselect all other industries</li>
-<li>Select only the &quot;test&quot; industry</li>
-<li>Verify selection indicator shows only &quot;test&quot; is selected</li>
-</ul>
-</li>
-<li><p><strong>Set Location</strong></p>
-<ul>
-<li>Enter ZIP code: 60010 (Barrington, IL)</li>
-<li>This area has good CPA firm coverage for testing</li>
-</ul>
-</li>
-<li><p><strong>Configure Search Settings</strong></p>
-<ul>
-<li>Set search radius: 25 miles</li>
-<li>Ensure API configuration allows sufficient results</li>
-</ul>
-</li>
-</ol>
-<h3>Step 3: Execute Search and Monitor</h3>
-<ol>
-<li><p><strong>Start Scraping Process</strong></p>
-<ul>
-<li>Click &quot;Start Scraping&quot; button</li>
-<li>Immediately open browser developer console (F12)</li>
-<li>Monitor console logs in real-time</li>
-</ul>
-</li>
-<li><p><strong>Expected Console Output</strong></p>
-<pre><code>[INFO] Starting complete processing for industry: test
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Industry Criteria Fix - Verification Test
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Industry Criteria Fix - Verification Test</h1>
+        <h2>Test Objective</h2>
+        <p>
+          Verify that the custom &quot;test&quot; industry with &quot;CPA firm&quot; criteria now
+          searches only for CPA firms and does not include unrelated business types from other
+          industries.
+        </p>
+        <h2>Pre-Test Setup</h2>
+        <h3>1. Application Status</h3>
+        <ul>
+          <li>
+            ✅ Application running at <a href="http://localhost:3000">http://localhost:3000</a>
+          </li>
+          <li>✅ Industry criteria fix implemented</li>
+          <li>✅ Ready for testing</li>
+        </ul>
+        <h3>2. Test Industry Configuration</h3>
+        <ul>
+          <li><strong>Industry Name</strong>: &quot;test&quot; (or &quot;Test Industry&quot;)</li>
+          <li><strong>Keywords</strong>: [&quot;CPA firm&quot;]</li>
+          <li><strong>Expected Behavior</strong>: Search only for CPA firms</li>
+        </ul>
+        <h2>Test Procedure</h2>
+        <h3>Step 1: Create/Verify Custom Industry</h3>
+        <ol>
+          <li>
+            <p><strong>Navigate to Industry Categories</strong></p>
+            <ul>
+              <li>Go to the main application page</li>
+              <li>Locate the &quot;Industry Categories&quot; section</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Create Custom Industry</strong> (if not exists)</p>
+            <ul>
+              <li>Click &quot;Add Custom&quot; button</li>
+              <li>Enter name: &quot;test&quot;</li>
+              <li>Enter keywords: &quot;CPA firm&quot;</li>
+              <li>Save the industry</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Verify Industry Settings</strong></p>
+            <ul>
+              <li>Confirm industry appears in the list</li>
+              <li>Check that keywords show &quot;CPA firm&quot;</li>
+              <li>Ensure industry is marked as custom</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>Step 2: Configure Search Parameters</h3>
+        <ol>
+          <li>
+            <p><strong>Select Only Test Industry</strong></p>
+            <ul>
+              <li>Deselect all other industries</li>
+              <li>Select only the &quot;test&quot; industry</li>
+              <li>Verify selection indicator shows only &quot;test&quot; is selected</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Set Location</strong></p>
+            <ul>
+              <li>Enter ZIP code: 60010 (Barrington, IL)</li>
+              <li>This area has good CPA firm coverage for testing</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Configure Search Settings</strong></p>
+            <ul>
+              <li>Set search radius: 25 miles</li>
+              <li>Ensure API configuration allows sufficient results</li>
+            </ul>
+          </li>
+        </ol>
+        <h3>Step 3: Execute Search and Monitor</h3>
+        <ol>
+          <li>
+            <p><strong>Start Scraping Process</strong></p>
+            <ul>
+              <li>Click &quot;Start Scraping&quot; button</li>
+              <li>Immediately open browser developer console (F12)</li>
+              <li>Monitor console logs in real-time</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Expected Console Output</strong></p>
+            <pre><code>[INFO] Starting complete processing for industry: test
 [INFO] Using keywords: &quot;CPA firm&quot; in 60010
 [INFO] Starting search for criteria: &quot;CPA firm&quot;
 [INFO] Scraping DuckDuckGo SERP for: CPA firm 60010
@@ -111,9 +130,10 @@
 [INFO] Page 3: Found 10 results
 [INFO] Completed search for &quot;CPA firm&quot;: XX results found
 </code></pre>
-</li>
-<li><p><strong>What Should NOT Appear</strong></p>
-<pre><code>❌ &quot;bookkeeping service&quot;
+          </li>
+          <li>
+            <p><strong>What Should NOT Appear</strong></p>
+            <pre><code>❌ &quot;bookkeeping service&quot;
 ❌ &quot;tax advisory firms&quot;
 ❌ &quot;small business accountant&quot;
 ❌ &quot;tax preparation services&quot;
@@ -122,145 +142,180 @@
 ❌ &quot;outsourced CFO&quot;
 ❌ &quot;business tax consultant&quot;
 </code></pre>
-</li>
-</ol>
-<h3>Step 4: Verify Search Results</h3>
-<ol>
-<li><p><strong>Check Processing Steps</strong></p>
-<ul>
-<li>Monitor the processing steps display</li>
-<li>Should show: &quot;Searching test Businesses&quot;</li>
-<li>Details should show: &quot;Using keywords: &#39;CPA firm&#39; in 60010&quot;</li>
-</ul>
-</li>
-<li><p><strong>Examine Found URLs</strong></p>
-<ul>
-<li>Look at the URLs being scraped</li>
-<li>Should be CPA firm websites</li>
-<li>Should NOT include general accounting or bookkeeping sites</li>
-</ul>
-</li>
-<li><p><strong>Review Final Results</strong></p>
-<ul>
-<li>Check the businesses found</li>
-<li>All should be CPA firms specifically</li>
-<li>Business names should contain &quot;CPA&quot;, &quot;Certified Public Accountant&quot;, etc.</li>
-</ul>
-</li>
-</ol>
-<h2>Success Criteria</h2>
-<h3>✅ Console Log Verification</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Shows &quot;Using keywords: &#39;CPA firm&#39; in 60010&quot;</li>
-<li><input disabled="" type="checkbox"> Shows &quot;Starting search for criteria: &#39;CPA firm&#39;&quot;</li>
-<li><input disabled="" type="checkbox"> Does NOT show other accounting-related terms</li>
-<li><input disabled="" type="checkbox"> Processes multiple pages for &quot;CPA firm&quot; only</li>
-</ul>
-<h3>✅ Search Behavior Verification</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Only searches for &quot;CPA firm&quot; criteria</li>
-<li><input disabled="" type="checkbox"> Does not expand to other accounting terms</li>
-<li><input disabled="" type="checkbox"> Processes 6 pages for the single criteria</li>
-<li><input disabled="" type="checkbox"> No cross-contamination from other industries</li>
-</ul>
-<h3>✅ Results Verification</h3>
-<ul>
-<li><input disabled="" type="checkbox"> All found businesses are CPA firms</li>
-<li><input disabled="" type="checkbox"> No bookkeeping services in results</li>
-<li><input disabled="" type="checkbox"> No general tax preparation services</li>
-<li><input disabled="" type="checkbox"> No financial consulting firms (unless they&#39;re CPAs)</li>
-</ul>
-<h3>✅ Processing Steps Verification</h3>
-<ul>
-<li><input disabled="" type="checkbox"> Processing step shows correct keywords</li>
-<li><input disabled="" type="checkbox"> No mention of other industry criteria</li>
-<li><input disabled="" type="checkbox"> Clear indication of single-industry processing</li>
-</ul>
-<h2>Failure Indicators</h2>
-<h3>❌ If Test Fails, Look For:</h3>
-<ul>
-<li>Console shows multiple criteria being searched</li>
-<li>Expansion to accounting-related terms beyond &quot;CPA firm&quot;</li>
-<li>Results include non-CPA accounting businesses</li>
-<li>Processing steps mention other keywords</li>
-</ul>
-<h3>🔧 Troubleshooting Steps:</h3>
-<ol>
-<li><p><strong>Verify Industry Selection</strong></p>
-<ul>
-<li>Ensure only &quot;test&quot; industry is selected</li>
-<li>Check that other industries are deselected</li>
-</ul>
-</li>
-<li><p><strong>Check Industry Configuration</strong></p>
-<ul>
-<li>Verify &quot;test&quot; industry has only &quot;CPA firm&quot; as keyword</li>
-<li>Ensure no additional keywords were added</li>
-</ul>
-</li>
-<li><p><strong>Clear Cache and Retry</strong></p>
-<ul>
-<li>Clear browser cache</li>
-<li>Restart application if needed</li>
-<li>Re-create custom industry if necessary</li>
-</ul>
-</li>
-</ol>
-<h2>Test Results Documentation</h2>
-<h3>Record the Following:</h3>
-<ul>
-<li><strong>Console Output</strong>: Copy exact log messages</li>
-<li><strong>Search Criteria Used</strong>: List all criteria that were searched</li>
-<li><strong>Result Count</strong>: Number of businesses found</li>
-<li><strong>Business Types</strong>: Types of businesses in results</li>
-<li><strong>Any Unexpected Behavior</strong>: Note any deviations from expected behavior</li>
-</ul>
-<h3>Example Successful Test Result:</h3>
-<pre><code>✅ PASS: Industry Criteria Fix Test
+          </li>
+        </ol>
+        <h3>Step 4: Verify Search Results</h3>
+        <ol>
+          <li>
+            <p><strong>Check Processing Steps</strong></p>
+            <ul>
+              <li>Monitor the processing steps display</li>
+              <li>Should show: &quot;Searching test Businesses&quot;</li>
+              <li>Details should show: &quot;Using keywords: &#39;CPA firm&#39; in 60010&quot;</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Examine Found URLs</strong></p>
+            <ul>
+              <li>Look at the URLs being scraped</li>
+              <li>Should be CPA firm websites</li>
+              <li>Should NOT include general accounting or bookkeeping sites</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Review Final Results</strong></p>
+            <ul>
+              <li>Check the businesses found</li>
+              <li>All should be CPA firms specifically</li>
+              <li>
+                Business names should contain &quot;CPA&quot;, &quot;Certified Public
+                Accountant&quot;, etc.
+              </li>
+            </ul>
+          </li>
+        </ol>
+        <h2>Success Criteria</h2>
+        <h3>✅ Console Log Verification</h3>
+        <ul>
+          <li>
+            <input disabled="" type="checkbox" /> Shows &quot;Using keywords: &#39;CPA firm&#39; in
+            60010&quot;
+          </li>
+          <li>
+            <input disabled="" type="checkbox" /> Shows &quot;Starting search for criteria: &#39;CPA
+            firm&#39;&quot;
+          </li>
+          <li>
+            <input disabled="" type="checkbox" /> Does NOT show other accounting-related terms
+          </li>
+          <li>
+            <input disabled="" type="checkbox" /> Processes multiple pages for &quot;CPA firm&quot;
+            only
+          </li>
+        </ul>
+        <h3>✅ Search Behavior Verification</h3>
+        <ul>
+          <li>
+            <input disabled="" type="checkbox" /> Only searches for &quot;CPA firm&quot; criteria
+          </li>
+          <li><input disabled="" type="checkbox" /> Does not expand to other accounting terms</li>
+          <li><input disabled="" type="checkbox" /> Processes 6 pages for the single criteria</li>
+          <li>
+            <input disabled="" type="checkbox" /> No cross-contamination from other industries
+          </li>
+        </ul>
+        <h3>✅ Results Verification</h3>
+        <ul>
+          <li><input disabled="" type="checkbox" /> All found businesses are CPA firms</li>
+          <li><input disabled="" type="checkbox" /> No bookkeeping services in results</li>
+          <li><input disabled="" type="checkbox" /> No general tax preparation services</li>
+          <li>
+            <input disabled="" type="checkbox" /> No financial consulting firms (unless they&#39;re
+            CPAs)
+          </li>
+        </ul>
+        <h3>✅ Processing Steps Verification</h3>
+        <ul>
+          <li><input disabled="" type="checkbox" /> Processing step shows correct keywords</li>
+          <li><input disabled="" type="checkbox" /> No mention of other industry criteria</li>
+          <li>
+            <input disabled="" type="checkbox" /> Clear indication of single-industry processing
+          </li>
+        </ul>
+        <h2>Failure Indicators</h2>
+        <h3>❌ If Test Fails, Look For:</h3>
+        <ul>
+          <li>Console shows multiple criteria being searched</li>
+          <li>Expansion to accounting-related terms beyond &quot;CPA firm&quot;</li>
+          <li>Results include non-CPA accounting businesses</li>
+          <li>Processing steps mention other keywords</li>
+        </ul>
+        <h3>🔧 Troubleshooting Steps:</h3>
+        <ol>
+          <li>
+            <p><strong>Verify Industry Selection</strong></p>
+            <ul>
+              <li>Ensure only &quot;test&quot; industry is selected</li>
+              <li>Check that other industries are deselected</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Check Industry Configuration</strong></p>
+            <ul>
+              <li>Verify &quot;test&quot; industry has only &quot;CPA firm&quot; as keyword</li>
+              <li>Ensure no additional keywords were added</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Clear Cache and Retry</strong></p>
+            <ul>
+              <li>Clear browser cache</li>
+              <li>Restart application if needed</li>
+              <li>Re-create custom industry if necessary</li>
+            </ul>
+          </li>
+        </ol>
+        <h2>Test Results Documentation</h2>
+        <h3>Record the Following:</h3>
+        <ul>
+          <li><strong>Console Output</strong>: Copy exact log messages</li>
+          <li><strong>Search Criteria Used</strong>: List all criteria that were searched</li>
+          <li><strong>Result Count</strong>: Number of businesses found</li>
+          <li><strong>Business Types</strong>: Types of businesses in results</li>
+          <li>
+            <strong>Any Unexpected Behavior</strong>: Note any deviations from expected behavior
+          </li>
+        </ul>
+        <h3>Example Successful Test Result:</h3>
+        <pre><code>✅ PASS: Industry Criteria Fix Test
 - Console showed only &quot;CPA firm&quot; as search criteria
 - No expansion to other accounting terms
 - Found 45 CPA firms in 60010 area
 - No bookkeeping or general accounting services in results
 - Processing completed as expected
 </code></pre>
-<h3>Example Failed Test Result:</h3>
-<pre><code>❌ FAIL: Industry Criteria Fix Test
+        <h3>Example Failed Test Result:</h3>
+        <pre><code>❌ FAIL: Industry Criteria Fix Test
 - Console showed multiple criteria: &quot;CPA firm&quot;, &quot;bookkeeping service&quot;, &quot;tax preparation&quot;
 - Expansion occurred despite custom industry specification
 - Found mixed results including non-CPA businesses
 - Issue: System still using expansion logic
 </code></pre>
-<h2>Post-Test Actions</h2>
-<h3>If Test Passes:</h3>
-<ul>
-<li>Mark industry criteria fix as verified</li>
-<li>Document successful test results</li>
-<li>Proceed to performance monitoring</li>
-</ul>
-<h3>If Test Fails:</h3>
-<ul>
-<li>Document specific failure points</li>
-<li>Review implementation for remaining issues</li>
-<li>Re-test after fixes are applied</li>
-</ul>
-<p>This test specifically validates that the industry criteria fix is working correctly and that custom industries now use only their specified keywords without unwanted expansion or cross-contamination from other industry definitions.</p>
+        <h2>Post-Test Actions</h2>
+        <h3>If Test Passes:</h3>
+        <ul>
+          <li>Mark industry criteria fix as verified</li>
+          <li>Document successful test results</li>
+          <li>Proceed to performance monitoring</li>
+        </ul>
+        <h3>If Test Fails:</h3>
+        <ul>
+          <li>Document specific failure points</li>
+          <li>Review implementation for remaining issues</li>
+          <li>Re-test after fixes are applied</li>
+        </ul>
+        <p>
+          This test specifically validates that the industry criteria fix is working correctly and
+          that custom industries now use only their specified keywords without unwanted expansion or
+          cross-contamination from other industry definitions.
+        </p>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

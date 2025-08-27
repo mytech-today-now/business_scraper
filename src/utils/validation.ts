@@ -21,7 +21,8 @@ const ZIP_REGEX = /^\d{5}(-\d{4})?$/
 /**
  * URL validation regex
  */
-const URL_REGEX = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
+const URL_REGEX =
+  /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
 
 /**
  * Sanitization options interface
@@ -107,9 +108,18 @@ const BusinessRecordSchema = z.object({
 const ScrapingConfigSchema = z.object({
   industries: z.array(z.string()).min(1, 'At least one industry must be selected'),
   zipCode: z.string().regex(ZIP_REGEX, 'Invalid ZIP code format'),
-  searchRadius: z.number().min(1, 'Search radius must be at least 1 mile').max(100, 'Search radius cannot exceed 100 miles'),
-  searchDepth: z.number().min(1, 'Search depth must be at least 1').max(5, 'Search depth cannot exceed 5'),
-  pagesPerSite: z.number().min(1, 'Pages per site must be at least 1').max(20, 'Pages per site cannot exceed 20'),
+  searchRadius: z
+    .number()
+    .min(1, 'Search radius must be at least 1 mile')
+    .max(100, 'Search radius cannot exceed 100 miles'),
+  searchDepth: z
+    .number()
+    .min(1, 'Search depth must be at least 1')
+    .max(5, 'Search depth cannot exceed 5'),
+  pagesPerSite: z
+    .number()
+    .min(1, 'Pages per site must be at least 1')
+    .max(20, 'Pages per site cannot exceed 20'),
   // Search configuration (optional fields)
   duckduckgoSerpPages: z.number().min(1).max(5).optional(),
   maxSearchResults: z.number().min(50).max(10000).optional(),
@@ -123,7 +133,9 @@ const ScrapingConfigSchema = z.object({
 const IndustryCategorySchema = z.object({
   id: z.string().min(1, 'ID is required'),
   name: z.string().min(1, 'Name is required'),
-  keywords: z.array(z.string().min(1, 'Keyword cannot be empty')).min(1, 'At least one keyword is required'),
+  keywords: z
+    .array(z.string().min(1, 'Keyword cannot be empty'))
+    .min(1, 'At least one keyword is required'),
   isCustom: z.boolean(),
 })
 
@@ -150,7 +162,7 @@ export const DEFAULT_INPUT_LIMITS: InputLengthLimits = {
   description: 2000,
   searchQuery: 200,
   fileName: 255,
-  general: 1000
+  general: 1000,
 }
 
 /**
@@ -292,7 +304,7 @@ export class ValidationService {
       allowHtml = false,
       allowUrls = true,
       preserveNewlines = false,
-      strictMode = false
+      strictMode = false,
     } = options
 
     let result = input.trim()
@@ -317,12 +329,28 @@ export class ValidationService {
 
     // Remove dangerous HTML elements
     const dangerousElements = [
-      'iframe', 'object', 'embed', 'applet', 'form', 'input', 'textarea',
-      'select', 'button', 'link', 'meta', 'style', 'base', 'frame', 'frameset'
+      'iframe',
+      'object',
+      'embed',
+      'applet',
+      'form',
+      'input',
+      'textarea',
+      'select',
+      'button',
+      'link',
+      'meta',
+      'style',
+      'base',
+      'frame',
+      'frameset',
     ]
 
     dangerousElements.forEach(element => {
-      const regex = new RegExp(`<${element}\\b[^<]*(?:(?!<\\/${element}>)<[^<]*)*<\\/${element}>`, 'gi')
+      const regex = new RegExp(
+        `<${element}\\b[^<]*(?:(?!<\\/${element}>)<[^<]*)*<\\/${element}>`,
+        'gi'
+      )
       result = result.replace(regex, '')
       result = result.replace(new RegExp(`<${element}\\b[^>]*>`, 'gi'), '')
     })
@@ -335,11 +363,36 @@ export class ValidationService {
 
     // Remove event handlers (comprehensive list)
     const eventHandlers = [
-      'onabort', 'onblur', 'onchange', 'onclick', 'ondblclick', 'onerror', 'onfocus',
-      'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onmousedown', 'onmousemove',
-      'onmouseout', 'onmouseover', 'onmouseup', 'onreset', 'onresize', 'onselect',
-      'onsubmit', 'onunload', 'onbeforeunload', 'oncontextmenu', 'ondrag', 'ondrop',
-      'onscroll', 'onwheel', 'ontouchstart', 'ontouchend', 'ontouchmove'
+      'onabort',
+      'onblur',
+      'onchange',
+      'onclick',
+      'ondblclick',
+      'onerror',
+      'onfocus',
+      'onkeydown',
+      'onkeypress',
+      'onkeyup',
+      'onload',
+      'onmousedown',
+      'onmousemove',
+      'onmouseout',
+      'onmouseover',
+      'onmouseup',
+      'onreset',
+      'onresize',
+      'onselect',
+      'onsubmit',
+      'onunload',
+      'onbeforeunload',
+      'oncontextmenu',
+      'ondrag',
+      'ondrop',
+      'onscroll',
+      'onwheel',
+      'ontouchstart',
+      'ontouchend',
+      'ontouchmove',
     ]
 
     eventHandlers.forEach(handler => {
@@ -352,14 +405,14 @@ export class ValidationService {
     if (!allowHtml) {
       result = result.replace(/<[a-zA-Z][^>]*>/g, '')
       result = result.replace(/<\/[a-zA-Z][^>]*>/g, '')
-      result = result.replace(/&lt;|&gt;|&amp;|&quot;|&#x27;|&#x2F;/g, (match) => {
+      result = result.replace(/&lt;|&gt;|&amp;|&quot;|&#x27;|&#x2F;/g, match => {
         const entities: Record<string, string> = {
           '&lt;': '<',
           '&gt;': '>',
           '&amp;': '&',
           '&quot;': '"',
           '&#x27;': "'",
-          '&#x2F;': '/'
+          '&#x2F;': '/',
         }
         return entities[match] || match
       })
@@ -371,7 +424,7 @@ export class ValidationService {
       /(--|\/\*|\*\/|;|'|"|`)/g,
       /(\b(OR|AND)\b\s*\d*\s*=\s*\d*)/gi,
       /(\bUNION\b.*\bSELECT\b)/gi,
-      /(\bINTO\b.*\bOUTFILE\b)/gi
+      /(\bINTO\b.*\bOUTFILE\b)/gi,
     ]
 
     if (strictMode) {
@@ -387,7 +440,7 @@ export class ValidationService {
     // Remove command injection patterns
     const commandPatterns = [
       /[;&|`$(){}[\]]/g,
-      /\b(cat|ls|dir|type|echo|curl|wget|nc|netcat|rm|del|mv|cp|chmod|chown)\b/gi
+      /\b(cat|ls|dir|type|echo|curl|wget|nc|netcat|rm|del|mv|cp|chmod|chown)\b/gi,
     ]
 
     if (strictMode) {
@@ -515,23 +568,22 @@ export class ValidationService {
       }
 
       // Check for suspicious patterns
-      if (urlObj.hostname.includes('localhost') ||
-          urlObj.hostname.includes('127.0.0.1') ||
-          urlObj.hostname.includes('0.0.0.0')) {
+      if (
+        urlObj.hostname.includes('localhost') ||
+        urlObj.hostname.includes('127.0.0.1') ||
+        urlObj.hostname.includes('0.0.0.0')
+      ) {
         result.warnings.push('URL points to localhost or loopback address')
       }
 
       // Check for private IP ranges
-      const privateIpPatterns = [
-        /^10\./, /^172\.(1[6-9]|2[0-9]|3[01])\./, /^192\.168\./
-      ]
+      const privateIpPatterns = [/^10\./, /^172\.(1[6-9]|2[0-9]|3[01])\./, /^192\.168\./]
 
       privateIpPatterns.forEach(pattern => {
         if (pattern.test(urlObj.hostname)) {
           result.warnings.push('URL points to private IP address')
         }
       })
-
     } catch (error) {
       result.isValid = false
       result.errors.push('Invalid URL structure')
@@ -546,7 +598,10 @@ export class ValidationService {
    * @param options - Validation options
    * @returns Validation result
    */
-  validateFileUpload(file: File | { name: string; size: number; type: string }, options: FileValidationOptions = {}): ValidationResult {
+  validateFileUpload(
+    file: File | { name: string; size: number; type: string },
+    options: FileValidationOptions = {}
+  ): ValidationResult {
     const result: ValidationResult = {
       isValid: true,
       errors: [],
@@ -561,7 +616,7 @@ export class ValidationService {
       validateMagicNumbers = true,
       allowExecutables = false,
       maxFilenameLength = 255,
-      virusScanTimeout = 30000
+      virusScanTimeout = 30000,
     } = options
 
     if (!file) {
@@ -590,7 +645,10 @@ export class ValidationService {
     }
 
     // Filename security validation
-    const sanitizedFilename = this.sanitizeInput(file.name, { maxLength: maxFilenameLength, strictMode: true })
+    const sanitizedFilename = this.sanitizeInput(file.name, {
+      maxLength: maxFilenameLength,
+      strictMode: true,
+    })
     if (sanitizedFilename !== file.name) {
       result.warnings.push('Filename contains potentially dangerous characters')
     }
@@ -629,13 +687,42 @@ export class ValidationService {
 
     // Check for executable extensions
     const executableExtensions = [
-      '.exe', '.bat', '.cmd', '.com', '.scr', '.pif', '.vbs', '.js', '.jar',
-      '.msi', '.app', '.deb', '.rpm', '.dmg', '.pkg', '.run', '.bin',
-      '.sh', '.ps1', '.psm1', '.psd1', '.ps1xml', '.psc1', '.pssc',
-      '.msh', '.msh1', '.msh2', '.mshxml', '.msh1xml', '.msh2xml'
+      '.exe',
+      '.bat',
+      '.cmd',
+      '.com',
+      '.scr',
+      '.pif',
+      '.vbs',
+      '.js',
+      '.jar',
+      '.msi',
+      '.app',
+      '.deb',
+      '.rpm',
+      '.dmg',
+      '.pkg',
+      '.run',
+      '.bin',
+      '.sh',
+      '.ps1',
+      '.psm1',
+      '.psd1',
+      '.ps1xml',
+      '.psc1',
+      '.pssc',
+      '.msh',
+      '.msh1',
+      '.msh2',
+      '.mshxml',
+      '.msh1xml',
+      '.msh2xml',
     ]
 
-    if (!allowExecutables && executableExtensions.some(ext => file.name.toLowerCase().endsWith(ext))) {
+    if (
+      !allowExecutables &&
+      executableExtensions.some(ext => file.name.toLowerCase().endsWith(ext))
+    ) {
       result.isValid = false
       result.errors.push('Executable files are not allowed')
     }
@@ -652,7 +739,7 @@ export class ValidationService {
       /\.aspx$/i,
       /\.php$/i,
       /\.jsp$/i,
-      /\.jspx$/i
+      /\.jspx$/i,
     ]
 
     if (suspiciousPatterns.some(pattern => pattern.test(file.name))) {
@@ -666,7 +753,8 @@ export class ValidationService {
     }
 
     // Additional security warnings
-    if (file.size > 50 * 1024 * 1024) { // 50MB
+    if (file.size > 50 * 1024 * 1024) {
+      // 50MB
       result.warnings.push('Large file size may impact performance')
     }
 
@@ -683,12 +771,18 @@ export class ValidationService {
    * @param extension - File extension
    * @param result - Validation result to update
    */
-  private async validateFileMagicNumbers(file: File, extension: string, result: ValidationResult): Promise<void> {
+  private async validateFileMagicNumbers(
+    file: File,
+    extension: string,
+    result: ValidationResult
+  ): Promise<void> {
     try {
       // Read first 16 bytes for magic number validation
       const buffer = await file.slice(0, 16).arrayBuffer()
       const bytes = new Uint8Array(buffer)
-      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')
+      const hex = Array.from(bytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
 
       // Magic number signatures for common file types
       const magicNumbers: Record<string, string[]> = {
@@ -704,7 +798,7 @@ export class ValidationService {
         '.xls': ['d0cf11e0'],
         '.xlsx': ['504b0304'],
         '.ppt': ['d0cf11e0'],
-        '.pptx': ['504b0304']
+        '.pptx': ['504b0304'],
       }
 
       const expectedSignatures = magicNumbers[extension.toLowerCase()]
@@ -731,7 +825,6 @@ export class ValidationService {
         result.isValid = false
         result.errors.push('File contains embedded executable content')
       }
-
     } catch (error) {
       result.warnings.push('Could not validate file magic numbers')
     }
@@ -743,7 +836,10 @@ export class ValidationService {
    * @param options - Scanning options
    * @returns Promise resolving to scan result
    */
-  async scanFileForMalware(file: File | { name: string; size: number; type: string }, options: FileValidationOptions = {}): Promise<ValidationResult> {
+  async scanFileForMalware(
+    file: File | { name: string; size: number; type: string },
+    options: FileValidationOptions = {}
+  ): Promise<ValidationResult> {
     const result: ValidationResult = {
       isValid: true,
       errors: [],
@@ -769,7 +865,7 @@ export class ValidationService {
           /exec\s*\(/gi,
           /passthru\s*\(/gi,
           /file_get_contents\s*\(/gi,
-          /curl_exec\s*\(/gi
+          /curl_exec\s*\(/gi,
         ]
 
         for (const pattern of malwarePatterns) {
@@ -784,7 +880,7 @@ export class ValidationService {
           /[a-zA-Z0-9+/]{100,}/g, // Long base64-like strings
           /\\x[0-9a-fA-F]{2}/g, // Hex encoded strings
           /\\[0-7]{3}/g, // Octal encoded strings
-          /%[0-9a-fA-F]{2}/g // URL encoded strings
+          /%[0-9a-fA-F]{2}/g, // URL encoded strings
         ]
 
         let obfuscationScore = 0
@@ -799,7 +895,6 @@ export class ValidationService {
           result.warnings.push('File appears to be heavily obfuscated')
         }
       }
-
     } catch (error) {
       result.warnings.push('Could not complete malware scan')
     }
@@ -889,10 +984,7 @@ export class ValidationService {
     }
 
     // Check for command injection
-    const commandPatterns = [
-      /[;&|`$(){}[\]]/,
-      /\b(cat|ls|dir|type|echo|curl|wget|nc|netcat)\b/i,
-    ]
+    const commandPatterns = [/[;&|`$(){}[\]]/, /\b(cat|ls|dir|type|echo|curl|wget|nc|netcat)\b/i]
 
     for (const pattern of commandPatterns) {
       if (pattern.test(input)) {
@@ -910,7 +1002,10 @@ export class ValidationService {
    * @param cspDirectives - CSP directives to check against
    * @returns Validation result
    */
-  validateContentSecurityPolicy(content: string, cspDirectives: Record<string, string[]> = {}): ValidationResult {
+  validateContentSecurityPolicy(
+    content: string,
+    cspDirectives: Record<string, string[]> = {}
+  ): ValidationResult {
     const result: ValidationResult = {
       isValid: true,
       errors: [],
@@ -925,7 +1020,7 @@ export class ValidationService {
       'font-src': ["'self'"],
       'object-src': ["'none'"],
       'media-src': ["'self'"],
-      'frame-src': ["'none'"]
+      'frame-src': ["'none'"],
     }
 
     const directives = { ...defaultDirectives, ...cspDirectives }
@@ -949,7 +1044,7 @@ export class ValidationService {
     const resourcePatterns = [
       { directive: 'script-src', pattern: /<script[^>]+src\s*=\s*["']([^"']+)["']/gi },
       { directive: 'img-src', pattern: /<img[^>]+src\s*=\s*["']([^"']+)["']/gi },
-      { directive: 'link-src', pattern: /<link[^>]+href\s*=\s*["']([^"']+)["']/gi }
+      { directive: 'link-src', pattern: /<link[^>]+href\s*=\s*["']([^"']+)["']/gi },
     ]
 
     resourcePatterns.forEach(({ directive, pattern }) => {
@@ -958,7 +1053,11 @@ export class ValidationService {
         const url = match[1]
         if (url.startsWith('http://') || url.startsWith('https://')) {
           const domain = new URL(url).origin
-          if (directives[directive] && !directives[directive].includes(domain) && !directives[directive].includes('*')) {
+          if (
+            directives[directive] &&
+            !directives[directive].includes(domain) &&
+            !directives[directive].includes('*')
+          ) {
             result.warnings.push(`External resource from ${domain} may violate CSP ${directive}`)
           }
         }
@@ -974,15 +1073,18 @@ export class ValidationService {
    * @param options - Validation options
    * @returns Validation result
    */
-  validateInputComplexity(input: string, options: {
-    minLength?: number
-    maxLength?: number
-    requireSpecialChars?: boolean
-    requireNumbers?: boolean
-    requireUppercase?: boolean
-    requireLowercase?: boolean
-    maxRepeatingChars?: number
-  } = {}): ValidationResult {
+  validateInputComplexity(
+    input: string,
+    options: {
+      minLength?: number
+      maxLength?: number
+      requireSpecialChars?: boolean
+      requireNumbers?: boolean
+      requireUppercase?: boolean
+      requireLowercase?: boolean
+      maxRepeatingChars?: number
+    } = {}
+  ): ValidationResult {
     const result: ValidationResult = {
       isValid: true,
       errors: [],
@@ -996,7 +1098,7 @@ export class ValidationService {
       requireNumbers = false,
       requireUppercase = false,
       requireLowercase = false,
-      maxRepeatingChars = 10
+      maxRepeatingChars = 10,
     } = options
 
     if (input.length < minLength) {
@@ -1076,7 +1178,9 @@ export class ValidationService {
    * @param inputs - Object with input values and their types
    * @returns Combined validation result
    */
-  validateInputLengths(inputs: Record<string, { value: string; type: keyof InputLengthLimits }>): ValidationResult {
+  validateInputLengths(
+    inputs: Record<string, { value: string; type: keyof InputLengthLimits }>
+  ): ValidationResult {
     const result: ValidationResult = {
       isValid: true,
       errors: [],
@@ -1126,13 +1230,8 @@ export class ValidationService {
 
     // Check for suspicious business names
     if (business.businessName) {
-      const suspiciousPatterns = [
-        /test/i,
-        /example/i,
-        /placeholder/i,
-        /lorem ipsum/i,
-      ]
-      
+      const suspiciousPatterns = [/test/i, /example/i, /placeholder/i, /lorem ipsum/i]
+
       if (suspiciousPatterns.some(pattern => pattern.test(business.businessName))) {
         result.warnings.push('Business name appears to be a placeholder or test value')
       }
@@ -1149,12 +1248,12 @@ export class ValidationService {
     // Validate coordinates if present
     if (business.coordinates) {
       const { lat, lng } = business.coordinates
-      
+
       // Check if coordinates are in a reasonable range for business locations
       if (lat === 0 && lng === 0) {
         result.warnings.push('Coordinates appear to be default values (0, 0)')
       }
-      
+
       // Check if coordinates are in the ocean (very basic check)
       if (Math.abs(lat) < 1 && Math.abs(lng) < 1) {
         result.warnings.push('Coordinates may be inaccurate (too close to 0, 0)')
@@ -1211,7 +1310,7 @@ export class ValidationService {
 
     businesses.forEach((business, index) => {
       const validation = this.validateBusinessRecord(business)
-      
+
       if (validation.isValid) {
         summary.validRecords++
       } else {

@@ -26,5 +26,5 @@ export type {
   DataQualityMetrics,
   UserActivitySummary,
   TeamPerformance,
-  WorkspaceAnalytics
+  WorkspaceAnalytics,
 } from '@/types/multi-user'

@@ -121,12 +121,13 @@ export class ExportService {
     // Build industry parts - each industry gets its own segment
     let industryParts: string[] = []
     if (context?.selectedIndustries && context.selectedIndustries.length > 0) {
-      industryParts = context.selectedIndustries.map(industry =>
-        industry
-          .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
-          .replace(/\s+/g, '-') // Replace spaces with hyphens
-          .replace(/-+/g, '-') // Replace multiple hyphens with single
-          .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      industryParts = context.selectedIndustries.map(
+        industry =>
+          industry
+            .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-') // Replace multiple hyphens with single
+            .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
       )
     } else {
       industryParts = ['All-Industries']
@@ -232,11 +233,15 @@ export class ExportService {
       businessesToExport = businesses.filter(business =>
         options.selectedBusinesses!.includes(business.id)
       )
-      logger.info('ExportService', `Filtered export: ${businessesToExport.length} of ${businesses.length} businesses selected`)
+      logger.info(
+        'ExportService',
+        `Filtered export: ${businessesToExport.length} of ${businesses.length} businesses selected`
+      )
     }
 
     // Process data with prioritized deduplication
-    const { processedRecords, stats } = await prioritizedDataProcessor.processBusinessRecords(businessesToExport)
+    const { processedRecords, stats } =
+      await prioritizedDataProcessor.processBusinessRecords(businessesToExport)
 
     logger.info('ExportService', `Data processing complete:`, {
       original: stats.totalRecords,
@@ -244,18 +249,23 @@ export class ExportService {
       final: stats.finalRecords,
       withEmail: stats.recordsWithEmail,
       withPhone: stats.recordsWithPhone,
-      withAddress: stats.recordsWithAddress
+      withAddress: stats.recordsWithAddress,
     })
 
     // Generate prioritized filename using selected industry names
-    const filename = options.filename || prioritizedExportFormatter.generateFilename({
-      industries: options.context?.selectedIndustries,
-      location: options.context?.searchLocation,
-      totalRecords: processedRecords.length
-    })
+    const filename =
+      options.filename ||
+      prioritizedExportFormatter.generateFilename({
+        industries: options.context?.selectedIndustries,
+        location: options.context?.searchLocation,
+        totalRecords: processedRecords.length,
+      })
 
     try {
-      logger.info('ExportService', `Exporting ${processedRecords.length} prioritized businesses as ${format} to ${filename}`)
+      logger.info(
+        'ExportService',
+        `Exporting ${processedRecords.length} prioritized businesses as ${format} to ${filename}`
+      )
 
       switch (format) {
         case 'csv':
@@ -303,20 +313,17 @@ export class ExportService {
       }
 
       // Email filter
-      if (filters.hasEmail !== undefined &&
-          (business.email?.length > 0) !== filters.hasEmail) {
+      if (filters.hasEmail !== undefined && business.email?.length > 0 !== filters.hasEmail) {
         return false
       }
 
       // Phone filter
-      if (filters.hasPhone !== undefined &&
-          Boolean(business.phone) !== filters.hasPhone) {
+      if (filters.hasPhone !== undefined && Boolean(business.phone) !== filters.hasPhone) {
         return false
       }
 
       // Website filter
-      if (filters.hasWebsite !== undefined &&
-          Boolean(business.websiteUrl) !== filters.hasWebsite) {
+      if (filters.hasWebsite !== undefined && Boolean(business.websiteUrl) !== filters.hasWebsite) {
         return false
       }
 
@@ -411,7 +418,7 @@ export class ExportService {
 
     // Format data for export (with template support)
     const formattedData = this.applyTemplate(businesses, options.template)
-    
+
     let csvContent = ''
 
     // Add headers
@@ -428,13 +435,13 @@ export class ExportService {
 
     // Create blob with appropriate encoding
     const encoding = options.encoding || 'utf-8'
-    const blob = new Blob([csvContent], { 
-      type: `text/csv;charset=${encoding}` 
+    const blob = new Blob([csvContent], {
+      type: `text/csv;charset=${encoding}`,
     })
 
     return {
       blob,
-      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
+      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`,
     }
   }
 
@@ -453,12 +460,12 @@ export class ExportService {
     const csvContent = prioritizedExportFormatter.formatForCSV(records)
 
     const blob = new Blob([csvContent], {
-      type: 'text/csv;charset=utf-8'
+      type: 'text/csv;charset=utf-8',
     })
 
     return {
       blob,
-      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
+      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`,
     }
   }
 
@@ -478,7 +485,7 @@ export class ExportService {
 
     return {
       blob: csvResult.blob,
-      filename: filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`
+      filename: filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`,
     }
   }
 
@@ -498,7 +505,7 @@ export class ExportService {
 
     return {
       blob: csvResult.blob,
-      filename: filename.endsWith('.xls') ? filename : `${filename}.xls`
+      filename: filename.endsWith('.xls') ? filename : `${filename}.xls`,
     }
   }
 
@@ -518,7 +525,7 @@ export class ExportService {
 
     return {
       blob: csvResult.blob,
-      filename: filename.endsWith('.ods') ? filename : `${filename}.ods`
+      filename: filename.endsWith('.ods') ? filename : `${filename}.ods`,
     }
   }
 
@@ -538,12 +545,12 @@ export class ExportService {
     const jsonContent = JSON.stringify(jsonData, null, 2)
 
     const blob = new Blob([jsonContent], {
-      type: 'application/json'
+      type: 'application/json',
     })
 
     return {
       blob,
-      filename: filename.endsWith('.json') ? filename : `${filename}.json`
+      filename: filename.endsWith('.json') ? filename : `${filename}.json`,
     }
   }
 
@@ -574,15 +581,17 @@ export class ExportService {
     doc.text(`Average Quality: ${Math.round(summary.averageConfidence * 100)}%`, 20, 56)
 
     // Prepare table data
-    const tableData = records.slice(0, 100).map(record => [
-      record.email || '',
-      record.phone || '',
-      record.businessName || '',
-      record.streetAddress || '',
-      record.city || '',
-      record.state || '',
-      record.zipCode || ''
-    ])
+    const tableData = records
+      .slice(0, 100)
+      .map(record => [
+        record.email || '',
+        record.phone || '',
+        record.businessName || '',
+        record.streetAddress || '',
+        record.city || '',
+        record.state || '',
+        record.zipCode || '',
+      ])
 
     // Add table
     ;(doc as any).autoTable({
@@ -590,14 +599,14 @@ export class ExportService {
       body: tableData,
       startY: 65,
       styles: { fontSize: 8 },
-      headStyles: { fillColor: [66, 139, 202] }
+      headStyles: { fillColor: [66, 139, 202] },
     })
 
     const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' })
 
     return {
       blob: pdfBlob,
-      filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`
+      filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
     }
   }
 
@@ -621,7 +630,7 @@ export class ExportService {
     // Excel will automatically detect and open CSV files correctly
     return {
       blob: csvResult.blob,
-      filename: `${filename}.xlsx`
+      filename: `${filename}.xlsx`,
     }
   }
 
@@ -645,7 +654,7 @@ export class ExportService {
     // Excel will automatically detect and open CSV files correctly
     return {
       blob: csvResult.blob,
-      filename: `${filename}.xls`
+      filename: `${filename}.xls`,
     }
   }
 
@@ -669,7 +678,7 @@ export class ExportService {
     // LibreOffice will automatically detect and open CSV files correctly
     return {
       blob: csvResult.blob,
-      filename: `${filename}.ods`
+      filename: `${filename}.ods`,
     }
   }
 
@@ -691,7 +700,7 @@ export class ExportService {
     // Add title
     doc.setFontSize(16)
     doc.text('Business Directory Export', 14, 20)
-    
+
     // Add export date
     doc.setFontSize(10)
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30)
@@ -699,7 +708,7 @@ export class ExportService {
 
     // Prepare table data (with template support)
     const formattedData = this.applyTemplate(businesses, options.template)
-    
+
     if (formattedData.length > 0) {
       const headers = Object.keys(formattedData[0]!)
       const rows = formattedData.map(row => Object.values(row))
@@ -740,7 +749,7 @@ export class ExportService {
 
     return {
       blob: pdfBlob,
-      filename: `${filename}.pdf`
+      filename: `${filename}.pdf`,
     }
   }
 
@@ -767,14 +776,14 @@ export class ExportService {
     }
 
     const jsonContent = JSON.stringify(exportData, null, 2)
-    
-    const blob = new Blob([jsonContent], { 
-      type: 'application/json' 
+
+    const blob = new Blob([jsonContent], {
+      type: 'application/json',
     })
 
     return {
       blob,
-      filename: filename.endsWith('.json') ? filename : `${filename}.json`
+      filename: filename.endsWith('.json') ? filename : `${filename}.json`,
     }
   }
 
@@ -790,15 +799,15 @@ export class ExportService {
       const link = document.createElement('a')
       link.href = url
       link.download = filename
-      
+
       // Trigger download
       document.body.appendChild(link)
       link.click()
-      
+
       // Cleanup
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
-      
+
       logger.info('ExportService', `File downloaded: ${filename}`)
     } catch (error) {
       logger.error('ExportService', 'Download failed', error)
@@ -813,7 +822,17 @@ export class ExportService {
    */
   getSupportedFormats(includeAll: boolean = false): ExportFormat[] {
     const primaryFormats: ExportFormat[] = ['csv', 'xlsx', 'pdf']
-    const allFormats: ExportFormat[] = ['csv', 'xlsx', 'xls', 'ods', 'pdf', 'json', 'xml', 'vcf', 'sql']
+    const allFormats: ExportFormat[] = [
+      'csv',
+      'xlsx',
+      'xls',
+      'ods',
+      'pdf',
+      'json',
+      'xml',
+      'vcf',
+      'sql',
+    ]
 
     return includeAll ? allFormats : primaryFormats
   }
@@ -835,7 +854,7 @@ export class ExportService {
       vcf: 'vCard Format - Contact information format',
       sql: 'SQL Insert Statements - Database import format',
     }
-    
+
     return descriptions[format] || 'Unknown format'
   }
 
@@ -847,30 +866,30 @@ export class ExportService {
    */
   estimateFileSize(businesses: BusinessRecord[], format: ExportFormat): number {
     const avgRecordSize = {
-      csv: 200,    // bytes per record
-      xlsx: 200,   // bytes per record (now CSV format)
-      xls: 200,    // bytes per record (now CSV format)
-      ods: 200,    // bytes per record (now CSV format)
-      pdf: 150,    // bytes per record
-      json: 400,   // bytes per record
-      xml: 350,    // bytes per record
-      vcf: 180,    // bytes per record
-      sql: 250,    // bytes per record
+      csv: 200, // bytes per record
+      xlsx: 200, // bytes per record (now CSV format)
+      xls: 200, // bytes per record (now CSV format)
+      ods: 200, // bytes per record (now CSV format)
+      pdf: 150, // bytes per record
+      json: 400, // bytes per record
+      xml: 350, // bytes per record
+      vcf: 180, // bytes per record
+      sql: 250, // bytes per record
     }
 
     const baseSize = {
-      csv: 100,     // header size
-      xlsx: 100,    // header size (now CSV format)
-      xls: 100,     // header size (now CSV format)
-      ods: 100,     // header size (now CSV format)
-      pdf: 5000,    // document structure
-      json: 200,    // metadata
-      xml: 300,     // XML structure
-      vcf: 50,      // vCard header
-      sql: 150,     // SQL statements
+      csv: 100, // header size
+      xlsx: 100, // header size (now CSV format)
+      xls: 100, // header size (now CSV format)
+      ods: 100, // header size (now CSV format)
+      pdf: 5000, // document structure
+      json: 200, // metadata
+      xml: 300, // XML structure
+      vcf: 50, // vCard header
+      sql: 150, // SQL statements
     }
 
-    return baseSize[format] + (businesses.length * avgRecordSize[format])
+    return baseSize[format] + businesses.length * avgRecordSize[format]
   }
 
   /**
@@ -1065,7 +1084,10 @@ export class ExportService {
     template: CRMTemplate,
     options: ExportOptions
   ): Promise<{ blob: Blob; filename: string }> {
-    logger.info('ExportService', `Exporting ${businesses.length} businesses using CRM template: ${template.name}`)
+    logger.info(
+      'ExportService',
+      `Exporting ${businesses.length} businesses using CRM template: ${template.name}`
+    )
 
     try {
       const crmOptions = {
@@ -1077,31 +1099,28 @@ export class ExportService {
         metadata: {
           exportedBy: 'Business Scraper',
           exportPurpose: 'CRM Import',
-          notes: `Exported using ${template.name} template`
-        }
+          notes: `Exported using ${template.name} template`,
+        },
       }
 
-      const result = await crmExportService.exportWithCRMTemplate(
-        businesses,
-        template,
-        crmOptions
-      )
+      const result = await crmExportService.exportWithCRMTemplate(businesses, template, crmOptions)
 
       logger.info('ExportService', 'CRM export completed', {
         totalRecords: result.statistics.totalRecords,
         exportedRecords: result.statistics.exportedRecords,
         skippedRecords: result.statistics.skippedRecords,
-        processingTime: result.statistics.processingTime
+        processingTime: result.statistics.processingTime,
       })
 
       return {
         blob: result.blob,
-        filename: result.filename
+        filename: result.filename,
       }
-
     } catch (error) {
       logger.error('ExportService', 'CRM export failed', error)
-      throw new Error(`CRM export failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `CRM export failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 }

@@ -10,14 +10,14 @@ import { CreateUserRequest, UpdateUserRequest } from '@/types/multi-user'
 // Mock database
 const mockDatabase = {
   query: jest.fn(),
-  transaction: jest.fn()
+  transaction: jest.fn(),
 }
 
 // Mock bcrypt
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashed_password'),
   compare: jest.fn().mockResolvedValue(true),
-  genSalt: jest.fn().mockResolvedValue('salt')
+  genSalt: jest.fn().mockResolvedValue('salt'),
 }))
 
 describe('UserManagementService', () => {
@@ -36,7 +36,7 @@ describe('UserManagementService', () => {
         email: 'test@example.com',
         password: 'password123',
         firstName: 'Test',
-        lastName: 'User'
+        lastName: 'User',
       }
 
       const mockUser = {
@@ -46,7 +46,7 @@ describe('UserManagementService', () => {
         isActive: true,
         isVerified: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockDatabase.query
@@ -56,12 +56,14 @@ describe('UserManagementService', () => {
 
       const result = await UserManagementService.createUser(userData)
 
-      expect(result.user).toEqual(expect.objectContaining({
-        username: userData.username,
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName
-      }))
+      expect(result.user).toEqual(
+        expect.objectContaining({
+          username: userData.username,
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+        })
+      )
       expect(mockDatabase.query).toHaveBeenCalledTimes(3)
     })
 
@@ -71,15 +73,16 @@ describe('UserManagementService', () => {
         email: 'test@example.com',
         password: 'password123',
         firstName: 'Test',
-        lastName: 'User'
+        lastName: 'User',
       }
 
-      mockDatabase.query.mockResolvedValueOnce({ 
-        rows: [{ id: 'existing-user' }] 
+      mockDatabase.query.mockResolvedValueOnce({
+        rows: [{ id: 'existing-user' }],
       })
 
-      await expect(UserManagementService.createUser(userData))
-        .rejects.toThrow('Username already exists')
+      await expect(UserManagementService.createUser(userData)).rejects.toThrow(
+        'Username already exists'
+      )
     })
 
     it('should throw error if email already exists', async () => {
@@ -88,15 +91,16 @@ describe('UserManagementService', () => {
         email: 'existing@example.com',
         password: 'password123',
         firstName: 'Test',
-        lastName: 'User'
+        lastName: 'User',
       }
 
       mockDatabase.query
         .mockResolvedValueOnce({ rows: [] }) // Username check
         .mockResolvedValueOnce({ rows: [{ id: 'existing-user' }] }) // Email check
 
-      await expect(UserManagementService.createUser(userData))
-        .rejects.toThrow('Email already exists')
+      await expect(UserManagementService.createUser(userData)).rejects.toThrow(
+        'Email already exists'
+      )
     })
 
     it('should validate required fields', async () => {
@@ -105,11 +109,12 @@ describe('UserManagementService', () => {
         email: 'test@example.com',
         password: 'password123',
         firstName: 'Test',
-        lastName: 'User'
+        lastName: 'User',
       } as CreateUserRequest
 
-      await expect(UserManagementService.createUser(invalidUserData))
-        .rejects.toThrow('Username is required')
+      await expect(UserManagementService.createUser(invalidUserData)).rejects.toThrow(
+        'Username is required'
+      )
     })
   })
 
@@ -125,7 +130,7 @@ describe('UserManagementService', () => {
         isVerified: true,
         roles: [],
         teams: [],
-        workspaces: []
+        workspaces: [],
       }
 
       mockDatabase.query.mockResolvedValueOnce({ rows: [mockUser] })
@@ -157,7 +162,7 @@ describe('UserManagementService', () => {
       const mockUser = {
         id: 'user-123',
         username: 'testuser',
-        isActive: false
+        isActive: false,
       }
 
       mockDatabase.query.mockResolvedValueOnce({ rows: [mockUser] })
@@ -177,14 +182,14 @@ describe('UserManagementService', () => {
       const updateData: UpdateUserRequest = {
         firstName: 'Updated',
         lastName: 'Name',
-        email: 'updated@example.com'
+        email: 'updated@example.com',
       }
 
       const mockUpdatedUser = {
         id: 'user-123',
         username: 'testuser',
         ...updateData,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockDatabase.query.mockResolvedValueOnce({ rows: [mockUpdatedUser] })
@@ -199,8 +204,9 @@ describe('UserManagementService', () => {
     it('should throw error if user not found', async () => {
       mockDatabase.query.mockResolvedValueOnce({ rows: [] })
 
-      await expect(UserManagementService.updateUser('nonexistent', {}))
-        .rejects.toThrow('User not found')
+      await expect(UserManagementService.updateUser('nonexistent', {})).rejects.toThrow(
+        'User not found'
+      )
     })
   })
 
@@ -219,19 +225,19 @@ describe('UserManagementService', () => {
               id: 'role-123',
               name: 'contributor',
               displayName: 'Contributor',
-              permissions: ['campaigns.view', 'data.view']
-            }
-          }
+              permissions: ['campaigns.view', 'data.view'],
+            },
+          },
         ],
         teams: [
           {
             team: {
               id: 'team-123',
-              name: 'Test Team'
+              name: 'Test Team',
             },
-            role: 'member'
-          }
-        ]
+            role: 'member',
+          },
+        ],
       }
 
       mockDatabase.query.mockResolvedValueOnce({ rows: [mockUser] })
@@ -261,15 +267,17 @@ describe('UserManagementService', () => {
         .mockResolvedValueOnce({ rows: [] }) // No existing assignment
         .mockResolvedValueOnce({ rows: [{ user_id: 'user-123', role_id: 'role-123' }] }) // Insert
 
-      await expect(UserManagementService.assignRole('user-123', 'role-123', 'admin-123'))
-        .resolves.not.toThrow()
+      await expect(
+        UserManagementService.assignRole('user-123', 'role-123', 'admin-123')
+      ).resolves.not.toThrow()
     })
 
     it('should throw error if user not found', async () => {
       mockDatabase.query.mockResolvedValueOnce({ rows: [] })
 
-      await expect(UserManagementService.assignRole('nonexistent', 'role-123', 'admin-123'))
-        .rejects.toThrow('User not found')
+      await expect(
+        UserManagementService.assignRole('nonexistent', 'role-123', 'admin-123')
+      ).rejects.toThrow('User not found')
     })
 
     it('should throw error if role not found', async () => {
@@ -277,33 +285,34 @@ describe('UserManagementService', () => {
         .mockResolvedValueOnce({ rows: [{ id: 'user-123' }] })
         .mockResolvedValueOnce({ rows: [] })
 
-      await expect(UserManagementService.assignRole('user-123', 'nonexistent', 'admin-123'))
-        .rejects.toThrow('Role not found')
+      await expect(
+        UserManagementService.assignRole('user-123', 'nonexistent', 'admin-123')
+      ).rejects.toThrow('Role not found')
     })
   })
 
   describe('revokeRole', () => {
     it('should revoke role from user successfully', async () => {
-      mockDatabase.query.mockResolvedValueOnce({ 
-        rows: [{ user_id: 'user-123', role_id: 'role-123' }] 
+      mockDatabase.query.mockResolvedValueOnce({
+        rows: [{ user_id: 'user-123', role_id: 'role-123' }],
       })
 
-      await expect(UserManagementService.revokeRole('user-123', 'role-123'))
-        .resolves.not.toThrow()
+      await expect(UserManagementService.revokeRole('user-123', 'role-123')).resolves.not.toThrow()
     })
 
     it('should throw error if role assignment not found', async () => {
       mockDatabase.query.mockResolvedValueOnce({ rows: [] })
 
-      await expect(UserManagementService.revokeRole('user-123', 'role-123'))
-        .rejects.toThrow('Role assignment not found')
+      await expect(UserManagementService.revokeRole('user-123', 'role-123')).rejects.toThrow(
+        'Role assignment not found'
+      )
     })
   })
 
   describe('deleteUser', () => {
     it('should soft delete user successfully', async () => {
-      mockDatabase.query.mockResolvedValueOnce({ 
-        rows: [{ id: 'user-123', isActive: false }] 
+      mockDatabase.query.mockResolvedValueOnce({
+        rows: [{ id: 'user-123', isActive: false }],
       })
 
       const result = await UserManagementService.deleteUser('user-123', false)
@@ -312,19 +321,19 @@ describe('UserManagementService', () => {
     })
 
     it('should hard delete user successfully', async () => {
-      mockDatabase.query.mockResolvedValueOnce({ 
-        rows: [{ id: 'user-123' }] 
+      mockDatabase.query.mockResolvedValueOnce({
+        rows: [{ id: 'user-123' }],
       })
 
-      await expect(UserManagementService.deleteUser('user-123', true))
-        .resolves.not.toThrow()
+      await expect(UserManagementService.deleteUser('user-123', true)).resolves.not.toThrow()
     })
 
     it('should throw error if user not found', async () => {
       mockDatabase.query.mockResolvedValueOnce({ rows: [] })
 
-      await expect(UserManagementService.deleteUser('nonexistent', false))
-        .rejects.toThrow('User not found')
+      await expect(UserManagementService.deleteUser('nonexistent', false)).rejects.toThrow(
+        'User not found'
+      )
     })
   })
 
@@ -332,14 +341,14 @@ describe('UserManagementService', () => {
     it('should return paginated users list', async () => {
       const mockUsers = [
         { id: 'user-1', username: 'user1', total_count: '2' },
-        { id: 'user-2', username: 'user2', total_count: '2' }
+        { id: 'user-2', username: 'user2', total_count: '2' },
       ]
 
       mockDatabase.query.mockResolvedValueOnce({ rows: mockUsers })
 
       const result = await UserManagementService.getUsers({
         page: 1,
-        limit: 10
+        limit: 10,
       })
 
       expect(result.users).toHaveLength(2)
@@ -349,16 +358,14 @@ describe('UserManagementService', () => {
     })
 
     it('should filter users by search term', async () => {
-      const mockUsers = [
-        { id: 'user-1', username: 'testuser', total_count: '1' }
-      ]
+      const mockUsers = [{ id: 'user-1', username: 'testuser', total_count: '1' }]
 
       mockDatabase.query.mockResolvedValueOnce({ rows: mockUsers })
 
       const result = await UserManagementService.getUsers({
         page: 1,
         limit: 10,
-        search: 'test'
+        search: 'test',
       })
 
       expect(result.users).toHaveLength(1)
@@ -366,16 +373,14 @@ describe('UserManagementService', () => {
     })
 
     it('should filter users by role', async () => {
-      const mockUsers = [
-        { id: 'user-1', username: 'admin', total_count: '1' }
-      ]
+      const mockUsers = [{ id: 'user-1', username: 'admin', total_count: '1' }]
 
       mockDatabase.query.mockResolvedValueOnce({ rows: mockUsers })
 
       const result = await UserManagementService.getUsers({
         page: 1,
         limit: 10,
-        role: 'admin'
+        role: 'admin',
       })
 
       expect(result.users).toHaveLength(1)

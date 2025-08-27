@@ -74,7 +74,7 @@ export interface ApiKeyConfig {
 /**
  * API Permissions
  */
-export type ApiPermission = 
+export type ApiPermission =
   | 'read:businesses'
   | 'write:businesses'
   | 'read:exports'
@@ -113,7 +113,7 @@ export interface WebhookConfig {
 /**
  * Webhook Events
  */
-export type WebhookEvent = 
+export type WebhookEvent =
   | 'export.completed'
   | 'export.failed'
   | 'data.scraped'
@@ -166,7 +166,7 @@ export interface ExportScheduleConfig {
   templateId: string
   schedule: {
     type: 'cron' | 'interval'
-    expression: string        // Cron expression or interval (e.g., '0 9 * * 1' or '1h')
+    expression: string // Cron expression or interval (e.g., '0 9 * * 1' or '1h')
     timezone: string
   }
   filters?: {
@@ -355,28 +355,48 @@ export interface ApiResponse<T = any> {
  */
 export interface IntegrationService {
   // OAuth 2.0 Management
-  createOAuth2Client(config: Omit<OAuth2Client, 'id' | 'tokens' | 'status' | 'createdAt' | 'updatedAt' | 'usageCount'>): Promise<OAuth2Client>
+  createOAuth2Client(
+    config: Omit<
+      OAuth2Client,
+      'id' | 'tokens' | 'status' | 'createdAt' | 'updatedAt' | 'usageCount'
+    >
+  ): Promise<OAuth2Client>
   getOAuth2Client(id: string): Promise<OAuth2Client | null>
   refreshToken(clientId: string): Promise<OAuth2Token>
   revokeToken(clientId: string): Promise<void>
-  
+
   // API Key Management
-  createApiKey(config: Omit<ApiKeyConfig, 'id' | 'key' | 'status' | 'createdAt' | 'usageCount'>): Promise<ApiKeyConfig>
+  createApiKey(
+    config: Omit<ApiKeyConfig, 'id' | 'key' | 'status' | 'createdAt' | 'usageCount'>
+  ): Promise<ApiKeyConfig>
   getApiKey(id: string): Promise<ApiKeyConfig | null>
   revokeApiKey(id: string): Promise<void>
-  
+
   // Webhook Management
-  createWebhook(config: Omit<WebhookConfig, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'successCount' | 'failureCount'>): Promise<WebhookConfig>
+  createWebhook(
+    config: Omit<
+      WebhookConfig,
+      'id' | 'status' | 'createdAt' | 'updatedAt' | 'successCount' | 'failureCount'
+    >
+  ): Promise<WebhookConfig>
   updateWebhook(id: string, config: Partial<WebhookConfig>): Promise<WebhookConfig>
   deleteWebhook(id: string): Promise<void>
   triggerWebhook(id: string, event: WebhookEvent, data: any): Promise<WebhookDeliveryResult>
-  
+
   // Schedule Management
-  createSchedule(config: Omit<ExportScheduleConfig, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'runCount' | 'successCount' | 'failureCount'>): Promise<ExportScheduleConfig>
+  createSchedule(
+    config: Omit<
+      ExportScheduleConfig,
+      'id' | 'status' | 'createdAt' | 'updatedAt' | 'runCount' | 'successCount' | 'failureCount'
+    >
+  ): Promise<ExportScheduleConfig>
   updateSchedule(id: string, config: Partial<ExportScheduleConfig>): Promise<ExportScheduleConfig>
   deleteSchedule(id: string): Promise<void>
-  
+
   // Analytics
-  getUsageAnalytics(clientId: string, period: { start: string; end: string }): Promise<ApiUsageAnalytics>
+  getUsageAnalytics(
+    clientId: string,
+    period: { start: string; end: string }
+  ): Promise<ApiUsageAnalytics>
   getHealthStatus(): Promise<IntegrationHealthStatus[]>
 }

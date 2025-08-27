@@ -1,49 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🔐 Security Deployment Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">🔐 Security Deployment Guide</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>🔐 Security Deployment Guide</h1>
-<h2>Overview</h2>
-<p>This guide provides comprehensive instructions for secure deployment of the Business Scraper application, focusing on proper secret management and security best practices.</p>
-<h2>🚨 Critical Security Requirements</h2>
-<h3>Before Deployment</h3>
-<ol>
-<li><strong>Never commit secrets to version control</strong></li>
-<li><strong>Use strong, unique passwords for all environments</strong></li>
-<li><strong>Enable authentication in production</strong></li>
-<li><strong>Use encrypted connections (SSL/TLS)</strong></li>
-<li><strong>Regularly rotate secrets and passwords</strong></li>
-</ol>
-<h2>📋 Environment Setup Checklist</h2>
-<h3>Development Environment</h3>
-<pre><code class="language-bash"># 1. Copy template files
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">🔐 Security Deployment Guide</li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>🔐 Security Deployment Guide</h1>
+        <h2>Overview</h2>
+        <p>
+          This guide provides comprehensive instructions for secure deployment of the Business
+          Scraper application, focusing on proper secret management and security best practices.
+        </p>
+        <h2>🚨 Critical Security Requirements</h2>
+        <h3>Before Deployment</h3>
+        <ol>
+          <li><strong>Never commit secrets to version control</strong></li>
+          <li><strong>Use strong, unique passwords for all environments</strong></li>
+          <li><strong>Enable authentication in production</strong></li>
+          <li><strong>Use encrypted connections (SSL/TLS)</strong></li>
+          <li><strong>Regularly rotate secrets and passwords</strong></li>
+        </ol>
+        <h2>📋 Environment Setup Checklist</h2>
+        <h3>Development Environment</h3>
+        <pre><code class="language-bash"># 1. Copy template files
 cp config/development.env.example config/development.env
 cp .env.example .env.local
 
@@ -56,8 +62,8 @@ node scripts/generate-secrets.js --env development --output .env.dev.secrets
 # 4. Validate configuration
 npm run config:validate
 </code></pre>
-<h3>Production Environment</h3>
-<pre><code class="language-bash"># 1. Copy template files
+        <h3>Production Environment</h3>
+        <pre><code class="language-bash"># 1. Copy template files
 cp config/production.env.example config/production.env
 
 # 2. Generate production secrets (CRITICAL: Store securely)
@@ -72,10 +78,10 @@ NODE_ENV=production npm run config:validate
 # 5. Remove secrets file after copying values
 rm .env.prod.secrets  # After copying values to secure location
 </code></pre>
-<h2>🔑 Secret Generation</h2>
-<h3>Automated Secret Generation</h3>
-<p>Use the provided script to generate cryptographically secure secrets:</p>
-<pre><code class="language-bash"># Generate all secrets for production
+        <h2>🔑 Secret Generation</h2>
+        <h3>Automated Secret Generation</h3>
+        <p>Use the provided script to generate cryptographically secure secrets:</p>
+        <pre><code class="language-bash"># Generate all secrets for production
 node scripts/generate-secrets.js --env production
 
 # Generate secrets for specific environment
@@ -85,9 +91,9 @@ node scripts/generate-secrets.js --env test
 # Display secrets without saving to file
 node scripts/generate-secrets.js --display-only
 </code></pre>
-<h3>Manual Secret Generation</h3>
-<p>If you need to generate secrets manually:</p>
-<pre><code class="language-bash"># Generate encryption key (32 bytes hex)
+        <h3>Manual Secret Generation</h3>
+        <p>If you need to generate secrets manually:</p>
+        <pre><code class="language-bash"># Generate encryption key (32 bytes hex)
 node -e &quot;console.log(require(&#39;crypto&#39;).randomBytes(32).toString(&#39;hex&#39;))&quot;
 
 # Generate JWT secret (64 bytes base64url)
@@ -96,10 +102,10 @@ node -e &quot;console.log(require(&#39;crypto&#39;).randomBytes(64).toString(&#3
 # Generate secure password
 node scripts/generate-password.js --random --length 24
 </code></pre>
-<h2>🛡️ Security Configuration</h2>
-<h3>Required Security Variables</h3>
-<p><strong>Critical secrets that MUST be unique and secure:</strong></p>
-<pre><code class="language-env"># Database Security
+        <h2>🛡️ Security Configuration</h2>
+        <h3>Required Security Variables</h3>
+        <p><strong>Critical secrets that MUST be unique and secure:</strong></p>
+        <pre><code class="language-env"># Database Security
 DB_PASSWORD=&lt;strong-unique-password&gt;
 POSTGRES_PASSWORD=&lt;strong-unique-password&gt;
 REDIS_PASSWORD=&lt;strong-unique-password&gt;
@@ -113,8 +119,8 @@ SESSION_SECRET=&lt;random-string&gt;
 ADMIN_PASSWORD_HASH=&lt;pbkdf2-hash&gt;
 ADMIN_PASSWORD_SALT=&lt;random-salt&gt;
 </code></pre>
-<h3>Production Security Settings</h3>
-<pre><code class="language-env"># Enable authentication
+        <h3>Production Security Settings</h3>
+        <pre><code class="language-env"># Enable authentication
 ENABLE_AUTH=true
 
 # Use hashed passwords (never plain text)
@@ -134,61 +140,65 @@ LOCKOUT_DURATION=900000  # 15 minutes
 RATE_LIMIT_MAX=100
 SCRAPING_RATE_LIMIT=10
 </code></pre>
-<h2>🔒 Secret Management Best Practices</h2>
-<h3>1. Environment Separation</h3>
-<ul>
-<li><strong>Development</strong>: Use weak passwords for convenience, but still unique</li>
-<li><strong>Staging</strong>: Use production-strength secrets, separate from production</li>
-<li><strong>Production</strong>: Use maximum security, unique secrets</li>
-</ul>
-<h3>2. Secret Storage</h3>
-<p><strong>DO:</strong></p>
-<ul>
-<li>Use environment variables</li>
-<li>Use secret management services (AWS Secrets Manager, Azure Key Vault, etc.)</li>
-<li>Store secrets in encrypted files with restricted access</li>
-<li>Use different secrets for each environment</li>
-</ul>
-<p><strong>DON&#39;T:</strong></p>
-<ul>
-<li>Commit secrets to version control</li>
-<li>Share secrets via email or chat</li>
-<li>Use the same secrets across environments</li>
-<li>Store secrets in plain text files</li>
-</ul>
-<h3>3. Secret Rotation</h3>
-<ul>
-<li>Rotate database passwords quarterly</li>
-<li>Rotate API keys when compromised</li>
-<li>Rotate encryption keys annually</li>
-<li>Update admin passwords regularly</li>
-</ul>
-<h2>🚀 Deployment Procedures</h2>
-<h3>Docker Deployment</h3>
-<ol>
-<li><strong>Create secure environment file:</strong></li>
-</ol>
-<pre><code class="language-bash"># Generate secrets
+        <h2>🔒 Secret Management Best Practices</h2>
+        <h3>1. Environment Separation</h3>
+        <ul>
+          <li>
+            <strong>Development</strong>: Use weak passwords for convenience, but still unique
+          </li>
+          <li>
+            <strong>Staging</strong>: Use production-strength secrets, separate from production
+          </li>
+          <li><strong>Production</strong>: Use maximum security, unique secrets</li>
+        </ul>
+        <h3>2. Secret Storage</h3>
+        <p><strong>DO:</strong></p>
+        <ul>
+          <li>Use environment variables</li>
+          <li>Use secret management services (AWS Secrets Manager, Azure Key Vault, etc.)</li>
+          <li>Store secrets in encrypted files with restricted access</li>
+          <li>Use different secrets for each environment</li>
+        </ul>
+        <p><strong>DON&#39;T:</strong></p>
+        <ul>
+          <li>Commit secrets to version control</li>
+          <li>Share secrets via email or chat</li>
+          <li>Use the same secrets across environments</li>
+          <li>Store secrets in plain text files</li>
+        </ul>
+        <h3>3. Secret Rotation</h3>
+        <ul>
+          <li>Rotate database passwords quarterly</li>
+          <li>Rotate API keys when compromised</li>
+          <li>Rotate encryption keys annually</li>
+          <li>Update admin passwords regularly</li>
+        </ul>
+        <h2>🚀 Deployment Procedures</h2>
+        <h3>Docker Deployment</h3>
+        <ol>
+          <li><strong>Create secure environment file:</strong></li>
+        </ol>
+        <pre><code class="language-bash"># Generate secrets
 node scripts/generate-secrets.js --env production --output .env.production.secrets
 
 # Copy values to docker environment file
 cp .env.production.secrets .env.docker
 # Edit .env.docker and add Docker-specific variables
 </code></pre>
-<ol start="2">
-<li><strong>Deploy with Docker Compose:</strong></li>
-</ol>
-<pre><code class="language-bash"># Production deployment
+        <ol start="2">
+          <li><strong>Deploy with Docker Compose:</strong></li>
+        </ol>
+        <pre><code class="language-bash"># Production deployment
 docker-compose -f docker-compose.production.yml up -d
 
 # Verify deployment
 docker-compose -f docker-compose.production.yml logs app
 </code></pre>
-<h3>Manual Deployment</h3>
-<ol>
-<li><strong>Prepare environment:</strong></li>
-</ol>
-<pre><code class="language-bash"># Set NODE_ENV
+        <h3>Manual Deployment</h3>
+        <ol>
+          <li><strong>Prepare environment:</strong></li>
+        </ol>
+        <pre><code class="language-bash"># Set NODE_ENV
 export NODE_ENV=production
 
 # Load configuration
@@ -197,94 +207,101 @@ npm run config:load production
 # Validate configuration
 npm run config:validate
 </code></pre>
-<ol start="2">
-<li><strong>Build and start:</strong></li>
-</ol>
-<pre><code class="language-bash"># Build application
+        <ol start="2">
+          <li><strong>Build and start:</strong></li>
+        </ol>
+        <pre><code class="language-bash"># Build application
 npm run build
 
 # Start production server
 npm start
 </code></pre>
-<h2>🔍 Security Validation</h2>
-<h3>Configuration Validation</h3>
-<p>The application includes built-in security validation:</p>
-<pre><code class="language-bash"># Validate current configuration
+        <h2>🔍 Security Validation</h2>
+        <h3>Configuration Validation</h3>
+        <p>The application includes built-in security validation:</p>
+        <pre><code class="language-bash"># Validate current configuration
 npm run config:validate
 
 # Load and validate specific environment
 npm run config:load production
 </code></pre>
-<h3>Security Checklist</h3>
-<ul>
-<li><input disabled="" type="checkbox"> All CHANGE_ME values replaced</li>
-<li><input disabled="" type="checkbox"> All GENERATE_ values replaced</li>
-<li><input disabled="" type="checkbox"> Strong passwords (12+ characters, mixed case, numbers, symbols)</li>
-<li><input disabled="" type="checkbox"> Unique secrets for each environment</li>
-<li><input disabled="" type="checkbox"> Authentication enabled in production</li>
-<li><input disabled="" type="checkbox"> SSL/TLS enabled for database connections</li>
-<li><input disabled="" type="checkbox"> No secrets committed to version control</li>
-<li><input disabled="" type="checkbox"> Configuration validation passes</li>
-</ul>
-<h2>🚨 Incident Response</h2>
-<h3>If Secrets Are Compromised</h3>
-<ol>
-<li><p><strong>Immediate Actions:</strong></p>
-<ul>
-<li>Rotate all affected secrets immediately</li>
-<li>Update all environment files</li>
-<li>Restart all services</li>
-<li>Review access logs</li>
-</ul>
-</li>
-<li><p><strong>Generate New Secrets:</strong></p>
-</li>
-</ol>
-<pre><code class="language-bash"># Generate new secrets
+        <h3>Security Checklist</h3>
+        <ul>
+          <li><input disabled="" type="checkbox" /> All CHANGE_ME values replaced</li>
+          <li><input disabled="" type="checkbox" /> All GENERATE_ values replaced</li>
+          <li>
+            <input disabled="" type="checkbox" /> Strong passwords (12+ characters, mixed case,
+            numbers, symbols)
+          </li>
+          <li><input disabled="" type="checkbox" /> Unique secrets for each environment</li>
+          <li><input disabled="" type="checkbox" /> Authentication enabled in production</li>
+          <li><input disabled="" type="checkbox" /> SSL/TLS enabled for database connections</li>
+          <li><input disabled="" type="checkbox" /> No secrets committed to version control</li>
+          <li><input disabled="" type="checkbox" /> Configuration validation passes</li>
+        </ul>
+        <h2>🚨 Incident Response</h2>
+        <h3>If Secrets Are Compromised</h3>
+        <ol>
+          <li>
+            <p><strong>Immediate Actions:</strong></p>
+            <ul>
+              <li>Rotate all affected secrets immediately</li>
+              <li>Update all environment files</li>
+              <li>Restart all services</li>
+              <li>Review access logs</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Generate New Secrets:</strong></p>
+          </li>
+        </ol>
+        <pre><code class="language-bash"># Generate new secrets
 node scripts/generate-secrets.js --env production
 
 # Update configuration
 # Restart services
 </code></pre>
-<ol start="3">
-<li><strong>Audit and Monitor:</strong><ul>
-<li>Review who had access to compromised secrets</li>
-<li>Monitor for unauthorized access</li>
-<li>Update access controls</li>
-</ul>
-</li>
-</ol>
-<h2>📞 Support</h2>
-<p>For security-related issues:</p>
-<ol>
-<li>Check this documentation</li>
-<li>Validate configuration with <code>npm run config:validate</code></li>
-<li>Generate new secrets with <code>node scripts/generate-secrets.js</code></li>
-<li>Review application logs for security warnings</li>
-</ol>
-<h2>🔗 Related Documentation</h2>
-<ul>
-<li><a href="CONFIGURATION.md">Configuration Guide</a></li>
-<li><a href="DEPLOYMENT.md">Deployment Guide</a></li>
-<li><a href="SECURITY.md">Security Overview</a></li>
-</ul>
+        <ol start="3">
+          <li>
+            <strong>Audit and Monitor:</strong>
+            <ul>
+              <li>Review who had access to compromised secrets</li>
+              <li>Monitor for unauthorized access</li>
+              <li>Update access controls</li>
+            </ul>
+          </li>
+        </ol>
+        <h2>📞 Support</h2>
+        <p>For security-related issues:</p>
+        <ol>
+          <li>Check this documentation</li>
+          <li>Validate configuration with <code>npm run config:validate</code></li>
+          <li>Generate new secrets with <code>node scripts/generate-secrets.js</code></li>
+          <li>Review application logs for security warnings</li>
+        </ol>
+        <h2>🔗 Related Documentation</h2>
+        <ul>
+          <li><a href="CONFIGURATION.md">Configuration Guide</a></li>
+          <li><a href="DEPLOYMENT.md">Deployment Guide</a></li>
+          <li><a href="SECURITY.md">Security Overview</a></li>
+        </ul>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

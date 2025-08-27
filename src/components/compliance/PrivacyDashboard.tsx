@@ -21,7 +21,7 @@ import {
   Phone,
   MapPin,
   Calendar,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react'
 import { logger } from '@/utils/logger'
 
@@ -78,7 +78,9 @@ interface PrivacyDashboardProps {
 }
 
 export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'data' | 'rights' | 'settings' | 'requests'>('overview')
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'data' | 'rights' | 'settings' | 'requests'
+  >('overview')
   const [loading, setLoading] = useState(true)
   const [dataCategories, setDataCategories] = useState<DataCategory[]>([])
   const [privacyRights, setPrivacyRights] = useState<PrivacyRight[]>([])
@@ -101,7 +103,7 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
       if (sessionId) params.append('sessionId', sessionId)
 
       const response = await fetch(`/api/compliance/privacy-dashboard?${params}`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to load privacy data')
       }
@@ -112,7 +114,6 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
       setPrivacyRights(data.privacyRights || [])
       setDSARRequests(data.dsarRequests || [])
       setPrivacySettings(data.privacySettings || null)
-
     } catch (error) {
       logger.error('Privacy Dashboard', 'Failed to load dashboard data', error)
       setError('Failed to load privacy data. Please try again.')
@@ -132,8 +133,8 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
           subjectEmail: userEmail,
           description,
           verificationMethod: 'email',
-          verificationData: { email: userEmail }
-        })
+          verificationData: { email: userEmail },
+        }),
       })
 
       if (response.ok) {
@@ -157,12 +158,12 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
         body: JSON.stringify({
           userEmail,
           sessionId,
-          settings: newSettings
-        })
+          settings: newSettings,
+        }),
       })
 
       if (response.ok) {
-        setPrivacySettings(prev => prev ? { ...prev, ...newSettings } : null)
+        setPrivacySettings(prev => (prev ? { ...prev, ...newSettings } : null))
         alert('Privacy settings updated successfully.')
       } else {
         throw new Error('Failed to update settings')
@@ -218,7 +219,7 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
             { id: 'data', label: 'My Data', icon: FileText },
             { id: 'rights', label: 'Privacy Rights', icon: Shield },
             { id: 'settings', label: 'Settings', icon: Settings },
-            { id: 'requests', label: 'Requests', icon: Clock }
+            { id: 'requests', label: 'Requests', icon: Clock },
           ].map(tab => {
             const Icon = tab.icon
             return (
@@ -267,7 +268,7 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white p-6 rounded-lg border">
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-8 w-8 text-green-600" />
@@ -279,7 +280,7 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white p-6 rounded-lg border">
               <div className="flex items-center gap-3">
                 <Clock className="h-8 w-8 text-orange-600" />
@@ -300,10 +301,15 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
               {dsarRequests.slice(0, 3).map(request => (
                 <div key={request.id} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${
-                      request.status === 'completed' ? 'bg-green-500' :
-                      request.status === 'pending' ? 'bg-yellow-500' : 'bg-blue-500'
-                    }`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        request.status === 'completed'
+                          ? 'bg-green-500'
+                          : request.status === 'pending'
+                            ? 'bg-yellow-500'
+                            : 'bg-blue-500'
+                      }`}
+                    />
                     <span className="text-sm">{request.description}</span>
                   </div>
                   <span className="text-xs text-gray-500">
@@ -377,7 +383,7 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
       {activeTab === 'rights' && (
         <div className="space-y-6">
           <h3 className="text-lg font-semibold">Your Privacy Rights</h3>
-          
+
           <div className="grid gap-4">
             {privacyRights.map(right => (
               <div key={right.id} className="bg-white p-6 rounded-lg border">
@@ -385,12 +391,17 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h4 className="font-semibold">{right.name}</h4>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        right.status === 'available' ? 'bg-green-100 text-green-800' :
-                        right.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        right.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          right.status === 'available'
+                            ? 'bg-green-100 text-green-800'
+                            : right.status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : right.status === 'completed'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
                         {right.status || 'available'}
                       </span>
                     </div>
@@ -401,11 +412,13 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
                       </p>
                     )}
                   </div>
-                  
+
                   {right.available && right.status === 'available' && (
                     <button
                       onClick={() => {
-                        const description = prompt(`Describe your ${right.name.toLowerCase()} request:`)
+                        const description = prompt(
+                          `Describe your ${right.name.toLowerCase()} request:`
+                        )
                         if (description) {
                           submitDSARRequest(right.id, description)
                         }
@@ -425,7 +438,7 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
       {activeTab === 'settings' && privacySettings && (
         <div className="space-y-6">
           <h3 className="text-lg font-semibold">Privacy Settings</h3>
-          
+
           {/* Consent Preferences */}
           <div className="bg-white p-6 rounded-lg border">
             <h4 className="font-semibold mb-4">Consent Preferences</h4>
@@ -437,12 +450,14 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
                     <input
                       type="checkbox"
                       checked={value}
-                      onChange={(e) => updatePrivacySettings({
-                        consentPreferences: {
-                          ...privacySettings.consentPreferences,
-                          [key]: e.target.checked
-                        }
-                      })}
+                      onChange={e =>
+                        updatePrivacySettings({
+                          consentPreferences: {
+                            ...privacySettings.consentPreferences,
+                            [key]: e.target.checked,
+                          },
+                        })
+                      }
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -459,13 +474,15 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
               <div className="flex items-center justify-between">
                 <div>
                   <span className="font-medium">Do Not Sell My Information</span>
-                  <p className="text-sm text-gray-600">Opt out of the sale of your personal information</p>
+                  <p className="text-sm text-gray-600">
+                    Opt out of the sale of your personal information
+                  </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={privacySettings.ccpaOptOut}
-                    onChange={(e) => updatePrivacySettings({ ccpaOptOut: e.target.checked })}
+                    onChange={e => updatePrivacySettings({ ccpaOptOut: e.target.checked })}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -502,16 +519,21 @@ export default function PrivacyDashboard({ userEmail, sessionId }: PrivacyDashbo
                     <h4 className="font-semibold capitalize">{request.type} Request</h4>
                     <p className="text-sm text-gray-600">{request.description}</p>
                   </div>
-                  <span className={`px-3 py-1 text-sm rounded-full ${
-                    request.status === 'completed' ? 'bg-green-100 text-green-800' :
-                    request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    request.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                  <span
+                    className={`px-3 py-1 text-sm rounded-full ${
+                      request.status === 'completed'
+                        ? 'bg-green-100 text-green-800'
+                        : request.status === 'pending'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : request.status === 'in_progress'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-red-100 text-red-800'
+                    }`}
+                  >
                     {request.status.replace('_', ' ')}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>Submitted: {new Date(request.submittedAt).toLocaleDateString()}</span>
                   {request.completedAt && (

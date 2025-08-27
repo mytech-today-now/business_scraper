@@ -18,17 +18,17 @@ jest.mock('react-window', () => ({
         {children({ index, style: { height: itemSize } })}
       </div>
     ))
-    
+
     return (
-      <div 
+      <div
         data-testid="virtual-list"
-        onScroll={(e) => onScroll && onScroll({ scrollTop: e.currentTarget.scrollTop })}
+        onScroll={e => onScroll && onScroll({ scrollTop: e.currentTarget.scrollTop })}
         style={{ height: 400, overflow: 'auto' }}
       >
         {items}
       </div>
     )
-  }
+  },
 }))
 
 jest.mock('react-window-infinite-loader', () => ({
@@ -36,14 +36,14 @@ jest.mock('react-window-infinite-loader', () => ({
   default: ({ children, isItemLoaded, loadMoreItems }: any) => {
     return children({
       onItemsRendered: jest.fn(),
-      ref: jest.fn()
+      ref: jest.fn(),
     })
-  }
+  },
 }))
 
 jest.mock('react-virtualized-auto-sizer', () => ({
   __esModule: true,
-  default: ({ children }: any) => children({ height: 400, width: 800 })
+  default: ({ children }: any) => children({ height: 400, width: 800 }),
 }))
 
 // Mock the virtual scrolling service
@@ -54,24 +54,24 @@ jest.mock('@/lib/virtualScrollingService', () => ({
       pagination: {
         nextCursor: 'next-cursor',
         hasMore: true,
-        totalCount: 1000
-      }
+        totalCount: 1000,
+      },
     }),
     prefetchNextPage: jest.fn(),
-    clearCache: jest.fn()
+    clearCache: jest.fn(),
   }),
   calculateAILeadScore: jest.fn().mockReturnValue({
     overall: 85,
-    badges: ['verified', 'high-engagement']
-  })
+    badges: ['verified', 'high-engagement'],
+  }),
 }))
 
 // Mock AI lead scoring service
 jest.mock('@/lib/aiLeadScoringService', () => ({
   calculateAILeadScore: jest.fn().mockReturnValue({
     overall: 85,
-    badges: ['verified', 'high-engagement']
-  })
+    badges: ['verified', 'high-engagement'],
+  }),
 }))
 
 // Mock performance monitoring service
@@ -89,9 +89,9 @@ jest.mock('@/lib/performanceMonitoringService', () => ({
       avgFrameRate: 58,
       currentMemoryUsage: 45 * 1024 * 1024,
       alertCount: 0,
-      metricsCount: 25
-    })
-  }
+      metricsCount: 25,
+    }),
+  },
 }))
 
 // Mock businesses data
@@ -107,11 +107,11 @@ const mockBusinesses: BusinessRecord[] = Array.from({ length: 100 }, (_, index) 
     city: 'Test City',
     state: 'TS',
     zipCode: `${String(index).padStart(5, '0')}`,
-    country: 'USA'
+    country: 'USA',
   },
   scrapedAt: new Date(Date.now() - index * 1000 * 60 * 60), // Staggered times
   source: 'Test Source',
-  confidence: 0.8 + (index % 20) * 0.01
+  confidence: 0.8 + (index % 20) * 0.01,
 }))
 
 const defaultProps = {
@@ -122,22 +122,22 @@ const defaultProps = {
   isExporting: false,
   height: 600,
   initialFilters: {},
-  initialSort: { field: 'scrapedAt' as const, order: 'desc' as const }
+  initialSort: { field: 'scrapedAt' as const, order: 'desc' as const },
 }
 
 describe('VirtualizedResultsTable Integration Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Mock performance.now for consistent testing
     jest.spyOn(performance, 'now').mockReturnValue(1000)
-    
+
     // Mock performance.memory
     Object.defineProperty(performance, 'memory', {
       value: {
-        usedJSHeapSize: 50 * 1024 * 1024 // 50MB
+        usedJSHeapSize: 50 * 1024 * 1024, // 50MB
       },
-      configurable: true
+      configurable: true,
     })
   })
 
@@ -148,18 +148,18 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Component Rendering', () => {
     test('should render virtual scrolling table', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
         expect(screen.getByTestId('virtual-list')).toBeInTheDocument()
       })
-      
+
       expect(screen.getByText(/Business Results/)).toBeInTheDocument()
       expect(screen.getByPlaceholderText('Search businesses...')).toBeInTheDocument()
     })
 
     test('should show loading state', () => {
       render(<VirtualizedResultsTable {...defaultProps} isLoading={true} />)
-      
+
       expect(screen.getByText('Loading more results...')).toBeInTheDocument()
     })
 
@@ -167,11 +167,11 @@ describe('VirtualizedResultsTable Integration Tests', () => {
       // Mock development environment
       const originalEnv = process.env.NODE_ENV
       process.env.NODE_ENV = 'development'
-      
+
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       expect(screen.getByText('Performance')).toBeInTheDocument()
-      
+
       // Restore environment
       process.env.NODE_ENV = originalEnv
     })
@@ -180,30 +180,36 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Performance Monitoring Integration', () => {
     test('should start frame rate monitoring on mount', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
-        expect(performanceMonitoringService.startFrameRateMonitoring).toHaveBeenCalledWith('VirtualizedResultsTable')
+        expect(performanceMonitoringService.startFrameRateMonitoring).toHaveBeenCalledWith(
+          'VirtualizedResultsTable'
+        )
       })
     })
 
     test('should stop frame rate monitoring on unmount', async () => {
       const { unmount } = render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       unmount()
-      
-      expect(performanceMonitoringService.stopFrameRateMonitoring).toHaveBeenCalledWith('VirtualizedResultsTable')
+
+      expect(performanceMonitoringService.stopFrameRateMonitoring).toHaveBeenCalledWith(
+        'VirtualizedResultsTable'
+      )
     })
 
     test('should record performance metrics on scroll', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       const virtualList = await screen.findByTestId('virtual-list')
-      
+
       // Simulate scroll event
       fireEvent.scroll(virtualList, { target: { scrollTop: 100 } })
-      
+
       await waitFor(() => {
-        expect(performanceMonitoringService.incrementFrameCount).toHaveBeenCalledWith('VirtualizedResultsTable')
+        expect(performanceMonitoringService.incrementFrameCount).toHaveBeenCalledWith(
+          'VirtualizedResultsTable'
+        )
       })
     })
 
@@ -211,19 +217,19 @@ describe('VirtualizedResultsTable Integration Tests', () => {
       // Mock development environment
       const originalEnv = process.env.NODE_ENV
       process.env.NODE_ENV = 'development'
-      
+
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       // Click performance button to show panel
       const performanceButton = screen.getByText('Performance')
       fireEvent.click(performanceButton)
-      
+
       await waitFor(() => {
         expect(screen.getByText('Performance Metrics')).toBeInTheDocument()
         expect(screen.getByText('8.50ms')).toBeInTheDocument() // avgRenderTime
         expect(screen.getByText('58 fps')).toBeInTheDocument() // avgFrameRate
       })
-      
+
       // Restore environment
       process.env.NODE_ENV = originalEnv
     })
@@ -233,22 +239,22 @@ describe('VirtualizedResultsTable Integration Tests', () => {
     test('should handle search input', async () => {
       const user = userEvent.setup()
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       const searchInput = screen.getByPlaceholderText('Search businesses...')
-      
+
       await user.type(searchInput, 'Technology')
-      
+
       expect(searchInput).toHaveValue('Technology')
     })
 
     test('should record performance metrics on search', async () => {
       const user = userEvent.setup()
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       const searchInput = screen.getByPlaceholderText('Search businesses...')
-      
+
       await user.type(searchInput, 'test')
-      
+
       await waitFor(() => {
         expect(performanceMonitoringService.recordMetric).toHaveBeenCalled()
       })
@@ -258,25 +264,25 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Row Selection', () => {
     test('should handle row selection', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
         const checkboxes = screen.getAllByRole('checkbox')
         expect(checkboxes.length).toBeGreaterThan(0)
       })
-      
+
       const firstCheckbox = screen.getAllByRole('checkbox')[1] // Skip header checkbox
       fireEvent.click(firstCheckbox)
-      
+
       expect(firstCheckbox).toBeChecked()
     })
 
     test('should handle select all', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
         const headerCheckbox = screen.getAllByRole('checkbox')[0]
         fireEvent.click(headerCheckbox)
-        
+
         // All visible checkboxes should be checked
         const checkboxes = screen.getAllByRole('checkbox')
         checkboxes.forEach(checkbox => {
@@ -289,14 +295,14 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Export Functionality', () => {
     test('should handle export with performance tracking', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       const exportButton = screen.getByText(/Export/)
       fireEvent.click(exportButton)
-      
+
       await waitFor(() => {
         expect(performanceMonitoringService.recordMetric).toHaveBeenCalledWith(
           expect.objectContaining({
-            operation: 'export'
+            operation: 'export',
           })
         )
       })
@@ -304,7 +310,7 @@ describe('VirtualizedResultsTable Integration Tests', () => {
 
     test('should show export button with count', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
         expect(screen.getByText(/Export \(/)).toBeInTheDocument()
       })
@@ -314,11 +320,11 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Sorting', () => {
     test('should handle column sorting', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
         const businessNameHeader = screen.getByText('Business Name')
         fireEvent.click(businessNameHeader)
-        
+
         // Should record performance metric for sorting
         expect(performanceMonitoringService.recordMetric).toHaveBeenCalled()
       })
@@ -330,9 +336,9 @@ describe('VirtualizedResultsTable Integration Tests', () => {
       // Mock fetch to throw error
       const mockFetch = jest.fn().mockRejectedValue(new Error('Network error'))
       global.fetch = mockFetch
-      
+
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       // Component should still render without crashing
       expect(screen.getByText(/Business Results/)).toBeInTheDocument()
     })
@@ -341,11 +347,11 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Accessibility', () => {
     test('should have proper ARIA labels', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       await waitFor(() => {
         const searchInput = screen.getByPlaceholderText('Search businesses...')
         expect(searchInput).toHaveAttribute('type', 'text')
-        
+
         const checkboxes = screen.getAllByRole('checkbox')
         expect(checkboxes[0]).toHaveAttribute('title', 'Select all businesses')
       })
@@ -354,13 +360,13 @@ describe('VirtualizedResultsTable Integration Tests', () => {
     test('should support keyboard navigation', async () => {
       const user = userEvent.setup()
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       const searchInput = screen.getByPlaceholderText('Search businesses...')
-      
+
       // Should be able to focus and type
       await user.click(searchInput)
       await user.keyboard('test')
-      
+
       expect(searchInput).toHaveValue('test')
       expect(searchInput).toHaveFocus()
     })
@@ -372,11 +378,11 @@ describe('VirtualizedResultsTable Integration Tests', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: 768 // Tablet size
+        value: 768, // Tablet size
       })
-      
+
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       // Component should render without issues
       expect(screen.getByText(/Business Results/)).toBeInTheDocument()
     })
@@ -385,14 +391,14 @@ describe('VirtualizedResultsTable Integration Tests', () => {
   describe('Memory Management', () => {
     test('should limit performance metrics to prevent memory leaks', async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
-      
+
       // Simulate many scroll events
       const virtualList = await screen.findByTestId('virtual-list')
-      
+
       for (let i = 0; i < 150; i++) {
         fireEvent.scroll(virtualList, { target: { scrollTop: i * 10 } })
       }
-      
+
       // Performance monitoring service should handle metric limiting
       expect(performanceMonitoringService.recordMetric).toHaveBeenCalled()
     })

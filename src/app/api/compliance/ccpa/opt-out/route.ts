@@ -14,21 +14,11 @@ import { logger } from '@/utils/logger'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const {
-      consumerEmail,
-      consumerName,
-      phone,
-      address,
-      verificationMethod,
-      requestDetails
-    } = body
+    const { consumerEmail, consumerName, phone, address, verificationMethod, requestDetails } = body
 
     // Validate required fields
     if (!consumerEmail || !consumerName) {
-      return NextResponse.json(
-        { error: 'Consumer email and name are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Consumer email and name are required' }, { status: 400 })
     }
 
     // Get client information
@@ -45,28 +35,21 @@ export async function POST(request: NextRequest) {
     if (result.success) {
       logger.info('CCPA Opt-Out API', 'Opt-out request processed successfully', {
         consumerEmail,
-        clientIP
+        clientIP,
       })
 
       return NextResponse.json({
         success: true,
         message: 'Your opt-out request has been processed successfully',
         requestId: crypto.randomUUID(), // Generate a request ID for tracking
-        effectiveDate: new Date().toISOString()
+        effectiveDate: new Date().toISOString(),
       })
     } else {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: result.error }, { status: 400 })
     }
-
   } catch (error) {
     logger.error('CCPA Opt-Out API', 'Failed to process opt-out request', error)
-    return NextResponse.json(
-      { error: 'Failed to process opt-out request' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to process opt-out request' }, { status: 500 })
   }
 }
 
@@ -80,10 +63,7 @@ export async function GET(request: NextRequest) {
     const email = url.searchParams.get('email')
 
     if (!email) {
-      return NextResponse.json(
-        { error: 'Email parameter is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Email parameter is required' }, { status: 400 })
     }
 
     const clientIP = getClientIP(request)
@@ -95,12 +75,12 @@ export async function GET(request: NextRequest) {
       const optOutStatus = {
         isOptedOut: result.data.privacySettings?.doNotSell || false,
         optOutDate: result.data.privacySettings?.doNotSellDate,
-        lastUpdated: result.data.lastUpdated
+        lastUpdated: result.data.lastUpdated,
       }
 
       return NextResponse.json({
         success: true,
-        optOutStatus
+        optOutStatus,
       })
     } else {
       return NextResponse.json(
@@ -108,13 +88,9 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       )
     }
-
   } catch (error) {
     logger.error('CCPA Opt-Out API', 'Failed to get opt-out status', error)
-    return NextResponse.json(
-      { error: 'Failed to get opt-out status' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to get opt-out status' }, { status: 500 })
   }
 }
 
@@ -122,7 +98,5 @@ export async function GET(request: NextRequest) {
  * Get client IP address
  */
 function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-forwarded-for') ||
-         request.headers.get('x-real-ip') ||
-         'unknown'
+  return request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
 }

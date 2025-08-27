@@ -21,20 +21,20 @@ const CONFIG = {
     'docs/API_DOCUMENTATION.md',
     'docs/CRM_EXPORT_GUIDE.md',
     'docs/DOCUMENTATION_STANDARDS.md',
-    'docs/CONTRIBUTING_DOCUMENTATION.md'
+    'docs/CONTRIBUTING_DOCUMENTATION.md',
   ],
   versionFiles: [
     'VERSION',
     'package.json',
     'README.md',
     'docs/README.md',
-    'docs/API_DOCUMENTATION.md'
+    'docs/API_DOCUMENTATION.md',
   ],
   linkPatterns: [
-    /\[([^\]]+)\]\(([^)]+)\)/g,  // Markdown links
-    /href="([^"]+)"/g,           // HTML links
-    /src="([^"]+)"/g             // Image sources
-  ]
+    /\[([^\]]+)\]\(([^)]+)\)/g, // Markdown links
+    /href="([^"]+)"/g, // HTML links
+    /src="([^"]+)"/g, // Image sources
+  ],
 }
 
 class DocumentationValidator {
@@ -115,23 +115,30 @@ class DocumentationValidator {
 
       try {
         const content = fs.readFileSync(filePath, 'utf8')
-        
+
         if (file === 'package.json') {
           const packageData = JSON.parse(content)
           if (packageData.version !== this.currentVersion) {
-            this.errors.push(`Version mismatch in ${file}: expected ${this.currentVersion}, found ${packageData.version}`)
+            this.errors.push(
+              `Version mismatch in ${file}: expected ${this.currentVersion}, found ${packageData.version}`
+            )
           }
         } else {
           // Check for version badges and references
-          const versionPattern = new RegExp(`version-${this.currentVersion.replace(/\./g, '\\.')}`, 'g')
+          const versionPattern = new RegExp(
+            `version-${this.currentVersion.replace(/\./g, '\\.')}`,
+            'g'
+          )
           const badgePattern = /version-(\d+\.\d+\.\d+)/g
-          
+
           const badges = content.match(badgePattern)
           if (badges) {
             badges.forEach(badge => {
               const foundVersion = badge.replace('version-', '')
               if (foundVersion !== this.currentVersion) {
-                this.errors.push(`Version badge mismatch in ${file}: expected ${this.currentVersion}, found ${foundVersion}`)
+                this.errors.push(
+                  `Version badge mismatch in ${file}: expected ${this.currentVersion}, found ${foundVersion}`
+                )
               }
             })
           }
@@ -166,14 +173,14 @@ class DocumentationValidator {
    */
   findMarkdownFiles() {
     const files = []
-    
-    const searchDir = (dir) => {
+
+    const searchDir = dir => {
       const items = fs.readdirSync(dir)
-      
+
       for (const item of items) {
         const fullPath = path.join(dir, item)
         const stats = fs.statSync(fullPath)
-        
+
         if (stats.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
           searchDir(fullPath)
         } else if (item.endsWith('.md')) {
@@ -209,11 +216,13 @@ class DocumentationValidator {
     let previousLevel = 0
     for (const { line, number } of headings) {
       const level = line.match(/^(#{1,6})/)[1].length
-      
+
       if (level > previousLevel + 1) {
-        this.warnings.push(`${relativePath}:${number}: Heading level skipped (H${previousLevel} to H${level})`)
+        this.warnings.push(
+          `${relativePath}:${number}: Heading level skipped (H${previousLevel} to H${level})`
+        )
       }
-      
+
       previousLevel = level
     }
   }
@@ -228,16 +237,16 @@ class DocumentationValidator {
     const issues = [
       {
         pattern: /\t/g,
-        message: 'Contains tabs (use spaces instead)'
+        message: 'Contains tabs (use spaces instead)',
       },
       {
         pattern: /[ ]+$/gm,
-        message: 'Contains trailing whitespace'
+        message: 'Contains trailing whitespace',
       },
       {
         pattern: /\n{3,}/g,
-        message: 'Contains multiple consecutive empty lines'
-      }
+        message: 'Contains multiple consecutive empty lines',
+      },
     ]
 
     for (const { pattern, message } of issues) {
@@ -276,15 +285,22 @@ class DocumentationValidator {
       while ((match = pattern.exec(content)) !== null) {
         const linkText = match[1] || 'link'
         const linkUrl = match[2] || match[1]
-        
+
         // Skip external links and anchors
-        if (linkUrl.startsWith('http') || linkUrl.startsWith('#') || linkUrl.startsWith('mailto:')) {
+        if (
+          linkUrl.startsWith('http') ||
+          linkUrl.startsWith('#') ||
+          linkUrl.startsWith('mailto:')
+        ) {
           continue
         }
 
         // Validate internal links
-        const linkPath = path.resolve(path.dirname(path.join(__dirname, '..', relativePath)), linkUrl)
-        
+        const linkPath = path.resolve(
+          path.dirname(path.join(__dirname, '..', relativePath)),
+          linkUrl
+        )
+
         if (!fs.existsSync(linkPath)) {
           this.errors.push(`${relativePath}: Broken link "${linkText}" -> ${linkUrl}`)
         }
@@ -412,19 +428,24 @@ ${this.errors.length > 0 ? '1. Fix all errors listed above\n2. Re-run validation
       console.log('\n✅ All documentation validation checks passed!')
     }
 
-    console.log(`\n${this.errors.length === 0 ? '✅' : '❌'} Validation ${this.errors.length === 0 ? 'PASSED' : 'FAILED'}`)
+    console.log(
+      `\n${this.errors.length === 0 ? '✅' : '❌'} Validation ${this.errors.length === 0 ? 'PASSED' : 'FAILED'}`
+    )
   }
 }
 
 // Run validation if called directly
 if (require.main === module) {
   const validator = new DocumentationValidator()
-  validator.validate().then(success => {
-    process.exit(success ? 0 : 1)
-  }).catch(error => {
-    console.error('Validation failed:', error)
-    process.exit(1)
-  })
+  validator
+    .validate()
+    .then(success => {
+      process.exit(success ? 0 : 1)
+    })
+    .catch(error => {
+      console.error('Validation failed:', error)
+      process.exit(1)
+    })
 }
 
 module.exports = DocumentationValidator

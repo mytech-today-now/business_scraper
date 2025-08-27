@@ -9,7 +9,7 @@ import {
   CRMSyncBatch,
   CRMWebhookEvent,
   CRMWebhookSubscription,
-  PipedriveConfiguration
+  PipedriveConfiguration,
 } from '@/types/crm'
 import { BaseCRMService } from './baseCRMService'
 import { logger } from '@/utils/logger'
@@ -22,7 +22,7 @@ export class PipedriveService extends BaseCRMService {
   async initialize(): Promise<void> {
     try {
       logger.info('PipedriveService', 'Initializing Pipedrive service', {
-        providerId: this.provider.id
+        providerId: this.provider.id,
       })
 
       const config = this.provider.configuration as PipedriveConfiguration
@@ -41,10 +41,10 @@ export class PipedriveService extends BaseCRMService {
   async authenticate(): Promise<boolean> {
     try {
       const auth = this.provider.configuration.authentication
-      
+
       if (auth.type === 'api_key') {
         this.apiToken = auth.credentials.apiToken
-        
+
         // Test the API token
         const isValid = await this.validateConnection()
         if (isValid) {
@@ -87,8 +87,12 @@ export class PipedriveService extends BaseCRMService {
       // Check for duplicates
       const duplicateIds = await this.checkForDuplicates(record)
       if (duplicateIds.length > 0) {
-        return this.createSyncRecord(record, 'conflict', undefined, 
-          `Duplicate records found: ${duplicateIds.join(', ')}`)
+        return this.createSyncRecord(
+          record,
+          'conflict',
+          undefined,
+          `Duplicate records found: ${duplicateIds.join(', ')}`
+        )
       }
 
       // Map business record to Pipedrive format
@@ -111,15 +115,19 @@ export class PipedriveService extends BaseCRMService {
           org_id: orgResponse.data?.id,
           value: 0,
           currency: 'USD',
-          status: 'open'
+          status: 'open',
         })
       }
 
       if (personResponse.success && personResponse.data?.id) {
         return this.createSyncRecord(record, 'synced', personResponse.data.id)
       } else {
-        return this.createSyncRecord(record, 'failed', undefined, 
-          orgResponse.error || personResponse.error || 'Unknown error')
+        return this.createSyncRecord(
+          record,
+          'failed',
+          undefined,
+          orgResponse.error || personResponse.error || 'Unknown error'
+        )
       }
     } catch (error) {
       logger.error('PipedriveService', 'Failed to sync business record', error)
@@ -136,12 +144,12 @@ export class PipedriveService extends BaseCRMService {
 
       // Pipedrive doesn't have native batch operations, so process individually
       const batchSize = this.provider.configuration.syncSettings.batchSize || 5
-      
+
       for (let i = 0; i < records.length; i += batchSize) {
         const batch = records.slice(i, i + batchSize)
         const batchResults = await this.processBatch(
           batch,
-          (record) => this.syncBusinessRecord(record),
+          record => this.syncBusinessRecord(record),
           batchSize
         )
         syncRecords.push(...batchResults)
@@ -160,7 +168,7 @@ export class PipedriveService extends BaseCRMService {
         totalRecords: records.length,
         successfulRecords,
         failedRecords,
-        errors: []
+        errors: [],
       }
     } catch (error) {
       logger.error('PipedriveService', 'Batch sync failed', error)
@@ -172,12 +180,12 @@ export class PipedriveService extends BaseCRMService {
     try {
       const sinceDate = since || new Date(Date.now() - 24 * 60 * 60 * 1000)
       const sinceFormatted = sinceDate.toISOString().split('T')[0] // YYYY-MM-DD format
-      
+
       const response = await this.makeApiCall('GET', '/persons', {
         start: 0,
         limit: 100,
         sort: 'update_time DESC',
-        filter_id: undefined // Could be configured to use a specific filter
+        filter_id: undefined, // Could be configured to use a specific filter
       })
 
       if (response.ok) {
@@ -186,7 +194,7 @@ export class PipedriveService extends BaseCRMService {
           return this.mapPipedrivePersonsToBusinessRecords(data.data)
         }
       }
-      
+
       throw new Error(`Failed to pull updates: ${response.statusText}`)
     } catch (error) {
       logger.error('PipedriveService', 'Failed to pull updates', error)
@@ -197,7 +205,7 @@ export class PipedriveService extends BaseCRMService {
   async setupWebhooks(): Promise<CRMWebhookSubscription[]> {
     try {
       logger.info('PipedriveService', 'Setting up Pipedrive webhooks')
-      
+
       const webhookUrl = this.provider.configuration.webhookUrl
       if (!webhookUrl) {
         throw new Error('Webhook URL not configured')
@@ -212,9 +220,9 @@ export class PipedriveService extends BaseCRMService {
         { object: 'organization', action: 'added' },
         { object: 'organization', action: 'updated' },
         { object: 'deal', action: 'added' },
-        { object: 'deal', action: 'updated' }
+        { object: 'deal', action: 'updated' },
       ]
-      
+
       for (const eventType of eventTypes) {
         const subscription = await this.createWebhookSubscription(eventType, webhookUrl)
         if (subscription) {
@@ -234,7 +242,7 @@ export class PipedriveService extends BaseCRMService {
       logger.info('PipedriveService', 'Handling Pipedrive webhook event', {
         eventType: event.eventType,
         objectType: event.objectType,
-        objectId: event.objectId
+        objectId: event.objectId,
       })
 
       // Process the webhook event
@@ -267,7 +275,7 @@ export class PipedriveService extends BaseCRMService {
       const orgsResponse = await this.makeApiCall('GET', '/organizations', {
         start: 0,
         limit: 50,
-        sort: 'update_time ASC'
+        sort: 'update_time ASC',
       })
 
       if (orgsResponse.ok) {
@@ -286,7 +294,11 @@ export class PipedriveService extends BaseCRMService {
     }
   }
 
-  private async makeApiCall(method: string, endpoint: string, params?: Record<string, any>): Promise<Response> {
+  private async makeApiCall(
+    method: string,
+    endpoint: string,
+    params?: Record<string, any>
+  ): Promise<Response> {
     if (!this.apiToken || !this.apiBaseUrl) {
       throw new Error('Not authenticated')
     }
@@ -306,8 +318,8 @@ export class PipedriveService extends BaseCRMService {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
+        Accept: 'application/json',
+      },
     }
 
     if (params && method !== 'GET') {
@@ -328,7 +340,7 @@ export class PipedriveService extends BaseCRMService {
       address_admin_area_level_1: record.address.state,
       address_postal_code: record.address.zipCode,
       address_country: 'United States',
-      visible_to: '3' // Visible to entire company
+      visible_to: '3', // Visible to entire company
     }
 
     const person = {
@@ -336,7 +348,7 @@ export class PipedriveService extends BaseCRMService {
       email: record.email,
       phone: record.phone ? [{ value: record.phone, primary: true }] : [],
       org_id: null, // Will be set after organization creation
-      visible_to: '3' // Visible to entire company
+      visible_to: '3', // Visible to entire company
     }
 
     return { organization, person }
@@ -373,13 +385,17 @@ export class PipedriveService extends BaseCRMService {
       syncDirection: 'push',
       lastSyncAt: new Date(),
       syncAttempts: 1,
-      errors: errorMessage ? [{
-        timestamp: new Date(),
-        errorCode: 'SYNC_ERROR',
-        errorMessage,
-        isRetryable: status !== 'conflict'
-      }] : [],
-      metadata: {}
+      errors: errorMessage
+        ? [
+            {
+              timestamp: new Date(),
+              errorCode: 'SYNC_ERROR',
+              errorMessage,
+              isRetryable: status !== 'conflict',
+            },
+          ]
+        : [],
+      metadata: {},
     }
   }
 
@@ -387,22 +403,27 @@ export class PipedriveService extends BaseCRMService {
     return persons.map(person => ({
       id: person.id.toString(),
       businessName: person.org_name || person.name,
-      email: person.email ? [{ value: person.email[0]?.value || person.email }].filter(e => e.value) : [],
+      email: person.email
+        ? [{ value: person.email[0]?.value || person.email }].filter(e => e.value)
+        : [],
       phone: person.phone?.[0]?.value,
       websiteUrl: person.org_id ? `https://company-${person.org_id}.example.com` : '',
       address: {
         street: person.org_address || '',
         city: person.org_address_locality || '',
         state: person.org_address_admin_area_level_1 || '',
-        zipCode: person.org_address_postal_code || ''
+        zipCode: person.org_address_postal_code || '',
       },
       contactPerson: person.name,
       industry: '',
-      scrapedAt: new Date(person.update_time || person.add_time)
+      scrapedAt: new Date(person.update_time || person.add_time),
     }))
   }
 
-  private async createWebhookSubscription(eventType: any, callbackUrl: string): Promise<CRMWebhookSubscription | null> {
+  private async createWebhookSubscription(
+    eventType: any,
+    callbackUrl: string
+  ): Promise<CRMWebhookSubscription | null> {
     try {
       const response = await this.makeApiCall('POST', '/webhooks', {
         subscription_url: callbackUrl,
@@ -410,7 +431,7 @@ export class PipedriveService extends BaseCRMService {
         event_object: eventType.object,
         user_id: 0, // All users
         http_auth_user: '',
-        http_auth_password: ''
+        http_auth_password: '',
       })
 
       if (response.ok) {
@@ -424,35 +445,43 @@ export class PipedriveService extends BaseCRMService {
             isActive: true,
             secret: '',
             createdAt: new Date(),
-            lastTriggeredAt: undefined
+            lastTriggeredAt: undefined,
           }
         }
       }
     } catch (error) {
-      logger.error('PipedriveService', `Failed to create webhook subscription for ${eventType.object}.${eventType.action}`, error)
+      logger.error(
+        'PipedriveService',
+        `Failed to create webhook subscription for ${eventType.object}.${eventType.action}`,
+        error
+      )
     }
-    
+
     return null
   }
 
   private async refreshSingleCompanyProfile(org: any): Promise<void> {
     try {
       logger.info('PipedriveService', `Refreshing profile for organization: ${org.name}`)
-      
+
       // This would use Puppeteer to scrape updated company information
       // Implementation would depend on specific requirements
-      
+
       // For now, just log the action
       logger.debug('PipedriveService', `Profile refresh completed for: ${org.name}`)
     } catch (error) {
-      logger.error('PipedriveService', `Failed to refresh profile for organization: ${org.name}`, error)
+      logger.error(
+        'PipedriveService',
+        `Failed to refresh profile for organization: ${org.name}`,
+        error
+      )
     }
   }
 
   private async handlePersonUpdate(event: CRMWebhookEvent): Promise<void> {
     logger.info('PipedriveService', 'Processing person update', {
       objectId: event.objectId,
-      eventType: event.eventType
+      eventType: event.eventType,
     })
     // Implementation for handling person updates
   }
@@ -460,7 +489,7 @@ export class PipedriveService extends BaseCRMService {
   private async handleOrganizationUpdate(event: CRMWebhookEvent): Promise<void> {
     logger.info('PipedriveService', 'Processing organization update', {
       objectId: event.objectId,
-      eventType: event.eventType
+      eventType: event.eventType,
     })
     // Implementation for handling organization updates
   }
@@ -468,7 +497,7 @@ export class PipedriveService extends BaseCRMService {
   private async handleDealUpdate(event: CRMWebhookEvent): Promise<void> {
     logger.info('PipedriveService', 'Processing deal update', {
       objectId: event.objectId,
-      eventType: event.eventType
+      eventType: event.eventType,
     })
     // Implementation for handling deal updates
   }

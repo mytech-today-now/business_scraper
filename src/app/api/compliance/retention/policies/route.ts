@@ -20,15 +20,11 @@ async function getPolicies(request: NextRequest) {
     return NextResponse.json({
       success: true,
       policies,
-      count: policies.length
+      count: policies.length,
     })
-
   } catch (error) {
     logger.error('Retention Policies API', 'Failed to get retention policies', error)
-    return NextResponse.json(
-      { error: 'Failed to retrieve retention policies' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to retrieve retention policies' }, { status: 500 })
   }
 }
 
@@ -48,7 +44,7 @@ async function createPolicy(request: NextRequest) {
       autoDelete,
       archiveBeforeDelete,
       notificationDays,
-      isActive
+      isActive,
     } = body
 
     // Validate required fields
@@ -76,7 +72,7 @@ async function createPolicy(request: NextRequest) {
       autoDelete: autoDelete || false,
       archiveBeforeDelete: archiveBeforeDelete || true,
       notificationDays: notificationDays || [30, 7, 1],
-      isActive: isActive !== false
+      isActive: isActive !== false,
     }
 
     const policyId = await dataRetentionService.createOrUpdatePolicy(policy)
@@ -89,38 +85,37 @@ async function createPolicy(request: NextRequest) {
       action: 'create',
       details: {
         policyId,
-        policy
+        policy,
       },
       timestamp: new Date(),
       complianceFlags: {
         gdprRelevant: true,
         ccpaRelevant: true,
-        soc2Relevant: true
-      }
+        soc2Relevant: true,
+      },
     })
 
     logger.info('Retention Policies API', `Retention policy created: ${name}`, {
       policyId,
       dataType,
-      retentionPeriodDays
+      retentionPeriodDays,
     })
 
     return NextResponse.json({
       success: true,
       policyId,
       policy,
-      message: 'Retention policy created successfully'
+      message: 'Retention policy created successfully',
     })
-
   } catch (error) {
     logger.error('Retention Policies API', 'Failed to create retention policy', error)
-    return NextResponse.json(
-      { error: 'Failed to create retention policy' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create retention policy' }, { status: 500 })
   }
 }
 
 // Apply authentication middleware
 export const GET = withAuth(getPolicies, { required: true, roles: ['admin', 'compliance_officer'] })
-export const POST = withAuth(createPolicy, { required: true, roles: ['admin', 'compliance_officer'] })
+export const POST = withAuth(createPolicy, {
+  required: true,
+  roles: ['admin', 'compliance_officer'],
+})

@@ -1,49 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Configuration Management Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Configuration Management Guide</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Configuration Management Guide</h1>
-<p>This document provides comprehensive information about the configuration management system for the Business Scraper application.</p>
-<h2>Overview</h2>
-<p>The application uses a centralized configuration management system that:</p>
-<ul>
-<li><strong>Validates all environment variables</strong> with type checking and constraints</li>
-<li><strong>Supports multiple environments</strong> (development, production, test)</li>
-<li><strong>Provides feature flags</strong> for enabling/disabling functionality</li>
-<li><strong>Includes health checks</strong> for configuration validation</li>
-<li><strong>Offers flexible caching</strong> with Redis and in-memory options</li>
-<li><strong>Configurable logging</strong> with multiple formats and outputs</li>
-</ul>
-<h2>Configuration Structure</h2>
-<h3>Application Configuration</h3>
-<pre><code class="language-typescript">app: {
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Configuration Management Guide
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Configuration Management Guide</h1>
+        <p>
+          This document provides comprehensive information about the configuration management system
+          for the Business Scraper application.
+        </p>
+        <h2>Overview</h2>
+        <p>The application uses a centralized configuration management system that:</p>
+        <ul>
+          <li>
+            <strong>Validates all environment variables</strong> with type checking and constraints
+          </li>
+          <li><strong>Supports multiple environments</strong> (development, production, test)</li>
+          <li><strong>Provides feature flags</strong> for enabling/disabling functionality</li>
+          <li><strong>Includes health checks</strong> for configuration validation</li>
+          <li><strong>Offers flexible caching</strong> with Redis and in-memory options</li>
+          <li><strong>Configurable logging</strong> with multiple formats and outputs</li>
+        </ul>
+        <h2>Configuration Structure</h2>
+        <h3>Application Configuration</h3>
+        <pre><code class="language-typescript">app: {
   name: string           // Application name
   version: string        // Application version
   environment: string    // Current environment (development/production/test)
@@ -51,8 +61,8 @@
   port: number          // Server port
 }
 </code></pre>
-<h3>Database Configuration</h3>
-<pre><code class="language-typescript">database: {
+        <h3>Database Configuration</h3>
+        <pre><code class="language-typescript">database: {
   url?: string          // Full database URL (optional)
   host: string          // Database host
   port: number          // Database port
@@ -66,8 +76,8 @@
   ssl: boolean          // Enable SSL
 }
 </code></pre>
-<h3>Security Configuration</h3>
-<pre><code class="language-typescript">security: {
+        <h3>Security Configuration</h3>
+        <pre><code class="language-typescript">security: {
   enableAuth: boolean           // Enable authentication
   sessionTimeout: number        // Session timeout in ms
   maxLoginAttempts: number      // Max failed login attempts
@@ -81,8 +91,8 @@
   adminPasswordSalt?: string    // Admin password salt (production)
 }
 </code></pre>
-<h3>Feature Flags</h3>
-<pre><code class="language-typescript">features: {
+        <h3>Feature Flags</h3>
+        <pre><code class="language-typescript">features: {
   enableAuth: boolean                    // Authentication system
   enableCaching: boolean                 // Caching system
   enableRateLimiting: boolean           // Rate limiting
@@ -91,34 +101,34 @@
   enableExperimentalFeatures: boolean   // Experimental features
 }
 </code></pre>
-<h2>Environment Files</h2>
-<h3>Development (<code>config/development.env</code>)</h3>
-<ul>
-<li><strong>Authentication</strong>: Disabled by default</li>
-<li><strong>Database</strong>: Local PostgreSQL</li>
-<li><strong>Logging</strong>: Debug level with file output</li>
-<li><strong>Rate Limiting</strong>: Relaxed limits</li>
-<li><strong>Feature Flags</strong>: Most features enabled for testing</li>
-</ul>
-<h3>Production (<code>config/production.env</code>)</h3>
-<ul>
-<li><strong>Authentication</strong>: Enabled with secure credentials</li>
-<li><strong>Database</strong>: Production database with SSL</li>
-<li><strong>Logging</strong>: Info level with JSON format</li>
-<li><strong>Rate Limiting</strong>: Strict limits</li>
-<li><strong>Feature Flags</strong>: Stable features only</li>
-</ul>
-<h3>Test (<code>config/test.env</code>)</h3>
-<ul>
-<li><strong>Authentication</strong>: Disabled for faster testing</li>
-<li><strong>Database</strong>: Separate test database</li>
-<li><strong>Logging</strong>: Minimal logging</li>
-<li><strong>Rate Limiting</strong>: Very relaxed</li>
-<li><strong>Feature Flags</strong>: Experimental features enabled</li>
-</ul>
-<h2>Configuration Scripts</h2>
-<h3>Load Configuration</h3>
-<pre><code class="language-bash"># Load and validate configuration for specific environment
+        <h2>Environment Files</h2>
+        <h3>Development (<code>config/development.env</code>)</h3>
+        <ul>
+          <li><strong>Authentication</strong>: Disabled by default</li>
+          <li><strong>Database</strong>: Local PostgreSQL</li>
+          <li><strong>Logging</strong>: Debug level with file output</li>
+          <li><strong>Rate Limiting</strong>: Relaxed limits</li>
+          <li><strong>Feature Flags</strong>: Most features enabled for testing</li>
+        </ul>
+        <h3>Production (<code>config/production.env</code>)</h3>
+        <ul>
+          <li><strong>Authentication</strong>: Enabled with secure credentials</li>
+          <li><strong>Database</strong>: Production database with SSL</li>
+          <li><strong>Logging</strong>: Info level with JSON format</li>
+          <li><strong>Rate Limiting</strong>: Strict limits</li>
+          <li><strong>Feature Flags</strong>: Stable features only</li>
+        </ul>
+        <h3>Test (<code>config/test.env</code>)</h3>
+        <ul>
+          <li><strong>Authentication</strong>: Disabled for faster testing</li>
+          <li><strong>Database</strong>: Separate test database</li>
+          <li><strong>Logging</strong>: Minimal logging</li>
+          <li><strong>Rate Limiting</strong>: Very relaxed</li>
+          <li><strong>Feature Flags</strong>: Experimental features enabled</li>
+        </ul>
+        <h2>Configuration Scripts</h2>
+        <h3>Load Configuration</h3>
+        <pre><code class="language-bash"># Load and validate configuration for specific environment
 npm run config:load development
 npm run config:load production
 
@@ -128,8 +138,8 @@ npm run config:validate
 # Show configuration summary
 npm run config:summary
 </code></pre>
-<h3>Generate Environment Files</h3>
-<pre><code class="language-bash"># Generate .env files from templates
+        <h3>Generate Environment Files</h3>
+        <pre><code class="language-bash"># Generate .env files from templates
 npm run config:dev      # Creates .env.development
 npm run config:prod     # Creates .env.production
 npm run config:test     # Creates .env.test
@@ -137,14 +147,14 @@ npm run config:test     # Creates .env.test
 # Custom generation
 npm run config:generate production .env.custom
 </code></pre>
-<h2>Environment Variables</h2>
-<h3>Required Variables</h3>
-<pre><code class="language-env">NODE_ENV=development|production|test
+        <h2>Environment Variables</h2>
+        <h3>Required Variables</h3>
+        <pre><code class="language-env">NODE_ENV=development|production|test
 NEXT_PUBLIC_APP_NAME=Business Scraper App
 NEXT_PUBLIC_APP_VERSION=1.0.0
 </code></pre>
-<h3>Database Variables</h3>
-<pre><code class="language-env"># Option 1: Full URL
+        <h3>Database Variables</h3>
+        <pre><code class="language-env"># Option 1: Full URL
 DATABASE_URL=postgresql://user:pass@host:port/db
 
 # Option 2: Individual settings
@@ -155,8 +165,8 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 DB_SSL=false
 </code></pre>
-<h3>Security Variables</h3>
-<pre><code class="language-env"># Authentication
+        <h3>Security Variables</h3>
+        <pre><code class="language-env"># Authentication
 ENABLE_AUTH=false
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=admin123                    # Development only
@@ -168,21 +178,21 @@ RATE_LIMIT_WINDOW=60000
 RATE_LIMIT_MAX=100
 SCRAPING_RATE_LIMIT=10
 </code></pre>
-<h3>Feature Flags</h3>
-<pre><code class="language-env">FEATURE_ENABLE_CACHING=true
+        <h3>Feature Flags</h3>
+        <pre><code class="language-env">FEATURE_ENABLE_CACHING=true
 FEATURE_ENABLE_RATE_LIMITING=true
 FEATURE_ENABLE_METRICS=false
 FEATURE_ENABLE_EXPERIMENTAL=false
 </code></pre>
-<h3>Logging Configuration</h3>
-<pre><code class="language-env">LOG_LEVEL=info                    # debug|info|warn|error
+        <h3>Logging Configuration</h3>
+        <pre><code class="language-env">LOG_LEVEL=info                    # debug|info|warn|error
 LOG_FORMAT=text                   # text|json
 LOG_ENABLE_CONSOLE=true
 LOG_ENABLE_FILE=false
 LOG_FILE_PATH=./logs/app.log
 </code></pre>
-<h3>Cache Configuration</h3>
-<pre><code class="language-env"># Memory Cache (default)
+        <h3>Cache Configuration</h3>
+        <pre><code class="language-env"># Memory Cache (default)
 CACHE_TYPE=memory
 CACHE_MAX_SIZE=1000
 CACHE_TTL=3600000
@@ -194,29 +204,29 @@ REDIS_PORT=6379
 REDIS_PASSWORD=optional_password
 REDIS_DB=0
 </code></pre>
-<h2>API Endpoints</h2>
-<h3>Configuration API</h3>
-<pre><code>GET /api/config                    # Get public configuration
+        <h2>API Endpoints</h2>
+        <h3>Configuration API</h3>
+        <pre><code>GET /api/config                    # Get public configuration
 GET /api/config?section=health     # Configuration health check
 GET /api/config?section=features   # Feature flags status
 GET /api/config?section=validation # Configuration validation
 GET /api/config?section=report     # Full configuration report
 </code></pre>
-<h3>Health Check API</h3>
-<pre><code>GET /api/health                    # Application health including config
+        <h3>Health Check API</h3>
+        <pre><code>GET /api/health                    # Application health including config
 </code></pre>
-<h2>Feature Flag System</h2>
-<h3>Available Features</h3>
-<ul>
-<li><strong>AUTH</strong>: Authentication and session management</li>
-<li><strong>CACHING</strong>: Performance caching system</li>
-<li><strong>RATE_LIMITING</strong>: API rate limiting protection</li>
-<li><strong>METRICS</strong>: Application metrics collection</li>
-<li><strong>DEBUG_MODE</strong>: Debug logging and tools</li>
-<li><strong>EXPERIMENTAL_FEATURES</strong>: Beta and experimental features</li>
-</ul>
-<h3>Usage in Code</h3>
-<pre><code class="language-typescript">import { Features } from &#39;@/lib/feature-flags&#39;
+        <h2>Feature Flag System</h2>
+        <h3>Available Features</h3>
+        <ul>
+          <li><strong>AUTH</strong>: Authentication and session management</li>
+          <li><strong>CACHING</strong>: Performance caching system</li>
+          <li><strong>RATE_LIMITING</strong>: API rate limiting protection</li>
+          <li><strong>METRICS</strong>: Application metrics collection</li>
+          <li><strong>DEBUG_MODE</strong>: Debug logging and tools</li>
+          <li><strong>EXPERIMENTAL_FEATURES</strong>: Beta and experimental features</li>
+        </ul>
+        <h3>Usage in Code</h3>
+        <pre><code class="language-typescript">import { Features } from &#39;@/lib/feature-flags&#39;
 
 // Check individual features
 if (Features.isAuthEnabled()) {
@@ -233,57 +243,67 @@ if (Features.isMetricsEnabled(context)) {
   // Collect metrics
 }
 </code></pre>
-<h2>Configuration Validation</h2>
-<h3>Automatic Validation</h3>
-<p>The system automatically validates:</p>
-<ul>
-<li><strong>Required variables</strong> are present</li>
-<li><strong>Data types</strong> are correct (string, number, boolean, URL, port)</li>
-<li><strong>Value ranges</strong> are within acceptable limits</li>
-<li><strong>Dependencies</strong> between configuration options</li>
-<li><strong>Security requirements</strong> for production environments</li>
-</ul>
-<h3>Manual Validation</h3>
-<pre><code class="language-bash"># Validate current configuration
+        <h2>Configuration Validation</h2>
+        <h3>Automatic Validation</h3>
+        <p>The system automatically validates:</p>
+        <ul>
+          <li><strong>Required variables</strong> are present</li>
+          <li><strong>Data types</strong> are correct (string, number, boolean, URL, port)</li>
+          <li><strong>Value ranges</strong> are within acceptable limits</li>
+          <li><strong>Dependencies</strong> between configuration options</li>
+          <li><strong>Security requirements</strong> for production environments</li>
+        </ul>
+        <h3>Manual Validation</h3>
+        <pre><code class="language-bash"># Validate current configuration
 npm run config:validate
 
 # Load and validate specific environment
 npm run config:load production
 </code></pre>
-<h3>Health Checks</h3>
-<pre><code class="language-bash"># Check configuration health via API
+        <h3>Health Checks</h3>
+        <pre><code class="language-bash"># Check configuration health via API
 curl http://localhost:3000/api/config?section=health
 
 # Check overall application health
 curl http://localhost:3000/api/health
 </code></pre>
-<h2>Best Practices</h2>
-<h3>Development</h3>
-<ol>
-<li><strong>Use development template</strong>: Start with <code>config/development.env</code></li>
-<li><strong>Override locally</strong>: Use <code>.env.local</code> for personal settings</li>
-<li><strong>Enable debug features</strong>: Set <code>NEXT_PUBLIC_DEBUG=true</code></li>
-<li><strong>Use relaxed security</strong>: Disable auth for easier development</li>
-</ol>
-<h3>Production</h3>
-<ol>
-<li><strong>Generate secure credentials</strong>: Use <code>scripts/generate-password.js</code></li>
-<li><strong>Enable all security features</strong>: Authentication, rate limiting, SSL</li>
-<li><strong>Use environment variables</strong>: Never commit secrets to version control</li>
-<li><strong>Monitor configuration</strong>: Set up health check monitoring</li>
-<li><strong>Use JSON logging</strong>: Better for log aggregation systems</li>
-</ol>
-<h3>Testing</h3>
-<ol>
-<li><strong>Use test database</strong>: Separate from development data</li>
-<li><strong>Disable unnecessary features</strong>: Faster test execution</li>
-<li><strong>Use minimal logging</strong>: Reduce test output noise</li>
-<li><strong>Enable experimental features</strong>: Test new functionality</li>
-</ol>
-<h2>Troubleshooting</h2>
-<h3>Common Issues</h3>
-<h4>Configuration Not Loading</h4>
-<pre><code class="language-bash"># Check if config files exist
+        <h2>Best Practices</h2>
+        <h3>Development</h3>
+        <ol>
+          <li>
+            <strong>Use development template</strong>: Start with
+            <code>config/development.env</code>
+          </li>
+          <li>
+            <strong>Override locally</strong>: Use <code>.env.local</code> for personal settings
+          </li>
+          <li><strong>Enable debug features</strong>: Set <code>NEXT_PUBLIC_DEBUG=true</code></li>
+          <li><strong>Use relaxed security</strong>: Disable auth for easier development</li>
+        </ol>
+        <h3>Production</h3>
+        <ol>
+          <li>
+            <strong>Generate secure credentials</strong>: Use
+            <code>scripts/generate-password.js</code>
+          </li>
+          <li><strong>Enable all security features</strong>: Authentication, rate limiting, SSL</li>
+          <li>
+            <strong>Use environment variables</strong>: Never commit secrets to version control
+          </li>
+          <li><strong>Monitor configuration</strong>: Set up health check monitoring</li>
+          <li><strong>Use JSON logging</strong>: Better for log aggregation systems</li>
+        </ol>
+        <h3>Testing</h3>
+        <ol>
+          <li><strong>Use test database</strong>: Separate from development data</li>
+          <li><strong>Disable unnecessary features</strong>: Faster test execution</li>
+          <li><strong>Use minimal logging</strong>: Reduce test output noise</li>
+          <li><strong>Enable experimental features</strong>: Test new functionality</li>
+        </ol>
+        <h2>Troubleshooting</h2>
+        <h3>Common Issues</h3>
+        <h4>Configuration Not Loading</h4>
+        <pre><code class="language-bash"># Check if config files exist
 ls -la config/
 
 # Validate configuration
@@ -292,100 +312,107 @@ npm run config:validate
 # Check environment variables
 npm run config:summary
 </code></pre>
-<h4>Database Connection Issues</h4>
-<pre><code class="language-bash"># Check database configuration
+        <h4>Database Connection Issues</h4>
+        <pre><code class="language-bash"># Check database configuration
 npm run config:load | grep -i db
 
 # Test database connection
 npm run db:status
 </code></pre>
-<h4>Feature Flags Not Working</h4>
-<pre><code class="language-bash"># Check feature flag status
+        <h4>Feature Flags Not Working</h4>
+        <pre><code class="language-bash"># Check feature flag status
 curl http://localhost:3000/api/config?section=features
 
 # Validate feature dependencies
 npm run config:validate
 </code></pre>
-<h3>Debug Mode</h3>
-<p>Enable debug mode for detailed logging:</p>
-<pre><code class="language-env">NEXT_PUBLIC_DEBUG=true
+        <h3>Debug Mode</h3>
+        <p>Enable debug mode for detailed logging:</p>
+        <pre><code class="language-env">NEXT_PUBLIC_DEBUG=true
 LOG_LEVEL=debug
 </code></pre>
-<h3>Configuration Report</h3>
-<p>Generate a comprehensive configuration report:</p>
-<pre><code class="language-bash"># Text report
+        <h3>Configuration Report</h3>
+        <p>Generate a comprehensive configuration report:</p>
+        <pre><code class="language-bash"># Text report
 npm run config:summary
 
 # Markdown report
 curl &quot;http://localhost:3000/api/config?section=report&amp;format=markdown&quot; &gt; config-report.md
 </code></pre>
-<h2>Security Considerations</h2>
-<h3>Production Security</h3>
-<ol>
-<li><strong>Use hashed passwords</strong>: Never use plain text in production</li>
-<li><strong>Secure API keys</strong>: Store in secure environment variables</li>
-<li><strong>Enable SSL</strong>: For database and external API connections</li>
-<li><strong>Rotate credentials</strong>: Regularly update passwords and API keys</li>
-<li><strong>Monitor access</strong>: Log configuration access and changes</li>
-</ol>
-<h3>Environment Separation</h3>
-<ol>
-<li><strong>Separate databases</strong>: Different databases per environment</li>
-<li><strong>Different API keys</strong>: Use separate keys for dev/prod</li>
-<li><strong>Isolated configurations</strong>: No shared credentials between environments</li>
-</ol>
-<h3>Secrets Management</h3>
-<ol>
-<li><strong>Environment variables</strong>: Use secure environment variable systems</li>
-<li><strong>Secret management</strong>: Consider using dedicated secret management tools</li>
-<li><strong>Access control</strong>: Limit who can access production configurations</li>
-<li><strong>Audit logging</strong>: Track configuration changes and access</li>
-</ol>
-<h2>Migration Guide</h2>
-<h3>From Environment Variables</h3>
-<p>If migrating from direct environment variable usage:</p>
-<ol>
-<li><strong>Audit current variables</strong>: List all environment variables in use</li>
-<li><strong>Map to new structure</strong>: Use the configuration schema</li>
-<li><strong>Update code</strong>: Replace <code>process.env</code> with <code>getConfig()</code></li>
-<li><strong>Test thoroughly</strong>: Validate all functionality works</li>
-<li><strong>Deploy gradually</strong>: Use feature flags for gradual rollout</li>
-</ol>
-<h3>Configuration Updates</h3>
-<p>When updating configuration:</p>
-<ol>
-<li><strong>Update templates</strong>: Modify files in <code>config/</code> directory</li>
-<li><strong>Update validation</strong>: Add new validation rules if needed</li>
-<li><strong>Update documentation</strong>: Keep this guide current</li>
-<li><strong>Test all environments</strong>: Validate dev, test, and production</li>
-<li><strong>Communicate changes</strong>: Inform team of configuration updates</li>
-</ol>
-<h2>Support</h2>
-<p>For configuration-related issues:</p>
-<ol>
-<li>Check this documentation</li>
-<li>Run configuration validation: <code>npm run config:validate</code></li>
-<li>Check application health: <code>curl http://localhost:3000/api/health</code></li>
-<li>Review logs for configuration errors</li>
-<li>Contact the development team with specific error messages</li>
-</ol>
+        <h2>Security Considerations</h2>
+        <h3>Production Security</h3>
+        <ol>
+          <li><strong>Use hashed passwords</strong>: Never use plain text in production</li>
+          <li><strong>Secure API keys</strong>: Store in secure environment variables</li>
+          <li><strong>Enable SSL</strong>: For database and external API connections</li>
+          <li><strong>Rotate credentials</strong>: Regularly update passwords and API keys</li>
+          <li><strong>Monitor access</strong>: Log configuration access and changes</li>
+        </ol>
+        <h3>Environment Separation</h3>
+        <ol>
+          <li><strong>Separate databases</strong>: Different databases per environment</li>
+          <li><strong>Different API keys</strong>: Use separate keys for dev/prod</li>
+          <li>
+            <strong>Isolated configurations</strong>: No shared credentials between environments
+          </li>
+        </ol>
+        <h3>Secrets Management</h3>
+        <ol>
+          <li><strong>Environment variables</strong>: Use secure environment variable systems</li>
+          <li>
+            <strong>Secret management</strong>: Consider using dedicated secret management tools
+          </li>
+          <li><strong>Access control</strong>: Limit who can access production configurations</li>
+          <li><strong>Audit logging</strong>: Track configuration changes and access</li>
+        </ol>
+        <h2>Migration Guide</h2>
+        <h3>From Environment Variables</h3>
+        <p>If migrating from direct environment variable usage:</p>
+        <ol>
+          <li><strong>Audit current variables</strong>: List all environment variables in use</li>
+          <li><strong>Map to new structure</strong>: Use the configuration schema</li>
+          <li>
+            <strong>Update code</strong>: Replace <code>process.env</code> with
+            <code>getConfig()</code>
+          </li>
+          <li><strong>Test thoroughly</strong>: Validate all functionality works</li>
+          <li><strong>Deploy gradually</strong>: Use feature flags for gradual rollout</li>
+        </ol>
+        <h3>Configuration Updates</h3>
+        <p>When updating configuration:</p>
+        <ol>
+          <li><strong>Update templates</strong>: Modify files in <code>config/</code> directory</li>
+          <li><strong>Update validation</strong>: Add new validation rules if needed</li>
+          <li><strong>Update documentation</strong>: Keep this guide current</li>
+          <li><strong>Test all environments</strong>: Validate dev, test, and production</li>
+          <li><strong>Communicate changes</strong>: Inform team of configuration updates</li>
+        </ol>
+        <h2>Support</h2>
+        <p>For configuration-related issues:</p>
+        <ol>
+          <li>Check this documentation</li>
+          <li>Run configuration validation: <code>npm run config:validate</code></li>
+          <li>Check application health: <code>curl http://localhost:3000/api/health</code></li>
+          <li>Review logs for configuration errors</li>
+          <li>Contact the development team with specific error messages</li>
+        </ol>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

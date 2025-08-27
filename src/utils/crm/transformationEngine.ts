@@ -12,7 +12,7 @@ import {
   ValidationError,
   ValidationRule,
   FieldTransformer,
-  CRMExportOptions
+  CRMExportOptions,
 } from './types'
 import { logger } from '@/utils/logger'
 
@@ -36,34 +36,39 @@ export class CRMTransformationEngine {
       warnings: string[]
     }> = []
 
-    logger.info('CRMTransformationEngine', `Starting batch transformation of ${records.length} records using template: ${template.name}`)
+    logger.info(
+      'CRMTransformationEngine',
+      `Starting batch transformation of ${records.length} records using template: ${template.name}`
+    )
 
     for (const record of records) {
       try {
         const result = await this.transformRecord(record, template, options)
-        
+
         if (result.isValid || !template.validation.strictMode) {
           validRecords.push(result.data)
         }
-        
+
         if (!result.isValid) {
           invalidRecords.push({
             originalRecord: record,
             errors: result.errors,
-            warnings: result.warnings
+            warnings: result.warnings,
           })
         }
       } catch (error) {
         logger.error('CRMTransformationEngine', `Failed to transform record ${record.id}`, error)
         invalidRecords.push({
           originalRecord: record,
-          errors: [{
-            field: 'general',
-            message: `Transformation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            value: record,
-            rule: 'transformation'
-          }],
-          warnings: []
+          errors: [
+            {
+              field: 'general',
+              message: `Transformation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              value: record,
+              rule: 'transformation',
+            },
+          ],
+          warnings: [],
         })
       }
     }
@@ -71,7 +76,10 @@ export class CRMTransformationEngine {
     const processingTime = Date.now() - startTime
     const totalWarnings = invalidRecords.reduce((sum, record) => sum + record.warnings.length, 0)
 
-    logger.info('CRMTransformationEngine', `Batch transformation completed: ${validRecords.length}/${records.length} valid records in ${processingTime}ms`)
+    logger.info(
+      'CRMTransformationEngine',
+      `Batch transformation completed: ${validRecords.length}/${records.length} valid records in ${processingTime}ms`
+    )
 
     return {
       validRecords,
@@ -81,8 +89,8 @@ export class CRMTransformationEngine {
         valid: validRecords.length,
         invalid: invalidRecords.length,
         warnings: totalWarnings,
-        processingTime
-      }
+        processingTime,
+      },
     }
   }
 
@@ -111,41 +119,57 @@ export class CRMTransformationEngine {
 
         // Apply custom transformers from options
         if (options.customTransformers && options.customTransformers[mapping.targetField]) {
-          transformedValue = options.customTransformers[mapping.targetField](transformedValue, record)
+          transformedValue = options.customTransformers[mapping.targetField](
+            transformedValue,
+            record
+          )
         }
 
         // Use default value if transformed value is empty
-        if ((transformedValue === null || transformedValue === undefined || transformedValue === '') && mapping.defaultValue !== undefined) {
+        if (
+          (transformedValue === null ||
+            transformedValue === undefined ||
+            transformedValue === '') &&
+          mapping.defaultValue !== undefined
+        ) {
           transformedValue = mapping.defaultValue
         }
 
         // Validate the transformed value
         if (mapping.validation) {
-          const validationErrors = this.validateField(mapping.targetField, transformedValue, mapping.validation)
+          const validationErrors = this.validateField(
+            mapping.targetField,
+            transformedValue,
+            mapping.validation
+          )
           errors.push(...validationErrors)
         }
 
         // Check required fields
-        if (mapping.required && (transformedValue === null || transformedValue === undefined || transformedValue === '')) {
+        if (
+          mapping.required &&
+          (transformedValue === null || transformedValue === undefined || transformedValue === '')
+        ) {
           errors.push({
             field: mapping.targetField,
             message: `Required field '${mapping.targetField}' is missing or empty`,
             value: transformedValue,
-            rule: 'required'
+            rule: 'required',
           })
         }
 
         transformedData[mapping.targetField] = transformedValue
-
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown transformation error'
         errors.push({
           field: mapping.targetField,
           message: `Transformation failed: ${errorMessage}`,
           value: this.extractFieldValue(record, mapping.sourceField),
-          rule: 'transformation'
+          rule: 'transformation',
         })
-        warnings.push(`Failed to transform field '${mapping.sourceField}' to '${mapping.targetField}': ${errorMessage}`)
+        warnings.push(
+          `Failed to transform field '${mapping.sourceField}' to '${mapping.targetField}': ${errorMessage}`
+        )
       }
     }
 
@@ -153,7 +177,7 @@ export class CRMTransformationEngine {
       data: transformedData,
       errors,
       warnings,
-      isValid: errors.length === 0
+      isValid: errors.length === 0,
     }
   }
 
@@ -186,7 +210,7 @@ export class CRMTransformationEngine {
         field: fieldName,
         message: `Field '${fieldName}' is required`,
         value,
-        rule: 'required'
+        rule: 'required',
       })
       return errors // Don't continue validation if required field is missing
     }
@@ -210,7 +234,7 @@ export class CRMTransformationEngine {
         field: fieldName,
         message: `Field '${fieldName}' exceeds maximum length of ${rules.maxLength}`,
         value,
-        rule: 'maxLength'
+        rule: 'maxLength',
       })
     }
 
@@ -219,7 +243,7 @@ export class CRMTransformationEngine {
         field: fieldName,
         message: `Field '${fieldName}' is below minimum length of ${rules.minLength}`,
         value,
-        rule: 'minLength'
+        rule: 'minLength',
       })
     }
 
@@ -229,7 +253,7 @@ export class CRMTransformationEngine {
         field: fieldName,
         message: `Field '${fieldName}' does not match required pattern`,
         value,
-        rule: 'pattern'
+        rule: 'pattern',
       })
     }
 
@@ -239,7 +263,7 @@ export class CRMTransformationEngine {
         field: fieldName,
         message: `Field '${fieldName}' must be one of: ${rules.allowedValues.join(', ')}`,
         value,
-        rule: 'allowedValues'
+        rule: 'allowedValues',
       })
     }
 
@@ -249,9 +273,12 @@ export class CRMTransformationEngine {
       if (customResult !== true) {
         errors.push({
           field: fieldName,
-          message: typeof customResult === 'string' ? customResult : `Field '${fieldName}' failed custom validation`,
+          message:
+            typeof customResult === 'string'
+              ? customResult
+              : `Field '${fieldName}' failed custom validation`,
           value,
-          rule: 'custom'
+          rule: 'custom',
         })
       }
     }
@@ -262,7 +289,11 @@ export class CRMTransformationEngine {
   /**
    * Validate field type
    */
-  private validateType(fieldName: string, value: any, expectedType: ValidationRule['type']): ValidationError | null {
+  private validateType(
+    fieldName: string,
+    value: any,
+    expectedType: ValidationRule['type']
+  ): ValidationError | null {
     switch (expectedType) {
       case 'string':
         if (typeof value !== 'string') {
@@ -270,7 +301,7 @@ export class CRMTransformationEngine {
             field: fieldName,
             message: `Field '${fieldName}' must be a string`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
@@ -281,18 +312,21 @@ export class CRMTransformationEngine {
             field: fieldName,
             message: `Field '${fieldName}' must be a number`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
 
       case 'boolean':
-        if (typeof value !== 'boolean' && !['true', 'false', '1', '0'].includes(String(value).toLowerCase())) {
+        if (
+          typeof value !== 'boolean' &&
+          !['true', 'false', '1', '0'].includes(String(value).toLowerCase())
+        ) {
           return {
             field: fieldName,
             message: `Field '${fieldName}' must be a boolean`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
@@ -303,7 +337,7 @@ export class CRMTransformationEngine {
             field: fieldName,
             message: `Field '${fieldName}' must be a valid date`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
@@ -315,7 +349,7 @@ export class CRMTransformationEngine {
             field: fieldName,
             message: `Field '${fieldName}' must be a valid email address`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
@@ -328,7 +362,7 @@ export class CRMTransformationEngine {
             field: fieldName,
             message: `Field '${fieldName}' must be a valid phone number`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
@@ -341,7 +375,7 @@ export class CRMTransformationEngine {
             field: fieldName,
             message: `Field '${fieldName}' must be a valid URL`,
             value,
-            rule: 'type'
+            rule: 'type',
           }
         }
         break
@@ -355,7 +389,7 @@ export class CRMTransformationEngine {
    */
   createSummaryReport(result: BatchTransformationResult): string {
     const { summary, invalidRecords } = result
-    
+
     let report = `CRM Export Transformation Summary\n`
     report += `=====================================\n`
     report += `Total Records: ${summary.total}\n`
@@ -367,7 +401,7 @@ export class CRMTransformationEngine {
     if (invalidRecords.length > 0) {
       report += `Invalid Records Details:\n`
       report += `------------------------\n`
-      
+
       invalidRecords.slice(0, 10).forEach((record, index) => {
         report += `Record ${index + 1} (ID: ${record.originalRecord.id}):\n`
         record.errors.forEach(error => {

@@ -73,12 +73,12 @@ export function PerformanceAdvisoryBanner({
 
     if (showAdvisoryBanner) {
       const isHighMemory = metrics.memoryUsage > 300 * 1024 * 1024 // 300MB
-      
+
       return {
-        type: isHighMemory ? 'warning' : 'info' as const,
+        type: isHighMemory ? 'warning' : ('info' as const),
         icon: isHighMemory ? AlertTriangle : Zap,
         title: isHighMemory ? 'Performance Advisory' : 'Optimization Available',
-        message: isHighMemory 
+        message: isHighMemory
           ? `High memory usage detected (${Math.round(metrics.memoryUsage / 1024 / 1024)}MB). Consider enabling pagination for better performance.`
           : `You have ${datasetSize.toLocaleString()} results. Enable pagination or continue in expanded mode for optimal browsing.`,
         actions: [
@@ -105,66 +105,68 @@ export function PerformanceAdvisoryBanner({
   const { type, icon: Icon, title, message, actions } = config
 
   return (
-    <Card className={clsx(
-      'border-l-4 mb-4 transition-all duration-300 ease-in-out',
-      {
-        'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20': type === 'info',
-        'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/20': type === 'warning',
-        'border-l-red-500 bg-red-50 dark:bg-red-950/20': type === 'error',
-      },
-      className
-    )}>
+    <Card
+      className={clsx(
+        'border-l-4 mb-4 transition-all duration-300 ease-in-out',
+        {
+          'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20': type === 'info',
+          'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/20': type === 'warning',
+          'border-l-red-500 bg-red-50 dark:bg-red-950/20': type === 'error',
+        },
+        className
+      )}
+    >
       <div className="p-4">
         <div className="flex items-start gap-3">
           {/* Icon */}
-          <div className={clsx(
-            'flex-shrink-0 p-1 rounded-full',
-            {
+          <div
+            className={clsx('flex-shrink-0 p-1 rounded-full', {
               'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30': type === 'info',
-              'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30': type === 'warning',
+              'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30':
+                type === 'warning',
               'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/30': type === 'error',
-            }
-          )}>
+            })}
+          >
             <Icon className="h-5 w-5" />
           </div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
-              <h3 className={clsx(
-                'text-sm font-semibold',
-                {
+              <h3
+                className={clsx('text-sm font-semibold', {
                   'text-blue-800 dark:text-blue-200': type === 'info',
                   'text-yellow-800 dark:text-yellow-200': type === 'warning',
                   'text-red-800 dark:text-red-200': type === 'error',
-                }
-              )}>
+                })}
+              >
                 {title}
               </h3>
 
               {/* Performance Score Badge */}
               {metrics.performanceScore < 80 && (
-                <div className={clsx(
-                  'px-2 py-1 rounded-full text-xs font-medium',
-                  {
-                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': metrics.performanceScore >= 60,
-                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300': metrics.performanceScore >= 40,
-                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300': metrics.performanceScore < 40,
-                  }
-                )}>
+                <div
+                  className={clsx('px-2 py-1 rounded-full text-xs font-medium', {
+                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300':
+                      metrics.performanceScore >= 60,
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300':
+                      metrics.performanceScore >= 40,
+                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300':
+                      metrics.performanceScore < 40,
+                  })}
+                >
                   Performance: {metrics.performanceScore}%
                 </div>
               )}
             </div>
 
-            <p className={clsx(
-              'text-sm mb-3',
-              {
+            <p
+              className={clsx('text-sm mb-3', {
                 'text-blue-700 dark:text-blue-300': type === 'info',
                 'text-yellow-700 dark:text-yellow-300': type === 'warning',
                 'text-red-700 dark:text-red-300': type === 'error',
-              }
-            )}>
+              })}
+            >
               {message}
             </p>
 
@@ -173,9 +175,7 @@ export function PerformanceAdvisoryBanner({
               <span>Dataset: {metrics.datasetSize.toLocaleString()} items</span>
               <span>Memory: {Math.round(metrics.memoryUsage / 1024 / 1024)}MB</span>
               <span>Mode: {mode}</span>
-              {metrics.averageRenderTime > 0 && (
-                <span>Render: {metrics.averageRenderTime}ms</span>
-              )}
+              {metrics.averageRenderTime > 0 && <span>Render: {metrics.averageRenderTime}ms</span>}
             </div>
 
             {/* Actions */}
@@ -230,12 +230,7 @@ export function PerformanceAdvisoryBanner({
  * Specialized prompt for pagination mode switching
  */
 export function PerformanceModePrompt() {
-  const {
-    metrics,
-    showPaginationPrompt,
-    acceptPagination,
-    declinePagination,
-  } = usePerformance()
+  const { metrics, showPaginationPrompt, acceptPagination, declinePagination } = usePerformance()
 
   if (!showPaginationPrompt) return null
 
@@ -256,8 +251,8 @@ export function PerformanceModePrompt() {
           </div>
 
           <p className="text-sm mb-6">
-            For better browsing experience with large datasets, we recommend enabling pagination mode. 
-            This will improve page responsiveness and reduce memory usage.
+            For better browsing experience with large datasets, we recommend enabling pagination
+            mode. This will improve page responsiveness and reduce memory usage.
           </p>
 
           <div className="flex gap-3">

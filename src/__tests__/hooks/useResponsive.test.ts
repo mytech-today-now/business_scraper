@@ -26,7 +26,7 @@ const mockTouchSupport = (hasTouch: boolean) => {
     configurable: true,
     value: hasTouch ? {} : undefined,
   })
-  
+
   Object.defineProperty(navigator, 'maxTouchPoints', {
     writable: true,
     configurable: true,
@@ -49,9 +49,9 @@ describe('useResponsive', () => {
   describe('breakpoint detection', () => {
     it('should detect mobile breakpoint correctly', () => {
       mockWindowSize(500) // Below sm (640px)
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.breakpoints.sm).toBe(false)
       expect(result.current.breakpoints.md).toBe(false)
       expect(result.current.breakpoints.lg).toBe(false)
@@ -62,9 +62,9 @@ describe('useResponsive', () => {
 
     it('should detect tablet breakpoint correctly', () => {
       mockWindowSize(800) // Between md (768px) and lg (1024px)
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.breakpoints.sm).toBe(true)
       expect(result.current.breakpoints.md).toBe(true)
       expect(result.current.breakpoints.lg).toBe(false)
@@ -75,9 +75,9 @@ describe('useResponsive', () => {
 
     it('should detect desktop breakpoint correctly', () => {
       mockWindowSize(1200) // Above lg (1024px)
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.breakpoints.sm).toBe(true)
       expect(result.current.breakpoints.md).toBe(true)
       expect(result.current.breakpoints.lg).toBe(true)
@@ -88,9 +88,9 @@ describe('useResponsive', () => {
 
     it('should detect touch device correctly', () => {
       mockTouchSupport(true)
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.isTouchDevice).toBe(true)
     })
   })
@@ -98,26 +98,26 @@ describe('useResponsive', () => {
   describe('utility functions', () => {
     it('should correctly identify breakpoint states', () => {
       mockWindowSize(800) // md breakpoint
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.isAbove('sm')).toBe(true)
       expect(result.current.isAbove('md')).toBe(true)
       expect(result.current.isAbove('lg')).toBe(false)
-      
+
       expect(result.current.isBelow('sm')).toBe(false)
       expect(result.current.isBelow('md')).toBe(false)
       expect(result.current.isBelow('lg')).toBe(true)
-      
+
       expect(result.current.isBetween('md', 'lg')).toBe(true)
       expect(result.current.isBetween('sm', 'md')).toBe(false)
     })
 
     it('should return correct current breakpoint', () => {
       mockWindowSize(800) // md breakpoint
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.getCurrentBreakpoint()).toBe('md')
     })
   })
@@ -125,29 +125,29 @@ describe('useResponsive', () => {
   describe('resize handling', () => {
     it('should update breakpoints on window resize', () => {
       mockWindowSize(500) // Mobile
-      
+
       const { result } = renderHook(() => useResponsive())
-      
+
       expect(result.current.isMobile).toBe(true)
-      
+
       // Simulate resize to desktop
       act(() => {
         mockWindowSize(1200)
         window.dispatchEvent(new Event('resize'))
       })
-      
+
       expect(result.current.isMobile).toBe(false)
       expect(result.current.isDesktop).toBe(true)
     })
 
     it('should update window size on resize', () => {
       const { result } = renderHook(() => useResponsive())
-      
+
       act(() => {
         mockWindowSize(1200, 900)
         window.dispatchEvent(new Event('resize'))
       })
-      
+
       expect(result.current.windowSize.width).toBe(1200)
       expect(result.current.windowSize.height).toBe(900)
     })
@@ -166,11 +166,9 @@ describe('useResponsiveValue', () => {
       md: 'md-value',
       lg: 'lg-value',
     }
-    
-    const { result } = renderHook(() => 
-      useResponsiveValue(values, 'default-value')
-    )
-    
+
+    const { result } = renderHook(() => useResponsiveValue(values, 'default-value'))
+
     expect(result.current).toBe('lg-value')
   })
 
@@ -181,9 +179,7 @@ describe('useResponsiveValue', () => {
       // md and lg not defined
     }
 
-    const { result } = renderHook(() =>
-      useResponsiveValue(values, 'default-value')
-    )
+    const { result } = renderHook(() => useResponsiveValue(values, 'default-value'))
 
     expect(result.current).toBe('sm-value') // Falls back to sm when lg is active but not defined
   })
@@ -192,11 +188,9 @@ describe('useResponsiveValue', () => {
     const values = {
       xl: 'xl-value', // Only xl defined, but we're at lg
     }
-    
-    const { result } = renderHook(() => 
-      useResponsiveValue(values, 'default-value')
-    )
-    
+
+    const { result } = renderHook(() => useResponsiveValue(values, 'default-value'))
+
     expect(result.current).toBe('default-value')
   })
 
@@ -205,27 +199,25 @@ describe('useResponsiveValue', () => {
       sm: 'mobile-value',
       lg: 'desktop-value',
     }
-    
+
     mockWindowSize(500) // Mobile
-    
-    const { result } = renderHook(() => 
-      useResponsiveValue(values, 'default-value')
-    )
-    
+
+    const { result } = renderHook(() => useResponsiveValue(values, 'default-value'))
+
     expect(result.current).toBe('default-value') // sm not active at 500px (below 640px threshold)
-    
+
     act(() => {
       mockWindowSize(700) // sm active
       window.dispatchEvent(new Event('resize'))
     })
-    
+
     expect(result.current).toBe('mobile-value')
-    
+
     act(() => {
       mockWindowSize(1200) // lg active
       window.dispatchEvent(new Event('resize'))
     })
-    
+
     expect(result.current).toBe('desktop-value')
   })
 })

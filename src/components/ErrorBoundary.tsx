@@ -3,7 +3,13 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { logger } from '@/utils/logger'
 import { Button } from '../view/components/ui/Button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../view/components/ui/Card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../view/components/ui/Card'
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -34,7 +40,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       hasError: false,
       error: null,
       errorInfo: null,
-      errorId: null
+      errorId: null,
     }
   }
 
@@ -43,34 +49,34 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return {
       hasError: true,
       error,
-      errorId: generateErrorId()
+      errorId: generateErrorId(),
     }
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     const errorId = this.state.errorId || generateErrorId()
-    
+
     // Log the error with full context
     logger.error('ErrorBoundary', `React Error Boundary caught error ${errorId}`, {
       errorId,
       error: {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       },
       errorInfo: {
-        componentStack: errorInfo.componentStack
+        componentStack: errorInfo.componentStack,
       },
       level: this.props.level || 'component',
       retryCount: this.retryCount,
       url: typeof window !== 'undefined' ? window.location.href : 'unknown',
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown'
+      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
     })
 
     // Update state with error info
     this.setState({
       errorInfo,
-      errorId
+      errorId,
     })
 
     // Call custom error handler if provided
@@ -92,13 +98,16 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   private handleRetry = () => {
     if (this.retryCount < this.maxRetries) {
       this.retryCount++
-      logger.info('ErrorBoundary', `Retrying component render (attempt ${this.retryCount}/${this.maxRetries})`)
-      
+      logger.info(
+        'ErrorBoundary',
+        `Retrying component render (attempt ${this.retryCount}/${this.maxRetries})`
+      )
+
       this.setState({
         hasError: false,
         error: null,
         errorInfo: null,
-        errorId: null
+        errorId: null,
       })
     }
   }
@@ -122,11 +131,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       stack: this.state.error?.stack,
       componentStack: this.state.errorInfo?.componentStack,
       timestamp: new Date().toISOString(),
-      url: typeof window !== 'undefined' ? window.location.href : 'unknown'
+      url: typeof window !== 'undefined' ? window.location.href : 'unknown',
     }
 
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(JSON.stringify(errorDetails, null, 2))
+      navigator.clipboard
+        .writeText(JSON.stringify(errorDetails, null, 2))
         .then(() => {
           // Could show a toast notification here
           console.log('Error details copied to clipboard')
@@ -149,10 +159,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       const canRetry = this.retryCount < this.maxRetries
 
       return (
-        <div 
-          className="error-boundary-container p-4"
-          data-testid="error-boundary"
-        >
+        <div className="error-boundary-container p-4" data-testid="error-boundary">
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -162,7 +169,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </CardTitle>
               </div>
               <CardDescription>
-                Something went wrong while rendering this {level}. 
+                Something went wrong while rendering this {level}.
                 {this.state.errorId && ` Error ID: ${this.state.errorId}`}
               </CardDescription>
             </CardHeader>
@@ -177,7 +184,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               {/* Action buttons */}
               <div className="flex flex-wrap gap-2">
                 {canRetry && (
-                  <Button 
+                  <Button
                     onClick={this.handleRetry}
                     variant="default"
                     size="sm"
@@ -187,8 +194,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                     Try Again ({this.maxRetries - this.retryCount} left)
                   </Button>
                 )}
-                
-                <Button 
+
+                <Button
                   onClick={this.handleReload}
                   variant="outline"
                   size="sm"
@@ -199,7 +206,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </Button>
 
                 {level === 'page' && (
-                  <Button 
+                  <Button
                     onClick={this.handleGoHome}
                     variant="outline"
                     size="sm"
@@ -220,7 +227,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                       Technical Details
                     </span>
                   </summary>
-                  <div 
+                  <div
                     className="mt-2 p-3 bg-muted rounded-lg text-xs font-mono overflow-auto max-h-40"
                     data-testid="error-details"
                   >
@@ -240,11 +247,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                       {this.state.errorInfo?.componentStack && (
                         <div>
                           <strong>Component Stack:</strong>
-                          <pre className="mt-1 whitespace-pre-wrap">{this.state.errorInfo.componentStack}</pre>
+                          <pre className="mt-1 whitespace-pre-wrap">
+                            {this.state.errorInfo.componentStack}
+                          </pre>
                         </div>
                       )}
                     </div>
-                    <Button 
+                    <Button
                       onClick={this.copyErrorDetails}
                       variant="ghost"
                       size="sm"
@@ -278,15 +287,15 @@ function generateErrorId(): string {
 export function useErrorHandler() {
   return (error: Error, errorInfo?: ErrorInfo) => {
     const errorId = generateErrorId()
-    
+
     logger.error('ErrorHandler', `Unhandled error ${errorId}`, {
       errorId,
       error: {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       },
-      errorInfo
+      errorInfo,
     })
 
     // In a real application, report to error tracking service
@@ -312,6 +321,6 @@ export function withErrorBoundary<P extends object>(
   )
 
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`
-  
+
   return WrappedComponent
 }

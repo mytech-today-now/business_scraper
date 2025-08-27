@@ -26,9 +26,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       body = await request.json()
     } else {
       return NextResponse.json(
-        { 
-          error: 'invalid_request', 
-          error_description: 'Unsupported content type' 
+        {
+          error: 'invalid_request',
+          error_description: 'Unsupported content type',
         },
         { status: 400 }
       )
@@ -41,15 +41,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       code,
       redirect_uri: redirectUri,
       refresh_token: refreshToken,
-      code_verifier: codeVerifier
+      code_verifier: codeVerifier,
     } = body
 
     // Validate grant type
     if (!grantType) {
       return NextResponse.json(
-        { 
-          error: 'invalid_request', 
-          error_description: 'Missing grant_type parameter' 
+        {
+          error: 'invalid_request',
+          error_description: 'Missing grant_type parameter',
         },
         { status: 400 }
       )
@@ -57,9 +57,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!['authorization_code', 'refresh_token'].includes(grantType)) {
       return NextResponse.json(
-        { 
-          error: 'unsupported_grant_type', 
-          error_description: 'Only authorization_code and refresh_token grant types are supported' 
+        {
+          error: 'unsupported_grant_type',
+          error_description: 'Only authorization_code and refresh_token grant types are supported',
         },
         { status: 400 }
       )
@@ -68,9 +68,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Validate client credentials
     if (!clientId || !clientSecret) {
       return NextResponse.json(
-        { 
-          error: 'invalid_client', 
-          error_description: 'Missing client credentials' 
+        {
+          error: 'invalid_client',
+          error_description: 'Missing client credentials',
         },
         { status: 400 }
       )
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.info('OAuth2Token', `Token request from IP: ${ip}`, {
       grantType,
       clientId,
-      hasPKCE: !!codeVerifier
+      hasPKCE: !!codeVerifier,
     })
 
     try {
@@ -87,9 +87,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         // Authorization code flow
         if (!code || !redirectUri) {
           return NextResponse.json(
-            { 
-              error: 'invalid_request', 
-              error_description: 'Missing code or redirect_uri parameter' 
+            {
+              error: 'invalid_request',
+              error_description: 'Missing code or redirect_uri parameter',
             },
             { status: 400 }
           )
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         logger.info('OAuth2Token', `Access token issued for client: ${clientId}`, {
           clientId,
           scope: token.scope,
-          expiresIn: token.expiresIn
+          expiresIn: token.expiresIn,
         })
 
         return NextResponse.json({
@@ -114,31 +114,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           token_type: token.tokenType,
           expires_in: token.expiresIn,
           refresh_token: token.refreshToken,
-          scope: token.scope.join(' ')
+          scope: token.scope.join(' '),
         })
-
       } else if (grantType === 'refresh_token') {
         // Refresh token flow
         if (!refreshToken) {
           return NextResponse.json(
-            { 
-              error: 'invalid_request', 
-              error_description: 'Missing refresh_token parameter' 
+            {
+              error: 'invalid_request',
+              error_description: 'Missing refresh_token parameter',
             },
             { status: 400 }
           )
         }
 
-        const token = await oauth2Service.refreshToken(
-          clientId,
-          clientSecret,
-          refreshToken
-        )
+        const token = await oauth2Service.refreshToken(clientId, clientSecret, refreshToken)
 
         logger.info('OAuth2Token', `Token refreshed for client: ${clientId}`, {
           clientId,
           scope: token.scope,
-          expiresIn: token.expiresIn
+          expiresIn: token.expiresIn,
         })
 
         return NextResponse.json({
@@ -146,38 +141,39 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           token_type: token.tokenType,
           expires_in: token.expiresIn,
           refresh_token: token.refreshToken,
-          scope: token.scope.join(' ')
+          scope: token.scope.join(' '),
         })
       }
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      
+
       logger.warn('OAuth2Token', `Token request failed for client: ${clientId}`, {
         clientId,
         grantType,
         error: errorMessage,
-        ip
+        ip,
       })
 
       // Map specific errors to OAuth error codes
       if (errorMessage.includes('not found') || errorMessage.includes('Invalid client')) {
         return NextResponse.json(
-          { 
-            error: 'invalid_client', 
-            error_description: 'Client authentication failed' 
+          {
+            error: 'invalid_client',
+            error_description: 'Client authentication failed',
           },
           { status: 401 }
         )
       }
 
-      if (errorMessage.includes('Invalid authorization code') || 
-          errorMessage.includes('expired') ||
-          errorMessage.includes('Invalid refresh token')) {
+      if (
+        errorMessage.includes('Invalid authorization code') ||
+        errorMessage.includes('expired') ||
+        errorMessage.includes('Invalid refresh token')
+      ) {
         return NextResponse.json(
-          { 
-            error: 'invalid_grant', 
-            error_description: errorMessage 
+          {
+            error: 'invalid_grant',
+            error_description: errorMessage,
           },
           { status: 400 }
         )
@@ -185,9 +181,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       if (errorMessage.includes('redirect')) {
         return NextResponse.json(
-          { 
-            error: 'invalid_request', 
-            error_description: errorMessage 
+          {
+            error: 'invalid_request',
+            error_description: errorMessage,
           },
           { status: 400 }
         )
@@ -195,9 +191,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       if (errorMessage.includes('PKCE') || errorMessage.includes('verifier')) {
         return NextResponse.json(
-          { 
-            error: 'invalid_request', 
-            error_description: errorMessage 
+          {
+            error: 'invalid_request',
+            error_description: errorMessage,
           },
           { status: 400 }
         )
@@ -205,21 +201,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       // Generic server error
       return NextResponse.json(
-        { 
-          error: 'server_error', 
-          error_description: 'Token generation failed' 
+        {
+          error: 'server_error',
+          error_description: 'Token generation failed',
         },
         { status: 500 }
       )
     }
-
   } catch (error) {
     logger.error('OAuth2Token', `Token endpoint error from IP: ${ip}`, error)
 
     return NextResponse.json(
-      { 
-        error: 'server_error', 
-        error_description: 'Internal server error' 
+      {
+        error: 'server_error',
+        error_description: 'Internal server error',
       },
       { status: 500 }
     )
@@ -236,7 +231,7 @@ export async function OPTIONS(request: NextRequest): Promise<NextResponse> {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400'
-    }
+      'Access-Control-Max-Age': '86400',
+    },
   })
 }

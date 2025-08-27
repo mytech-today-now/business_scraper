@@ -47,7 +47,10 @@ export class AuthorizationService {
     }
 
     this.authorizationCodes.set(code, authCode)
-    logger.info('AuthorizationService', `Generated authorization code for user ${user.id}, client ${client.id}`)
+    logger.info(
+      'AuthorizationService',
+      `Generated authorization code for user ${user.id}, client ${client.id}`
+    )
 
     return { code, expiresAt }
   }
@@ -109,7 +112,10 @@ export class AuthorizationService {
     authCode.isUsed = true
     this.authorizationCodes.set(code, authCode)
 
-    logger.info('AuthorizationService', `Validated and consumed authorization code for client ${clientId}`)
+    logger.info(
+      'AuthorizationService',
+      `Validated and consumed authorization code for client ${clientId}`
+    )
     return { valid: true, authCode }
   }
 
@@ -138,7 +144,7 @@ export class AuthorizationService {
     // Validate and parse scopes
     const requestedScopes = this.parseScopes(request.scope || 'openid')
     const validationResult = this.validateScopes(requestedScopes, client.allowedScopes)
-    
+
     if (!validationResult.valid) {
       return { valid: false, error: 'invalid_scope' }
     }
@@ -203,7 +209,10 @@ export class AuthorizationService {
     }
 
     if (cleanedCount > 0) {
-      logger.info('AuthorizationService', `Cleaned up ${cleanedCount} expired/used authorization codes`)
+      logger.info(
+        'AuthorizationService',
+        `Cleaned up ${cleanedCount} expired/used authorization codes`
+      )
     }
 
     return cleanedCount
@@ -223,7 +232,10 @@ export class AuthorizationService {
       }
     }
 
-    logger.info('AuthorizationService', `Revoked ${revokedCount} authorization codes for user ${userId}`)
+    logger.info(
+      'AuthorizationService',
+      `Revoked ${revokedCount} authorization codes for user ${userId}`
+    )
     return revokedCount
   }
 
@@ -241,7 +253,10 @@ export class AuthorizationService {
       }
     }
 
-    logger.info('AuthorizationService', `Revoked ${revokedCount} authorization codes for client ${clientId}`)
+    logger.info(
+      'AuthorizationService',
+      `Revoked ${revokedCount} authorization codes for client ${clientId}`
+    )
     return revokedCount
   }
 

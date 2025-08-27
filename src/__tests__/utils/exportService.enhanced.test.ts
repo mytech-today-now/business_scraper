@@ -19,14 +19,14 @@ const mockBusinesses: BusinessRecord[] = [
       street: '123 Main St',
       city: 'Anytown',
       state: 'CA',
-      zipCode: '12345'
+      zipCode: '12345',
     },
     industry: 'Legal Services',
     contactPerson: 'John Doe',
-    coordinates: { lat: 40.7128, lng: -74.0060 },
+    coordinates: { lat: 40.7128, lng: -74.006 },
     scrapedAt: new Date('2025-01-15T10:30:00Z'),
     confidence: 0.95,
-    source: 'test'
+    source: 'test',
   },
   {
     id: '2',
@@ -38,15 +38,15 @@ const mockBusinesses: BusinessRecord[] = [
       street: '456 Oak Ave',
       city: 'Somewhere',
       state: 'NY',
-      zipCode: '67890'
+      zipCode: '67890',
     },
     industry: 'Legal Services',
     contactPerson: 'Jane Smith',
     coordinates: { lat: 40.7589, lng: -73.9851 },
     scrapedAt: new Date('2025-01-15T11:00:00Z'),
     confidence: 0.88,
-    source: 'test'
-  }
+    source: 'test',
+  },
 ]
 
 describe('ExportService Enhanced Features', () => {
@@ -54,7 +54,7 @@ describe('ExportService Enhanced Features', () => {
 
   // Helper function to read blob content
   const readBlobAsText = async (blob: Blob): Promise<string> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const reader = new FileReader()
       reader.onload = () => resolve(reader.result as string)
       reader.readAsText(blob)
@@ -80,7 +80,7 @@ describe('ExportService Enhanced Features', () => {
     it('should generate standardized filename for single industry', async () => {
       const context: ExportContext = {
         selectedIndustries: ['Legal Services'],
-        totalResults: 2
+        totalResults: 2,
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', { context })
@@ -91,18 +91,20 @@ describe('ExportService Enhanced Features', () => {
     it('should generate standardized filename for multiple industries', async () => {
       const context: ExportContext = {
         selectedIndustries: ['Legal Services', 'Medical Services', 'Financial Services'],
-        totalResults: 2
+        totalResults: 2,
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', { context })
 
-      expect(result.filename).toBe('2025-01-19_Legal-Services_Medical-Services_Financial-Services_2.csv')
+      expect(result.filename).toBe(
+        '2025-01-19_Legal-Services_Medical-Services_Financial-Services_2.csv'
+      )
     })
 
     it('should generate standardized filename for many industries', async () => {
       const context: ExportContext = {
         selectedIndustries: ['Legal', 'Medical', 'Financial', 'Technology', 'Retail'],
-        totalResults: 2
+        totalResults: 2,
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', { context })
@@ -113,12 +115,12 @@ describe('ExportService Enhanced Features', () => {
     it('should handle filtered export count in filename', async () => {
       const context: ExportContext = {
         selectedIndustries: ['Legal Services'],
-        totalResults: 2
+        totalResults: 2,
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
         context,
-        selectedBusinesses: ['1'] // Only export first business
+        selectedBusinesses: ['1'], // Only export first business
       })
 
       expect(result.filename).toBe('2025-01-19_Legal-Services_1.csv')
@@ -127,7 +129,7 @@ describe('ExportService Enhanced Features', () => {
     it('should sanitize industry names in filename', async () => {
       const context: ExportContext = {
         selectedIndustries: ['Legal & Law Services'],
-        totalResults: 2
+        totalResults: 2,
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', { context })
@@ -138,19 +140,21 @@ describe('ExportService Enhanced Features', () => {
     it('should handle custom industry names in filename', async () => {
       const context: ExportContext = {
         selectedIndustries: ['My Custom Industry', 'Another Custom Business Type'],
-        totalResults: 2 // Use actual number of mock businesses
+        totalResults: 2, // Use actual number of mock businesses
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', { context })
 
-      expect(result.filename).toBe('2025-01-19_My-Custom-Industry_Another-Custom-Business-Type_2.csv')
+      expect(result.filename).toBe(
+        '2025-01-19_My-Custom-Industry_Another-Custom-Business-Type_2.csv'
+      )
     })
   })
 
   describe('Filtered Exports', () => {
     it('should export only selected businesses', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'json', {
-        selectedBusinesses: ['1']
+        selectedBusinesses: ['1'],
       })
 
       const exportData = JSON.parse(await readBlobAsText(result.blob))
@@ -161,7 +165,7 @@ describe('ExportService Enhanced Features', () => {
 
     it('should handle empty selection gracefully', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'json', {
-        selectedBusinesses: []
+        selectedBusinesses: [],
       })
 
       const exportData = JSON.parse(await readBlobAsText(result.blob))
@@ -171,7 +175,7 @@ describe('ExportService Enhanced Features', () => {
 
     it('should handle non-existent business IDs', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'json', {
-        selectedBusinesses: ['999'] // Non-existent ID
+        selectedBusinesses: ['999'], // Non-existent ID
       })
 
       const exportData = JSON.parse(await readBlobAsText(result.blob))
@@ -186,27 +190,32 @@ describe('ExportService Enhanced Features', () => {
     customHeaders: {
       businessName: 'Company Name',
       email: 'Email Address',
-      phone: 'Phone Number'
-    }
+      phone: 'Phone Number',
+    },
   }
 
   const locationTemplate: ExportTemplate = {
     name: 'Location Data',
-    fields: ['businessName', 'address.street', 'address.city', 'coordinates.lat', 'coordinates.lng'],
+    fields: [
+      'businessName',
+      'address.street',
+      'address.city',
+      'coordinates.lat',
+      'coordinates.lng',
+    ],
     customHeaders: {
       businessName: 'Business Name',
       'address.street': 'Street Address',
       'address.city': 'City',
       'coordinates.lat': 'Latitude',
-      'coordinates.lng': 'Longitude'
-    }
+      'coordinates.lng': 'Longitude',
+    },
   }
 
   describe('Custom Export Templates', () => {
-
     it('should use prioritized export format for CSV', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
-        template: basicTemplate // Template is ignored in prioritized export
+        template: basicTemplate, // Template is ignored in prioritized export
       })
 
       const csvContent = await readBlobAsText(result.blob)
@@ -224,7 +233,7 @@ describe('ExportService Enhanced Features', () => {
 
     it('should use prioritized export format for location data', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
-        template: locationTemplate // Template is ignored in prioritized export
+        template: locationTemplate, // Template is ignored in prioritized export
       })
 
       const csvContent = await readBlobAsText(result.blob)
@@ -242,7 +251,7 @@ describe('ExportService Enhanced Features', () => {
 
     it('should use prioritized export format for JSON', async () => {
       const result = await exportService.exportBusinesses(mockBusinesses, 'json', {
-        template: basicTemplate // Template is ignored in prioritized export
+        template: basicTemplate, // Template is ignored in prioritized export
       })
 
       const exportData = JSON.parse(await readBlobAsText(result.blob))
@@ -261,12 +270,12 @@ describe('ExportService Enhanced Features', () => {
         fields: ['businessName', 'nonExistentField'],
         customHeaders: {
           businessName: 'Company Name',
-          nonExistentField: 'Missing Field'
-        }
+          nonExistentField: 'Missing Field',
+        },
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
-        template: templateWithMissingField // Template is ignored in prioritized export
+        template: templateWithMissingField, // Template is ignored in prioritized export
       })
 
       const csvContent = await readBlobAsText(result.blob)
@@ -294,13 +303,13 @@ describe('ExportService Enhanced Features', () => {
     it('should combine all features: filtered export with template and custom filename', async () => {
       const context: ExportContext = {
         selectedIndustries: ['Legal Services'],
-        totalResults: 2
+        totalResults: 2,
       }
 
       const result = await exportService.exportBusinesses(mockBusinesses, 'csv', {
         context,
         selectedBusinesses: ['1'],
-        template: basicTemplate
+        template: basicTemplate,
       })
 
       // Check filename

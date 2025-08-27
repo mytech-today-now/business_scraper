@@ -13,14 +13,14 @@ export function ServiceWorkerRegistration(): null {
   const { isOnline, isOffline, wasOffline } = useOfflineSupport({
     onOnline: () => {
       if (wasOffline) {
-        toast.success('Connection restored! You\'re back online.', {
+        toast.success("Connection restored! You're back online.", {
           duration: 3000,
           icon: '🌐',
         })
       }
     },
     onOffline: () => {
-      toast.error('You\'re offline. Some features may be limited.', {
+      toast.error("You're offline. Some features may be limited.", {
         duration: 5000,
         icon: '📱',
       })
@@ -41,7 +41,7 @@ export function ServiceWorkerRegistration(): null {
   const registerServiceWorker = async () => {
     try {
       logger.info('ServiceWorker', 'Registering service worker...')
-      
+
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
         updateViaCache: 'none',
@@ -55,16 +55,16 @@ export function ServiceWorkerRegistration(): null {
       // Handle service worker updates
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing
-        
+
         if (newWorker) {
           logger.info('ServiceWorker', 'New service worker found, installing...')
-          
+
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed') {
               if (navigator.serviceWorker.controller) {
                 // New update available
                 logger.info('ServiceWorker', 'New service worker installed, update available')
-                
+
                 toast.success('App update available! Refresh to get the latest version.', {
                   duration: 8000,
                   icon: '🔄',
@@ -72,7 +72,7 @@ export function ServiceWorkerRegistration(): null {
               } else {
                 // First time installation
                 logger.info('ServiceWorker', 'Service worker installed for the first time')
-                
+
                 toast.success('App is ready for offline use!', {
                   duration: 4000,
                   icon: '📱',
@@ -86,7 +86,7 @@ export function ServiceWorkerRegistration(): null {
       // Handle service worker controller change
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         logger.info('ServiceWorker', 'Service worker controller changed')
-        
+
         // Optionally reload the page to ensure consistency
         if (confirm('App has been updated. Reload to get the latest version?')) {
           window.location.reload()
@@ -96,7 +96,7 @@ export function ServiceWorkerRegistration(): null {
       // Check for waiting service worker
       if (registration.waiting) {
         logger.info('ServiceWorker', 'Service worker is waiting to activate')
-        
+
         toast.success('App update is ready! Refresh to activate.', {
           duration: 8000,
           icon: '🔄',
@@ -104,13 +104,15 @@ export function ServiceWorkerRegistration(): null {
       }
 
       // Periodic update check (every 24 hours)
-      setInterval(() => {
-        registration.update()
-      }, 24 * 60 * 60 * 1000)
-
+      setInterval(
+        () => {
+          registration.update()
+        },
+        24 * 60 * 60 * 1000
+      )
     } catch (error) {
       logger.error('ServiceWorker', 'Service worker registration failed', error)
-      
+
       // Don't show error toast to users as this is not critical
       console.warn('Service worker registration failed:', error)
     }
@@ -123,12 +125,12 @@ export function ServiceWorkerRegistration(): null {
     const handleBeforeInstallPrompt = (event: Event) => {
       // Prevent the mini-infobar from appearing on mobile
       event.preventDefault()
-      
+
       // Stash the event so it can be triggered later
       deferredPrompt = event
-      
+
       logger.info('PWA', 'Install prompt available')
-      
+
       // Show custom install prompt after a delay
       setTimeout(() => {
         showInstallPrompt(deferredPrompt)
@@ -137,12 +139,12 @@ export function ServiceWorkerRegistration(): null {
 
     const handleAppInstalled = () => {
       logger.info('PWA', 'App was installed')
-      
+
       toast.success('Business Scraper installed successfully!', {
         duration: 4000,
         icon: '📱',
       })
-      
+
       deferredPrompt = null
     }
 
@@ -164,7 +166,7 @@ export function ServiceWorkerRegistration(): null {
     }
 
     toast.custom(
-      (t) => (
+      t => (
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border max-w-sm">
           <div className="flex items-start space-x-3">
             <div className="text-2xl">📱</div>
@@ -177,18 +179,18 @@ export function ServiceWorkerRegistration(): null {
                 <button
                   onClick={async () => {
                     toast.dismiss(t.id)
-                    
+
                     try {
                       const result = await deferredPrompt.prompt()
                       logger.info('PWA', 'Install prompt result', { outcome: result.outcome })
-                      
+
                       if (result.outcome === 'accepted') {
                         toast.success('Installing app...', { duration: 2000 })
                       }
                     } catch (error) {
                       logger.error('PWA', 'Install prompt failed', error)
                     }
-                    
+
                     deferredPrompt = null
                   }}
                   className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded hover:bg-primary/90"
@@ -223,7 +225,7 @@ export function ServiceWorkerRegistration(): null {
 export function useIsPWA(): boolean {
   useEffect(() => {
     if (typeof window === 'undefined') return false
-    
+
     return (
       window.matchMedia('(display-mode: standalone)').matches ||
       (window.navigator as any).standalone === true ||

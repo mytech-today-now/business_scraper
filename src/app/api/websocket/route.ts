@@ -13,25 +13,25 @@ import { getClientIP } from '@/lib/security'
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
-  
+
   try {
     const status = webSocketServer.getStatus()
-    
+
     logger.info('WebSocketAPI', `Status request from IP: ${ip}`, status)
-    
+
     return NextResponse.json({
       success: true,
       status,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('WebSocketAPI', `Failed to get status from IP: ${ip}`, error)
-    
+
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to get WebSocket server status',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -43,77 +43,77 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
-  
+
   try {
     const body = await request.json()
     const { action } = body
-    
+
     logger.info('WebSocketAPI', `${action} request from IP: ${ip}`)
-    
+
     switch (action) {
       case 'start':
         if (webSocketServer.getStatus().isRunning) {
           return NextResponse.json({
             success: true,
             message: 'WebSocket server is already running',
-            status: webSocketServer.getStatus()
+            status: webSocketServer.getStatus(),
           })
         }
-        
+
         await webSocketServer.start()
-        
+
         return NextResponse.json({
           success: true,
           message: 'WebSocket server started successfully',
-          status: webSocketServer.getStatus()
+          status: webSocketServer.getStatus(),
         })
-      
+
       case 'stop':
         if (!webSocketServer.getStatus().isRunning) {
           return NextResponse.json({
             success: true,
             message: 'WebSocket server is already stopped',
-            status: webSocketServer.getStatus()
+            status: webSocketServer.getStatus(),
           })
         }
-        
+
         await webSocketServer.stop()
-        
+
         return NextResponse.json({
           success: true,
           message: 'WebSocket server stopped successfully',
-          status: webSocketServer.getStatus()
+          status: webSocketServer.getStatus(),
         })
-      
+
       case 'restart':
         await webSocketServer.stop()
         await new Promise(resolve => setTimeout(resolve, 1000)) // Wait 1 second
         await webSocketServer.start()
-        
+
         return NextResponse.json({
           success: true,
           message: 'WebSocket server restarted successfully',
-          status: webSocketServer.getStatus()
+          status: webSocketServer.getStatus(),
         })
-      
+
       default:
         return NextResponse.json(
-          { 
+          {
             success: false,
             error: 'Invalid action',
-            message: 'Action must be one of: start, stop, restart'
+            message: 'Action must be one of: start, stop, restart',
           },
           { status: 400 }
         )
     }
   } catch (error) {
     logger.error('WebSocketAPI', `WebSocket operation failed from IP: ${ip}`, error)
-    
+
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'WebSocket operation failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )

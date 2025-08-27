@@ -16,7 +16,7 @@ export interface TimestampedEntity extends BaseEntity {
 }
 
 // Permission system types
-export type Permission = 
+export type Permission =
   // System permissions
   | 'system.manage'
   | 'system.view'
@@ -86,7 +86,7 @@ export interface User extends TimestampedEntity {
   isVerified: boolean
   lastLoginAt?: Date
   passwordChangedAt: Date
-  
+
   // Profile information
   jobTitle?: string
   department?: string
@@ -94,7 +94,7 @@ export interface User extends TimestampedEntity {
   timezone: string
   language: string
   preferences: UserPreferences
-  
+
   // Security settings
   twoFactorEnabled: boolean
   twoFactorSecret?: string
@@ -209,12 +209,12 @@ export interface Workspace extends TimestampedEntity {
   owner: User
   isActive: boolean
   settings: WorkspaceSettings
-  
+
   // Workspace configuration
   defaultSearchRadius: number
   defaultSearchDepth: number
   defaultPagesPerSite: number
-  
+
   // Computed fields
   memberCount?: number
   campaignCount?: number
@@ -258,7 +258,7 @@ export interface WorkspaceMembership extends BaseEntity {
 }
 
 // Audit and activity tracking types
-export type AuditAction = 
+export type AuditAction =
   | 'user.login'
   | 'user.logout'
   | 'user.created'

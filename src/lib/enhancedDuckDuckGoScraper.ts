@@ -30,7 +30,7 @@ export class EnhancedDuckDuckGoScraper {
     blockResources: true,
     filterConsole: true,
     retryAttempts: 3,
-    retryDelay: 2000
+    retryDelay: 2000,
   }
 
   /**
@@ -82,8 +82,8 @@ export class EnhancedDuckDuckGoScraper {
           '--safebrowsing-disable-auto-update',
           '--enable-automation',
           '--password-store=basic',
-          '--use-mock-keychain'
-        ]
+          '--use-mock-keychain',
+        ],
       })
 
       logger.info('EnhancedDuckDuckGoScraper', 'Browser initialized successfully')
@@ -103,7 +103,7 @@ export class EnhancedDuckDuckGoScraper {
       maxResults = this.config.maxResults,
       timeout = this.config.timeout,
       blockResources = this.config.blockResources,
-      filterConsole = this.config.filterConsole
+      filterConsole = this.config.filterConsole,
     } = options
 
     if (!this.browser) {
@@ -135,7 +135,6 @@ export class EnhancedDuckDuckGoScraper {
 
         logger.info('EnhancedDuckDuckGoScraper', `Successfully extracted ${results.length} results`)
         return results
-
       } catch (error) {
         retryCount++
         logger.warn('EnhancedDuckDuckGoScraper', `Attempt ${retryCount} failed:`, error)
@@ -146,7 +145,10 @@ export class EnhancedDuckDuckGoScraper {
         }
 
         if (retryCount >= this.config.retryAttempts) {
-          logger.error('EnhancedDuckDuckGoScraper', `All ${this.config.retryAttempts} attempts failed`)
+          logger.error(
+            'EnhancedDuckDuckGoScraper',
+            `All ${this.config.retryAttempts} attempts failed`
+          )
           throw error
         }
 
@@ -165,7 +167,11 @@ export class EnhancedDuckDuckGoScraper {
   /**
    * Configure page with resource blocking and console filtering
    */
-  private async configurePage(page: Page, blockResources: boolean, filterConsole: boolean): Promise<void> {
+  private async configurePage(
+    page: Page,
+    blockResources: boolean,
+    filterConsole: boolean
+  ): Promise<void> {
     // Set user agent to appear more human-like
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -177,7 +183,7 @@ export class EnhancedDuckDuckGoScraper {
     // Block unnecessary resources if enabled
     if (blockResources) {
       await page.setRequestInterception(true)
-      page.on('request', (request) => {
+      page.on('request', request => {
         const resourceType = request.resourceType()
         const url = request.url()
 
@@ -204,9 +210,9 @@ export class EnhancedDuckDuckGoScraper {
 
     // Filter console messages if enabled
     if (filterConsole) {
-      page.on('console', (msg) => {
+      page.on('console', msg => {
         const text = msg.text()
-        
+
         // Only log critical errors, filter out noise
         if (
           msg.type() === 'error' &&
@@ -224,7 +230,7 @@ export class EnhancedDuckDuckGoScraper {
       })
 
       // Handle page errors
-      page.on('pageerror', (error) => {
+      page.on('pageerror', error => {
         logger.warn('EnhancedDuckDuckGoScraper', `Page error: ${error.message}`)
       })
     }
@@ -252,7 +258,7 @@ export class EnhancedDuckDuckGoScraper {
   private async navigateWithRetry(page: Page, url: string, timeout: number): Promise<void> {
     await page.goto(url, {
       waitUntil: 'networkidle2',
-      timeout
+      timeout,
     })
 
     // Additional wait for dynamic content
@@ -270,7 +276,7 @@ export class EnhancedDuckDuckGoScraper {
       '.result__body',
       '.results .result',
       'article[data-testid="result"]',
-      '[data-layout="organic"]'
+      '[data-layout="organic"]',
     ]
 
     // Try multiple selectors
@@ -302,7 +308,7 @@ export class EnhancedDuckDuckGoScraper {
         '.result__body',
         '.results .result',
         'article[data-testid="result"]',
-        '[data-layout="organic"]'
+        '[data-layout="organic"]',
       ]
 
       let resultElements: NodeListOf<Element> | null = null
@@ -329,10 +335,11 @@ export class EnhancedDuckDuckGoScraper {
           const element = resultElements[i]
 
           // Enhanced link extraction
-          const linkElement = element.querySelector('a[href]') || 
-                             element.querySelector('h2 a') ||
-                             element.querySelector('.result__title a') ||
-                             element.querySelector('[data-testid="result-title-a"]')
+          const linkElement =
+            element.querySelector('a[href]') ||
+            element.querySelector('h2 a') ||
+            element.querySelector('.result__title a') ||
+            element.querySelector('[data-testid="result-title-a"]')
 
           if (!linkElement) continue
 
@@ -340,42 +347,53 @@ export class EnhancedDuckDuckGoScraper {
           if (!url || url.startsWith('javascript:') || url.includes('duckduckgo.com')) continue
 
           // Enhanced title extraction
-          const title = linkElement.textContent?.trim() ||
-                       element.querySelector('h2')?.textContent?.trim() ||
-                       element.querySelector('.result__title')?.textContent?.trim() ||
-                       'No title'
+          const title =
+            linkElement.textContent?.trim() ||
+            element.querySelector('h2')?.textContent?.trim() ||
+            element.querySelector('.result__title')?.textContent?.trim() ||
+            'No title'
 
           // Enhanced snippet extraction
-          const snippet = element.querySelector('.result__snippet')?.textContent?.trim() ||
-                         element.querySelector('[data-testid="result-snippet"]')?.textContent?.trim() ||
-                         element.querySelector('.result__body')?.textContent?.trim() ||
-                         'No snippet'
+          const snippet =
+            element.querySelector('.result__snippet')?.textContent?.trim() ||
+            element.querySelector('[data-testid="result-snippet"]')?.textContent?.trim() ||
+            element.querySelector('.result__body')?.textContent?.trim() ||
+            'No snippet'
 
           // Extract domain
           const domain = new URL(url).hostname.toLowerCase()
 
           // Filter out non-business domains
           const excludedDomains = [
-            'wikipedia.org', 'facebook.com', 'twitter.com', 'linkedin.com',
-            'youtube.com', 'instagram.com', 'pinterest.com', 'reddit.com',
-            'yelp.com', 'yellowpages.com', 'google.com', 'bing.com'
+            'wikipedia.org',
+            'facebook.com',
+            'twitter.com',
+            'linkedin.com',
+            'youtube.com',
+            'instagram.com',
+            'pinterest.com',
+            'reddit.com',
+            'yelp.com',
+            'yellowpages.com',
+            'google.com',
+            'bing.com',
           ]
 
-          const isBusinessDomain = !excludedDomains.some(excluded => domain.includes(excluded)) &&
-                                  !url.includes('duckduckgo.com') &&
-                                  url.startsWith('http')
+          const isBusinessDomain =
+            !excludedDomains.some(excluded => domain.includes(excluded)) &&
+            !url.includes('duckduckgo.com') &&
+            url.startsWith('http')
 
           if (isBusinessDomain && title && title !== 'No title') {
             results.push({
               url,
               title,
               snippet,
-              domain
+              domain,
             })
 
             console.log(`Extracted: ${title} -> ${url}`)
           }
-
         } catch (error) {
           console.log(`Error processing result ${i}:`, error)
           continue
@@ -384,7 +402,6 @@ export class EnhancedDuckDuckGoScraper {
 
       console.log(`Total business results extracted: ${results.length}`)
       return results
-
     }, maxResults)
   }
 

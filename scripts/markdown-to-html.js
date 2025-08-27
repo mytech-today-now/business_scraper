@@ -23,7 +23,7 @@ marked.setOptions({
  */
 function generateHTMLTemplate(title, content, relativePath = '') {
   const cssPath = relativePath ? `${relativePath}/styles.css` : 'styles.css'
-  
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,13 +143,13 @@ function extractTitle(content) {
   if (h1Match) {
     return h1Match[1].replace(/[#*`]/g, '').trim()
   }
-  
+
   // Try to find any heading
   const headingMatch = content.match(/^#{1,6}\s+(.+)$/m)
   if (headingMatch) {
     return headingMatch[1].replace(/[#*`]/g, '').trim()
   }
-  
+
   // Fallback to filename
   return 'Documentation'
 }
@@ -160,22 +160,22 @@ function extractTitle(content) {
 function convertMarkdownToHTML(inputPath, outputPath, relativePath = '') {
   try {
     console.log(`Converting: ${inputPath} -> ${outputPath}`)
-    
+
     // Read the markdown file
     const markdownContent = fs.readFileSync(inputPath, 'utf8')
-    
+
     // Extract title
     const title = extractTitle(markdownContent)
-    
+
     // Convert markdown to HTML
     const htmlContent = marked(markdownContent)
-    
+
     // Generate complete HTML document
     const fullHTML = generateHTMLTemplate(title, htmlContent, relativePath)
-    
+
     // Write the HTML file
     fs.writeFileSync(outputPath, fullHTML, 'utf8')
-    
+
     console.log(`✓ Successfully converted: ${path.basename(inputPath)}`)
     return true
   } catch (error) {
@@ -189,35 +189,34 @@ function convertMarkdownToHTML(inputPath, outputPath, relativePath = '') {
  */
 function processDirectory(dirPath) {
   console.log(`\nProcessing directory: ${dirPath}`)
-  
+
   try {
     const files = fs.readdirSync(dirPath)
-    const markdownFiles = files.filter(file => 
-      file.toLowerCase().endsWith('.md') && 
-      !file.toLowerCase().startsWith('readme.md') // Skip readme.md as it's already HTML
+    const markdownFiles = files.filter(
+      file => file.toLowerCase().endsWith('.md') && !file.toLowerCase().startsWith('readme.md') // Skip readme.md as it's already HTML
     )
-    
+
     console.log(`Found ${markdownFiles.length} markdown files to convert`)
-    
+
     let successCount = 0
     let failCount = 0
-    
+
     markdownFiles.forEach(file => {
       const inputPath = path.join(dirPath, file)
       const outputPath = path.join(dirPath, file.replace(/\.md$/i, '.html'))
-      
+
       if (convertMarkdownToHTML(inputPath, outputPath)) {
         successCount++
       } else {
         failCount++
       }
     })
-    
+
     console.log(`\n📊 Conversion Summary:`)
     console.log(`✓ Successfully converted: ${successCount} files`)
     console.log(`✗ Failed conversions: ${failCount} files`)
     console.log(`📁 Total files processed: ${successCount + failCount} files`)
-    
+
     return { success: successCount, failed: failCount }
   } catch (error) {
     console.error(`Error processing directory ${dirPath}:`, error.message)
@@ -230,7 +229,7 @@ function processDirectory(dirPath) {
  */
 function main() {
   const args = process.argv.slice(2)
-  
+
   if (args.length === 0) {
     console.log(`
 📚 Markdown to HTML Converter
@@ -253,20 +252,20 @@ Features:
 `)
     process.exit(1)
   }
-  
+
   const inputPath = args[0]
-  
+
   if (!fs.existsSync(inputPath)) {
     console.error(`Error: Path "${inputPath}" does not exist`)
     process.exit(1)
   }
-  
+
   const stats = fs.statSync(inputPath)
-  
+
   if (stats.isDirectory()) {
     // Process entire directory
     const result = processDirectory(inputPath)
-    
+
     if (result.failed > 0) {
       console.log(`\n⚠️  Some files failed to convert. Check the error messages above.`)
       process.exit(1)
@@ -276,7 +275,7 @@ Features:
   } else if (stats.isFile() && inputPath.toLowerCase().endsWith('.md')) {
     // Process single file
     const outputPath = args[1] || inputPath.replace(/\.md$/i, '.html')
-    
+
     if (convertMarkdownToHTML(inputPath, outputPath)) {
       console.log(`\n🎉 File converted successfully!`)
     } else {
@@ -298,5 +297,5 @@ module.exports = {
   convertMarkdownToHTML,
   processDirectory,
   generateHTMLTemplate,
-  extractTitle
+  extractTitle,
 }

@@ -38,12 +38,12 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
       'intermittent',
       'race condition',
       'async',
-      'promise'
+      'promise',
     ]
-    
+
     const errorMessage = error.message.toLowerCase()
     return retryableErrors.some(pattern => errorMessage.includes(pattern))
-  }
+  },
 }
 
 /**
@@ -56,98 +56,93 @@ export function useAutoRetry<T>(config: Partial<RetryConfig> = {}) {
   /**
    * Execute a function with automatic retry logic
    */
-  const executeWithRetry = useCallback(async (
-    testFunction: () => Promise<T> | T,
-    testId: string,
-    suiteName?: string
-  ): Promise<RetryResult<T>> => {
-    let lastError: Error | null = null
-    let result: T | null = null
-    let attempts = 0
+  const executeWithRetry = useCallback(
+    async (
+      testFunction: () => Promise<T> | T,
+      testId: string,
+      suiteName?: string
+    ): Promise<RetryResult<T>> => {
+      let lastError: Error | null = null
+      let result: T | null = null
+      let attempts = 0
 
-    // Reset retry count for this test
-    retryAttempts.current.set(testId, 0)
+      // Reset retry count for this test
+      retryAttempts.current.set(testId, 0)
 
-    while (attempts <= retryConfig.maxRetries) {
-      try {
-        attempts++
-        result = await Promise.resolve(testFunction())
-        
-        // Success - reset retry count and return
-        retryAttempts.current.delete(testId)
-        return {
-          result,
-          error: null,
-          attempts,
-          success: true
-        }
-      } catch (error) {
-        lastError = error as Error
-        
-        // Check if we should retry this error
-        if (attempts <= retryConfig.maxRetries && 
-            retryConfig.retryCondition && 
-            retryConfig.retryCondition(lastError)) {
-          
-          // Log retry attempt
-          if (suiteName) {
-            testLogger.logError(
-              suiteName,
-              testId,
-              lastError,
-              {
+      while (attempts <= retryConfig.maxRetries) {
+        try {
+          attempts++
+          result = await Promise.resolve(testFunction())
+
+          // Success - reset retry count and return
+          retryAttempts.current.delete(testId)
+          return {
+            result,
+            error: null,
+            attempts,
+            success: true,
+          }
+        } catch (error) {
+          lastError = error as Error
+
+          // Check if we should retry this error
+          if (
+            attempts <= retryConfig.maxRetries &&
+            retryConfig.retryCondition &&
+            retryConfig.retryCondition(lastError)
+          ) {
+            // Log retry attempt
+            if (suiteName) {
+              testLogger.logError(suiteName, testId, lastError, {
                 category: 'flaky',
                 severity: 'medium',
-                retryCount: attempts - 1
-              }
-            )
-          }
+                retryCount: attempts - 1,
+              })
+            }
 
-          // Call retry callback if provided
-          if (retryConfig.onRetry) {
-            retryConfig.onRetry(attempts, lastError)
-          }
+            // Call retry callback if provided
+            if (retryConfig.onRetry) {
+              retryConfig.onRetry(attempts, lastError)
+            }
 
-          // Wait before retry with exponential backoff
-          if (attempts <= retryConfig.maxRetries) {
-            const delay = retryConfig.retryDelay * Math.pow(retryConfig.backoffMultiplier, attempts - 1)
-            await new Promise(resolve => setTimeout(resolve, delay))
+            // Wait before retry with exponential backoff
+            if (attempts <= retryConfig.maxRetries) {
+              const delay =
+                retryConfig.retryDelay * Math.pow(retryConfig.backoffMultiplier, attempts - 1)
+              await new Promise(resolve => setTimeout(resolve, delay))
+            }
+          } else {
+            // Don't retry this error type
+            break
           }
-        } else {
-          // Don't retry this error type
-          break
         }
       }
-    }
 
-    // All retries exhausted
-    retryAttempts.current.set(testId, attempts - 1)
-    
-    if (retryConfig.onMaxRetriesReached && lastError) {
-      retryConfig.onMaxRetriesReached(lastError)
-    }
+      // All retries exhausted
+      retryAttempts.current.set(testId, attempts - 1)
 
-    // Log final failure
-    if (suiteName && lastError) {
-      testLogger.logError(
-        suiteName,
-        testId,
-        lastError,
-        {
+      if (retryConfig.onMaxRetriesReached && lastError) {
+        retryConfig.onMaxRetriesReached(lastError)
+      }
+
+      // Log final failure
+      if (suiteName && lastError) {
+        testLogger.logError(suiteName, testId, lastError, {
           category: 'flaky',
           severity: 'high',
-          retryCount: attempts - 1
-        }
-      )
-    }
+          retryCount: attempts - 1,
+        })
+      }
 
-    return {
-      result: null,
-      error: lastError,
-      attempts,
-      success: false
-    }
-  }, [retryConfig])
+      return {
+        result: null,
+        error: lastError,
+        attempts,
+        success: false,
+      }
+    },
+    [retryConfig]
+  )
 
   /**
    * Get retry statistics for a specific test
@@ -155,7 +150,7 @@ export function useAutoRetry<T>(config: Partial<RetryConfig> = {}) {
   const getRetryStats = useCallback((testId: string) => {
     return {
       retryCount: retryAttempts.current.get(testId) || 0,
-      hasRetried: retryAttempts.current.has(testId)
+      hasRetried: retryAttempts.current.has(testId),
     }
   }, [])
 
@@ -174,10 +169,9 @@ export function useAutoRetry<T>(config: Partial<RetryConfig> = {}) {
     return {
       totalTests: stats.length,
       totalRetries: stats.reduce((sum, [, retries]) => sum + retries, 0),
-      averageRetries: stats.length > 0 
-        ? stats.reduce((sum, [, retries]) => sum + retries, 0) / stats.length 
-        : 0,
-      testsWithRetries: stats.filter(([, retries]) => retries > 0).length
+      averageRetries:
+        stats.length > 0 ? stats.reduce((sum, [, retries]) => sum + retries, 0) / stats.length : 0,
+      testsWithRetries: stats.filter(([, retries]) => retries > 0).length,
     }
   }, [])
 
@@ -186,7 +180,7 @@ export function useAutoRetry<T>(config: Partial<RetryConfig> = {}) {
     getRetryStats,
     clearRetryHistory,
     getAllRetryStats,
-    config: retryConfig
+    config: retryConfig,
   }
 }
 
@@ -202,11 +196,11 @@ export function withAutoRetry<T>(
   return async () => {
     const { executeWithRetry } = useAutoRetry(config)
     const result = await executeWithRetry(testFunction, testName, suiteName)
-    
+
     if (!result.success && result.error) {
       throw result.error
     }
-    
+
     return result.result as T
   }
 }
@@ -227,7 +221,7 @@ export function retryableTest(
       name,
       expect.getState().currentTestName || 'unknown'
     )
-    
+
     if (!result.success && result.error) {
       throw result.error
     }
@@ -252,7 +246,7 @@ export function retryableDescribe(
     // Set up retry configuration for this suite
     beforeEach(() => {
       // Store retry config in global state for tests to access
-      (global as any).__retryConfig = retryConfig
+      ;(global as any).__retryConfig = retryConfig
     })
 
     afterEach(() => {
@@ -281,7 +275,7 @@ export function shouldRetryError(error: Error): boolean {
     /promise/i,
     /websocket/i,
     /connection/i,
-    /temporary/i
+    /temporary/i,
   ]
 
   return retryablePatterns.some(pattern => pattern.test(error.message))
@@ -301,11 +295,11 @@ export function createRetryableFunction<T extends (...args: any[]) => Promise<an
       fn.name || 'anonymous',
       'retryable-function'
     )
-    
+
     if (!result.success && result.error) {
       throw result.error
     }
-    
+
     return result.result
   }) as T
 }

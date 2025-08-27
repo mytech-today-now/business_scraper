@@ -1,6 +1,6 @@
 /**
  * Address Input Handler Utility
- * 
+ *
  * Handles various address input formats and extracts ZIP codes gracefully
  * with proper error handling and fallbacks.
  */
@@ -31,15 +31,62 @@ export interface AddressComponents {
 export class AddressInputHandler {
   private static readonly ZIP_REGEX = /\b(\d{5})(?:-\d{4})?\b/g
   private static readonly ZIP_ONLY_REGEX = /^\s*(\d{5})(?:-\d{4})?\s*$/
-  private static readonly FULL_ADDRESS_REGEX = /^(.+?),?\s*([A-Za-z\s]+),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\s*$/
-  private static readonly CITY_STATE_ZIP_REGEX = /^([A-Za-z\s]+),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\s*$/
+  private static readonly FULL_ADDRESS_REGEX =
+    /^(.+?),?\s*([A-Za-z\s]+),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\s*$/
+  private static readonly CITY_STATE_ZIP_REGEX =
+    /^([A-Za-z\s]+),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\s*$/
   private static readonly STATE_ABBREVIATIONS = new Set([
-    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
-    'DC'
+    'AL',
+    'AK',
+    'AZ',
+    'AR',
+    'CA',
+    'CO',
+    'CT',
+    'DE',
+    'FL',
+    'GA',
+    'HI',
+    'ID',
+    'IL',
+    'IN',
+    'IA',
+    'KS',
+    'KY',
+    'LA',
+    'ME',
+    'MD',
+    'MA',
+    'MI',
+    'MN',
+    'MS',
+    'MO',
+    'MT',
+    'NE',
+    'NV',
+    'NH',
+    'NJ',
+    'NM',
+    'NY',
+    'NC',
+    'ND',
+    'OH',
+    'OK',
+    'OR',
+    'PA',
+    'RI',
+    'SC',
+    'SD',
+    'TN',
+    'TX',
+    'UT',
+    'VT',
+    'VA',
+    'WA',
+    'WV',
+    'WI',
+    'WY',
+    'DC',
   ])
 
   /**
@@ -51,7 +98,7 @@ export class AddressInputHandler {
       originalInput: input.trim(),
       wasExtracted: false,
       extractedFrom: 'unknown',
-      confidence: 'low'
+      confidence: 'low',
     }
 
     try {
@@ -84,7 +131,10 @@ export class AddressInputHandler {
           result.extractedFrom = 'full-address'
           result.confidence = 'high'
           result.warning = `Extracted ZIP code "${zip}" from full address`
-          logger.info('AddressInputHandler', `Full address parsed: ${street}, ${city}, ${state} ${zip}`)
+          logger.info(
+            'AddressInputHandler',
+            `Full address parsed: ${street}, ${city}, ${state} ${zip}`
+          )
           return result
         }
       }
@@ -113,9 +163,10 @@ export class AddressInputHandler {
         result.wasExtracted = true
         result.extractedFrom = 'partial-address'
         result.confidence = zipMatches.length === 1 ? 'medium' : 'low'
-        result.warning = zipMatches.length > 1 
-          ? `Multiple ZIP codes found, using "${result.zipCode}"`
-          : `Extracted ZIP code "${result.zipCode}" from address text`
+        result.warning =
+          zipMatches.length > 1
+            ? `Multiple ZIP codes found, using "${result.zipCode}"`
+            : `Extracted ZIP code "${result.zipCode}" from address text`
         logger.info('AddressInputHandler', `ZIP code extracted from text: ${result.zipCode}`)
         return result
       }
@@ -125,7 +176,6 @@ export class AddressInputHandler {
       result.confidence = 'low'
       logger.warn('AddressInputHandler', `No ZIP code found in input: "${trimmedInput}"`)
       return result
-
     } catch (error) {
       result.error = `Error parsing address: ${error instanceof Error ? error.message : 'Unknown error'}`
       result.confidence = 'low'

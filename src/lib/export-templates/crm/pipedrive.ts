@@ -11,7 +11,6 @@ import { BusinessRecord } from '@/types/business'
  * Pipedrive CRM export template
  */
 export class PipedriveExportTemplate extends BaseExportTemplate {
-  
   constructor() {
     super(PipedriveExportTemplate.createTemplate())
   }
@@ -26,7 +25,7 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
       platform: 'pipedrive',
       description: 'Export business data as Pipedrive Organization records',
       version: '1.0.0',
-      
+
       fieldMappings: [
         {
           type: 'direct',
@@ -36,170 +35,174 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
           validation: [
             {
               type: 'required',
-              message: 'Organization name is required for Pipedrive'
-            }
-          ]
+              message: 'Organization name is required for Pipedrive',
+            },
+          ],
         },
         {
           type: 'format',
           sourceFields: ['phone.0'],
           targetField: 'Phone',
           options: {
-            format: 'phone'
+            format: 'phone',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'format',
           sourceFields: ['email.0'],
           targetField: 'Email',
           options: {
-            format: 'email'
+            format: 'email',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'format',
           sourceFields: ['website'],
           targetField: 'Website',
           options: {
-            format: 'url'
+            format: 'url',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'concatenate',
           sourceFields: ['address.street', 'address.city', 'address.state', 'address.zipCode'],
           targetField: 'Address',
           options: {
-            separator: ', '
+            separator: ', ',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['industry'],
           targetField: 'Industry',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['description'],
           targetField: 'Notes',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Label',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'Web Scraped Lead' }
-            ]
+            conditions: [{ condition: 'exists', value: 'Web Scraped Lead' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Owner',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'Admin' }
-            ]
+            conditions: [{ condition: 'exists', value: 'Admin' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Visible to',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'Everyone' }
-            ]
+            conditions: [{ condition: 'exists', value: 'Everyone' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['email', 'phone', 'website', 'address'],
           targetField: 'Lead Score',
           options: {
-            calculation: 'calculateLeadScore'
+            calculation: 'calculateLeadScore',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['website', 'email', 'address'],
           targetField: 'Company Size',
           options: {
-            calculation: 'estimateCompanySize'
+            calculation: 'estimateCompanySize',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['businessName'],
           targetField: 'Add time',
           options: {
-            calculation: 'currentTimestamp'
+            calculation: 'currentTimestamp',
           },
-          validation: []
-        }
+          validation: [],
+        },
       ],
-      
+
       requiredFields: ['Organization name'],
       optionalFields: [
-        'Phone', 'Email', 'Website', 'Address', 'Industry', 'Notes',
-        'Label', 'Owner', 'Visible to', 'Lead Score', 'Company Size', 'Add time'
+        'Phone',
+        'Email',
+        'Website',
+        'Address',
+        'Industry',
+        'Notes',
+        'Label',
+        'Owner',
+        'Visible to',
+        'Lead Score',
+        'Company Size',
+        'Add time',
       ],
-      
+
       platformConfig: {
         fileFormat: 'csv',
         headers: {
           'Organization name': 'Organization name',
-          'Phone': 'Phone',
-          'Email': 'Email',
-          'Website': 'Website',
-          'Address': 'Address',
-          'Industry': 'Industry',
-          'Notes': 'Notes',
-          'Label': 'Label',
-          'Owner': 'Owner',
+          Phone: 'Phone',
+          Email: 'Email',
+          Website: 'Website',
+          Address: 'Address',
+          Industry: 'Industry',
+          Notes: 'Notes',
+          Label: 'Label',
+          Owner: 'Owner',
           'Visible to': 'Visible to',
           'Lead Score': 'Lead Score',
           'Company Size': 'Company Size',
-          'Add time': 'Add time'
+          'Add time': 'Add time',
         },
         delimiter: ',',
         encoding: 'utf-8',
         dateFormat: 'YYYY-MM-DD HH:mm:ss',
         booleanFormat: { true: '1', false: '0' },
-        nullValue: ''
+        nullValue: '',
       },
-      
+
       metadata: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         createdBy: 'system',
         tags: ['crm', 'pipedrive', 'organizations'],
-        category: 'crm'
+        category: 'crm',
       },
-      
+
       qualityRules: {
         minimumFields: 1,
         duplicateHandling: 'include',
         dataValidation: [
           {
             type: 'required',
-            message: 'Organization name is required'
-          }
-        ]
-      }
+            message: 'Organization name is required',
+          },
+        ],
+      },
     }
   }
 
@@ -208,13 +211,13 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
    */
   protected async preprocessData(businesses: BusinessRecord[]): Promise<BusinessRecord[]> {
     const baseProcessed = await super.preprocessData(businesses)
-    
+
     return baseProcessed.map(business => {
       return {
         ...business,
         businessName: this.normalizeOrganizationName(business.businessName),
         industry: this.normalizeIndustry(business.industry),
-        description: this.normalizeNotes(business.description)
+        description: this.normalizeNotes(business.description),
       }
     })
   }
@@ -222,7 +225,10 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
   /**
    * Pipedrive-specific field mapping for calculated fields
    */
-  protected async applyFieldMapping(business: BusinessRecord, mapping: FieldTransformation): Promise<any> {
+  protected async applyFieldMapping(
+    business: BusinessRecord,
+    mapping: FieldTransformation
+  ): Promise<any> {
     if (mapping.type === 'calculate') {
       switch (mapping.options?.calculation) {
         case 'calculateLeadScore':
@@ -235,7 +241,7 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
           return super.applyFieldMapping(business, mapping)
       }
     }
-    
+
     return super.applyFieldMapping(business, mapping)
   }
 
@@ -252,7 +258,9 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
     const suggestions: string[] = []
 
     // Check for Pipedrive-specific requirements
-    const orgNameMapping = this.template.fieldMappings.find(m => m.targetField === 'Organization name')
+    const orgNameMapping = this.template.fieldMappings.find(
+      m => m.targetField === 'Organization name'
+    )
     if (!orgNameMapping) {
       errors.push('Pipedrive template must include Organization name field mapping')
     }
@@ -270,11 +278,8 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
    */
   private normalizeOrganizationName(name: string): string {
     if (!name) return ''
-    
-    return name
-      .trim()
-      .replace(/\s+/g, ' ')
-      .substring(0, 255) // Reasonable limit for organization names
+
+    return name.trim().replace(/\s+/g, ' ').substring(0, 255) // Reasonable limit for organization names
   }
 
   /**
@@ -282,12 +287,9 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
    */
   private normalizeIndustry(industry: string): string {
     if (!industry) return ''
-    
+
     // Pipedrive allows free-form industry text
-    return industry
-      .trim()
-      .replace(/\s+/g, ' ')
-      .substring(0, 100)
+    return industry.trim().replace(/\s+/g, ' ').substring(0, 100)
   }
 
   /**
@@ -295,11 +297,11 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
    */
   private normalizeNotes(description: string): string {
     if (!description) return ''
-    
+
     // Add context to the notes
     const timestamp = new Date().toLocaleDateString()
     const prefix = `[Web Scraped ${timestamp}] `
-    
+
     return prefix + description.trim().substring(0, 3000 - prefix.length)
   }
 
@@ -308,7 +310,7 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
    */
   private calculateLeadScore(business: BusinessRecord): number {
     let score = 0
-    
+
     // Email scoring
     if (business.email?.length) {
       score += 20
@@ -316,7 +318,7 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
         score += 10 // Business email bonus
       }
     }
-    
+
     // Phone scoring
     if (business.phone?.length) {
       score += 15
@@ -324,7 +326,7 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
         score += 5 // Multiple phones bonus
       }
     }
-    
+
     // Website scoring
     if (business.website) {
       score += 20
@@ -332,17 +334,17 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
         score += 10 // Own website bonus
       }
     }
-    
+
     // Address scoring
     if (business.address?.street && business.address?.city && business.address?.state) {
       score += 15
     }
-    
+
     // Industry and description scoring
     if (business.industry) score += 5
     if (business.description && business.description.length > 50) score += 10
     if (business.description && business.description.length > 200) score += 5
-    
+
     return Math.min(score, 100) // Cap at 100
   }
 
@@ -351,17 +353,17 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
    */
   private estimateCompanySize(business: BusinessRecord): string {
     let indicators = 0
-    
+
     if (business.website) indicators++
     if (business.email?.length && business.email.length > 1) indicators++
     if (business.phone?.length && business.phone.length > 1) indicators++
     if (business.address?.street) indicators++
     if (business.description && business.description.length > 100) indicators++
-    
+
     if (indicators >= 4) return 'Large (50+ employees)'
     if (indicators >= 3) return 'Medium (11-50 employees)'
     if (indicators >= 2) return 'Small (2-10 employees)'
-    
+
     return 'Micro (1 employee)'
   }
 
@@ -375,7 +377,7 @@ export class PipedriveExportTemplate extends BaseExportTemplate {
         ...record,
         'Organization name': record['Organization name'] || 'Unknown Company',
         'Visible to': record['Visible to'] || 'Everyone',
-        'Owner': record['Owner'] || 'Admin'
+        Owner: record['Owner'] || 'Admin',
       }
     })
   }

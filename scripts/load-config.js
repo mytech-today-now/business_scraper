@@ -18,24 +18,24 @@ const ROOT_DIR = path.join(__dirname, '..')
  */
 function loadConfig(environment = 'development') {
   console.log(`🔧 Loading configuration for ${environment} environment...`)
-  
+
   const configFile = path.join(CONFIG_DIR, `${environment}.env`)
-  
+
   if (!fs.existsSync(configFile)) {
     console.error(`❌ Configuration file not found: ${configFile}`)
     process.exit(1)
   }
-  
+
   // Load the environment-specific config
   const result = dotenv.config({ path: configFile })
-  
+
   if (result.error) {
     console.error(`❌ Error loading configuration: ${result.error.message}`)
     process.exit(1)
   }
-  
+
   console.log(`✅ Configuration loaded from ${configFile}`)
-  
+
   // Also load .env.local if it exists (for local overrides)
   const localEnvFile = path.join(ROOT_DIR, '.env.local')
   if (fs.existsSync(localEnvFile)) {
@@ -44,7 +44,7 @@ function loadConfig(environment = 'development') {
       console.log(`✅ Local overrides loaded from ${localEnvFile}`)
     }
   }
-  
+
   return result.parsed
 }
 
@@ -68,7 +68,11 @@ function validatePasswordStrength(password, varName) {
   }
 
   // Check for placeholder values
-  if (password.includes('CHANGE_ME') || password.includes('GENERATE_') || password.includes('YOUR_')) {
+  if (
+    password.includes('CHANGE_ME') ||
+    password.includes('GENERATE_') ||
+    password.includes('YOUR_')
+  ) {
     issues.push(`${varName} contains placeholder values`)
   }
 
@@ -83,11 +87,7 @@ function validateSecrets() {
   const issues = []
 
   // Critical secrets that must be present and secure
-  const criticalSecrets = [
-    'ENCRYPTION_KEY',
-    'JWT_SECRET',
-    'SESSION_SECRET'
-  ]
+  const criticalSecrets = ['ENCRYPTION_KEY', 'JWT_SECRET', 'SESSION_SECRET']
 
   for (const secretName of criticalSecrets) {
     const secret = process.env[secretName]
@@ -119,11 +119,7 @@ function validateSecrets() {
 function validateConfig() {
   console.log('🔍 Validating configuration...')
 
-  const requiredVars = [
-    'NODE_ENV',
-    'NEXT_PUBLIC_APP_NAME',
-    'NEXT_PUBLIC_APP_VERSION'
-  ]
+  const requiredVars = ['NODE_ENV', 'NEXT_PUBLIC_APP_NAME', 'NEXT_PUBLIC_APP_VERSION']
 
   const missingVars = []
   const securityIssues = []
@@ -145,21 +141,19 @@ function validateConfig() {
   if (env === 'production') {
     console.log('🔒 Performing production security validation...')
 
-    const productionRequiredVars = [
-      'DB_PASSWORD',
-      'ENCRYPTION_KEY',
-      'JWT_SECRET',
-      'SESSION_SECRET'
-    ]
+    const productionRequiredVars = ['DB_PASSWORD', 'ENCRYPTION_KEY', 'JWT_SECRET', 'SESSION_SECRET']
 
-    const missingProdVars = productionRequiredVars.filter(varName =>
-      !process.env[varName] ||
-      process.env[varName].includes('CHANGE_ME') ||
-      process.env[varName].includes('GENERATE_')
+    const missingProdVars = productionRequiredVars.filter(
+      varName =>
+        !process.env[varName] ||
+        process.env[varName].includes('CHANGE_ME') ||
+        process.env[varName].includes('GENERATE_')
     )
 
     if (missingProdVars.length > 0) {
-      console.error(`❌ Production environment missing or has placeholder values for: ${missingProdVars.join(', ')}`)
+      console.error(
+        `❌ Production environment missing or has placeholder values for: ${missingProdVars.join(', ')}`
+      )
       return false
     }
 
@@ -170,11 +164,16 @@ function validateConfig() {
     }
 
     if (process.env.ADMIN_PASSWORD) {
-      const adminPasswordValidation = validatePasswordStrength(process.env.ADMIN_PASSWORD, 'ADMIN_PASSWORD')
+      const adminPasswordValidation = validatePasswordStrength(
+        process.env.ADMIN_PASSWORD,
+        'ADMIN_PASSWORD'
+      )
       if (!adminPasswordValidation.isValid) {
         securityIssues.push(...adminPasswordValidation.issues)
       }
-      console.warn('⚠️  ADMIN_PASSWORD is set in production. Consider using ADMIN_PASSWORD_HASH instead.')
+      console.warn(
+        '⚠️  ADMIN_PASSWORD is set in production. Consider using ADMIN_PASSWORD_HASH instead.'
+      )
     }
 
     // Validate authentication setup
@@ -183,7 +182,9 @@ function validateConfig() {
     }
 
     if (!process.env.ADMIN_PASSWORD_HASH || !process.env.ADMIN_PASSWORD_SALT) {
-      securityIssues.push('Production should use hashed passwords (ADMIN_PASSWORD_HASH and ADMIN_PASSWORD_SALT)')
+      securityIssues.push(
+        'Production should use hashed passwords (ADMIN_PASSWORD_HASH and ADMIN_PASSWORD_SALT)'
+      )
     }
   }
 
@@ -219,13 +220,21 @@ function displayConfigSummary() {
   console.log(`Cache Type: ${process.env.CACHE_TYPE}`)
   console.log(`Log Level: ${process.env.LOG_LEVEL}`)
   console.log(`Log Format: ${process.env.LOG_FORMAT}`)
-  
+
   // Feature flags
   console.log('\n🚩 Feature Flags:')
-  console.log(`  Caching: ${process.env.FEATURE_ENABLE_CACHING === 'true' ? 'Enabled' : 'Disabled'}`)
-  console.log(`  Rate Limiting: ${process.env.FEATURE_ENABLE_RATE_LIMITING === 'true' ? 'Enabled' : 'Disabled'}`)
-  console.log(`  Metrics: ${process.env.FEATURE_ENABLE_METRICS === 'true' ? 'Enabled' : 'Disabled'}`)
-  console.log(`  Experimental: ${process.env.FEATURE_ENABLE_EXPERIMENTAL === 'true' ? 'Enabled' : 'Disabled'}`)
+  console.log(
+    `  Caching: ${process.env.FEATURE_ENABLE_CACHING === 'true' ? 'Enabled' : 'Disabled'}`
+  )
+  console.log(
+    `  Rate Limiting: ${process.env.FEATURE_ENABLE_RATE_LIMITING === 'true' ? 'Enabled' : 'Disabled'}`
+  )
+  console.log(
+    `  Metrics: ${process.env.FEATURE_ENABLE_METRICS === 'true' ? 'Enabled' : 'Disabled'}`
+  )
+  console.log(
+    `  Experimental: ${process.env.FEATURE_ENABLE_EXPERIMENTAL === 'true' ? 'Enabled' : 'Disabled'}`
+  )
 }
 
 /**
@@ -233,18 +242,18 @@ function displayConfigSummary() {
  */
 function generateEnvFile(environment, outputPath = '.env') {
   console.log(`📝 Generating ${outputPath} from ${environment} template...`)
-  
+
   const configFile = path.join(CONFIG_DIR, `${environment}.env`)
   const outputFile = path.join(ROOT_DIR, outputPath)
-  
+
   if (!fs.existsSync(configFile)) {
     console.error(`❌ Template file not found: ${configFile}`)
     process.exit(1)
   }
-  
+
   // Read template
   const template = fs.readFileSync(configFile, 'utf8')
-  
+
   // Add header comment
   const header = `# Generated from ${environment}.env template
 # Generated on: ${new Date().toISOString()}
@@ -254,14 +263,14 @@ function generateEnvFile(environment, outputPath = '.env') {
 #
 
 `
-  
+
   const content = header + template
-  
+
   // Write to output file
   fs.writeFileSync(outputFile, content)
-  
+
   console.log(`✅ Generated ${outputFile}`)
-  
+
   // Check for placeholder values
   const placeholders = content.match(/(CHANGE_ME|GENERATE_[A-Z_]+|YOUR_[A-Z_]+)/g)
   if (placeholders) {
@@ -279,7 +288,7 @@ function generateEnvFile(environment, outputPath = '.env') {
 function main() {
   const args = process.argv.slice(2)
   const command = args[0]
-  
+
   switch (command) {
     case 'load':
       const environment = args[1] || process.env.NODE_ENV || 'development'
@@ -290,30 +299,32 @@ function main() {
         process.exit(1)
       }
       break
-      
+
     case 'validate':
       if (!validateConfig()) {
         process.exit(1)
       }
       break
-      
+
     case 'generate':
       const sourceEnv = args[1] || 'development'
       const outputFile = args[2] || '.env'
       generateEnvFile(sourceEnv, outputFile)
       break
-      
+
     case 'summary':
       displayConfigSummary()
       break
-      
+
     default:
       console.log('Configuration Loader Script')
       console.log('')
       console.log('Usage:')
       console.log('  node scripts/load-config.js load [environment]     # Load and validate config')
       console.log('  node scripts/load-config.js validate              # Validate current config')
-      console.log('  node scripts/load-config.js generate [env] [file] # Generate .env from template')
+      console.log(
+        '  node scripts/load-config.js generate [env] [file] # Generate .env from template'
+      )
       console.log('  node scripts/load-config.js summary               # Show config summary')
       console.log('')
       console.log('Examples:')
@@ -333,5 +344,5 @@ module.exports = {
   loadConfig,
   validateConfig,
   displayConfigSummary,
-  generateEnvFile
+  generateEnvFile,
 }

@@ -40,7 +40,7 @@ export function withApiSecurity(
       requireCSRF = false,
       rateLimit = 'general',
       validateInput = true,
-      logRequests = true
+      logRequests = true,
     } = options
 
     const ip = getClientIP(request)
@@ -58,17 +58,17 @@ export function withApiSecurity(
       if (!rateLimitResult.allowed) {
         logger.warn('API Security', `Rate limit exceeded for ${pathname} from IP: ${ip}`)
         return NextResponse.json(
-          { 
+          {
             error: 'Rate limit exceeded',
-            retryAfter: rateLimitResult.retryAfter 
+            retryAfter: rateLimitResult.retryAfter,
           },
-          { 
+          {
             status: 429,
             headers: {
               'Retry-After': String(rateLimitResult.retryAfter || 60),
               'X-RateLimit-Remaining': String(rateLimitResult.remaining),
-              'X-RateLimit-Reset': String(rateLimitResult.resetTime)
-            }
+              'X-RateLimit-Reset': String(rateLimitResult.resetTime),
+            },
           }
         )
       }
@@ -104,13 +104,9 @@ export function withApiSecurity(
       addSecurityHeaders(response)
 
       return response
-
     } catch (error) {
       logger.error('API Security', `Security middleware error for ${pathname}`, error)
-      return NextResponse.json(
-        { error: 'Internal server error' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
   }
 }
@@ -122,20 +118,17 @@ async function checkAuthentication(request: NextRequest): Promise<NextResponse |
   const sessionId = request.cookies.get('session-id')?.value
 
   if (!sessionId) {
-    logger.warn('API Security', `Authentication required but no session provided from IP: ${getClientIP(request)}`)
-    return NextResponse.json(
-      { error: 'Authentication required' },
-      { status: 401 }
+    logger.warn(
+      'API Security',
+      `Authentication required but no session provided from IP: ${getClientIP(request)}`
     )
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
   }
 
   const session = getSession(sessionId)
   if (!session || !session.isValid) {
     logger.warn('API Security', `Invalid session attempt from IP: ${getClientIP(request)}`)
-    const response = NextResponse.json(
-      { error: 'Invalid session' },
-      { status: 401 }
-    )
+    const response = NextResponse.json({ error: 'Invalid session' }, { status: 401 })
     response.cookies.delete('session-id')
     return response
   }
@@ -152,23 +145,16 @@ async function checkCSRFProtection(request: NextRequest): Promise<NextResponse |
     return null // No session, no CSRF check needed
   }
 
-  const csrfToken = request.headers.get('X-CSRF-Token') || 
-                   request.cookies.get('csrf-token')?.value
+  const csrfToken = request.headers.get('X-CSRF-Token') || request.cookies.get('csrf-token')?.value
 
   if (!csrfToken) {
     logger.warn('API Security', `CSRF token missing from IP: ${getClientIP(request)}`)
-    return NextResponse.json(
-      { error: 'CSRF token required' },
-      { status: 403 }
-    )
+    return NextResponse.json({ error: 'CSRF token required' }, { status: 403 })
   }
 
   if (!csrfProtectionService.validateCSRFToken(sessionId, csrfToken)) {
     logger.warn('API Security', `Invalid CSRF token from IP: ${getClientIP(request)}`)
-    return NextResponse.json(
-      { error: 'Invalid CSRF token' },
-      { status: 403 }
-    )
+    return NextResponse.json({ error: 'Invalid CSRF token' }, { status: 403 })
   }
 
   return null
@@ -180,24 +166,24 @@ async function checkCSRFProtection(request: NextRequest): Promise<NextResponse |
 async function validateRequestInput(request: NextRequest): Promise<NextResponse | null> {
   try {
     const contentType = request.headers.get('content-type')
-    
+
     if (!contentType?.includes('application/json')) {
       return null // Skip validation for non-JSON requests
     }
 
     const body = await request.json()
-    
+
     // Basic validation for common injection patterns
     const validateObject = (obj: any, path = ''): string[] => {
       const errors: string[] = []
-      
+
       for (const [key, value] of Object.entries(obj)) {
         const currentPath = path ? `${path}.${key}` : key
-        
+
         if (typeof value === 'string') {
           const sanitized = sanitizeInput(value)
           const validation = validateInput(sanitized)
-          
+
           if (!validation.isValid) {
             errors.push(`${currentPath}: ${validation.errors.join(', ')}`)
           }
@@ -205,31 +191,31 @@ async function validateRequestInput(request: NextRequest): Promise<NextResponse 
           errors.push(...validateObject(value, currentPath))
         }
       }
-      
+
       return errors
     }
 
     const validationErrors = validateObject(body)
-    
+
     if (validationErrors.length > 0) {
-      logger.warn('API Security', `Input validation failed from IP: ${getClientIP(request)}`, validationErrors)
+      logger.warn(
+        'API Security',
+        `Input validation failed from IP: ${getClientIP(request)}`,
+        validationErrors
+      )
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid input detected',
-          details: validationErrors
+          details: validationErrors,
         },
         { status: 400 }
       )
     }
 
     return null
-
   } catch (error) {
     logger.warn('API Security', `Failed to parse request body from IP: ${getClientIP(request)}`)
-    return NextResponse.json(
-      { error: 'Invalid JSON in request body' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 })
   }
 }
 
@@ -239,16 +225,16 @@ async function validateRequestInput(request: NextRequest): Promise<NextResponse 
 function addSecurityHeaders(response: NextResponse): void {
   // Prevent MIME type sniffing
   response.headers.set('X-Content-Type-Options', 'nosniff')
-  
+
   // Prevent clickjacking
   response.headers.set('X-Frame-Options', 'DENY')
-  
+
   // XSS protection
   response.headers.set('X-XSS-Protection', '1; mode=block')
-  
+
   // Referrer policy
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  
+
   // Remove server information
   response.headers.delete('Server')
   response.headers.delete('X-Powered-By')
@@ -307,7 +293,7 @@ export function validateParameters(
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   }
 }
 
@@ -321,13 +307,14 @@ export function createSecureErrorResponse(
 ): NextResponse {
   // In production, don't expose detailed error information
   const isDevelopment = process.env.NODE_ENV === 'development'
-  
+
   const errorResponse = {
     error: defaultMessage,
-    ...(isDevelopment && error instanceof Error && {
-      details: error.message,
-      stack: error.stack
-    })
+    ...(isDevelopment &&
+      error instanceof Error && {
+        details: error.message,
+        stack: error.stack,
+      }),
   }
 
   return NextResponse.json(errorResponse, { status: statusCode })

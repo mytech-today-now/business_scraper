@@ -64,7 +64,7 @@ export class RateLimitingService {
         maxConcurrentRequests: 1,
         backoffMultiplier: 3, // Increased from 2 to 3
         maxBackoffDelay: 600000, // Increased from 5 to 10 minutes
-        resetHour: 0
+        resetHour: 0,
       },
       {
         name: 'google',
@@ -75,7 +75,7 @@ export class RateLimitingService {
         maxConcurrentRequests: 2,
         backoffMultiplier: 1.5,
         maxBackoffDelay: 180000, // 3 minutes
-        resetHour: 0
+        resetHour: 0,
       },
       {
         name: 'bing',
@@ -86,7 +86,7 @@ export class RateLimitingService {
         maxConcurrentRequests: 3,
         backoffMultiplier: 1.5,
         maxBackoffDelay: 120000, // 2 minutes
-        resetHour: 0
+        resetHour: 0,
       },
       {
         name: 'bbb',
@@ -97,7 +97,7 @@ export class RateLimitingService {
         maxConcurrentRequests: 1,
         backoffMultiplier: 2,
         maxBackoffDelay: 240000, // 4 minutes
-        resetHour: 0
+        resetHour: 0,
       },
       {
         name: 'yelp',
@@ -108,8 +108,8 @@ export class RateLimitingService {
         maxConcurrentRequests: 2,
         backoffMultiplier: 1.5,
         maxBackoffDelay: 180000, // 3 minutes
-        resetHour: 0
-      }
+        resetHour: 0,
+      },
     ]
 
     providers.forEach(provider => {
@@ -134,7 +134,7 @@ export class RateLimitingService {
         requestsInLastHour: 0,
         requestsInLastDay: 0,
         recommendedDelay: 60000,
-        backoffLevel: 0
+        backoffLevel: 0,
       }
     }
 
@@ -196,24 +196,30 @@ export class RateLimitingService {
       requestsInLastHour,
       requestsInLastDay,
       recommendedDelay,
-      backoffLevel
+      backoffLevel,
     }
   }
 
   /**
    * Record a request attempt
    */
-  recordRequest(provider: string, success: boolean, responseTime: number, statusCode?: number, errorType?: string): void {
+  recordRequest(
+    provider: string,
+    success: boolean,
+    responseTime: number,
+    statusCode?: number,
+    errorType?: string
+  ): void {
     const now = Date.now()
     const history = this.requestHistory.get(provider) || []
-    
+
     const record: RequestRecord = {
       timestamp: now,
       provider,
       success,
       responseTime,
       statusCode,
-      errorType
+      errorType,
     }
 
     history.push(record)
@@ -222,7 +228,7 @@ export class RateLimitingService {
 
     // Adjust backoff level based on success/failure
     const currentBackoff = this.backoffLevels.get(provider) || 0
-    
+
     if (success) {
       // Gradually reduce backoff on success
       this.backoffLevels.set(provider, Math.max(0, currentBackoff - 1))
@@ -230,7 +236,9 @@ export class RateLimitingService {
       // Increase backoff on failure
       const limits = this.providerLimits.get(provider)
       if (limits) {
-        const maxBackoffLevel = Math.log(limits.maxBackoffDelay / limits.minDelayBetweenRequests) / Math.log(limits.backoffMultiplier)
+        const maxBackoffLevel =
+          Math.log(limits.maxBackoffDelay / limits.minDelayBetweenRequests) /
+          Math.log(limits.backoffMultiplier)
         this.backoffLevels.set(provider, Math.min(maxBackoffLevel, currentBackoff + 1))
       }
     }
@@ -245,7 +253,7 @@ export class RateLimitingService {
       responseTime,
       statusCode,
       errorType,
-      backoffLevel: this.backoffLevels.get(provider)
+      backoffLevel: this.backoffLevels.get(provider),
     })
   }
 
@@ -254,14 +262,18 @@ export class RateLimitingService {
    */
   async waitForRequest(provider: string): Promise<void> {
     const status = this.canMakeRequest(provider)
-    
+
     if (!status.canMakeRequest && status.recommendedDelay > 0) {
-      logger.info('RateLimiting', `Waiting ${status.recommendedDelay}ms before ${provider} request`, {
-        requestsInLastMinute: status.requestsInLastMinute,
-        requestsInLastHour: status.requestsInLastHour,
-        backoffLevel: status.backoffLevel
-      })
-      
+      logger.info(
+        'RateLimiting',
+        `Waiting ${status.recommendedDelay}ms before ${provider} request`,
+        {
+          requestsInLastMinute: status.requestsInLastMinute,
+          requestsInLastHour: status.requestsInLastHour,
+          backoffLevel: status.backoffLevel,
+        }
+      )
+
       await new Promise(resolve => setTimeout(resolve, status.recommendedDelay))
     }
   }
@@ -272,7 +284,7 @@ export class RateLimitingService {
   private cleanOldRecords(provider: string): void {
     const history = this.requestHistory.get(provider) || []
     const oneDayAgo = Date.now() - 86400000
-    
+
     const cleanedHistory = history.filter(r => r.timestamp > oneDayAgo)
     this.requestHistory.set(provider, cleanedHistory)
   }
@@ -290,22 +302,26 @@ export class RateLimitingService {
    */
   getStats(): any {
     const stats: any = {}
-    
+
     for (const [provider, limits] of this.providerLimits) {
       const status = this.canMakeRequest(provider)
       const history = this.requestHistory.get(provider) || []
-      const recentFailures = history.filter(r => !r.success && r.timestamp > Date.now() - 3600000).length
-      
+      const recentFailures = history.filter(
+        r => !r.success && r.timestamp > Date.now() - 3600000
+      ).length
+
       stats[provider] = {
         ...status,
         limits,
         recentFailures,
         totalRequests: history.length,
-        averageResponseTime: history.length > 0 ? 
-          history.reduce((sum, r) => sum + r.responseTime, 0) / history.length : 0
+        averageResponseTime:
+          history.length > 0
+            ? history.reduce((sum, r) => sum + r.responseTime, 0) / history.length
+            : 0,
       }
     }
-    
+
     return stats
   }
 

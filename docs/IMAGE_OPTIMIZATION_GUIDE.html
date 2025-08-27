@@ -1,59 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Optimization Guide - Business Scraper Documentation</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
     <div class="content-wrapper">
-        <div class="back-to-docs">
-            <a href="readme.html" class="btn btn-outline-primary">
-                ← Back to Documentation Hub
-            </a>
-        </div>
-        
-        <div class="nav-breadcrumb">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="readme.html">Documentation</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Image Optimization Guide</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="back-to-docs">
+        <a href="readme.html" class="btn btn-outline-primary"> ← Back to Documentation Hub </a>
+      </div>
 
-        <main class="documentation-content">
-            <h1>Image Optimization Guide</h1>
-<h2>Overview</h2>
-<p>The Business Scraper App now uses Next.js Image optimization for superior performance and user experience. This guide covers the implementation and best practices.</p>
-<h2>Features</h2>
-<h3>🚀 <strong>Automatic Format Optimization</strong></h3>
-<ul>
-<li><strong>WebP</strong>: 25-35% smaller than JPEG</li>
-<li><strong>AVIF</strong>: 50% smaller than JPEG (when supported)</li>
-<li><strong>Fallback</strong>: Automatic fallback to original format</li>
-</ul>
-<h3>📱 <strong>Responsive Image Delivery</strong></h3>
-<ul>
-<li>Device-specific image sizes</li>
-<li>Bandwidth-optimized delivery</li>
-<li>Retina display support</li>
-</ul>
-<h3>⚡ <strong>Performance Optimizations</strong></h3>
-<ul>
-<li><strong>Priority loading</strong>: Above-the-fold images load first</li>
-<li><strong>Lazy loading</strong>: Below-the-fold images load on demand</li>
-<li><strong>Layout stability</strong>: No Cumulative Layout Shift (CLS)</li>
-</ul>
-<h2>Implementation</h2>
-<h3>Basic Usage</h3>
-<pre><code class="language-jsx">import Image from &#39;next/image&#39;
+      <div class="nav-breadcrumb">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="readme.html">Documentation</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Image Optimization Guide</li>
+          </ol>
+        </nav>
+      </div>
+
+      <main class="documentation-content">
+        <h1>Image Optimization Guide</h1>
+        <h2>Overview</h2>
+        <p>
+          The Business Scraper App now uses Next.js Image optimization for superior performance and
+          user experience. This guide covers the implementation and best practices.
+        </p>
+        <h2>Features</h2>
+        <h3>🚀 <strong>Automatic Format Optimization</strong></h3>
+        <ul>
+          <li><strong>WebP</strong>: 25-35% smaller than JPEG</li>
+          <li><strong>AVIF</strong>: 50% smaller than JPEG (when supported)</li>
+          <li><strong>Fallback</strong>: Automatic fallback to original format</li>
+        </ul>
+        <h3>📱 <strong>Responsive Image Delivery</strong></h3>
+        <ul>
+          <li>Device-specific image sizes</li>
+          <li>Bandwidth-optimized delivery</li>
+          <li>Retina display support</li>
+        </ul>
+        <h3>⚡ <strong>Performance Optimizations</strong></h3>
+        <ul>
+          <li><strong>Priority loading</strong>: Above-the-fold images load first</li>
+          <li><strong>Lazy loading</strong>: Below-the-fold images load on demand</li>
+          <li><strong>Layout stability</strong>: No Cumulative Layout Shift (CLS)</li>
+        </ul>
+        <h2>Implementation</h2>
+        <h3>Basic Usage</h3>
+        <pre><code class="language-jsx">import Image from &#39;next/image&#39;
 
 // Standard image
 &lt;Image
@@ -81,9 +87,9 @@
   sizes=&quot;(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw&quot;
 /&gt;
 </code></pre>
-<h3>Current Implementation</h3>
-<h4>App Header Logo</h4>
-<pre><code class="language-jsx">&lt;Image
+        <h3>Current Implementation</h3>
+        <h4>App Header Logo</h4>
+        <pre><code class="language-jsx">&lt;Image
   src=&quot;/favicon.ico&quot;
   alt=&quot;Business Scraper Logo&quot;
   width={32}
@@ -94,8 +100,8 @@
   quality={90}
 /&gt;
 </code></pre>
-<h4>Login Page Logo</h4>
-<pre><code class="language-jsx">&lt;Image
+        <h4>Login Page Logo</h4>
+        <pre><code class="language-jsx">&lt;Image
   src=&quot;/favicon.ico&quot;
   alt=&quot;Business Scraper Logo&quot;
   width={40}
@@ -106,9 +112,9 @@
   quality={90}
 /&gt;
 </code></pre>
-<h2>Configuration</h2>
-<h3>Next.js Config (<code>next.config.js</code>)</h3>
-<pre><code class="language-javascript">images: {
+        <h2>Configuration</h2>
+        <h3>Next.js Config (<code>next.config.js</code>)</h3>
+        <pre><code class="language-javascript">images: {
   formats: [&#39;image/webp&#39;, &#39;image/avif&#39;],
   deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
   imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -122,8 +128,8 @@
   unoptimized: false,
 }
 </code></pre>
-<h3>CSP Configuration</h3>
-<pre><code class="language-javascript">imgSrc: [
+        <h3>CSP Configuration</h3>
+        <pre><code class="language-javascript">imgSrc: [
   &quot;&#39;self&#39;&quot;,
   &quot;data:&quot;,
   &quot;blob:&quot;,
@@ -133,23 +139,23 @@
   &quot;/_next/static/*&quot; // Next.js static assets
 ]
 </code></pre>
-<h2>Best Practices</h2>
-<h3>1. <strong>Always Use Explicit Dimensions</strong></h3>
-<pre><code class="language-jsx">// ✅ Good - prevents layout shift
+        <h2>Best Practices</h2>
+        <h3>1. <strong>Always Use Explicit Dimensions</strong></h3>
+        <pre><code class="language-jsx">// ✅ Good - prevents layout shift
 &lt;Image src=&quot;/image.jpg&quot; width={400} height={300} alt=&quot;Description&quot; /&gt;
 
 // ❌ Bad - causes layout shift
 &lt;Image src=&quot;/image.jpg&quot; alt=&quot;Description&quot; /&gt;
 </code></pre>
-<h3>2. <strong>Use Priority for Above-the-Fold Images</strong></h3>
-<pre><code class="language-jsx">// ✅ Good - loads immediately
+        <h3>2. <strong>Use Priority for Above-the-Fold Images</strong></h3>
+        <pre><code class="language-jsx">// ✅ Good - loads immediately
 &lt;Image src=&quot;/hero.jpg&quot; priority width={800} height={400} alt=&quot;Hero&quot; /&gt;
 
 // ❌ Bad - lazy loads critical image
 &lt;Image src=&quot;/hero.jpg&quot; width={800} height={400} alt=&quot;Hero&quot; /&gt;
 </code></pre>
-<h3>3. <strong>Optimize Sizes Attribute</strong></h3>
-<pre><code class="language-jsx">// ✅ Good - responsive optimization
+        <h3>3. <strong>Optimize Sizes Attribute</strong></h3>
+        <pre><code class="language-jsx">// ✅ Good - responsive optimization
 &lt;Image
   src=&quot;/banner.jpg&quot;
   sizes=&quot;(max-width: 768px) 100vw, 50vw&quot;
@@ -161,77 +167,94 @@
 // ❌ Bad - fixed size
 &lt;Image src=&quot;/banner.jpg&quot; width={1200} height={300} alt=&quot;Banner&quot; /&gt;
 </code></pre>
-<h3>4. <strong>Use Appropriate Quality Settings</strong></h3>
-<pre><code class="language-jsx">// ✅ Good - high quality for logos
+        <h3>4. <strong>Use Appropriate Quality Settings</strong></h3>
+        <pre><code class="language-jsx">// ✅ Good - high quality for logos
 &lt;Image src=&quot;/logo.png&quot; quality={90} width={200} height={100} alt=&quot;Logo&quot; /&gt;
 
 // ✅ Good - standard quality for photos
 &lt;Image src=&quot;/photo.jpg&quot; quality={75} width={400} height={300} alt=&quot;Photo&quot; /&gt;
 </code></pre>
-<h2>Performance Benefits</h2>
-<h3>Core Web Vitals Improvements</h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Before</th>
-<th>After</th>
-<th>Improvement</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>LCP</td>
-<td>~2.5s</td>
-<td>~1.8s</td>
-<td>28% faster</td>
-</tr>
-<tr>
-<td>CLS</td>
-<td>0.15</td>
-<td>0.00</td>
-<td>100% stable</td>
-</tr>
-<tr>
-<td>FCP</td>
-<td>~1.8s</td>
-<td>~1.2s</td>
-<td>33% faster</td>
-</tr>
-</tbody></table>
-<h3>Bandwidth Savings</h3>
-<table>
-<thead>
-<tr>
-<th>Format</th>
-<th>Size Reduction</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>WebP</td>
-<td>25-35% smaller</td>
-</tr>
-<tr>
-<td>AVIF</td>
-<td>50% smaller</td>
-</tr>
-<tr>
-<td>Responsive</td>
-<td>40-60% smaller</td>
-</tr>
-</tbody></table>
-<h2>Troubleshooting</h2>
-<h3>Common Issues</h3>
-<h4>1. <strong>CSP Violations</strong></h4>
-<p><strong>Error</strong>: <code>Refused to load image because it violates CSP</code><br><strong>Solution</strong>: Ensure <code>/_next/image*</code> is in CSP <code>img-src</code></p>
-<h4>2. <strong>Layout Shift</strong></h4>
-<p><strong>Error</strong>: Images cause layout jumping<br><strong>Solution</strong>: Always provide <code>width</code> and <code>height</code> attributes</p>
-<h4>3. <strong>Slow Loading</strong></h4>
-<p><strong>Error</strong>: Images load slowly<br><strong>Solution</strong>: Use <code>priority</code> for above-the-fold images</p>
-<h4>4. <strong>External Domain Issues</strong></h4>
-<p><strong>Error</strong>: External images don&#39;t load<br><strong>Solution</strong>: Add domains to <code>next.config.js</code> images config</p>
-<h3>Debug Mode</h3>
-<p>Enable debug logging in development:</p>
-<pre><code class="language-javascript">// next.config.js
+        <h2>Performance Benefits</h2>
+        <h3>Core Web Vitals Improvements</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Before</th>
+              <th>After</th>
+              <th>Improvement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LCP</td>
+              <td>~2.5s</td>
+              <td>~1.8s</td>
+              <td>28% faster</td>
+            </tr>
+            <tr>
+              <td>CLS</td>
+              <td>0.15</td>
+              <td>0.00</td>
+              <td>100% stable</td>
+            </tr>
+            <tr>
+              <td>FCP</td>
+              <td>~1.8s</td>
+              <td>~1.2s</td>
+              <td>33% faster</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Bandwidth Savings</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Format</th>
+              <th>Size Reduction</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>WebP</td>
+              <td>25-35% smaller</td>
+            </tr>
+            <tr>
+              <td>AVIF</td>
+              <td>50% smaller</td>
+            </tr>
+            <tr>
+              <td>Responsive</td>
+              <td>40-60% smaller</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>Troubleshooting</h2>
+        <h3>Common Issues</h3>
+        <h4>1. <strong>CSP Violations</strong></h4>
+        <p>
+          <strong>Error</strong>: <code>Refused to load image because it violates CSP</code
+          ><br /><strong>Solution</strong>: Ensure <code>/_next/image*</code> is in CSP
+          <code>img-src</code>
+        </p>
+        <h4>2. <strong>Layout Shift</strong></h4>
+        <p>
+          <strong>Error</strong>: Images cause layout jumping<br /><strong>Solution</strong>: Always
+          provide <code>width</code> and <code>height</code> attributes
+        </p>
+        <h4>3. <strong>Slow Loading</strong></h4>
+        <p>
+          <strong>Error</strong>: Images load slowly<br /><strong>Solution</strong>: Use
+          <code>priority</code> for above-the-fold images
+        </p>
+        <h4>4. <strong>External Domain Issues</strong></h4>
+        <p>
+          <strong>Error</strong>: External images don&#39;t load<br /><strong>Solution</strong>: Add
+          domains to <code>next.config.js</code> images config
+        </p>
+        <h3>Debug Mode</h3>
+        <p>Enable debug logging in development:</p>
+        <pre><code class="language-javascript">// next.config.js
 images: {
   // ... other config
   loader: &#39;default&#39;,
@@ -242,23 +265,26 @@ images: {
   contentSecurityPolicy: &quot;default-src &#39;self&#39;; script-src &#39;none&#39;; sandbox;&quot;,
 }
 </code></pre>
-<h2>Migration Guide</h2>
-<h3>From <code>&lt;img&gt;</code> to <code>&lt;Image&gt;</code></h3>
-<ol>
-<li><p><strong>Add import</strong>:</p>
-<pre><code class="language-jsx">import Image from &#39;next/image&#39;
+        <h2>Migration Guide</h2>
+        <h3>From <code>&lt;img&gt;</code> to <code>&lt;Image&gt;</code></h3>
+        <ol>
+          <li>
+            <p><strong>Add import</strong>:</p>
+            <pre><code class="language-jsx">import Image from &#39;next/image&#39;
 </code></pre>
-</li>
-<li><p><strong>Replace element</strong>:</p>
-<pre><code class="language-jsx">// Before
+          </li>
+          <li>
+            <p><strong>Replace element</strong>:</p>
+            <pre><code class="language-jsx">// Before
 &lt;img src=&quot;/logo.png&quot; alt=&quot;Logo&quot; className=&quot;w-32 h-16&quot; /&gt;
 
 // After
 &lt;Image src=&quot;/logo.png&quot; alt=&quot;Logo&quot; width={128} height={64} /&gt;
 </code></pre>
-</li>
-<li><p><strong>Add optimization attributes</strong>:</p>
-<pre><code class="language-jsx">&lt;Image
+          </li>
+          <li>
+            <p><strong>Add optimization attributes</strong>:</p>
+            <pre><code class="language-jsx">&lt;Image
   src=&quot;/logo.png&quot;
   alt=&quot;Logo&quot;
   width={128}
@@ -268,33 +294,41 @@ images: {
   quality={90} // for high quality
 /&gt;
 </code></pre>
-</li>
-</ol>
-<h2>Resources</h2>
-<ul>
-<li><a href="https://nextjs.org/docs/api-reference/next/image">Next.js Image Documentation</a></li>
-<li><a href="https://web.dev/fast/#optimize-your-images">Image Optimization Best Practices</a></li>
-<li><a href="https://web.dev/vitals/">Core Web Vitals</a></li>
-<li><a href="https://developers.google.com/speed/webp">WebP Format Guide</a></li>
-<li><a href="https://web.dev/compress-images-avif/">AVIF Format Guide</a></li>
-</ul>
+          </li>
+        </ol>
+        <h2>Resources</h2>
+        <ul>
+          <li>
+            <a href="https://nextjs.org/docs/api-reference/next/image"
+              >Next.js Image Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://web.dev/fast/#optimize-your-images"
+              >Image Optimization Best Practices</a
+            >
+          </li>
+          <li><a href="https://web.dev/vitals/">Core Web Vitals</a></li>
+          <li><a href="https://developers.google.com/speed/webp">WebP Format Guide</a></li>
+          <li><a href="https://web.dev/compress-images-avif/">AVIF Format Guide</a></li>
+        </ul>
+      </main>
 
-        </main>
-
-        <footer class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted">
-                <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration Platform
-            </p>
-            <p class="text-muted">
-                <a href="readme.html">Documentation Hub</a> | 
-                <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
-            </p>
-            <p class="text-muted small">Last updated: 8/24/2025</p>
-        </footer>
+      <footer class="text-center mt-5 pt-4 border-top">
+        <p class="text-muted">
+          <strong>Business Scraper Application v3.0.0</strong> - Enterprise Multi-User Collaboration
+          Platform
+        </p>
+        <p class="text-muted">
+          <a href="readme.html">Documentation Hub</a> |
+          <a href="https://github.com/mytech-today-now/business_scraper">GitHub Repository</a>
+        </p>
+        <p class="text-muted small">Last updated: 8/24/2025</p>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-</body>
+  </body>
 </html>

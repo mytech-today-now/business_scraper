@@ -6,19 +6,19 @@
 'use client'
 
 import React, { useState } from 'react'
-import { 
-  Settings, 
-  User, 
-  Palette, 
-  Bell, 
-  Shield, 
-  Globe, 
-  Accessibility, 
-  Keyboard, 
-  Monitor, 
-  Save, 
-  RotateCcw, 
-  Download, 
+import {
+  Settings,
+  User,
+  Palette,
+  Bell,
+  Shield,
+  Globe,
+  Accessibility,
+  Keyboard,
+  Monitor,
+  Save,
+  RotateCcw,
+  Download,
   Upload,
   Eye,
   EyeOff,
@@ -29,7 +29,7 @@ import {
   Clock,
   Calendar,
   Languages,
-  Zap
+  Zap,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
@@ -63,7 +63,11 @@ export function SettingsPanel() {
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i]
       if (key && typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
-        if (current && typeof current === 'object' && Object.prototype.hasOwnProperty.call(current, key)) {
+        if (
+          current &&
+          typeof current === 'object' &&
+          Object.prototype.hasOwnProperty.call(current, key)
+        ) {
           current = (current as Record<string, any>)[key]
         } else {
           // Create nested object if it doesn't exist
@@ -71,7 +75,7 @@ export function SettingsPanel() {
             value: {},
             writable: true,
             enumerable: true,
-            configurable: true
+            configurable: true,
           })
           current = (current as Record<string, any>)[key]
         }
@@ -87,7 +91,7 @@ export function SettingsPanel() {
         value,
         writable: true,
         enumerable: true,
-        configurable: true
+        configurable: true,
       })
     } else {
       console.warn('Invalid preference key:', lastKey)
@@ -115,7 +119,7 @@ export function SettingsPanel() {
     const dataStr = JSON.stringify(localPreferences, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
     const url = URL.createObjectURL(dataBlob)
-    
+
     const link = document.createElement('a')
     link.href = url
     link.download = 'business-scraper-settings.json'
@@ -123,7 +127,7 @@ export function SettingsPanel() {
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
-    
+
     showToast('Settings exported', 'success')
   }
 
@@ -132,7 +136,7 @@ export function SettingsPanel() {
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       try {
         const imported = JSON.parse(e.target?.result as string)
         setLocalPreferences(imported)
@@ -183,11 +187,9 @@ export function SettingsPanel() {
               <h1 className="text-2xl font-bold">
                 {sections.find(s => s.id === activeSection)?.label}
               </h1>
-              <p className="text-gray-600 mt-1">
-                Customize your application experience
-              </p>
+              <p className="text-gray-600 mt-1">Customize your application experience</p>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               {hasUnsavedChanges && (
                 <Button variant="outline" onClick={resetSettings}>
@@ -204,24 +206,15 @@ export function SettingsPanel() {
 
           {/* Settings Content */}
           {activeSection === 'general' && (
-            <GeneralSettings
-              preferences={localPreferences}
-              onChange={handlePreferenceChange}
-            />
+            <GeneralSettings preferences={localPreferences} onChange={handlePreferenceChange} />
           )}
 
           {activeSection === 'appearance' && (
-            <AppearanceSettings
-              preferences={localPreferences}
-              onChange={handlePreferenceChange}
-            />
+            <AppearanceSettings preferences={localPreferences} onChange={handlePreferenceChange} />
           )}
 
           {activeSection === 'performance' && (
-            <PerformanceSettings
-              preferences={localPreferences}
-              onChange={handlePreferenceChange}
-            />
+            <PerformanceSettings preferences={localPreferences} onChange={handlePreferenceChange} />
           )}
 
           {activeSection === 'notifications' && (
@@ -239,17 +232,11 @@ export function SettingsPanel() {
           )}
 
           {activeSection === 'keyboard' && (
-            <KeyboardSettings
-              preferences={localPreferences}
-              onChange={handlePreferenceChange}
-            />
+            <KeyboardSettings preferences={localPreferences} onChange={handlePreferenceChange} />
           )}
 
           {activeSection === 'privacy' && (
-            <PrivacySettings
-              preferences={localPreferences}
-              onChange={handlePreferenceChange}
-            />
+            <PrivacySettings preferences={localPreferences} onChange={handlePreferenceChange} />
           )}
 
           {activeSection === 'advanced' && (
@@ -266,7 +253,10 @@ export function SettingsPanel() {
   )
 }
 
-function GeneralSettings({ preferences, onChange }: {
+function GeneralSettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -284,7 +274,7 @@ function GeneralSettings({ preferences, onChange }: {
             <label className="block text-sm font-medium mb-2">Language</label>
             <select
               value={preferences.language}
-              onChange={(e) => onChange('language', e.target.value)}
+              onChange={e => onChange('language', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
               <option value="en">English</option>
@@ -298,7 +288,7 @@ function GeneralSettings({ preferences, onChange }: {
             <label className="block text-sm font-medium mb-2">Timezone</label>
             <select
               value={preferences.timezone}
-              onChange={(e) => onChange('timezone', e.target.value)}
+              onChange={e => onChange('timezone', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
               <option value="America/New_York">Eastern Time</option>
@@ -313,7 +303,7 @@ function GeneralSettings({ preferences, onChange }: {
             <label className="block text-sm font-medium mb-2">Date Format</label>
             <select
               value={preferences.dateFormat}
-              onChange={(e) => onChange('dateFormat', e.target.value)}
+              onChange={e => onChange('dateFormat', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
               <option value="MM/dd/yyyy">MM/DD/YYYY</option>
@@ -327,7 +317,10 @@ function GeneralSettings({ preferences, onChange }: {
   )
 }
 
-function AppearanceSettings({ preferences, onChange }: {
+function AppearanceSettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -368,7 +361,7 @@ function AppearanceSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.interface.compactMode}
-              onChange={(e) => onChange('interface.compactMode', e.target.checked)}
+              onChange={e => onChange('interface.compactMode', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -381,7 +374,7 @@ function AppearanceSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.interface.showTooltips}
-              onChange={(e) => onChange('interface.showTooltips', e.target.checked)}
+              onChange={e => onChange('interface.showTooltips', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -391,7 +384,10 @@ function AppearanceSettings({ preferences, onChange }: {
   )
 }
 
-function NotificationSettings({ preferences, onChange }: {
+function NotificationSettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -416,7 +412,7 @@ function NotificationSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.notifications.enabled}
-              onChange={(e) => onChange('notifications.enabled', e.target.checked)}
+              onChange={e => onChange('notifications.enabled', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -432,7 +428,7 @@ function NotificationSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.notifications.sound}
-              onChange={(e) => onChange('notifications.sound', e.target.checked)}
+              onChange={e => onChange('notifications.sound', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -448,7 +444,7 @@ function NotificationSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.notifications.desktop}
-              onChange={(e) => onChange('notifications.desktop', e.target.checked)}
+              onChange={e => onChange('notifications.desktop', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -464,7 +460,7 @@ function NotificationSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.notifications.email}
-              onChange={(e) => onChange('notifications.email', e.target.checked)}
+              onChange={e => onChange('notifications.email', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -474,7 +470,10 @@ function NotificationSettings({ preferences, onChange }: {
   )
 }
 
-function AccessibilitySettings({ preferences, onChange }: {
+function AccessibilitySettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -496,7 +495,7 @@ function AccessibilitySettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.accessibility.highContrast}
-              onChange={(e) => onChange('accessibility.highContrast', e.target.checked)}
+              onChange={e => onChange('accessibility.highContrast', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -509,7 +508,7 @@ function AccessibilitySettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.accessibility.largeText}
-              onChange={(e) => onChange('accessibility.largeText', e.target.checked)}
+              onChange={e => onChange('accessibility.largeText', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -522,7 +521,7 @@ function AccessibilitySettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.accessibility.reducedMotion}
-              onChange={(e) => onChange('accessibility.reducedMotion', e.target.checked)}
+              onChange={e => onChange('accessibility.reducedMotion', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -532,7 +531,10 @@ function AccessibilitySettings({ preferences, onChange }: {
   )
 }
 
-function KeyboardSettings({ preferences, onChange }: {
+function KeyboardSettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -554,7 +556,7 @@ function KeyboardSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.interface.keyboardNavigation}
-              onChange={(e) => onChange('interface.keyboardNavigation', e.target.checked)}
+              onChange={e => onChange('interface.keyboardNavigation', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -582,7 +584,10 @@ function KeyboardSettings({ preferences, onChange }: {
   )
 }
 
-function PrivacySettings({ preferences, onChange }: {
+function PrivacySettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -604,7 +609,7 @@ function PrivacySettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.interface.autoSave}
-              onChange={(e) => onChange('interface.autoSave', e.target.checked)}
+              onChange={e => onChange('interface.autoSave', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -629,7 +634,10 @@ function PrivacySettings({ preferences, onChange }: {
   )
 }
 
-function PerformanceSettings({ preferences, onChange }: {
+function PerformanceSettings({
+  preferences,
+  onChange,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
 }) {
@@ -646,12 +654,14 @@ function PerformanceSettings({ preferences, onChange }: {
           <div className="flex items-center justify-between">
             <div>
               <label className="text-sm font-medium">Auto-Detection</label>
-              <p className="text-xs text-gray-500">Automatically optimize performance based on dataset size</p>
+              <p className="text-xs text-gray-500">
+                Automatically optimize performance based on dataset size
+              </p>
             </div>
             <input
               type="checkbox"
               checked={preferences.performance.autoDetection}
-              onChange={(e) => onChange('performance.autoDetection', e.target.checked)}
+              onChange={e => onChange('performance.autoDetection', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -664,7 +674,7 @@ function PerformanceSettings({ preferences, onChange }: {
             <input
               type="checkbox"
               checked={preferences.performance.enableMonitoring}
-              onChange={(e) => onChange('performance.enableMonitoring', e.target.checked)}
+              onChange={e => onChange('performance.enableMonitoring', e.target.checked)}
               className="rounded"
             />
           </div>
@@ -675,12 +685,14 @@ function PerformanceSettings({ preferences, onChange }: {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <label className="text-sm font-medium">Force Disable Virtualization</label>
-                <p className="text-xs text-gray-500">Never use virtualized rendering, even for large datasets</p>
+                <p className="text-xs text-gray-500">
+                  Never use virtualized rendering, even for large datasets
+                </p>
               </div>
               <input
                 type="checkbox"
                 checked={preferences.performance.forceDisableVirtualization}
-                onChange={(e) => onChange('performance.forceDisableVirtualization', e.target.checked)}
+                onChange={e => onChange('performance.forceDisableVirtualization', e.target.checked)}
                 className="rounded"
               />
             </div>
@@ -688,12 +700,14 @@ function PerformanceSettings({ preferences, onChange }: {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <label className="text-sm font-medium">Force Enable Pagination</label>
-                <p className="text-xs text-gray-500">Always use pagination for medium to large datasets</p>
+                <p className="text-xs text-gray-500">
+                  Always use pagination for medium to large datasets
+                </p>
               </div>
               <input
                 type="checkbox"
                 checked={preferences.performance.forceEnablePagination}
-                onChange={(e) => onChange('performance.forceEnablePagination', e.target.checked)}
+                onChange={e => onChange('performance.forceEnablePagination', e.target.checked)}
                 className="rounded"
               />
             </div>
@@ -705,7 +719,7 @@ function PerformanceSettings({ preferences, onChange }: {
               </div>
               <select
                 value={preferences.performance.pageSize}
-                onChange={(e) => onChange('performance.pageSize', Number(e.target.value))}
+                onChange={e => onChange('performance.pageSize', Number(e.target.value))}
                 className="border rounded px-2 py-1 text-sm bg-background"
               >
                 <option value={25}>25</option>
@@ -728,7 +742,9 @@ function PerformanceSettings({ preferences, onChange }: {
                 <Input
                   type="number"
                   value={preferences.performance.customThresholds.advisory}
-                  onChange={(e) => onChange('performance.customThresholds.advisory', Number(e.target.value))}
+                  onChange={e =>
+                    onChange('performance.customThresholds.advisory', Number(e.target.value))
+                  }
                   className="w-20 text-sm"
                   min={100}
                   max={10000}
@@ -743,7 +759,9 @@ function PerformanceSettings({ preferences, onChange }: {
                 <Input
                   type="number"
                   value={preferences.performance.customThresholds.pagination}
-                  onChange={(e) => onChange('performance.customThresholds.pagination', Number(e.target.value))}
+                  onChange={e =>
+                    onChange('performance.customThresholds.pagination', Number(e.target.value))
+                  }
                   className="w-20 text-sm"
                   min={500}
                   max={25000}
@@ -753,12 +771,16 @@ function PerformanceSettings({ preferences, onChange }: {
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-sm font-medium">Virtualization Threshold</label>
-                  <p className="text-xs text-gray-500">Auto-switch to virtualization at this count</p>
+                  <p className="text-xs text-gray-500">
+                    Auto-switch to virtualization at this count
+                  </p>
                 </div>
                 <Input
                   type="number"
                   value={preferences.performance.customThresholds.virtualization}
-                  onChange={(e) => onChange('performance.customThresholds.virtualization', Number(e.target.value))}
+                  onChange={e =>
+                    onChange('performance.customThresholds.virtualization', Number(e.target.value))
+                  }
                   className="w-20 text-sm"
                   min={1000}
                   max={50000}
@@ -772,7 +794,12 @@ function PerformanceSettings({ preferences, onChange }: {
   )
 }
 
-function AdvancedSettings({ preferences, onChange, onExport, onImport }: {
+function AdvancedSettings({
+  preferences,
+  onChange,
+  onExport,
+  onImport,
+}: {
   preferences: UserPreferences
   onChange: (path: string, value: any) => void
   onExport: () => void
@@ -800,12 +827,7 @@ function AdvancedSettings({ preferences, onChange, onExport, onImport }: {
                   <Upload className="h-4 w-4 mr-2" />
                   Import Settings
                 </span>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={onImport}
-                  className="hidden"
-                />
+                <input type="file" accept=".json" onChange={onImport} className="hidden" />
               </label>
             </div>
           </div>

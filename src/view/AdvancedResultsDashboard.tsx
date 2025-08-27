@@ -6,21 +6,21 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  Eye, 
-  Edit, 
-  Trash2, 
-  Tag, 
-  Star, 
-  BarChart3, 
-  PieChart, 
-  Map, 
-  Grid, 
-  List, 
-  SortAsc, 
+import {
+  Search,
+  Filter,
+  Download,
+  Eye,
+  Edit,
+  Trash2,
+  Tag,
+  Star,
+  BarChart3,
+  PieChart,
+  Map,
+  Grid,
+  List,
+  SortAsc,
   SortDesc,
   MoreHorizontal,
   CheckSquare,
@@ -28,7 +28,8 @@ import {
   RefreshCw,
   Settings,
   Bookmark,
-  Share2
+  Activity,
+  Share2,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
@@ -82,22 +83,22 @@ export function AdvancedResultsDashboard() {
   const [showVisualization, setShowVisualization] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [streamingStatus, setStreamingStatus] = useState<string>('idle')
-  
+
   // Advanced filtering and search
   const [searchQuery, setSearchQuery] = useState('')
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilter[]>([])
   const [savedQueries, setSavedQueries] = useState<SavedQuery[]>([])
   const [activeSavedQuery, setActiveSavedQuery] = useState<string | null>(null)
-  
+
   // Sorting and pagination
   const [sortConfig, setSortConfig] = useState<{ field: string; direction: 'asc' | 'desc' }[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10000) // Show all results by default
-  
+
   // Annotations and tags
   const [annotations, setAnnotations] = useState<ResultAnnotation[]>([])
   const [availableTags, setAvailableTags] = useState<string[]>([])
-  
+
   // UI state
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
   const [showBulkActions, setShowBulkActions] = useState(false)
@@ -122,7 +123,7 @@ export function AdvancedResultsDashboard() {
       const mockBusinesses: BusinessRecord[] = [
         {
           id: '1',
-          businessName: 'Joe\'s Pizza',
+          businessName: "Joe's Pizza",
           industry: 'Restaurant',
           email: ['info@joespizza.com'],
           phone: '(555) 123-4567',
@@ -147,9 +148,7 @@ export function AdvancedResultsDashboard() {
           id: '1',
           name: 'Restaurant Businesses',
           description: 'All restaurant businesses',
-          filters: [
-            { field: 'industry', operator: 'equals', value: 'Restaurant' }
-          ],
+          filters: [{ field: 'industry', operator: 'equals', value: 'Restaurant' }],
           sorting: [{ field: 'businessName', direction: 'asc' }],
           createdAt: new Date('2024-01-10'),
           isPublic: true,
@@ -186,12 +185,13 @@ export function AdvancedResultsDashboard() {
     // Apply search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(business =>
-        business.businessName.toLowerCase().includes(query) ||
-        business.industry.toLowerCase().includes(query) ||
-        business.email.some(email => email.toLowerCase().includes(query)) ||
-        (business.phone && business.phone.toLowerCase().includes(query)) ||
-        (business.websiteUrl && business.websiteUrl.toLowerCase().includes(query))
+      filtered = filtered.filter(
+        business =>
+          business.businessName.toLowerCase().includes(query) ||
+          business.industry.toLowerCase().includes(query) ||
+          business.email.some(email => email.toLowerCase().includes(query)) ||
+          (business.phone && business.phone.toLowerCase().includes(query)) ||
+          (business.websiteUrl && business.websiteUrl.toLowerCase().includes(query))
       )
     }
 
@@ -209,11 +209,11 @@ export function AdvancedResultsDashboard() {
         for (const sort of sortConfig) {
           const aValue = getFieldValue(a, sort.field)
           const bValue = getFieldValue(b, sort.field)
-          
+
           let comparison = 0
           if (aValue < bValue) comparison = -1
           else if (aValue > bValue) comparison = 1
-          
+
           if (comparison !== 0) {
             return sort.direction === 'desc' ? -comparison : comparison
           }
@@ -228,19 +228,33 @@ export function AdvancedResultsDashboard() {
 
   const getFieldValue = (business: BusinessRecord, field: string): any => {
     switch (field) {
-      case 'businessName': return business.businessName
-      case 'industry': return business.industry
-      case 'email': return business.email.join(', ')
-      case 'phone': return business.phone || ''
-      case 'website': return business.websiteUrl || ''
-      case 'city': return business.address?.city || ''
-      case 'state': return business.address?.state || ''
-      case 'scrapedAt': return business.scrapedAt
-      default: return ''
+      case 'businessName':
+        return business.businessName
+      case 'industry':
+        return business.industry
+      case 'email':
+        return business.email.join(', ')
+      case 'phone':
+        return business.phone || ''
+      case 'website':
+        return business.websiteUrl || ''
+      case 'city':
+        return business.address?.city || ''
+      case 'state':
+        return business.address?.state || ''
+      case 'scrapedAt':
+        return business.scrapedAt
+      default:
+        return ''
     }
   }
 
-  const applyFilterOperator = (fieldValue: any, operator: string, value: any, secondValue?: any): boolean => {
+  const applyFilterOperator = (
+    fieldValue: any,
+    operator: string,
+    value: any,
+    secondValue?: any
+  ): boolean => {
     switch (operator) {
       case 'equals':
         return fieldValue === value
@@ -263,8 +277,11 @@ export function AdvancedResultsDashboard() {
 
   const handleBulkAction = async (action: string) => {
     const selectedIds = Array.from(selectedBusinesses)
-    logger.info('AdvancedResultsDashboard', `Performing bulk action: ${action} on ${selectedIds.length} items`)
-    
+    logger.info(
+      'AdvancedResultsDashboard',
+      `Performing bulk action: ${action} on ${selectedIds.length} items`
+    )
+
     try {
       switch (action) {
         case 'export':
@@ -280,7 +297,7 @@ export function AdvancedResultsDashboard() {
           // Add annotation to selected businesses
           break
       }
-      
+
       // Refresh data
       await loadBusinesses()
       setSelectedBusinesses(new Set())
@@ -292,7 +309,7 @@ export function AdvancedResultsDashboard() {
   const addAdvancedFilter = () => {
     setAdvancedFilters([
       ...advancedFilters,
-      { field: 'businessName', operator: 'contains', value: '' }
+      { field: 'businessName', operator: 'contains', value: '' },
     ])
   }
 
@@ -301,9 +318,9 @@ export function AdvancedResultsDashboard() {
   }
 
   const updateAdvancedFilter = (index: number, updates: Partial<AdvancedFilter>) => {
-    setAdvancedFilters(advancedFilters.map((filter, i) => 
-      i === index ? { ...filter, ...updates } : filter
-    ))
+    setAdvancedFilters(
+      advancedFilters.map((filter, i) => (i === index ? { ...filter, ...updates } : filter))
+    )
   }
 
   const saveCurrentQuery = async (name: string, description: string) => {
@@ -316,7 +333,7 @@ export function AdvancedResultsDashboard() {
       createdAt: new Date(),
       isPublic: false,
     }
-    
+
     setSavedQueries([...savedQueries, newQuery])
     logger.info('AdvancedResultsDashboard', `Saved query: ${name}`)
   }
@@ -357,44 +374,50 @@ export function AdvancedResultsDashboard() {
   const generateVisualization = (type: DataVisualization['type']): DataVisualization => {
     switch (type) {
       case 'pie':
-        const industryData = businesses.reduce((acc, business) => {
-          acc[business.industry] = (acc[business.industry] || 0) + 1
-          return acc
-        }, {} as Record<string, number>)
-        
+        const industryData = businesses.reduce(
+          (acc, business) => {
+            acc[business.industry] = (acc[business.industry] || 0) + 1
+            return acc
+          },
+          {} as Record<string, number>
+        )
+
         return {
           type: 'pie',
           title: 'Businesses by Industry',
           data: Object.entries(industryData).map(([industry, count]) => ({
             name: industry,
-            value: count
+            value: count,
           })),
-          config: {}
+          config: {},
         }
-      
+
       case 'bar':
-        const stateData = businesses.reduce((acc, business) => {
-          const state = business.address?.state || 'Unknown'
-          acc[state] = (acc[state] || 0) + 1
-          return acc
-        }, {} as Record<string, number>)
-        
+        const stateData = businesses.reduce(
+          (acc, business) => {
+            const state = business.address?.state || 'Unknown'
+            acc[state] = (acc[state] || 0) + 1
+            return acc
+          },
+          {} as Record<string, number>
+        )
+
         return {
           type: 'bar',
           title: 'Businesses by State',
           data: Object.entries(stateData).map(([state, count]) => ({
             name: state,
-            value: count
+            value: count,
           })),
-          config: {}
+          config: {},
         }
-      
+
       default:
         return {
           type: 'bar',
           title: 'Default Visualization',
           data: [],
-          config: {}
+          config: {},
         }
     }
   }
@@ -410,14 +433,9 @@ export function AdvancedResultsDashboard() {
             {selectedBusinesses.size > 0 && ` • ${selectedBusinesses.size} selected`}
           </p>
         </div>
-        
+
         <div className="flex items-center space-x-3">
-          <Button
-            variant="outline"
-            icon={RefreshCw}
-            onClick={loadBusinesses}
-            disabled={isLoading}
-          >
+          <Button variant="outline" icon={RefreshCw} onClick={loadBusinesses} disabled={isLoading}>
             Refresh
           </Button>
           <Button
@@ -427,9 +445,7 @@ export function AdvancedResultsDashboard() {
           >
             Visualize
           </Button>
-          <Button icon={Download}>
-            Export
-          </Button>
+          <Button icon={Download}>Export</Button>
         </div>
       </div>
 
@@ -443,11 +459,11 @@ export function AdvancedResultsDashboard() {
               <Input
                 placeholder="Search businesses..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
-            
+
             <Button
               variant="outline"
               icon={Filter}
@@ -455,11 +471,13 @@ export function AdvancedResultsDashboard() {
             >
               Advanced Filters
             </Button>
-            
+
             <Button
               variant="outline"
               icon={Bookmark}
-              onClick={() => {/* Show saved queries */}}
+              onClick={() => {
+                /* Show saved queries */
+              }}
             >
               Saved Queries
             </Button>
@@ -473,16 +491,12 @@ export function AdvancedResultsDashboard() {
                   <AdvancedFilterRow
                     key={index}
                     filter={filter}
-                    onUpdate={(updates) => updateAdvancedFilter(index, updates)}
+                    onUpdate={updates => updateAdvancedFilter(index, updates)}
                     onRemove={() => removeAdvancedFilter(index)}
                   />
                 ))}
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={addAdvancedFilter}
-                >
+
+                <Button variant="outline" size="sm" onClick={addAdvancedFilter}>
                   Add Filter
                 </Button>
               </div>
@@ -503,7 +517,7 @@ export function AdvancedResultsDashboard() {
                 Clear Selection
               </Button>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Button size="sm" onClick={() => handleBulkAction('export')}>
                 Export Selected
@@ -566,14 +580,14 @@ export function AdvancedResultsDashboard() {
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">Performance:</span>
               <Button
-                variant={useVirtualScrolling ? "default" : "outline"}
+                variant={useVirtualScrolling ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setUseVirtualScrolling(true)}
               >
                 Virtual
               </Button>
               <Button
-                variant={!useVirtualScrolling ? "default" : "outline"}
+                variant={!useVirtualScrolling ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setUseVirtualScrolling(false)}
               >
@@ -584,7 +598,7 @@ export function AdvancedResultsDashboard() {
 
           <select
             value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
+            onChange={e => setPageSize(Number(e.target.value))}
             className="px-3 py-1 border border-gray-300 rounded text-sm"
             title="Results per page"
           >
@@ -604,14 +618,20 @@ export function AdvancedResultsDashboard() {
           >
             Columns
           </Button>
-          
+
           {paginatedBusinesses.length > 0 && (
             <Button
               variant="outline"
               size="sm"
-              onClick={selectedBusinesses.size === paginatedBusinesses.length ? clearSelection : selectAllVisible}
+              onClick={
+                selectedBusinesses.size === paginatedBusinesses.length
+                  ? clearSelection
+                  : selectAllVisible
+              }
             >
-              {selectedBusinesses.size === paginatedBusinesses.length ? 'Deselect All' : 'Select All'}
+              {selectedBusinesses.size === paginatedBusinesses.length
+                ? 'Deselect All'
+                : 'Select All'}
             </Button>
           )}
         </div>
@@ -640,18 +660,16 @@ export function AdvancedResultsDashboard() {
       {viewMode === 'table' ? (
         useVirtualScrolling ? (
           <VirtualizedResultsTable
-            onEdit={(business) => {
+            onEdit={business => {
               // Handle business edit
-              const updatedBusinesses = businesses.map(b =>
-                b.id === business.id ? business : b
-              )
+              const updatedBusinesses = businesses.map(b => (b.id === business.id ? business : b))
               setBusinesses(updatedBusinesses)
             }}
-            onDelete={(businessId) => {
+            onDelete={businessId => {
               const updatedBusinesses = businesses.filter(b => b.id !== businessId)
               setBusinesses(updatedBusinesses)
             }}
-            onExport={(exportBusinesses) => {
+            onExport={exportBusinesses => {
               // Handle export
               console.log('Exporting businesses:', exportBusinesses.length)
             }}
@@ -661,11 +679,11 @@ export function AdvancedResultsDashboard() {
               search: searchQuery,
               industry: '',
               hasEmail: undefined,
-              hasPhone: undefined
+              hasPhone: undefined,
             }}
             initialSort={{
               field: 'scrapedAt',
-              order: 'desc'
+              order: 'desc',
             }}
           />
         ) : (
@@ -697,9 +715,9 @@ export function AdvancedResultsDashboard() {
             query: searchQuery || 'business',
             location: 'United States',
             industry: '',
-            maxResults: 1000
+            maxResults: 1000,
           }}
-          onResultsUpdate={(streamingResults) => {
+          onResultsUpdate={streamingResults => {
             setBusinesses(streamingResults)
             setFilteredBusinesses(streamingResults)
           }}
@@ -712,9 +730,10 @@ export function AdvancedResultsDashboard() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600">
-            Showing {startIndex + 1} to {Math.min(endIndex, filteredBusinesses.length)} of {filteredBusinesses.length} results
+            Showing {startIndex + 1} to {Math.min(endIndex, filteredBusinesses.length)} of{' '}
+            {filteredBusinesses.length} results
           </p>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -724,11 +743,11 @@ export function AdvancedResultsDashboard() {
             >
               Previous
             </Button>
-            
+
             <span className="text-sm">
               Page {currentPage} of {totalPages}
             </span>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -745,7 +764,14 @@ export function AdvancedResultsDashboard() {
 }
 
 // Placeholder components for different view modes
-function ResultsTable({ businesses, selectedBusinesses, onToggleSelection, sortConfig, onSort, annotations }: any) {
+function ResultsTable({
+  businesses,
+  selectedBusinesses,
+  onToggleSelection,
+  sortConfig,
+  onSort,
+  annotations,
+}: any) {
   return (
     <Card>
       <div className="overflow-x-auto">
@@ -820,21 +846,21 @@ function ResultsGrid({ businesses, selectedBusinesses, onToggleSelection, annota
             />
             <Button variant="ghost" size="sm" icon={MoreHorizontal} />
           </div>
-          
+
           <h3 className="font-semibold mb-2">{business.businessName}</h3>
           <p className="text-sm text-gray-600 mb-2">{business.industry}</p>
-          
+
           <div className="space-y-1 text-sm">
             {business.email[0] && <div>{business.email[0]}</div>}
             {business.phone && <div>{business.phone}</div>}
-            <div>{business.address?.city}, {business.address?.state}</div>
+            <div>
+              {business.address?.city}, {business.address?.state}
+            </div>
           </div>
-          
+
           <div className="mt-3 flex items-center justify-between">
-            <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-              Active
-            </span>
-            
+            <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">Active</span>
+
             <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" icon={Eye} />
               <Button variant="ghost" size="sm" icon={Edit} />
@@ -856,7 +882,11 @@ function ResultsMap({ businesses, selectedBusinesses, onToggleSelection }: any) 
   )
 }
 
-function AdvancedFilterRow({ filter, onUpdate, onRemove }: {
+function AdvancedFilterRow({
+  filter,
+  onUpdate,
+  onRemove,
+}: {
   filter: AdvancedFilter
   onUpdate: (updates: Partial<AdvancedFilter>) => void
   onRemove: () => void
@@ -884,27 +914,31 @@ function AdvancedFilterRow({ filter, onUpdate, onRemove }: {
     <div className="flex items-center space-x-3">
       <select
         value={filter.field}
-        onChange={(e) => onUpdate({ field: e.target.value })}
+        onChange={e => onUpdate({ field: e.target.value })}
         className="px-3 py-2 border border-gray-300 rounded text-sm"
       >
         {fields.map(field => (
-          <option key={field.value} value={field.value}>{field.label}</option>
+          <option key={field.value} value={field.value}>
+            {field.label}
+          </option>
         ))}
       </select>
 
       <select
         value={filter.operator}
-        onChange={(e) => onUpdate({ operator: e.target.value as any })}
+        onChange={e => onUpdate({ operator: e.target.value as any })}
         className="px-3 py-2 border border-gray-300 rounded text-sm"
       >
         {operators.map(op => (
-          <option key={op.value} value={op.value}>{op.label}</option>
+          <option key={op.value} value={op.value}>
+            {op.label}
+          </option>
         ))}
       </select>
 
       <Input
         value={filter.value}
-        onChange={(e) => onUpdate({ value: e.target.value })}
+        onChange={e => onUpdate({ value: e.target.value })}
         placeholder="Value"
         className="w-32"
       />
@@ -912,18 +946,13 @@ function AdvancedFilterRow({ filter, onUpdate, onRemove }: {
       {filter.operator === 'between' && (
         <Input
           value={filter.secondValue || ''}
-          onChange={(e) => onUpdate({ secondValue: e.target.value })}
+          onChange={e => onUpdate({ secondValue: e.target.value })}
           placeholder="To"
           className="w-32"
         />
       )}
 
-      <Button
-        variant="ghost"
-        size="sm"
-        icon={Trash2}
-        onClick={onRemove}
-      />
+      <Button variant="ghost" size="sm" icon={Trash2} onClick={onRemove} />
     </div>
   )
 }

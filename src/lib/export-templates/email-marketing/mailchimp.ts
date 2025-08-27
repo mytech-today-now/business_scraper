@@ -11,7 +11,6 @@ import { BusinessRecord } from '@/types/business'
  * Mailchimp email marketing export template
  */
 export class MailchimpExportTemplate extends BaseExportTemplate {
-  
   constructor() {
     super(MailchimpExportTemplate.createTemplate())
   }
@@ -26,87 +25,87 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
       platform: 'mailchimp',
       description: 'Export business data as Mailchimp contact list',
       version: '1.0.0',
-      
+
       fieldMappings: [
         {
           type: 'format',
           sourceFields: ['email.0'],
           targetField: 'Email Address',
           options: {
-            format: 'email'
+            format: 'email',
           },
           validation: [
             {
               type: 'required',
-              message: 'Email address is required for Mailchimp contacts'
+              message: 'Email address is required for Mailchimp contacts',
             },
             {
               type: 'email',
-              message: 'Invalid email format'
-            }
-          ]
+              message: 'Invalid email format',
+            },
+          ],
         },
         {
           type: 'calculate',
           sourceFields: ['businessName'],
           targetField: 'First Name',
           options: {
-            calculation: 'extractFirstName'
+            calculation: 'extractFirstName',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['businessName'],
           targetField: 'Last Name',
           options: {
-            calculation: 'extractLastName'
+            calculation: 'extractLastName',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['businessName'],
           targetField: 'Company',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'format',
           sourceFields: ['phone.0'],
           targetField: 'Phone',
           options: {
-            format: 'phone'
+            format: 'phone',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.street'],
           targetField: 'Address',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.city'],
           targetField: 'City',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.state'],
           targetField: 'State',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['address.zipCode'],
           targetField: 'Zip',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
@@ -115,137 +114,144 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
           options: {
             conditions: [
               { condition: 'empty', value: 'US' },
-              { condition: 'default', value: 'address.country' }
-            ]
+              { condition: 'default', value: 'address.country' },
+            ],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'format',
           sourceFields: ['website'],
           targetField: 'Website',
           options: {
-            format: 'url'
+            format: 'url',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'direct',
           sourceFields: ['industry'],
           targetField: 'Industry',
           options: {},
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['industry', 'address.state', 'website', 'email', 'phone'],
           targetField: 'Tags',
           options: {
-            calculation: 'generateTags'
+            calculation: 'generateTags',
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['email'],
           targetField: 'GDPR Permission',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'No' }
-            ]
+            conditions: [{ condition: 'exists', value: 'No' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['businessName'],
           targetField: 'Source',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'Web Scraping' }
-            ]
+            conditions: [{ condition: 'exists', value: 'Web Scraping' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'conditional',
           sourceFields: ['email'],
           targetField: 'Opt-in Status',
           options: {
-            conditions: [
-              { condition: 'exists', value: 'pending' }
-            ]
+            conditions: [{ condition: 'exists', value: 'pending' }],
           },
-          validation: []
+          validation: [],
         },
         {
           type: 'calculate',
           sourceFields: ['businessName'],
           targetField: 'Date Added',
           options: {
-            calculation: 'currentDate'
+            calculation: 'currentDate',
           },
-          validation: []
-        }
+          validation: [],
+        },
       ],
-      
+
       requiredFields: ['Email Address'],
       optionalFields: [
-        'First Name', 'Last Name', 'Company', 'Phone', 'Address', 'City',
-        'State', 'Zip', 'Country', 'Website', 'Industry', 'Tags',
-        'GDPR Permission', 'Source', 'Opt-in Status', 'Date Added'
+        'First Name',
+        'Last Name',
+        'Company',
+        'Phone',
+        'Address',
+        'City',
+        'State',
+        'Zip',
+        'Country',
+        'Website',
+        'Industry',
+        'Tags',
+        'GDPR Permission',
+        'Source',
+        'Opt-in Status',
+        'Date Added',
       ],
-      
+
       platformConfig: {
         fileFormat: 'csv',
         headers: {
           'Email Address': 'Email Address',
           'First Name': 'First Name',
           'Last Name': 'Last Name',
-          'Company': 'Company',
-          'Phone': 'Phone',
-          'Address': 'Address',
-          'City': 'City',
-          'State': 'State',
-          'Zip': 'Zip',
-          'Country': 'Country',
-          'Website': 'Website',
-          'Industry': 'Industry',
-          'Tags': 'Tags',
+          Company: 'Company',
+          Phone: 'Phone',
+          Address: 'Address',
+          City: 'City',
+          State: 'State',
+          Zip: 'Zip',
+          Country: 'Country',
+          Website: 'Website',
+          Industry: 'Industry',
+          Tags: 'Tags',
           'GDPR Permission': 'GDPR Permission',
-          'Source': 'Source',
+          Source: 'Source',
           'Opt-in Status': 'Opt-in Status',
-          'Date Added': 'Date Added'
+          'Date Added': 'Date Added',
         },
         delimiter: ',',
         encoding: 'utf-8',
         dateFormat: 'MM/DD/YYYY',
         booleanFormat: { true: 'Yes', false: 'No' },
-        nullValue: ''
+        nullValue: '',
       },
-      
+
       metadata: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         createdBy: 'system',
         tags: ['email-marketing', 'mailchimp', 'contacts'],
-        category: 'email-marketing'
+        category: 'email-marketing',
       },
-      
+
       qualityRules: {
         minimumFields: 1,
         duplicateHandling: 'skip',
         dataValidation: [
           {
             type: 'required',
-            message: 'Email address is required'
+            message: 'Email address is required',
           },
           {
             type: 'email',
-            message: 'Valid email address required'
-          }
-        ]
-      }
+            message: 'Valid email address required',
+          },
+        ],
+      },
     }
   }
 
@@ -254,24 +260,33 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
    */
   protected async preprocessData(businesses: BusinessRecord[]): Promise<BusinessRecord[]> {
     const baseProcessed = await super.preprocessData(businesses)
-    
+
     // Filter for businesses with valid email addresses
-    return baseProcessed.filter(business => {
-      return business.email && business.email.length > 0 && 
-             business.email[0] && this.isValidEmail(business.email[0])
-    }).map(business => {
-      return {
-        ...business,
-        email: business.email?.map(email => email.toLowerCase().trim()),
-        businessName: this.normalizeBusinessName(business.businessName)
-      }
-    })
+    return baseProcessed
+      .filter(business => {
+        return (
+          business.email &&
+          business.email.length > 0 &&
+          business.email[0] &&
+          this.isValidEmail(business.email[0])
+        )
+      })
+      .map(business => {
+        return {
+          ...business,
+          email: business.email?.map(email => email.toLowerCase().trim()),
+          businessName: this.normalizeBusinessName(business.businessName),
+        }
+      })
   }
 
   /**
    * Mailchimp-specific field mapping for calculated fields
    */
-  protected async applyFieldMapping(business: BusinessRecord, mapping: FieldTransformation): Promise<any> {
+  protected async applyFieldMapping(
+    business: BusinessRecord,
+    mapping: FieldTransformation
+  ): Promise<any> {
     if (mapping.type === 'calculate') {
       switch (mapping.options?.calculation) {
         case 'extractFirstName':
@@ -286,7 +301,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
           return super.applyFieldMapping(business, mapping)
       }
     }
-    
+
     return super.applyFieldMapping(business, mapping)
   }
 
@@ -335,11 +350,8 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
    */
   private normalizeBusinessName(name: string): string {
     if (!name) return ''
-    
-    return name
-      .trim()
-      .replace(/\s+/g, ' ')
-      .substring(0, 100) // Reasonable limit for company names
+
+    return name.trim().replace(/\s+/g, ' ').substring(0, 100) // Reasonable limit for company names
   }
 
   /**
@@ -347,7 +359,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
    */
   private extractFirstName(businessName: string): string {
     if (!businessName) return ''
-    
+
     // For business names, use the first word as "first name"
     const words = businessName.trim().split(/\s+/)
     return words[0] || ''
@@ -358,7 +370,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
    */
   private extractLastName(businessName: string): string {
     if (!businessName) return ''
-    
+
     // For business names, use remaining words as "last name"
     const words = businessName.trim().split(/\s+/)
     return words.slice(1).join(' ') || ''
@@ -369,30 +381,30 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
    */
   private generateTags(business: BusinessRecord): string {
     const tags: string[] = ['web-scraped']
-    
+
     // Industry tag
     if (business.industry) {
       tags.push(business.industry.toLowerCase().replace(/\s+/g, '-'))
     }
-    
+
     // Location tag
     if (business.address?.state) {
       tags.push(business.address.state.toLowerCase().replace(/\s+/g, '-'))
     }
-    
+
     // Data quality tags
     if (business.website) {
       tags.push('has-website')
     }
-    
+
     if (business.phone?.length) {
       tags.push('has-phone')
     }
-    
+
     if (business.address?.street) {
       tags.push('has-address')
     }
-    
+
     // Business type tags based on email domain
     if (business.email?.[0]) {
       const domain = business.email[0].split('@')[1]?.toLowerCase()
@@ -404,7 +416,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
         }
       }
     }
-    
+
     // Lead quality tag
     const qualityScore = this.calculateQualityScore(business)
     if (qualityScore >= 7) {
@@ -414,7 +426,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
     } else {
       tags.push('low-quality')
     }
-    
+
     return tags.join(',')
   }
 
@@ -423,7 +435,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
    */
   private calculateQualityScore(business: BusinessRecord): number {
     let score = 0
-    
+
     if (business.email?.length) score += 2
     if (business.phone?.length) score += 2
     if (business.website) score += 2
@@ -431,7 +443,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
     if (business.address?.city && business.address?.state) score += 1
     if (business.industry) score += 1
     if (business.description && business.description.length > 50) score += 1
-    
+
     return score
   }
 
@@ -445,7 +457,7 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
         ...record,
         'GDPR Permission': record['GDPR Permission'] || 'No',
         'Opt-in Status': record['Opt-in Status'] || 'pending',
-        'Source': record['Source'] || 'Web Scraping'
+        Source: record['Source'] || 'Web Scraping',
       }
     })
   }
@@ -460,34 +472,34 @@ export class MailchimpExportTemplate extends BaseExportTemplate {
     warnings: any[]
   }> {
     const baseResult = await super.applyQualityRules(data)
-    
+
     // Additional email-specific validation
     const emailValidatedRecords: any[] = []
     const emailSkippedRecords: any[] = []
     const emailErrors: any[] = []
-    
+
     for (let i = 0; i < baseResult.validRecords.length; i++) {
       const record = baseResult.validRecords[i]
       const email = record['Email Address']
-      
+
       if (!email || !this.isValidEmail(email)) {
         emailErrors.push({
           recordIndex: i,
           field: 'Email Address',
           error: 'Invalid or missing email address',
-          value: email
+          value: email,
         })
         emailSkippedRecords.push(record)
       } else {
         emailValidatedRecords.push(record)
       }
     }
-    
+
     return {
       validRecords: emailValidatedRecords,
       skippedRecords: [...baseResult.skippedRecords, ...emailSkippedRecords],
       errors: [...baseResult.errors, ...emailErrors],
-      warnings: baseResult.warnings
+      warnings: baseResult.warnings,
     }
   }
 }

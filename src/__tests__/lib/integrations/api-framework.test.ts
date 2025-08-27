@@ -11,12 +11,12 @@ import { ApiRequestContext, ApiResponse } from '@/types/integrations'
 jest.mock('@/lib/analytics/api-metrics', () => ({
   apiMetricsService: {
     checkRateLimit: jest.fn(),
-    recordRequest: jest.fn()
-  }
+    recordRequest: jest.fn(),
+  },
 }))
 
 jest.mock('@/lib/security', () => ({
-  getClientIP: jest.fn(() => '127.0.0.1')
+  getClientIP: jest.fn(() => '127.0.0.1'),
 }))
 
 describe('ApiFramework', () => {
@@ -27,14 +27,14 @@ describe('ApiFramework', () => {
   beforeEach(() => {
     apiFramework = new ApiFramework()
     mockHandler = jest.fn()
-    
+
     // Create mock request
     mockRequest = new NextRequest('https://example.com/api/v1/test', {
       method: 'GET',
       headers: {
         'user-agent': 'test-agent',
-        'authorization': 'Bearer test-token'
-      }
+        authorization: 'Bearer test-token',
+      },
     })
 
     // Reset mocks
@@ -44,7 +44,7 @@ describe('ApiFramework', () => {
   describe('Handler Creation', () => {
     test('should create handler with default options', () => {
       const handler = apiFramework.createHandler(mockHandler)
-      
+
       expect(typeof handler).toBe('function')
     })
 
@@ -53,10 +53,10 @@ describe('ApiFramework', () => {
         permissions: ['read:businesses'],
         rateLimit: {
           requestsPerMinute: 50,
-          requestsPerHour: 500
-        }
+          requestsPerHour: 500,
+        },
       })
-      
+
       expect(typeof handler).toBe('function')
     })
   })
@@ -69,8 +69,8 @@ describe('ApiFramework', () => {
         metadata: {
           requestId: 'test-id',
           timestamp: new Date().toISOString(),
-          version: 'v1'
-        }
+          version: 'v1',
+        },
       }
 
       mockHandler.mockResolvedValue(mockResponse)
@@ -81,7 +81,7 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -96,8 +96,8 @@ describe('ApiFramework', () => {
           metadata: expect.objectContaining({
             ip: '127.0.0.1',
             method: 'GET',
-            userAgent: 'test-agent'
-          })
+            userAgent: 'test-agent',
+          }),
         })
       )
     })
@@ -108,7 +108,7 @@ describe('ApiFramework', () => {
         allowed: false,
         remaining: { minute: 0, hour: 0, day: 0 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: true
+        rateLimitHit: true,
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -116,7 +116,7 @@ describe('ApiFramework', () => {
 
       expect(response.status).toBe(429)
       expect(mockHandler).not.toHaveBeenCalled()
-      
+
       const responseData = await response.json()
       expect(responseData.error.message).toBe('Rate limit exceeded')
     })
@@ -130,14 +130,14 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       const handler = apiFramework.createHandler(mockHandler)
       const response = await handler(mockRequest)
 
       expect(response.status).toBe(500)
-      
+
       const responseData = await response.json()
       expect(responseData.success).toBe(false)
       expect(responseData.error.message).toBe('Test error')
@@ -147,7 +147,7 @@ describe('ApiFramework', () => {
   describe('Authentication', () => {
     test('should handle missing authentication', async () => {
       const requestWithoutAuth = new NextRequest('https://example.com/api/v1/test', {
-        method: 'GET'
+        method: 'GET',
       })
 
       // Mock rate limit check
@@ -156,13 +156,13 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       mockHandler.mockResolvedValue({
         success: true,
         data: { message: 'test' },
-        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' }
+        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' },
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -176,8 +176,8 @@ describe('ApiFramework', () => {
       const requestWithApiKey = new NextRequest('https://example.com/api/v1/test', {
         method: 'GET',
         headers: {
-          'x-api-key': 'test-api-key'
-        }
+          'x-api-key': 'test-api-key',
+        },
       })
 
       // Mock rate limit check
@@ -186,13 +186,13 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       mockHandler.mockResolvedValue({
         success: true,
         data: { message: 'test' },
-        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' }
+        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' },
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -203,7 +203,7 @@ describe('ApiFramework', () => {
         requestWithApiKey,
         expect.objectContaining({
           clientId: 'api-client',
-          userId: 'api-user'
+          userId: 'api-user',
         })
       )
     })
@@ -217,18 +217,18 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       const handler = apiFramework.createHandler(mockHandler, {
-        permissions: ['admin:all'] // Require admin permission
+        permissions: ['admin:all'], // Require admin permission
       })
 
       const response = await handler(mockRequest)
 
       expect(response.status).toBe(403)
       expect(mockHandler).not.toHaveBeenCalled()
-      
+
       const responseData = await response.json()
       expect(responseData.error.message).toBe('Insufficient permissions')
     })
@@ -240,17 +240,17 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       mockHandler.mockResolvedValue({
         success: true,
         data: { message: 'test' },
-        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' }
+        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' },
       })
 
       const handler = apiFramework.createHandler(mockHandler, {
-        permissions: ['read:businesses'] // Permission that anonymous users have
+        permissions: ['read:businesses'], // Permission that anonymous users have
       })
 
       const response = await handler(mockRequest)
@@ -263,7 +263,7 @@ describe('ApiFramework', () => {
   describe('CORS Handling', () => {
     test('should handle OPTIONS preflight request', async () => {
       const optionsRequest = new NextRequest('https://example.com/api/v1/test', {
-        method: 'OPTIONS'
+        method: 'OPTIONS',
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -282,13 +282,13 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       mockHandler.mockResolvedValue({
         success: true,
         data: { message: 'test' },
-        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' }
+        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' },
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -306,13 +306,13 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       mockHandler.mockResolvedValue({
         success: true,
         data: { message: 'test' },
-        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' }
+        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' },
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -333,13 +333,13 @@ describe('ApiFramework', () => {
         allowed: true,
         remaining: { minute: 99, hour: 999, day: 9999 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: false
+        rateLimitHit: false,
       })
 
       mockHandler.mockResolvedValue({
         success: true,
         data: { message: 'test' },
-        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' }
+        metadata: { requestId: 'test', timestamp: new Date().toISOString(), version: 'v1' },
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -354,7 +354,7 @@ describe('ApiFramework', () => {
         expect.any(Number), // dataTransferred
         expect.objectContaining({
           ip: '127.0.0.1',
-          userAgent: 'test-agent'
+          userAgent: 'test-agent',
         })
       )
     })
@@ -366,7 +366,7 @@ describe('ApiFramework', () => {
         allowed: false,
         remaining: { minute: 0, hour: 0, day: 0 },
         resetTime: { minute: 60, hour: 3600, day: 86400 },
-        rateLimitHit: true
+        rateLimitHit: true,
       })
 
       const handler = apiFramework.createHandler(mockHandler)
@@ -380,7 +380,7 @@ describe('ApiFramework', () => {
         expect.any(Number), // responseTime
         0, // dataTransferred
         expect.objectContaining({
-          rateLimitHit: true
+          rateLimitHit: true,
         })
       )
     })
@@ -389,7 +389,7 @@ describe('ApiFramework', () => {
   describe('Health and Metrics', () => {
     test('should provide health status', () => {
       const health = apiFramework.getHealthStatus()
-      
+
       expect(health.status).toBe('healthy')
       expect(health.version).toBe('v1')
       expect(health.uptime).toBeGreaterThan(0)
@@ -398,7 +398,7 @@ describe('ApiFramework', () => {
 
     test('should provide metrics', () => {
       const metrics = apiFramework.getMetrics()
-      
+
       expect(typeof metrics).toBe('object')
     })
   })
