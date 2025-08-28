@@ -5,6 +5,13 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
+import { useConfig } from '@/controller/ConfigContext'
+import { useScraperController } from '@/controller/useScraperController'
+import {
+  mockConfigContext,
+  mockScraperController,
+  setupBrowserMocks
+} from '@/test/testUtils'
 
 // Mock Next.js Image component for testing
 jest.mock('next/image', () => {
@@ -45,28 +52,25 @@ jest.mock('next/image', () => {
 // Import components after mocking
 import { App } from '@/view/components/App'
 
+// Mock the hooks
+jest.mock('@/controller/ConfigContext', () => ({
+  ...jest.requireActual('@/controller/ConfigContext'),
+  useConfig: jest.fn(),
+}))
+
+jest.mock('@/controller/useScraperController')
+
+const mockUseConfig = useConfig as jest.MockedFunction<typeof useConfig>
+const mockUseScraperController = useScraperController as jest.MockedFunction<typeof useScraperController>
+
 describe('Image Optimization', () => {
   beforeEach((): void => {
-    // Mock the config context
-    jest.mock('@/controller/ConfigContext', () => ({
-      useConfig: () => ({
-        config: {},
-        updateConfig: jest.fn(),
-        resetConfig: jest.fn(),
-      }),
-    }))
+    // Setup browser mocks
+    setupBrowserMocks()
 
-    // Mock the scraper controller
-    jest.mock('@/controller/useScraperController', () => ({
-      useScraperController: () => ({
-        isRunning: false,
-        results: [],
-        progress: { current: 0, total: 0, status: 'idle' },
-        startScraping: jest.fn(),
-        stopScraping: jest.fn(),
-        clearResults: jest.fn(),
-      }),
-    }))
+    // Setup hook mocks
+    mockUseConfig.mockReturnValue(mockConfigContext)
+    mockUseScraperController.mockReturnValue(mockScraperController)
   })
 
   test('should render optimized favicon image in header', (): void => {
