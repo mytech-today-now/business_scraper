@@ -63,7 +63,144 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock fetch globally
-global.fetch = jest.fn()
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve({}),
+    text: () => Promise.resolve(''),
+    blob: () => Promise.resolve(new Blob()),
+  })
+)
+
+// Mock NextRequest and NextResponse for API tests
+global.NextRequest = jest.fn().mockImplementation((url, init) => ({
+  url,
+  method: init?.method || 'GET',
+  headers: new Map(Object.entries(init?.headers || {})),
+  body: init?.body,
+  json: () => Promise.resolve(JSON.parse(init?.body || '{}')),
+  text: () => Promise.resolve(init?.body || ''),
+}))
+
+global.NextResponse = {
+  json: jest.fn((data, init) => ({
+    status: init?.status || 200,
+    headers: new Map(Object.entries(init?.headers || {})),
+    json: () => Promise.resolve(data),
+  })),
+  redirect: jest.fn((url, status) => ({
+    status: status || 302,
+    headers: new Map([['Location', url]]),
+  })),
+}
+
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+})
+
+// Mock ResizeObserver
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}))
+
+// Mock IntersectionObserver
+global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}))
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+}
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock
+})
+
+// Mock sessionStorage
+const sessionStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+}
+Object.defineProperty(window, 'sessionStorage', {
+  value: sessionStorageMock
+})
+
+// Mock URL methods
+global.URL.createObjectURL = jest.fn(() => 'mocked-url')
+global.URL.revokeObjectURL = jest.fn()
+
+// Mock crypto API
+if (!global.crypto) {
+  Object.defineProperty(global, 'crypto', {
+    value: {
+      randomUUID: jest.fn(() => 'mocked-uuid'),
+      getRandomValues: jest.fn((arr) => {
+        for (let i = 0; i < arr.length; i++) {
+          arr[i] = Math.floor(Math.random() * 256)
+        }
+        return arr
+      }),
+    },
+    writable: true,
+  })
+}
+
+// Mock performance API
+Object.defineProperty(window, 'performance', {
+  value: {
+    now: jest.fn(() => Date.now()),
+    mark: jest.fn(),
+    measure: jest.fn(),
+    getEntriesByType: jest.fn(() => []),
+    getEntriesByName: jest.fn(() => []),
+  }
+})
+
+// Mock requestAnimationFrame
+global.requestAnimationFrame = jest.fn(cb => setTimeout(cb, 0))
+global.cancelAnimationFrame = jest.fn(id => clearTimeout(id))
+
+// Mock document.documentElement.classList for dark mode tests
+Object.defineProperty(document.documentElement, 'classList', {
+  value: {
+    toggle: jest.fn(),
+    add: jest.fn(),
+    remove: jest.fn(),
+    contains: jest.fn(),
+  },
+  writable: true,
+})
+
+// Mock console methods to reduce noise during tests
+const originalConsole = { ...console }
+global.console = {
+  ...originalConsole,
+  info: jest.fn(),
+  log: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+}
 
 // Mock Request and Response for Next.js API tests
 global.Request = class MockRequest {
@@ -120,16 +257,7 @@ global.Response = class MockResponse {
   }
 }
 
-// Mock crypto for Node.js environment
-global.crypto = {
-  randomUUID: () => Math.random().toString(36).substring(2, 15),
-  getRandomValues: arr => {
-    for (let i = 0; i < arr.length; i++) {
-      arr[i] = Math.floor(Math.random() * 256)
-    }
-    return arr
-  },
-}
+
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
