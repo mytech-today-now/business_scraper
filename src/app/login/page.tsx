@@ -29,10 +29,27 @@ export default function LoginPage() {
     error: csrfError,
   } = useFormCSRFProtection()
 
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'GET',
+        credentials: 'include',
+      })
+
+      if (response.ok) {
+        // Already authenticated, redirect to main app
+        router.push('/')
+      }
+    } catch (_error) {
+      // Not authenticated, stay on login page
+      logger.info('Login', 'User not authenticated')
+    }
+  }
+
   // Check if already authenticated
   useEffect(() => {
     checkAuthStatus()
-  }, [checkAuthStatus])
+  }, []) // Remove checkAuthStatus from dependencies to avoid the hoisting issue
 
   // Countdown timer for retry after rate limiting
   useEffect(() => {
@@ -52,23 +69,6 @@ export default function LoginPage() {
     // Return undefined for the else case
     return undefined
   }, [retryAfter])
-
-  const checkAuthStatus = async () => {
-    try {
-      const response = await fetch('/api/auth', {
-        method: 'GET',
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        // Already authenticated, redirect to main app
-        router.push('/')
-      }
-    } catch (_error) {
-      // Not authenticated, stay on login page
-      logger.info('Login', 'User not authenticated')
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
