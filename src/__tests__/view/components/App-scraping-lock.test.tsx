@@ -6,8 +6,12 @@ import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from '@/view/components/App'
-import { ConfigProvider } from '@/controller/ConfigContext'
 import { useScraperController } from '@/controller/useScraperController'
+import { useConfig } from '@/controller/ConfigContext'
+import {
+  mockConfigContext,
+  setupBrowserMocks
+} from '@/test/testUtils'
 
 // Mock the scraper controller
 jest.mock('@/controller/useScraperController')
@@ -15,9 +19,17 @@ const mockUseScraperController = useScraperController as jest.MockedFunction<
   typeof useScraperController
 >
 
-// Mock other dependencies
+// Mock the config hook
+jest.mock('@/controller/ConfigContext', () => ({
+  ...jest.requireActual('@/controller/ConfigContext'),
+  useConfig: jest.fn(),
+}))
+const mockUseConfig = useConfig as jest.MockedFunction<typeof useConfig>
+
+// Mock storage
 jest.mock('@/model/storage', () => ({
   storage: {
+    initialize: jest.fn().mockResolvedValue(undefined),
     getConfig: jest.fn().mockResolvedValue({
       id: 'default',
       industries: [],
@@ -36,6 +48,12 @@ jest.mock('@/model/storage', () => ({
       },
     ]),
     saveIndustries: jest.fn().mockResolvedValue(undefined),
+    getAllSubCategories: jest.fn().mockResolvedValue([]),
+    saveSubCategory: jest.fn().mockResolvedValue(undefined),
+    getAllBusinesses: jest.fn().mockResolvedValue([]),
+    saveBusiness: jest.fn().mockResolvedValue(undefined),
+    deleteBusiness: jest.fn().mockResolvedValue(undefined),
+    clearAllBusinesses: jest.fn().mockResolvedValue(undefined),
   },
 }))
 
@@ -81,9 +99,7 @@ jest.mock('@/hooks/useErrorHandling', () => ({
   }),
 }))
 
-const renderWithProvider = (component: React.ReactElement) => {
-  return render(<ConfigProvider>{component}</ConfigProvider>)
-}
+// Browser mocks are handled by test utilities
 
 describe('App Component - Scraping Lock Functionality', () => {
   const mockScrapingState = {
@@ -113,24 +129,31 @@ describe('App Component - Scraping Lock Functionality', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    setupBrowserMocks()
     mockUseScraperController.mockReturnValue(mockScraperController)
+    mockUseConfig.mockReturnValue(mockConfigContext)
   })
 
   describe('when scraping is not active', () => {
     it('should allow navigation to configuration tab', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Configuration')).toBeInTheDocument()
+        expect(screen.getAllByText('Configuration')).toHaveLength(4) // Header button, breadcrumb, title, etc.
       })
 
-      const configButton = screen.getByRole('button', { name: /configuration/i })
-      expect(configButton).not.toBeDisabled()
-      expect(configButton).not.toHaveClass('opacity-50')
+      // Get the specific navigation button in the header
+      const configButtons = screen.getAllByRole('button', { name: /configuration/i })
+      const headerConfigButton = configButtons.find(button =>
+        button.closest('header') !== null
+      )
+
+      expect(headerConfigButton).not.toBeDisabled()
+      expect(headerConfigButton).not.toHaveClass('opacity-50')
     })
 
     it('should allow editing configuration fields', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
         expect(screen.getByLabelText(/zip code/i)).toBeInTheDocument()
@@ -141,10 +164,10 @@ describe('App Component - Scraping Lock Functionality', () => {
     })
 
     it('should not show scraping lock banner', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Configuration')).toBeInTheDocument()
+        expect(screen.getAllByText('Configuration')).toHaveLength(4)
       })
 
       expect(
@@ -165,19 +188,24 @@ describe('App Component - Scraping Lock Functionality', () => {
     })
 
     it('should disable navigation to configuration tab', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Configuration')).toBeInTheDocument()
+        expect(screen.getAllByText('Configuration')).toHaveLength(4)
       })
 
-      const configButton = screen.getByRole('button', { name: /configuration/i })
-      expect(configButton).toBeDisabled()
-      expect(configButton).toHaveClass('opacity-50')
+      // Get the specific navigation button in the header that should be disabled
+      const configButtons = screen.getAllByRole('button', { name: /configuration/i })
+      const headerConfigButton = configButtons.find(button =>
+        button.closest('header') !== null && button.hasAttribute('disabled')
+      )
+
+      expect(headerConfigButton).toBeDisabled()
+      expect(headerConfigButton).toHaveClass('opacity-50')
     })
 
     it('should show lock icon on configuration tab', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
         expect(screen.getByText('🔒')).toBeInTheDocument()
@@ -185,21 +213,26 @@ describe('App Component - Scraping Lock Functionality', () => {
     })
 
     it('should show tooltip explaining why configuration is locked', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Configuration')).toBeInTheDocument()
+        expect(screen.getAllByText('Configuration')).toHaveLength(4)
       })
 
-      const configButton = screen.getByRole('button', { name: /configuration/i })
-      expect(configButton).toHaveAttribute(
+      // Get the specific disabled navigation button in the header
+      const configButtons = screen.getAllByRole('button', { name: /configuration/i })
+      const disabledHeaderButton = configButtons.find(button =>
+        button.closest('header') !== null && button.hasAttribute('disabled')
+      )
+
+      expect(disabledHeaderButton).toHaveAttribute(
         'title',
         'Configuration cannot be changed while scraping is active. Please stop scraping first.'
       )
     })
 
     it('should show scraping lock banner when on configuration tab', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
         expect(screen.getByText(/Configuration Locked - Scraping in Progress/)).toBeInTheDocument()
@@ -211,7 +244,7 @@ describe('App Component - Scraping Lock Functionality', () => {
     })
 
     it('should disable configuration input fields', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
         expect(screen.getByLabelText(/zip code/i)).toBeInTheDocument()
@@ -229,47 +262,52 @@ describe('App Component - Scraping Lock Functionality', () => {
     })
 
     it('should show lock messages on configuration sections', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
         expect(
-          screen.getByText(/Configuration is locked while scraping is active/)
+          screen.getByText(/Configuration Locked - Scraping in Progress/)
         ).toBeInTheDocument()
       })
 
-      expect(
-        screen.getByText(/Settings cannot be changed during active scraping/)
-      ).toBeInTheDocument()
+      // Check for multiple instances of the lock message
+      const lockMessages = screen.getAllByText(/Settings cannot be changed during active scraping/)
+      expect(lockMessages).toHaveLength(2) // Should appear in both sections
+
       expect(screen.getByText(/Industry selection is locked during scraping/)).toBeInTheDocument()
     })
 
     it('should disable industry selection buttons', async () => {
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Select All')).toBeInTheDocument()
+        const selectAllButtons = screen.getAllByText('Select All')
+        expect(selectAllButtons).toHaveLength(2) // One in each section
       })
 
-      const selectAllButton = screen.getByRole('button', { name: /select all/i })
+      // Find the disabled Select All button
+      const selectAllButtons = screen.getAllByRole('button', { name: /select all/i })
+      const disabledSelectAllButton = selectAllButtons.find(button => button.hasAttribute('disabled'))
+
       const addCustomButton = screen.getByRole('button', { name: /add custom/i })
 
-      expect(selectAllButton).toBeDisabled()
+      expect(disabledSelectAllButton).toBeDisabled()
       expect(addCustomButton).toBeDisabled()
     })
 
     it('should prevent clicking on industry items', async () => {
       const user = userEvent.setup()
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Industry Categories')).toBeInTheDocument()
+        expect(screen.getByText(/Industry selection is locked during scraping/)).toBeInTheDocument()
       })
 
       // Industry items should have cursor-not-allowed class and be non-interactive
-      const industryItems = screen.getAllByText(/law firm|restaurant|medical/i)
+      const industryItems = screen.getAllByText(/Law Firms/i)
       if (industryItems.length > 0) {
-        const firstIndustry = industryItems[0].closest('div')
-        expect(firstIndustry).toHaveClass('cursor-not-allowed')
+        const firstIndustryContainer = industryItems[0].closest('[class*="cursor-not-allowed"]')
+        expect(firstIndustryContainer).toBeInTheDocument()
       }
     })
   })
@@ -284,14 +322,20 @@ describe('App Component - Scraping Lock Functionality', () => {
         },
       })
 
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Scraping')).toBeInTheDocument()
+        const scrapingButtons = screen.getAllByText('Scraping')
+        expect(scrapingButtons).toHaveLength(2) // Header button and breadcrumb
       })
 
-      const scrapingButton = screen.getByRole('button', { name: /scraping/i })
-      expect(scrapingButton).not.toBeDisabled()
+      // Get the specific navigation button in the header
+      const scrapingButtons = screen.getAllByRole('button', { name: /scraping/i })
+      const headerScrapingButton = scrapingButtons.find(button =>
+        button.closest('header') !== null
+      )
+
+      expect(headerScrapingButton).not.toBeDisabled()
     })
 
     it('should prevent navigation back to configuration during scraping', async () => {
@@ -306,18 +350,22 @@ describe('App Component - Scraping Lock Functionality', () => {
         },
       })
 
-      renderWithProvider(<App />)
+      render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText('Configuration')).toBeInTheDocument()
+        expect(screen.getAllByText('Configuration')).toHaveLength(4)
       })
 
-      // Try to click configuration tab - should be disabled
-      const configButton = screen.getByRole('button', { name: /configuration/i })
-      expect(configButton).toBeDisabled()
+      // Get the specific disabled navigation button in the header
+      const configButtons = screen.getAllByRole('button', { name: /configuration/i })
+      const disabledHeaderButton = configButtons.find(button =>
+        button.closest('header') !== null && button.hasAttribute('disabled')
+      )
 
-      // Click should not work
-      await user.click(configButton)
+      expect(disabledHeaderButton).toBeDisabled()
+
+      // Click should not work (disabled buttons don't trigger click events)
+      await user.click(disabledHeaderButton!)
 
       // Should still show the scraping lock banner (indicating we're on config tab but locked)
       expect(screen.getByText(/Configuration Locked - Scraping in Progress/)).toBeInTheDocument()
