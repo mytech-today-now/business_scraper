@@ -1,0 +1,360 @@
+/**
+ * Enhanced Test Helpers and Utilities
+ * Comprehensive testing utilities for business scraper application
+ */
+
+import { jest } from '@jest/globals'
+import { render, RenderOptions, RenderResult } from '@testing-library/react'
+import { ReactElement, ReactNode } from 'react'
+import userEvent from '@testing-library/user-event'
+import { BusinessRecord, ScrapingConfig, IndustryCategory } from '@/types/business'
+
+// Enhanced mock data generators
+export const createMockBusinessRecord = (overrides: Partial<BusinessRecord> = {}): BusinessRecord => ({
+  id: `business-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+  businessName: 'Test Business',
+  industry: 'Technology',
+  address: '123 Test St, Test City, TC 12345',
+  phone: '(555) 123-4567',
+  email: 'test@testbusiness.com',
+  website: 'https://testbusiness.com',
+  description: 'A test business for unit testing',
+  scrapedAt: new Date(),
+  source: 'test',
+  confidence: 0.95,
+  verified: true,
+  ...overrides
+})
+
+export const createMockScrapingConfig = (overrides: Partial<ScrapingConfig> = {}): ScrapingConfig => ({
+  id: `config-${Date.now()}`,
+  maxResults: 100,
+  timeout: 30000,
+  retryAttempts: 3,
+  enableJavaScript: true,
+  userAgent: 'Mozilla/5.0 (Test Browser)',
+  delay: 1000,
+  ...overrides
+})
+
+export const createMockIndustryCategory = (overrides: Partial<IndustryCategory> = {}): IndustryCategory => ({
+  id: `industry-${Date.now()}`,
+  name: 'Test Industry',
+  keywords: ['test', 'sample', 'example'],
+  description: 'Test industry category',
+  isCustom: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...overrides
+})
+
+// API Response Mocks
+export const createMockApiResponse = <T>(data: T, success = true) => ({
+  success,
+  data,
+  message: success ? 'Operation successful' : 'Operation failed',
+  timestamp: new Date().toISOString(),
+  ...(success ? {} : { error: 'Test error message' })
+})
+
+export const createMockSearchResults = (count = 5): BusinessRecord[] => 
+  Array.from({ length: count }, (_, index) => 
+    createMockBusinessRecord({
+      id: `search-result-${index}`,
+      businessName: `Business ${index + 1}`,
+      industry: index % 2 === 0 ? 'Technology' : 'Healthcare'
+    })
+  )
+
+// Enhanced component testing utilities
+interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
+  initialState?: any
+  theme?: 'light' | 'dark'
+  mobile?: boolean
+}
+
+export const renderWithProviders = (
+  ui: ReactElement,
+  options: CustomRenderOptions = {}
+): RenderResult => {
+  const { initialState, theme = 'light', mobile = false, ...renderOptions } = options
+
+  // Mock window.matchMedia for responsive testing
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: mobile ? query.includes('max-width') : query.includes('min-width'),
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  })
+
+  // Mock IntersectionObserver
+  global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+  }))
+
+  const Wrapper = ({ children }: { children: ReactNode }) => {
+    return (
+      <div data-theme={theme} className={mobile ? 'mobile-viewport' : 'desktop-viewport'}>
+        {children}
+      </div>
+    )
+  }
+
+  return render(ui, { wrapper: Wrapper, ...renderOptions })
+}
+
+// User interaction helpers
+export const createUserEvent = () => userEvent.setup({
+  advanceTimers: jest.advanceTimersByTime,
+})
+
+// Database and storage mocks
+export const createMockDatabase = () => ({
+  businesses: new Map<string, BusinessRecord>(),
+  configs: new Map<string, ScrapingConfig>(),
+  industries: new Map<string, IndustryCategory>(),
+  
+  // CRUD operations
+  async create<T>(store: string, data: T & { id: string }): Promise<T> {
+    const map = this[store as keyof typeof this] as Map<string, T>
+    map.set(data.id, data)
+    return data
+  },
+  
+  async read<T>(store: string, id: string): Promise<T | undefined> {
+    const map = this[store as keyof typeof this] as Map<string, T>
+    return map.get(id)
+  },
+  
+  async update<T>(store: string, id: string, data: Partial<T>): Promise<T | undefined> {
+    const map = this[store as keyof typeof this] as Map<string, T>
+    const existing = map.get(id)
+    if (existing) {
+      const updated = { ...existing, ...data }
+      map.set(id, updated)
+      return updated
+    }
+    return undefined
+  },
+  
+  async delete(store: string, id: string): Promise<boolean> {
+    const map = this[store as keyof typeof this] as Map<string, any>
+    return map.delete(id)
+  },
+  
+  async list<T>(store: string): Promise<T[]> {
+    const map = this[store as keyof typeof this] as Map<string, T>
+    return Array.from(map.values())
+  },
+  
+  async clear(store?: string): Promise<void> {
+    if (store) {
+      const map = this[store as keyof typeof this] as Map<string, any>
+      map.clear()
+    } else {
+      this.businesses.clear()
+      this.configs.clear()
+      this.industries.clear()
+    }
+  }
+})
+
+// Network and API mocks
+export const createMockFetch = (responses: Record<string, any> = {}) => {
+  return jest.fn().mockImplementation((url: string, options?: RequestInit) => {
+    const method = options?.method || 'GET'
+    const key = `${method} ${url}`
+    
+    const response = responses[key] || responses[url] || { success: true, data: null }
+    
+    return Promise.resolve({
+      ok: response.success !== false,
+      status: response.success !== false ? 200 : 400,
+      statusText: response.success !== false ? 'OK' : 'Bad Request',
+      json: () => Promise.resolve(response),
+      text: () => Promise.resolve(JSON.stringify(response)),
+      headers: new Headers(),
+      redirected: false,
+      type: 'basic' as ResponseType,
+      url,
+      clone: jest.fn(),
+      body: null,
+      bodyUsed: false,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+      blob: () => Promise.resolve(new Blob()),
+      formData: () => Promise.resolve(new FormData()),
+    })
+  })
+}
+
+// Performance testing utilities
+export const measurePerformance = async <T>(
+  operation: () => Promise<T> | T,
+  name = 'operation'
+): Promise<{ result: T; duration: number }> => {
+  const start = performance.now()
+  const result = await operation()
+  const end = performance.now()
+  const duration = end - start
+  
+  console.log(`Performance: ${name} took ${duration.toFixed(2)}ms`)
+  
+  return { result, duration }
+}
+
+// Accessibility testing helpers
+export const checkAccessibility = async (container: HTMLElement) => {
+  // Basic accessibility checks
+  const issues: string[] = []
+  
+  // Check for missing alt text on images
+  const images = container.querySelectorAll('img')
+  images.forEach((img, index) => {
+    if (!img.alt && !img.getAttribute('aria-label')) {
+      issues.push(`Image ${index + 1} missing alt text`)
+    }
+  })
+  
+  // Check for missing labels on form controls
+  const inputs = container.querySelectorAll('input, textarea, select')
+  inputs.forEach((input, index) => {
+    const hasLabel = input.getAttribute('aria-label') || 
+                    input.getAttribute('aria-labelledby') ||
+                    container.querySelector(`label[for="${input.id}"]`)
+    if (!hasLabel) {
+      issues.push(`Form control ${index + 1} missing label`)
+    }
+  })
+  
+  // Check for proper heading hierarchy
+  const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
+  let previousLevel = 0
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1))
+    if (index === 0 && level !== 1) {
+      issues.push('First heading should be h1')
+    } else if (level > previousLevel + 1) {
+      issues.push(`Heading level skipped: h${previousLevel} to h${level}`)
+    }
+    previousLevel = level
+  })
+  
+  return issues
+}
+
+// Error boundary testing
+export const createErrorBoundaryWrapper = () => {
+  class TestErrorBoundary extends React.Component<
+    { children: ReactNode },
+    { hasError: boolean; error?: Error }
+  > {
+    constructor(props: { children: ReactNode }) {
+      super(props)
+      this.state = { hasError: false }
+    }
+    
+    static getDerivedStateFromError(error: Error) {
+      return { hasError: true, error }
+    }
+    
+    componentDidCatch(error: Error, errorInfo: any) {
+      console.error('Test Error Boundary caught an error:', error, errorInfo)
+    }
+    
+    render() {
+      if (this.state.hasError) {
+        return <div data-testid="error-boundary">Something went wrong</div>
+      }
+      
+      return this.props.children
+    }
+  }
+  
+  return TestErrorBoundary
+}
+
+// Async testing utilities
+export const waitForCondition = async (
+  condition: () => boolean | Promise<boolean>,
+  timeout = 5000,
+  interval = 100
+): Promise<void> => {
+  const start = Date.now()
+  
+  while (Date.now() - start < timeout) {
+    if (await condition()) {
+      return
+    }
+    await new Promise(resolve => setTimeout(resolve, interval))
+  }
+  
+  throw new Error(`Condition not met within ${timeout}ms`)
+}
+
+// Memory leak detection
+export const detectMemoryLeaks = () => {
+  const initialMemory = (performance as any).memory?.usedJSHeapSize || 0
+  
+  return {
+    check: () => {
+      const currentMemory = (performance as any).memory?.usedJSHeapSize || 0
+      const increase = currentMemory - initialMemory
+      
+      if (increase > 10 * 1024 * 1024) { // 10MB threshold
+        console.warn(`Potential memory leak detected: ${(increase / 1024 / 1024).toFixed(2)}MB increase`)
+      }
+      
+      return { initial: initialMemory, current: currentMemory, increase }
+    }
+  }
+}
+
+// Test data cleanup
+export const cleanupTestData = () => {
+  // Clear localStorage
+  if (typeof localStorage !== 'undefined') {
+    localStorage.clear()
+  }
+  
+  // Clear sessionStorage
+  if (typeof sessionStorage !== 'undefined') {
+    sessionStorage.clear()
+  }
+  
+  // Clear IndexedDB (mock)
+  if (global.indexedDB) {
+    // Reset mock database
+  }
+  
+  // Reset fetch mock
+  if (global.fetch && jest.isMockFunction(global.fetch)) {
+    global.fetch.mockClear()
+  }
+}
+
+export default {
+  createMockBusinessRecord,
+  createMockScrapingConfig,
+  createMockIndustryCategory,
+  createMockApiResponse,
+  createMockSearchResults,
+  renderWithProviders,
+  createUserEvent,
+  createMockDatabase,
+  createMockFetch,
+  measurePerformance,
+  checkAccessibility,
+  createErrorBoundaryWrapper,
+  waitForCondition,
+  detectMemoryLeaks,
+  cleanupTestData
+}
