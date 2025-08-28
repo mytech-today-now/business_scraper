@@ -10,6 +10,8 @@ import { logger } from './logger'
 import { CRMTemplate, crmExportService } from './crm'
 import { prioritizedDataProcessor, PrioritizedBusinessRecord } from '@/lib/prioritizedDataProcessor'
 import { prioritizedExportFormatter } from './prioritizedExportFormatter'
+import { BusinessInsights } from '@/hooks/useBusinessInsights'
+import { LeadScore } from '@/lib/aiLeadScoring'
 
 /**
  * Export format types
@@ -486,6 +488,248 @@ export class ExportService {
     return {
       blob: csvResult.blob,
       filename: filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`,
+    }
+  }
+
+  /**
+   * Export business intelligence insights
+   * @param insights - Business insights data
+   * @param format - Export format
+   * @param filename - Output filename
+   * @returns Promise resolving to export blob
+   */
+  async exportBusinessInsights(
+    insights: BusinessInsights,
+    format: ExportFormat = 'csv',
+    filename: string = 'business-insights'
+  ): Promise<{ blob: Blob; filename: string }> {
+    try {
+      logger.info('ExportService', `Exporting business insights as ${format}`)
+
+      switch (format) {
+        case 'csv':
+          return this.exportInsightsToCSV(insights, filename)
+        case 'json':
+          return this.exportInsightsToJSON(insights, filename)
+        case 'pdf':
+          return this.exportInsightsToPDF(insights, filename)
+        default:
+          throw new Error(`Unsupported format for insights export: ${format}`)
+      }
+    } catch (error) {
+      logger.error('ExportService', 'Failed to export business insights', error)
+      throw error
+    }
+  }
+
+  /**
+   * Export insights to CSV format
+   */
+  private exportInsightsToCSV(
+    insights: BusinessInsights,
+    filename: string
+  ): { blob: Blob; filename: string } {
+    let csvContent = ''
+
+    // Summary section
+    csvContent += 'Business Intelligence Summary\n'
+    csvContent += 'Metric,Value\n'
+    csvContent += `Total Businesses,${insights.summary.totalBusinesses}\n`
+    csvContent += `Average Score,${insights.summary.averageScore}\n`
+    csvContent += `Top Industry,${insights.summary.topIndustry}\n`
+    csvContent += `Top State,${insights.summary.topState}\n`
+    csvContent += `High Quality Leads,${insights.summary.highQualityLeads}\n`
+    csvContent += `Predicted Conversions,${insights.summary.predictedConversions}\n`
+    csvContent += `Estimated Revenue,$${insights.summary.estimatedRevenue.toLocaleString()}\n`
+    csvContent += '\n'
+
+    // Industry distribution
+    csvContent += 'Industry Distribution\n'
+    csvContent += 'Industry,Count,Percentage\n'
+    const totalBusinesses = insights.summary.totalBusinesses
+    insights.industryDistribution.forEach(item => {
+      const percentage = totalBusinesses > 0 ? ((item.value / totalBusinesses) * 100).toFixed(1) : '0'
+      csvContent += `${item.name},${item.value},${percentage}%\n`
+    })
+    csvContent += '\n'
+
+    // Score distribution
+    csvContent += 'Lead Score Distribution\n'
+    csvContent += 'Score Range,Count\n'
+    insights.scoreDistribution.forEach(item => {
+      csvContent += `${item.name},${item.value}\n`
+    })
+    csvContent += '\n'
+
+    // Geographic distribution
+    csvContent += 'Geographic Distribution\n'
+    csvContent += 'State,Count,Average Score\n'
+    insights.geographicDistribution.forEach(item => {
+      csvContent += `${item.state},${item.count},${item.averageScore}\n`
+    })
+    csvContent += '\n'
+
+    // ROI predictions
+    if (insights.roiPredictions.length > 0) {
+      csvContent += 'ROI Predictions\n'
+      csvContent += 'Category,Leads,Predicted Revenue,ROI\n'
+      insights.roiPredictions.forEach(item => {
+        csvContent += `${item.category},${item.leads},$${item.predictedRevenue.toLocaleString()},${item.roi.toFixed(2)}\n`
+      })
+      csvContent += '\n'
+    }
+
+    // Recommendations
+    csvContent += 'AI Recommendations\n'
+    csvContent += 'Recommendation\n'
+    insights.summary.recommendations.forEach(rec => {
+      csvContent += `"${rec}"\n`
+    })
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
+    return {
+      blob,
+      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
+    }
+  }
+
+  /**
+   * Export insights to JSON format
+   */
+  private exportInsightsToJSON(
+    insights: BusinessInsights,
+    filename: string
+  ): { blob: Blob; filename: string } {
+    const exportData = {
+      metadata: {
+        exportDate: new Date().toISOString(),
+        version: '1.0.0',
+        type: 'business-intelligence-insights'
+      },
+      insights
+    }
+
+    const jsonContent = JSON.stringify(exportData, null, 2)
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8' })
+
+    return {
+      blob,
+      filename: filename.endsWith('.json') ? filename : `${filename}.json`
+    }
+  }
+
+  /**
+   * Export insights to PDF format
+   */
+  private exportInsightsToPDF(
+    insights: BusinessInsights,
+    filename: string
+  ): { blob: Blob; filename: string } {
+    const doc = new jsPDF()
+
+    // Title
+    doc.setFontSize(20)
+    doc.text('Business Intelligence Report', 14, 22)
+
+    // Summary
+    doc.setFontSize(14)
+    doc.text('Executive Summary', 14, 40)
+    doc.setFontSize(10)
+
+    let yPos = 50
+    const summaryData = [
+      ['Total Businesses', insights.summary.totalBusinesses.toString()],
+      ['Average Lead Score', `${insights.summary.averageScore}/100`],
+      ['Top Industry', insights.summary.topIndustry],
+      ['Top State', insights.summary.topState],
+      ['High Quality Leads', insights.summary.highQualityLeads.toString()],
+      ['Predicted Conversions', insights.summary.predictedConversions.toString()],
+      ['Estimated Revenue', `$${insights.summary.estimatedRevenue.toLocaleString()}`]
+    ]
+
+    autoTable(doc, {
+      head: [['Metric', 'Value']],
+      body: summaryData,
+      startY: yPos,
+      theme: 'grid',
+      headStyles: { fillColor: [66, 139, 202] }
+    })
+
+    // Industry Distribution
+    yPos = (doc as any).lastAutoTable.finalY + 20
+    doc.setFontSize(14)
+    doc.text('Industry Distribution', 14, yPos)
+
+    const industryData = insights.industryDistribution.map(item => [
+      item.name,
+      item.value.toString(),
+      `${((item.value / insights.summary.totalBusinesses) * 100).toFixed(1)}%`
+    ])
+
+    autoTable(doc, {
+      head: [['Industry', 'Count', 'Percentage']],
+      body: industryData,
+      startY: yPos + 10,
+      theme: 'grid',
+      headStyles: { fillColor: [66, 139, 202] }
+    })
+
+    // Recommendations
+    yPos = (doc as any).lastAutoTable.finalY + 20
+    doc.setFontSize(14)
+    doc.text('AI Recommendations', 14, yPos)
+    doc.setFontSize(10)
+
+    yPos += 10
+    insights.summary.recommendations.forEach((rec, index) => {
+      doc.text(`${index + 1}. ${rec}`, 14, yPos)
+      yPos += 6
+    })
+
+    const pdfBlob = doc.output('blob')
+    return {
+      blob: pdfBlob,
+      filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`
+    }
+  }
+
+  /**
+   * Export lead scores summary
+   * @param businesses - Business records with lead scores
+   * @param scores - Lead scores map
+   * @param format - Export format
+   * @param filename - Output filename
+   * @returns Promise resolving to export blob
+   */
+  async exportLeadScores(
+    businesses: BusinessRecord[],
+    scores: Map<string, LeadScore>,
+    format: ExportFormat = 'csv',
+    filename: string = 'lead-scores'
+  ): Promise<{ blob: Blob; filename: string }> {
+    try {
+      logger.info('ExportService', `Exporting lead scores as ${format}`)
+
+      // Create enhanced business records with scores
+      const enhancedBusinesses = businesses.map(business => {
+        const score = scores.get(business.id)
+        return {
+          ...business,
+          leadScore: score ? {
+            score: score.score,
+            confidence: score.confidence,
+            scoredAt: new Date(),
+            factors: score.factors,
+            recommendations: score.recommendations
+          } : undefined
+        }
+      })
+
+      // Use existing export methods with enhanced data
+      return this.export(enhancedBusinesses, format, filename)
+    } catch (error) {
+      logger.error('ExportService', 'Failed to export lead scores', error)
+      throw error
     }
   }
 

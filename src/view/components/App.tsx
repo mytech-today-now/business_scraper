@@ -28,6 +28,7 @@ import { ApiConfigurationPage } from './ApiConfigurationPage'
 import { MobileNavigation } from './MobileNavigation'
 import { AIInsightsPanel } from './AIInsightsPanel'
 import { MemoryDashboard } from './MemoryDashboard'
+import { BusinessIntelligenceDashboard } from './BusinessIntelligenceDashboard'
 import { ProgressIndicator } from './ProgressIndicator'
 import { StreamingResultsDisplay } from './StreamingResultsDisplay'
 import { Button } from './ui/Button'
@@ -941,7 +942,7 @@ export function App(): JSX.Element {
   const { state, resetApplicationData, toggleDarkMode } = useConfig()
   const { scrapingState, hasResults } = useScraperController()
   const { isMobile } = useResponsive()
-  const [activeTab, setActiveTab] = useState<'config' | 'scraping' | 'ai-insights'>('config')
+  const [activeTab, setActiveTab] = useState<'config' | 'scraping' | 'ai-insights' | 'bi-dashboard'>('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [isResetting, setIsResetting] = useState(false)
@@ -1073,6 +1074,15 @@ export function App(): JSX.Element {
                     AI Insights
                   </Button>
                   <Button
+                    variant={activeTab === 'bi-dashboard' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setActiveTab('bi-dashboard')}
+                    className="min-h-touch"
+                  >
+                    <Brain className="h-4 w-4 mr-1" />
+                    BI Dashboard
+                  </Button>
+                  <Button
                     variant={activeTab === 'memory' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setActiveTab('memory')}
@@ -1181,6 +1191,11 @@ export function App(): JSX.Element {
             <ScrapingPanel />
           ) : activeTab === 'memory' ? (
             <MemoryDashboard />
+          ) : activeTab === 'bi-dashboard' ? (
+            <BusinessIntelligenceDashboard
+              businesses={scrapingState.results}
+              scores={new Map()} // This will be populated with actual scores
+            />
           ) : (
             <AIInsightsPanel />
           )}

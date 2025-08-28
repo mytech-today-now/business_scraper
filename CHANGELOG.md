@@ -6,6 +6,125 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.13.0] - 2025-08-28
+
+### Added - AI/ML-Powered Lead Scoring & Business Intelligence Features
+
+#### 🤖 **AI Lead Scoring System**
+
+- **Core AI Service**: `src/lib/aiLeadScoring.ts` - TensorFlow.js-powered lead scoring engine
+  - Machine learning models for intelligent lead scoring (0-100 scale)
+  - Multi-factor scoring algorithm: data completeness, contact quality, business size, industry relevance, geographic desirability, web presence
+  - Configurable scoring weights and industry/geographic priorities
+  - Confidence scoring and automated recommendations
+  - Batch processing capabilities with performance optimization
+  - Fallback rule-based scoring for ML model failures
+  - Memory management and model disposal for optimal performance
+
+- **Enhanced Data Management**: `src/lib/enhancedDataManager.ts` - AI-integrated data pipeline
+  - Automatic lead scoring during business data processing
+  - Integrated validation, duplicate detection, and caching
+  - Batch processing with configurable options and error handling
+  - Lead filtering and sorting by score ranges
+  - High-quality lead identification and attention-needed business detection
+  - Enhanced export functionality with AI insights
+
+#### 📊 **Business Intelligence Dashboard**
+
+- **Interactive Dashboard**: `src/view/components/BusinessIntelligenceDashboard.tsx`
+  - Comprehensive BI dashboard with AI insights and predictive analytics
+  - Industry distribution pie charts with interactive tooltips
+  - Lead score distribution histograms and geographic mapping
+  - Conversion predictions and ROI forecasting
+  - Trend analysis with time-series visualization
+  - Market insights with growth trends and competition analysis
+  - High-contrast mode and full accessibility compliance (WCAG 2.1)
+  - Responsive design for desktop and mobile devices
+
+- **Advanced React Hooks**: AI-powered data processing and insights
+  - `src/hooks/useLeadScoring.ts` - Real-time lead scoring with caching and error handling
+  - `src/hooks/useBusinessInsights.ts` - Business intelligence metrics and distribution analysis
+  - `src/hooks/usePredictiveAnalytics.ts` - ML models for ROI/trend analysis and market predictions
+  - Debounced operations, batch processing, and automatic refresh capabilities
+  - Export functionality for insights and predictions in multiple formats
+
+#### 📈 **Predictive Analytics & Market Intelligence**
+
+- **Chart Utilities**: `src/utils/chartHelpers.ts` - Reusable chart configurations with accessibility
+  - Industry and geographic distribution generators
+  - Lead score and conversion prediction calculators
+  - ROI forecasting and trend analysis utilities
+  - Accessibility-compliant color palettes and high-contrast modes
+  - Screen reader support with text alternatives and ARIA labels
+  - Responsive chart dimensions and export capabilities
+
+- **Enhanced Export System**: AI insights integration in all export formats
+  - Lead scores and confidence levels in CSV/Excel exports
+  - AI factor breakdowns (data completeness, contact quality, etc.)
+  - Automated recommendations and scoring timestamps
+  - Business intelligence insights export (JSON, CSV, PDF)
+  - ROI predictions and market analysis reports
+
+#### 🔧 **API & Integration Enhancements**
+
+- **AI API Endpoints**: `src/app/api/ai/lead-scoring/route.ts`
+  - RESTful API for lead scoring and batch processing
+  - Configuration management and model status endpoints
+  - Secure API with rate limiting and input validation
+  - Error handling and fallback mechanisms
+
+- **Type System Updates**: Enhanced TypeScript definitions
+  - Extended BusinessRecord interface with leadScore properties
+  - AI scoring factor types and recommendation structures
+  - Business intelligence and predictive analytics interfaces
+
+#### 🧪 **Comprehensive AI Testing Suite**
+
+- **Unit Tests**: `src/__tests__/lib/aiLeadScoring.test.ts`
+  - Complete AI service testing with mock TensorFlow.js
+  - Scoring algorithm validation and edge case handling
+  - Configuration management and batch processing tests
+  - Memory management and error handling verification
+
+- **Hook Testing**: `src/__tests__/hooks/useBusinessInsights.test.tsx`
+  - Business insights generation and export functionality
+  - Auto-refresh and interval management testing
+  - Error handling and data validation tests
+
+- **Integration Tests**: `src/__tests__/integration/ai-workflow.test.ts`
+  - End-to-end AI pipeline testing with real data flows
+  - Performance testing with large datasets
+  - Data enhancement and export integration validation
+  - Filtering, sorting, and business prioritization tests
+
+#### ♿ **Accessibility & User Experience**
+
+- **WCAG 2.1 Compliance**: Full accessibility support for AI features
+  - Screen reader compatibility with ARIA labels and descriptions
+  - Keyboard navigation support for all interactive elements
+  - High-contrast mode for charts and visualizations
+  - Text alternatives for all graphical content
+  - Semantic HTML structure with proper heading hierarchy
+
+- **Enhanced UI Components**: AI-integrated business discovery
+  - Updated LeadScoreBadge component with new AI scoring system
+  - Real-time score calculation and detailed factor breakdowns
+  - Interactive tooltips with scoring explanations
+  - Confidence indicators and recommendation displays
+
+### Technical Improvements
+
+- **Dependencies**: Added TensorFlow.js, Recharts, Leaflet, and D3.js for AI and visualization
+- **Performance**: Optimized batch processing and memory management for large datasets
+- **Security**: Enhanced API security with input validation and rate limiting
+- **Documentation**: Comprehensive inline documentation and usage examples
+
+### Breaking Changes
+
+- BusinessRecord interface extended with optional leadScore property
+- Export formats now include additional AI-related columns
+- API endpoints updated with new AI scoring parameters
+
 ## [3.12.0] - 2025-08-28
 
 ### Added - Comprehensive Testing Coverage & Enhanced Quality Assurance Framework

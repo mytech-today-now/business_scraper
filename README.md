@@ -1,6 +1,6 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-5.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-5.3.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
@@ -16,14 +16,28 @@ Controls**, **End-to-End Encryption**, **Role-Based Access Control**,
 Authentication**, **Real-Time Consent Management**, and **Privacy-First
 Architecture**.
 
-## 🆕 **Latest Update (v5.1.0)** - 🚀 Advanced Performance Optimization with Real-Time Result Streaming
+## 🆕 **Latest Update (v5.3.0)** - 🤖 AI/ML-Powered Lead Scoring & Business Intelligence
 
-**🚀 Real-Time Search Result Streaming**: Implemented advanced performance
-optimization with real-time result streaming capabilities. This major update
-includes Server-Sent Events (SSE) integration, custom React hooks for streaming
-management, comprehensive progress indicators, automatic fallback mechanisms,
-and enhanced accessibility support. Users can now monitor search progress in
-real-time with pause/resume functionality and graceful connection handling.
+**🤖 AI-Powered Lead Scoring**: Implemented comprehensive AI/ML-powered lead scoring and business intelligence features. This major update includes TensorFlow.js integration, intelligent lead scoring algorithms, predictive analytics, interactive business intelligence dashboard, and comprehensive accessibility support. Users can now automatically score leads, visualize business insights, and make data-driven decisions with AI-powered recommendations.
+
+### 🤖 **AI/ML Lead Scoring Features**
+
+#### 🧠 **Intelligent Lead Scoring System**
+
+- **AI-Powered Scoring**: TensorFlow.js-based machine learning models for automatic lead scoring (0-100 scale)
+- **Multi-Factor Analysis**: Data completeness, contact quality, business size, industry relevance, geographic desirability, web presence
+- **Configurable Weights**: Customizable scoring criteria and industry/geographic priorities
+- **Confidence Scoring**: AI confidence levels and automated recommendations for each lead
+- **Batch Processing**: Efficient processing of large datasets with progress tracking
+- **Fallback Mechanisms**: Rule-based scoring when ML models are unavailable
+
+#### 📊 **Business Intelligence Dashboard**
+
+- **Interactive Visualizations**: Industry distribution, lead score histograms, geographic mapping
+- **Predictive Analytics**: ROI forecasting, conversion predictions, trend analysis
+- **Market Insights**: Growth trends, competition analysis, automated recommendations
+- **Export Capabilities**: Comprehensive export of insights in CSV, JSON, and PDF formats
+- **Accessibility Compliant**: WCAG 2.1 compliant with high-contrast mode and screen reader support
 
 ### 🚀 **Real-Time Streaming Features**
 

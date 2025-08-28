@@ -305,7 +305,7 @@ export function formatCsvCell(value: any): string {
  * @returns Formatted business object
  */
 export function formatBusinessForExport(business: BusinessRecord): Record<string, any> {
-  return {
+  const baseData = {
     'Business Name': formatBusinessName(business.businessName),
     Email: business.email.join('; '),
     Phone: business.phone ? formatPhoneNumber(business.phone) : '',
@@ -318,4 +318,58 @@ export function formatBusinessForExport(business: BusinessRecord): Record<string
       : '',
     'Scraped Date': formatDate(business.scrapedAt),
   }
+
+  // Add AI Lead Scoring data if available
+  if (business.leadScore) {
+    baseData['Lead Score'] = business.leadScore.score
+    baseData['Lead Confidence'] = Math.round(business.leadScore.confidence * 100) + '%'
+    baseData['Score Date'] = formatDate(business.leadScore.scoredAt)
+
+    // Add factor scores if available
+    if (business.leadScore.factors) {
+      baseData['Data Completeness'] = Math.round(business.leadScore.factors.dataCompleteness)
+      baseData['Contact Quality'] = Math.round(business.leadScore.factors.contactQuality)
+      baseData['Business Size'] = Math.round(business.leadScore.factors.businessSize)
+      baseData['Industry Relevance'] = Math.round(business.leadScore.factors.industryRelevance)
+      baseData['Geographic Desirability'] = Math.round(business.leadScore.factors.geographicDesirability)
+      baseData['Web Presence'] = Math.round(business.leadScore.factors.webPresence)
+    }
+
+    // Add recommendations if available
+    if (business.leadScore.recommendations && business.leadScore.recommendations.length > 0) {
+      baseData['AI Recommendations'] = business.leadScore.recommendations.join('; ')
+    }
+  } else {
+    // Add empty columns for consistency
+    baseData['Lead Score'] = ''
+    baseData['Lead Confidence'] = ''
+    baseData['Score Date'] = ''
+    baseData['Data Completeness'] = ''
+    baseData['Contact Quality'] = ''
+    baseData['Business Size'] = ''
+    baseData['Industry Relevance'] = ''
+    baseData['Geographic Desirability'] = ''
+    baseData['Web Presence'] = ''
+    baseData['AI Recommendations'] = ''
+  }
+
+  // Add data quality score if available
+  if (business.dataQualityScore !== undefined) {
+    baseData['Data Quality Score'] = business.dataQualityScore
+  } else {
+    baseData['Data Quality Score'] = ''
+  }
+
+  // Add email validation data if available
+  if (business.emailValidation) {
+    baseData['Email Validation Score'] = business.emailValidation.overallConfidence
+    baseData['Valid Email Count'] = business.emailValidation.validEmailCount
+    baseData['Best Email'] = business.emailValidation.bestEmail || ''
+  } else {
+    baseData['Email Validation Score'] = ''
+    baseData['Valid Email Count'] = ''
+    baseData['Best Email'] = ''
+  }
+
+  return baseData
 }

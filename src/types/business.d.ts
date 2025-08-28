@@ -157,6 +157,21 @@ export interface BusinessRecord {
   dataQualityScore?: number // 0-100 overall quality score
   enrichmentSources?: string[] // Sources used for enrichment
   lastEnriched?: Date
+  // AI Lead Scoring data
+  leadScore?: {
+    score: number // 0-100 AI-generated lead score
+    confidence: number // 0-1 confidence in the score
+    scoredAt: Date // When the score was calculated
+    factors?: {
+      dataCompleteness: number // 0-100
+      contactQuality: number // 0-100
+      businessSize: number // 0-100
+      industryRelevance: number // 0-100
+      geographicDesirability: number // 0-100
+      webPresence: number // 0-100
+    }
+    recommendations?: string[] // AI-generated recommendations
+  }
 }
 
 export interface ScrapingConfig {

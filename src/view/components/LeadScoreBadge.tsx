@@ -17,14 +17,14 @@ import {
   Zap,
 } from 'lucide-react'
 import { Button } from './ui/Button'
-import { PredictiveAnalytics, LeadScore } from '@/types/ai'
 import { BusinessRecord } from '@/types/business'
+import { LeadScore } from '@/lib/aiLeadScoring'
 import { logger } from '@/utils/logger'
 
 interface LeadScoreBadgeProps {
   business: BusinessRecord
-  analytics?: PredictiveAnalytics
-  onAnalyticsUpdate?: (analytics: PredictiveAnalytics) => void
+  leadScore?: LeadScore
+  onScoreUpdate?: (score: LeadScore) => void
   showDetails?: boolean
   size?: 'sm' | 'md' | 'lg'
 }
@@ -35,8 +35,8 @@ interface LeadScoreBadgeProps {
  */
 export function LeadScoreBadge({
   business,
-  analytics,
-  onAnalyticsUpdate,
+  leadScore,
+  onScoreUpdate,
   showDetails = false,
   size = 'md',
 }: LeadScoreBadgeProps) {
@@ -52,27 +52,14 @@ export function LeadScoreBadge({
       setLoading(true)
       setError(null)
 
-      const response = await fetch('/api/ai/lead-scoring', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          businessId: business.id,
-          business,
-        }),
-      })
+      // Import the AI service dynamically to avoid SSR issues
+      const { aiLeadScoringService } = await import('@/lib/aiLeadScoring')
 
-      if (!response.ok) {
-        throw new Error(`Failed to calculate lead score: ${response.statusText}`)
-      }
+      const score = await aiLeadScoringService.getLeadScore(business)
 
-      const data = await response.json()
-      if (data.success && onAnalyticsUpdate) {
-        onAnalyticsUpdate(data.data.analytics)
+      if (onScoreUpdate) {
+        onScoreUpdate(score)
         logger.info('LeadScoreBadge', `Lead score calculated for: ${business.businessName}`)
-      } else {
-        throw new Error(data.error || 'Failed to calculate lead score')
       }
     } catch (error) {
       logger.error('LeadScoreBadge', 'Failed to calculate lead score', error)
@@ -126,8 +113,8 @@ export function LeadScoreBadge({
     }
   }
 
-  // If no analytics and not loading, show calculate button
-  if (!analytics && !loading) {
+  // If no lead score and not loading, show calculate button
+  if (!leadScore && !business.leadScore && !loading) {
     return (
       <div className="flex items-center gap-2">
         <Button
@@ -161,8 +148,16 @@ export function LeadScoreBadge({
     )
   }
 
-  // No analytics available
-  if (!analytics) {
+  // Get the score from props or business record
+  const currentScore = leadScore || (business.leadScore ? {
+    score: business.leadScore.score,
+    confidence: business.leadScore.confidence,
+    factors: business.leadScore.factors,
+    recommendations: business.leadScore.recommendations || []
+  } : null)
+
+  // No score available
+  if (!currentScore) {
     return (
       <div
         className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} bg-gray-100 text-gray-600`}
@@ -173,10 +168,9 @@ export function LeadScoreBadge({
     )
   }
 
-  const leadScore = analytics.leadScoring
-  const scoreColor = getScoreColor(leadScore.overallScore)
-  const scoreIcon = getScoreIcon(leadScore.overallScore)
-  const priorityLabel = getPriorityLabel(leadScore.overallScore)
+  const scoreColor = getScoreColor(currentScore.score)
+  const scoreIcon = getScoreIcon(currentScore.score)
+  const priorityLabel = getPriorityLabel(currentScore.score)
 
   return (
     <div className="flex items-center gap-2">
@@ -184,18 +178,18 @@ export function LeadScoreBadge({
       <div
         className={`inline-flex items-center gap-1 rounded-full border ${getSizeClasses()} ${scoreColor} cursor-pointer transition-all hover:shadow-sm`}
         onClick={() => showDetails && setShowDetailedView(!showDetailedView)}
-        title={`Lead Score: ${leadScore.overallScore} (${priorityLabel} Priority)`}
+        title={`Lead Score: ${currentScore.score} (${priorityLabel} Priority)`}
       >
         {scoreIcon}
-        <span className="font-medium">{leadScore.overallScore}</span>
+        <span className="font-medium">{currentScore.score}</span>
         {showDetails && <Eye className="h-3 w-3 ml-1" />}
       </div>
 
       {/* Confidence Indicator */}
-      {leadScore.confidence > 0.8 && (
+      {currentScore.confidence > 0.8 && (
         <div
           className="inline-flex items-center"
-          title={`High Confidence (${Math.round(leadScore.confidence * 100)}%)`}
+          title={`High Confidence (${Math.round(currentScore.confidence * 100)}%)`}
         >
           <CheckCircle className="h-3 w-3 text-green-600" />
         </div>
@@ -243,68 +237,71 @@ export function LeadScoreBadge({
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Overall Score</span>
                 <div className={`px-3 py-1 rounded-full text-sm font-bold ${scoreColor}`}>
-                  {leadScore.overallScore}
+                  {currentScore.score}
                 </div>
               </div>
               <div className="mt-2 text-xs text-gray-600">
-                Priority: {priorityLabel} | Confidence: {Math.round(leadScore.confidence * 100)}%
+                Priority: {priorityLabel} | Confidence: {Math.round(currentScore.confidence * 100)}%
               </div>
             </div>
 
             {/* Component Scores */}
-            <div className="space-y-3 mb-4">
-              <h4 className="font-medium text-sm">Component Scores</h4>
+            {currentScore.factors && (
+              <div className="space-y-3 mb-4">
+                <h4 className="font-medium text-sm">Component Scores</h4>
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Website Quality</span>
-                  <span className="font-medium">{leadScore.components.websiteQuality}</span>
-                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Data Completeness</span>
+                    <span className="font-medium">{Math.round(currentScore.factors.dataCompleteness)}</span>
+                  </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Business Maturity</span>
-                  <span className="font-medium">{leadScore.components.businessMaturity}</span>
-                </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Contact Quality</span>
+                    <span className="font-medium">{Math.round(currentScore.factors.contactQuality)}</span>
+                  </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Conversion Probability</span>
-                  <span className="font-medium">{leadScore.components.conversionProbability}</span>
-                </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Business Size</span>
+                    <span className="font-medium">{Math.round(currentScore.factors.businessSize)}</span>
+                  </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Industry Relevance</span>
-                  <span className="font-medium">{leadScore.components.industryRelevance}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Industry Relevance</span>
+                    <span className="font-medium">{Math.round(currentScore.factors.industryRelevance)}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Geographic Desirability</span>
+                    <span className="font-medium">{Math.round(currentScore.factors.geographicDesirability)}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Web Presence</span>
+                    <span className="font-medium">{Math.round(currentScore.factors.webPresence)}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Recommendation */}
-            {analytics.recommendation && (
+            {/* Recommendations */}
+            {currentScore.recommendations && currentScore.recommendations.length > 0 && (
               <div className="p-3 bg-blue-50 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <Zap className="h-4 w-4 text-blue-600" />
-                  <span className="font-medium text-sm">Recommendation</span>
+                  <span className="font-medium text-sm">Recommendations</span>
                 </div>
-                <p className="text-sm text-gray-700">{analytics.recommendation.reasoning}</p>
-                <div className="mt-2">
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${
-                      analytics.recommendation.priority === 'high'
-                        ? 'bg-green-100 text-green-800'
-                        : analytics.recommendation.priority === 'medium'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {analytics.recommendation.priority.toUpperCase()} PRIORITY
-                  </span>
+                <div className="space-y-1">
+                  {currentScore.recommendations.map((rec, index) => (
+                    <p key={index} className="text-sm text-gray-700">• {rec}</p>
+                  ))}
                 </div>
               </div>
             )}
 
             {/* Last Updated */}
             <div className="mt-4 text-xs text-gray-500 text-center">
-              Calculated: {new Date(leadScore.calculatedAt).toLocaleString()}
+              Calculated: {business.leadScore?.scoredAt ? new Date(business.leadScore.scoredAt).toLocaleString() : 'Just now'}
             </div>
           </div>
         </div>
