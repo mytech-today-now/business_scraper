@@ -8,6 +8,13 @@ import {
   IndustrySubCategory,
 } from '@/types/business'
 import { PredictiveAnalytics, AIProcessingJob, AIInsightsSummary } from '@/types/ai'
+import {
+  UserPaymentProfile,
+  PaymentTransaction,
+  Invoice,
+  PaymentAuditLog,
+  PaymentAnalytics
+} from '@/types/payment'
 import { logger } from '@/utils/logger'
 import { DataCompression, CompressedData } from '@/lib/data-compression'
 
@@ -83,6 +90,54 @@ interface BusinessScraperDB extends DBSchema {
       'by-generated-date': Date
     }
   }
+  userPaymentProfiles: {
+    key: string
+    value: UserPaymentProfile
+    indexes: {
+      'by-stripe-customer-id': string
+      'by-subscription-status': string
+      'by-subscription-tier': string
+      'by-email': string
+    }
+  }
+  paymentTransactions: {
+    key: string
+    value: PaymentTransaction
+    indexes: {
+      'by-user-id': string
+      'by-status': string
+      'by-created-date': Date
+      'by-stripe-payment-intent-id': string
+    }
+  }
+  invoices: {
+    key: string
+    value: Invoice
+    indexes: {
+      'by-user-id': string
+      'by-status': string
+      'by-stripe-invoice-id': string
+      'by-created-date': Date
+    }
+  }
+  paymentAuditLogs: {
+    key: string
+    value: PaymentAuditLog
+    indexes: {
+      'by-user-id': string
+      'by-entity-type': string
+      'by-action': string
+      'by-timestamp': Date
+    }
+  }
+  paymentAnalytics: {
+    key: string
+    value: PaymentAnalytics
+    indexes: {
+      'by-user-id': string
+      'by-period-start': Date
+    }
+  }
 }
 
 /**
@@ -91,7 +146,7 @@ interface BusinessScraperDB extends DBSchema {
 export class StorageService {
   private db: IDBPDatabase<BusinessScraperDB> | null = null
   private readonly dbName = 'business-scraper-db'
-  private readonly dbVersion = 4
+  private readonly dbVersion = 5
 
   /**
    * Check if we're running in a browser environment
@@ -192,6 +247,52 @@ export class StorageService {
                 industryStore.createIndex('by-subcategory', 'subCategoryId')
               }
             }
+          }
+
+          // Add payment-related stores (version 5)
+          if (oldVersion < 5) {
+            // User Payment Profiles store
+            const userPaymentProfilesStore = db.createObjectStore('userPaymentProfiles', {
+              keyPath: 'userId',
+            })
+            userPaymentProfilesStore.createIndex('by-stripe-customer-id', 'stripeCustomerId')
+            userPaymentProfilesStore.createIndex('by-subscription-status', 'subscriptionStatus')
+            userPaymentProfilesStore.createIndex('by-subscription-tier', 'subscriptionTier')
+            userPaymentProfilesStore.createIndex('by-email', 'email')
+
+            // Payment Transactions store
+            const paymentTransactionsStore = db.createObjectStore('paymentTransactions', {
+              keyPath: 'id',
+            })
+            paymentTransactionsStore.createIndex('by-user-id', 'userId')
+            paymentTransactionsStore.createIndex('by-status', 'status')
+            paymentTransactionsStore.createIndex('by-created-date', 'createdAt')
+            paymentTransactionsStore.createIndex('by-stripe-payment-intent-id', 'stripePaymentIntentId')
+
+            // Invoices store
+            const invoicesStore = db.createObjectStore('invoices', {
+              keyPath: 'id',
+            })
+            invoicesStore.createIndex('by-user-id', 'userId')
+            invoicesStore.createIndex('by-status', 'status')
+            invoicesStore.createIndex('by-stripe-invoice-id', 'stripeInvoiceId')
+            invoicesStore.createIndex('by-created-date', 'createdAt')
+
+            // Payment Audit Logs store
+            const paymentAuditLogsStore = db.createObjectStore('paymentAuditLogs', {
+              keyPath: 'id',
+            })
+            paymentAuditLogsStore.createIndex('by-user-id', 'userId')
+            paymentAuditLogsStore.createIndex('by-entity-type', 'entityType')
+            paymentAuditLogsStore.createIndex('by-action', 'action')
+            paymentAuditLogsStore.createIndex('by-timestamp', 'timestamp')
+
+            // Payment Analytics store
+            const paymentAnalyticsStore = db.createObjectStore('paymentAnalytics', {
+              keyPath: 'userId',
+            })
+            paymentAnalyticsStore.createIndex('by-user-id', 'userId')
+            paymentAnalyticsStore.createIndex('by-period-start', 'period.start')
           }
         },
       })
@@ -1089,6 +1190,143 @@ export class StorageService {
     } catch (error) {
       logger.error('Storage', 'Failed to save AI insights', error)
       throw error
+    }
+  }
+
+  // Payment Operations
+
+  /**
+   * Save user payment profile
+   */
+  async saveUserPaymentProfile(profile: UserPaymentProfile): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('userPaymentProfiles', profile)
+      logger.info('Storage', `Saved payment profile for user: ${profile.userId}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save user payment profile', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get user payment profile
+   */
+  async getUserPaymentProfile(userId: string): Promise<UserPaymentProfile | undefined> {
+    try {
+      const db = await this.getDatabase()
+      return await db.get('userPaymentProfiles', userId)
+    } catch (error) {
+      logger.error('Storage', `Failed to get payment profile for user: ${userId}`, error)
+      return undefined
+    }
+  }
+
+  /**
+   * Save payment transaction
+   */
+  async savePaymentTransaction(transaction: PaymentTransaction): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('paymentTransactions', transaction)
+      logger.info('Storage', `Saved payment transaction: ${transaction.id}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save payment transaction', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get payment transactions for user
+   */
+  async getPaymentTransactionsByUser(userId: string): Promise<PaymentTransaction[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAllFromIndex('paymentTransactions', 'by-user-id', userId)
+    } catch (error) {
+      logger.error('Storage', `Failed to get payment transactions for user: ${userId}`, error)
+      return []
+    }
+  }
+
+  /**
+   * Save invoice
+   */
+  async saveInvoice(invoice: Invoice): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('invoices', invoice)
+      logger.info('Storage', `Saved invoice: ${invoice.id}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save invoice', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get invoices for user
+   */
+  async getInvoicesByUser(userId: string): Promise<Invoice[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAllFromIndex('invoices', 'by-user-id', userId)
+    } catch (error) {
+      logger.error('Storage', `Failed to get invoices for user: ${userId}`, error)
+      return []
+    }
+  }
+
+  /**
+   * Save payment audit log
+   */
+  async savePaymentAuditLog(auditLog: PaymentAuditLog): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('paymentAuditLogs', auditLog)
+      logger.info('Storage', `Saved payment audit log: ${auditLog.id}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save payment audit log', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get payment audit logs for user
+   */
+  async getPaymentAuditLogsByUser(userId: string): Promise<PaymentAuditLog[]> {
+    try {
+      const db = await this.getDatabase()
+      return await db.getAllFromIndex('paymentAuditLogs', 'by-user-id', userId)
+    } catch (error) {
+      logger.error('Storage', `Failed to get payment audit logs for user: ${userId}`, error)
+      return []
+    }
+  }
+
+  /**
+   * Save payment analytics
+   */
+  async savePaymentAnalytics(analytics: PaymentAnalytics): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('paymentAnalytics', analytics)
+      logger.info('Storage', `Saved payment analytics for user: ${analytics.userId}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save payment analytics', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get payment analytics for user
+   */
+  async getPaymentAnalytics(userId: string): Promise<PaymentAnalytics | undefined> {
+    try {
+      const db = await this.getDatabase()
+      return await db.get('paymentAnalytics', userId)
+    } catch (error) {
+      logger.error('Storage', `Failed to get payment analytics for user: ${userId}`, error)
+      return undefined
     }
   }
 

@@ -121,6 +121,14 @@ export interface FileUploadConfig {
   allowedExtensions: string[]
 }
 
+export interface PaymentsConfig {
+  stripePublishableKey: string
+  stripeSecretKey: string
+  stripeWebhookSecret: string
+  successUrl: string
+  cancelUrl: string
+}
+
 export interface AppConfig {
   app: {
     name: string
@@ -137,6 +145,7 @@ export interface AppConfig {
   logging: LoggingConfig
   features: FeatureFlags
   fileUpload: FileUploadConfig
+  payments: PaymentsConfig
 }
 
 // Environment variable validation rules
@@ -257,6 +266,14 @@ const configSchema: Record<string, ValidationRule> = {
   ENABLE_MAGIC_NUMBER_VALIDATION: { type: 'boolean', default: true },
   FILE_SCAN_TIMEOUT: { type: 'number', min: 1000, default: 30000 },
   MAX_UPLOAD_FILES: { type: 'number', min: 1, max: 100, default: 10 },
+
+  // Stripe Configuration
+  STRIPE_PUBLISHABLE_KEY: { type: 'string', required: true },
+  STRIPE_SECRET_KEY: { type: 'string', required: true },
+  STRIPE_WEBHOOK_SECRET: { type: 'string', required: true },
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: { type: 'string', required: true },
+  PAYMENT_SUCCESS_URL: { type: 'url', required: true },
+  PAYMENT_CANCEL_URL: { type: 'url', required: true },
 }
 
 /**
@@ -528,6 +545,13 @@ export function loadConfig(): AppConfig {
         '.xlsx',
       ],
     },
+    payments: {
+      stripePublishableKey: config.STRIPE_PUBLISHABLE_KEY,
+      stripeSecretKey: config.STRIPE_SECRET_KEY,
+      stripeWebhookSecret: config.STRIPE_WEBHOOK_SECRET,
+      successUrl: config.PAYMENT_SUCCESS_URL,
+      cancelUrl: config.PAYMENT_CANCEL_URL,
+    },
   }
 
   logger.info(
@@ -596,4 +620,8 @@ export function getLoggingConfig(): LoggingConfig {
 
 export function getFeatureFlags(): FeatureFlags {
   return getConfig().features
+}
+
+export function getPaymentsConfig(): PaymentsConfig {
+  return getConfig().payments
 }

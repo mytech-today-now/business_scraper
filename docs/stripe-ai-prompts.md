@@ -223,14 +223,14 @@ Proceed to Prompt 3 for Model layer implementation.
 
 ---
 
-## Prompt 3: Model Layer Implementation - Part 1 (Stripe Service)
+## Prompt 3: Model Layer Implementation - Comprehensive Payment Services
 
 ### Objective
-Create the core Stripe service class that handles all Stripe API interactions.
+Create a comprehensive Model layer for payment functionality including Stripe service, user-payment integration, customer synchronization, and business rules validation.
 
 ### Instructions for AI Assistant
 
-**Step 1: Create Stripe Service File**
+**Step 1: Create Core Stripe Service File**
 1. Create a new file `src/model/stripeService.ts`
 2. Implement the following service class:
 
@@ -266,10 +266,32 @@ export class StripeService {
     }
   }
 
+  async updateCustomer(customerId: string, updates: Partial<Stripe.CustomerUpdateParams>): Promise<Stripe.Customer> {
+    try {
+      const customer = await this.stripe.customers.update(customerId, updates)
+      logger.info('StripeService', `Customer updated: ${customerId}`)
+      return customer
+    } catch (error) {
+      logger.error('StripeService', 'Failed to update customer', error)
+      throw error
+    }
+  }
+
+  async getCustomer(customerId: string): Promise<Stripe.Customer> {
+    try {
+      const customer = await this.stripe.customers.retrieve(customerId)
+      return customer as Stripe.Customer
+    } catch (error) {
+      logger.error('StripeService', 'Failed to retrieve customer', error)
+      throw error
+    }
+  }
+
   // Subscription Management
   async createSubscription(
     customerId: string,
-    priceId: string
+    priceId: string,
+    metadata?: Record<string, string>
   ): Promise<Stripe.Subscription> {
     try {
       const subscription = await this.stripe.subscriptions.create({
@@ -278,6 +300,7 @@ export class StripeService {
         payment_behavior: 'default_incomplete',
         payment_settings: { save_default_payment_method: 'on_subscription' },
         expand: ['latest_invoice.payment_intent'],
+        metadata: metadata || {}
       })
       return subscription
     } catch (error) {
@@ -286,11 +309,39 @@ export class StripeService {
     }
   }
 
+  async updateSubscription(
+    subscriptionId: string,
+    updates: Partial<Stripe.SubscriptionUpdateParams>
+  ): Promise<Stripe.Subscription> {
+    try {
+      const subscription = await this.stripe.subscriptions.update(subscriptionId, updates)
+      logger.info('StripeService', `Subscription updated: ${subscriptionId}`)
+      return subscription
+    } catch (error) {
+      logger.error('StripeService', 'Failed to update subscription', error)
+      throw error
+    }
+  }
+
+  async cancelSubscription(subscriptionId: string, atPeriodEnd: boolean = true): Promise<Stripe.Subscription> {
+    try {
+      const subscription = await this.stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: atPeriodEnd
+      })
+      logger.info('StripeService', `Subscription ${atPeriodEnd ? 'scheduled for cancellation' : 'canceled'}: ${subscriptionId}`)
+      return subscription
+    } catch (error) {
+      logger.error('StripeService', 'Failed to cancel subscription', error)
+      throw error
+    }
+  }
+
   // Payment Intent for one-time payments
   async createPaymentIntent(
     amount: number,
     currency: string = 'usd',
-    customerId?: string
+    customerId?: string,
+    metadata?: Record<string, string>
   ): Promise<Stripe.PaymentIntent> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
@@ -298,10 +349,35 @@ export class StripeService {
         currency,
         customer: customerId,
         automatic_payment_methods: { enabled: true },
+        metadata: metadata || {}
       })
       return paymentIntent
     } catch (error) {
       logger.error('StripeService', 'Failed to create payment intent', error)
+      throw error
+    }
+  }
+
+  // Invoice Management
+  async createInvoice(customerId: string, items: Stripe.InvoiceItemCreateParams[]): Promise<Stripe.Invoice> {
+    try {
+      // Create invoice items
+      for (const item of items) {
+        await this.stripe.invoiceItems.create({
+          customer: customerId,
+          ...item
+        })
+      }
+
+      // Create and finalize invoice
+      const invoice = await this.stripe.invoices.create({
+        customer: customerId,
+        auto_advance: true
+      })
+
+      return await this.stripe.invoices.finalizeInvoice(invoice.id)
+    } catch (error) {
+      logger.error('StripeService', 'Failed to create invoice', error)
       throw error
     }
   }
@@ -319,21 +395,460 @@ export class StripeService {
       throw error
     }
   }
+
+  // Price and Product Management
+  async getPrice(priceId: string): Promise<Stripe.Price> {
+    try {
+      return await this.stripe.prices.retrieve(priceId)
+    } catch (error) {
+      logger.error('StripeService', 'Failed to retrieve price', error)
+      throw error
+    }
+  }
+
+  async listPrices(productId?: string): Promise<Stripe.Price[]> {
+    try {
+      const prices = await this.stripe.prices.list({
+        product: productId,
+        active: true
+      })
+      return prices.data
+    } catch (error) {
+      logger.error('StripeService', 'Failed to list prices', error)
+      throw error
+    }
+  }
 }
 
 export const stripeService = new StripeService()
 ```
 
-**Step 2: Verify Implementation**
-1. Check that all imports resolve correctly
-2. Ensure the service compiles without TypeScript errors
-3. Verify that the singleton export pattern is used
+**Step 2: Create User-Payment Integration Service**
+1. Create a new file `src/model/userPaymentService.ts`
+2. Implement user-payment relationship management:
+
+```typescript
+import { stripeService } from './stripeService'
+import { paymentStorage } from './paymentStorage'
+import { storage } from './storage'
+import { logger } from '@/utils/logger'
+import { z } from 'zod'
+
+// User payment profile schema
+export const UserPaymentProfileSchema = z.object({
+  userId: z.string().uuid(),
+  stripeCustomerId: z.string(),
+  email: z.string().email(),
+  name: z.string().optional(),
+  defaultPaymentMethod: z.string().optional(),
+  subscriptionStatus: z.enum(['free', 'premium', 'enterprise']),
+  subscriptionId: z.string().optional(),
+  billingAddress: z.object({
+    line1: z.string().optional(),
+    line2: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    postal_code: z.string().optional(),
+    country: z.string().optional()
+  }).optional(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+})
+
+export type UserPaymentProfile = z.infer<typeof UserPaymentProfileSchema>
+
+export class UserPaymentService {
+  // Create or retrieve Stripe customer for user
+  async ensureStripeCustomer(userId: string, email: string, name?: string): Promise<string> {
+    try {
+      // Check if user already has a Stripe customer ID
+      const existingProfile = await this.getUserPaymentProfile(userId)
+      if (existingProfile?.stripeCustomerId) {
+        return existingProfile.stripeCustomerId
+      }
+
+      // Create new Stripe customer
+      const customer = await stripeService.createCustomer(email, name)
+
+      // Store customer ID in user profile
+      await this.updateUserPaymentProfile(userId, {
+        stripeCustomerId: customer.id,
+        email,
+        name,
+        subscriptionStatus: 'free',
+        updatedAt: new Date()
+      })
+
+      logger.info('UserPaymentService', `Stripe customer created for user: ${userId}`)
+      return customer.id
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to ensure Stripe customer', error)
+      throw error
+    }
+  }
+
+  // Get user payment profile
+  async getUserPaymentProfile(userId: string): Promise<UserPaymentProfile | null> {
+    try {
+      const profile = await storage.get('userPaymentProfiles', userId)
+      return profile ? UserPaymentProfileSchema.parse(profile) : null
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to get user payment profile', error)
+      return null
+    }
+  }
+
+  // Update user payment profile
+  async updateUserPaymentProfile(userId: string, updates: Partial<UserPaymentProfile>): Promise<void> {
+    try {
+      const existing = await this.getUserPaymentProfile(userId)
+      const updated = {
+        ...existing,
+        ...updates,
+        userId,
+        updatedAt: new Date()
+      }
+
+      if (!existing) {
+        updated.createdAt = new Date()
+      }
+
+      await storage.put('userPaymentProfiles', updated, userId)
+      logger.info('UserPaymentService', `User payment profile updated: ${userId}`)
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to update user payment profile', error)
+      throw error
+    }
+  }
+
+  // Sync user data with Stripe
+  async syncUserWithStripe(userId: string): Promise<void> {
+    try {
+      const profile = await this.getUserPaymentProfile(userId)
+      if (!profile?.stripeCustomerId) {
+        return
+      }
+
+      const stripeCustomer = await stripeService.getCustomer(profile.stripeCustomerId)
+
+      // Update local profile with Stripe data
+      await this.updateUserPaymentProfile(userId, {
+        email: stripeCustomer.email || profile.email,
+        name: stripeCustomer.name || profile.name,
+        defaultPaymentMethod: stripeCustomer.default_source as string || profile.defaultPaymentMethod
+      })
+
+      logger.info('UserPaymentService', `User synced with Stripe: ${userId}`)
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to sync user with Stripe', error)
+      throw error
+    }
+  }
+
+  // Check if user has active subscription
+  async hasActiveSubscription(userId: string): Promise<boolean> {
+    try {
+      const subscription = await paymentStorage.getUserActiveSubscription(userId)
+      return subscription?.status === 'active'
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to check subscription status', error)
+      return false
+    }
+  }
+
+  // Get user's current subscription tier
+  async getUserSubscriptionTier(userId: string): Promise<'free' | 'premium' | 'enterprise'> {
+    try {
+      const profile = await this.getUserPaymentProfile(userId)
+      if (!profile) return 'free'
+
+      const hasActive = await this.hasActiveSubscription(userId)
+      return hasActive ? profile.subscriptionStatus : 'free'
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to get subscription tier', error)
+      return 'free'
+    }
+  }
+}
+
+export const userPaymentService = new UserPaymentService()
+```
+
+**Step 3: Create Payment Validation and Business Rules Service**
+1. Create a new file `src/model/paymentValidationService.ts`
+2. Implement business rules and validation:
+
+```typescript
+import { logger } from '@/utils/logger'
+import { userPaymentService } from './userPaymentService'
+import { paymentStorage } from './paymentStorage'
+
+export interface PaymentValidationResult {
+  isValid: boolean
+  errors: string[]
+  warnings: string[]
+}
+
+export interface FeatureAccessResult {
+  hasAccess: boolean
+  reason?: string
+  upgradeRequired?: boolean
+  quotaRemaining?: number
+}
+
+export class PaymentValidationService {
+  // Validate payment amount
+  validatePaymentAmount(amount: number, currency: string = 'usd'): PaymentValidationResult {
+    const result: PaymentValidationResult = {
+      isValid: true,
+      errors: [],
+      warnings: []
+    }
+
+    // Minimum amount validation (Stripe minimums)
+    const minimums: Record<string, number> = {
+      usd: 50, // $0.50
+      eur: 50, // €0.50
+      gbp: 30, // £0.30
+      cad: 50, // CAD $0.50
+    }
+
+    const minAmount = minimums[currency.toLowerCase()] || 50
+    if (amount < minAmount) {
+      result.isValid = false
+      result.errors.push(`Minimum payment amount is ${minAmount / 100} ${currency.toUpperCase()}`)
+    }
+
+    // Maximum amount validation (reasonable business limits)
+    const maxAmount = 1000000 // $10,000
+    if (amount > maxAmount) {
+      result.isValid = false
+      result.errors.push(`Maximum payment amount is ${maxAmount / 100} ${currency.toUpperCase()}`)
+    }
+
+    return result
+  }
+
+  // Validate subscription upgrade/downgrade
+  async validateSubscriptionChange(
+    userId: string,
+    newPlanId: string,
+    currentPlanId?: string
+  ): Promise<PaymentValidationResult> {
+    const result: PaymentValidationResult = {
+      isValid: true,
+      errors: [],
+      warnings: []
+    }
+
+    try {
+      // Get plan details
+      const newPlan = await paymentStorage.getSubscriptionPlan(newPlanId)
+      if (!newPlan) {
+        result.isValid = false
+        result.errors.push('Invalid subscription plan')
+        return result
+      }
+
+      if (!newPlan.isActive) {
+        result.isValid = false
+        result.errors.push('Subscription plan is not available')
+        return result
+      }
+
+      // Check if user already has this plan
+      if (currentPlanId === newPlanId) {
+        result.isValid = false
+        result.errors.push('User already has this subscription plan')
+        return result
+      }
+
+      // Validate downgrade restrictions
+      if (currentPlanId) {
+        const currentPlan = await paymentStorage.getSubscriptionPlan(currentPlanId)
+        if (currentPlan && newPlan.priceCents < currentPlan.priceCents) {
+          result.warnings.push('Downgrading will reduce available features')
+        }
+      }
+
+      return result
+    } catch (error) {
+      logger.error('PaymentValidationService', 'Failed to validate subscription change', error)
+      result.isValid = false
+      result.errors.push('Validation failed')
+      return result
+    }
+  }
+
+  // Check feature access based on subscription
+  async checkFeatureAccess(userId: string, featureType: string): Promise<FeatureAccessResult> {
+    try {
+      const tier = await userPaymentService.getUserSubscriptionTier(userId)
+
+      // Define feature access rules
+      const featureRules: Record<string, string[]> = {
+        'basic_scraping': ['free', 'premium', 'enterprise'],
+        'advanced_export': ['premium', 'enterprise'],
+        'premium_industries': ['premium', 'enterprise'],
+        'advanced_search': ['premium', 'enterprise'],
+        'unlimited_quota': ['enterprise'],
+        'priority_support': ['enterprise'],
+        'custom_integrations': ['enterprise']
+      }
+
+      const allowedTiers = featureRules[featureType] || []
+      const hasAccess = allowedTiers.includes(tier)
+
+      if (!hasAccess) {
+        return {
+          hasAccess: false,
+          reason: `Feature requires ${allowedTiers.join(' or ')} subscription`,
+          upgradeRequired: true
+        }
+      }
+
+      // Check quota limits for free tier
+      if (tier === 'free' && featureType === 'basic_scraping') {
+        const usage = await paymentStorage.getUserFeatureUsage(userId, featureType, new Date())
+        const freeQuota = 100 // 100 scraping requests per day for free tier
+
+        if (usage >= freeQuota) {
+          return {
+            hasAccess: false,
+            reason: 'Daily quota exceeded',
+            upgradeRequired: true,
+            quotaRemaining: 0
+          }
+        }
+
+        return {
+          hasAccess: true,
+          quotaRemaining: freeQuota - usage
+        }
+      }
+
+      return { hasAccess: true }
+    } catch (error) {
+      logger.error('PaymentValidationService', 'Failed to check feature access', error)
+      return {
+        hasAccess: false,
+        reason: 'Access check failed'
+      }
+    }
+  }
+
+  // Validate refund eligibility
+  async validateRefundEligibility(paymentIntentId: string): Promise<PaymentValidationResult> {
+    const result: PaymentValidationResult = {
+      isValid: true,
+      errors: [],
+      warnings: []
+    }
+
+    try {
+      // Get payment transaction
+      const transaction = await paymentStorage.getPaymentTransaction(paymentIntentId)
+      if (!transaction) {
+        result.isValid = false
+        result.errors.push('Payment transaction not found')
+        return result
+      }
+
+      // Check if already refunded
+      if (transaction.status === 'refunded') {
+        result.isValid = false
+        result.errors.push('Payment has already been refunded')
+        return result
+      }
+
+      // Check refund time limit (30 days)
+      const daysSincePayment = Math.floor(
+        (Date.now() - transaction.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+      )
+
+      if (daysSincePayment > 30) {
+        result.isValid = false
+        result.errors.push('Refund period has expired (30 days)')
+        return result
+      }
+
+      if (daysSincePayment > 7) {
+        result.warnings.push('Refund is outside the standard 7-day period')
+      }
+
+      return result
+    } catch (error) {
+      logger.error('PaymentValidationService', 'Failed to validate refund eligibility', error)
+      result.isValid = false
+      result.errors.push('Refund validation failed')
+      return result
+    }
+  }
+}
+
+export const paymentValidationService = new PaymentValidationService()
+```
+
+**Step 4: Update Storage Integration**
+1. Open `src/model/storage.ts`
+2. Add payment-related storage interfaces to the existing schema:
+
+```typescript
+// Add to the BusinessScraperDB interface
+userPaymentProfiles: {
+  key: string
+  value: {
+    userId: string
+    stripeCustomerId: string
+    email: string
+    name?: string
+    defaultPaymentMethod?: string
+    subscriptionStatus: 'free' | 'premium' | 'enterprise'
+    subscriptionId?: string
+    billingAddress?: {
+      line1?: string
+      line2?: string
+      city?: string
+      state?: string
+      postal_code?: string
+      country?: string
+    }
+    createdAt: Date
+    updatedAt: Date
+  }
+}
+paymentTransactionCache: {
+  key: string
+  value: {
+    id: string
+    userId: string
+    amount: number
+    currency: string
+    status: string
+    description: string
+    date: Date
+    metadata?: Record<string, any>
+  }
+}
+subscriptionCache: {
+  key: string
+  value: {
+    id: string
+    userId: string
+    planName: string
+    status: string
+    currentPeriodEnd: Date
+    features: Record<string, boolean>
+  }
+}
+```
 
 **Validation Steps:**
-- Confirm file is created in correct location
-- Check TypeScript compilation passes
-- Verify logger and config imports work
-- Test that service can be imported in other files
+- Confirm all new service files are created in correct locations
+- Check TypeScript compilation passes for all new services
+- Verify integration with existing storage system works
+- Test that all services can be imported without errors
+- Validate that business rules are properly implemented
 
 **Next Steps:**
 Proceed to Prompt 4 for Payment Models implementation.
@@ -1683,9 +2198,1822 @@ npm run test:e2e
 
 ---
 
-## Summary
+## Prompt 10: User Management Integration
 
-This series of AI prompts provides a complete, step-by-step implementation guide for integrating Stripe payments into the Business Scraper App. Each prompt builds upon the previous work and includes detailed validation steps to ensure proper implementation.
+### Objective
+Integrate the payment system with the existing user management system and create user onboarding flows for payment setup.
+
+### Instructions for AI Assistant
+
+**Step 1: Create User Registration Enhancement**
+1. Open the existing user registration component
+2. Add payment profile initialization:
+
+```typescript
+import { userPaymentService } from '@/model/userPaymentService'
+
+// Add to user registration flow
+const handleUserRegistration = async (userData: UserRegistrationData) => {
+  try {
+    // Existing user creation logic
+    const user = await createUser(userData)
+
+    // Initialize payment profile
+    await userPaymentService.ensureStripeCustomer(
+      user.id,
+      userData.email,
+      userData.name
+    )
+
+    // Set initial free tier
+    await userPaymentService.updateUserPaymentProfile(user.id, {
+      subscriptionStatus: 'free'
+    })
+
+    logger.info('UserRegistration', `Payment profile created for user: ${user.id}`)
+  } catch (error) {
+    logger.error('UserRegistration', 'Failed to create payment profile', error)
+    // Handle gracefully - user can still use free features
+  }
+}
+```
+
+**Step 2: Create User Profile Payment Section**
+1. Create a new file `src/view/components/UserPaymentProfile.tsx`:
+
+```typescript
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { Button } from './ui/Button'
+import { Badge } from './ui/Badge'
+import { CreditCard, Crown, Star } from 'lucide-react'
+import { usePaymentController } from '@/controller/usePaymentController'
+import { useFeatureAccess } from '@/controller/useFeatureAccess'
+
+interface UserPaymentProfileProps {
+  userId: string
+}
+
+export function UserPaymentProfile({ userId }: UserPaymentProfileProps) {
+  const { currentSubscription, paymentHistory, isProcessing } = usePaymentController()
+  const { scrapingQuotaRemaining, canExportAdvanced, canUseAdvancedSearch } = useFeatureAccess(userId)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+
+  const getSubscriptionBadge = () => {
+    if (!currentSubscription) {
+      return <Badge variant="secondary">Free Plan</Badge>
+    }
+
+    switch (currentSubscription.status) {
+      case 'active':
+        return <Badge variant="default" className="bg-green-500"><Crown className="w-4 h-4 mr-1" />Premium</Badge>
+      case 'past_due':
+        return <Badge variant="destructive">Payment Due</Badge>
+      case 'canceled':
+        return <Badge variant="secondary">Canceled</Badge>
+      default:
+        return <Badge variant="secondary">{currentSubscription.status}</Badge>
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Subscription Status */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>Subscription Status</span>
+            {getSubscriptionBadge()}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-600">Scraping Quota</p>
+              <p className="text-2xl font-bold">{scrapingQuotaRemaining}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Advanced Features</p>
+              <div className="flex space-x-2 mt-1">
+                {canExportAdvanced && <Star className="w-4 h-4 text-yellow-500" />}
+                {canUseAdvancedSearch && <Star className="w-4 h-4 text-yellow-500" />}
+                {!canExportAdvanced && !canUseAdvancedSearch && (
+                  <span className="text-sm text-gray-400">None</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {!currentSubscription && (
+            <Button
+              onClick={() => setShowUpgradeModal(true)}
+              className="w-full mt-4"
+            >
+              <Crown className="w-4 h-4 mr-2" />
+              Upgrade to Premium
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Payment History */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <CreditCard className="w-5 h-5 mr-2" />
+            Payment History
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {paymentHistory.length === 0 ? (
+            <p className="text-gray-500 text-center py-4">No payment history</p>
+          ) : (
+            <div className="space-y-2">
+              {paymentHistory.slice(0, 5).map((payment) => (
+                <div key={payment.id} className="flex justify-between items-center p-2 border rounded">
+                  <div>
+                    <p className="font-medium">{payment.description}</p>
+                    <p className="text-sm text-gray-600">{payment.createdAt.toLocaleDateString()}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium">${(payment.amountCents / 100).toFixed(2)}</p>
+                    <Badge variant={payment.status === 'succeeded' ? 'default' : 'destructive'}>
+                      {payment.status}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+```
+
+**Step 3: Create User Onboarding Flow**
+1. Create a new file `src/view/components/PaymentOnboarding.tsx`:
+
+```typescript
+'use client'
+
+import React, { useState } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { Button } from './ui/Button'
+import { Progress } from './ui/Progress'
+import { Check, CreditCard, Crown, Zap } from 'lucide-react'
+
+interface PaymentOnboardingProps {
+  userId: string
+  onComplete: () => void
+}
+
+export function PaymentOnboarding({ userId, onComplete }: PaymentOnboardingProps) {
+  const [currentStep, setCurrentStep] = useState(1)
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+
+  const steps = [
+    { id: 1, title: 'Welcome', icon: Zap },
+    { id: 2, title: 'Choose Plan', icon: Crown },
+    { id: 3, title: 'Payment Setup', icon: CreditCard },
+    { id: 4, title: 'Complete', icon: Check }
+  ]
+
+  const plans = [
+    {
+      id: 'free',
+      name: 'Free',
+      price: 0,
+      features: ['100 scraping requests/day', 'Basic exports', 'Standard support']
+    },
+    {
+      id: 'premium',
+      name: 'Premium',
+      price: 29,
+      features: ['Unlimited scraping', 'Advanced exports', 'Premium industries', 'Priority support']
+    }
+  ]
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="text-center space-y-4">
+            <Zap className="w-16 h-16 mx-auto text-blue-500" />
+            <h2 className="text-2xl font-bold">Welcome to Business Scraper!</h2>
+            <p className="text-gray-600">
+              Let's set up your account to get the most out of our business discovery platform.
+            </p>
+            <Button onClick={() => setCurrentStep(2)}>Get Started</Button>
+          </div>
+        )
+
+      case 2:
+        return (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-center">Choose Your Plan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {plans.map((plan) => (
+                <Card
+                  key={plan.id}
+                  className={`cursor-pointer transition-all ${
+                    selectedPlan === plan.id ? 'ring-2 ring-blue-500' : ''
+                  }`}
+                  onClick={() => setSelectedPlan(plan.id)}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-center">
+                      {plan.name}
+                      {plan.price > 0 && (
+                        <div className="text-2xl font-bold mt-2">
+                          ${plan.price}/month
+                        </div>
+                      )}
+                      {plan.price === 0 && (
+                        <div className="text-2xl font-bold mt-2 text-green-600">
+                          Free
+                        </div>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <Check className="w-4 h-4 text-green-500 mr-2" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="flex justify-center">
+              <Button
+                onClick={() => setCurrentStep(selectedPlan === 'free' ? 4 : 3)}
+                disabled={!selectedPlan}
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        )
+
+      case 3:
+        return (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-center">Payment Setup</h2>
+            <p className="text-center text-gray-600">
+              Set up your payment method to activate your Premium subscription.
+            </p>
+            {/* Payment form would go here */}
+            <div className="flex justify-center space-x-4">
+              <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                Back
+              </Button>
+              <Button onClick={() => setCurrentStep(4)}>
+                Complete Setup
+              </Button>
+            </div>
+          </div>
+        )
+
+      case 4:
+        return (
+          <div className="text-center space-y-4">
+            <Check className="w-16 h-16 mx-auto text-green-500" />
+            <h2 className="text-2xl font-bold">Setup Complete!</h2>
+            <p className="text-gray-600">
+              Your account is ready. Start discovering businesses with our powerful scraping tools.
+            </p>
+            <Button onClick={onComplete}>Start Scraping</Button>
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
+  return (
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader>
+        <div className="flex items-center justify-between mb-4">
+          {steps.map((step) => {
+            const Icon = step.icon
+            return (
+              <div
+                key={step.id}
+                className={`flex items-center ${
+                  step.id <= currentStep ? 'text-blue-500' : 'text-gray-400'
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  step.id <= currentStep ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                }`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                {step.id < steps.length && (
+                  <div className={`w-16 h-1 mx-2 ${
+                    step.id < currentStep ? 'bg-blue-500' : 'bg-gray-200'
+                  }`} />
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <Progress value={(currentStep / steps.length) * 100} className="w-full" />
+      </CardHeader>
+      <CardContent>
+        {renderStep()}
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+**Validation Steps:**
+- Verify user registration integrates payment profile creation
+- Test onboarding flow guides users through plan selection
+- Check that user profile displays payment information correctly
+- Confirm graceful error handling when payment setup fails
+
+**Next Steps:**
+Proceed to Prompt 11 for Payment Analytics and Reporting implementation.
+
+---
+
+## Prompt 11: Payment Analytics and Reporting
+
+### Objective
+Implement comprehensive analytics and reporting for payment data, subscription metrics, and revenue tracking.
+
+### Instructions for AI Assistant
+
+**Step 1: Create Payment Analytics Service**
+1. Create a new file `src/model/paymentAnalyticsService.ts`
+2. Implement analytics data collection and processing:
+
+```typescript
+import { paymentStorage } from './paymentStorage'
+import { logger } from '@/utils/logger'
+
+export interface RevenueMetrics {
+  totalRevenue: number
+  monthlyRecurringRevenue: number
+  averageRevenuePerUser: number
+  churnRate: number
+  growthRate: number
+  period: {
+    start: Date
+    end: Date
+  }
+}
+
+export interface SubscriptionMetrics {
+  totalSubscriptions: number
+  activeSubscriptions: number
+  canceledSubscriptions: number
+  trialSubscriptions: number
+  subscriptionsByPlan: Record<string, number>
+  conversionRate: number
+}
+
+export interface UserMetrics {
+  totalUsers: number
+  paidUsers: number
+  freeUsers: number
+  newUsersThisMonth: number
+  userGrowthRate: number
+}
+
+export interface FeatureUsageMetrics {
+  totalUsage: Record<string, number>
+  usageByPlan: Record<string, Record<string, number>>
+  popularFeatures: Array<{ feature: string; usage: number }>
+  usageTrends: Array<{ date: Date; feature: string; usage: number }>
+}
+
+export class PaymentAnalyticsService {
+  // Calculate revenue metrics for a given period
+  async getRevenueMetrics(startDate: Date, endDate: Date): Promise<RevenueMetrics> {
+    try {
+      const transactions = await paymentStorage.getTransactionsByDateRange(startDate, endDate)
+      const successfulTransactions = transactions.filter(t => t.status === 'succeeded')
+
+      const totalRevenue = successfulTransactions.reduce((sum, t) => sum + t.amountCents, 0) / 100
+
+      // Calculate MRR (Monthly Recurring Revenue)
+      const subscriptions = await paymentStorage.getActiveSubscriptions()
+      const monthlyRecurringRevenue = subscriptions.reduce((sum, sub) => {
+        const plan = sub.plan
+        if (plan.interval === 'month') {
+          return sum + (plan.priceCents / 100)
+        } else if (plan.interval === 'year') {
+          return sum + (plan.priceCents / 100 / 12)
+        }
+        return sum
+      }, 0)
+
+      // Calculate ARPU (Average Revenue Per User)
+      const uniqueUsers = new Set(successfulTransactions.map(t => t.userId)).size
+      const averageRevenuePerUser = uniqueUsers > 0 ? totalRevenue / uniqueUsers : 0
+
+      // Calculate churn rate (simplified)
+      const previousPeriodStart = new Date(startDate)
+      previousPeriodStart.setMonth(previousPeriodStart.getMonth() - 1)
+      const previousSubscriptions = await paymentStorage.getSubscriptionsByDateRange(
+        previousPeriodStart,
+        startDate
+      )
+      const churnRate = previousSubscriptions.length > 0
+        ? (previousSubscriptions.length - subscriptions.length) / previousSubscriptions.length
+        : 0
+
+      // Calculate growth rate
+      const previousRevenue = await this.getRevenueForPeriod(previousPeriodStart, startDate)
+      const growthRate = previousRevenue > 0 ? (totalRevenue - previousRevenue) / previousRevenue : 0
+
+      return {
+        totalRevenue,
+        monthlyRecurringRevenue,
+        averageRevenuePerUser,
+        churnRate: Math.max(0, churnRate),
+        growthRate,
+        period: { start: startDate, end: endDate }
+      }
+    } catch (error) {
+      logger.error('PaymentAnalyticsService', 'Failed to calculate revenue metrics', error)
+      throw error
+    }
+  }
+
+  // Get subscription analytics
+  async getSubscriptionMetrics(): Promise<SubscriptionMetrics> {
+    try {
+      const allSubscriptions = await paymentStorage.getAllSubscriptions()
+      const activeSubscriptions = allSubscriptions.filter(s => s.status === 'active')
+      const canceledSubscriptions = allSubscriptions.filter(s => s.status === 'canceled')
+      const trialSubscriptions = allSubscriptions.filter(s => s.status === 'trialing')
+
+      // Group by plan
+      const subscriptionsByPlan = allSubscriptions.reduce((acc, sub) => {
+        const planName = sub.plan?.name || 'Unknown'
+        acc[planName] = (acc[planName] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+
+      // Calculate conversion rate (active subscriptions / total users)
+      const totalUsers = await paymentStorage.getTotalUserCount()
+      const conversionRate = totalUsers > 0 ? activeSubscriptions.length / totalUsers : 0
+
+      return {
+        totalSubscriptions: allSubscriptions.length,
+        activeSubscriptions: activeSubscriptions.length,
+        canceledSubscriptions: canceledSubscriptions.length,
+        trialSubscriptions: trialSubscriptions.length,
+        subscriptionsByPlan,
+        conversionRate
+      }
+    } catch (error) {
+      logger.error('PaymentAnalyticsService', 'Failed to get subscription metrics', error)
+      throw error
+    }
+  }
+
+  // Get user metrics
+  async getUserMetrics(): Promise<UserMetrics> {
+    try {
+      const totalUsers = await paymentStorage.getTotalUserCount()
+      const paidUsers = await paymentStorage.getPaidUserCount()
+      const freeUsers = totalUsers - paidUsers
+
+      // Get new users this month
+      const monthStart = new Date()
+      monthStart.setDate(1)
+      monthStart.setHours(0, 0, 0, 0)
+      const newUsersThisMonth = await paymentStorage.getNewUserCount(monthStart, new Date())
+
+      // Calculate user growth rate
+      const lastMonthStart = new Date(monthStart)
+      lastMonthStart.setMonth(lastMonthStart.getMonth() - 1)
+      const lastMonthUsers = await paymentStorage.getUserCountAsOf(monthStart)
+      const userGrowthRate = lastMonthUsers > 0 ? (totalUsers - lastMonthUsers) / lastMonthUsers : 0
+
+      return {
+        totalUsers,
+        paidUsers,
+        freeUsers,
+        newUsersThisMonth,
+        userGrowthRate
+      }
+    } catch (error) {
+      logger.error('PaymentAnalyticsService', 'Failed to get user metrics', error)
+      throw error
+    }
+  }
+
+  // Get feature usage analytics
+  async getFeatureUsageMetrics(startDate: Date, endDate: Date): Promise<FeatureUsageMetrics> {
+    try {
+      const usageData = await paymentStorage.getFeatureUsageByDateRange(startDate, endDate)
+
+      // Total usage by feature
+      const totalUsage = usageData.reduce((acc, usage) => {
+        acc[usage.featureType] = (acc[usage.featureType] || 0) + usage.usageCount
+        return acc
+      }, {} as Record<string, number>)
+
+      // Usage by plan
+      const usageByPlan: Record<string, Record<string, number>> = {}
+      for (const usage of usageData) {
+        const userSubscription = await paymentStorage.getUserActiveSubscription(usage.userId)
+        const planName = userSubscription?.plan?.name || 'Free'
+
+        if (!usageByPlan[planName]) {
+          usageByPlan[planName] = {}
+        }
+        usageByPlan[planName][usage.featureType] =
+          (usageByPlan[planName][usage.featureType] || 0) + usage.usageCount
+      }
+
+      // Popular features
+      const popularFeatures = Object.entries(totalUsage)
+        .map(([feature, usage]) => ({ feature, usage }))
+        .sort((a, b) => b.usage - a.usage)
+        .slice(0, 10)
+
+      // Usage trends (daily aggregation)
+      const usageTrends = await this.calculateUsageTrends(startDate, endDate)
+
+      return {
+        totalUsage,
+        usageByPlan,
+        popularFeatures,
+        usageTrends
+      }
+    } catch (error) {
+      logger.error('PaymentAnalyticsService', 'Failed to get feature usage metrics', error)
+      throw error
+    }
+  }
+
+  // Generate comprehensive analytics report
+  async generateAnalyticsReport(startDate: Date, endDate: Date) {
+    try {
+      const [revenue, subscriptions, users, featureUsage] = await Promise.all([
+        this.getRevenueMetrics(startDate, endDate),
+        this.getSubscriptionMetrics(),
+        this.getUserMetrics(),
+        this.getFeatureUsageMetrics(startDate, endDate)
+      ])
+
+      return {
+        revenue,
+        subscriptions,
+        users,
+        featureUsage,
+        generatedAt: new Date(),
+        period: { start: startDate, end: endDate }
+      }
+    } catch (error) {
+      logger.error('PaymentAnalyticsService', 'Failed to generate analytics report', error)
+      throw error
+    }
+  }
+
+  // Helper methods
+  private async getRevenueForPeriod(startDate: Date, endDate: Date): Promise<number> {
+    const transactions = await paymentStorage.getTransactionsByDateRange(startDate, endDate)
+    return transactions
+      .filter(t => t.status === 'succeeded')
+      .reduce((sum, t) => sum + t.amountCents, 0) / 100
+  }
+
+  private async calculateUsageTrends(startDate: Date, endDate: Date) {
+    // Implementation for daily usage trends
+    const trends: Array<{ date: Date; feature: string; usage: number }> = []
+    const currentDate = new Date(startDate)
+
+    while (currentDate <= endDate) {
+      const dayStart = new Date(currentDate)
+      const dayEnd = new Date(currentDate)
+      dayEnd.setHours(23, 59, 59, 999)
+
+      const dayUsage = await paymentStorage.getFeatureUsageByDateRange(dayStart, dayEnd)
+
+      const dailyTotals = dayUsage.reduce((acc, usage) => {
+        acc[usage.featureType] = (acc[usage.featureType] || 0) + usage.usageCount
+        return acc
+      }, {} as Record<string, number>)
+
+      Object.entries(dailyTotals).forEach(([feature, usage]) => {
+        trends.push({ date: new Date(currentDate), feature, usage })
+      })
+
+      currentDate.setDate(currentDate.getDate() + 1)
+    }
+
+    return trends
+  }
+}
+
+export const paymentAnalyticsService = new PaymentAnalyticsService()
+```
+
+**Validation Steps:**
+- Verify analytics calculations are mathematically correct
+- Test report generation with sample data
+- Check that metrics update in real-time
+- Confirm performance with large datasets
+
+**Next Steps:**
+Proceed to Prompt 12 for Compliance and Audit Logging implementation.
+
+---
+
+## Prompt 12: Compliance and Audit Logging
+
+### Objective
+Implement comprehensive audit logging, compliance tracking, and data protection measures for payment processing.
+
+### Instructions for AI Assistant
+
+**Step 1: Create Audit Logging Service**
+1. Create a new file `src/model/auditLoggingService.ts`
+2. Implement comprehensive audit trail functionality:
+
+```typescript
+import { logger } from '@/utils/logger'
+import { storage } from './storage'
+import { z } from 'zod'
+
+export const AuditEventSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  eventType: z.enum([
+    'payment_created',
+    'payment_succeeded',
+    'payment_failed',
+    'subscription_created',
+    'subscription_updated',
+    'subscription_canceled',
+    'customer_created',
+    'customer_updated',
+    'refund_issued',
+    'dispute_created',
+    'feature_accessed',
+    'data_exported',
+    'login_attempt',
+    'password_changed',
+    'email_changed',
+    'account_deleted'
+  ]),
+  entityType: z.enum(['payment', 'subscription', 'customer', 'user', 'feature']),
+  entityId: z.string(),
+  action: z.string(),
+  details: z.record(z.any()),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional(),
+  sessionId: z.string().optional(),
+  timestamp: z.date(),
+  severity: z.enum(['low', 'medium', 'high', 'critical']),
+  complianceFlags: z.array(z.string()).optional(),
+  retentionPeriod: z.number().optional() // days
+})
+
+export type AuditEvent = z.infer<typeof AuditEventSchema>
+
+export class AuditLoggingService {
+  // Log audit event
+  async logEvent(event: Omit<AuditEvent, 'id' | 'timestamp'>): Promise<void> {
+    try {
+      const auditEvent: AuditEvent = {
+        ...event,
+        id: crypto.randomUUID(),
+        timestamp: new Date()
+      }
+
+      // Validate event
+      const validatedEvent = AuditEventSchema.parse(auditEvent)
+
+      // Store in IndexedDB for immediate access
+      await storage.put('auditEvents', validatedEvent, validatedEvent.id)
+
+      // Also send to secure logging service for long-term storage
+      await this.sendToSecureLogging(validatedEvent)
+
+      logger.info('AuditLoggingService', `Audit event logged: ${event.eventType}`)
+    } catch (error) {
+      logger.error('AuditLoggingService', 'Failed to log audit event', error)
+      // Don't throw - audit logging should not break main functionality
+    }
+  }
+
+  // Log payment-related events
+  async logPaymentEvent(
+    userId: string,
+    eventType: 'payment_created' | 'payment_succeeded' | 'payment_failed',
+    paymentId: string,
+    details: Record<string, any>,
+    request?: Request
+  ): Promise<void> {
+    await this.logEvent({
+      userId,
+      eventType,
+      entityType: 'payment',
+      entityId: paymentId,
+      action: eventType.replace('payment_', ''),
+      details: {
+        ...details,
+        amount: details.amount,
+        currency: details.currency,
+        paymentMethod: details.paymentMethod
+      },
+      ipAddress: this.extractIpAddress(request),
+      userAgent: request?.headers.get('user-agent') || undefined,
+      severity: eventType === 'payment_failed' ? 'medium' : 'low',
+      complianceFlags: ['PCI_DSS', 'GDPR'],
+      retentionPeriod: 2555 // 7 years for financial records
+    })
+  }
+
+  // Generate compliance report
+  async generateComplianceReport(startDate: Date, endDate: Date) {
+    try {
+      const events = await this.getEventsByDateRange(startDate, endDate)
+
+      const eventsByType = events.reduce((acc, event) => {
+        acc[event.eventType] = (acc[event.eventType] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+
+      return {
+        reportId: crypto.randomUUID(),
+        period: { start: startDate, end: endDate },
+        totalEvents: events.length,
+        eventsByType,
+        securityEvents: events.filter(e =>
+          ['login_attempt', 'password_changed', 'email_changed'].includes(e.eventType)
+        ),
+        paymentEvents: events.filter(e =>
+          e.eventType.startsWith('payment_') || e.eventType.startsWith('subscription_')
+        ),
+        generatedAt: new Date()
+      }
+    } catch (error) {
+      logger.error('AuditLoggingService', 'Failed to generate compliance report', error)
+      throw error
+    }
+  }
+
+  // Private helper methods
+  private extractIpAddress(request?: Request): string | undefined {
+    if (!request) return undefined
+
+    const headers = ['x-forwarded-for', 'x-real-ip', 'x-client-ip', 'cf-connecting-ip']
+    for (const header of headers) {
+      const value = request.headers.get(header)
+      if (value) return value.split(',')[0].trim()
+    }
+    return undefined
+  }
+
+  private async sendToSecureLogging(event: AuditEvent): Promise<void> {
+    // Implementation would send to external secure logging service
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Audit Event:', event)
+    }
+  }
+
+  private async getEventsByDateRange(startDate: Date, endDate: Date): Promise<AuditEvent[]> {
+    const allEvents = await storage.getAll('auditEvents')
+    return allEvents.filter(event =>
+      event.timestamp >= startDate && event.timestamp <= endDate
+    )
+  }
+}
+
+export const auditLoggingService = new AuditLoggingService()
+```
+
+**Validation Steps:**
+- Verify audit events are logged correctly for all payment operations
+- Test compliance report generation with sample data
+- Check GDPR data export functionality
+- Confirm data deletion respects retention requirements
+
+**Next Steps:**
+Proceed to Prompt 13 for Email Notifications and Communication implementation.
+
+---
+
+## Prompt 13: Email Notifications and Communication
+
+### Objective
+Implement email notification system for payment events, subscription changes, and user communications.
+
+### Instructions for AI Assistant
+
+**Step 1: Create Email Service**
+1. Create a new file `src/model/emailService.ts`
+2. Implement email notification functionality:
+
+```typescript
+import { logger } from '@/utils/logger'
+import { getConfig } from '@/lib/config'
+
+export interface EmailTemplate {
+  subject: string
+  htmlContent: string
+  textContent: string
+  variables: Record<string, string>
+}
+
+export interface EmailNotification {
+  to: string
+  template: string
+  variables: Record<string, any>
+  priority: 'low' | 'normal' | 'high'
+  scheduledFor?: Date
+}
+
+export class EmailService {
+  private config = getConfig()
+
+  // Send payment confirmation email
+  async sendPaymentConfirmation(
+    userEmail: string,
+    paymentDetails: {
+      amount: number
+      currency: string
+      description: string
+      receiptUrl?: string
+    }
+  ): Promise<void> {
+    try {
+      const template = this.getPaymentConfirmationTemplate(paymentDetails)
+
+      await this.sendEmail({
+        to: userEmail,
+        template: 'payment_confirmation',
+        variables: {
+          amount: `$${(paymentDetails.amount / 100).toFixed(2)}`,
+          currency: paymentDetails.currency.toUpperCase(),
+          description: paymentDetails.description,
+          receiptUrl: paymentDetails.receiptUrl || '#'
+        },
+        priority: 'normal'
+      })
+
+      logger.info('EmailService', `Payment confirmation sent to: ${userEmail}`)
+    } catch (error) {
+      logger.error('EmailService', 'Failed to send payment confirmation', error)
+    }
+  }
+
+  // Send subscription welcome email
+  async sendSubscriptionWelcome(
+    userEmail: string,
+    subscriptionDetails: {
+      planName: string
+      features: string[]
+      nextBillingDate: Date
+    }
+  ): Promise<void> {
+    try {
+      await this.sendEmail({
+        to: userEmail,
+        template: 'subscription_welcome',
+        variables: {
+          planName: subscriptionDetails.planName,
+          features: subscriptionDetails.features.join(', '),
+          nextBillingDate: subscriptionDetails.nextBillingDate.toLocaleDateString()
+        },
+        priority: 'normal'
+      })
+
+      logger.info('EmailService', `Subscription welcome sent to: ${userEmail}`)
+    } catch (error) {
+      logger.error('EmailService', 'Failed to send subscription welcome', error)
+    }
+  }
+
+  // Send payment failure notification
+  async sendPaymentFailure(
+    userEmail: string,
+    failureDetails: {
+      amount: number
+      currency: string
+      reason: string
+      retryUrl: string
+    }
+  ): Promise<void> {
+    try {
+      await this.sendEmail({
+        to: userEmail,
+        template: 'payment_failure',
+        variables: {
+          amount: `$${(failureDetails.amount / 100).toFixed(2)}`,
+          currency: failureDetails.currency.toUpperCase(),
+          reason: failureDetails.reason,
+          retryUrl: failureDetails.retryUrl
+        },
+        priority: 'high'
+      })
+
+      logger.info('EmailService', `Payment failure notification sent to: ${userEmail}`)
+    } catch (error) {
+      logger.error('EmailService', 'Failed to send payment failure notification', error)
+    }
+  }
+
+  // Send subscription cancellation confirmation
+  async sendSubscriptionCancellation(
+    userEmail: string,
+    cancellationDetails: {
+      planName: string
+      endDate: Date
+      reason?: string
+    }
+  ): Promise<void> {
+    try {
+      await this.sendEmail({
+        to: userEmail,
+        template: 'subscription_cancellation',
+        variables: {
+          planName: cancellationDetails.planName,
+          endDate: cancellationDetails.endDate.toLocaleDateString(),
+          reason: cancellationDetails.reason || 'Not specified'
+        },
+        priority: 'normal'
+      })
+
+      logger.info('EmailService', `Subscription cancellation sent to: ${userEmail}`)
+    } catch (error) {
+      logger.error('EmailService', 'Failed to send subscription cancellation', error)
+    }
+  }
+
+  // Private helper methods
+  private async sendEmail(notification: EmailNotification): Promise<void> {
+    // In a real implementation, this would integrate with an email service
+    // like SendGrid, Mailgun, or AWS SES
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Email Notification:', {
+        to: notification.to,
+        template: notification.template,
+        variables: notification.variables,
+        priority: notification.priority
+      })
+    }
+
+    // Simulate email sending
+    await new Promise(resolve => setTimeout(resolve, 100))
+  }
+
+  private getPaymentConfirmationTemplate(paymentDetails: any): EmailTemplate {
+    return {
+      subject: 'Payment Confirmation - Business Scraper',
+      htmlContent: `
+        <h2>Payment Confirmation</h2>
+        <p>Thank you for your payment!</p>
+        <div>
+          <strong>Amount:</strong> {{amount}} {{currency}}<br>
+          <strong>Description:</strong> {{description}}<br>
+          <strong>Date:</strong> ${new Date().toLocaleDateString()}
+        </div>
+        <p><a href="{{receiptUrl}}">View Receipt</a></p>
+      `,
+      textContent: `
+        Payment Confirmation
+
+        Thank you for your payment!
+
+        Amount: {{amount}} {{currency}}
+        Description: {{description}}
+        Date: ${new Date().toLocaleDateString()}
+
+        View Receipt: {{receiptUrl}}
+      `,
+      variables: {}
+    }
+  }
+}
+
+export const emailService = new EmailService()
+```
+
+**Validation Steps:**
+- Test email notifications for all payment events
+- Verify email templates render correctly with variables
+- Check that high-priority emails are sent immediately
+- Confirm email delivery tracking works
+
+**Next Steps:**
+Proceed to Prompt 14 for Performance Monitoring and Alerting implementation.
+
+---
+
+## Prompt 14: Performance Monitoring and Alerting
+
+### Objective
+Implement comprehensive performance monitoring, alerting, and health checks for the payment system.
+
+### Instructions for AI Assistant
+
+**Step 1: Create Performance Monitoring Service**
+1. Create a new file `src/model/performanceMonitoringService.ts`
+2. Implement monitoring and alerting functionality:
+
+```typescript
+import { logger } from '@/utils/logger'
+import { storage } from './storage'
+
+export interface PerformanceMetric {
+  id: string
+  metricType: 'response_time' | 'error_rate' | 'throughput' | 'availability'
+  value: number
+  threshold: number
+  status: 'healthy' | 'warning' | 'critical'
+  timestamp: Date
+  context: Record<string, any>
+}
+
+export interface AlertRule {
+  id: string
+  name: string
+  metricType: string
+  condition: 'greater_than' | 'less_than' | 'equals'
+  threshold: number
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  enabled: boolean
+  cooldownMinutes: number
+}
+
+export interface Alert {
+  id: string
+  ruleId: string
+  message: string
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  triggeredAt: Date
+  resolvedAt?: Date
+  status: 'active' | 'resolved' | 'acknowledged'
+  context: Record<string, any>
+}
+
+export class PerformanceMonitoringService {
+  private metrics: Map<string, PerformanceMetric[]> = new Map()
+  private alertRules: AlertRule[] = []
+  private activeAlerts: Map<string, Alert> = new Map()
+
+  // Initialize default alert rules
+  constructor() {
+    this.initializeDefaultAlertRules()
+  }
+
+  // Record performance metric
+  async recordMetric(
+    metricType: PerformanceMetric['metricType'],
+    value: number,
+    context: Record<string, any> = {}
+  ): Promise<void> {
+    try {
+      const metric: PerformanceMetric = {
+        id: crypto.randomUUID(),
+        metricType,
+        value,
+        threshold: this.getThresholdForMetric(metricType),
+        status: this.calculateStatus(metricType, value),
+        timestamp: new Date(),
+        context
+      }
+
+      // Store metric
+      const key = `${metricType}_${new Date().toISOString().split('T')[0]}`
+      const existingMetrics = this.metrics.get(key) || []
+      existingMetrics.push(metric)
+      this.metrics.set(key, existingMetrics)
+
+      // Store in IndexedDB for persistence
+      await storage.put('performanceMetrics', metric, metric.id)
+
+      // Check alert rules
+      await this.checkAlertRules(metric)
+
+      logger.debug('PerformanceMonitoringService', `Metric recorded: ${metricType} = ${value}`)
+    } catch (error) {
+      logger.error('PerformanceMonitoringService', 'Failed to record metric', error)
+    }
+  }
+
+  // Monitor payment API response times
+  async monitorPaymentApiPerformance<T>(
+    operation: string,
+    apiCall: () => Promise<T>
+  ): Promise<T> {
+    const startTime = Date.now()
+    let success = false
+
+    try {
+      const result = await apiCall()
+      success = true
+      return result
+    } catch (error) {
+      success = false
+      throw error
+    } finally {
+      const responseTime = Date.now() - startTime
+
+      await this.recordMetric('response_time', responseTime, {
+        operation,
+        success,
+        endpoint: 'payment_api'
+      })
+
+      if (!success) {
+        await this.recordMetric('error_rate', 1, {
+          operation,
+          endpoint: 'payment_api'
+        })
+      }
+    }
+  }
+
+  // Monitor Stripe API health
+  async checkStripeApiHealth(): Promise<boolean> {
+    try {
+      const startTime = Date.now()
+
+      // Simple health check - retrieve a test price
+      const response = await fetch('https://api.stripe.com/v1/prices?limit=1', {
+        headers: {
+          'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`
+        }
+      })
+
+      const responseTime = Date.now() - startTime
+      const isHealthy = response.ok
+
+      await this.recordMetric('response_time', responseTime, {
+        service: 'stripe_api',
+        endpoint: 'prices'
+      })
+
+      await this.recordMetric('availability', isHealthy ? 1 : 0, {
+        service: 'stripe_api'
+      })
+
+      return isHealthy
+    } catch (error) {
+      await this.recordMetric('availability', 0, {
+        service: 'stripe_api',
+        error: error.message
+      })
+      return false
+    }
+  }
+
+  // Get performance dashboard data
+  async getPerformanceDashboard(hours: number = 24) {
+    try {
+      const since = new Date(Date.now() - hours * 60 * 60 * 1000)
+      const allMetrics = await storage.getAll('performanceMetrics')
+
+      const recentMetrics = allMetrics.filter(m => m.timestamp >= since)
+
+      const dashboard = {
+        overview: {
+          totalRequests: recentMetrics.filter(m => m.metricType === 'response_time').length,
+          averageResponseTime: this.calculateAverage(
+            recentMetrics.filter(m => m.metricType === 'response_time').map(m => m.value)
+          ),
+          errorRate: this.calculateErrorRate(recentMetrics),
+          uptime: this.calculateUptime(recentMetrics)
+        },
+        alerts: {
+          active: Array.from(this.activeAlerts.values()).filter(a => a.status === 'active'),
+          resolved: Array.from(this.activeAlerts.values()).filter(a => a.status === 'resolved')
+        },
+        trends: this.calculateTrends(recentMetrics, hours)
+      }
+
+      return dashboard
+    } catch (error) {
+      logger.error('PerformanceMonitoringService', 'Failed to get performance dashboard', error)
+      throw error
+    }
+  }
+
+  // Create custom alert rule
+  async createAlertRule(rule: Omit<AlertRule, 'id'>): Promise<AlertRule> {
+    const alertRule: AlertRule = {
+      ...rule,
+      id: crypto.randomUUID()
+    }
+
+    this.alertRules.push(alertRule)
+    await storage.put('alertRules', alertRule, alertRule.id)
+
+    logger.info('PerformanceMonitoringService', `Alert rule created: ${rule.name}`)
+    return alertRule
+  }
+
+  // Private helper methods
+  private initializeDefaultAlertRules(): void {
+    this.alertRules = [
+      {
+        id: 'response_time_high',
+        name: 'High Response Time',
+        metricType: 'response_time',
+        condition: 'greater_than',
+        threshold: 5000, // 5 seconds
+        severity: 'high',
+        enabled: true,
+        cooldownMinutes: 5
+      },
+      {
+        id: 'error_rate_high',
+        name: 'High Error Rate',
+        metricType: 'error_rate',
+        condition: 'greater_than',
+        threshold: 0.05, // 5%
+        severity: 'critical',
+        enabled: true,
+        cooldownMinutes: 2
+      },
+      {
+        id: 'stripe_api_down',
+        name: 'Stripe API Unavailable',
+        metricType: 'availability',
+        condition: 'less_than',
+        threshold: 1,
+        severity: 'critical',
+        enabled: true,
+        cooldownMinutes: 1
+      }
+    ]
+  }
+
+  private getThresholdForMetric(metricType: string): number {
+    const thresholds = {
+      'response_time': 2000, // 2 seconds
+      'error_rate': 0.01, // 1%
+      'throughput': 100, // requests per minute
+      'availability': 0.99 // 99%
+    }
+    return thresholds[metricType] || 0
+  }
+
+  private calculateStatus(metricType: string, value: number): PerformanceMetric['status'] {
+    const threshold = this.getThresholdForMetric(metricType)
+
+    if (metricType === 'availability') {
+      if (value >= 0.99) return 'healthy'
+      if (value >= 0.95) return 'warning'
+      return 'critical'
+    }
+
+    if (metricType === 'error_rate') {
+      if (value <= 0.01) return 'healthy'
+      if (value <= 0.05) return 'warning'
+      return 'critical'
+    }
+
+    // For response_time and throughput
+    if (value <= threshold) return 'healthy'
+    if (value <= threshold * 1.5) return 'warning'
+    return 'critical'
+  }
+
+  private async checkAlertRules(metric: PerformanceMetric): Promise<void> {
+    for (const rule of this.alertRules) {
+      if (!rule.enabled || rule.metricType !== metric.metricType) continue
+
+      const shouldAlert = this.evaluateAlertCondition(rule, metric.value)
+
+      if (shouldAlert) {
+        await this.triggerAlert(rule, metric)
+      }
+    }
+  }
+
+  private evaluateAlertCondition(rule: AlertRule, value: number): boolean {
+    switch (rule.condition) {
+      case 'greater_than':
+        return value > rule.threshold
+      case 'less_than':
+        return value < rule.threshold
+      case 'equals':
+        return value === rule.threshold
+      default:
+        return false
+    }
+  }
+
+  private async triggerAlert(rule: AlertRule, metric: PerformanceMetric): Promise<void> {
+    // Check cooldown
+    const existingAlert = this.activeAlerts.get(rule.id)
+    if (existingAlert && existingAlert.status === 'active') {
+      const cooldownMs = rule.cooldownMinutes * 60 * 1000
+      if (Date.now() - existingAlert.triggeredAt.getTime() < cooldownMs) {
+        return // Still in cooldown
+      }
+    }
+
+    const alert: Alert = {
+      id: crypto.randomUUID(),
+      ruleId: rule.id,
+      message: `${rule.name}: ${metric.metricType} is ${metric.value} (threshold: ${rule.threshold})`,
+      severity: rule.severity,
+      triggeredAt: new Date(),
+      status: 'active',
+      context: {
+        metric: metric,
+        rule: rule
+      }
+    }
+
+    this.activeAlerts.set(rule.id, alert)
+    await storage.put('alerts', alert, alert.id)
+
+    // Send alert notification
+    await this.sendAlertNotification(alert)
+
+    logger.warn('PerformanceMonitoringService', `Alert triggered: ${alert.message}`)
+  }
+
+  private async sendAlertNotification(alert: Alert): Promise<void> {
+    // In a real implementation, this would send notifications via:
+    // - Email
+    // - Slack
+    // - PagerDuty
+    // - SMS
+
+    logger.error('ALERT', alert.message, alert.context)
+  }
+
+  private calculateAverage(values: number[]): number {
+    if (values.length === 0) return 0
+    return values.reduce((sum, val) => sum + val, 0) / values.length
+  }
+
+  private calculateErrorRate(metrics: PerformanceMetric[]): number {
+    const errorMetrics = metrics.filter(m => m.metricType === 'error_rate')
+    if (errorMetrics.length === 0) return 0
+    return this.calculateAverage(errorMetrics.map(m => m.value))
+  }
+
+  private calculateUptime(metrics: PerformanceMetric[]): number {
+    const availabilityMetrics = metrics.filter(m => m.metricType === 'availability')
+    if (availabilityMetrics.length === 0) return 1
+    return this.calculateAverage(availabilityMetrics.map(m => m.value))
+  }
+
+  private calculateTrends(metrics: PerformanceMetric[], hours: number) {
+    // Group metrics by hour and calculate trends
+    const hourlyData = new Map<string, PerformanceMetric[]>()
+
+    for (const metric of metrics) {
+      const hour = new Date(metric.timestamp).toISOString().slice(0, 13)
+      const existing = hourlyData.get(hour) || []
+      existing.push(metric)
+      hourlyData.set(hour, existing)
+    }
+
+    const trends = Array.from(hourlyData.entries()).map(([hour, hourMetrics]) => ({
+      hour,
+      responseTime: this.calculateAverage(
+        hourMetrics.filter(m => m.metricType === 'response_time').map(m => m.value)
+      ),
+      errorRate: this.calculateAverage(
+        hourMetrics.filter(m => m.metricType === 'error_rate').map(m => m.value)
+      ),
+      throughput: hourMetrics.filter(m => m.metricType === 'response_time').length
+    }))
+
+    return trends.sort((a, b) => a.hour.localeCompare(b.hour))
+  }
+}
+
+export const performanceMonitoringService = new PerformanceMonitoringService()
+```
+
+**Validation Steps:**
+- Test performance monitoring captures metrics correctly
+- Verify alert rules trigger at appropriate thresholds
+- Check dashboard displays real-time performance data
+- Confirm monitoring doesn't impact application performance
+
+**Next Steps:**
+Proceed to Prompt 15 for Dashboard Integration implementation.
+
+---
+
+## Prompt 15: Dashboard Integration and Final Setup
+
+### Objective
+Create a comprehensive admin dashboard for payment management, analytics, and system monitoring integration.
+
+### Instructions for AI Assistant
+
+**Step 1: Create Admin Dashboard Component**
+1. Create a new file `src/view/components/AdminDashboard.tsx`
+2. Implement comprehensive dashboard functionality:
+
+```typescript
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/Tabs'
+import { Badge } from './ui/Badge'
+import { Button } from './ui/Button'
+import {
+  DollarSign,
+  Users,
+  CreditCard,
+  TrendingUp,
+  AlertTriangle,
+  Activity,
+  Download,
+  Settings
+} from 'lucide-react'
+import { paymentAnalyticsService } from '@/model/paymentAnalyticsService'
+import { performanceMonitoringService } from '@/model/performanceMonitoringService'
+import { auditLoggingService } from '@/model/auditLoggingService'
+
+export function AdminDashboard() {
+  const [analytics, setAnalytics] = useState<any>(null)
+  const [performance, setPerformance] = useState<any>(null)
+  const [alerts, setAlerts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true)
+
+      const endDate = new Date()
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - 30) // Last 30 days
+
+      const [analyticsData, performanceData] = await Promise.all([
+        paymentAnalyticsService.generateAnalyticsReport(startDate, endDate),
+        performanceMonitoringService.getPerformanceDashboard(24)
+      ])
+
+      setAnalytics(analyticsData)
+      setPerformance(performanceData)
+      setAlerts(performanceData.alerts.active)
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const generateComplianceReport = async () => {
+    try {
+      const endDate = new Date()
+      const startDate = new Date()
+      startDate.setMonth(startDate.getMonth() - 1) // Last month
+
+      const report = await auditLoggingService.generateComplianceReport(startDate, endDate)
+
+      // In a real implementation, this would trigger a download
+      console.log('Compliance Report Generated:', report)
+      alert('Compliance report generated successfully!')
+    } catch (error) {
+      console.error('Failed to generate compliance report:', error)
+      alert('Failed to generate compliance report')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg">Loading dashboard...</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Payment System Dashboard</h1>
+        <div className="flex space-x-2">
+          <Button onClick={generateComplianceReport} variant="outline">
+            <Download className="w-4 h-4 mr-2" />
+            Export Compliance Report
+          </Button>
+          <Button variant="outline">
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+        </div>
+      </div>
+
+      {/* Alert Banner */}
+      {alerts.length > 0 && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <AlertTriangle className="w-5 h-5 text-red-500 mr-2" />
+              <span className="font-medium text-red-800">
+                {alerts.length} active alert{alerts.length > 1 ? 's' : ''}
+              </span>
+            </div>
+            <div className="mt-2 space-y-1">
+              {alerts.slice(0, 3).map((alert, index) => (
+                <div key={index} className="text-sm text-red-700">
+                  • {alert.message}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${analytics?.revenue?.totalRevenue?.toFixed(2) || '0.00'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              +{((analytics?.revenue?.growthRate || 0) * 100).toFixed(1)}% from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {analytics?.subscriptions?.activeSubscriptions || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {analytics?.subscriptions?.conversionRate ?
+                `${(analytics.subscriptions.conversionRate * 100).toFixed(1)}% conversion rate` :
+                'No conversion data'
+              }
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Monthly Recurring Revenue</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${analytics?.revenue?.monthlyRecurringRevenue?.toFixed(2) || '0.00'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              ARPU: ${analytics?.revenue?.averageRevenuePerUser?.toFixed(2) || '0.00'}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">System Health</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {((performance?.overview?.uptime || 0) * 100).toFixed(1)}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Avg response: {performance?.overview?.averageResponseTime?.toFixed(0) || 0}ms
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Detailed Tabs */}
+      <Tabs defaultValue="analytics" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="performance">Performance</TabsTrigger>
+          <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+          <TabsTrigger value="compliance">Compliance</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Revenue Trends</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Total Revenue:</span>
+                    <span className="font-medium">
+                      ${analytics?.revenue?.totalRevenue?.toFixed(2) || '0.00'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Growth Rate:</span>
+                    <span className={`font-medium ${
+                      (analytics?.revenue?.growthRate || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {((analytics?.revenue?.growthRate || 0) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Churn Rate:</span>
+                    <span className="font-medium">
+                      {((analytics?.revenue?.churnRate || 0) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>User Metrics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Total Users:</span>
+                    <span className="font-medium">{analytics?.users?.totalUsers || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Paid Users:</span>
+                    <span className="font-medium">{analytics?.users?.paidUsers || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Free Users:</span>
+                    <span className="font-medium">{analytics?.users?.freeUsers || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>New This Month:</span>
+                    <span className="font-medium">{analytics?.users?.newUsersThisMonth || 0}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="performance" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Response Times</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {performance?.overview?.averageResponseTime?.toFixed(0) || 0}ms
+                </div>
+                <p className="text-sm text-muted-foreground">Average response time</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Error Rate</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {((performance?.overview?.errorRate || 0) * 100).toFixed(2)}%
+                </div>
+                <p className="text-sm text-muted-foreground">Error rate</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Uptime</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {((performance?.overview?.uptime || 0) * 100).toFixed(2)}%
+                </div>
+                <p className="text-sm text-muted-foreground">System uptime</p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="subscriptions" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Subscription Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">
+                    {analytics?.subscriptions?.totalSubscriptions || 0}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Total</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">
+                    {analytics?.subscriptions?.activeSubscriptions || 0}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Active</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600">
+                    {analytics?.subscriptions?.canceledSubscriptions || 0}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Canceled</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {analytics?.subscriptions?.trialSubscriptions || 0}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Trial</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="compliance" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Compliance Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span>GDPR Compliance</span>
+                  <Badge variant="default">Compliant</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>PCI DSS</span>
+                  <Badge variant="default">Compliant</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>SOC 2</span>
+                  <Badge variant="default">Compliant</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Audit Logging</span>
+                  <Badge variant="default">Active</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
+```
+
+**Step 2: Final Integration and Testing**
+1. Update the main application to include admin dashboard routing
+2. Add comprehensive end-to-end tests for the complete payment flow
+3. Update documentation with final implementation details
+
+**Validation Steps:**
+- Verify dashboard displays all metrics correctly
+- Test real-time updates of performance data
+- Check that compliance reports generate successfully
+- Confirm admin controls work properly
+
+**Final Implementation Checklist:**
+- [ ] All 15 prompts implemented successfully
+- [ ] Database migrations completed
+- [ ] API endpoints tested and secured
+- [ ] Frontend components integrated
+- [ ] Payment flows tested with Stripe test cards
+- [ ] Webhook endpoints configured and tested
+- [ ] Monitoring and alerting operational
+- [ ] Compliance logging active
+- [ ] Documentation updated
+- [ ] Security audit completed
+
+---
+
+## Summary
 
 The implementation follows the project's MVC architecture, maintains security best practices, and includes comprehensive testing. The result is a production-ready payment system with subscription management, feature access control, and usage tracking.
 
