@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Payment Integration - AI Implementation Prompts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #635bff;
+            border-bottom: 3px solid #635bff;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #424770;
+            margin-top: 40px;
+            border-left: 5px solid #635bff;
+            padding-left: 20px;
+            background: #f8f9ff;
+            padding: 15px 20px;
+            border-radius: 5px;
+        }
+        h3 {
+            color: #525f7f;
+            margin-top: 30px;
+            font-size: 1.3em;
+        }
+        h4 {
+            color: #6c757d;
+            margin-top: 25px;
+            font-weight: 600;
+        }
+        .meta-info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-style: italic;
+            text-align: center;
+        }
+        .overview {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 14px;
+            position: relative;
+        }
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #6c757d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .prompt-section {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            position: relative;
+        }
+        .prompt-section::before {
+            content: "AI PROMPT";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .objective {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #f39c12;
+        }
+        .validation {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #28a745;
+        }
+        .next-steps {
+            background: #cce5ff;
+            border: 1px solid #99d6ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #007bff;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        ul, ol {
+            padding-left: 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 10px 0;
+        }
+        .toc a {
+            color: #635bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .divider {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, #635bff, #424770);
+            margin: 40px 0;
+            border-radius: 2px;
+        }
+        .summary-box {
+            background: #f1f3f4;
+            border: 2px solid #4285f4;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .benefits-list {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .benefits-list ul {
+            margin: 0;
+        }
+        .benefits-list li {
+            color: #155724;
+        }
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">🚀</span>Stripe Payment Integration - AI Implementation Prompts</h1>
+        
+        <div class="meta-info">
+            <strong>Business Scraper App - Complete Payment System Implementation</strong><br>
+            <em>Version: 1.0.0 | Date: 2025-08-29 | Framework: Next.js 14 + TypeScript</em>
+        </div>
+
+        <div class="overview">
+            <h3><span class="emoji">📋</span>Overview</h3>
+            <p>This document contains a series of AI prompts designed for <strong>Augment AI running in VS Code</strong> to implement a complete Stripe payment system into the Business Scraper App. Each prompt builds upon the previous work and includes detailed step-by-step instructions.</p>
+        </div>
+
+        <div class="toc">
+            <h3><span class="emoji">📚</span>Table of Contents</h3>
+            <ul>
+                <li><a href="#prompt1">Prompt 1: Project Setup and Dependencies</a></li>
+                <li><a href="#prompt2">Prompt 2: Database Schema Implementation</a></li>
+                <li><a href="#prompt3">Prompt 3: Model Layer - Stripe Service</a></li>
+                <li><a href="#prompt4">Prompt 4: Model Layer - Payment Models</a></li>
+                <li><a href="#prompt5">Prompt 5: API Layer - Webhooks and Endpoints</a></li>
+                <li><a href="#prompt6">Prompt 6: View Layer - Payment Components</a></li>
+                <li><a href="#prompt7">Prompt 7: Controller Layer - State Management</a></li>
+                <li><a href="#prompt8">Prompt 8: Security and Testing</a></li>
+                <li><a href="#prompt9">Prompt 9: Final Integration</a></li>
+                <li><a href="#summary">Implementation Summary</a></li>
+            </ul>
+        </div>
+
+        <hr class="divider">
+
+        <div class="prompt-section" id="prompt1">
+            <h2><span class="emoji">📦</span>Prompt 1: Project Setup and Dependencies</h2>
+            
+            <div class="objective">
+                <h3>Objective</h3>
+                <p>Install and configure all necessary Stripe dependencies and update project configuration files.</p>
+            </div>
+
+            <h3>Instructions for AI Assistant</h3>
+
+            <div class="step-title">Step 1: Install Stripe Dependencies</div>
+            <p>Execute the following commands in the terminal to install required packages:</p>
+
+            <div class="code-block" data-lang="bash">
+npm install stripe @stripe/stripe-js @stripe/react-stripe-js
+npm install --save-dev @types/stripe
+npm install crypto-js jsonwebtoken
+npm install --save-dev @types/jsonwebtoken
+            </div>
+
+            <div class="step-title">Step 2: Verify Installation</div>
+            <p>After installation, check that the following packages appear in <code>package.json</code>:</p>
+            <ul>
+                <li><code>stripe</code></li>
+                <li><code>@stripe/stripe-js</code></li>
+                <li><code>@stripe/react-stripe-js</code></li>
+                <li><code>crypto-js</code></li>
+                <li><code>jsonwebtoken</code></li>
+            </ul>
+
+            <div class="step-title">Step 3: Update Environment Configuration</div>
+            <p>1. Open the file <code>config/development.env.example</code></p>
+            <p>2. Add the following Stripe configuration variables:</p>
+
+            <div class="code-block" data-lang="env">
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Production keys (for deployment)
+STRIPE_PUBLISHABLE_KEY_LIVE=pk_live_...
+STRIPE_SECRET_KEY_LIVE=sk_live_...
+STRIPE_WEBHOOK_SECRET_LIVE=whsec_...
+
+# Payment Configuration
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+PAYMENT_SUCCESS_URL=http://localhost:3000/payment/success
+PAYMENT_CANCEL_URL=http://localhost:3000/payment/cancel
+            </div>
+
+            <p>3. Copy the same configuration to <code>config/production.env.example</code> and <code>config/test.env.example</code></p>
+
+            <div class="step-title">Step 4: Update Configuration Schema</div>
+            <p>1. Open <code>src/lib/config.ts</code></p>
+            <p>2. Locate the <code>configSchema</code> object</p>
+            <p>3. Add the following validation rules:</p>
+
+            <div class="code-block" data-lang="typescript">
+// Add to configSchema
+'STRIPE_PUBLISHABLE_KEY': { type: 'string', required: true },
+'STRIPE_SECRET_KEY': { type: 'string', required: true },
+'STRIPE_WEBHOOK_SECRET': { type: 'string', required: true },
+'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY': { type: 'string', required: true },
+'PAYMENT_SUCCESS_URL': { type: 'url', required: true },
+'PAYMENT_CANCEL_URL': { type: 'url', required: true },
+            </div>
+
+            <p>4. Update the <code>AppConfig</code> interface to include:</p>
+
+            <div class="code-block" data-lang="typescript">
+payments: {
+  stripePublishableKey: string
+  stripeSecretKey: string
+  stripeWebhookSecret: string
+  successUrl: string
+  cancelUrl: string
+}
+            </div>
+
+            <div class="validation">
+                <h4><span class="emoji">✅</span>Validation Steps:</h4>
+                <ul>
+                    <li>Run <code>npm list</code> to confirm all packages are installed</li>
+                    <li>Check that environment files contain Stripe configuration</li>
+                    <li>Verify config.ts compiles without TypeScript errors</li>
+                    <li>Test that the application starts without configuration errors</li>
+                </ul>
+            </div>
+
+            <div class="next-steps">
+                <h4><span class="emoji">➡️</span>Next Steps:</h4>
+                <p>Proceed to Prompt 2 for database schema implementation.</p>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="prompt-section" id="prompt2">
+            <h2><span class="emoji">🗄️</span>Prompt 2: Database Schema Implementation</h2>
+
+            <div class="objective">
+                <h3>Objective</h3>
+                <p>Create PostgreSQL database tables and indexes to support Stripe payment functionality.</p>
+            </div>
+
+            <h3>Instructions for AI Assistant</h3>
+
+            <div class="step-title">Step 1: Create Migration File</div>
+            <p>1. Navigate to the <code>database/migrations/</code> directory</p>
+            <p>2. Create a new file named <code>002_stripe_payment_system.sql</code></p>
+            <p>3. Add the following SQL schema:</p>
+
+            <div class="code-block" data-lang="sql">
+-- Users table updates (add Stripe customer ID if not exists)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id VARCHAR(255) UNIQUE;
+
+-- Subscription plans
+CREATE TABLE IF NOT EXISTS subscription_plans (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    stripe_price_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price_cents INTEGER NOT NULL,
+    currency VARCHAR(3) DEFAULT 'usd',
+    interval VARCHAR(20) NOT NULL, -- 'month', 'year'
+    features JSONB,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User subscriptions
+CREATE TABLE IF NOT EXISTS user_subscriptions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    stripe_subscription_id VARCHAR(255) UNIQUE NOT NULL,
+    plan_id UUID REFERENCES subscription_plans(id),
+    status VARCHAR(50) NOT NULL, -- 'active', 'canceled', 'past_due', etc.
+    current_period_start TIMESTAMP,
+    current_period_end TIMESTAMP,
+    cancel_at_period_end BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Payment transactions
+CREATE TABLE IF NOT EXISTS payment_transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    stripe_payment_intent_id VARCHAR(255) UNIQUE,
+    amount_cents INTEGER NOT NULL,
+    currency VARCHAR(3) DEFAULT 'usd',
+    status VARCHAR(50) NOT NULL,
+    description TEXT,
+    metadata JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Usage tracking for premium features
+CREATE TABLE IF NOT EXISTS feature_usage (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    feature_type VARCHAR(100) NOT NULL, -- 'scraping_request', 'export', 'advanced_search'
+    usage_count INTEGER DEFAULT 1,
+    date DATE DEFAULT CURRENT_DATE,
+    metadata JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripe_customer_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON user_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe ON user_subscriptions(stripe_subscription_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_user ON payment_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_usage_user_date ON feature_usage(user_id, date);
+            </div>
+
+            <div class="validation">
+                <h4><span class="emoji">✅</span>Validation Steps:</h4>
+                <ul>
+                    <li>Confirm migration file exists and is properly formatted</li>
+                    <li>Verify database tables are created successfully</li>
+                    <li>Check that IndexedDB interface compiles without errors</li>
+                    <li>Test that foreign key relationships work correctly</li>
+                </ul>
+            </div>
+
+            <div class="next-steps">
+                <h4><span class="emoji">➡️</span>Next Steps:</h4>
+                <p>Proceed to Prompt 3 for Model layer implementation.</p>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="summary-box" id="summary">
+            <h2><span class="emoji">📋</span>Implementation Summary</h2>
+
+            <p>This series of AI prompts provides a complete, step-by-step implementation guide for integrating Stripe payments into the Business Scraper App. Each prompt builds upon the previous work and includes detailed validation steps to ensure proper implementation.</p>
+
+            <div class="benefits-list">
+                <h3><span class="emoji">🎯</span>Key Benefits:</h3>
+                <ul>
+                    <li><strong>Monetization</strong> through subscription tiers</li>
+                    <li><strong>Controlled access</strong> to premium features</li>
+                    <li><strong>Scalable usage tracking</strong> system</li>
+                    <li><strong>PCI-compliant</strong> payment processing</li>
+                    <li><strong>Comprehensive error handling</strong> and logging</li>
+                    <li><strong>Production-ready</strong> security measures</li>
+                </ul>
+            </div>
+
+            <div class="validation">
+                <h3><span class="emoji">✅</span>Final Deliverables:</h3>
+                <ul>
+                    <li>Complete Stripe payment system integrated</li>
+                    <li>Feature access control implemented</li>
+                    <li>Comprehensive testing suite</li>
+                    <li>Security measures in place</li>
+                    <li>Documentation updated</li>
+                    <li>Ready for production deployment</li>
+                </ul>
+            </div>
+
+            <div class="next-steps">
+                <h3><span class="emoji">⏱️</span>Implementation Details:</h3>
+                <p><strong>Total Implementation Time Estimate:</strong> 8-12 hours for an experienced developer following these prompts sequentially.</p>
+                <p><strong>Architecture Compliance:</strong> Follows the project's MVC architecture, maintains security best practices, and includes comprehensive testing.</p>
+            </div>
+        </div>
+
+        <div class="overview">
+            <h3><span class="emoji">📝</span>Post-Implementation Notes</h3>
+            <ul>
+                <li>Configure production Stripe keys before deployment</li>
+                <li>Set up monitoring for payment events</li>
+                <li>Train support team on subscription management</li>
+                <li>Monitor usage patterns and adjust quotas as needed</li>
+            </ul>
+        </div>
+
+    </div>
+</body>
+</html>
