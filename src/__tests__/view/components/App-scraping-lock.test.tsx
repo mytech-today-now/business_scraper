@@ -8,10 +8,7 @@ import userEvent from '@testing-library/user-event'
 import { App } from '@/view/components/App'
 import { useScraperController } from '@/controller/useScraperController'
 import { useConfig } from '@/controller/ConfigContext'
-import {
-  mockConfigContext,
-  setupBrowserMocks
-} from '@/test/testUtils'
+import { mockConfigContext, setupBrowserMocks } from '@/test/testUtils'
 
 // Mock the scraper controller
 jest.mock('@/controller/useScraperController')
@@ -144,9 +141,7 @@ describe('App Component - Scraping Lock Functionality', () => {
 
       // Get the specific navigation button in the header
       const configButtons = screen.getAllByRole('button', { name: /configuration/i })
-      const headerConfigButton = configButtons.find(button =>
-        button.closest('header') !== null
-      )
+      const headerConfigButton = configButtons.find(button => button.closest('header') !== null)
 
       expect(headerConfigButton).not.toBeDisabled()
       expect(headerConfigButton).not.toHaveClass('opacity-50')
@@ -196,8 +191,8 @@ describe('App Component - Scraping Lock Functionality', () => {
 
       // Get the specific navigation button in the header that should be disabled
       const configButtons = screen.getAllByRole('button', { name: /configuration/i })
-      const headerConfigButton = configButtons.find(button =>
-        button.closest('header') !== null && button.hasAttribute('disabled')
+      const headerConfigButton = configButtons.find(
+        button => button.closest('header') !== null && button.hasAttribute('disabled')
       )
 
       expect(headerConfigButton).toBeDisabled()
@@ -221,8 +216,8 @@ describe('App Component - Scraping Lock Functionality', () => {
 
       // Get the specific disabled navigation button in the header
       const configButtons = screen.getAllByRole('button', { name: /configuration/i })
-      const disabledHeaderButton = configButtons.find(button =>
-        button.closest('header') !== null && button.hasAttribute('disabled')
+      const disabledHeaderButton = configButtons.find(
+        button => button.closest('header') !== null && button.hasAttribute('disabled')
       )
 
       expect(disabledHeaderButton).toHaveAttribute(
@@ -265,9 +260,7 @@ describe('App Component - Scraping Lock Functionality', () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/Configuration Locked - Scraping in Progress/)
-        ).toBeInTheDocument()
+        expect(screen.getByText(/Configuration Locked - Scraping in Progress/)).toBeInTheDocument()
       })
 
       // Check for multiple instances of the lock message
@@ -287,7 +280,9 @@ describe('App Component - Scraping Lock Functionality', () => {
 
       // Find the disabled Select All button
       const selectAllButtons = screen.getAllByRole('button', { name: /select all/i })
-      const disabledSelectAllButton = selectAllButtons.find(button => button.hasAttribute('disabled'))
+      const disabledSelectAllButton = selectAllButtons.find(button =>
+        button.hasAttribute('disabled')
+      )
 
       const addCustomButton = screen.getByRole('button', { name: /add custom/i })
 
@@ -331,9 +326,7 @@ describe('App Component - Scraping Lock Functionality', () => {
 
       // Get the specific navigation button in the header
       const scrapingButtons = screen.getAllByRole('button', { name: /scraping/i })
-      const headerScrapingButton = scrapingButtons.find(button =>
-        button.closest('header') !== null
-      )
+      const headerScrapingButton = scrapingButtons.find(button => button.closest('header') !== null)
 
       expect(headerScrapingButton).not.toBeDisabled()
     })
@@ -358,8 +351,8 @@ describe('App Component - Scraping Lock Functionality', () => {
 
       // Get the specific disabled navigation button in the header
       const configButtons = screen.getAllByRole('button', { name: /configuration/i })
-      const disabledHeaderButton = configButtons.find(button =>
-        button.closest('header') !== null && button.hasAttribute('disabled')
+      const disabledHeaderButton = configButtons.find(
+        button => button.closest('header') !== null && button.hasAttribute('disabled')
       )
 
       expect(disabledHeaderButton).toBeDisabled()

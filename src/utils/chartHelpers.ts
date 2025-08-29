@@ -49,7 +49,7 @@ export const COLOR_PALETTES = {
     '#8B5CF6', // Purple
     '#06B6D4', // Cyan
     '#84CC16', // Lime
-    '#F97316'  // Orange
+    '#F97316', // Orange
   ],
   accessibility: [
     '#1f77b4', // Blue
@@ -59,17 +59,9 @@ export const COLOR_PALETTES = {
     '#9467bd', // Purple
     '#8c564b', // Brown
     '#e377c2', // Pink
-    '#7f7f7f'  // Gray
+    '#7f7f7f', // Gray
   ],
-  heatmap: [
-    '#fee5d9',
-    '#fcbba1',
-    '#fc9272',
-    '#fb6a4a',
-    '#ef3b2c',
-    '#cb181d',
-    '#99000d'
-  ]
+  heatmap: ['#fee5d9', '#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#99000d'],
 }
 
 /**
@@ -85,10 +77,10 @@ export function generateIndustryDistribution(
     const industry = business.industry || 'Unknown'
     const current = industryMap.get(industry) || { count: 0, totalScore: 0 }
     const score = scores?.get(business.id)?.score || 0
-    
+
     industryMap.set(industry, {
       count: current.count + 1,
-      totalScore: current.totalScore + score
+      totalScore: current.totalScore + score,
     })
   })
 
@@ -97,7 +89,7 @@ export function generateIndustryDistribution(
       name: industry,
       value: data.count,
       color: COLOR_PALETTES.primary[index % COLOR_PALETTES.primary.length],
-      label: `${industry}: ${data.count} businesses (Avg Score: ${Math.round(data.totalScore / data.count)})`
+      label: `${industry}: ${data.count} businesses (Avg Score: ${Math.round(data.totalScore / data.count)})`,
     }))
     .sort((a, b) => b.value - a.value)
 }
@@ -111,7 +103,7 @@ export function generateScoreDistribution(scores: Map<string, LeadScore>): Chart
     { range: '21-40', min: 21, max: 40, count: 0 },
     { range: '41-60', min: 41, max: 60, count: 0 },
     { range: '61-80', min: 61, max: 80, count: 0 },
-    { range: '81-100', min: 81, max: 100, count: 0 }
+    { range: '81-100', min: 81, max: 100, count: 0 },
   ]
 
   scores.forEach(score => {
@@ -123,7 +115,7 @@ export function generateScoreDistribution(scores: Map<string, LeadScore>): Chart
     name: bucket.range,
     value: bucket.count,
     color: COLOR_PALETTES.accessibility[index],
-    label: `Score ${bucket.range}: ${bucket.count} leads`
+    label: `Score ${bucket.range}: ${bucket.count} leads`,
   }))
 }
 
@@ -134,35 +126,38 @@ export function generateGeographicDistribution(
   businesses: BusinessRecord[],
   scores?: Map<string, LeadScore>
 ): GeographicData[] {
-  const stateMap = new Map<string, { count: number; totalScore: number; coords: { lat: number; lng: number } }>()
+  const stateMap = new Map<
+    string,
+    { count: number; totalScore: number; coords: { lat: number; lng: number } }
+  >()
 
   // State coordinates for mapping (simplified)
   const stateCoordinates: Record<string, { lat: number; lng: number }> = {
-    'CA': { lat: 36.7783, lng: -119.4179 },
-    'NY': { lat: 43.2994, lng: -74.2179 },
-    'TX': { lat: 31.9686, lng: -99.9018 },
-    'FL': { lat: 27.7663, lng: -81.6868 },
-    'WA': { lat: 47.7511, lng: -120.7401 },
-    'IL': { lat: 40.6331, lng: -89.3985 },
-    'PA': { lat: 41.2033, lng: -77.1945 },
-    'OH': { lat: 40.4173, lng: -82.9071 }
+    CA: { lat: 36.7783, lng: -119.4179 },
+    NY: { lat: 43.2994, lng: -74.2179 },
+    TX: { lat: 31.9686, lng: -99.9018 },
+    FL: { lat: 27.7663, lng: -81.6868 },
+    WA: { lat: 47.7511, lng: -120.7401 },
+    IL: { lat: 40.6331, lng: -89.3985 },
+    PA: { lat: 41.2033, lng: -77.1945 },
+    OH: { lat: 40.4173, lng: -82.9071 },
   }
 
   businesses.forEach(business => {
     const state = business.address?.state
     if (!state) return
 
-    const current = stateMap.get(state) || { 
-      count: 0, 
-      totalScore: 0, 
-      coords: stateCoordinates[state] || { lat: 0, lng: 0 }
+    const current = stateMap.get(state) || {
+      count: 0,
+      totalScore: 0,
+      coords: stateCoordinates[state] || { lat: 0, lng: 0 },
     }
     const score = scores?.get(business.id)?.score || 0
-    
+
     stateMap.set(state, {
       count: current.count + 1,
       totalScore: current.totalScore + score,
-      coords: current.coords
+      coords: current.coords,
     })
   })
 
@@ -170,7 +165,7 @@ export function generateGeographicDistribution(
     state,
     count: data.count,
     averageScore: data.count > 0 ? Math.round(data.totalScore / data.count) : 0,
-    coordinates: data.coords
+    coordinates: data.coords,
   }))
 }
 
@@ -218,11 +213,11 @@ export function generateConversionPrediction(scores: Map<string, LeadScore>): Ch
     { range: '60-79', multiplier: 0.65, label: 'Good Quality' },
     { range: '40-59', multiplier: 0.45, label: 'Medium Quality' },
     { range: '20-39', multiplier: 0.25, label: 'Low Quality' },
-    { range: '0-19', multiplier: 0.10, label: 'Very Low Quality' }
+    { range: '0-19', multiplier: 0.1, label: 'Very Low Quality' },
   ]
 
   const distribution = generateScoreDistribution(scores)
-  
+
   return scoreRanges.map((range, index) => {
     const bucket = distribution.find(d => d.name.includes(range.range.split('-')[0]))
     const leadCount = bucket?.value || 0
@@ -232,7 +227,7 @@ export function generateConversionPrediction(scores: Map<string, LeadScore>): Ch
       name: range.label,
       value: predictedConversions,
       color: COLOR_PALETTES.primary[index],
-      label: `${range.label}: ${predictedConversions} predicted conversions from ${leadCount} leads`
+      label: `${range.label}: ${predictedConversions} predicted conversions from ${leadCount} leads`,
     }
   })
 }
@@ -250,10 +245,10 @@ export function createChartConfig(
     accessibility: {
       ariaLabel: `${type} chart showing ${title}`,
       description: description,
-      textAlternative: `Chart data: ${description}`
+      textAlternative: `Chart data: ${description}`,
     },
     responsive: true,
-    animation: true
+    animation: true,
   }
 }
 
@@ -263,14 +258,14 @@ export function createChartConfig(
 export function generateChartSummary(data: ChartData[], title: string): string {
   const total = data.reduce((sum, item) => sum + item.value, 0)
   const topItems = data.slice(0, 3)
-  
+
   let summary = `${title}: Total of ${total} items. `
-  
+
   if (topItems.length > 0) {
     summary += 'Top categories: '
-    summary += topItems.map(item => 
-      `${item.name} with ${item.value} (${Math.round((item.value / total) * 100)}%)`
-    ).join(', ')
+    summary += topItems
+      .map(item => `${item.name} with ${item.value} (${Math.round((item.value / total) * 100)}%)`)
+      .join(', ')
   }
 
   return summary
@@ -279,7 +274,10 @@ export function generateChartSummary(data: ChartData[], title: string): string {
 /**
  * Format numbers for display
  */
-export function formatNumber(value: number, type: 'count' | 'percentage' | 'score' = 'count'): string {
+export function formatNumber(
+  value: number,
+  type: 'count' | 'percentage' | 'score' = 'count'
+): string {
   switch (type) {
     case 'percentage':
       return `${Math.round(value * 100)}%`
@@ -308,15 +306,15 @@ export function calculateROIPredictions(
   scores: Map<string, LeadScore>,
   averageOrderValue: number = 1000,
   conversionRates: Record<string, number> = {
-    'high': 0.15,
-    'medium': 0.08,
-    'low': 0.03
+    high: 0.15,
+    medium: 0.08,
+    low: 0.03,
   }
 ): { category: string; leads: number; predictedRevenue: number; roi: number }[] {
   const categories = {
     high: { min: 70, max: 100, rate: conversionRates.high },
     medium: { min: 40, max: 69, rate: conversionRates.medium },
-    low: { min: 0, max: 39, rate: conversionRates.low }
+    low: { min: 0, max: 39, rate: conversionRates.low },
   }
 
   return Object.entries(categories).map(([category, config]) => {
@@ -332,7 +330,7 @@ export function calculateROIPredictions(
       category: category.charAt(0).toUpperCase() + category.slice(1),
       leads,
       predictedRevenue: Math.round(predictedRevenue),
-      roi: Math.round(roi * 100) / 100
+      roi: Math.round(roi * 100) / 100,
     }
   })
 }
@@ -347,7 +345,7 @@ export function exportChartDataToCSV(data: ChartData[], filename: string): void 
       const total = data.reduce((sum, d) => sum + d.value, 0)
       const percentage = Math.round((item.value / total) * 100)
       return [item.name, item.value, `${percentage}%`].join(',')
-    })
+    }),
   ].join('\n')
 
   const blob = new Blob([csvContent], { type: 'text/csv' })
@@ -362,14 +360,17 @@ export function exportChartDataToCSV(data: ChartData[], filename: string): void 
 /**
  * Responsive chart dimensions
  */
-export function getResponsiveChartDimensions(containerWidth: number): { width: number; height: number } {
+export function getResponsiveChartDimensions(containerWidth: number): {
+  width: number
+  height: number
+} {
   const aspectRatio = 16 / 9
   const maxWidth = Math.min(containerWidth - 40, 800) // 20px padding on each side
   const height = Math.min(maxWidth / aspectRatio, 400)
-  
+
   return {
     width: maxWidth,
-    height: Math.max(height, 200) // Minimum height
+    height: Math.max(height, 200), // Minimum height
   }
 }
 
@@ -384,7 +385,7 @@ export const HIGH_CONTRAST_COLORS = [
   '#0000FF', // Blue
   '#FFFF00', // Yellow
   '#FF00FF', // Magenta
-  '#00FFFF'  // Cyan
+  '#00FFFF', // Cyan
 ]
 
 /**
@@ -393,6 +394,6 @@ export const HIGH_CONTRAST_COLORS = [
 export function applyHighContrastMode(data: ChartData[]): ChartData[] {
   return data.map((item, index) => ({
     ...item,
-    color: HIGH_CONTRAST_COLORS[index % HIGH_CONTRAST_COLORS.length]
+    color: HIGH_CONTRAST_COLORS[index % HIGH_CONTRAST_COLORS.length],
   }))
 }

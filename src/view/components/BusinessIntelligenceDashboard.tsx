@@ -6,43 +6,43 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  PieChart, 
-  Pie, 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  PieChart,
+  Pie,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
-  Cell
+  Cell,
 } from 'recharts'
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Target, 
-  DollarSign, 
-  Users, 
+import {
+  TrendingUp,
+  TrendingDown,
+  Target,
+  DollarSign,
+  Users,
   MapPin,
   Download,
   RefreshCw,
   Eye,
-  EyeOff
+  EyeOff,
 } from 'lucide-react'
 import { BusinessRecord } from '@/types/business'
 import { LeadScore } from '@/lib/aiLeadScoring'
 import { useBusinessInsights } from '@/hooks/useBusinessInsights'
 import { usePredictiveAnalytics } from '@/hooks/usePredictiveAnalytics'
-import { 
-  createChartConfig, 
-  generateChartSummary, 
-  getScoreColor, 
+import {
+  createChartConfig,
+  generateChartSummary,
+  getScoreColor,
   formatNumber,
-  applyHighContrastMode
+  applyHighContrastMode,
 } from '@/utils/chartHelpers'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Button } from './ui/Button'
@@ -59,10 +59,12 @@ export interface BusinessIntelligenceDashboardProps {
 export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboardProps> = ({
   businesses,
   scores,
-  className = ''
+  className = '',
 }) => {
   const [highContrastMode, setHighContrastMode] = useState(false)
-  const [selectedView, setSelectedView] = useState<'overview' | 'trends' | 'predictions'>('overview')
+  const [selectedView, setSelectedView] = useState<'overview' | 'trends' | 'predictions'>(
+    'overview'
+  )
 
   // Use custom hooks for insights and predictions
   const {
@@ -70,10 +72,10 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
     isLoading: insightsLoading,
     error: insightsError,
     refreshInsights,
-    exportInsights
+    exportInsights,
   } = useBusinessInsights(businesses, scores, {
     autoRefresh: true,
-    includeROI: true
+    includeROI: true,
   })
 
   const {
@@ -83,11 +85,11 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
     isLoading: predictionsLoading,
     error: predictionsError,
     runPredictions,
-    exportPredictions
+    exportPredictions,
   } = usePredictiveAnalytics(businesses, scores, {
     enableTrendAnalysis: true,
     enableROIForecasting: true,
-    enableMarketInsights: true
+    enableMarketInsights: true,
   })
 
   const isLoading = insightsLoading || predictionsLoading
@@ -102,7 +104,7 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div 
+        <div
           className="bg-white p-3 border border-gray-300 rounded shadow-lg"
           role="tooltip"
           aria-label={`Chart data for ${label}`}
@@ -135,16 +137,11 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
       <div className={`p-6 ${className}`}>
         <Card className="border-red-200 bg-red-50">
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-red-800 mb-2">
-              Unable to Generate Insights
-            </h3>
+            <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Generate Insights</h3>
             <p className="text-red-600 mb-4">
               {insightsError || predictionsError || 'No data available for analysis'}
             </p>
-            <Button 
-              onClick={refreshInsights}
-              className="bg-red-600 hover:bg-red-700"
-            >
+            <Button onClick={refreshInsights} className="bg-red-600 hover:bg-red-700">
               <RefreshCw className="w-4 h-4 mr-2" />
               Retry
             </Button>
@@ -159,14 +156,10 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Business Intelligence Dashboard
-          </h1>
-          <p className="text-gray-600 mt-1">
-            AI-powered insights and predictive analytics
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900">Business Intelligence Dashboard</h1>
+          <p className="text-gray-600 mt-1">AI-powered insights and predictive analytics</p>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"
@@ -176,16 +169,12 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
             {highContrastMode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             {highContrastMode ? 'Normal' : 'High Contrast'}
           </Button>
-          
-          <Button
-            variant="outline"
-            onClick={refreshInsights}
-            aria-label="Refresh insights"
-          >
+
+          <Button variant="outline" onClick={refreshInsights} aria-label="Refresh insights">
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>
-          
+
           <Button
             variant="outline"
             onClick={() => exportInsights('csv')}
@@ -202,7 +191,7 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
         {[
           { key: 'overview', label: 'Overview' },
           { key: 'trends', label: 'Trends' },
-          { key: 'predictions', label: 'Predictions' }
+          { key: 'predictions', label: 'Predictions' },
         ].map(({ key, label }) => (
           <button
             key={key}
@@ -240,7 +229,10 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Average Score</p>
-                <p className="text-2xl font-bold" style={{ color: getScoreColor(insights.summary.averageScore) }}>
+                <p
+                  className="text-2xl font-bold"
+                  style={{ color: getScoreColor(insights.summary.averageScore) }}
+                >
                   {insights.summary.averageScore}/100
                 </p>
               </div>
@@ -287,9 +279,12 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
               <CardTitle>Industry Distribution</CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
-                role="img" 
-                aria-label={generateChartSummary(insights.industryDistribution, 'Industry distribution')}
+              <div
+                role="img"
+                aria-label={generateChartSummary(
+                  insights.industryDistribution,
+                  'Industry distribution'
+                )}
               >
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
@@ -323,9 +318,12 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
               <CardTitle>Lead Score Distribution</CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
-                role="img" 
-                aria-label={generateChartSummary(insights.scoreDistribution, 'Lead score distribution')}
+              <div
+                role="img"
+                aria-label={generateChartSummary(
+                  insights.scoreDistribution,
+                  'Lead score distribution'
+                )}
               >
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={processChartData(insights.scoreDistribution)}>
@@ -353,7 +351,7 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {insights.geographicDistribution.slice(0, 6).map((location) => (
+                {insights.geographicDistribution.slice(0, 6).map(location => (
                   <div key={location.state} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">{location.state}</span>
@@ -361,7 +359,7 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
                     </div>
                     <div className="mt-2">
                       <span className="text-sm text-gray-600">Avg Score: </span>
-                      <span 
+                      <span
                         className="font-medium"
                         style={{ color: getScoreColor(location.averageScore) }}
                       >
@@ -392,10 +390,10 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
                     <YAxis />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="#3B82F6" 
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#3B82F6"
                       strokeWidth={2}
                       name="Businesses Discovered"
                     />
@@ -423,12 +421,17 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
                           ) : insight.trend === 'declining' ? (
                             <TrendingDown className="w-4 h-4 text-red-600 mr-1" />
                           ) : null}
-                          <span className={`text-sm ${
-                            insight.trend === 'growing' ? 'text-green-600' : 
-                            insight.trend === 'declining' ? 'text-red-600' : 
-                            'text-gray-600'
-                          }`}>
-                            {insight.trend} ({insight.growthRate > 0 ? '+' : ''}{insight.growthRate.toFixed(1)}%)
+                          <span
+                            className={`text-sm ${
+                              insight.trend === 'growing'
+                                ? 'text-green-600'
+                                : insight.trend === 'declining'
+                                  ? 'text-red-600'
+                                  : 'text-gray-600'
+                            }`}
+                          >
+                            {insight.trend} ({insight.growthRate > 0 ? '+' : ''}
+                            {insight.growthRate.toFixed(1)}%)
                           </span>
                         </div>
                       </div>
@@ -460,7 +463,10 @@ export const BusinessIntelligenceDashboard: React.FC<BusinessIntelligenceDashboa
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {roiForecasts.map((forecast, index) => (
-                  <div key={index} className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg">
+                  <div
+                    key={index}
+                    className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg"
+                  >
                     <h4 className="font-medium text-gray-900 mb-2">{forecast.timeframe}</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">

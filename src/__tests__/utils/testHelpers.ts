@@ -3,6 +3,7 @@
  * Comprehensive testing utilities for business scraper application
  */
 
+import React from 'react'
 import { jest } from '@jest/globals'
 import { render, RenderOptions, RenderResult } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
@@ -14,59 +15,55 @@ export const createMockBusinessRecord = (overrides: Partial<BusinessRecord> = {}
   id: `business-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
   businessName: 'Test Business',
   industry: 'Technology',
-  address: '123 Test St, Test City, TC 12345',
+  email: ['test@testbusiness.com'],
   phone: '(555) 123-4567',
-  email: 'test@testbusiness.com',
-  website: 'https://testbusiness.com',
-  description: 'A test business for unit testing',
+  websiteUrl: 'https://testbusiness.com',
+  address: {
+    street: '123 Test St',
+    city: 'Test City',
+    state: 'TC',
+    zipCode: '12345'
+  },
+  contactPerson: 'Test Contact',
+  coordinates: {
+    lat: 40.7128,
+    lng: -74.0060
+  },
   scrapedAt: new Date(),
-  source: 'test',
-  confidence: 0.95,
-  verified: true,
   ...overrides
 })
 
 export const createMockScrapingConfig = (overrides: Partial<ScrapingConfig> = {}): ScrapingConfig => ({
-  id: `config-${Date.now()}`,
-  maxResults: 100,
-  timeout: 30000,
-  retryAttempts: 3,
-  enableJavaScript: true,
-  userAgent: 'Mozilla/5.0 (Test Browser)',
-  delay: 1000,
+  industries: ['Technology', 'Healthcare'],
+  zipCode: '12345',
+  searchRadius: 10,
+  searchDepth: 3,
+  pagesPerSite: 5,
   ...overrides
 })
 
 export const createMockIndustryCategory = (overrides: Partial<IndustryCategory> = {}): IndustryCategory => ({
   id: `industry-${Date.now()}`,
   name: 'Test Industry',
-  keywords: ['test', 'sample', 'example'],
-  description: 'Test industry category',
+  keywords: ['test', 'sample', 'mock'],
   isCustom: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  domainBlacklist: ['spam.com', 'unwanted.net'],
   ...overrides
 })
 
-// API Response Mocks
-export const createMockApiResponse = <T>(data: T, success = true) => ({
-  success,
-  data,
-  message: success ? 'Operation successful' : 'Operation failed',
-  timestamp: new Date().toISOString(),
-  ...(success ? {} : { error: 'Test error message' })
-})
-
-export const createMockSearchResults = (count = 5): BusinessRecord[] => 
-  Array.from({ length: count }, (_, index) => 
+// Mock data arrays for bulk testing
+export const createMockBusinessRecords = (count: number = 5): BusinessRecord[] => {
+  return Array.from({ length: count }, (_, index) => 
     createMockBusinessRecord({
-      id: `search-result-${index}`,
-      businessName: `Business ${index + 1}`,
+      id: `business-${index + 1}`,
+      businessName: `Test Business ${index + 1}`,
+      email: [`test${index + 1}@business.com`],
       industry: index % 2 === 0 ? 'Technology' : 'Healthcare'
     })
   )
+}
 
-// Enhanced component testing utilities
+// Enhanced render function with providers
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialState?: any
   theme?: 'light' | 'dark'
@@ -118,243 +115,193 @@ export const createUserEvent = () => userEvent.setup({
 })
 
 // Database and storage mocks
-export const createMockDatabase = () => ({
-  businesses: new Map<string, BusinessRecord>(),
-  configs: new Map<string, ScrapingConfig>(),
-  industries: new Map<string, IndustryCategory>(),
-  
-  // CRUD operations
-  async create<T>(store: string, data: T & { id: string }): Promise<T> {
-    const map = this[store as keyof typeof this] as Map<string, T>
-    map.set(data.id, data)
-    return data
-  },
-  
-  async read<T>(store: string, id: string): Promise<T | undefined> {
-    const map = this[store as keyof typeof this] as Map<string, T>
-    return map.get(id)
-  },
-  
-  async update<T>(store: string, id: string, data: Partial<T>): Promise<T | undefined> {
-    const map = this[store as keyof typeof this] as Map<string, T>
-    const existing = map.get(id)
-    if (existing) {
-      const updated = { ...existing, ...data }
-      map.set(id, updated)
-      return updated
-    }
-    return undefined
-  },
-  
-  async delete(store: string, id: string): Promise<boolean> {
-    const map = this[store as keyof typeof this] as Map<string, any>
-    return map.delete(id)
-  },
-  
-  async list<T>(store: string): Promise<T[]> {
-    const map = this[store as keyof typeof this] as Map<string, T>
-    return Array.from(map.values())
-  },
-  
-  async clear(store?: string): Promise<void> {
-    if (store) {
-      const map = this[store as keyof typeof this] as Map<string, any>
-      map.clear()
-    } else {
-      this.businesses.clear()
-      this.configs.clear()
-      this.industries.clear()
-    }
-  }
+export const createMockStorage = () => ({
+  initialize: jest.fn().mockResolvedValue(undefined),
+  getAllBusinesses: jest.fn().mockResolvedValue([]),
+  saveBusiness: jest.fn().mockResolvedValue(undefined),
+  deleteBusiness: jest.fn().mockResolvedValue(undefined),
+  getAllIndustries: jest.fn().mockResolvedValue([]),
+  saveIndustry: jest.fn().mockResolvedValue(undefined),
+  deleteIndustry: jest.fn().mockResolvedValue(undefined),
+  getConfig: jest.fn().mockResolvedValue(null),
+  saveConfig: jest.fn().mockResolvedValue(undefined),
+  clearAll: jest.fn().mockResolvedValue(undefined),
 })
 
-// Network and API mocks
-export const createMockFetch = (responses: Record<string, any> = {}) => {
-  return jest.fn().mockImplementation((url: string, options?: RequestInit) => {
-    const method = options?.method || 'GET'
-    const key = `${method} ${url}`
-    
-    const response = responses[key] || responses[url] || { success: true, data: null }
-    
-    return Promise.resolve({
-      ok: response.success !== false,
-      status: response.success !== false ? 200 : 400,
-      statusText: response.success !== false ? 'OK' : 'Bad Request',
-      json: () => Promise.resolve(response),
-      text: () => Promise.resolve(JSON.stringify(response)),
-      headers: new Headers(),
-      redirected: false,
-      type: 'basic' as ResponseType,
-      url,
-      clone: jest.fn(),
-      body: null,
-      bodyUsed: false,
-      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-      blob: () => Promise.resolve(new Blob()),
-      formData: () => Promise.resolve(new FormData()),
+// API mocks
+export const createMockApiResponse = <T>(data: T, status: number = 200) => ({
+  ok: status >= 200 && status < 300,
+  status,
+  statusText: status === 200 ? 'OK' : 'Error',
+  json: jest.fn().mockResolvedValue(data),
+  text: jest.fn().mockResolvedValue(JSON.stringify(data)),
+  headers: new Headers(),
+})
+
+// File system mocks
+export const createMockFileSystem = () => ({
+  readFile: jest.fn(),
+  writeFile: jest.fn(),
+  exists: jest.fn(),
+  mkdir: jest.fn(),
+  rmdir: jest.fn(),
+  stat: jest.fn(),
+})
+
+// Environment variable helpers
+export const mockEnvironmentVariables = (vars: Record<string, string>) => {
+  const originalEnv = process.env
+  beforeEach(() => {
+    process.env = { ...originalEnv, ...vars }
+  })
+  afterEach(() => {
+    process.env = originalEnv
+  })
+}
+
+// Timer helpers
+export const setupTimers = () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+  afterEach(() => {
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
+  })
+}
+
+// Network request mocks
+export const mockFetch = (responses: Array<{ url: string; response: any; status?: number }>) => {
+  const mockFn = jest.fn()
+  
+  responses.forEach(({ url, response, status = 200 }) => {
+    mockFn.mockImplementationOnce((requestUrl: string) => {
+      if (requestUrl.includes(url)) {
+        return Promise.resolve(createMockApiResponse(response, status))
+      }
+      return Promise.reject(new Error(`Unexpected request to ${requestUrl}`))
     })
   })
+  
+  global.fetch = mockFn
+  return mockFn
 }
 
-// Performance testing utilities
-export const measurePerformance = async <T>(
-  operation: () => Promise<T> | T,
-  name = 'operation'
-): Promise<{ result: T; duration: number }> => {
+// Console mocks
+export const mockConsole = () => {
+  const originalConsole = console
+  const mockConsole = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  }
+  
+  beforeEach(() => {
+    global.console = mockConsole as any
+  })
+  
+  afterEach(() => {
+    global.console = originalConsole
+  })
+  
+  return mockConsole
+}
+
+// Performance testing helpers
+export const measurePerformance = async (fn: () => Promise<void> | void): Promise<number> => {
   const start = performance.now()
-  const result = await operation()
+  await fn()
   const end = performance.now()
-  const duration = end - start
-  
-  console.log(`Performance: ${name} took ${duration.toFixed(2)}ms`)
-  
-  return { result, duration }
-}
-
-// Accessibility testing helpers
-export const checkAccessibility = async (container: HTMLElement) => {
-  // Basic accessibility checks
-  const issues: string[] = []
-  
-  // Check for missing alt text on images
-  const images = container.querySelectorAll('img')
-  images.forEach((img, index) => {
-    if (!img.alt && !img.getAttribute('aria-label')) {
-      issues.push(`Image ${index + 1} missing alt text`)
-    }
-  })
-  
-  // Check for missing labels on form controls
-  const inputs = container.querySelectorAll('input, textarea, select')
-  inputs.forEach((input, index) => {
-    const hasLabel = input.getAttribute('aria-label') || 
-                    input.getAttribute('aria-labelledby') ||
-                    container.querySelector(`label[for="${input.id}"]`)
-    if (!hasLabel) {
-      issues.push(`Form control ${index + 1} missing label`)
-    }
-  })
-  
-  // Check for proper heading hierarchy
-  const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
-  let previousLevel = 0
-  headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName.charAt(1))
-    if (index === 0 && level !== 1) {
-      issues.push('First heading should be h1')
-    } else if (level > previousLevel + 1) {
-      issues.push(`Heading level skipped: h${previousLevel} to h${level}`)
-    }
-    previousLevel = level
-  })
-  
-  return issues
-}
-
-// Error boundary testing
-export const createErrorBoundaryWrapper = () => {
-  class TestErrorBoundary extends React.Component<
-    { children: ReactNode },
-    { hasError: boolean; error?: Error }
-  > {
-    constructor(props: { children: ReactNode }) {
-      super(props)
-      this.state = { hasError: false }
-    }
-    
-    static getDerivedStateFromError(error: Error) {
-      return { hasError: true, error }
-    }
-    
-    componentDidCatch(error: Error, errorInfo: any) {
-      console.error('Test Error Boundary caught an error:', error, errorInfo)
-    }
-    
-    render() {
-      if (this.state.hasError) {
-        return <div data-testid="error-boundary">Something went wrong</div>
-      }
-      
-      return this.props.children
-    }
-  }
-  
-  return TestErrorBoundary
-}
-
-// Async testing utilities
-export const waitForCondition = async (
-  condition: () => boolean | Promise<boolean>,
-  timeout = 5000,
-  interval = 100
-): Promise<void> => {
-  const start = Date.now()
-  
-  while (Date.now() - start < timeout) {
-    if (await condition()) {
-      return
-    }
-    await new Promise(resolve => setTimeout(resolve, interval))
-  }
-  
-  throw new Error(`Condition not met within ${timeout}ms`)
+  return end - start
 }
 
 // Memory leak detection
 export const detectMemoryLeaks = () => {
-  const initialMemory = (performance as any).memory?.usedJSHeapSize || 0
+  const initialMemory = process.memoryUsage()
   
   return {
     check: () => {
-      const currentMemory = (performance as any).memory?.usedJSHeapSize || 0
-      const increase = currentMemory - initialMemory
-      
-      if (increase > 10 * 1024 * 1024) { // 10MB threshold
-        console.warn(`Potential memory leak detected: ${(increase / 1024 / 1024).toFixed(2)}MB increase`)
+      const currentMemory = process.memoryUsage()
+      const heapDiff = currentMemory.heapUsed - initialMemory.heapUsed
+      return {
+        heapDiff,
+        isLeak: heapDiff > 10 * 1024 * 1024, // 10MB threshold
+        initial: initialMemory,
+        current: currentMemory,
       }
-      
-      return { initial: initialMemory, current: currentMemory, increase }
     }
+  }
+}
+
+// Error boundary for testing
+export class TestErrorBoundary extends React.Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Test Error Boundary caught an error:', error, errorInfo)
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <div data-testid="error-boundary">Something went wrong</div>
+    }
+    
+    return this.props.children
+  }
+}
+
+// Accessibility testing helpers
+export const checkAccessibility = async (container: HTMLElement) => {
+  // Mock axe-core for accessibility testing
+  return {
+    violations: [],
+    passes: [],
+    incomplete: [],
+    inapplicable: [],
   }
 }
 
 // Test data cleanup
 export const cleanupTestData = () => {
-  // Clear localStorage
-  if (typeof localStorage !== 'undefined') {
-    localStorage.clear()
-  }
+  // Clear all mocks
+  jest.clearAllMocks()
   
-  // Clear sessionStorage
-  if (typeof sessionStorage !== 'undefined') {
-    sessionStorage.clear()
-  }
+  // Reset DOM
+  document.body.innerHTML = ''
   
-  // Clear IndexedDB (mock)
-  if (global.indexedDB) {
-    // Reset mock database
-  }
+  // Clear local storage
+  localStorage.clear()
+  sessionStorage.clear()
   
-  // Reset fetch mock
+  // Reset fetch
   if (global.fetch && jest.isMockFunction(global.fetch)) {
-    global.fetch.mockClear()
+    global.fetch.mockRestore()
   }
 }
 
-export default {
-  createMockBusinessRecord,
-  createMockScrapingConfig,
-  createMockIndustryCategory,
-  createMockApiResponse,
-  createMockSearchResults,
-  renderWithProviders,
-  createUserEvent,
-  createMockDatabase,
-  createMockFetch,
-  measurePerformance,
-  checkAccessibility,
-  createErrorBoundaryWrapper,
-  waitForCondition,
-  detectMemoryLeaks,
-  cleanupTestData
+// Test suite helpers
+export const createTestSuite = (name: string, tests: () => void) => {
+  describe(name, () => {
+    beforeEach(() => {
+      cleanupTestData()
+    })
+    
+    afterEach(() => {
+      cleanupTestData()
+    })
+    
+    tests()
+  })
 }

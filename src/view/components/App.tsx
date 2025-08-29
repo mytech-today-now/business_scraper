@@ -942,7 +942,9 @@ export function App(): JSX.Element {
   const { state, resetApplicationData, toggleDarkMode } = useConfig()
   const { scrapingState, hasResults } = useScraperController()
   const { isMobile } = useResponsive()
-  const [activeTab, setActiveTab] = useState<'config' | 'scraping' | 'ai-insights' | 'bi-dashboard'>('config')
+  const [activeTab, setActiveTab] = useState<
+    'config' | 'scraping' | 'ai-insights' | 'bi-dashboard'
+  >('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [isResetting, setIsResetting] = useState(false)

@@ -1,0 +1,63 @@
+# Simple Dockerfile for Business Scraper Application
+# Optimized for development and testing environments
+
+FROM node:18-alpine AS base
+
+# Install system dependencies
+RUN apk add --no-cache \
+    libc6-compat \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+# Set Puppeteer to use installed Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --force && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Create next.config.js for container environment
+RUN echo 'const nextConfig = { \
+  output: "standalone", \
+  typescript: { ignoreBuildErrors: true }, \
+  eslint: { ignoreDuringBuilds: true }, \
+  experimental: { \
+    serverComponentsExternalPackages: ["puppeteer-core"] \
+  } \
+}; \
+module.exports = nextConfig;' > next.config.container.js
+
+# Build application with container config
+RUN cp next.config.container.js next.config.js && npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Change ownership
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Start application
+CMD ["npm", "start"]

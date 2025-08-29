@@ -23,8 +23,8 @@ RUN apk add --no-cache \
 COPY package*.json ./
 COPY yarn.lock* ./
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install dependencies with platform-specific handling
+RUN npm install --omit=dev --no-package-lock --force && npm cache clean --force
 
 # Stage 2: Builder
 FROM node:18-alpine AS builder
@@ -41,8 +41,8 @@ RUN apk add --no-cache \
 COPY package*.json ./
 COPY yarn.lock* ./
 
-# Install all dependencies (including dev)
-RUN npm ci
+# Install all dependencies (including dev) with platform-specific handling
+RUN npm install --no-package-lock --force
 
 # Copy source code
 COPY . .

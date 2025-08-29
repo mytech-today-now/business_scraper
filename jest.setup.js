@@ -132,7 +132,7 @@ const localStorageMock = {
   clear: jest.fn(),
 }
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
+  value: localStorageMock,
 })
 
 // Mock sessionStorage
@@ -143,7 +143,7 @@ const sessionStorageMock = {
   clear: jest.fn(),
 }
 Object.defineProperty(window, 'sessionStorage', {
-  value: sessionStorageMock
+  value: sessionStorageMock,
 })
 
 // Mock URL methods
@@ -155,7 +155,7 @@ if (!global.crypto) {
   Object.defineProperty(global, 'crypto', {
     value: {
       randomUUID: jest.fn(() => 'mocked-uuid'),
-      getRandomValues: jest.fn((arr) => {
+      getRandomValues: jest.fn(arr => {
         for (let i = 0; i < arr.length; i++) {
           arr[i] = Math.floor(Math.random() * 256)
         }
@@ -174,7 +174,7 @@ Object.defineProperty(window, 'performance', {
     measure: jest.fn(),
     getEntriesByType: jest.fn(() => []),
     getEntriesByName: jest.fn(() => []),
-  }
+  },
 })
 
 // Mock requestAnimationFrame
@@ -256,8 +256,6 @@ global.Response = class MockResponse {
     })
   }
 }
-
-
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

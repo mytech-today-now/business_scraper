@@ -83,7 +83,7 @@ export function usePredictiveAnalytics(
     enableROIForecasting = true,
     enableMarketInsights = true,
     historicalDataDays = 90,
-    confidenceThreshold = 0.7
+    confidenceThreshold = 0.7,
   } = options
 
   const [state, setState] = useState<PredictiveAnalyticsState>({
@@ -93,7 +93,7 @@ export function usePredictiveAnalytics(
     marketInsights: [],
     isLoading: false,
     error: null,
-    lastUpdated: null
+    lastUpdated: null,
   })
 
   /**
@@ -106,7 +106,8 @@ export function usePredictiveAnalytics(
       // Analyze historical patterns
       const now = new Date()
       const historicalData = businesses.filter(business => {
-        const daysDiff = (now.getTime() - new Date(business.scrapedAt).getTime()) / (1000 * 60 * 60 * 24)
+        const daysDiff =
+          (now.getTime() - new Date(business.scrapedAt).getTime()) / (1000 * 60 * 60 * 24)
         return daysDiff <= historicalDataDays
       })
 
@@ -123,26 +124,27 @@ export function usePredictiveAnalytics(
       // Next week prediction
       if (weeklyData.length >= 2) {
         const avgWeekly = weeklyData.reduce((sum, week) => sum + week.count, 0) / weeklyData.length
-        const trendMultiplier = 1 + (weeklyTrend / 100)
-        
+        const trendMultiplier = 1 + weeklyTrend / 100
+
         predictions.push({
           period: 'Next Week',
           predictedLeads: Math.round(avgWeekly * trendMultiplier),
           confidence: Math.min(0.9, weeklyData.length / 10),
-          seasonalFactors: detectSeasonalFactors(weeklyData)
+          seasonalFactors: detectSeasonalFactors(weeklyData),
         })
       }
 
       // Next month prediction
       if (monthlyData.length >= 2) {
-        const avgMonthly = monthlyData.reduce((sum, month) => sum + month.count, 0) / monthlyData.length
-        const trendMultiplier = 1 + (monthlyTrend / 100)
-        
+        const avgMonthly =
+          monthlyData.reduce((sum, month) => sum + month.count, 0) / monthlyData.length
+        const trendMultiplier = 1 + monthlyTrend / 100
+
         predictions.push({
           period: 'Next Month',
           predictedLeads: Math.round(avgMonthly * trendMultiplier),
           confidence: Math.min(0.8, monthlyData.length / 6),
-          seasonalFactors: detectSeasonalFactors(monthlyData)
+          seasonalFactors: detectSeasonalFactors(monthlyData),
         })
       }
 
@@ -167,18 +169,21 @@ export function usePredictiveAnalytics(
       const conversionRates = {
         high: 0.15, // 80-100 score
         medium: 0.08, // 50-79 score
-        low: 0.03 // 0-49 score
+        low: 0.03, // 0-49 score
       }
 
       const averageOrderValue = 1000 // Default AOV
       const costPerLead = 10 // Default cost per lead
 
       const forecasts: ROIForecast[] = []
-      const timeframes: Array<{ key: '1month' | '3months' | '6months' | '1year', multiplier: number }> = [
+      const timeframes: Array<{
+        key: '1month' | '3months' | '6months' | '1year'
+        multiplier: number
+      }> = [
         { key: '1month', multiplier: 1 },
         { key: '3months', multiplier: 3 },
         { key: '6months', multiplier: 6 },
-        { key: '1year', multiplier: 12 }
+        { key: '1year', multiplier: 12 },
       ]
 
       timeframes.forEach(({ key, multiplier }) => {
@@ -200,14 +205,15 @@ export function usePredictiveAnalytics(
         const projectedMediumLeads = Math.round(totalLeads * mediumRatio)
         const projectedLowLeads = Math.round(totalLeads * lowRatio)
 
-        const conversions = 
+        const conversions =
           projectedHighLeads * conversionRates.high +
           projectedMediumLeads * conversionRates.medium +
           projectedLowLeads * conversionRates.low
 
         const expectedRevenue = conversions * averageOrderValue
         const expectedCosts = totalLeads * costPerLead
-        const projectedROI = expectedCosts > 0 ? (expectedRevenue - expectedCosts) / expectedCosts : 0
+        const projectedROI =
+          expectedCosts > 0 ? (expectedRevenue - expectedCosts) / expectedCosts : 0
 
         forecasts.push({
           timeframe: key,
@@ -219,8 +225,8 @@ export function usePredictiveAnalytics(
             `Average order value: $${averageOrderValue}`,
             `Cost per lead: $${costPerLead}`,
             `Based on ${totalScored} scored leads`,
-            `Historical data: ${historicalDataDays} days`
-          ]
+            `Historical data: ${historicalDataDays} days`,
+          ],
         })
       })
 
@@ -256,9 +262,10 @@ export function usePredictiveAnalytics(
           .map(b => scores.get(b.id)?.score || 0)
           .filter(score => score > 0)
 
-        const avgScore = industryScores.length > 0 
-          ? industryScores.reduce((sum, score) => sum + score, 0) / industryScores.length
-          : 0
+        const avgScore =
+          industryScores.length > 0
+            ? industryScores.reduce((sum, score) => sum + score, 0) / industryScores.length
+            : 0
 
         // Determine trend based on recent data
         const recentBusinesses = industryBusinesses.filter(b => {
@@ -277,7 +284,7 @@ export function usePredictiveAnalytics(
         if (olderBusinesses.length > 0) {
           const recentRate = recentBusinesses.length / 30 // per day
           const olderRate = olderBusinesses.length / 30 // per day
-          
+
           if (recentRate > olderRate * 1.1) {
             trend = 'growing'
             growthRate = ((recentRate - olderRate) / olderRate) * 100
@@ -288,9 +295,12 @@ export function usePredictiveAnalytics(
         }
 
         // Determine competition level based on business density
-        const competitionLevel: 'low' | 'medium' | 'high' = 
-          industryBusinesses.length < 10 ? 'low' :
-          industryBusinesses.length < 50 ? 'medium' : 'high'
+        const competitionLevel: 'low' | 'medium' | 'high' =
+          industryBusinesses.length < 10
+            ? 'low'
+            : industryBusinesses.length < 50
+              ? 'medium'
+              : 'high'
 
         // Generate recommendations
         const recommendations = generateIndustryRecommendations(
@@ -306,7 +316,7 @@ export function usePredictiveAnalytics(
           trend,
           growthRate: Math.round(growthRate * 100) / 100,
           competitionLevel,
-          recommendations
+          recommendations,
         })
       })
 
@@ -334,7 +344,7 @@ export function usePredictiveAnalytics(
         roiForecasts,
         marketInsights,
         isLoading: false,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       }))
 
       logger.info('usePredictiveAnalytics', 'Predictions generated successfully')
@@ -343,7 +353,7 @@ export function usePredictiveAnalytics(
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        isLoading: false
+        isLoading: false,
       }))
       logger.error('usePredictiveAnalytics', 'Failed to run predictions', error)
     }
@@ -353,7 +363,7 @@ export function usePredictiveAnalytics(
     enableMarketInsights,
     generateTrendPredictions,
     generateROIForecasts,
-    generateMarketInsights
+    generateMarketInsights,
   ])
 
   /**
@@ -365,35 +375,35 @@ export function usePredictiveAnalytics(
     try {
       // Placeholder for model training
       // In a real implementation, this would train ML models on historical data
-      
+
       const models: PredictiveModel[] = [
         {
           name: 'Trend Predictor',
           type: 'trend',
           accuracy: 0.75,
           lastTrained: new Date(),
-          predictions: []
+          predictions: [],
         },
         {
           name: 'ROI Forecaster',
           type: 'roi',
           accuracy: 0.68,
           lastTrained: new Date(),
-          predictions: []
+          predictions: [],
         },
         {
           name: 'Market Analyzer',
           type: 'market',
           accuracy: 0.72,
           lastTrained: new Date(),
-          predictions: []
-        }
+          predictions: [],
+        },
       ]
 
       setState(prev => ({
         ...prev,
         models,
-        isLoading: false
+        isLoading: false,
       }))
 
       logger.info('usePredictiveAnalytics', 'Models trained successfully')
@@ -402,7 +412,7 @@ export function usePredictiveAnalytics(
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        isLoading: false
+        isLoading: false,
       }))
       logger.error('usePredictiveAnalytics', 'Failed to train models', error)
     }
@@ -411,54 +421,59 @@ export function usePredictiveAnalytics(
   /**
    * Export predictions
    */
-  const exportPredictions = useCallback((format: 'json' | 'csv') => {
-    try {
-      const timestamp = new Date().toISOString().split('T')[0]
-      const filename = `predictive-analytics-${timestamp}`
+  const exportPredictions = useCallback(
+    (format: 'json' | 'csv') => {
+      try {
+        const timestamp = new Date().toISOString().split('T')[0]
+        const filename = `predictive-analytics-${timestamp}`
 
-      const exportData = {
-        trendPredictions: state.trendPredictions,
-        roiForecasts: state.roiForecasts,
-        marketInsights: state.marketInsights,
-        generatedAt: new Date().toISOString()
+        const exportData = {
+          trendPredictions: state.trendPredictions,
+          roiForecasts: state.roiForecasts,
+          marketInsights: state.marketInsights,
+          generatedAt: new Date().toISOString(),
+        }
+
+        if (format === 'json') {
+          const jsonData = JSON.stringify(exportData, null, 2)
+          const blob = new Blob([jsonData], { type: 'application/json' })
+          const url = window.URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `${filename}.json`
+          link.click()
+          window.URL.revokeObjectURL(url)
+        } else if (format === 'csv') {
+          // Export ROI forecasts as CSV
+          const csvContent = [
+            ['Timeframe', 'Expected Revenue', 'Expected Costs', 'Projected ROI', 'Confidence'],
+            ...state.roiForecasts.map(forecast => [
+              forecast.timeframe,
+              forecast.expectedRevenue,
+              forecast.expectedCosts,
+              `${forecast.projectedROI}%`,
+              `${Math.round(forecast.confidence * 100)}%`,
+            ]),
+          ]
+            .map(row => row.join(','))
+            .join('\n')
+
+          const blob = new Blob([csvContent], { type: 'text/csv' })
+          const url = window.URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `${filename}.csv`
+          link.click()
+          window.URL.revokeObjectURL(url)
+        }
+
+        logger.info('usePredictiveAnalytics', `Predictions exported as ${format}`)
+      } catch (error) {
+        logger.error('usePredictiveAnalytics', 'Failed to export predictions', error)
       }
-
-      if (format === 'json') {
-        const jsonData = JSON.stringify(exportData, null, 2)
-        const blob = new Blob([jsonData], { type: 'application/json' })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${filename}.json`
-        link.click()
-        window.URL.revokeObjectURL(url)
-      } else if (format === 'csv') {
-        // Export ROI forecasts as CSV
-        const csvContent = [
-          ['Timeframe', 'Expected Revenue', 'Expected Costs', 'Projected ROI', 'Confidence'],
-          ...state.roiForecasts.map(forecast => [
-            forecast.timeframe,
-            forecast.expectedRevenue,
-            forecast.expectedCosts,
-            `${forecast.projectedROI}%`,
-            `${Math.round(forecast.confidence * 100)}%`
-          ])
-        ].map(row => row.join(',')).join('\n')
-
-        const blob = new Blob([csvContent], { type: 'text/csv' })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${filename}.csv`
-        link.click()
-        window.URL.revokeObjectURL(url)
-      }
-
-      logger.info('usePredictiveAnalytics', `Predictions exported as ${format}`)
-    } catch (error) {
-      logger.error('usePredictiveAnalytics', 'Failed to export predictions', error)
-    }
-  }, [state])
+    },
+    [state]
+  )
 
   // Auto-run predictions when data changes
   useEffect(() => {
@@ -471,63 +486,64 @@ export function usePredictiveAnalytics(
     ...state,
     runPredictions,
     trainModels,
-    exportPredictions
+    exportPredictions,
   }
 }
 
 // Helper functions
 function groupBusinessesByWeek(businesses: BusinessRecord[]): { week: string; count: number }[] {
   const weekMap = new Map<string, number>()
-  
+
   businesses.forEach(business => {
     const date = new Date(business.scrapedAt)
     const weekStart = new Date(date)
     weekStart.setDate(date.getDate() - date.getDay())
     const weekKey = weekStart.toISOString().split('T')[0]
-    
+
     weekMap.set(weekKey, (weekMap.get(weekKey) || 0) + 1)
   })
-  
+
   return Array.from(weekMap.entries()).map(([week, count]) => ({ week, count }))
 }
 
 function groupBusinessesByMonth(businesses: BusinessRecord[]): { month: string; count: number }[] {
   const monthMap = new Map<string, number>()
-  
+
   businesses.forEach(business => {
     const date = new Date(business.scrapedAt)
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-    
+
     monthMap.set(monthKey, (monthMap.get(monthKey) || 0) + 1)
   })
-  
+
   return Array.from(monthMap.entries()).map(([month, count]) => ({ month, count }))
 }
 
 function calculateTrend(data: { count: number }[]): number {
   if (data.length < 2) return 0
-  
+
   const recent = data.slice(-3).reduce((sum, d) => sum + d.count, 0) / Math.min(3, data.length)
-  const older = data.slice(0, -3).reduce((sum, d) => sum + d.count, 0) / Math.max(1, data.length - 3)
-  
+  const older =
+    data.slice(0, -3).reduce((sum, d) => sum + d.count, 0) / Math.max(1, data.length - 3)
+
   return older > 0 ? ((recent - older) / older) * 100 : 0
 }
 
 function detectSeasonalFactors(data: { count: number }[]): string[] {
   // Simplified seasonal detection
   const factors: string[] = []
-  
+
   if (data.length >= 4) {
     const avg = data.reduce((sum, d) => sum + d.count, 0) / data.length
     const recent = data[data.length - 1].count
-    
+
     if (recent > avg * 1.2) {
       factors.push('Above average activity')
     } else if (recent < avg * 0.8) {
       factors.push('Below average activity')
     }
   }
-  
+
   return factors
 }
 
@@ -539,24 +555,24 @@ function generateIndustryRecommendations(
   businessCount: number
 ): string[] {
   const recommendations: string[] = []
-  
+
   if (trend === 'growing') {
     recommendations.push(`${industry} is growing - consider increasing investment`)
   } else if (trend === 'declining') {
     recommendations.push(`${industry} is declining - evaluate market position`)
   }
-  
+
   if (avgScore < 50) {
     recommendations.push(`Low average scores in ${industry} - improve targeting`)
   } else if (avgScore > 75) {
     recommendations.push(`High-quality leads in ${industry} - prioritize this market`)
   }
-  
+
   if (competitionLevel === 'low') {
     recommendations.push(`Low competition in ${industry} - opportunity for expansion`)
   } else if (competitionLevel === 'high') {
     recommendations.push(`High competition in ${industry} - focus on differentiation`)
   }
-  
+
   return recommendations
 }

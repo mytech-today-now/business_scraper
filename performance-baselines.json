@@ -1,0 +1,47 @@
+[
+  {
+    "testName": "single-website-scraping",
+    "averageResponseTime": 301,
+    "maxResponseTime": 301,
+    "throughput": 0,
+    "memoryUsage": -4313728,
+    "errorRate": 100,
+    "timestamp": "2025-08-28T19:32:33.629Z"
+  },
+  {
+    "testName": "multiple-website-scraping",
+    "averageResponseTime": 531,
+    "maxResponseTime": 531,
+    "throughput": 0,
+    "memoryUsage": 1814416,
+    "errorRate": 100,
+    "timestamp": "2025-08-28T19:32:34.172Z"
+  },
+  {
+    "testName": "enhanced-scraping-engine",
+    "averageResponseTime": 135,
+    "maxResponseTime": 135,
+    "throughput": 7.407407407407407,
+    "memoryUsage": 2105352,
+    "errorRate": 0,
+    "timestamp": "2025-08-28T19:32:34.310Z"
+  },
+  {
+    "testName": "client-website-scraping",
+    "averageResponseTime": 1,
+    "maxResponseTime": 1,
+    "throughput": 1000,
+    "memoryUsage": 277568,
+    "errorRate": 0,
+    "timestamp": "2025-08-28T19:33:04.497Z"
+  },
+  {
+    "testName": "baseline-comparison-test",
+    "averageResponseTime": 568,
+    "maxResponseTime": 568,
+    "throughput": 0,
+    "memoryUsage": 12682576,
+    "errorRate": 100,
+    "timestamp": "2025-08-28T19:33:15.594Z"
+  }
+]

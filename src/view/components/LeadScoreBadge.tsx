@@ -149,12 +149,16 @@ export function LeadScoreBadge({
   }
 
   // Get the score from props or business record
-  const currentScore = leadScore || (business.leadScore ? {
-    score: business.leadScore.score,
-    confidence: business.leadScore.confidence,
-    factors: business.leadScore.factors,
-    recommendations: business.leadScore.recommendations || []
-  } : null)
+  const currentScore =
+    leadScore ||
+    (business.leadScore
+      ? {
+          score: business.leadScore.score,
+          confidence: business.leadScore.confidence,
+          factors: business.leadScore.factors,
+          recommendations: business.leadScore.recommendations || [],
+        }
+      : null)
 
   // No score available
   if (!currentScore) {
@@ -253,32 +257,44 @@ export function LeadScoreBadge({
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Data Completeness</span>
-                    <span className="font-medium">{Math.round(currentScore.factors.dataCompleteness)}</span>
+                    <span className="font-medium">
+                      {Math.round(currentScore.factors.dataCompleteness)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Contact Quality</span>
-                    <span className="font-medium">{Math.round(currentScore.factors.contactQuality)}</span>
+                    <span className="font-medium">
+                      {Math.round(currentScore.factors.contactQuality)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Business Size</span>
-                    <span className="font-medium">{Math.round(currentScore.factors.businessSize)}</span>
+                    <span className="font-medium">
+                      {Math.round(currentScore.factors.businessSize)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Industry Relevance</span>
-                    <span className="font-medium">{Math.round(currentScore.factors.industryRelevance)}</span>
+                    <span className="font-medium">
+                      {Math.round(currentScore.factors.industryRelevance)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Geographic Desirability</span>
-                    <span className="font-medium">{Math.round(currentScore.factors.geographicDesirability)}</span>
+                    <span className="font-medium">
+                      {Math.round(currentScore.factors.geographicDesirability)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Web Presence</span>
-                    <span className="font-medium">{Math.round(currentScore.factors.webPresence)}</span>
+                    <span className="font-medium">
+                      {Math.round(currentScore.factors.webPresence)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -293,7 +309,9 @@ export function LeadScoreBadge({
                 </div>
                 <div className="space-y-1">
                   {currentScore.recommendations.map((rec, index) => (
-                    <p key={index} className="text-sm text-gray-700">• {rec}</p>
+                    <p key={index} className="text-sm text-gray-700">
+                      • {rec}
+                    </p>
                   ))}
                 </div>
               </div>
@@ -301,7 +319,10 @@ export function LeadScoreBadge({
 
             {/* Last Updated */}
             <div className="mt-4 text-xs text-gray-500 text-center">
-              Calculated: {business.leadScore?.scoredAt ? new Date(business.leadScore.scoredAt).toLocaleString() : 'Just now'}
+              Calculated:{' '}
+              {business.leadScore?.scoredAt
+                ? new Date(business.leadScore.scoredAt).toLocaleString()
+                : 'Just now'}
             </div>
           </div>
         </div>

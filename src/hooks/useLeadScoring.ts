@@ -38,13 +38,10 @@ export interface LeadScoringActions {
 /**
  * Hook for managing lead scoring functionality
  */
-export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoringState & LeadScoringActions {
-  const {
-    autoScore = false,
-    cacheResults = true,
-    batchSize = 10,
-    debounceMs = 300
-  } = options
+export function useLeadScoring(
+  options: UseLeadScoringOptions = {}
+): LeadScoringState & LeadScoringActions {
+  const { autoScore = false, cacheResults = true, batchSize = 10, debounceMs = 300 } = options
 
   const [state, setState] = useState<LeadScoringState>({
     scores: new Map(),
@@ -54,8 +51,8 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
     progress: {
       processed: 0,
       total: 0,
-      percentage: 0
-    }
+      percentage: 0,
+    },
   })
 
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -67,26 +64,27 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
     const initializeService = async () => {
       try {
         setState(prev => ({ ...prev, isLoading: true, error: null }))
-        
+
         if (!aiLeadScoringService) {
           throw new Error('AI Lead Scoring Service not available')
         }
 
         await aiLeadScoringService.initialize()
-        
-        setState(prev => ({ 
-          ...prev, 
-          isInitialized: true, 
-          isLoading: false 
+
+        setState(prev => ({
+          ...prev,
+          isInitialized: true,
+          isLoading: false,
         }))
-        
+
         logger.info('useLeadScoring', 'AI Lead Scoring Service initialized')
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to initialize AI service'
-        setState(prev => ({ 
-          ...prev, 
-          error: errorMessage, 
-          isLoading: false 
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to initialize AI service'
+        setState(prev => ({
+          ...prev,
+          error: errorMessage,
+          isLoading: false,
         }))
         logger.error('useLeadScoring', 'Failed to initialize AI service', error)
       }
@@ -108,151 +106,161 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
   /**
    * Score a single business
    */
-  const scoreBusiness = useCallback(async (business: BusinessRecord): Promise<LeadScore | null> => {
-    if (!state.isInitialized) {
-      logger.warn('useLeadScoring', 'Service not initialized')
-      return null
-    }
-
-    try {
-      // Check cache first
-      if (cacheResults && state.scores.has(business.id)) {
-        return state.scores.get(business.id)!
+  const scoreBusiness = useCallback(
+    async (business: BusinessRecord): Promise<LeadScore | null> => {
+      if (!state.isInitialized) {
+        logger.warn('useLeadScoring', 'Service not initialized')
+        return null
       }
 
-      const score = await aiLeadScoringService.getLeadScore(business)
-      
-      if (cacheResults) {
-        setState(prev => ({
-          ...prev,
-          scores: new Map(prev.scores).set(business.id, score)
-        }))
-      }
+      try {
+        // Check cache first
+        if (cacheResults && state.scores.has(business.id)) {
+          return state.scores.get(business.id)!
+        }
 
-      return score
-    } catch (error) {
-      logger.error('useLeadScoring', `Failed to score business ${business.id}`, error)
-      return null
-    }
-  }, [state.isInitialized, state.scores, cacheResults])
+        const score = await aiLeadScoringService.getLeadScore(business)
+
+        if (cacheResults) {
+          setState(prev => ({
+            ...prev,
+            scores: new Map(prev.scores).set(business.id, score),
+          }))
+        }
+
+        return score
+      } catch (error) {
+        logger.error('useLeadScoring', `Failed to score business ${business.id}`, error)
+        return null
+      }
+    },
+    [state.isInitialized, state.scores, cacheResults]
+  )
 
   /**
    * Score multiple businesses with progress tracking
    */
-  const scoreBusinesses = useCallback(async (businesses: BusinessRecord[]): Promise<void> => {
-    if (!state.isInitialized) {
-      setState(prev => ({ ...prev, error: 'Service not initialized' }))
-      return
-    }
-
-    // Cancel any existing operation
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    abortControllerRef.current = new AbortController()
-    const { signal } = abortControllerRef.current
-
-    setState(prev => ({
-      ...prev,
-      isLoading: true,
-      error: null,
-      progress: {
-        processed: 0,
-        total: businesses.length,
-        percentage: 0
+  const scoreBusinesses = useCallback(
+    async (businesses: BusinessRecord[]): Promise<void> => {
+      if (!state.isInitialized) {
+        setState(prev => ({ ...prev, error: 'Service not initialized' }))
+        return
       }
-    }))
 
-    failedBusinessesRef.current = []
+      // Cancel any existing operation
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
 
-    try {
-      const newScores = new Map(state.scores)
-      let processed = 0
+      abortControllerRef.current = new AbortController()
+      const { signal } = abortControllerRef.current
 
-      // Process in batches to avoid overwhelming the system
-      for (let i = 0; i < businesses.length; i += batchSize) {
-        if (signal.aborted) {
-          throw new Error('Operation cancelled')
+      setState(prev => ({
+        ...prev,
+        isLoading: true,
+        error: null,
+        progress: {
+          processed: 0,
+          total: businesses.length,
+          percentage: 0,
+        },
+      }))
+
+      failedBusinessesRef.current = []
+
+      try {
+        const newScores = new Map(state.scores)
+        let processed = 0
+
+        // Process in batches to avoid overwhelming the system
+        for (let i = 0; i < businesses.length; i += batchSize) {
+          if (signal.aborted) {
+            throw new Error('Operation cancelled')
+          }
+
+          const batch = businesses.slice(i, i + batchSize)
+          const batchPromises = batch.map(async business => {
+            try {
+              // Skip if already cached
+              if (cacheResults && newScores.has(business.id)) {
+                return { business, score: newScores.get(business.id)! }
+              }
+
+              const score = await aiLeadScoringService.getLeadScore(business)
+              return { business, score }
+            } catch (error) {
+              logger.error('useLeadScoring', `Failed to score business ${business.id}`, error)
+              failedBusinessesRef.current.push(business)
+              return null
+            }
+          })
+
+          const batchResults = await Promise.all(batchPromises)
+
+          // Update scores and progress
+          batchResults.forEach(result => {
+            if (result) {
+              newScores.set(result.business.id, result.score)
+            }
+            processed++
+          })
+
+          const percentage = Math.round((processed / businesses.length) * 100)
+
+          setState(prev => ({
+            ...prev,
+            scores: new Map(newScores),
+            progress: {
+              processed,
+              total: businesses.length,
+              percentage,
+            },
+          }))
+
+          // Small delay between batches to prevent UI blocking
+          if (i + batchSize < businesses.length) {
+            await new Promise(resolve => setTimeout(resolve, 50))
+          }
         }
 
-        const batch = businesses.slice(i, i + batchSize)
-        const batchPromises = batch.map(async (business) => {
-          try {
-            // Skip if already cached
-            if (cacheResults && newScores.has(business.id)) {
-              return { business, score: newScores.get(business.id)! }
-            }
-
-            const score = await aiLeadScoringService.getLeadScore(business)
-            return { business, score }
-          } catch (error) {
-            logger.error('useLeadScoring', `Failed to score business ${business.id}`, error)
-            failedBusinessesRef.current.push(business)
-            return null
-          }
-        })
-
-        const batchResults = await Promise.all(batchPromises)
-        
-        // Update scores and progress
-        batchResults.forEach(result => {
-          if (result) {
-            newScores.set(result.business.id, result.score)
-          }
-          processed++
-        })
-
-        const percentage = Math.round((processed / businesses.length) * 100)
-        
         setState(prev => ({
           ...prev,
-          scores: new Map(newScores),
-          progress: {
-            processed,
-            total: businesses.length,
-            percentage
-          }
+          isLoading: false,
+          error:
+            failedBusinessesRef.current.length > 0
+              ? `Failed to score ${failedBusinessesRef.current.length} businesses`
+              : null,
         }))
 
-        // Small delay between batches to prevent UI blocking
-        if (i + batchSize < businesses.length) {
-          await new Promise(resolve => setTimeout(resolve, 50))
-        }
+        logger.info('useLeadScoring', `Scored ${processed} businesses successfully`)
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to score businesses'
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: errorMessage,
+        }))
+        logger.error('useLeadScoring', 'Batch scoring failed', error)
       }
-
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: failedBusinessesRef.current.length > 0 
-          ? `Failed to score ${failedBusinessesRef.current.length} businesses`
-          : null
-      }))
-
-      logger.info('useLeadScoring', `Scored ${processed} businesses successfully`)
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to score businesses'
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }))
-      logger.error('useLeadScoring', 'Batch scoring failed', error)
-    }
-  }, [state.isInitialized, state.scores, batchSize, cacheResults])
+    },
+    [state.isInitialized, state.scores, batchSize, cacheResults]
+  )
 
   /**
    * Debounced version of scoreBusinesses
    */
-  const debouncedScoreBusinesses = useCallback((businesses: BusinessRecord[]) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current)
-    }
+  const debouncedScoreBusinesses = useCallback(
+    (businesses: BusinessRecord[]) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
 
-    debounceTimeoutRef.current = setTimeout(() => {
-      scoreBusinesses(businesses)
-    }, debounceMs)
-  }, [scoreBusinesses, debounceMs])
+      debounceTimeoutRef.current = setTimeout(() => {
+        scoreBusinesses(businesses)
+      }, debounceMs)
+    },
+    [scoreBusinesses, debounceMs]
+  )
 
   /**
    * Clear all scores
@@ -265,8 +273,8 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
       progress: {
         processed: 0,
         total: 0,
-        percentage: 0
-      }
+        percentage: 0,
+      },
     }))
     failedBusinessesRef.current = []
     logger.info('useLeadScoring', 'Scores cleared')
@@ -282,7 +290,7 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
 
     const failedBusinesses = [...failedBusinessesRef.current]
     failedBusinessesRef.current = []
-    
+
     await scoreBusinesses(failedBusinesses)
   }, [scoreBusinesses])
 
@@ -297,7 +305,7 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
       logger.error('useLeadScoring', 'Failed to update configuration', error)
       setState(prev => ({
         ...prev,
-        error: 'Failed to update configuration'
+        error: 'Failed to update configuration',
       }))
     }
   }, [])
@@ -316,6 +324,6 @@ export function useLeadScoring(options: UseLeadScoringOptions = {}): LeadScoring
     scoreBusiness,
     clearScores,
     retryFailed,
-    updateConfig
+    updateConfig,
   }
 }

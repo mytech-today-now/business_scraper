@@ -109,6 +109,20 @@ const nextConfig = {
   // Enable standalone output for Docker deployment
   output: 'standalone',
 
+  // Experimental features for better build performance
+  experimental: {
+    // Disable static generation for API routes that require runtime data
+    isrMemoryCacheSize: 0,
+  },
+
+  // Configure static export behavior
+  trailingSlash: false,
+
+  // Skip static generation for dynamic API routes
+  async generateStaticParams() {
+    return []
+  },
+
   // Temporarily disable TypeScript checking during build
   typescript: {
     ignoreBuildErrors: true,

@@ -331,7 +331,9 @@ export function formatBusinessForExport(business: BusinessRecord): Record<string
       baseData['Contact Quality'] = Math.round(business.leadScore.factors.contactQuality)
       baseData['Business Size'] = Math.round(business.leadScore.factors.businessSize)
       baseData['Industry Relevance'] = Math.round(business.leadScore.factors.industryRelevance)
-      baseData['Geographic Desirability'] = Math.round(business.leadScore.factors.geographicDesirability)
+      baseData['Geographic Desirability'] = Math.round(
+        business.leadScore.factors.geographicDesirability
+      )
       baseData['Web Presence'] = Math.round(business.leadScore.factors.webPresence)
     }
 

@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\playwright.config.ts",
-    "rootDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+    "configFile": "G:\\_kyle\\temp_documents\\GitHub\\business_scraper\\playwright.config.ts",
+    "rootDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
     "forbidOnly": false,
     "fullyParallel": true,
     "globalSetup": null,
@@ -10,9 +10,7 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 16
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "reporter": [
       [
@@ -39,15 +37,13 @@
     "quiet": false,
     "projects": [
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "chromium",
         "name": "chromium",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -55,15 +51,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "firefox",
         "name": "firefox",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -71,15 +65,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "webkit",
         "name": "webkit",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -87,15 +79,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -103,15 +93,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "Mobile Safari",
         "name": "Mobile Safari",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -119,15 +107,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "Microsoft Edge",
         "name": "Microsoft Edge",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -135,15 +121,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/test-results",
+        "outputDir": "G:/_kyle/temp_documents/GitHub/business_scraper/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 16
-        },
+        "metadata": {},
         "id": "Google Chrome",
         "name": "Google Chrome",
-        "testDir": "C:/Users/kyle_/OneDrive/Documents/github/business_scraper/src/tests/e2e",
+        "testDir": "G:/_kyle/temp_documents/GitHub/business_scraper/src/tests/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -154,7 +138,7 @@
     "shard": null,
     "updateSnapshots": "missing",
     "updateSourceMethod": "patch",
-    "version": "1.54.1",
+    "version": "1.55.0",
     "workers": 16,
     "webServer": {
       "command": "npm run dev",
@@ -163,611 +147,19 @@
       "timeout": 120000
     }
   },
-  "suites": [
+  "suites": [],
+  "errors": [
     {
-      "title": "simple-e2e.test.ts",
-      "file": "simple-e2e.test.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Simple E2E Tests",
-          "file": "simple-e2e.test.ts",
-          "line": 11,
-          "column": 6,
-          "specs": [
-            {
-              "title": "should load the homepage successfully",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 3865,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.005Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-539357bdf288700d2933",
-              "file": "simple-e2e.test.ts",
-              "line": 12,
-              "column": 7
-            },
-            {
-              "title": "should handle navigation",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 3707,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.020Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-9b3a370cbba13059a6c8",
-              "file": "simple-e2e.test.ts",
-              "line": 23,
-              "column": 7
-            },
-            {
-              "title": "should be responsive",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
-                      "status": "passed",
-                      "duration": 3862,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.985Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-4bc6a9ab42120f88eac5",
-              "file": "simple-e2e.test.ts",
-              "line": 35,
-              "column": 7
-            },
-            {
-              "title": "should handle errors gracefully",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
-                      "status": "passed",
-                      "duration": 4116,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.984Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-7454635d571f1ee0bfcb",
-              "file": "simple-e2e.test.ts",
-              "line": 47,
-              "column": 7
-            },
-            {
-              "title": "should load within reasonable time",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
-                      "status": "passed",
-                      "duration": 4128,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.991Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-857e80fe4b0babc9659a",
-              "file": "simple-e2e.test.ts",
-              "line": 55,
-              "column": 7
-            },
-            {
-              "title": "should handle basic interactions",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
-                      "status": "passed",
-                      "duration": 3907,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.976Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-a14a5373fcfaf7034d01",
-              "file": "simple-e2e.test.ts",
-              "line": 67,
-              "column": 7
-            },
-            {
-              "title": "should handle form interactions",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
-                      "status": "passed",
-                      "duration": 3916,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.998Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-d2f50babc48449d33086",
-              "file": "simple-e2e.test.ts",
-              "line": 84,
-              "column": 7
-            },
-            {
-              "title": "should handle multiple tabs",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 7,
-                      "parallelIndex": 7,
-                      "status": "passed",
-                      "duration": 3761,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.019Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-70cb58671027927dacdd",
-              "file": "simple-e2e.test.ts",
-              "line": 102,
-              "column": 7
-            },
-            {
-              "title": "should handle browser back/forward",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 8,
-                      "parallelIndex": 8,
-                      "status": "passed",
-                      "duration": 3906,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.987Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-7cfa2163fe03a6f84a53",
-              "file": "simple-e2e.test.ts",
-              "line": 120,
-              "column": 7
-            },
-            {
-              "title": "should handle page refresh",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 9,
-                      "parallelIndex": 9,
-                      "status": "passed",
-                      "duration": 3823,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:10.997Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-535ee2b2316c608645a1",
-              "file": "simple-e2e.test.ts",
-              "line": 136,
-              "column": 7
-            },
-            {
-              "title": "should handle different user agents",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 10,
-                      "parallelIndex": 10,
-                      "status": "passed",
-                      "duration": 3860,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.014Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-855d69afe7c78f79ab16",
-              "file": "simple-e2e.test.ts",
-              "line": 149,
-              "column": 7
-            },
-            {
-              "title": "should handle network conditions",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 11,
-                      "parallelIndex": 11,
-                      "status": "passed",
-                      "duration": 3781,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.005Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-ba07ce6af3de7681e117",
-              "file": "simple-e2e.test.ts",
-              "line": 161,
-              "column": 7
-            },
-            {
-              "title": "should handle JavaScript disabled",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 12,
-                      "parallelIndex": 12,
-                      "status": "failed",
-                      "duration": 621,
-                      "error": {
-                        "message": "TypeError: page.setJavaScriptEnabled is not a function",
-                        "stack": "TypeError: page.setJavaScriptEnabled is not a function\n    at C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\src\\tests\\e2e\\simple-e2e.test.ts:181:16",
-                        "location": {
-                          "file": "C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\src\\tests\\e2e\\simple-e2e.test.ts",
-                          "column": 16,
-                          "line": 181
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 179 |\u001b[39m     \u001b[90m// Create a new page with JavaScript disabled\u001b[39m\n \u001b[90m 180 |\u001b[39m     \u001b[36mconst\u001b[39m page \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m context\u001b[33m.\u001b[39mnewPage()\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 181 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39msetJavaScriptEnabled(\u001b[36mfalse\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 182 |\u001b[39m     \n \u001b[90m 183 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m)\n \u001b[90m 184 |\u001b[39m     \u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\src\\tests\\e2e\\simple-e2e.test.ts",
-                            "column": 16,
-                            "line": 181
-                          },
-                          "message": "TypeError: page.setJavaScriptEnabled is not a function\n\n\u001b[0m \u001b[90m 179 |\u001b[39m     \u001b[90m// Create a new page with JavaScript disabled\u001b[39m\n \u001b[90m 180 |\u001b[39m     \u001b[36mconst\u001b[39m page \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m context\u001b[33m.\u001b[39mnewPage()\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 181 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39msetJavaScriptEnabled(\u001b[36mfalse\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 182 |\u001b[39m     \n \u001b[90m 183 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m)\n \u001b[90m 184 |\u001b[39m     \u001b[0m\n\u001b[2m    at C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\src\\tests\\e2e\\simple-e2e.test.ts:181:16\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.021Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\test-results\\simple-e2e-Simple-E2E-Test-484cd--handle-JavaScript-disabled-chromium\\test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\test-results\\simple-e2e-Simple-E2E-Test-484cd--handle-JavaScript-disabled-chromium\\video.webm"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\kyle_\\OneDrive\\Documents\\github\\business_scraper\\src\\tests\\e2e\\simple-e2e.test.ts",
-                        "column": 16,
-                        "line": 181
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-7827fb9a9f2a27bd1112",
-              "file": "simple-e2e.test.ts",
-              "line": 178,
-              "column": 7
-            },
-            {
-              "title": "should handle cookies and local storage",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 13,
-                      "parallelIndex": 13,
-                      "status": "passed",
-                      "duration": 3818,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.004Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-252d6bc979812a794f0c",
-              "file": "simple-e2e.test.ts",
-              "line": 191,
-              "column": 7
-            },
-            {
-              "title": "should handle accessibility basics",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 14,
-                      "parallelIndex": 14,
-                      "status": "passed",
-                      "duration": 3865,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.020Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-9a0fb083e667bfd5d1fa",
-              "file": "simple-e2e.test.ts",
-              "line": 220,
-              "column": 7
-            },
-            {
-              "title": "should handle performance basics",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 15,
-                      "parallelIndex": 15,
-                      "status": "passed",
-                      "duration": 3766,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-07-22T20:44:11.027Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "bac1d400569ee89bae31-8ecfd95e760165f03032",
-              "file": "simple-e2e.test.ts",
-              "line": 244,
-              "column": 7
-            }
-          ]
-        }
-      ]
+      "message": "Error: Timed out waiting 120000ms from config.webServer.",
+      "stack": "Error: Timed out waiting 120000ms from config.webServer."
     }
   ],
-  "errors": [],
   "stats": {
-    "startTime": "2025-07-22T20:44:03.788Z",
-    "duration": 11815.539999999999,
-    "expected": 15,
+    "startTime": "2025-08-28T19:37:38.263Z",
+    "duration": 121122.8,
+    "expected": 0,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }

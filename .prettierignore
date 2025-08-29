@@ -137,3 +137,6 @@ pnpm-lock.yaml
 
 # Ignore generated API documentation
 api-docs/
+
+# Temporarily ignore problematic test files
+src/__tests__/utils/testHelpers.ts

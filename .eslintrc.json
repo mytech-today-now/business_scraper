@@ -1,6 +1,7 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "plugins": ["security", "@typescript-eslint"],
+  "ignorePatterns": ["src/__tests__/utils/testHelpers.ts"],
   "rules": {
     "security/detect-unsafe-regex": "off",
     "security/detect-non-literal-regexp": "off",

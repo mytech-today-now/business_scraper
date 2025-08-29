@@ -15,43 +15,43 @@ jest.mock('@tensorflow/tfjs', () => ({
     fit: jest.fn(() => Promise.resolve()),
     predict: jest.fn(() => ({
       data: jest.fn(() => Promise.resolve([0.75])),
-      dispose: jest.fn()
+      dispose: jest.fn(),
     })),
-    dispose: jest.fn()
+    dispose: jest.fn(),
   })),
   layers: {
     dense: jest.fn(() => ({})),
-    dropout: jest.fn(() => ({}))
+    dropout: jest.fn(() => ({})),
   },
   train: {
-    adam: jest.fn(() => ({}))
+    adam: jest.fn(() => ({})),
   },
   tensor2d: jest.fn(() => ({
-    dispose: jest.fn()
-  }))
+    dispose: jest.fn(),
+  })),
 }))
 
 jest.mock('@/lib/dataValidationPipeline', () => ({
   dataValidationPipeline: {
-    validateAndClean: jest.fn((business) => ({
+    validateAndClean: jest.fn(business => ({
       isValid: true,
       cleanedData: business,
-      errors: []
+      errors: [],
     })),
-    calculateDataQualityScore: jest.fn(() => Promise.resolve(85))
-  }
+    calculateDataQualityScore: jest.fn(() => Promise.resolve(85)),
+  },
 }))
 
 jest.mock('@/lib/duplicateDetection', () => ({
   duplicateDetectionSystem: {
-    compareRecords: jest.fn(() => Promise.resolve({ isDuplicate: false, similarity: 0.1 }))
-  }
+    compareRecords: jest.fn(() => Promise.resolve({ isDuplicate: false, similarity: 0.1 })),
+  },
 }))
 
 jest.mock('@/lib/smartCacheManager', () => ({
   smartCacheManager: {
-    cacheBusinessData: jest.fn(() => Promise.resolve())
-  }
+    cacheBusinessData: jest.fn(() => Promise.resolve()),
+  },
 }))
 
 describe('AI/ML Workflow Integration', () => {
@@ -70,15 +70,15 @@ describe('AI/ML Workflow Integration', () => {
           suite: 'Suite 200',
           city: 'San Francisco',
           state: 'CA',
-          zipCode: '94105'
+          zipCode: '94105',
         },
         contactPerson: 'Jane Smith',
         coordinates: {
           lat: 37.7749,
-          lng: -122.4194
+          lng: -122.4194,
         },
         industry: 'Technology',
-        scrapedAt: new Date('2024-01-15T10:00:00Z')
+        scrapedAt: new Date('2024-01-15T10:00:00Z'),
       },
       {
         id: 'test-2',
@@ -89,10 +89,10 @@ describe('AI/ML Workflow Integration', () => {
           street: '456 Medical Center Blvd',
           city: 'Los Angeles',
           state: 'CA',
-          zipCode: '90210'
+          zipCode: '90210',
         },
         industry: 'Healthcare',
-        scrapedAt: new Date('2024-01-16T11:00:00Z')
+        scrapedAt: new Date('2024-01-16T11:00:00Z'),
       },
       {
         id: 'test-3',
@@ -103,11 +103,11 @@ describe('AI/ML Workflow Integration', () => {
           street: '789 Main Street',
           city: 'Small Town',
           state: 'TX',
-          zipCode: '75001'
+          zipCode: '75001',
         },
         industry: 'Food Service',
-        scrapedAt: new Date('2024-01-17T12:00:00Z')
-      }
+        scrapedAt: new Date('2024-01-17T12:00:00Z'),
+      },
     ]
   })
 
@@ -121,7 +121,7 @@ describe('AI/ML Workflow Integration', () => {
         enableLeadScoring: true,
         enableValidation: true,
         enableDuplicateDetection: true,
-        enableCaching: true
+        enableCaching: true,
       })
 
       // Verify processing results
@@ -154,10 +154,10 @@ describe('AI/ML Workflow Integration', () => {
           street: '',
           city: '',
           state: '',
-          zipCode: ''
+          zipCode: '',
         },
         industry: '',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       const mixedBusinesses = [...testBusinesses, lowQualityBusiness]
@@ -194,7 +194,7 @@ describe('AI/ML Workflow Integration', () => {
 
       const caBusinesses = [
         result.scores.get('test-1'), // CA
-        result.scores.get('test-2')  // CA
+        result.scores.get('test-2'), // CA
       ]
       const txBusiness = result.scores.get('test-3') // TX
 
@@ -213,12 +213,12 @@ describe('AI/ML Workflow Integration', () => {
       const largeBatch = Array.from({ length: 50 }, (_, index) => ({
         ...testBusinesses[0],
         id: `batch-business-${index}`,
-        businessName: `Business ${index}`
+        businessName: `Business ${index}`,
       }))
 
       const startTime = Date.now()
       const result = await enhancedDataManager.processBatch(largeBatch, {
-        batchSize: 10
+        batchSize: 10,
       })
       const endTime = Date.now()
 
@@ -232,7 +232,7 @@ describe('AI/ML Workflow Integration', () => {
       const invalidBusinesses = [
         ...testBusinesses,
         { ...testBusinesses[0], id: 'invalid-1', businessName: null as any },
-        { ...testBusinesses[0], id: 'invalid-2', email: null as any }
+        { ...testBusinesses[0], id: 'invalid-2', email: null as any },
       ]
 
       const result = await enhancedDataManager.processBatch(invalidBusinesses)
@@ -277,13 +277,13 @@ describe('AI/ML Workflow Integration', () => {
         const recommendations = business.leadScore?.recommendations || []
 
         if (score >= 80) {
-          expect(recommendations.some(rec => 
-            rec.includes('High-quality') || rec.includes('prioritize')
-          )).toBe(true)
+          expect(
+            recommendations.some(rec => rec.includes('High-quality') || rec.includes('prioritize'))
+          ).toBe(true)
         } else if (score < 40) {
-          expect(recommendations.some(rec => 
-            rec.includes('Low-priority') || rec.includes('nurturing')
-          )).toBe(true)
+          expect(
+            recommendations.some(rec => rec.includes('Low-priority') || rec.includes('nurturing'))
+          ).toBe(true)
         }
       })
     })
@@ -295,14 +295,14 @@ describe('AI/ML Workflow Integration', () => {
       const exportData = enhancedDataManager.exportEnhancedData(result.processed)
 
       expect(exportData).toHaveLength(3)
-      
+
       exportData.forEach(record => {
         expect(record).toHaveProperty('leadScore')
         expect(record).toHaveProperty('leadConfidence')
         expect(record).toHaveProperty('dataQuality')
         expect(record).toHaveProperty('recommendations')
         expect(record).toHaveProperty('factors')
-        
+
         // Verify factor scores are included
         if (record.factors) {
           expect(record.factors).toHaveProperty('dataCompleteness')
@@ -319,14 +319,14 @@ describe('AI/ML Workflow Integration', () => {
   describe('Filtering and Sorting', () => {
     it('should filter businesses by lead score', async () => {
       const result = await enhancedDataManager.processBatch(testBusinesses)
-      
+
       const highQualityLeads = enhancedDataManager.getHighQualityLeads(result.processed)
       const mediumQualityLeads = enhancedDataManager.filterByScore(result.processed, 50, 69)
-      
+
       highQualityLeads.forEach(business => {
         expect(business.leadScore?.score).toBeGreaterThanOrEqual(70)
       })
-      
+
       mediumQualityLeads.forEach(business => {
         expect(business.leadScore?.score).toBeGreaterThanOrEqual(50)
         expect(business.leadScore?.score).toBeLessThanOrEqual(69)
@@ -335,17 +335,17 @@ describe('AI/ML Workflow Integration', () => {
 
     it('should sort businesses by lead score', async () => {
       const result = await enhancedDataManager.processBatch(testBusinesses)
-      
+
       const sortedDesc = enhancedDataManager.sortByScore(result.processed, true)
       const sortedAsc = enhancedDataManager.sortByScore(result.processed, false)
-      
+
       // Verify descending order
       for (let i = 0; i < sortedDesc.length - 1; i++) {
         const currentScore = sortedDesc[i].leadScore?.score || 0
         const nextScore = sortedDesc[i + 1].leadScore?.score || 0
         expect(currentScore).toBeGreaterThanOrEqual(nextScore)
       }
-      
+
       // Verify ascending order
       for (let i = 0; i < sortedAsc.length - 1; i++) {
         const currentScore = sortedAsc[i].leadScore?.score || 0
@@ -360,14 +360,14 @@ describe('AI/ML Workflow Integration', () => {
         ...testBusinesses[0],
         id: 'needs-attention',
         email: [], // Missing email
-        phone: undefined // Missing phone
+        phone: undefined, // Missing phone
       }
 
       const allBusinesses = [...testBusinesses, businessNeedingAttention]
       const result = await enhancedDataManager.processBatch(allBusinesses)
-      
+
       const needsAttention = enhancedDataManager.getBusinessesNeedingAttention(result.processed)
-      
+
       expect(needsAttention.length).toBeGreaterThan(0)
       expect(needsAttention.some(b => b.id === 'needs-attention')).toBe(true)
     })

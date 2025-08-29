@@ -2,7 +2,10 @@
 
 ## Overview
 
-The Business Scraper application includes comprehensive AI/ML-powered lead scoring and business intelligence features that transform raw business data into actionable insights. This document provides detailed information about the AI features, their implementation, and usage.
+The Business Scraper application includes comprehensive AI/ML-powered lead
+scoring and business intelligence features that transform raw business data into
+actionable insights. This document provides detailed information about the AI
+features, their implementation, and usage.
 
 ## AI Lead Scoring System
 
@@ -10,9 +13,11 @@ The Business Scraper application includes comprehensive AI/ML-powered lead scori
 
 #### AILeadScoringService (`src/lib/aiLeadScoring.ts`)
 
-The core AI service that provides intelligent lead scoring using TensorFlow.js machine learning models.
+The core AI service that provides intelligent lead scoring using TensorFlow.js
+machine learning models.
 
 **Key Features:**
+
 - Machine learning-based scoring (0-100 scale)
 - Multi-factor analysis with configurable weights
 - Confidence scoring and recommendations
@@ -20,11 +25,15 @@ The core AI service that provides intelligent lead scoring using TensorFlow.js m
 - Fallback rule-based scoring
 
 **Scoring Factors:**
+
 1. **Data Completeness (25% weight)**: Evaluates missing fields and data quality
-2. **Contact Quality (20% weight)**: Assesses email quality, phone availability, contact person
-3. **Business Size (15% weight)**: Estimates business size based on website and address indicators
+2. **Contact Quality (20% weight)**: Assesses email quality, phone availability,
+   contact person
+3. **Business Size (15% weight)**: Estimates business size based on website and
+   address indicators
 4. **Industry Relevance (15% weight)**: Scores based on industry priorities
-5. **Geographic Desirability (15% weight)**: Evaluates location-based preferences
+5. **Geographic Desirability (15% weight)**: Evaluates location-based
+   preferences
 6. **Web Presence (10% weight)**: Assesses website quality and online presence
 
 ### Usage Examples
@@ -67,13 +76,13 @@ aiLeadScoringService.updateConfig({
     businessSize: 0.15,
     industryRelevance: 0.15,
     geographicDesirability: 0.1,
-    webPresence: 0.05
+    webPresence: 0.05,
   },
   industryPriorities: {
-    'Technology': 1.0,
-    'Healthcare': 0.9,
-    'Finance': 0.8
-  }
+    Technology: 1.0,
+    Healthcare: 0.9,
+    Finance: 0.8,
+  },
 })
 ```
 
@@ -81,9 +90,11 @@ aiLeadScoringService.updateConfig({
 
 ### EnhancedDataManager (`src/lib/enhancedDataManager.ts`)
 
-Integrates AI lead scoring into the data processing pipeline with validation, duplicate detection, and caching.
+Integrates AI lead scoring into the data processing pipeline with validation,
+duplicate detection, and caching.
 
 **Features:**
+
 - Automatic lead scoring during data processing
 - Data validation and cleaning
 - Duplicate detection
@@ -101,7 +112,7 @@ const result = await enhancedDataManager.processBatch(businesses, {
   enableValidation: true,
   enableDuplicateDetection: true,
   enableCaching: true,
-  batchSize: 10
+  batchSize: 10,
 })
 
 console.log(`Processed: ${result.stats.processed}`)
@@ -125,11 +136,11 @@ const {
   progress,
   scoreBusinesses,
   scoreBusiness,
-  clearScores
+  clearScores,
 } = useLeadScoring({
   autoScore: true,
   cacheResults: true,
-  batchSize: 10
+  batchSize: 10,
 })
 ```
 
@@ -140,17 +151,12 @@ Generates business intelligence metrics and insights.
 ```typescript
 import { useBusinessInsights } from '@/hooks/useBusinessInsights'
 
-const {
-  insights,
-  isLoading,
-  error,
-  refreshInsights,
-  exportInsights
-} = useBusinessInsights(businesses, scores, {
-  autoRefresh: true,
-  includeROI: true,
-  averageOrderValue: 1000
-})
+const { insights, isLoading, error, refreshInsights, exportInsights } =
+  useBusinessInsights(businesses, scores, {
+    autoRefresh: true,
+    includeROI: true,
+    averageOrderValue: 1000,
+  })
 ```
 
 ### usePredictiveAnalytics
@@ -165,11 +171,11 @@ const {
   roiForecasts,
   marketInsights,
   runPredictions,
-  exportPredictions
+  exportPredictions,
 } = usePredictiveAnalytics(businesses, scores, {
   enableTrendAnalysis: true,
   enableROIForecasting: true,
-  enableMarketInsights: true
+  enableMarketInsights: true,
 })
 ```
 
@@ -180,6 +186,7 @@ const {
 Interactive dashboard with comprehensive AI insights and visualizations.
 
 **Features:**
+
 - Industry distribution pie charts
 - Lead score distribution histograms
 - Geographic mapping with average scores
@@ -192,7 +199,8 @@ Interactive dashboard with comprehensive AI insights and visualizations.
 
 ### Dashboard Sections
 
-1. **Overview Tab**: Key metrics, industry distribution, score distribution, geographic data
+1. **Overview Tab**: Key metrics, industry distribution, score distribution,
+   geographic data
 2. **Trends Tab**: Business discovery trends, market insights, growth analysis
 3. **Predictions Tab**: ROI forecasts, conversion predictions, trend predictions
 
@@ -203,6 +211,7 @@ Interactive dashboard with comprehensive AI insights and visualizations.
 Reusable chart configurations with accessibility features.
 
 **Functions:**
+
 - `generateIndustryDistribution()`: Creates industry breakdown charts
 - `generateScoreDistribution()`: Creates lead score histograms
 - `generateGeographicDistribution()`: Creates geographic analysis
@@ -217,6 +226,7 @@ Reusable chart configurations with accessibility features.
 RESTful API for lead scoring operations.
 
 **POST Endpoints:**
+
 ```typescript
 // Score single business
 POST /api/ai/lead-scoring
@@ -241,6 +251,7 @@ POST /api/ai/lead-scoring
 ```
 
 **GET Endpoints:**
+
 ```typescript
 // Get status
 GET /api/ai/lead-scoring?action=status
@@ -256,6 +267,7 @@ GET /api/ai/lead-scoring?action=config
 All export formats now include AI-generated insights:
 
 **CSV/Excel Exports Include:**
+
 - Lead Score (0-100)
 - Lead Confidence (percentage)
 - Score Date (timestamp)
@@ -264,6 +276,7 @@ All export formats now include AI-generated insights:
 - Data Quality Score
 
 **Business Intelligence Exports:**
+
 - Industry distribution analysis
 - Geographic distribution with average scores
 - ROI predictions and forecasts
@@ -289,7 +302,8 @@ await exportService.exportBusinessInsights(insights, 'pdf', 'bi-report')
 All AI features are fully accessible:
 
 - **Screen Reader Support**: ARIA labels, descriptions, and text alternatives
-- **Keyboard Navigation**: Full keyboard accessibility for all interactive elements
+- **Keyboard Navigation**: Full keyboard accessibility for all interactive
+  elements
 - **High Contrast Mode**: Alternative color schemes for visual accessibility
 - **Semantic HTML**: Proper heading hierarchy and semantic structure
 - **Focus Management**: Clear focus indicators and logical tab order
@@ -405,4 +419,5 @@ To contribute to AI features:
 4. Update documentation for new features
 5. Consider performance implications for large datasets
 
-For detailed implementation examples and advanced usage, refer to the test files in `src/__tests__/` and the component implementations in `src/view/components/`.
+For detailed implementation examples and advanced usage, refer to the test files
+in `src/__tests__/` and the component implementations in `src/view/components/`.

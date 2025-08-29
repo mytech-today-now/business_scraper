@@ -46,10 +46,10 @@ export class EnhancedDataManager {
   async initialize(): Promise<void> {
     try {
       logger.info('EnhancedDataManager', 'Initializing data manager...')
-      
+
       // Initialize AI lead scoring service
       await aiLeadScoringService.initialize()
-      
+
       this.isInitialized = true
       logger.info('EnhancedDataManager', 'Data manager initialized successfully')
     } catch (error) {
@@ -74,7 +74,7 @@ export class EnhancedDataManager {
       enableValidation = true,
       enableDuplicateDetection = true,
       enableCaching = true,
-      batchSize = 10
+      batchSize = 10,
     } = options
 
     const result: ProcessingResult = {
@@ -87,8 +87,8 @@ export class EnhancedDataManager {
         processed: 0,
         scored: 0,
         duplicates: 0,
-        errors: 0
-      }
+        errors: 0,
+      },
     }
 
     logger.info('EnhancedDataManager', `Processing ${businesses.length} businesses`)
@@ -96,7 +96,7 @@ export class EnhancedDataManager {
     // Process in batches to avoid overwhelming the system
     for (let i = 0; i < businesses.length; i += batchSize) {
       const batch = businesses.slice(i, i + batchSize)
-      
+
       for (const business of batch) {
         try {
           let processedBusiness = { ...business }
@@ -107,9 +107,10 @@ export class EnhancedDataManager {
             if (validationResult.cleanedData) {
               processedBusiness = { ...processedBusiness, ...validationResult.cleanedData }
             }
-            
+
             // Update data quality score
-            processedBusiness.dataQualityScore = await dataValidationPipeline.calculateDataQualityScore(business)
+            processedBusiness.dataQualityScore =
+              await dataValidationPipeline.calculateDataQualityScore(business)
           }
 
           // 2. Duplicate detection
@@ -126,38 +127,50 @@ export class EnhancedDataManager {
           if (enableLeadScoring) {
             try {
               const leadScore = await aiLeadScoringService.getLeadScore(processedBusiness)
-              
+
               // Add lead score to business record
               processedBusiness.leadScore = {
                 score: leadScore.score,
                 confidence: leadScore.confidence,
                 scoredAt: new Date(),
                 factors: leadScore.factors,
-                recommendations: leadScore.recommendations
+                recommendations: leadScore.recommendations,
               }
 
               result.scores.set(processedBusiness.id, leadScore)
               result.stats.scored++
             } catch (error) {
-              logger.warn('EnhancedDataManager', `Failed to score business ${processedBusiness.id}`, error)
+              logger.warn(
+                'EnhancedDataManager',
+                `Failed to score business ${processedBusiness.id}`,
+                error
+              )
             }
           }
 
           // 4. Caching
           if (enableCaching) {
             try {
-              await smartCacheManager.cacheBusinessData(processedBusiness.websiteUrl, processedBusiness)
+              await smartCacheManager.cacheBusinessData(
+                processedBusiness.websiteUrl,
+                processedBusiness
+              )
             } catch (error) {
-              logger.warn('EnhancedDataManager', `Failed to cache business ${processedBusiness.id}`, error)
+              logger.warn(
+                'EnhancedDataManager',
+                `Failed to cache business ${processedBusiness.id}`,
+                error
+              )
             }
           }
 
           result.processed.push(processedBusiness)
           result.stats.processed++
-
         } catch (error) {
           logger.error('EnhancedDataManager', `Failed to process business ${business.id}`, error)
-          result.errors.push(`Failed to process ${business.businessName}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+          result.errors.push(
+            `Failed to process ${business.businessName}: ${error instanceof Error ? error.message : 'Unknown error'}`
+          )
           result.stats.errors++
         }
       }
@@ -168,7 +181,10 @@ export class EnhancedDataManager {
       }
     }
 
-    logger.info('EnhancedDataManager', `Processing complete: ${result.stats.processed}/${result.stats.total} processed`)
+    logger.info(
+      'EnhancedDataManager',
+      `Processing complete: ${result.stats.processed}/${result.stats.total} processed`
+    )
     return result
   }
 
@@ -180,21 +196,21 @@ export class EnhancedDataManager {
     options: DataProcessingOptions = {}
   ): Promise<{ business: BusinessRecord; score?: LeadScore; error?: string }> {
     const result = await this.processBatch([business], options)
-    
+
     if (result.processed.length > 0) {
       return {
         business: result.processed[0],
-        score: result.scores.get(business.id)
+        score: result.scores.get(business.id),
       }
     } else if (result.errors.length > 0) {
       return {
         business,
-        error: result.errors[0]
+        error: result.errors[0],
       }
     } else {
       return {
         business,
-        error: 'Unknown processing error'
+        error: 'Unknown processing error',
       }
     }
   }
@@ -208,7 +224,7 @@ export class EnhancedDataManager {
     }
 
     const scores = new Map<string, LeadScore>()
-    
+
     for (const business of businesses) {
       try {
         const leadScore = await aiLeadScoringService.getLeadScore(business)
@@ -238,8 +254,8 @@ export class EnhancedDataManager {
             confidence: score.confidence,
             scoredAt: new Date(),
             factors: score.factors,
-            recommendations: score.recommendations
-          }
+            recommendations: score.recommendations,
+          },
         }
       }
       return business
@@ -285,11 +301,13 @@ export class EnhancedDataManager {
     return businesses.filter(business => {
       const score = business.leadScore?.score
       const dataQuality = business.dataQualityScore
-      
-      return (score !== undefined && score < 50) || 
-             (dataQuality !== undefined && dataQuality < 60) ||
-             !business.email.length ||
-             !business.phone
+
+      return (
+        (score !== undefined && score < 50) ||
+        (dataQuality !== undefined && dataQuality < 60) ||
+        !business.email.length ||
+        !business.phone
+      )
     })
   }
 
@@ -344,14 +362,16 @@ export class EnhancedDataManager {
       dataQuality: business.dataQualityScore || 0,
       recommendations: business.leadScore?.recommendations?.join('; ') || '',
       scoredAt: business.leadScore?.scoredAt?.toISOString() || '',
-      factors: business.leadScore?.factors ? {
-        dataCompleteness: business.leadScore.factors.dataCompleteness,
-        contactQuality: business.leadScore.factors.contactQuality,
-        businessSize: business.leadScore.factors.businessSize,
-        industryRelevance: business.leadScore.factors.industryRelevance,
-        geographicDesirability: business.leadScore.factors.geographicDesirability,
-        webPresence: business.leadScore.factors.webPresence
-      } : null
+      factors: business.leadScore?.factors
+        ? {
+            dataCompleteness: business.leadScore.factors.dataCompleteness,
+            contactQuality: business.leadScore.factors.contactQuality,
+            businessSize: business.leadScore.factors.businessSize,
+            industryRelevance: business.leadScore.factors.industryRelevance,
+            geographicDesirability: business.leadScore.factors.geographicDesirability,
+            webPresence: business.leadScore.factors.webPresence,
+          }
+        : null,
     }))
   }
 

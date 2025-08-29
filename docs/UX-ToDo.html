@@ -179,8 +179,8 @@
           existing navigation without disrupting current user flows.
         </p>
         <p>
-          <strong>Business Value:</strong> Improved user orientation and faster navigation for
-          power users managing complex scraping campaigns.
+          <strong>Business Value:</strong> Improved user orientation and faster navigation for power
+          users managing complex scraping campaigns.
         </p>
         <div class="issue-meta">
           <span class="meta-item priority-medium">Priority: Medium</span>
@@ -193,8 +193,8 @@
             PROMPT: "Add complementary breadcrumb navigation to the Business Scraper application
             without disrupting existing tab navigation. Implementation: 1. Create Breadcrumb
             component in src/view/components/ui/Breadcrumb.tsx 2. Add TypeScript interfaces for
-            breadcrumb state 3. Integrate subtly into App.tsx header below existing navigation
-            4. Implement context-aware breadcrumbs based on current workflow state 5. Style with
+            breadcrumb state 3. Integrate subtly into App.tsx header below existing navigation 4.
+            Implement context-aware breadcrumbs based on current workflow state 5. Style with
             Tailwind CSS to match existing design system 6. Ensure mobile responsiveness and
             accessibility 7. Add smooth transitions and hover states Technical requirements: -
             Complement existing ConfigContext navigation - Implement workflow-aware breadcrumb
@@ -208,8 +208,8 @@
         <h2 class="issue-title">Enhancement: Contextual Back Navigation</h2>
         <p>
           <strong>Description:</strong> While tab navigation provides good access to all sections,
-          adding contextual back buttons would enhance workflow efficiency, especially for users
-          who prefer linear navigation patterns.
+          adding contextual back buttons would enhance workflow efficiency, especially for users who
+          prefer linear navigation patterns.
         </p>
         <p>
           <strong>Current State:</strong> Tab-based navigation allows access to any section, but
@@ -220,8 +220,8 @@
           existing navigation without replacing the flexible tab system.
         </p>
         <p>
-          <strong>Business Value:</strong> Improved workflow efficiency for users who prefer
-          linear navigation, especially during configuration and review phases.
+          <strong>Business Value:</strong> Improved workflow efficiency for users who prefer linear
+          navigation, especially during configuration and review phases.
         </p>
         <div class="issue-meta">
           <span class="meta-item priority-low">Priority: Low</span>
@@ -235,14 +235,14 @@
             Business Scraper application. Implementation: 1. Create BackButton component in
             src/view/components/ui/BackButton.tsx 2. Enhance ConfigContext.tsx with optional
             navigation history 3. Add contextual back buttons to workflow-heavy sections 4.
-            Implement smart visibility based on user navigation patterns 5. Preserve all data
-            during back navigation 6. Style consistently with existing design system Features: -
-            Optional back button visibility in workflow sections - Smart context detection for
-            when back navigation is most useful - Data preservation and state management -
-            Keyboard shortcuts (Alt+Left Arrow) - Smooth transitions and loading states -
-            Mobile-optimized touch targets Technical requirements: - Work alongside existing tab
-            navigation - Implement workflow context detection - Add comprehensive unit tests -
-            Ensure accessibility compliance - Maintain mobile responsiveness"
+            Implement smart visibility based on user navigation patterns 5. Preserve all data during
+            back navigation 6. Style consistently with existing design system Features: - Optional
+            back button visibility in workflow sections - Smart context detection for when back
+            navigation is most useful - Data preservation and state management - Keyboard shortcuts
+            (Alt+Left Arrow) - Smooth transitions and loading states - Mobile-optimized touch
+            targets Technical requirements: - Work alongside existing tab navigation - Implement
+            workflow context detection - Add comprehensive unit tests - Ensure accessibility
+            compliance - Maintain mobile responsiveness"
           </div>
         </div>
       </article>
@@ -260,7 +260,8 @@
         </p>
         <p>
           <strong>Current State:</strong> Forms have functional validation that prevents invalid
-          submissions, but feedback is provided primarily on form submission rather than during input.
+          submissions, but feedback is provided primarily on form submission rather than during
+          input.
         </p>
         <p>
           <strong>Enhancement Goal:</strong> Add real-time validation with immediate visual feedback
@@ -279,19 +280,19 @@
           <div class="prompt-title">🔧 Augment AI Prompt for VS Code:</div>
           <div class="prompt-text">
             PROMPT: "Enhance the existing form validation system in the Business Scraper application
-            with real-time feedback capabilities. Implementation: 1. Enhance existing Input component
-            in src/view/components/ui/Input.tsx with real-time validation states 2. Extend current
-            validation utilities in src/utils/validation.ts 3. Add visual feedback states (error,
-            success, warning, loading) 4. Implement debounced validation for performance 5. Add
-            field-level validation with immediate feedback Validation enhancements: - Build on
+            with real-time feedback capabilities. Implementation: 1. Enhance existing Input
+            component in src/view/components/ui/Input.tsx with real-time validation states 2. Extend
+            current validation utilities in src/utils/validation.ts 3. Add visual feedback states
+            (error, success, warning, loading) 4. Implement debounced validation for performance 5.
+            Add field-level validation with immediate feedback Validation enhancements: - Build on
             existing Zod validation schemas - Add real-time validation with debouncing - Implement
             visual feedback states and transitions - Create consistent error message display - Add
             async validation for API-dependent fields - Maintain current form submission validation
-            Components to enhance: - ApiConfigurationPage.tsx for API key validation - IndustryModal.tsx
-            for industry creation - All existing form inputs throughout the application Technical
-            requirements: - Preserve existing validation logic and schemas - Add TypeScript interfaces
-            for validation states - Ensure accessibility with ARIA attributes - Include comprehensive
-            unit tests - Maintain mobile-friendly design"
+            Components to enhance: - ApiConfigurationPage.tsx for API key validation -
+            IndustryModal.tsx for industry creation - All existing form inputs throughout the
+            application Technical requirements: - Preserve existing validation logic and schemas -
+            Add TypeScript interfaces for validation states - Ensure accessibility with ARIA
+            attributes - Include comprehensive unit tests - Maintain mobile-friendly design"
           </div>
         </div>
       </article>
@@ -301,7 +302,9 @@
       <header class="category-header">♿ Accessibility & Inclusive Design Enhancement</header>
 
       <article class="issue">
-        <h2 class="issue-title">Enhancement: Advanced ARIA Implementation & Screen Reader Optimization</h2>
+        <h2 class="issue-title">
+          Enhancement: Advanced ARIA Implementation & Screen Reader Optimization
+        </h2>
         <p>
           <strong>Description:</strong> The application has good basic accessibility with semantic
           HTML and keyboard navigation. Enhancing ARIA implementation would provide an even better
@@ -309,7 +312,8 @@
         </p>
         <p>
           <strong>Current State:</strong> The application uses semantic HTML elements and has basic
-          accessibility features. The mobile-first responsive design includes accessibility considerations.
+          accessibility features. The mobile-first responsive design includes accessibility
+          considerations.
         </p>
         <p>
           <strong>Enhancement Goal:</strong> Achieve comprehensive WCAG 2.1 AA compliance with
@@ -329,9 +333,9 @@
           <div class="prompt-text">
             PROMPT: "Enhance accessibility features in the Business Scraper application to achieve
             full WCAG 2.1 AA compliance. Implementation: 1. Audit existing components (Button.tsx,
-            Input.tsx, CategorySelector.tsx, ResultsTable.tsx) for ARIA enhancement opportunities
-            2. Create accessibility utility in src/utils/accessibility.ts with ARIA helper functions
-            3. Enhance existing semantic HTML with comprehensive ARIA labels and descriptions 4.
+            Input.tsx, CategorySelector.tsx, ResultsTable.tsx) for ARIA enhancement opportunities 2.
+            Create accessibility utility in src/utils/accessibility.ts with ARIA helper functions 3.
+            Enhance existing semantic HTML with comprehensive ARIA labels and descriptions 4.
             Implement advanced focus management and keyboard navigation 5. Add screen reader
             optimization for complex interactions 6. Create accessibility testing suite Features: -
             Comprehensive ARIA labels, descriptions, and roles - Advanced focus management with
@@ -339,8 +343,8 @@
             and navigation enhancement - High contrast mode support - Reduced motion preferences
             Technical requirements: - Build on existing semantic HTML foundation - Implement ARIA
             best practices and patterns - Add accessibility testing with @axe-core/playwright -
-            Create comprehensive accessibility documentation - Ensure mobile accessibility compliance
-            - Include screen reader testing validation"
+            Create comprehensive accessibility documentation - Ensure mobile accessibility
+            compliance - Include screen reader testing validation"
           </div>
         </div>
       </article>
@@ -823,7 +827,8 @@
       // Update stats to reflect current state
       document.querySelector('.stat-number').textContent = totalEnhancements
       document.querySelectorAll('.stat-number')[1].textContent = highPriorityEnhancements
-      document.querySelectorAll('.stat-number')[2].textContent = document.querySelectorAll('.category').length
+      document.querySelectorAll('.stat-number')[2].textContent =
+        document.querySelectorAll('.category').length
       document.querySelectorAll('.stat-number')[3].textContent = '95%' // Current quality score
     </script>
   </body>

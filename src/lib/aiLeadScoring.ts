@@ -46,29 +46,29 @@ export interface ScoringConfig {
 const DEFAULT_CONFIG: ScoringConfig = {
   weights: {
     dataCompleteness: 0.25,
-    contactQuality: 0.20,
+    contactQuality: 0.2,
     businessSize: 0.15,
     industryRelevance: 0.15,
     geographicDesirability: 0.15,
-    webPresence: 0.10
+    webPresence: 0.1,
   },
   industryPriorities: {
-    'Technology': 1.0,
-    'Healthcare': 0.9,
+    Technology: 1.0,
+    Healthcare: 0.9,
     'Professional Services': 0.8,
-    'Manufacturing': 0.7,
-    'Retail': 0.6,
-    'Construction': 0.5
+    Manufacturing: 0.7,
+    Retail: 0.6,
+    Construction: 0.5,
   },
   geographicPriorities: {
-    'CA': 1.0, // California
-    'NY': 0.9, // New York
-    'TX': 0.8, // Texas
-    'FL': 0.7, // Florida
-    'WA': 0.9  // Washington
+    CA: 1.0, // California
+    NY: 0.9, // New York
+    TX: 0.8, // Texas
+    FL: 0.7, // Florida
+    WA: 0.9, // Washington
   },
   minimumScore: 20,
-  confidenceThreshold: 0.7
+  confidenceThreshold: 0.7,
 }
 
 /**
@@ -89,27 +89,27 @@ export class AILeadScoringService {
   async initialize(): Promise<void> {
     try {
       logger.info('AILeadScoring', 'Initializing AI lead scoring model...')
-      
+
       // Create a simple neural network for lead scoring
       this.model = tf.sequential({
         layers: [
           tf.layers.dense({ inputShape: [6], units: 16, activation: 'relu' }),
           tf.layers.dropout({ rate: 0.2 }),
           tf.layers.dense({ units: 8, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'sigmoid' })
-        ]
+          tf.layers.dense({ units: 1, activation: 'sigmoid' }),
+        ],
       })
 
       // Compile the model
       this.model.compile({
         optimizer: tf.train.adam(0.001),
         loss: 'meanSquaredError',
-        metrics: ['accuracy']
+        metrics: ['accuracy'],
       })
 
       // Train with synthetic data for demonstration
       await this.trainModel()
-      
+
       this.isInitialized = true
       logger.info('AILeadScoring', 'AI model initialized successfully')
     } catch (error) {
@@ -124,7 +124,7 @@ export class AILeadScoringService {
   private async trainModel(): Promise<void> {
     // Generate synthetic training data
     const trainingData = this.generateSyntheticTrainingData(1000)
-    
+
     const xs = tf.tensor2d(trainingData.features)
     const ys = tf.tensor2d(trainingData.labels, [trainingData.labels.length, 1])
 
@@ -132,7 +132,7 @@ export class AILeadScoringService {
       epochs: 50,
       batchSize: 32,
       validationSplit: 0.2,
-      verbose: 0
+      verbose: 0,
     })
 
     xs.dispose()
@@ -142,7 +142,10 @@ export class AILeadScoringService {
   /**
    * Generate synthetic training data for the model
    */
-  private generateSyntheticTrainingData(samples: number): { features: number[][], labels: number[] } {
+  private generateSyntheticTrainingData(samples: number): {
+    features: number[][]
+    labels: number[]
+  } {
     const features: number[][] = []
     const labels: number[] = []
 
@@ -155,14 +158,13 @@ export class AILeadScoringService {
       const webPresence = Math.random()
 
       // Synthetic scoring logic for training
-      const score = (
+      const score =
         dataCompleteness * 0.25 +
-        contactQuality * 0.20 +
+        contactQuality * 0.2 +
         businessSize * 0.15 +
         industryRelevance * 0.15 +
         geographicDesirability * 0.15 +
-        webPresence * 0.10
-      )
+        webPresence * 0.1
 
       features.push([
         dataCompleteness,
@@ -170,7 +172,7 @@ export class AILeadScoringService {
         businessSize,
         industryRelevance,
         geographicDesirability,
-        webPresence
+        webPresence,
       ])
       labels.push(score)
     }
@@ -190,7 +192,7 @@ export class AILeadScoringService {
       const factors = this.calculateScoreFactors(business)
       const mlScore = await this.calculateMLScore(factors)
       const ruleBasedScore = this.calculateRuleBasedScore(factors)
-      
+
       // Combine ML and rule-based scores
       const finalScore = Math.round((mlScore * 0.7 + ruleBasedScore * 0.3) * 100)
       const confidence = this.calculateConfidence(factors)
@@ -200,20 +202,20 @@ export class AILeadScoringService {
         score: Math.max(this.config.minimumScore, Math.min(100, finalScore)),
         confidence,
         factors,
-        recommendations
+        recommendations,
       }
     } catch (error) {
       logger.error('AILeadScoring', 'Failed to calculate lead score', error)
-      
+
       // Fallback to rule-based scoring
       const factors = this.calculateScoreFactors(business)
       const fallbackScore = this.calculateRuleBasedScore(factors)
-      
+
       return {
         score: Math.round(fallbackScore * 100),
         confidence: 0.5,
         factors,
-        recommendations: ['Score calculated using fallback method due to AI model error']
+        recommendations: ['Score calculated using fallback method due to AI model error'],
       }
     }
   }
@@ -228,7 +230,7 @@ export class AILeadScoringService {
       businessSize: this.calculateBusinessSize(business),
       industryRelevance: this.calculateIndustryRelevance(business),
       geographicDesirability: this.calculateGeographicDesirability(business),
-      webPresence: this.calculateWebPresence(business)
+      webPresence: this.calculateWebPresence(business),
     }
   }
 
@@ -248,7 +250,7 @@ export class AILeadScoringService {
       business.address?.city,
       business.address?.state,
       business.address?.zipCode,
-      business.industry
+      business.industry,
     ]
 
     requiredFields.forEach(field => {
@@ -261,7 +263,7 @@ export class AILeadScoringService {
       business.phone,
       business.contactPerson,
       business.coordinates?.lat,
-      business.coordinates?.lng
+      business.coordinates?.lng,
     ]
 
     optionalFields.forEach(field => {
@@ -280,15 +282,16 @@ export class AILeadScoringService {
     // Email quality
     if (business.email && business.email.length > 0) {
       score += 40
-      
+
       // Bonus for multiple emails
       if (business.email.length > 1) score += 10
-      
+
       // Bonus for professional email domains
-      const professionalDomains = business.email.some(email => 
-        !email.includes('gmail.com') && 
-        !email.includes('yahoo.com') && 
-        !email.includes('hotmail.com')
+      const professionalDomains = business.email.some(
+        email =>
+          !email.includes('gmail.com') &&
+          !email.includes('yahoo.com') &&
+          !email.includes('hotmail.com')
       )
       if (professionalDomains) score += 15
     }
@@ -347,14 +350,16 @@ export class AILeadScoringService {
 
     if (business.websiteUrl) {
       score += 60
-      
+
       // Bonus for HTTPS
       if (business.websiteUrl.startsWith('https://')) score += 20
-      
+
       // Bonus for professional domain
-      if (!business.websiteUrl.includes('wordpress.com') && 
-          !business.websiteUrl.includes('wix.com') && 
-          !business.websiteUrl.includes('squarespace.com')) {
+      if (
+        !business.websiteUrl.includes('wordpress.com') &&
+        !business.websiteUrl.includes('wix.com') &&
+        !business.websiteUrl.includes('squarespace.com')
+      ) {
         score += 20
       }
     }
@@ -368,18 +373,20 @@ export class AILeadScoringService {
   private async calculateMLScore(factors: ScoreFactors): Promise<number> {
     if (!this.model) return 0.5
 
-    const input = tf.tensor2d([[
-      factors.dataCompleteness / 100,
-      factors.contactQuality / 100,
-      factors.businessSize / 100,
-      factors.industryRelevance / 100,
-      factors.geographicDesirability / 100,
-      factors.webPresence / 100
-    ]])
+    const input = tf.tensor2d([
+      [
+        factors.dataCompleteness / 100,
+        factors.contactQuality / 100,
+        factors.businessSize / 100,
+        factors.industryRelevance / 100,
+        factors.geographicDesirability / 100,
+        factors.webPresence / 100,
+      ],
+    ])
 
     const prediction = this.model.predict(input) as tf.Tensor
     const score = await prediction.data()
-    
+
     input.dispose()
     prediction.dispose()
 
@@ -391,7 +398,7 @@ export class AILeadScoringService {
    */
   private calculateRuleBasedScore(factors: ScoreFactors): number {
     const weights = this.config.weights
-    
+
     return (
       (factors.dataCompleteness / 100) * weights.dataCompleteness +
       (factors.contactQuality / 100) * weights.contactQuality +
@@ -447,7 +454,7 @@ export class AILeadScoringService {
    */
   async scoreBusinesses(businesses: BusinessRecord[]): Promise<Map<string, LeadScore>> {
     const scores = new Map<string, LeadScore>()
-    
+
     for (const business of businesses) {
       try {
         const score = await this.getLeadScore(business)

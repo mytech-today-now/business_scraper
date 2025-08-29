@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document provides comprehensive guidelines for testing the Business Scraper application. Our testing strategy follows industry best practices and ensures high-quality, reliable software delivery.
+This document provides comprehensive guidelines for testing the Business Scraper
+application. Our testing strategy follows industry best practices and ensures
+high-quality, reliable software delivery.
 
 ## Testing Architecture
 
@@ -37,6 +39,7 @@ src/
 ### Jest Configuration
 
 Our Jest setup includes:
+
 - TypeScript support
 - React Testing Library integration
 - Coverage reporting
@@ -89,7 +92,8 @@ npm test -- --maxWorkers=4
 
 ### Unit Tests
 
-Unit tests should focus on individual functions, classes, or components in isolation.
+Unit tests should focus on individual functions, classes, or components in
+isolation.
 
 ```typescript
 // Example unit test
@@ -118,7 +122,7 @@ describe('Button', () => {
   it('should call onClick when clicked', async () => {
     const handleClick = jest.fn()
     render(<Button onClick={handleClick}>Click me</Button>)
-    
+
     await userEvent.click(screen.getByRole('button'))
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
@@ -147,6 +151,7 @@ describe('App Integration', () => {
 ### Mock Implementations
 
 We provide comprehensive mocks for:
+
 - Browser APIs (localStorage, fetch, etc.)
 - External services
 - React hooks and contexts
@@ -161,7 +166,7 @@ import {
   mockScraperController,
   setupBrowserMocks,
   createMockUser,
-  waitForLoadingToFinish
+  waitForLoadingToFinish,
 } from '@/test/testUtils'
 ```
 
@@ -231,9 +236,9 @@ await waitFor(() => {
 // Testing error scenarios
 it('should handle errors gracefully', async () => {
   const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
-  
+
   render(<ComponentThatMightError />)
-  
+
   expect(consoleSpy).not.toHaveBeenCalled()
   consoleSpy.mockRestore()
 })
@@ -263,6 +268,7 @@ npm test -- --testNamePattern="specific test" --runInBand
 ### GitHub Actions
 
 Our CI pipeline runs:
+
 - All test suites
 - Coverage analysis
 - Performance benchmarks
@@ -272,6 +278,7 @@ Our CI pipeline runs:
 ### Quality Gates
 
 Tests must pass with:
+
 - 85% minimum coverage
 - No critical security vulnerabilities
 - No accessibility violations
@@ -355,4 +362,5 @@ it('should have no accessibility violations', async () => {
 
 ---
 
-For more detailed information, see the individual test files and documentation in the `docs/` directory.
+For more detailed information, see the individual test files and documentation
+in the `docs/` directory.

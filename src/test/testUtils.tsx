@@ -226,13 +226,13 @@ export const setupBrowserMocks = () => {
     Object.defineProperty(global, 'crypto', {
       value: {
         randomUUID: jest.fn(() => 'mocked-uuid'),
-        getRandomValues: jest.fn((arr) => {
+        getRandomValues: jest.fn(arr => {
           for (let i = 0; i < arr.length; i++) {
             arr[i] = Math.floor(Math.random() * 256)
           }
           return arr
         }),
-      }
+      },
     })
   }
 
@@ -245,7 +245,7 @@ export const setupBrowserMocks = () => {
         measure: jest.fn(),
         getEntriesByType: jest.fn(() => []),
         getEntriesByName: jest.fn(() => []),
-      }
+      },
     })
   }
 
@@ -313,10 +313,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialConfigState?: Partial<any>
 }
 
-export const renderWithProviders = (
-  ui: React.ReactElement,
-  options: CustomRenderOptions = {}
-) => {
+export const renderWithProviders = (ui: React.ReactElement, options: CustomRenderOptions = {}) => {
   const { initialConfigState, ...renderOptions } = options
 
   // Setup browser mocks

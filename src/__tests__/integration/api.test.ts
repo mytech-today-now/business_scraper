@@ -6,8 +6,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GET as searchGET, POST as searchPOST } from '@/app/api/search/route'
 import { GET as scrapeGET, POST as scrapePOST } from '@/app/api/scrape/route'
-import { GET as dataManagementGET, POST as dataManagementPOST } from '@/app/api/data-management/route'
-import { createMockApiResponse, createMockSearchResults, createMockFetch } from '../utils/testHelpers'
+import {
+  GET as dataManagementGET,
+  POST as dataManagementPOST,
+} from '@/app/api/data-management/route'
+import {
+  createMockApiResponse,
+  createMockSearchResults,
+  createMockFetch,
+} from '../utils/testHelpers'
 import { jest } from '@jest/globals'
 
 // Mock external dependencies
@@ -15,7 +22,7 @@ jest.mock('@/model/searchEngine', () => ({
   searchEngine: {
     searchForBusinesses: jest.fn(),
     initialize: jest.fn(),
-  }
+  },
 }))
 
 jest.mock('@/model/scraperService', () => ({
@@ -24,12 +31,12 @@ jest.mock('@/model/scraperService', () => ({
     searchForWebsites: jest.fn(),
     scrapeWebsite: jest.fn(),
     cleanup: jest.fn(),
-  }
+  },
 }))
 
 jest.mock('@/lib/security', () => ({
   getClientIP: jest.fn(() => '127.0.0.1'),
-  sanitizeInput: jest.fn((input) => input),
+  sanitizeInput: jest.fn(input => input),
   validateInput: jest.fn(() => ({ isValid: true, errors: [] })),
 }))
 
@@ -38,7 +45,7 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
-  }
+  },
 }))
 
 describe('API Integration Tests', () => {
@@ -50,7 +57,7 @@ describe('API Integration Tests', () => {
   describe('Search API (/api/search)', () => {
     it('should handle GET request for search status', async () => {
       const request = new NextRequest('http://localhost:3000/api/search', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = await searchGET(request)
@@ -69,15 +76,15 @@ describe('API Integration Tests', () => {
       const searchData = {
         query: 'restaurants',
         zipCode: '90210',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(searchData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchPOST(request)
@@ -86,25 +93,21 @@ describe('API Integration Tests', () => {
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
       expect(data.data).toHaveLength(5)
-      expect(searchEngine.searchForBusinesses).toHaveBeenCalledWith(
-        'restaurants',
-        '90210',
-        10
-      )
+      expect(searchEngine.searchForBusinesses).toHaveBeenCalledWith('restaurants', '90210', 10)
     })
 
     it('should validate required fields in POST request', async () => {
       const invalidData = {
         query: '', // Empty query
-        zipCode: '90210'
+        zipCode: '90210',
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(invalidData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchPOST(request)
@@ -122,15 +125,15 @@ describe('API Integration Tests', () => {
       const searchData = {
         query: 'restaurants',
         zipCode: '90210',
-        maxResults: 10
+        maxResults: 10,
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(searchData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchPOST(request)
@@ -151,8 +154,8 @@ describe('API Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({ action: 'initialize' }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapePOST(request)
@@ -168,22 +171,22 @@ describe('API Integration Tests', () => {
       const mockScrapedData = {
         businessName: 'Test Business',
         phone: '(555) 123-4567',
-        email: 'test@business.com'
+        email: 'test@business.com',
       }
       scraperService.scrapeWebsite.mockResolvedValue(mockScrapedData)
 
       const scrapeData = {
         action: 'scrape',
         url: 'https://example.com',
-        depth: 1
+        depth: 1,
       }
 
       const request = new NextRequest('http://localhost:3000/api/scrape', {
         method: 'POST',
         body: JSON.stringify(scrapeData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapePOST(request)
@@ -192,24 +195,21 @@ describe('API Integration Tests', () => {
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
       expect(data.data).toEqual(mockScrapedData)
-      expect(scraperService.scrapeWebsite).toHaveBeenCalledWith(
-        'https://example.com',
-        { depth: 1 }
-      )
+      expect(scraperService.scrapeWebsite).toHaveBeenCalledWith('https://example.com', { depth: 1 })
     })
 
     it('should validate scrape parameters', async () => {
       const invalidData = {
         action: 'scrape',
-        url: 'invalid-url'
+        url: 'invalid-url',
       }
 
       const request = new NextRequest('http://localhost:3000/api/scrape', {
         method: 'POST',
         body: JSON.stringify(invalidData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapePOST(request)
@@ -228,8 +228,8 @@ describe('API Integration Tests', () => {
         method: 'POST',
         body: JSON.stringify({ action: 'cleanup' }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await scrapePOST(request)
@@ -244,7 +244,7 @@ describe('API Integration Tests', () => {
   describe('Data Management API (/api/data-management)', () => {
     it('should handle GET request for statistics', async () => {
       const request = new NextRequest('http://localhost:3000/api/data-management', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = await dataManagementGET(request)
@@ -267,17 +267,17 @@ describe('API Integration Tests', () => {
             id: 'test-1',
             businessName: 'Valid Business',
             industry: 'Technology',
-            email: 'test@business.com'
-          }
-        ]
+            email: 'test@business.com',
+          },
+        ],
       }
 
       const request = new NextRequest('http://localhost:3000/api/data-management', {
         method: 'POST',
         body: JSON.stringify(validationData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await dataManagementPOST(request)
@@ -295,22 +295,22 @@ describe('API Integration Tests', () => {
           {
             id: 'test-1',
             businessName: 'Business One',
-            email: 'test@business.com'
+            email: 'test@business.com',
           },
           {
             id: 'test-2',
             businessName: 'Business One',
-            email: 'test@business.com'
-          }
-        ]
+            email: 'test@business.com',
+          },
+        ],
       }
 
       const request = new NextRequest('http://localhost:3000/api/data-management', {
         method: 'POST',
         body: JSON.stringify(duplicateData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await dataManagementPOST(request)
@@ -327,16 +327,16 @@ describe('API Integration Tests', () => {
         options: {
           removeInvalid: true,
           removeDuplicates: true,
-          olderThan: '30d'
-        }
+          olderThan: '30d',
+        },
       }
 
       const request = new NextRequest('http://localhost:3000/api/data-management', {
         method: 'POST',
         body: JSON.stringify(cleanupData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await dataManagementPOST(request)
@@ -354,8 +354,8 @@ describe('API Integration Tests', () => {
         method: 'POST',
         body: 'invalid json',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchPOST(request)
@@ -369,7 +369,7 @@ describe('API Integration Tests', () => {
     it('should handle missing Content-Type header', async () => {
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
-        body: JSON.stringify({ query: 'test' })
+        body: JSON.stringify({ query: 'test' }),
       })
 
       const response = await searchPOST(request)
@@ -381,19 +381,19 @@ describe('API Integration Tests', () => {
 
     it('should sanitize input data', async () => {
       const { sanitizeInput } = require('@/lib/security')
-      sanitizeInput.mockImplementation((input) => input.replace(/<script>/g, ''))
+      sanitizeInput.mockImplementation(input => input.replace(/<script>/g, ''))
 
       const maliciousData = {
         query: 'restaurants<script>alert("xss")</script>',
-        zipCode: '90210'
+        zipCode: '90210',
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(maliciousData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       await searchPOST(request)
@@ -406,7 +406,7 @@ describe('API Integration Tests', () => {
       const { logger } = require('@/utils/logger')
 
       const request = new NextRequest('http://localhost:3000/api/search', {
-        method: 'GET'
+        method: 'GET',
       })
 
       await searchGET(request)
@@ -418,8 +418,9 @@ describe('API Integration Tests', () => {
 
   describe('Performance Tests', () => {
     it('should handle concurrent API requests', async () => {
-      const requests = Array.from({ length: 10 }, () => 
-        new NextRequest('http://localhost:3000/api/search', { method: 'GET' })
+      const requests = Array.from(
+        { length: 10 },
+        () => new NextRequest('http://localhost:3000/api/search', { method: 'GET' })
       )
 
       const start = performance.now()
@@ -437,15 +438,15 @@ describe('API Integration Tests', () => {
       const largeData = {
         query: 'restaurants',
         zipCode: '90210',
-        metadata: 'x'.repeat(10000) // 10KB of data
+        metadata: 'x'.repeat(10000), // 10KB of data
       }
 
       const request = new NextRequest('http://localhost:3000/api/search', {
         method: 'POST',
         body: JSON.stringify(largeData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
 
       const response = await searchPOST(request)

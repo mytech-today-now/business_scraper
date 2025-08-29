@@ -1,0 +1,128 @@
+# Docker ignore file for Business Scraper Application
+# Optimizes Docker build context and reduces image size
+
+# Node.js dependencies and build artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+.pnp
+.pnp.js
+
+# Next.js build artifacts
+.next/
+out/
+build/
+dist/
+
+# Environment files (security)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Testing and coverage
+coverage/
+.nyc_output
+test-results/
+playwright-report/
+.coverage
+
+# Logs and temporary files
+logs/
+*.log
+temp/
+tmp/
+.tmp/
+
+# Documentation and development files
+docs/
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# Backup and quarantine files
+backups/
+quarantine/
+*.backup
+*.bak
+
+# Development and testing scripts
+scripts/
+test-logs/
+debug-*.js
+demo-*.js
+*-test.log
+
+# Platform-specific files
+.dockerignore
+Dockerfile*
+docker-compose*.yml
+
+# CI/CD files
+.github/
+.circleci/
+.travis.yml
+.gitlab-ci.yml
+
+# Monitoring and configuration
+monitoring/
+nginx/
+database/
+
+# Large data files
+uploads/
+*.xlsx
+*.csv
+industries-*.json
+sample-*.json
+test-*.json
+demo-*.json
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Jest and testing
+jest.config.js
+jest.setup.js
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Playwright
+playwright.config.ts
+
+# Package manager files (will be copied separately)
+package-lock.json
+yarn.lock
+
+# Performance and optimization files
+performance-baselines.json

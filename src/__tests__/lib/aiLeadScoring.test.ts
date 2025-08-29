@@ -13,20 +13,20 @@ jest.mock('@tensorflow/tfjs', () => ({
     fit: jest.fn(() => Promise.resolve()),
     predict: jest.fn(() => ({
       data: jest.fn(() => Promise.resolve([0.75])),
-      dispose: jest.fn()
+      dispose: jest.fn(),
     })),
-    dispose: jest.fn()
+    dispose: jest.fn(),
   })),
   layers: {
     dense: jest.fn(() => ({})),
-    dropout: jest.fn(() => ({}))
+    dropout: jest.fn(() => ({})),
   },
   train: {
-    adam: jest.fn(() => ({}))
+    adam: jest.fn(() => ({})),
   },
   tensor2d: jest.fn(() => ({
-    dispose: jest.fn()
-  }))
+    dispose: jest.fn(),
+  })),
 }))
 
 describe('AILeadScoringService', () => {
@@ -46,15 +46,15 @@ describe('AILeadScoringService', () => {
         suite: 'Suite 100',
         city: 'Business City',
         state: 'CA',
-        zipCode: '90210'
+        zipCode: '90210',
       },
       contactPerson: 'John Doe',
       coordinates: {
         lat: 34.0522,
-        lng: -118.2437
+        lng: -118.2437,
       },
       industry: 'Technology',
-      scrapedAt: new Date('2024-01-15T10:00:00Z')
+      scrapedAt: new Date('2024-01-15T10:00:00Z'),
     }
   })
 
@@ -101,7 +101,7 @@ describe('AILeadScoringService', () => {
         email: [],
         phone: undefined,
         contactPerson: undefined,
-        coordinates: undefined
+        coordinates: undefined,
       }
 
       const result = await service.getLeadScore(incompleteBusiness)
@@ -112,42 +112,44 @@ describe('AILeadScoringService', () => {
 
     it('should calculate data completeness correctly', async () => {
       const result = await service.getLeadScore(mockBusiness)
-      
+
       // Complete business should have high data completeness
       expect(result.factors.dataCompleteness).toBeGreaterThan(80)
     })
 
     it('should calculate contact quality correctly', async () => {
       const result = await service.getLeadScore(mockBusiness)
-      
+
       // Business with multiple emails, phone, and contact person should have high contact quality
       expect(result.factors.contactQuality).toBeGreaterThan(70)
     })
 
     it('should calculate industry relevance based on configuration', async () => {
       const result = await service.getLeadScore(mockBusiness)
-      
+
       // Technology industry should have high relevance in default config
       expect(result.factors.industryRelevance).toBeGreaterThan(80)
     })
 
     it('should calculate geographic desirability based on state', async () => {
       const result = await service.getLeadScore(mockBusiness)
-      
+
       // California should have high geographic desirability in default config
       expect(result.factors.geographicDesirability).toBeGreaterThan(80)
     })
 
     it('should provide relevant recommendations', async () => {
       const result = await service.getLeadScore(mockBusiness)
-      
+
       expect(result.recommendations).toBeInstanceOf(Array)
       expect(result.recommendations.length).toBeGreaterThan(0)
-      
+
       if (result.score >= 80) {
-        expect(result.recommendations.some(rec => 
-          rec.includes('High-quality lead') || rec.includes('prioritize')
-        )).toBe(true)
+        expect(
+          result.recommendations.some(
+            rec => rec.includes('High-quality lead') || rec.includes('prioritize')
+          )
+        ).toBe(true)
       }
     })
   })
@@ -161,7 +163,7 @@ describe('AILeadScoringService', () => {
       const businesses = [
         mockBusiness,
         { ...mockBusiness, id: 'test-business-2', businessName: 'Another Company' },
-        { ...mockBusiness, id: 'test-business-3', businessName: 'Third Company' }
+        { ...mockBusiness, id: 'test-business-3', businessName: 'Third Company' },
       ]
 
       const scores = await service.scoreBusinesses(businesses)
@@ -175,7 +177,7 @@ describe('AILeadScoringService', () => {
     it('should handle errors in batch scoring gracefully', async () => {
       const businesses = [
         mockBusiness,
-        { ...mockBusiness, id: 'invalid-business', businessName: null as any } // Invalid data
+        { ...mockBusiness, id: 'invalid-business', businessName: null as any }, // Invalid data
       ]
 
       const scores = await service.scoreBusinesses(businesses)
@@ -196,12 +198,12 @@ describe('AILeadScoringService', () => {
           businessSize: 0.1,
           industryRelevance: 0.1,
           geographicDesirability: 0.1,
-          webPresence: 0.1
-        }
+          webPresence: 0.1,
+        },
       }
 
       expect(() => service.updateConfig(newConfig)).not.toThrow()
-      
+
       const currentConfig = service.getConfig()
       expect(currentConfig.weights.dataCompleteness).toBe(0.3)
       expect(currentConfig.weights.contactQuality).toBe(0.3)
@@ -209,7 +211,7 @@ describe('AILeadScoringService', () => {
 
     it('should return current configuration', () => {
       const config = service.getConfig()
-      
+
       expect(config).toHaveProperty('weights')
       expect(config).toHaveProperty('industryPriorities')
       expect(config).toHaveProperty('geographicPriorities')
@@ -221,9 +223,11 @@ describe('AILeadScoringService', () => {
   describe('fallback behavior', () => {
     it('should use rule-based scoring when ML model fails', async () => {
       await service.initialize()
-      
+
       // Mock ML model failure
-      jest.spyOn(service as any, 'calculateMLScore').mockRejectedValueOnce(new Error('ML model error'))
+      jest
+        .spyOn(service as any, 'calculateMLScore')
+        .mockRejectedValueOnce(new Error('ML model error'))
 
       const result = await service.getLeadScore(mockBusiness)
 
@@ -242,31 +246,31 @@ describe('AILeadScoringService', () => {
     it('should handle business with no email', async () => {
       const businessNoEmail = { ...mockBusiness, email: [] }
       const result = await service.getLeadScore(businessNoEmail)
-      
+
       expect(result.factors.contactQuality).toBeLessThan(50)
     })
 
     it('should handle business with unknown industry', async () => {
       const businessUnknownIndustry = { ...mockBusiness, industry: 'Unknown Industry' }
       const result = await service.getLeadScore(businessUnknownIndustry)
-      
+
       expect(result.factors.industryRelevance).toBe(50) // Default relevance
     })
 
     it('should handle business with unknown state', async () => {
-      const businessUnknownState = { 
-        ...mockBusiness, 
-        address: { ...mockBusiness.address, state: 'XX' }
+      const businessUnknownState = {
+        ...mockBusiness,
+        address: { ...mockBusiness.address, state: 'XX' },
       }
       const result = await service.getLeadScore(businessUnknownState)
-      
+
       expect(result.factors.geographicDesirability).toBe(50) // Default desirability
     })
 
     it('should handle business with no website', async () => {
       const businessNoWebsite = { ...mockBusiness, websiteUrl: '' }
       const result = await service.getLeadScore(businessNoWebsite)
-      
+
       expect(result.factors.webPresence).toBe(0)
     })
 
@@ -280,14 +284,14 @@ describe('AILeadScoringService', () => {
           street: '',
           city: '',
           state: '',
-          zipCode: ''
+          zipCode: '',
         },
         industry: '',
-        scrapedAt: new Date()
+        scrapedAt: new Date(),
       }
 
       const result = await service.getLeadScore(veryPoorBusiness)
-      
+
       expect(result.score).toBeGreaterThanOrEqual(service.getConfig().minimumScore)
     })
   })
@@ -295,13 +299,13 @@ describe('AILeadScoringService', () => {
   describe('memory management', () => {
     it('should dispose of resources properly', async () => {
       await service.initialize()
-      
+
       expect(() => service.dispose()).not.toThrow()
     })
 
     it('should handle multiple dispose calls', async () => {
       await service.initialize()
-      
+
       service.dispose()
       expect(() => service.dispose()).not.toThrow()
     })

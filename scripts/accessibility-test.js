@@ -9,14 +9,7 @@ const { AxePuppeteer } = require('@axe-core/puppeteer')
 const fs = require('fs')
 const path = require('path')
 
-const PAGES_TO_TEST = [
-  '/',
-  '/search',
-  '/results',
-  '/settings',
-  '/export',
-  '/help'
-]
+const PAGES_TO_TEST = ['/', '/search', '/results', '/settings', '/export', '/help']
 
 const ACCESSIBILITY_RULES = {
   // WCAG 2.1 AA compliance
@@ -29,30 +22,30 @@ const ACCESSIBILITY_RULES = {
     'heading-order': { enabled: true },
     'landmark-roles': { enabled: true },
     'alt-text': { enabled: true },
-    'form-labels': { enabled: true }
-  }
+    'form-labels': { enabled: true },
+  },
 }
 
 async function runAccessibilityTests() {
   console.log('🔍 Starting accessibility tests...')
-  
+
   const browser = await chromium.launch({ headless: true })
   const context = await browser.newContext()
   const page = await context.newPage()
-  
+
   const results = []
   const baseUrl = process.env.TEST_URL || 'http://localhost:3000'
-  
+
   try {
     for (const pagePath of PAGES_TO_TEST) {
       console.log(`Testing ${pagePath}...`)
-      
+
       const url = `${baseUrl}${pagePath}`
       await page.goto(url, { waitUntil: 'networkidle' })
-      
+
       // Wait for page to be fully loaded
       await page.waitForTimeout(2000)
-      
+
       // Run axe accessibility tests
       const axeResults = await page.evaluate(async () => {
         const axe = require('axe-core')
@@ -66,30 +59,32 @@ async function runAccessibilityTests() {
             'heading-order': { enabled: true },
             'landmark-roles': { enabled: true },
             'alt-text': { enabled: true },
-            'form-labels': { enabled: true }
-          }
+            'form-labels': { enabled: true },
+          },
         })
       })
-      
+
       // Test keyboard navigation
       const keyboardResults = await testKeyboardNavigation(page)
-      
+
       // Test screen reader compatibility
       const screenReaderResults = await testScreenReaderCompatibility(page)
-      
+
       const pageResults = {
         url,
         axe: axeResults,
         keyboard: keyboardResults,
         screenReader: screenReaderResults,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
-      
+
       results.push(pageResults)
-      
+
       // Log immediate results
       if (axeResults.violations.length > 0) {
-        console.log(`❌ ${axeResults.violations.length} accessibility violations found on ${pagePath}`)
+        console.log(
+          `❌ ${axeResults.violations.length} accessibility violations found on ${pagePath}`
+        )
         axeResults.violations.forEach(violation => {
           console.log(`  - ${violation.id}: ${violation.description}`)
         })
@@ -97,21 +92,24 @@ async function runAccessibilityTests() {
         console.log(`✅ No accessibility violations found on ${pagePath}`)
       }
     }
-    
+
     // Generate comprehensive report
     await generateAccessibilityReport(results)
-    
+
     // Check if any critical violations were found
     const totalViolations = results.reduce((sum, result) => sum + result.axe.violations.length, 0)
-    const criticalViolations = results.reduce((sum, result) => 
-      sum + result.axe.violations.filter(v => v.impact === 'critical' || v.impact === 'serious').length, 0
+    const criticalViolations = results.reduce(
+      (sum, result) =>
+        sum +
+        result.axe.violations.filter(v => v.impact === 'critical' || v.impact === 'serious').length,
+      0
     )
-    
+
     console.log(`\n📊 Accessibility Test Summary:`)
     console.log(`Total pages tested: ${results.length}`)
     console.log(`Total violations: ${totalViolations}`)
     console.log(`Critical/Serious violations: ${criticalViolations}`)
-    
+
     if (criticalViolations > 0) {
       console.log('❌ Accessibility tests failed due to critical violations')
       process.exit(1)
@@ -119,7 +117,6 @@ async function runAccessibilityTests() {
       console.log('✅ All accessibility tests passed')
       process.exit(0)
     }
-    
   } catch (error) {
     console.error('❌ Accessibility testing failed:', error)
     process.exit(1)
@@ -133,34 +130,36 @@ async function testKeyboardNavigation(page) {
     tabOrder: [],
     focusTraps: [],
     skipLinks: false,
-    errors: []
+    errors: [],
   }
-  
+
   try {
     // Test tab order
     await page.keyboard.press('Tab')
     let tabCount = 0
     const maxTabs = 50 // Prevent infinite loops
-    
+
     while (tabCount < maxTabs) {
       const focusedElement = await page.evaluate(() => {
         const element = document.activeElement
-        return element ? {
-          tagName: element.tagName,
-          id: element.id,
-          className: element.className,
-          ariaLabel: element.getAttribute('aria-label'),
-          role: element.getAttribute('role')
-        } : null
+        return element
+          ? {
+              tagName: element.tagName,
+              id: element.id,
+              className: element.className,
+              ariaLabel: element.getAttribute('aria-label'),
+              role: element.getAttribute('role'),
+            }
+          : null
       })
-      
+
       if (!focusedElement) break
-      
+
       results.tabOrder.push(focusedElement)
       await page.keyboard.press('Tab')
       tabCount++
     }
-    
+
     // Test for skip links
     await page.keyboard.press('Home')
     await page.keyboard.press('Tab')
@@ -168,13 +167,12 @@ async function testKeyboardNavigation(page) {
       const element = document.activeElement
       return element ? element.textContent : null
     })
-    
+
     results.skipLinks = firstFocusedElement && firstFocusedElement.toLowerCase().includes('skip')
-    
   } catch (error) {
     results.errors.push(`Keyboard navigation test failed: ${error.message}`)
   }
-  
+
   return results
 }
 
@@ -183,9 +181,9 @@ async function testScreenReaderCompatibility(page) {
     headingStructure: [],
     landmarks: [],
     ariaLabels: [],
-    errors: []
+    errors: [],
   }
-  
+
   try {
     // Test heading structure
     results.headingStructure = await page.evaluate(() => {
@@ -193,36 +191,39 @@ async function testScreenReaderCompatibility(page) {
       return headings.map(h => ({
         level: parseInt(h.tagName.charAt(1)),
         text: h.textContent.trim(),
-        id: h.id
+        id: h.id,
       }))
     })
-    
+
     // Test landmarks
     results.landmarks = await page.evaluate(() => {
-      const landmarks = Array.from(document.querySelectorAll('[role], main, nav, header, footer, aside, section'))
+      const landmarks = Array.from(
+        document.querySelectorAll('[role], main, nav, header, footer, aside, section')
+      )
       return landmarks.map(l => ({
         tagName: l.tagName,
         role: l.getAttribute('role') || l.tagName.toLowerCase(),
         ariaLabel: l.getAttribute('aria-label'),
-        ariaLabelledby: l.getAttribute('aria-labelledby')
+        ariaLabelledby: l.getAttribute('aria-labelledby'),
       }))
     })
-    
+
     // Test ARIA labels
     results.ariaLabels = await page.evaluate(() => {
-      const elementsWithAria = Array.from(document.querySelectorAll('[aria-label], [aria-labelledby], [aria-describedby]'))
+      const elementsWithAria = Array.from(
+        document.querySelectorAll('[aria-label], [aria-labelledby], [aria-describedby]')
+      )
       return elementsWithAria.map(el => ({
         tagName: el.tagName,
         ariaLabel: el.getAttribute('aria-label'),
         ariaLabelledby: el.getAttribute('aria-labelledby'),
-        ariaDescribedby: el.getAttribute('aria-describedby')
+        ariaDescribedby: el.getAttribute('aria-describedby'),
       }))
     })
-    
   } catch (error) {
     results.errors.push(`Screen reader compatibility test failed: ${error.message}`)
   }
-  
+
   return results
 }
 
@@ -231,32 +232,32 @@ async function generateAccessibilityReport(results) {
   if (!fs.existsSync(reportDir)) {
     fs.mkdirSync(reportDir, { recursive: true })
   }
-  
+
   // Generate JSON report
   const jsonReport = {
     summary: {
       totalPages: results.length,
       totalViolations: results.reduce((sum, r) => sum + r.axe.violations.length, 0),
-      criticalViolations: results.reduce((sum, r) => 
-        sum + r.axe.violations.filter(v => v.impact === 'critical' || v.impact === 'serious').length, 0
+      criticalViolations: results.reduce(
+        (sum, r) =>
+          sum +
+          r.axe.violations.filter(v => v.impact === 'critical' || v.impact === 'serious').length,
+        0
       ),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     },
-    results
+    results,
   }
-  
+
   fs.writeFileSync(
     path.join(reportDir, 'accessibility-report.json'),
     JSON.stringify(jsonReport, null, 2)
   )
-  
+
   // Generate HTML report
   const htmlReport = generateHTMLReport(jsonReport)
-  fs.writeFileSync(
-    path.join(reportDir, 'accessibility-report.html'),
-    htmlReport
-  )
-  
+  fs.writeFileSync(path.join(reportDir, 'accessibility-report.html'), htmlReport)
+
   console.log(`📄 Accessibility reports generated in ${reportDir}`)
 }
 
@@ -291,20 +292,27 @@ function generateHTMLReport(data) {
         <p><strong>Generated:</strong> ${new Date(data.summary.timestamp).toLocaleString()}</p>
     </div>
     
-    ${data.results.map(result => `
+    ${data.results
+      .map(
+        result => `
         <div class="page-section">
             <h3>Page: ${result.url}</h3>
             
-            ${result.axe.violations.length === 0 ? 
-                '<div class="pass">✅ No accessibility violations found</div>' :
-                result.axe.violations.map(violation => `
+            ${
+              result.axe.violations.length === 0
+                ? '<div class="pass">✅ No accessibility violations found</div>'
+                : result.axe.violations
+                    .map(
+                      violation => `
                     <div class="violation">
                         <h4 class="impact-${violation.impact}">${violation.id} (${violation.impact})</h4>
                         <p><strong>Description:</strong> ${violation.description}</p>
                         <p><strong>Help:</strong> ${violation.help}</p>
                         <p><strong>Elements affected:</strong> ${violation.nodes.length}</p>
                     </div>
-                `).join('')
+                `
+                    )
+                    .join('')
             }
             
             <h4>Keyboard Navigation</h4>
@@ -316,7 +324,9 @@ function generateHTMLReport(data) {
             <p>Landmarks: ${result.screenReader.landmarks.length} landmarks</p>
             <p>ARIA labels: ${result.screenReader.ariaLabels.length} elements with ARIA</p>
         </div>
-    `).join('')}
+    `
+      )
+      .join('')}
     
 </body>
 </html>

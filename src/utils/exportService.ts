@@ -548,7 +548,8 @@ export class ExportService {
     csvContent += 'Industry,Count,Percentage\n'
     const totalBusinesses = insights.summary.totalBusinesses
     insights.industryDistribution.forEach(item => {
-      const percentage = totalBusinesses > 0 ? ((item.value / totalBusinesses) * 100).toFixed(1) : '0'
+      const percentage =
+        totalBusinesses > 0 ? ((item.value / totalBusinesses) * 100).toFixed(1) : '0'
       csvContent += `${item.name},${item.value},${percentage}%\n`
     })
     csvContent += '\n'
@@ -589,7 +590,7 @@ export class ExportService {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
     return {
       blob,
-      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`
+      filename: filename.endsWith('.csv') ? filename : `${filename}.csv`,
     }
   }
 
@@ -604,9 +605,9 @@ export class ExportService {
       metadata: {
         exportDate: new Date().toISOString(),
         version: '1.0.0',
-        type: 'business-intelligence-insights'
+        type: 'business-intelligence-insights',
       },
-      insights
+      insights,
     }
 
     const jsonContent = JSON.stringify(exportData, null, 2)
@@ -614,7 +615,7 @@ export class ExportService {
 
     return {
       blob,
-      filename: filename.endsWith('.json') ? filename : `${filename}.json`
+      filename: filename.endsWith('.json') ? filename : `${filename}.json`,
     }
   }
 
@@ -644,7 +645,7 @@ export class ExportService {
       ['Top State', insights.summary.topState],
       ['High Quality Leads', insights.summary.highQualityLeads.toString()],
       ['Predicted Conversions', insights.summary.predictedConversions.toString()],
-      ['Estimated Revenue', `$${insights.summary.estimatedRevenue.toLocaleString()}`]
+      ['Estimated Revenue', `$${insights.summary.estimatedRevenue.toLocaleString()}`],
     ]
 
     autoTable(doc, {
@@ -652,7 +653,7 @@ export class ExportService {
       body: summaryData,
       startY: yPos,
       theme: 'grid',
-      headStyles: { fillColor: [66, 139, 202] }
+      headStyles: { fillColor: [66, 139, 202] },
     })
 
     // Industry Distribution
@@ -663,7 +664,7 @@ export class ExportService {
     const industryData = insights.industryDistribution.map(item => [
       item.name,
       item.value.toString(),
-      `${((item.value / insights.summary.totalBusinesses) * 100).toFixed(1)}%`
+      `${((item.value / insights.summary.totalBusinesses) * 100).toFixed(1)}%`,
     ])
 
     autoTable(doc, {
@@ -671,7 +672,7 @@ export class ExportService {
       body: industryData,
       startY: yPos + 10,
       theme: 'grid',
-      headStyles: { fillColor: [66, 139, 202] }
+      headStyles: { fillColor: [66, 139, 202] },
     })
 
     // Recommendations
@@ -689,7 +690,7 @@ export class ExportService {
     const pdfBlob = doc.output('blob')
     return {
       blob: pdfBlob,
-      filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`
+      filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
     }
   }
 
@@ -715,13 +716,15 @@ export class ExportService {
         const score = scores.get(business.id)
         return {
           ...business,
-          leadScore: score ? {
-            score: score.score,
-            confidence: score.confidence,
-            scoredAt: new Date(),
-            factors: score.factors,
-            recommendations: score.recommendations
-          } : undefined
+          leadScore: score
+            ? {
+                score: score.score,
+                confidence: score.confidence,
+                scoredAt: new Date(),
+                factors: score.factors,
+                recommendations: score.recommendations,
+              }
+            : undefined,
         }
       })
 

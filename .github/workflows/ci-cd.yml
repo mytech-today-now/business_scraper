@@ -137,7 +137,13 @@ jobs:
         continue-on-error: true
 
       - name: Run Snyk security scan
-        run: npm run test:security:snyk
+        run: |
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            npm run test:security:snyk
+          else
+            echo "⚠️ Snyk token not configured, skipping Snyk scan"
+            echo "Configure SNYK_TOKEN secret for Snyk vulnerability scanning"
+          fi
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -145,6 +151,26 @@ jobs:
       - name: Run security audit with audit-ci
         run: npx audit-ci --high
         continue-on-error: true
+
+      # Docker security scanning
+      - name: Build Docker image for security scanning
+        run: |
+          docker build -f Dockerfile.simple -t business-scraper:security-scan . || echo "Docker build failed, skipping security scan"
+
+      - name: Run Trivy vulnerability scanner on Docker image
+        if: success()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'business-scraper:security-scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: always() && hashFiles('trivy-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
 
       - name: Upload security test results
         uses: actions/upload-artifact@v3

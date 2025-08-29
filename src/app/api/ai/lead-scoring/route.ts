@@ -76,7 +76,7 @@ export const POST = withApiSecurity(
             enableLeadScoring: true,
             enableValidation: true,
             enableDuplicateDetection: true,
-            enableCaching: true
+            enableCaching: true,
           })
 
           return NextResponse.json({
@@ -86,15 +86,12 @@ export const POST = withApiSecurity(
               scores: Object.fromEntries(result.scores),
               stats: result.stats,
               duplicates: result.duplicates,
-              errors: result.errors
-            }
+              errors: result.errors,
+            },
           })
 
         default:
-          return NextResponse.json(
-            { error: `Unknown action: ${action}` },
-            { status: 400 }
-          )
+          return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
       }
     } catch (error) {
       logger.error('AI API', 'Lead scoring failed', error)
@@ -112,7 +109,7 @@ export const POST = withApiSecurity(
     requireCSRF: false,
     rateLimit: 'general',
     validateInput: true,
-    logRequests: true
+    logRequests: true,
   }
 )
 

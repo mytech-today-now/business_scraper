@@ -68,6 +68,7 @@ Create `.vscode/settings.json`:
 ### VS Code Extensions
 
 Recommended extensions:
+
 - Jest Runner
 - Jest Snippets
 - Testing Library Snippets
@@ -112,6 +113,7 @@ module.exports = {
 ### jest.setup.js
 
 Key setup includes:
+
 - Testing Library extensions
 - Global mocks (fetch, localStorage, etc.)
 - Browser API polyfills
@@ -143,6 +145,7 @@ Key setup includes:
 ### Global Mocks
 
 Automatically mocked in `jest.setup.js`:
+
 - `fetch` API
 - `localStorage` and `sessionStorage`
 - Browser APIs (ResizeObserver, IntersectionObserver)
@@ -164,14 +167,18 @@ export const useRouter = () => ({
 
 // __mocks__/puppeteer.js
 export default {
-  launch: jest.fn(() => Promise.resolve({
-    newPage: jest.fn(() => Promise.resolve({
-      goto: jest.fn(),
-      evaluate: jest.fn(),
+  launch: jest.fn(() =>
+    Promise.resolve({
+      newPage: jest.fn(() =>
+        Promise.resolve({
+          goto: jest.fn(),
+          evaluate: jest.fn(),
+          close: jest.fn(),
+        })
+      ),
       close: jest.fn(),
-    })),
-    close: jest.fn(),
-  })),
+    })
+  ),
 }
 ```
 
@@ -240,6 +247,7 @@ npm run test:debug -- --testNamePattern="specific test name"
 ### Common Debug Scenarios
 
 1. **Component not rendering**
+
    ```typescript
    // Add debug output
    const { debug } = render(<Component />)
@@ -247,12 +255,16 @@ npm run test:debug -- --testNamePattern="specific test name"
    ```
 
 2. **Async operations not completing**
+
    ```typescript
    // Use waitFor with debugging
-   await waitFor(() => {
-     console.log('Current state:', screen.debug())
-     expect(element).toBeInTheDocument()
-   }, { timeout: 5000 })
+   await waitFor(
+     () => {
+       console.log('Current state:', screen.debug())
+       expect(element).toBeInTheDocument()
+     },
+     { timeout: 5000 }
+   )
    ```
 
 3. **Mock not working**

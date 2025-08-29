@@ -5,7 +5,11 @@
 
 import { storage } from '@/model/storage'
 import { BusinessRecord, ScrapingConfig, IndustryCategory } from '@/types/business'
-import { createMockBusinessRecord, createMockScrapingConfig, createMockIndustryCategory } from '../utils/testHelpers'
+import {
+  createMockBusinessRecord,
+  createMockScrapingConfig,
+  createMockIndustryCategory,
+} from '../utils/testHelpers'
 import { jest } from '@jest/globals'
 
 // Mock IndexedDB
@@ -50,41 +54,41 @@ jest.mock('idb', () => ({
 describe('Storage Service', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Setup default mock behaviors
     mockDB.transaction.mockReturnValue(mockTransaction)
     mockTransaction.objectStore.mockReturnValue(mockObjectStore)
     mockObjectStore.index.mockReturnValue(mockIndex)
-    
+
     // Mock successful operations
     mockObjectStore.add.mockImplementation(() => ({
       addEventListener: jest.fn((event, callback) => {
         if (event === 'success') setTimeout(callback, 0)
-      })
+      }),
     }))
-    
+
     mockObjectStore.put.mockImplementation(() => ({
       addEventListener: jest.fn((event, callback) => {
         if (event === 'success') setTimeout(callback, 0)
-      })
+      }),
     }))
-    
+
     mockObjectStore.get.mockImplementation(() => ({
       addEventListener: jest.fn((event, callback) => {
         if (event === 'success') setTimeout(() => callback({ target: { result: null } }), 0)
-      })
+      }),
     }))
-    
+
     mockObjectStore.delete.mockImplementation(() => ({
       addEventListener: jest.fn((event, callback) => {
         if (event === 'success') setTimeout(callback, 0)
-      })
+      }),
     }))
-    
+
     mockObjectStore.getAll.mockImplementation(() => ({
       addEventListener: jest.fn((event, callback) => {
         if (event === 'success') setTimeout(() => callback({ target: { result: [] } }), 0)
-      })
+      }),
     }))
   })
 
@@ -105,14 +109,14 @@ describe('Storage Service', () => {
     const mockBusiness = createMockBusinessRecord({
       id: 'test-business-1',
       businessName: 'Test Business',
-      industry: 'Technology'
+      industry: 'Technology',
     })
 
     it('should save business record successfully', async () => {
       mockObjectStore.add.mockImplementation(() => ({
         addEventListener: jest.fn((event, callback) => {
           if (event === 'success') setTimeout(callback, 0)
-        })
+        }),
       }))
 
       await expect(storage.saveBusiness(mockBusiness)).resolves.not.toThrow()
@@ -125,7 +129,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: mockBusiness } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getBusiness('test-business-1')
@@ -139,7 +143,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: undefined } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getBusiness('non-existent')
@@ -149,7 +153,7 @@ describe('Storage Service', () => {
     it('should get all businesses', async () => {
       const mockBusinesses = [
         createMockBusinessRecord({ id: 'business-1' }),
-        createMockBusinessRecord({ id: 'business-2' })
+        createMockBusinessRecord({ id: 'business-2' }),
       ]
 
       mockObjectStore.getAll.mockImplementation(() => ({
@@ -157,7 +161,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: mockBusinesses } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getAllBusinesses()
@@ -167,7 +171,7 @@ describe('Storage Service', () => {
     it('should get businesses by industry', async () => {
       const techBusinesses = [
         createMockBusinessRecord({ id: 'tech-1', industry: 'Technology' }),
-        createMockBusinessRecord({ id: 'tech-2', industry: 'Technology' })
+        createMockBusinessRecord({ id: 'tech-2', industry: 'Technology' }),
       ]
 
       mockIndex.getAll.mockImplementation(() => ({
@@ -175,7 +179,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: techBusinesses } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getBusinessesByIndustry('Technology')
@@ -200,7 +204,7 @@ describe('Storage Service', () => {
     const mockIndustry = createMockIndustryCategory({
       id: 'test-industry-1',
       name: 'Technology',
-      keywords: ['software', 'tech', 'IT']
+      keywords: ['software', 'tech', 'IT'],
     })
 
     it('should save industry category', async () => {
@@ -211,7 +215,7 @@ describe('Storage Service', () => {
     it('should get all industries', async () => {
       const mockIndustries = [
         createMockIndustryCategory({ id: 'industry-1', name: 'Technology' }),
-        createMockIndustryCategory({ id: 'industry-2', name: 'Healthcare' })
+        createMockIndustryCategory({ id: 'industry-2', name: 'Healthcare' }),
       ]
 
       mockObjectStore.getAll.mockImplementation(() => ({
@@ -219,7 +223,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: mockIndustries } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getAllIndustries()
@@ -243,7 +247,7 @@ describe('Storage Service', () => {
     const mockConfig = createMockScrapingConfig({
       id: 'test-config-1',
       maxResults: 100,
-      timeout: 30000
+      timeout: 30000,
     })
 
     it('should save configuration', async () => {
@@ -257,7 +261,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: mockConfig } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getConfig('test-config-1')
@@ -276,7 +280,7 @@ describe('Storage Service', () => {
       name: 'Test Session',
       businesses: ['business-1', 'business-2'],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     it('should save session', async () => {
@@ -292,7 +296,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: mockSessions } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getAllSessions()
@@ -310,7 +314,7 @@ describe('Storage Service', () => {
       id: 'blacklist-1',
       domains: ['spam.com', 'malicious.net'],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     it('should save domain blacklist', async () => {
@@ -324,7 +328,7 @@ describe('Storage Service', () => {
           if (event === 'success') {
             setTimeout(() => callback({ target: { result: mockBlacklist } }), 0)
           }
-        })
+        }),
       }))
 
       const result = await storage.getDomainBlacklist('blacklist-1')
@@ -339,7 +343,7 @@ describe('Storage Service', () => {
           if (event === 'error') {
             setTimeout(() => callback({ target: { error: new Error('Transaction failed') } }), 0)
           }
-        })
+        }),
       }))
 
       const mockBusiness = createMockBusinessRecord()
@@ -358,28 +362,28 @@ describe('Storage Service', () => {
 
   describe('Performance Tests', () => {
     it('should handle bulk operations efficiently', async () => {
-      const businesses = Array.from({ length: 100 }, (_, i) => 
+      const businesses = Array.from({ length: 100 }, (_, i) =>
         createMockBusinessRecord({ id: `bulk-business-${i}` })
       )
 
       const start = performance.now()
-      
+
       // Mock successful bulk operations
       for (const business of businesses) {
         await storage.saveBusiness(business)
       }
-      
+
       const end = performance.now()
       expect(end - start).toBeLessThan(1000) // Should complete in under 1 second
     })
 
     it('should handle concurrent operations', async () => {
-      const businesses = Array.from({ length: 10 }, (_, i) => 
+      const businesses = Array.from({ length: 10 }, (_, i) =>
         createMockBusinessRecord({ id: `concurrent-business-${i}` })
       )
 
       const promises = businesses.map(business => storage.saveBusiness(business))
-      
+
       await expect(Promise.all(promises)).resolves.not.toThrow()
     })
   })
@@ -400,7 +404,7 @@ describe('Storage Service', () => {
       const business2 = createMockBusinessRecord({ id: 'duplicate-test' })
 
       await storage.saveBusiness(business1)
-      
+
       // Second save with same ID should use put (update) instead of add
       await expect(storage.updateBusiness(business2)).resolves.not.toThrow()
     })

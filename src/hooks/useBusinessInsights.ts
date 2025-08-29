@@ -6,7 +6,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { BusinessRecord } from '@/types/business'
 import { LeadScore } from '@/lib/aiLeadScoring'
-import { 
+import {
   generateIndustryDistribution,
   generateScoreDistribution,
   generateGeographicDistribution,
@@ -15,7 +15,7 @@ import {
   calculateROIPredictions,
   ChartData,
   GeographicData,
-  TrendData
+  TrendData,
 } from '@/utils/chartHelpers'
 import { logger } from '@/utils/logger'
 
@@ -72,17 +72,17 @@ export function useBusinessInsights(
     includeROI = true,
     averageOrderValue = 1000,
     conversionRates = {
-      'high': 0.15,
-      'medium': 0.08,
-      'low': 0.03
-    }
+      high: 0.15,
+      medium: 0.08,
+      low: 0.03,
+    },
   } = options
 
   const [state, setState] = useState<BusinessInsightsState>({
     insights: null,
     isLoading: false,
     error: null,
-    lastUpdated: null
+    lastUpdated: null,
   })
 
   /**
@@ -108,7 +108,7 @@ export function useBusinessInsights(
       const conversionPredictions = generateConversionPrediction(scores)
 
       // ROI predictions
-      const roiPredictions = includeROI 
+      const roiPredictions = includeROI
         ? calculateROIPredictions(scores, averageOrderValue, conversionRates)
         : []
 
@@ -129,7 +129,7 @@ export function useBusinessInsights(
         trendData,
         conversionPredictions,
         roiPredictions,
-        summary
+        summary,
       }
     } catch (error) {
       logger.error('useBusinessInsights', 'Failed to generate insights', error)
@@ -140,103 +140,121 @@ export function useBusinessInsights(
   /**
    * Generate insights summary
    */
-  const generateInsightsSummary = useCallback((
-    businesses: BusinessRecord[],
-    scores: Map<string, LeadScore>,
-    industryDist: ChartData[],
-    geoDist: GeographicData[],
-    conversionPred: ChartData[],
-    roiPred: { category: string; leads: number; predictedRevenue: number; roi: number }[]
-  ): InsightsSummary => {
-    const totalBusinesses = businesses.length
-    const scoresArray = Array.from(scores.values())
-    const averageScore = scoresArray.length > 0 
-      ? Math.round(scoresArray.reduce((sum, s) => sum + s.score, 0) / scoresArray.length)
-      : 0
+  const generateInsightsSummary = useCallback(
+    (
+      businesses: BusinessRecord[],
+      scores: Map<string, LeadScore>,
+      industryDist: ChartData[],
+      geoDist: GeographicData[],
+      conversionPred: ChartData[],
+      roiPred: { category: string; leads: number; predictedRevenue: number; roi: number }[]
+    ): InsightsSummary => {
+      const totalBusinesses = businesses.length
+      const scoresArray = Array.from(scores.values())
+      const averageScore =
+        scoresArray.length > 0
+          ? Math.round(scoresArray.reduce((sum, s) => sum + s.score, 0) / scoresArray.length)
+          : 0
 
-    const topIndustry = industryDist.length > 0 ? industryDist[0].name : 'Unknown'
-    const topState = geoDist.length > 0 
-      ? geoDist.reduce((max, current) => current.count > max.count ? current : max).state
-      : 'Unknown'
+      const topIndustry = industryDist.length > 0 ? industryDist[0].name : 'Unknown'
+      const topState =
+        geoDist.length > 0
+          ? geoDist.reduce((max, current) => (current.count > max.count ? current : max)).state
+          : 'Unknown'
 
-    const highQualityLeads = scoresArray.filter(s => s.score >= 70).length
-    const predictedConversions = conversionPred.reduce((sum, p) => sum + p.value, 0)
-    const estimatedRevenue = roiPred.reduce((sum, r) => sum + r.predictedRevenue, 0)
+      const highQualityLeads = scoresArray.filter(s => s.score >= 70).length
+      const predictedConversions = conversionPred.reduce((sum, p) => sum + p.value, 0)
+      const estimatedRevenue = roiPred.reduce((sum, r) => sum + r.predictedRevenue, 0)
 
-    // Generate recommendations
-    const recommendations = generateRecommendations(
-      totalBusinesses,
-      averageScore,
-      highQualityLeads,
-      industryDist,
-      geoDist
-    )
+      // Generate recommendations
+      const recommendations = generateRecommendations(
+        totalBusinesses,
+        averageScore,
+        highQualityLeads,
+        industryDist,
+        geoDist
+      )
 
-    return {
-      totalBusinesses,
-      averageScore,
-      topIndustry,
-      topState,
-      highQualityLeads,
-      predictedConversions,
-      estimatedRevenue,
-      recommendations
-    }
-  }, [])
+      return {
+        totalBusinesses,
+        averageScore,
+        topIndustry,
+        topState,
+        highQualityLeads,
+        predictedConversions,
+        estimatedRevenue,
+        recommendations,
+      }
+    },
+    []
+  )
 
   /**
    * Generate actionable recommendations
    */
-  const generateRecommendations = useCallback((
-    totalBusinesses: number,
-    averageScore: number,
-    highQualityLeads: number,
-    industryDist: ChartData[],
-    geoDist: GeographicData[]
-  ): string[] => {
-    const recommendations: string[] = []
+  const generateRecommendations = useCallback(
+    (
+      totalBusinesses: number,
+      averageScore: number,
+      highQualityLeads: number,
+      industryDist: ChartData[],
+      geoDist: GeographicData[]
+    ): string[] => {
+      const recommendations: string[] = []
 
-    // Score-based recommendations
-    if (averageScore < 50) {
-      recommendations.push('Consider improving data collection quality to increase average lead scores')
-    } else if (averageScore > 75) {
-      recommendations.push('Excellent lead quality! Focus on rapid follow-up for high-scoring leads')
-    }
-
-    // Volume recommendations
-    if (totalBusinesses < 100) {
-      recommendations.push('Expand search criteria to capture more potential leads')
-    } else if (totalBusinesses > 1000) {
-      recommendations.push('Consider implementing lead prioritization to focus on highest-quality prospects')
-    }
-
-    // Quality recommendations
-    const qualityRatio = totalBusinesses > 0 ? highQualityLeads / totalBusinesses : 0
-    if (qualityRatio < 0.2) {
-      recommendations.push('Low percentage of high-quality leads - review targeting criteria')
-    } else if (qualityRatio > 0.4) {
-      recommendations.push('High percentage of quality leads - excellent targeting!')
-    }
-
-    // Industry recommendations
-    if (industryDist.length > 0) {
-      const topIndustry = industryDist[0]
-      if (topIndustry.value / totalBusinesses > 0.5) {
-        recommendations.push(`Strong concentration in ${topIndustry.name} - consider diversifying or specializing further`)
+      // Score-based recommendations
+      if (averageScore < 50) {
+        recommendations.push(
+          'Consider improving data collection quality to increase average lead scores'
+        )
+      } else if (averageScore > 75) {
+        recommendations.push(
+          'Excellent lead quality! Focus on rapid follow-up for high-scoring leads'
+        )
       }
-    }
 
-    // Geographic recommendations
-    if (geoDist.length > 0) {
-      const topStates = geoDist.slice(0, 3)
-      const topStatesCount = topStates.reduce((sum, state) => sum + state.count, 0)
-      if (topStatesCount / totalBusinesses > 0.7) {
-        recommendations.push('Geographic concentration detected - consider expanding to new markets')
+      // Volume recommendations
+      if (totalBusinesses < 100) {
+        recommendations.push('Expand search criteria to capture more potential leads')
+      } else if (totalBusinesses > 1000) {
+        recommendations.push(
+          'Consider implementing lead prioritization to focus on highest-quality prospects'
+        )
       }
-    }
 
-    return recommendations
-  }, [])
+      // Quality recommendations
+      const qualityRatio = totalBusinesses > 0 ? highQualityLeads / totalBusinesses : 0
+      if (qualityRatio < 0.2) {
+        recommendations.push('Low percentage of high-quality leads - review targeting criteria')
+      } else if (qualityRatio > 0.4) {
+        recommendations.push('High percentage of quality leads - excellent targeting!')
+      }
+
+      // Industry recommendations
+      if (industryDist.length > 0) {
+        const topIndustry = industryDist[0]
+        if (topIndustry.value / totalBusinesses > 0.5) {
+          recommendations.push(
+            `Strong concentration in ${topIndustry.name} - consider diversifying or specializing further`
+          )
+        }
+      }
+
+      // Geographic recommendations
+      if (geoDist.length > 0) {
+        const topStates = geoDist.slice(0, 3)
+        const topStatesCount = topStates.reduce((sum, state) => sum + state.count, 0)
+        if (topStatesCount / totalBusinesses > 0.7) {
+          recommendations.push(
+            'Geographic concentration detected - consider expanding to new markets'
+          )
+        }
+      }
+
+      return recommendations
+    },
+    []
+  )
 
   /**
    * Refresh insights
@@ -246,7 +264,7 @@ export function useBusinessInsights(
       setState(prev => ({
         ...prev,
         insights: null,
-        error: 'No business data available'
+        error: 'No business data available',
       }))
       return
     }
@@ -259,7 +277,7 @@ export function useBusinessInsights(
         ...prev,
         insights,
         isLoading: false,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       }))
       logger.info('useBusinessInsights', 'Insights refreshed successfully')
     } catch (error) {
@@ -267,7 +285,7 @@ export function useBusinessInsights(
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        isLoading: false
+        isLoading: false,
       }))
       logger.error('useBusinessInsights', 'Failed to refresh insights', error)
     }
@@ -276,52 +294,57 @@ export function useBusinessInsights(
   /**
    * Export insights to different formats
    */
-  const exportInsights = useCallback((format: 'json' | 'csv') => {
-    if (!state.insights) {
-      logger.warn('useBusinessInsights', 'No insights available to export')
-      return
-    }
-
-    try {
-      const timestamp = new Date().toISOString().split('T')[0]
-      const filename = `business-insights-${timestamp}`
-
-      if (format === 'json') {
-        const jsonData = JSON.stringify(state.insights, null, 2)
-        const blob = new Blob([jsonData], { type: 'application/json' })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${filename}.json`
-        link.click()
-        window.URL.revokeObjectURL(url)
-      } else if (format === 'csv') {
-        // Export summary as CSV
-        const csvContent = [
-          ['Metric', 'Value'],
-          ['Total Businesses', state.insights.summary.totalBusinesses],
-          ['Average Score', state.insights.summary.averageScore],
-          ['Top Industry', state.insights.summary.topIndustry],
-          ['Top State', state.insights.summary.topState],
-          ['High Quality Leads', state.insights.summary.highQualityLeads],
-          ['Predicted Conversions', state.insights.summary.predictedConversions],
-          ['Estimated Revenue', `$${state.insights.summary.estimatedRevenue.toLocaleString()}`]
-        ].map(row => row.join(',')).join('\n')
-
-        const blob = new Blob([csvContent], { type: 'text/csv' })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${filename}.csv`
-        link.click()
-        window.URL.revokeObjectURL(url)
+  const exportInsights = useCallback(
+    (format: 'json' | 'csv') => {
+      if (!state.insights) {
+        logger.warn('useBusinessInsights', 'No insights available to export')
+        return
       }
 
-      logger.info('useBusinessInsights', `Insights exported as ${format}`)
-    } catch (error) {
-      logger.error('useBusinessInsights', 'Failed to export insights', error)
-    }
-  }, [state.insights])
+      try {
+        const timestamp = new Date().toISOString().split('T')[0]
+        const filename = `business-insights-${timestamp}`
+
+        if (format === 'json') {
+          const jsonData = JSON.stringify(state.insights, null, 2)
+          const blob = new Blob([jsonData], { type: 'application/json' })
+          const url = window.URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `${filename}.json`
+          link.click()
+          window.URL.revokeObjectURL(url)
+        } else if (format === 'csv') {
+          // Export summary as CSV
+          const csvContent = [
+            ['Metric', 'Value'],
+            ['Total Businesses', state.insights.summary.totalBusinesses],
+            ['Average Score', state.insights.summary.averageScore],
+            ['Top Industry', state.insights.summary.topIndustry],
+            ['Top State', state.insights.summary.topState],
+            ['High Quality Leads', state.insights.summary.highQualityLeads],
+            ['Predicted Conversions', state.insights.summary.predictedConversions],
+            ['Estimated Revenue', `$${state.insights.summary.estimatedRevenue.toLocaleString()}`],
+          ]
+            .map(row => row.join(','))
+            .join('\n')
+
+          const blob = new Blob([csvContent], { type: 'text/csv' })
+          const url = window.URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `${filename}.csv`
+          link.click()
+          window.URL.revokeObjectURL(url)
+        }
+
+        logger.info('useBusinessInsights', `Insights exported as ${format}`)
+      } catch (error) {
+        logger.error('useBusinessInsights', 'Failed to export insights', error)
+      }
+    },
+    [state.insights]
+  )
 
   // Auto-refresh insights when data changes
   useEffect(() => {
@@ -349,6 +372,6 @@ export function useBusinessInsights(
   return {
     ...memoizedState,
     refreshInsights,
-    exportInsights
+    exportInsights,
   }
 }

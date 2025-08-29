@@ -26,9 +26,9 @@ describe('Logger Service', () => {
       enableConsole: true,
       enableStorage: true,
       enableFile: false,
-      maxStoredLogs: 100
+      maxStoredLogs: 100,
     })
-    
+
     // Spy on console methods
     consoleSpy = jest.spyOn(console, 'log').mockImplementation()
     jest.spyOn(console, 'error').mockImplementation()
@@ -56,9 +56,9 @@ describe('Logger Service', () => {
       const warnConsoleSpy = jest.spyOn(console, 'log').mockImplementation()
 
       warnLogger.debug('Debug message') // Should not log
-      warnLogger.info('Info message')   // Should not log
+      warnLogger.info('Info message') // Should not log
       warnLogger.warn('Warning message') // Should log
-      warnLogger.error('Error message')  // Should log
+      warnLogger.error('Error message') // Should log
 
       expect(warnConsoleSpy).toHaveBeenCalledTimes(2)
       warnConsoleSpy.mockRestore()
@@ -72,7 +72,7 @@ describe('Logger Service', () => {
         object: { nested: 'value' },
         array: [1, 2, 3],
         null: null,
-        undefined: undefined
+        undefined: undefined,
       }
 
       expect(() => {
@@ -92,7 +92,7 @@ describe('Logger Service', () => {
       const metadata = {
         userId: '123',
         action: 'login',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
 
       logger.info('User logged in', metadata)
@@ -110,15 +110,15 @@ describe('Logger Service', () => {
     it('should support custom formatting', () => {
       const jsonLogger = new Logger({
         format: 'json',
-        enableConsole: true
+        enableConsole: true,
       })
       const jsonConsoleSpy = jest.spyOn(console, 'log').mockImplementation()
 
       jsonLogger.info('JSON message', { key: 'value' })
-      
+
       const logCall = jsonConsoleSpy.mock.calls[0][0]
       expect(() => JSON.parse(logCall)).not.toThrow()
-      
+
       jsonConsoleSpy.mockRestore()
     })
   })
@@ -139,7 +139,7 @@ describe('Logger Service', () => {
     it('should respect max stored logs limit', () => {
       const limitedLogger = new Logger({
         enableStorage: true,
-        maxStoredLogs: 3
+        maxStoredLogs: 3,
       })
 
       for (let i = 1; i <= 5; i++) {
@@ -169,9 +169,9 @@ describe('Logger Service', () => {
     it('should clear logs', () => {
       logger.info('Message 1')
       logger.info('Message 2')
-      
+
       expect(logger.getLogs()).toHaveLength(2)
-      
+
       logger.clearLogs()
       expect(logger.getLogs()).toHaveLength(0)
     })
@@ -188,9 +188,9 @@ describe('Logger Service', () => {
     it('should maintain scope hierarchy', () => {
       const parentScope = logger.createScope('Parent')
       const childScope = parentScope.createScope('Child')
-      
+
       childScope.info('Nested message')
-      
+
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Parent.Child'))
     })
   })
@@ -203,7 +203,7 @@ describe('Logger Service', () => {
       }
 
       const result = await logger.time('test-operation', operation)
-      
+
       expect(result).toBe('result')
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('test-operation'))
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('ms'))
@@ -219,7 +219,7 @@ describe('Logger Service', () => {
       }
 
       const result = logger.timeSync('sync-operation', syncOperation)
-      
+
       expect(result).toBe(499500) // Sum of 0 to 999
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('sync-operation'))
     })
@@ -229,7 +229,7 @@ describe('Logger Service', () => {
     it('should update configuration', () => {
       logger.updateConfig({
         level: LogLevel.ERROR,
-        enableConsole: false
+        enableConsole: false,
       })
 
       logger.info('This should not log')
@@ -283,8 +283,8 @@ describe('Logger Service', () => {
       const largeObj = {
         data: 'x'.repeat(10000),
         nested: {
-          moreData: 'y'.repeat(5000)
-        }
+          moreData: 'y'.repeat(5000),
+        },
       }
 
       expect(() => {
@@ -304,7 +304,7 @@ describe('Logger Service', () => {
     it('should update global config with updateLoggerConfig', () => {
       updateLoggerConfig({
         level: LogLevel.ERROR,
-        enableConsole: false
+        enableConsole: false,
       })
 
       const newLogger = createLogger('TestComponent')
@@ -318,7 +318,7 @@ describe('Logger Service', () => {
     it('should not leak memory with many log entries', () => {
       const memoryLogger = new Logger({
         enableStorage: true,
-        maxStoredLogs: 1000
+        maxStoredLogs: 1000,
       })
 
       // Generate many log entries
@@ -352,7 +352,7 @@ describe('Logger Service', () => {
         format: 'json',
         enableConsole: true,
         enableStorage: true,
-        maxStoredLogs: 50
+        maxStoredLogs: 50,
       })
 
       const complexConsoleSpy = jest.spyOn(console, 'log').mockImplementation()

@@ -124,9 +124,12 @@ describe('MobileNavigation', () => {
       // Close drawer
       await user.click(screen.getByLabelText('Close navigation menu'))
 
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should close drawer when overlay is clicked', async () => {
@@ -142,9 +145,12 @@ describe('MobileNavigation', () => {
 
       await user.click(overlay!)
 
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should close drawer when tab is selected', async () => {
@@ -159,9 +165,12 @@ describe('MobileNavigation', () => {
 
       expect(defaultProps.onTabChange).toHaveBeenCalledWith('scraping')
 
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should close drawer when action button is clicked', async () => {
@@ -176,9 +185,12 @@ describe('MobileNavigation', () => {
 
       expect(defaultProps.onApiConfigOpen).toHaveBeenCalled()
 
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should show correct dark mode text in drawer', async () => {
@@ -244,9 +256,12 @@ describe('MobileNavigation', () => {
       // Press escape using userEvent for better simulation
       await user.keyboard('{Escape}')
 
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should have proper ARIA attributes', async () => {

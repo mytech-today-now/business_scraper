@@ -7,11 +7,7 @@ import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { useConfig } from '@/controller/ConfigContext'
 import { useScraperController } from '@/controller/useScraperController'
-import {
-  mockConfigContext,
-  mockScraperController,
-  setupBrowserMocks
-} from '@/test/testUtils'
+import { mockConfigContext, mockScraperController, setupBrowserMocks } from '@/test/testUtils'
 
 // Mock Next.js Image component for testing
 jest.mock('next/image', () => {
@@ -61,7 +57,9 @@ jest.mock('@/controller/ConfigContext', () => ({
 jest.mock('@/controller/useScraperController')
 
 const mockUseConfig = useConfig as jest.MockedFunction<typeof useConfig>
-const mockUseScraperController = useScraperController as jest.MockedFunction<typeof useScraperController>
+const mockUseScraperController = useScraperController as jest.MockedFunction<
+  typeof useScraperController
+>
 
 describe('Image Optimization', () => {
   beforeEach((): void => {

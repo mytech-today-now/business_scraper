@@ -4,6 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+
+// Force dynamic rendering for this API route
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const revalidate = false
 import { withRBAC } from '@/lib/rbac-middleware'
 import { AuditService } from '@/lib/audit-service'
 import { logger } from '@/utils/logger'
