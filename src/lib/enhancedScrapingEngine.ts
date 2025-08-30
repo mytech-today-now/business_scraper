@@ -8,6 +8,8 @@ import { contactExtractor, ExtractedContact } from './contactExtractor'
 import { antiBotBypass } from './antiBotBypass'
 import { logger } from '@/utils/logger'
 import { BusinessRecord } from '@/types/business'
+import { withScrapingPerformanceTracking } from '@/middleware/performanceMiddleware'
+import { monitoringService } from '@/model/monitoringService'
 
 export interface ScrapingJob {
   id: string
@@ -499,13 +501,16 @@ export class EnhancedScrapingEngine {
       // Record performance metrics
       if (this.config.enablePerformanceMonitoring) {
         const endTime = Date.now()
+        const duration = endTime - startTime
+        const success = job.status === 'completed'
+
         const metrics: PerformanceMetrics = {
           jobId: job.id,
           url: job.url,
           startTime,
           endTime,
-          duration: endTime - startTime,
-          success: job.status === 'completed',
+          duration,
+          success,
           contactsFound,
           pagesScraped,
           retries: job.retries,
@@ -518,6 +523,29 @@ export class EnhancedScrapingEngine {
         if (this.performanceMetrics.length > 1000) {
           this.performanceMetrics.splice(0, 100)
         }
+
+        // Record metrics in monitoring service
+        await monitoringService.recordMetric('scraping_job_duration', duration, 'ms', {
+          job_id: job.id,
+          url: job.url,
+          success: success.toString(),
+          pages_scraped: pagesScraped.toString(),
+          contacts_found: contactsFound.toString(),
+          retries: job.retries.toString()
+        })
+
+        // Record scraping success/failure rate
+        await monitoringService.recordMetric('scraping_job_result', success ? 1 : 0, 'count', {
+          url: job.url,
+          domain: new URL(job.url).hostname
+        })
+
+        // Record pages per minute metric
+        const pagesPerMinute = pagesScraped / (duration / 60000)
+        await monitoringService.recordMetric('scraping_pages_per_minute', pagesPerMinute, 'rate', {
+          job_id: job.id,
+          domain: new URL(job.url).hostname
+        })
       }
     }
   }

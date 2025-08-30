@@ -15,13 +15,28 @@ import {
   PaymentAuditLog,
   PaymentAnalytics
 } from '@/types/payment'
+import { User } from './types/user'
 import { logger } from '@/utils/logger'
 import { DataCompression, CompressedData } from '@/lib/data-compression'
+import { AnalyticsEvent } from './analyticsService'
 
 /**
  * Database schema interface
  */
 interface BusinessScraperDB extends DBSchema {
+  users: {
+    key: string
+    value: User
+    indexes: {
+      'by-email': string
+      'by-stripe-customer-id': string
+      'by-subscription-status': string
+      'by-subscription-plan': string
+      'by-created-date': Date
+      'by-last-login': Date
+      'by-email-verified': boolean
+    }
+  }
   businesses: {
     key: string
     value: BusinessRecord
@@ -138,6 +153,16 @@ interface BusinessScraperDB extends DBSchema {
       'by-period-start': Date
     }
   }
+  analyticsEvents: {
+    key: string
+    value: AnalyticsEvent
+    indexes: {
+      'by-user-id': string
+      'by-event-type': string
+      'by-timestamp': Date
+      'by-session-id': string
+    }
+  }
 }
 
 /**
@@ -146,7 +171,7 @@ interface BusinessScraperDB extends DBSchema {
 export class StorageService {
   private db: IDBPDatabase<BusinessScraperDB> | null = null
   private readonly dbName = 'business-scraper-db'
-  private readonly dbVersion = 5
+  private readonly dbVersion = 7
 
   /**
    * Check if we're running in a browser environment
@@ -293,6 +318,33 @@ export class StorageService {
             })
             paymentAnalyticsStore.createIndex('by-user-id', 'userId')
             paymentAnalyticsStore.createIndex('by-period-start', 'period.start')
+          }
+
+          // Add users store (version 6)
+          if (oldVersion < 6) {
+            // Users store
+            const usersStore = db.createObjectStore('users', {
+              keyPath: 'id',
+            })
+            usersStore.createIndex('by-email', 'email')
+            usersStore.createIndex('by-stripe-customer-id', 'stripeCustomerId')
+            usersStore.createIndex('by-subscription-status', 'subscriptionStatus')
+            usersStore.createIndex('by-subscription-plan', 'subscriptionPlan')
+            usersStore.createIndex('by-created-date', 'createdAt')
+            usersStore.createIndex('by-last-login', 'lastLoginAt')
+            usersStore.createIndex('by-email-verified', 'emailVerified')
+          }
+
+          // Add analytics events store (version 7)
+          if (oldVersion < 7) {
+            // Analytics Events store
+            const analyticsEventsStore = db.createObjectStore('analyticsEvents', {
+              keyPath: 'id',
+            })
+            analyticsEventsStore.createIndex('by-user-id', 'userId')
+            analyticsEventsStore.createIndex('by-event-type', 'eventType')
+            analyticsEventsStore.createIndex('by-timestamp', 'timestamp')
+            analyticsEventsStore.createIndex('by-session-id', 'sessionId')
           }
         },
       })
@@ -1354,6 +1406,118 @@ export class StorageService {
     } catch (error) {
       logger.error('Storage', 'Failed to get all AI insights', error)
       return []
+    }
+  }
+
+  // Analytics Events Operations
+
+  /**
+   * Save an analytics event
+   */
+  async saveAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
+    try {
+      const db = await this.getDatabase()
+      await db.put('analyticsEvents', event)
+      logger.info('Storage', `Saved analytics event: ${event.eventType}`)
+    } catch (error) {
+      logger.error('Storage', 'Failed to save analytics event', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get analytics events by date range
+   */
+  async getAnalyticsEvents(startDate: Date, endDate: Date): Promise<AnalyticsEvent[]> {
+    try {
+      const db = await this.getDatabase()
+      const tx = db.transaction('analyticsEvents', 'readonly')
+      const store = tx.objectStore('analyticsEvents')
+      const index = store.index('by-timestamp')
+
+      const range = IDBKeyRange.bound(startDate, endDate)
+      const events = await index.getAll(range)
+
+      return events
+    } catch (error) {
+      logger.error('Storage', 'Failed to get analytics events', error)
+      return []
+    }
+  }
+
+  /**
+   * Get analytics events by user ID
+   */
+  async getAnalyticsEventsByUser(userId: string): Promise<AnalyticsEvent[]> {
+    try {
+      const db = await this.getDatabase()
+      const tx = db.transaction('analyticsEvents', 'readonly')
+      const store = tx.objectStore('analyticsEvents')
+      const index = store.index('by-user-id')
+
+      return await index.getAll(userId)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get analytics events by user', error)
+      return []
+    }
+  }
+
+  /**
+   * Get analytics events by event type
+   */
+  async getAnalyticsEventsByType(eventType: string): Promise<AnalyticsEvent[]> {
+    try {
+      const db = await this.getDatabase()
+      const tx = db.transaction('analyticsEvents', 'readonly')
+      const store = tx.objectStore('analyticsEvents')
+      const index = store.index('by-event-type')
+
+      return await index.getAll(eventType)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get analytics events by type', error)
+      return []
+    }
+  }
+
+  /**
+   * Get analytics events by session ID
+   */
+  async getAnalyticsEventsBySession(sessionId: string): Promise<AnalyticsEvent[]> {
+    try {
+      const db = await this.getDatabase()
+      const tx = db.transaction('analyticsEvents', 'readonly')
+      const store = tx.objectStore('analyticsEvents')
+      const index = store.index('by-session-id')
+
+      return await index.getAll(sessionId)
+    } catch (error) {
+      logger.error('Storage', 'Failed to get analytics events by session', error)
+      return []
+    }
+  }
+
+  /**
+   * Delete old analytics events (for cleanup)
+   */
+  async deleteOldAnalyticsEvents(beforeDate: Date): Promise<number> {
+    try {
+      const db = await this.getDatabase()
+      const tx = db.transaction('analyticsEvents', 'readwrite')
+      const store = tx.objectStore('analyticsEvents')
+      const index = store.index('by-timestamp')
+
+      const range = IDBKeyRange.upperBound(beforeDate)
+      const keys = await index.getAllKeys(range)
+
+      for (const key of keys) {
+        await store.delete(key)
+      }
+
+      logger.info('Storage', `Deleted ${keys.length} old analytics events`)
+      return keys.length
+    } catch (error) {
+      logger.error('Storage', 'Failed to delete old analytics events', error)
+      return 0
     }
   }
 

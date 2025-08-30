@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "5.4.0",
+  "version": "6.4.0",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
@@ -93,7 +93,18 @@
     "compliance:validate": "node scripts/validate-compliance-config.js",
     "ci": "npm run lint && npm run format:check && npm run type-check && npm run build",
     "test:unit:fast": "jest --testPathPatterns=unit --testPathIgnorePatterns=comprehensive",
-    "test:integration:fast": "jest --testPathPatterns=integration --testPathIgnorePatterns=comprehensive"
+    "test:integration:fast": "jest --testPathPatterns=integration --testPathIgnorePatterns=comprehensive",
+    "test:payments": "jest --testPathPattern=payments",
+    "test:payments:unit": "jest --testPathPattern=payments/unit",
+    "test:payments:integration": "jest --testPathPattern=payments/integration",
+    "test:payments:security": "jest --testPathPattern=payments/security",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
+    "stripe:fixtures": "stripe fixtures fixtures/stripe_fixtures.json",
+    "stripe:products": "node scripts/stripe-setup.js products",
+    "stripe:webhooks": "node scripts/stripe-setup.js webhooks",
+    "payments:setup": "npm run stripe:products && npm run stripe:webhooks",
+    "payments:test": "npm run test:payments && npm run test:payments:integration",
+    "payments:validate": "node scripts/validate-payment-config.js"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.10.0",

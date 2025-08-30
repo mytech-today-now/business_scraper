@@ -5,15 +5,16 @@ const getStaticCSPHeader = () => {
   // Basic CSP for static responses (will be enhanced by middleware)
   return [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
-    "connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com",
+    "connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com https://api.stripe.com https://checkout.stripe.com",
+    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
     "object-src 'none'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "form-action 'self'",
+    "form-action 'self' https://checkout.stripe.com",
     'upgrade-insecure-requests',
   ].join('; ')
 }
@@ -97,6 +98,40 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/api/webhooks/stripe',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://api.stripe.com'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'POST'
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'stripe-signature, content-type'
+          }
+        ]
+      },
+      {
+        source: '/api/payments/:path*',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          }
+        ]
+      }
     ]
   },
 

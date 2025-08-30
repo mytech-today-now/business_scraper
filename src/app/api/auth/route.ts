@@ -17,6 +17,7 @@ import {
 } from '@/lib/security'
 import { getOAuthContext } from '@/lib/oauth/oauth-middleware'
 import { logger } from '@/utils/logger'
+import { auditService } from '@/model/auditService'
 
 // Legacy single user credentials (for backward compatibility)
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin'
@@ -80,6 +81,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     if (!isValidCredentials) {
+      // Log failed authentication attempt
+      await auditService.logSecurityEvent(
+        'login_failure',
+        {
+          username,
+          reason: 'invalid_credentials',
+          userAgent: request.headers.get('user-agent'),
+          message: `Failed login attempt for username: ${username}`
+        },
+        ip
+      )
+
       logger.warn('Auth', `Failed login attempt from IP: ${ip} for username: ${username}`)
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
@@ -103,6 +116,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       path: '/',
     })
 
+    // Log successful authentication
+    await auditService.logAuditEvent('login_success', 'authentication', {
+      userId: username,
+      sessionId: session.id,
+      ipAddress: ip,
+      userAgent: request.headers.get('user-agent'),
+      severity: 'medium',
+      category: 'security',
+      complianceFlags: ['SOC2', 'GDPR']
+    })
+
     logger.info('Auth', `Successful login from IP: ${ip}`)
     return response
   } catch (error) {
@@ -117,8 +141,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
     const sessionId = request.cookies.get('session-id')?.value
+    const ip = getClientIP(request)
 
     if (sessionId) {
+      // Log logout event before invalidating session
+      await auditService.logAuditEvent('logout', 'authentication', {
+        userId: 'admin',
+        sessionId: sessionId,
+        ipAddress: ip,
+        userAgent: request.headers.get('user-agent'),
+        severity: 'low',
+        category: 'security',
+        complianceFlags: ['SOC2']
+      })
+
       invalidateSession(sessionId)
     }
 

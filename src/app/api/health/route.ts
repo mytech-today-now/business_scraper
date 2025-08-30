@@ -7,6 +7,7 @@ import { checkDatabaseConnection } from '@/lib/database'
 import { performConfigHealthCheck } from '@/lib/config-validator'
 import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
+import { monitoringService } from '@/model/monitoringService'
 import {
   withStandardErrorHandling,
   createSuccessResponse,
@@ -115,11 +116,27 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
       // Calculate response time
       healthCheck.responseTime = Date.now() - startTime
 
-      // Determine overall status
+      // Get monitoring service health data
+      const systemHealth = monitoringService.getSystemHealth()
+
+      // Add monitoring service data to health check
+      const monitoringData = {
+        overall: systemHealth.overall,
+        services: systemHealth.services.length,
+        activeAlerts: systemHealth.activeAlerts,
+        lastUpdated: systemHealth.lastUpdated
+      }
+
+      // Record health check metric
+      await monitoringService.recordMetric('health_check_response_time', healthCheck.responseTime, 'ms', {
+        status: healthCheck.status
+      })
+
+      // Determine overall status (combine existing checks with monitoring service)
       const checks = Object.values(healthCheck.checks)
-      if (checks.includes('unhealthy')) {
+      if (checks.includes('unhealthy') || systemHealth.overall === 'unhealthy') {
         healthCheck.status = 'unhealthy'
-      } else if (checks.includes('warning')) {
+      } else if (checks.includes('warning') || systemHealth.overall === 'degraded') {
         healthCheck.status = 'warning'
       }
 
@@ -127,7 +144,7 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
       const statusCode =
         healthCheck.status === 'healthy' ? 200 : healthCheck.status === 'warning' ? 200 : 503
 
-      return { healthCheck, statusCode }
+      return { healthCheck: { ...healthCheck, monitoring: monitoringData }, statusCode }
     },
     {
       operationName: 'Health Check',

@@ -1,8 +1,7 @@
 ---
-type: 'always_apply'
-description: 'Example description'
+type: "always_apply"
+description: "Example description"
 ---
-
 # Augment AI Rules & User Guidelines – General Application Development
 
 This document defines the standards, workflows, and guidelines for any computer
@@ -92,7 +91,7 @@ service.
 
 ### 4. Test Coverage Standards
 
-**RULE: Maintain at Least 85% Comprehensive Test Coverage Across All Test
+**RULE: Maintain at Least 95% Comprehensive Test Coverage Across All Test
 Categories**
 
 Software quality is directly proportional to the rigor of its testing. Testing

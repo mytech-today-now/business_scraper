@@ -9,6 +9,7 @@ import { DatabaseInterface, DatabaseConfig } from './database'
 import { logger } from '@/utils/logger'
 import { SecureDatabase } from './secureDatabase'
 import { metrics } from '@/lib/metrics'
+import { withDatabasePerformanceTracking } from '@/middleware/performanceMiddleware'
 
 export class PostgreSQLDatabase implements DatabaseInterface {
   private secureDb: SecureDatabase
@@ -33,41 +34,47 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   }
 
   private async query(text: string, params?: any[]): Promise<any> {
-    const startTime = Date.now()
-    const operation = this.extractOperationType(text)
-    const table = this.extractTableName(text)
+    // Use performance tracking wrapper for monitoring service integration
+    return withDatabasePerformanceTracking(
+      `postgresql_${this.extractOperationType(text).toLowerCase()}_${this.extractTableName(text)}`,
+      async () => {
+        const startTime = Date.now()
+        const operation = this.extractOperationType(text)
+        const table = this.extractTableName(text)
 
-    try {
-      // Initialize metrics
-      await metrics.initialize()
+        try {
+          // Initialize metrics
+          await metrics.initialize()
 
-      // Use secure database wrapper with SQL injection protection
-      const result = await this.secureDb.query(text, params, {
-        validateQuery: true,
-        logQuery: process.env.NODE_ENV === 'development',
-      })
+          // Use secure database wrapper with SQL injection protection
+          const result = await this.secureDb.query(text, params, {
+            validateQuery: true,
+            logQuery: process.env.NODE_ENV === 'development',
+          })
 
-      const duration = (Date.now() - startTime) / 1000
+          const duration = (Date.now() - startTime) / 1000
 
-      // Record successful query metrics
-      metrics.dbQueryDuration.observe({ operation, table, status: 'success' }, duration)
-      metrics.dbQueryTotal.inc({ operation, table, status: 'success' })
+          // Record successful query metrics (existing Prometheus metrics)
+          metrics.dbQueryDuration.observe({ operation, table, status: 'success' }, duration)
+          metrics.dbQueryTotal.inc({ operation, table, status: 'success' })
 
-      return result
-    } catch (error) {
-      const duration = (Date.now() - startTime) / 1000
+          return result
+        } catch (error) {
+          const duration = (Date.now() - startTime) / 1000
 
-      // Record error metrics
-      metrics.dbQueryDuration.observe({ operation, table, status: 'error' }, duration)
-      metrics.dbQueryTotal.inc({ operation, table, status: 'error' })
-      metrics.dbQueryErrors.inc({
-        operation,
-        table,
-        error_type: error instanceof Error ? error.name : 'unknown',
-      })
+          // Record error metrics
+          metrics.dbQueryDuration.observe({ operation, table, status: 'error' }, duration)
+          metrics.dbQueryTotal.inc({ operation, table, status: 'error' })
+          metrics.dbQueryErrors.inc({
+            operation,
+            table,
+            error_type: error instanceof Error ? error.name : 'unknown',
+          })
 
-      throw error
-    }
+          throw error
+        }
+      }
+    )
   }
 
   private extractOperationType(query: string): string {

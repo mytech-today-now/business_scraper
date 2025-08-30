@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{planName}}</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f4f4; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: #ffffff; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        }
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 30px 20px; 
+            text-align: center; 
+        }
+        .header h1 { 
+            margin: 0; 
+            font-size: 28px; 
+            font-weight: 600; 
+        }
+        .content { 
+            padding: 40px 30px; 
+            background: #ffffff; 
+        }
+        .content h2 { 
+            color: #333; 
+            margin-top: 0; 
+            font-size: 24px; 
+            font-weight: 600; 
+        }
+        .content p { 
+            margin: 16px 0; 
+            font-size: 16px; 
+            line-height: 1.6; 
+        }
+        .subscription-details { 
+            background: #f8f9fa; 
+            padding: 25px; 
+            border-radius: 8px; 
+            margin: 25px 0; 
+            border-left: 4px solid #28a745; 
+        }
+        .subscription-details h3 { 
+            margin-top: 0; 
+            color: #333; 
+            font-size: 18px; 
+            font-weight: 600; 
+        }
+        .subscription-details p { 
+            margin: 8px 0; 
+            font-size: 15px; 
+        }
+        .subscription-details strong { 
+            color: #333; 
+            font-weight: 600; 
+        }
+        .features-list { 
+            background: #e8f5e8; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0; 
+        }
+        .features-list h4 { 
+            margin-top: 0; 
+            color: #155724; 
+            font-size: 16px; 
+            font-weight: 600; 
+        }
+        .features-list ul { 
+            margin: 10px 0; 
+            padding-left: 20px; 
+        }
+        .features-list li { 
+            margin: 5px 0; 
+            color: #155724; 
+        }
+        .button { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            font-size: 16px; 
+            transition: transform 0.2s ease; 
+        }
+        .button:hover { 
+            transform: translateY(-1px); 
+        }
+        .button-container { 
+            text-align: center; 
+            margin: 30px 0; 
+        }
+        .footer { 
+            padding: 25px 30px; 
+            text-align: center; 
+            font-size: 14px; 
+            color: #666; 
+            background-color: #f8f9fa; 
+            border-top: 1px solid #e9ecef; 
+        }
+        .footer p { 
+            margin: 8px 0; 
+        }
+        .footer a { 
+            color: #667eea; 
+            text-decoration: none; 
+        }
+        .welcome-icon { 
+            width: 60px; 
+            height: 60px; 
+            background: #28a745; 
+            border-radius: 50%; 
+            margin: 0 auto 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 24px; 
+            font-weight: bold; 
+        }
+        @media only screen and (max-width: 600px) {
+            .container { 
+                margin: 0; 
+                box-shadow: none; 
+            }
+            .content { 
+                padding: 30px 20px; 
+            }
+            .header { 
+                padding: 25px 20px; 
+            }
+            .header h1 { 
+                font-size: 24px; 
+            }
+            .subscription-details { 
+                padding: 20px; 
+            }
+            .button { 
+                padding: 12px 24px; 
+                font-size: 15px; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to {{planName}}!</h1>
+        </div>
+
+        <div class="content">
+            <div class="welcome-icon">🎉</div>
+            
+            <h2>Your subscription is now active!</h2>
+            
+            <p>Hi {{userName}},</p>
+
+            <p>Thank you for subscribing to {{planName}}! We're excited to have you on board and can't wait for you to explore all the powerful features available to you.</p>
+
+            <div class="subscription-details">
+                <h3>Subscription Details</h3>
+                <p><strong>Plan:</strong> {{planName}}</p>
+                <p><strong>Price:</strong> {{price}}/{{interval}}</p>
+                <p><strong>Next billing date:</strong> {{nextBillingDate}}</p>
+            </div>
+
+            <div class="features-list">
+                <h4>What's included in your plan:</h4>
+                <p>{{features}}</p>
+            </div>
+
+            <p>You now have full access to your dashboard where you can start using all the features of your subscription. Get started by exploring the tools and capabilities available to you.</p>
+
+            <div class="button-container">
+                <a href="{{dashboardUrl}}" class="button">Access Your Dashboard</a>
+            </div>
+
+            <p>If you have any questions about your subscription or need help getting started, our support team is here to assist you every step of the way.</p>
+        </div>
+
+        <div class="footer">
+            <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+            <p>© 2025 Business Scraper App. All rights reserved.</p>
+            <p>This is an automated message. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

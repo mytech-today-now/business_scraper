@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - Action Required</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f4f4; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: #ffffff; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        }
+        .header { 
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); 
+            color: white; 
+            padding: 30px 20px; 
+            text-align: center; 
+        }
+        .header h1 { 
+            margin: 0; 
+            font-size: 28px; 
+            font-weight: 600; 
+        }
+        .content { 
+            padding: 40px 30px; 
+            background: #ffffff; 
+        }
+        .content h2 { 
+            color: #333; 
+            margin-top: 0; 
+            font-size: 24px; 
+            font-weight: 600; 
+        }
+        .content p { 
+            margin: 16px 0; 
+            font-size: 16px; 
+            line-height: 1.6; 
+        }
+        .payment-details { 
+            background: #f8f9fa; 
+            padding: 25px; 
+            border-radius: 8px; 
+            margin: 25px 0; 
+            border-left: 4px solid #dc3545; 
+        }
+        .payment-details h3 { 
+            margin-top: 0; 
+            color: #333; 
+            font-size: 18px; 
+            font-weight: 600; 
+        }
+        .payment-details p { 
+            margin: 8px 0; 
+            font-size: 15px; 
+        }
+        .payment-details strong { 
+            color: #333; 
+            font-weight: 600; 
+        }
+        .alert-box { 
+            background: #f8d7da; 
+            border: 1px solid #f5c6cb; 
+            color: #721c24; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0; 
+        }
+        .alert-box h4 { 
+            margin-top: 0; 
+            font-size: 16px; 
+            font-weight: 600; 
+        }
+        .button { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            font-size: 16px; 
+            transition: transform 0.2s ease; 
+        }
+        .button:hover { 
+            transform: translateY(-1px); 
+        }
+        .button-container { 
+            text-align: center; 
+            margin: 30px 0; 
+        }
+        .footer { 
+            padding: 25px 30px; 
+            text-align: center; 
+            font-size: 14px; 
+            color: #666; 
+            background-color: #f8f9fa; 
+            border-top: 1px solid #e9ecef; 
+        }
+        .footer p { 
+            margin: 8px 0; 
+        }
+        .footer a { 
+            color: #667eea; 
+            text-decoration: none; 
+        }
+        .warning-icon { 
+            width: 60px; 
+            height: 60px; 
+            background: #dc3545; 
+            border-radius: 50%; 
+            margin: 0 auto 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 24px; 
+            font-weight: bold; 
+        }
+        @media only screen and (max-width: 600px) {
+            .container { 
+                margin: 0; 
+                box-shadow: none; 
+            }
+            .content { 
+                padding: 30px 20px; 
+            }
+            .header { 
+                padding: 25px 20px; 
+            }
+            .header h1 { 
+                font-size: 24px; 
+            }
+            .payment-details { 
+                padding: 20px; 
+            }
+            .button { 
+                padding: 12px 24px; 
+                font-size: 15px; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Payment Failed</h1>
+        </div>
+
+        <div class="content">
+            <div class="warning-icon">⚠</div>
+            
+            <h2>Action Required</h2>
+            
+            <p>Hi {{userName}},</p>
+
+            <p>We were unable to process your recent payment. To continue enjoying our services without interruption, please update your payment information as soon as possible.</p>
+
+            <div class="payment-details">
+                <h3>Payment Details</h3>
+                <p><strong>Amount:</strong> {{amount}}</p>
+                <p><strong>Reason:</strong> {{reason}}</p>
+                <p><strong>Next retry:</strong> {{nextRetryDate}}</p>
+            </div>
+
+            <div class="alert-box">
+                <h4>What happens next?</h4>
+                <p>We'll automatically retry your payment on {{nextRetryDate}}. To avoid any service interruption, please update your payment method before then.</p>
+            </div>
+
+            <p>You can easily update your payment information by clicking the button below. This will take you to your secure billing dashboard where you can add a new payment method or update your existing one.</p>
+
+            <div class="button-container">
+                <a href="{{updatePaymentUrl}}" class="button">Update Payment Method</a>
+            </div>
+
+            <p>If you believe this is an error or if you have any questions about this payment failure, please contact our support team immediately. We're here to help resolve any issues quickly.</p>
+        </div>
+
+        <div class="footer">
+            <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+            <p>© 2025 Business Scraper App. All rights reserved.</p>
+            <p>This is an automated message. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

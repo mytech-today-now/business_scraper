@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession, getClientIP } from '@/lib/security'
 import { logger } from '@/utils/logger'
+import { auditService } from '@/model/auditService'
 
 export interface AuthConfig {
   required?: boolean
@@ -35,6 +36,18 @@ export function withAuth(
           return handler(request, { authenticated: false })
         }
 
+        // Log unauthorized access attempt
+        await auditService.logSecurityEvent(
+          'unauthorized_access_attempt',
+          {
+            endpoint: pathname,
+            method: request.method,
+            userAgent: request.headers.get('user-agent'),
+            message: `Authentication required for ${pathname}`
+          },
+          ip
+        )
+
         logger.warn('Auth Middleware', `Authentication required for ${pathname} from IP: ${ip}`)
         return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
       }
@@ -43,11 +56,35 @@ export function withAuth(
       const session = getSession(sessionId)
 
       if (!session || !session.isValid) {
+        // Log invalid session attempt
+        await auditService.logSecurityEvent(
+          'invalid_session_access',
+          {
+            endpoint: pathname,
+            method: request.method,
+            sessionId: sessionId,
+            userAgent: request.headers.get('user-agent'),
+            message: `Invalid session for ${pathname}`
+          },
+          ip
+        )
+
         logger.warn('Auth Middleware', `Invalid session for ${pathname} from IP: ${ip}`)
         const response = NextResponse.json({ error: 'Invalid session' }, { status: 401 })
         response.cookies.delete('session-id')
         return response
       }
+
+      // Log successful authentication
+      await auditService.logAuditEvent('session_validated', 'authentication', {
+        userId: 'admin',
+        sessionId: session.id,
+        ipAddress: ip,
+        userAgent: request.headers.get('user-agent'),
+        severity: 'low',
+        category: 'security',
+        complianceFlags: ['SOC2']
+      })
 
       // Create auth context
       const authContext: AuthContext = {

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import {
   Play,
@@ -16,6 +16,7 @@ import {
   Info,
   Brain,
   StopCircle,
+  BarChart3,
 } from 'lucide-react'
 import { useConfig } from '@/controller/ConfigContext'
 import { PerformanceProvider } from '@/controller/PerformanceContext'
@@ -25,12 +26,14 @@ import { ResultsTable } from './ResultsTable'
 import { VirtualizedResultsTable } from './VirtualizedResultsTable'
 import { ProcessingWindow } from './ProcessingWindow'
 import { ApiConfigurationPage } from './ApiConfigurationPage'
+import { AdminDashboard } from './AdminDashboard'
 import { MobileNavigation } from './MobileNavigation'
 import { AIInsightsPanel } from './AIInsightsPanel'
 import { MemoryDashboard } from './MemoryDashboard'
 import { BusinessIntelligenceDashboard } from './BusinessIntelligenceDashboard'
 import { ProgressIndicator } from './ProgressIndicator'
 import { StreamingResultsDisplay } from './StreamingResultsDisplay'
+import { AnalyticsDashboard } from './analytics/AnalyticsDashboard'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
@@ -40,6 +43,7 @@ import { ExportService, ExportFormat, ExportTemplate } from '@/utils/exportServi
 import { logger } from '@/utils/logger'
 import { clsx } from 'clsx'
 import { clientScraperService } from '@/model/clientScraperService'
+import { analyticsService } from '@/model/analyticsService'
 import { ErrorBoundary } from '../../components/ErrorBoundary'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { useResponsive } from '@/hooks/useResponsive'
@@ -943,11 +947,42 @@ export function App(): JSX.Element {
   const { scrapingState, hasResults } = useScraperController()
   const { isMobile } = useResponsive()
   const [activeTab, setActiveTab] = useState<
-    'config' | 'scraping' | 'ai-insights' | 'bi-dashboard'
+    'config' | 'scraping' | 'ai-insights' | 'bi-dashboard' | 'analytics' | 'dashboard'
   >('config')
   const [showApiConfig, setShowApiConfig] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [isResetting, setIsResetting] = useState(false)
+
+  // Analytics tracking for app initialization and tab changes
+  useEffect(() => {
+    // Track app initialization
+    analyticsService.trackEvent('app_initialized', {
+      timestamp: new Date().toISOString(),
+      isMobile,
+      hasResults
+    })
+  }, [])
+
+  useEffect(() => {
+    // Track tab changes
+    analyticsService.trackEvent('navigation_tab_change', {
+      activeTab,
+      timestamp: new Date().toISOString(),
+      isMobile
+    })
+  }, [activeTab, isMobile])
+
+  /**
+   * Handle tab change with analytics tracking
+   */
+  const handleTabChange = (tab: typeof activeTab) => {
+    setActiveTab(tab)
+    analyticsService.trackEvent('feature_tab_navigation', {
+      fromTab: activeTab,
+      toTab: tab,
+      timestamp: new Date().toISOString()
+    })
+  }
 
   /**
    * Handle application data reset
@@ -1022,7 +1057,7 @@ export function App(): JSX.Element {
                         )
                         return
                       }
-                      setActiveTab('config')
+                      handleTabChange('config')
                     }}
                     disabled={scrapingState.isScrapingActive}
                     title={
@@ -1045,7 +1080,7 @@ export function App(): JSX.Element {
                   <Button
                     variant={activeTab === 'scraping' ? 'default' : 'ghost'}
                     size="sm"
-                    onClick={() => setActiveTab('scraping')}
+                    onClick={() => handleTabChange('scraping')}
                     disabled={state.industriesInEditMode.length > 0}
                     title={
                       state.industriesInEditMode.length > 0
@@ -1070,7 +1105,7 @@ export function App(): JSX.Element {
                   <Button
                     variant={activeTab === 'ai-insights' ? 'default' : 'ghost'}
                     size="sm"
-                    onClick={() => setActiveTab('ai-insights')}
+                    onClick={() => handleTabChange('ai-insights')}
                     className="min-h-touch"
                   >
                     AI Insights
@@ -1078,11 +1113,29 @@ export function App(): JSX.Element {
                   <Button
                     variant={activeTab === 'bi-dashboard' ? 'default' : 'ghost'}
                     size="sm"
-                    onClick={() => setActiveTab('bi-dashboard')}
+                    onClick={() => handleTabChange('bi-dashboard')}
                     className="min-h-touch"
                   >
                     <Brain className="h-4 w-4 mr-1" />
                     BI Dashboard
+                  </Button>
+                  <Button
+                    variant={activeTab === 'analytics' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => handleTabChange('analytics')}
+                    className="min-h-touch"
+                  >
+                    <BarChart3 className="h-4 w-4 mr-1" />
+                    Analytics
+                  </Button>
+                  <Button
+                    variant={activeTab === 'dashboard' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => handleTabChange('dashboard')}
+                    className="min-h-touch"
+                  >
+                    <Settings className="h-4 w-4 mr-1" />
+                    Dashboard
                   </Button>
                   <Button
                     variant={activeTab === 'memory' ? 'default' : 'ghost'}
@@ -1198,6 +1251,10 @@ export function App(): JSX.Element {
               businesses={scrapingState.results}
               scores={new Map()} // This will be populated with actual scores
             />
+          ) : activeTab === 'analytics' ? (
+            <AnalyticsDashboard />
+          ) : activeTab === 'dashboard' ? (
+            <AdminDashboard />
           ) : (
             <AIInsightsPanel />
           )}

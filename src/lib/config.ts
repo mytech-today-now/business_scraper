@@ -129,6 +129,50 @@ export interface PaymentsConfig {
   cancelUrl: string
 }
 
+export interface EmailConfig {
+  smtpHost: string
+  smtpPort: number
+  smtpSecure: boolean
+  smtpUser: string
+  smtpPassword: string
+  fromAddress: string
+  supportEmail: string
+  templatePath: string
+}
+
+export interface MonitoringConfig {
+  enabled: boolean
+  healthCheckInterval: number
+  metricsRetention: number
+  alertThresholds: {
+    apiResponseTime: {
+      warning: number
+      critical: number
+    }
+    databaseQueryTime: {
+      warning: number
+      critical: number
+    }
+    memoryUsage: {
+      warning: number
+      critical: number
+    }
+    paymentProcessingTime: {
+      warning: number
+      critical: number
+    }
+  }
+  notifications: {
+    email: boolean
+    slack: boolean
+    webhook: boolean
+  }
+  prometheus: {
+    enabled: boolean
+    endpoint: string
+  }
+}
+
 export interface AppConfig {
   app: {
     name: string
@@ -136,6 +180,7 @@ export interface AppConfig {
     environment: 'development' | 'production' | 'test'
     debug: boolean
     port: number
+    baseUrl: string
   }
   database: DatabaseConfig
   security: SecurityConfig
@@ -146,6 +191,8 @@ export interface AppConfig {
   features: FeatureFlags
   fileUpload: FileUploadConfig
   payments: PaymentsConfig
+  email: EmailConfig
+  monitoring: MonitoringConfig
 }
 
 // Environment variable validation rules
@@ -250,6 +297,24 @@ const configSchema: Record<string, ValidationRule> = {
   LOG_MAX_FILE_SIZE: { type: 'number', min: 1024, default: 10485760 }, // 10MB
   LOG_MAX_FILES: { type: 'number', min: 1, default: 5 },
 
+  // Monitoring Configuration
+  MONITORING_ENABLED: { type: 'boolean', default: true },
+  MONITORING_HEALTH_CHECK_INTERVAL: { type: 'number', min: 5000, default: 30000 }, // 30 seconds
+  MONITORING_METRICS_RETENTION: { type: 'number', min: 100, default: 1000 }, // Number of metrics to retain
+  MONITORING_API_RESPONSE_WARNING: { type: 'number', min: 100, default: 1000 }, // 1 second
+  MONITORING_API_RESPONSE_CRITICAL: { type: 'number', min: 500, default: 3000 }, // 3 seconds
+  MONITORING_DB_QUERY_WARNING: { type: 'number', min: 100, default: 500 }, // 500ms
+  MONITORING_DB_QUERY_CRITICAL: { type: 'number', min: 500, default: 2000 }, // 2 seconds
+  MONITORING_MEMORY_WARNING: { type: 'number', min: 100, default: 524288000 }, // 500MB in bytes
+  MONITORING_MEMORY_CRITICAL: { type: 'number', min: 500, default: 1073741824 }, // 1GB in bytes
+  MONITORING_PAYMENT_WARNING: { type: 'number', min: 1000, default: 5000 }, // 5 seconds
+  MONITORING_PAYMENT_CRITICAL: { type: 'number', min: 5000, default: 10000 }, // 10 seconds
+  MONITORING_EMAIL_NOTIFICATIONS: { type: 'boolean', default: false },
+  MONITORING_SLACK_NOTIFICATIONS: { type: 'boolean', default: false },
+  MONITORING_WEBHOOK_NOTIFICATIONS: { type: 'boolean', default: false },
+  MONITORING_PROMETHEUS_ENABLED: { type: 'boolean', default: true },
+  MONITORING_PROMETHEUS_ENDPOINT: { type: 'string', default: '/api/metrics' },
+
   // Feature Flags
   FEATURE_ENABLE_CACHING: { type: 'boolean', default: true },
   FEATURE_ENABLE_RATE_LIMITING: { type: 'boolean', default: true },
@@ -274,6 +339,17 @@ const configSchema: Record<string, ValidationRule> = {
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: { type: 'string', required: true },
   PAYMENT_SUCCESS_URL: { type: 'url', required: true },
   PAYMENT_CANCEL_URL: { type: 'url', required: true },
+
+  // Email Configuration
+  SMTP_HOST: { type: 'string', required: true },
+  SMTP_PORT: { type: 'port', default: 587 },
+  SMTP_SECURE: { type: 'boolean', default: false },
+  SMTP_USER: { type: 'string', required: true },
+  SMTP_PASSWORD: { type: 'string', required: true },
+  EMAIL_FROM_ADDRESS: { type: 'email', required: true },
+  EMAIL_SUPPORT_ADDRESS: { type: 'email', required: true },
+  EMAIL_TEMPLATE_PATH: { type: 'string', default: './src/templates/email' },
+  NEXT_PUBLIC_APP_BASE_URL: { type: 'url', required: true },
 }
 
 /**
@@ -416,6 +492,7 @@ export function loadConfig(): AppConfig {
       environment: config.NODE_ENV,
       debug: config.NEXT_PUBLIC_DEBUG,
       port: config.PORT,
+      baseUrl: config.NEXT_PUBLIC_APP_BASE_URL,
     },
     database: {
       url: config.DATABASE_URL,
@@ -551,6 +628,48 @@ export function loadConfig(): AppConfig {
       stripeWebhookSecret: config.STRIPE_WEBHOOK_SECRET,
       successUrl: config.PAYMENT_SUCCESS_URL,
       cancelUrl: config.PAYMENT_CANCEL_URL,
+    },
+    email: {
+      smtpHost: config.SMTP_HOST,
+      smtpPort: config.SMTP_PORT,
+      smtpSecure: config.SMTP_SECURE,
+      smtpUser: config.SMTP_USER,
+      smtpPassword: config.SMTP_PASSWORD,
+      fromAddress: config.EMAIL_FROM_ADDRESS,
+      supportEmail: config.EMAIL_SUPPORT_ADDRESS,
+      templatePath: config.EMAIL_TEMPLATE_PATH,
+    },
+    monitoring: {
+      enabled: config.MONITORING_ENABLED,
+      healthCheckInterval: config.MONITORING_HEALTH_CHECK_INTERVAL,
+      metricsRetention: config.MONITORING_METRICS_RETENTION,
+      alertThresholds: {
+        apiResponseTime: {
+          warning: config.MONITORING_API_RESPONSE_WARNING,
+          critical: config.MONITORING_API_RESPONSE_CRITICAL,
+        },
+        databaseQueryTime: {
+          warning: config.MONITORING_DB_QUERY_WARNING,
+          critical: config.MONITORING_DB_QUERY_CRITICAL,
+        },
+        memoryUsage: {
+          warning: config.MONITORING_MEMORY_WARNING,
+          critical: config.MONITORING_MEMORY_CRITICAL,
+        },
+        paymentProcessingTime: {
+          warning: config.MONITORING_PAYMENT_WARNING,
+          critical: config.MONITORING_PAYMENT_CRITICAL,
+        },
+      },
+      notifications: {
+        email: config.MONITORING_EMAIL_NOTIFICATIONS,
+        slack: config.MONITORING_SLACK_NOTIFICATIONS,
+        webhook: config.MONITORING_WEBHOOK_NOTIFICATIONS,
+      },
+      prometheus: {
+        enabled: config.MONITORING_PROMETHEUS_ENABLED,
+        endpoint: config.MONITORING_PROMETHEUS_ENDPOINT,
+      },
     },
   }
 

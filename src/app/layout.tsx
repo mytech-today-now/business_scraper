@@ -4,6 +4,8 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import { ErrorBoundary } from '../components/ErrorBoundary'
 import { ServiceWorkerRegistration } from '../components/ServiceWorkerRegistration'
+import { StripeProvider } from '@/view/components/payments/StripeProvider'
+import { PaymentSystemInitializer } from '../components/PaymentSystemInitializer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -52,19 +54,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
       </head>
       <body className={inter.className}>
         <ErrorBoundary level="page" showDetails={process.env.NODE_ENV === 'development'}>
-          <div className="min-h-screen bg-background font-sans antialiased">{children}</div>
-          <ServiceWorkerRegistration />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: 'hsl(var(--card))',
-                color: 'hsl(var(--card-foreground))',
-                border: '1px solid hsl(var(--border))',
-              },
-            }}
-          />
+          <StripeProvider>
+            <PaymentSystemInitializer />
+            <div className="min-h-screen bg-background font-sans antialiased">{children}</div>
+            <ServiceWorkerRegistration />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: 'hsl(var(--card))',
+                  color: 'hsl(var(--card-foreground))',
+                  border: '1px solid hsl(var(--border))',
+                },
+              }}
+            />
+          </StripeProvider>
         </ErrorBoundary>
       </body>
     </html>

@@ -6,10 +6,11 @@
 import { stripeService } from './stripeService'
 import { storage } from './storage'
 import { logger } from '@/utils/logger'
-import { 
-  UserPaymentProfile, 
-  PaymentStatus, 
-  SubscriptionTier, 
+import { emailService } from './emailService'
+import {
+  UserPaymentProfile,
+  PaymentStatus,
+  SubscriptionTier,
   BillingAddress,
   PaymentMethodInfo,
   ServiceResponse,
@@ -148,13 +149,30 @@ export class UserPaymentService {
       await this.updateUserPaymentProfile(userId, {
         subscriptionId: subscription.id,
         subscriptionStatus: this.mapStripeStatusToPaymentStatus(subscription.status),
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-        cancelAtPeriodEnd: subscription.cancel_at_period_end,
-        trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : undefined
+        subscriptionTier: this.getSubscriptionTierFromPriceId(priceId)
       })
 
-      logger.info('UserPaymentService', `Subscription created for user: ${userId}`)
+      // Send subscription welcome email
+      const user = await this.getUserById(profile.stripeCustomerId)
+      const plan = await this.getSubscriptionPlan(priceId)
+
+      if (user && plan) {
+        await emailService.sendSubscriptionWelcome(
+          user.email,
+          user.name || 'Valued Customer',
+          {
+            planName: plan.name,
+            price: plan.priceCents,
+            currency: plan.currency,
+            interval: plan.interval,
+            features: plan.features,
+            nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+          },
+          user.id
+        )
+      }
+
+      logger.info('UserPaymentService', `Subscription created and welcome email sent for user: ${userId}`)
       return { success: true, data: subscription }
     } catch (error) {
       logger.error('UserPaymentService', `Failed to create subscription for user: ${userId}`, error)
@@ -193,7 +211,24 @@ export class UserPaymentService {
         cancelAtPeriodEnd: subscription.cancel_at_period_end
       })
 
-      logger.info('UserPaymentService', `Subscription canceled for user: ${userId}`)
+      // Send subscription cancellation email
+      const user = await this.getUserById(profile.stripeCustomerId || '')
+      const plan = await this.getSubscriptionPlan(profile.subscriptionId || '')
+
+      if (user && plan) {
+        await emailService.sendSubscriptionCancellation(
+          user.email,
+          user.name || 'Valued Customer',
+          {
+            planName: plan.name,
+            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+            reason: 'User requested cancellation'
+          },
+          user.id
+        )
+      }
+
+      logger.info('UserPaymentService', `Subscription canceled and email sent for user: ${userId}`)
       return { success: true, data: subscription }
     } catch (error) {
       logger.error('UserPaymentService', `Failed to cancel subscription for user: ${userId}`, error)
@@ -376,6 +411,126 @@ export class UserPaymentService {
   }
 
   /**
+   * Record payment success and send confirmation email
+   */
+  async recordPaymentSuccess(paymentIntent: any): Promise<void> {
+    try {
+      // Get user information
+      const user = await this.getUserById(paymentIntent.customer)
+      if (!user) {
+        logger.warn('UserPaymentService', `User not found for customer: ${paymentIntent.customer}`)
+        return
+      }
+
+      // Send payment confirmation email
+      await emailService.sendPaymentConfirmation(
+        user.email,
+        user.name || 'Valued Customer',
+        {
+          amount: paymentIntent.amount,
+          currency: paymentIntent.currency,
+          description: paymentIntent.description || 'Payment',
+          transactionId: paymentIntent.id,
+          date: new Date()
+        },
+        user.id
+      )
+
+      logger.info('UserPaymentService', `Payment success recorded and email sent for user: ${user.id}`)
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to record payment success', error)
+      throw error
+    }
+  }
+
+  /**
+   * Record payment failure and send notification email
+   */
+  async recordPaymentFailure(paymentIntent: any): Promise<void> {
+    try {
+      // Get user information
+      const user = await this.getUserById(paymentIntent.customer)
+      if (!user) {
+        logger.warn('UserPaymentService', `User not found for customer: ${paymentIntent.customer}`)
+        return
+      }
+
+      // Send payment failed notification
+      await emailService.sendPaymentFailed(
+        user.email,
+        user.name || 'Valued Customer',
+        {
+          amount: paymentIntent.amount,
+          currency: paymentIntent.currency,
+          reason: paymentIntent.last_payment_error?.message || 'Payment failed'
+        },
+        user.id
+      )
+
+      logger.info('UserPaymentService', `Payment failure recorded and email sent for user: ${user.id}`)
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to record payment failure', error)
+      throw error
+    }
+  }
+
+  /**
+   * Send invoice notification
+   */
+  async sendInvoiceNotification(
+    userId: string,
+    invoiceDetails: {
+      invoiceNumber: string
+      amount: number
+      currency: string
+      dueDate: Date
+      downloadUrl: string
+    }
+  ): Promise<void> {
+    try {
+      const user = await this.getUserById(userId)
+      if (!user) {
+        logger.warn('UserPaymentService', `User not found for invoice notification: ${userId}`)
+        return
+      }
+
+      await emailService.sendInvoiceNotification(
+        user.email,
+        user.name || 'Valued Customer',
+        invoiceDetails,
+        user.id
+      )
+
+      logger.info('UserPaymentService', `Invoice notification sent for user: ${userId}`)
+    } catch (error) {
+      logger.error('UserPaymentService', 'Failed to send invoice notification', error)
+      throw error
+    }
+  }
+
+  /**
+   * Helper method to get user by ID (placeholder implementation)
+   */
+  private async getUserById(customerId: string): Promise<{ id: string; email: string; name?: string } | null> {
+    try {
+      // This would typically query your user database
+      // For now, we'll use a placeholder implementation
+      const profile = await this.getUserPaymentProfile(customerId)
+      if (profile) {
+        return {
+          id: profile.userId,
+          email: profile.email,
+          name: profile.name
+        }
+      }
+      return null
+    } catch (error) {
+      logger.error('UserPaymentService', `Failed to get user by ID: ${customerId}`, error)
+      return null
+    }
+  }
+
+  /**
    * Helper method to map Stripe subscription status to our PaymentStatus
    */
   private mapStripeStatusToPaymentStatus(stripeStatus: Stripe.Subscription.Status): PaymentStatus {
@@ -392,6 +547,51 @@ export class UserPaymentService {
         return 'unpaid'
       default:
         return 'free'
+    }
+  }
+
+  /**
+   * Get subscription plan details from price ID
+   */
+  private async getSubscriptionPlan(priceId: string): Promise<{
+    name: string;
+    priceCents: number;
+    currency: string;
+    interval: string;
+    features: string[];
+  } | null> {
+    // This would typically query your pricing configuration
+    // For now, we'll use a placeholder implementation
+    const plans: Record<string, any> = {
+      'price_basic': {
+        name: 'Basic Plan',
+        priceCents: 999,
+        currency: 'USD',
+        interval: 'month',
+        features: ['Basic scraping', 'Email support', '1,000 searches/month']
+      },
+      'price_professional': {
+        name: 'Professional Plan',
+        priceCents: 2999,
+        currency: 'USD',
+        interval: 'month',
+        features: ['Advanced scraping', 'Priority support', '10,000 searches/month', 'API access']
+      },
+      'price_enterprise': {
+        name: 'Enterprise Plan',
+        priceCents: 9999,
+        currency: 'USD',
+        interval: 'month',
+        features: ['Unlimited scraping', '24/7 support', 'Unlimited searches', 'Custom integrations']
+      }
+    }
+
+    return plans[priceId] || {
+      name: 'Unknown Plan',
+      priceCents: 0,
+      currency: 'USD',
+      interval: 'month',
+      features: []
     }
   }
 
