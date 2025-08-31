@@ -6,16 +6,15 @@
 import { NextAuthOptions, Session, User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import PostgresAdapter from '@auth/pg-adapter'
-import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import { logger } from '@/utils/logger'
 import { getSecurityConfig } from '@/lib/config'
+import { getPostgresConnection } from './postgres-connection'
 
-// Database connection for NextAuth
-const pool = new Pool({
+// Database connection for NextAuth using postgres.js
+const sql = getPostgresConnection({
   connectionString: process.env.DATABASE_URL || process.env.NEXTAUTH_DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: false, // Explicitly disable SSL for local PostgreSQL container
 })
 
 // User roles and permissions
@@ -122,7 +121,9 @@ export interface ExtendedSession extends Session {
 
 // NextAuth configuration
 export const authOptions: NextAuthOptions = {
-  adapter: PostgresAdapter(pool),
+  // Note: Using database-less approach for now with postgres.js
+  // TODO: Create custom postgres.js adapter for NextAuth
+  // adapter: PostgresAdapter(pool),
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -138,13 +139,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // Query user from database
-          const result = await pool.query(
-            'SELECT * FROM users WHERE email = $1 AND is_active = true',
-            [credentials.email]
-          )
+          // Query user from database using postgres.js
+          const result = await sql`
+            SELECT * FROM users WHERE email = ${credentials.email} AND is_active = true
+          `
 
-          const user = result.rows[0]
+          const user = result[0]
           if (!user) {
             logger.warn('Auth', `Login attempt for non-existent user: ${credentials.email}`)
             return null
@@ -173,7 +173,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Update last login
-          await pool.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id])
+          await sql`UPDATE users SET last_login = NOW() WHERE id = ${user.id}`
 
           // Get user permissions
           const permissions = ROLE_PERMISSIONS[user.role as UserRole] || []
@@ -262,12 +262,11 @@ export const authOptions: NextAuthOptions = {
 async function verifyMFACode(userId: string, code: string): Promise<boolean> {
   try {
     // Get user's MFA secret from database
-    const result = await pool.query(
-      'SELECT mfa_secret FROM users WHERE id = $1 AND mfa_enabled = true',
-      [userId]
-    )
+    const result = await sql`
+      SELECT mfa_secret FROM users WHERE id = ${userId} AND mfa_enabled = true
+    `
 
-    if (!result.rows[0]?.mfa_secret) {
+    if (!result[0]?.mfa_secret) {
       logger.warn('Auth', `No MFA secret found for user: ${userId}`)
       return false
     }
@@ -276,7 +275,7 @@ async function verifyMFACode(userId: string, code: string): Promise<boolean> {
 
     // Verify the TOTP code
     const verified = speakeasy.totp.verify({
-      secret: result.rows[0].mfa_secret,
+      secret: result[0].mfa_secret,
       encoding: 'base32',
       token: code,
       window: 2, // Allow 2 time steps before/after current time
@@ -300,10 +299,10 @@ async function verifyMFACode(userId: string, code: string): Promise<boolean> {
  */
 async function logSecurityEvent(eventType: string, data: any): Promise<void> {
   try {
-    await pool.query(
-      'INSERT INTO security_audit_log (event_type, event_data, created_at) VALUES ($1, $2, NOW())',
-      [eventType, JSON.stringify(data)]
-    )
+    await sql`
+      INSERT INTO security_audit_log (event_type, event_data, created_at)
+      VALUES (${eventType}, ${JSON.stringify(data)}, NOW())
+    `
   } catch (error) {
     logger.error('Auth', 'Failed to log security event', error)
   }
@@ -349,10 +348,9 @@ export async function generateMFASecret(
     })
 
     // Store secret in database (encrypted)
-    await pool.query('UPDATE users SET mfa_secret = $1, mfa_enabled = false WHERE id = $2', [
-      secret.base32,
-      userId,
-    ])
+    await sql`
+      UPDATE users SET mfa_secret = ${secret.base32}, mfa_enabled = false WHERE id = ${userId}
+    `
 
     // Generate QR code URL
     const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url)
@@ -382,7 +380,7 @@ export async function enableMFA(userId: string, verificationCode: string): Promi
     }
 
     // Enable MFA
-    await pool.query('UPDATE users SET mfa_enabled = true WHERE id = $1', [userId])
+    await sql`UPDATE users SET mfa_enabled = true WHERE id = ${userId}`
 
     logger.info('Auth', `MFA enabled for user: ${userId}`)
     return true
@@ -397,9 +395,7 @@ export async function enableMFA(userId: string, verificationCode: string): Promi
  */
 export async function disableMFA(userId: string): Promise<boolean> {
   try {
-    await pool.query('UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = $1', [
-      userId,
-    ])
+    await sql`UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = ${userId}`
 
     logger.info('Auth', `MFA disabled for user: ${userId}`)
     return true

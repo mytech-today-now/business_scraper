@@ -11,7 +11,7 @@ import {
   validatePaymentCSRFToken,
   validateWebhookIP,
   withPaymentSecurity,
-  withStripeWebhookSecurity
+  withStripeWebhookSecurity,
 } from '@/middleware/paymentSecurity'
 import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { csrfProtectionService } from '@/lib/csrfProtection'
@@ -24,7 +24,9 @@ jest.mock('@/lib/csrfProtection')
 jest.mock('@/lib/security')
 jest.mock('@/utils/logger')
 
-const mockAdvancedRateLimitService = advancedRateLimitService as jest.Mocked<typeof advancedRateLimitService>
+const mockAdvancedRateLimitService = advancedRateLimitService as jest.Mocked<
+  typeof advancedRateLimitService
+>
 const mockCsrfProtectionService = csrfProtectionService as jest.Mocked<typeof csrfProtectionService>
 const mockGetClientIP = getClientIP as jest.MockedFunction<typeof getClientIP>
 const mockLogger = logger as jest.Mocked<typeof logger>
@@ -59,7 +61,7 @@ describe('Payment Security Middleware', () => {
 
       expect(result).toBeInstanceOf(NextResponse)
       expect(result?.status).toBe(429)
-      
+
       const responseData = await result?.json()
       expect(responseData.error).toBe('Too many payment requests, please try again later')
       expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -132,7 +134,7 @@ describe('Payment Security Middleware', () => {
       expect(validateWebhookSignature('', 'sig', testSecret)).toBe(false)
       expect(validateWebhookSignature(testPayload, '', testSecret)).toBe(false)
       expect(validateWebhookSignature(testPayload, 'sig', '')).toBe(false)
-      
+
       expect(mockLogger.warn).toHaveBeenCalledWith(
         'PaymentSecurity',
         'Missing required parameters for webhook signature validation'
@@ -160,7 +162,7 @@ describe('Payment Security Middleware', () => {
         cvv: '123',
         ssn: '123-45-6789',
         bank_account: '123456789',
-        safe_field: 'keep this'
+        safe_field: 'keep this',
       }
 
       const sanitized = sanitizePaymentData(sensitiveData)
@@ -168,7 +170,7 @@ describe('Payment Security Middleware', () => {
       expect(sanitized).toEqual({
         name: 'John Doe',
         email: 'john@example.com',
-        safe_field: 'keep this'
+        safe_field: 'keep this',
       })
       expect(sanitized.card_number).toBeUndefined()
       expect(sanitized.cvv).toBeUndefined()
@@ -182,13 +184,13 @@ describe('Payment Security Middleware', () => {
           name: 'John Doe',
           payment: {
             card_number: '4242424242424242',
-            cvv: '123'
-          }
+            cvv: '123',
+          },
         },
         transaction: {
           amount: 1000,
-          routing_number: '123456789'
-        }
+          routing_number: '123456789',
+        },
       }
 
       const sanitized = sanitizePaymentData(nestedData)
@@ -203,7 +205,7 @@ describe('Payment Security Middleware', () => {
     it('should handle arrays', () => {
       const arrayData = [
         { name: 'Item 1', card_number: '4242424242424242' },
-        { name: 'Item 2', cvv: '123' }
+        { name: 'Item 2', cvv: '123' },
       ]
 
       const sanitized = sanitizePaymentData(arrayData)
@@ -227,11 +229,11 @@ describe('Payment Security Middleware', () => {
     it('should validate CSRF token successfully', () => {
       const request = new NextRequest('https://example.com/api/payment', {
         method: 'POST',
-        headers: { 'Cookie': 'session-id=test-session' }
+        headers: { Cookie: 'session-id=test-session' },
       })
 
       mockCsrfProtectionService.validateFormSubmission.mockReturnValue({
-        isValid: true
+        isValid: true,
       })
 
       const result = validatePaymentCSRFToken(request)
@@ -246,12 +248,12 @@ describe('Payment Security Middleware', () => {
     it('should reject invalid CSRF token', () => {
       const request = new NextRequest('https://example.com/api/payment', {
         method: 'POST',
-        headers: { 'Cookie': 'session-id=test-session' }
+        headers: { Cookie: 'session-id=test-session' },
       })
 
       mockCsrfProtectionService.validateFormSubmission.mockReturnValue({
         isValid: false,
-        error: 'Invalid token'
+        error: 'Invalid token',
       })
 
       const result = validatePaymentCSRFToken(request)
@@ -265,7 +267,7 @@ describe('Payment Security Middleware', () => {
 
     it('should handle missing session ID', () => {
       const request = new NextRequest('https://example.com/api/payment', {
-        method: 'POST'
+        method: 'POST',
       })
 
       const result = validatePaymentCSRFToken(request)
@@ -280,7 +282,7 @@ describe('Payment Security Middleware', () => {
     it('should handle CSRF validation errors', () => {
       const request = new NextRequest('https://example.com/api/payment', {
         method: 'POST',
-        headers: { 'Cookie': 'session-id=test-session' }
+        headers: { Cookie: 'session-id=test-session' },
       })
 
       mockCsrfProtectionService.validateFormSubmission.mockImplementation(() => {
@@ -352,27 +354,25 @@ describe('Payment Security Middleware', () => {
   })
 
   describe('withPaymentSecurity', () => {
-    const mockHandler = jest.fn().mockResolvedValue(
-      NextResponse.json({ success: true })
-    )
+    const mockHandler = jest.fn().mockResolvedValue(NextResponse.json({ success: true }))
 
     beforeEach(() => {
       mockHandler.mockClear()
       mockAdvancedRateLimitService.checkRateLimit.mockResolvedValue(true)
       mockCsrfProtectionService.validateFormSubmission.mockReturnValue({
-        isValid: true
+        isValid: true,
       })
     })
 
     it('should apply all security checks for POST requests', async () => {
       const securedHandler = withPaymentSecurity(mockHandler, {
         requireCSRF: true,
-        rateLimitType: 'payment'
+        rateLimitType: 'payment',
       })
 
       const request = new NextRequest('https://example.com/api/payment', {
         method: 'POST',
-        headers: { 'Cookie': 'session-id=test-session' }
+        headers: { Cookie: 'session-id=test-session' },
       })
 
       const response = await securedHandler(request)
@@ -398,16 +398,16 @@ describe('Payment Security Middleware', () => {
     it('should block requests that fail CSRF validation', async () => {
       mockCsrfProtectionService.validateFormSubmission.mockReturnValue({
         isValid: false,
-        error: 'Invalid token'
+        error: 'Invalid token',
       })
 
       const securedHandler = withPaymentSecurity(mockHandler, {
-        requireCSRF: true
+        requireCSRF: true,
       })
 
       const request = new NextRequest('https://example.com/api/payment', {
         method: 'POST',
-        headers: { 'Cookie': 'session-id=test-session' }
+        headers: { Cookie: 'session-id=test-session' },
       })
 
       const response = await securedHandler(request)
@@ -418,11 +418,11 @@ describe('Payment Security Middleware', () => {
 
     it('should skip CSRF for GET requests', async () => {
       const securedHandler = withPaymentSecurity(mockHandler, {
-        requireCSRF: true
+        requireCSRF: true,
       })
 
       const request = new NextRequest('https://example.com/api/payment', {
-        method: 'GET'
+        method: 'GET',
       })
 
       await securedHandler(request)
@@ -449,9 +449,7 @@ describe('Payment Security Middleware', () => {
   })
 
   describe('withStripeWebhookSecurity', () => {
-    const mockHandler = jest.fn().mockResolvedValue(
-      NextResponse.json({ received: true })
-    )
+    const mockHandler = jest.fn().mockResolvedValue(NextResponse.json({ received: true }))
     const webhookSecret = 'whsec_test123'
 
     beforeEach(() => {
@@ -472,9 +470,9 @@ describe('Payment Security Middleware', () => {
       const request = new NextRequest('https://example.com/api/webhook', {
         method: 'POST',
         headers: {
-          'stripe-signature': signature
+          'stripe-signature': signature,
         },
-        body: payload
+        body: payload,
       })
 
       const response = await securedHandler(request)
@@ -488,9 +486,9 @@ describe('Payment Security Middleware', () => {
       const request = new NextRequest('https://example.com/api/webhook', {
         method: 'POST',
         headers: {
-          'stripe-signature': 'invalid_signature'
+          'stripe-signature': 'invalid_signature',
         },
-        body: '{"test": "data"}'
+        body: '{"test": "data"}',
       })
 
       const response = await securedHandler(request)
@@ -507,7 +505,7 @@ describe('Payment Security Middleware', () => {
       const securedHandler = withStripeWebhookSecurity(mockHandler, webhookSecret)
       const request = new NextRequest('https://example.com/api/webhook', {
         method: 'POST',
-        body: '{"test": "data"}'
+        body: '{"test": "data"}',
       })
 
       const response = await securedHandler(request)

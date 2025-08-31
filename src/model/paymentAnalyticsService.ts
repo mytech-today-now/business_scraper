@@ -7,29 +7,32 @@ import { storage } from './storage'
 import { userPaymentService } from './userPaymentService'
 import { stripeService } from './stripeService'
 import { logger } from '@/utils/logger'
-import { 
-  PaymentAnalytics, 
-  PaymentTransaction, 
+import {
+  PaymentAnalytics,
+  PaymentTransaction,
   Invoice,
   UserPaymentProfile,
   ServiceResponse,
-  PaginatedResponse
+  PaginatedResponse,
 } from '@/types/payment'
 
 export class PaymentAnalyticsService {
-
   /**
    * Generate payment analytics for a user
    */
   async generateUserAnalytics(
-    userId: string, 
-    startDate: Date, 
+    userId: string,
+    startDate: Date,
     endDate: Date
   ): Promise<ServiceResponse<PaymentAnalytics>> {
     try {
       const profile = await userPaymentService.getUserPaymentProfile(userId)
       if (!profile) {
-        return { success: false, error: 'User payment profile not found', code: 'PROFILE_NOT_FOUND' }
+        return {
+          success: false,
+          error: 'User payment profile not found',
+          code: 'PROFILE_NOT_FOUND',
+        }
       }
 
       // Get transactions and invoices for the period
@@ -38,13 +41,17 @@ export class PaymentAnalyticsService {
 
       // Calculate metrics
       const metrics = this.calculateMetrics(transactions, invoices, startDate, endDate)
-      const subscriptionMetrics = await this.calculateSubscriptionMetrics(userId, startDate, endDate)
+      const subscriptionMetrics = await this.calculateSubscriptionMetrics(
+        userId,
+        startDate,
+        endDate
+      )
 
       const analytics: PaymentAnalytics = {
         userId,
         period: { start: startDate, end: endDate },
         metrics,
-        subscriptionMetrics
+        subscriptionMetrics,
       }
 
       // Save analytics
@@ -53,11 +60,15 @@ export class PaymentAnalyticsService {
       logger.info('PaymentAnalyticsService', `Generated analytics for user: ${userId}`)
       return { success: true, data: analytics }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', `Failed to generate analytics for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'PaymentAnalyticsService',
+        `Failed to generate analytics for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'ANALYTICS_GENERATION_FAILED'
+        code: 'ANALYTICS_GENERATION_FAILED',
       }
     }
   }
@@ -66,17 +77,19 @@ export class PaymentAnalyticsService {
    * Get revenue analytics for a specific period
    */
   async getRevenueAnalytics(
-    startDate: Date, 
+    startDate: Date,
     endDate: Date
-  ): Promise<ServiceResponse<{
-    totalRevenue: number
-    subscriptionRevenue: number
-    oneTimeRevenue: number
-    refunds: number
-    netRevenue: number
-    transactionCount: number
-    averageTransactionValue: number
-  }>> {
+  ): Promise<
+    ServiceResponse<{
+      totalRevenue: number
+      subscriptionRevenue: number
+      oneTimeRevenue: number
+      refunds: number
+      netRevenue: number
+      transactionCount: number
+      averageTransactionValue: number
+    }>
+  > {
     try {
       // This would typically aggregate across all users
       // For now, we'll implement a basic version
@@ -87,17 +100,17 @@ export class PaymentAnalyticsService {
         refunds: 0,
         netRevenue: 0,
         transactionCount: 0,
-        averageTransactionValue: 0
+        averageTransactionValue: 0,
       }
 
       logger.info('PaymentAnalyticsService', 'Generated revenue analytics')
       return { success: true, data: analytics }
     } catch (error) {
       logger.error('PaymentAnalyticsService', 'Failed to generate revenue analytics', error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'REVENUE_ANALYTICS_FAILED'
+        code: 'REVENUE_ANALYTICS_FAILED',
       }
     }
   }
@@ -106,17 +119,19 @@ export class PaymentAnalyticsService {
    * Get subscription analytics
    */
   async getSubscriptionAnalytics(
-    startDate: Date, 
+    startDate: Date,
     endDate: Date
-  ): Promise<ServiceResponse<{
-    activeSubscriptions: number
-    newSubscriptions: number
-    canceledSubscriptions: number
-    churnRate: number
-    mrr: number
-    arr: number
-    averageRevenuePerUser: number
-  }>> {
+  ): Promise<
+    ServiceResponse<{
+      activeSubscriptions: number
+      newSubscriptions: number
+      canceledSubscriptions: number
+      churnRate: number
+      mrr: number
+      arr: number
+      averageRevenuePerUser: number
+    }>
+  > {
     try {
       // This would typically aggregate subscription data
       const analytics = {
@@ -126,17 +141,17 @@ export class PaymentAnalyticsService {
         churnRate: 0,
         mrr: 0,
         arr: 0,
-        averageRevenuePerUser: 0
+        averageRevenuePerUser: 0,
       }
 
       logger.info('PaymentAnalyticsService', 'Generated subscription analytics')
       return { success: true, data: analytics }
     } catch (error) {
       logger.error('PaymentAnalyticsService', 'Failed to generate subscription analytics', error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'SUBSCRIPTION_ANALYTICS_FAILED'
+        code: 'SUBSCRIPTION_ANALYTICS_FAILED',
       }
     }
   }
@@ -151,7 +166,7 @@ export class PaymentAnalyticsService {
   ): Promise<PaginatedResponse<PaymentTransaction>> {
     try {
       const allTransactions = await storage.getPaymentTransactionsByUser(userId)
-      
+
       // Sort by creation date (newest first)
       const sortedTransactions = allTransactions.sort(
         (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
@@ -164,14 +179,18 @@ export class PaymentAnalyticsService {
       return {
         data: paginatedTransactions,
         hasMore,
-        totalCount: sortedTransactions.length
+        totalCount: sortedTransactions.length,
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', `Failed to get payment history for user: ${userId}`, error)
+      logger.error(
+        'PaymentAnalyticsService',
+        `Failed to get payment history for user: ${userId}`,
+        error
+      )
       return {
         data: [],
         hasMore: false,
-        totalCount: 0
+        totalCount: 0,
       }
     }
   }
@@ -186,7 +205,7 @@ export class PaymentAnalyticsService {
   ): Promise<PaginatedResponse<Invoice>> {
     try {
       const allInvoices = await storage.getInvoicesByUser(userId)
-      
+
       // Sort by creation date (newest first)
       const sortedInvoices = allInvoices.sort(
         (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
@@ -199,14 +218,18 @@ export class PaymentAnalyticsService {
       return {
         data: paginatedInvoices,
         hasMore,
-        totalCount: sortedInvoices.length
+        totalCount: sortedInvoices.length,
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', `Failed to get invoice history for user: ${userId}`, error)
+      logger.error(
+        'PaymentAnalyticsService',
+        `Failed to get invoice history for user: ${userId}`,
+        error
+      )
       return {
         data: [],
         hasMore: false,
-        totalCount: 0
+        totalCount: 0,
       }
     }
   }
@@ -220,7 +243,11 @@ export class PaymentAnalyticsService {
       const profile = await userPaymentService.getUserPaymentProfile(userId)
 
       if (!profile) {
-        return { success: false, error: 'User payment profile not found', code: 'PROFILE_NOT_FOUND' }
+        return {
+          success: false,
+          error: 'User payment profile not found',
+          code: 'PROFILE_NOT_FOUND',
+        }
       }
 
       // Calculate total revenue from this customer
@@ -237,10 +264,10 @@ export class PaymentAnalyticsService {
       return { success: true, data: ltv }
     } catch (error) {
       logger.error('PaymentAnalyticsService', `Failed to calculate LTV for user: ${userId}`, error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'LTV_CALCULATION_FAILED'
+        code: 'LTV_CALCULATION_FAILED',
       }
     }
   }
@@ -248,28 +275,33 @@ export class PaymentAnalyticsService {
   /**
    * Get payment method analytics for a user
    */
-  async getPaymentMethodAnalytics(userId: string): Promise<ServiceResponse<{
-    paymentMethods: Array<{
-      type: string
-      count: number
-      totalAmount: number
-      percentage: number
+  async getPaymentMethodAnalytics(userId: string): Promise<
+    ServiceResponse<{
+      paymentMethods: Array<{
+        type: string
+        count: number
+        totalAmount: number
+        percentage: number
+      }>
+      preferredMethod: string
     }>
-    preferredMethod: string
-  }>> {
+  > {
     try {
       const transactions = await storage.getPaymentTransactionsByUser(userId)
-      
+
       // Group transactions by payment method
-      const methodStats = transactions.reduce((acc, transaction) => {
-        const method = transaction.paymentMethod
-        if (!acc[method]) {
-          acc[method] = { count: 0, totalAmount: 0 }
-        }
-        acc[method].count++
-        acc[method].totalAmount += transaction.amount
-        return acc
-      }, {} as Record<string, { count: number; totalAmount: number }>)
+      const methodStats = transactions.reduce(
+        (acc, transaction) => {
+          const method = transaction.paymentMethod
+          if (!acc[method]) {
+            acc[method] = { count: 0, totalAmount: 0 }
+          }
+          acc[method].count++
+          acc[method].totalAmount += transaction.amount
+          return acc
+        },
+        {} as Record<string, { count: number; totalAmount: number }>
+      )
 
       const totalTransactions = transactions.length
       const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0)
@@ -279,27 +311,33 @@ export class PaymentAnalyticsService {
         type,
         count: stats.count,
         totalAmount: stats.totalAmount,
-        percentage: totalTransactions > 0 ? (stats.count / totalTransactions) * 100 : 0
+        percentage: totalTransactions > 0 ? (stats.count / totalTransactions) * 100 : 0,
       }))
 
       // Find preferred method (most used)
-      const preferredMethod = paymentMethods.reduce((prev, current) => 
-        prev.count > current.count ? prev : current, paymentMethods[0]
-      )?.type || 'none'
+      const preferredMethod =
+        paymentMethods.reduce(
+          (prev, current) => (prev.count > current.count ? prev : current),
+          paymentMethods[0]
+        )?.type || 'none'
 
       return {
         success: true,
         data: {
           paymentMethods,
-          preferredMethod
-        }
+          preferredMethod,
+        },
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', `Failed to get payment method analytics for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'PaymentAnalyticsService',
+        `Failed to get payment method analytics for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'PAYMENT_METHOD_ANALYTICS_FAILED'
+        code: 'PAYMENT_METHOD_ANALYTICS_FAILED',
       }
     }
   }
@@ -307,46 +345,42 @@ export class PaymentAnalyticsService {
   // Private helper methods
 
   private async getTransactionsForPeriod(
-    userId: string, 
-    startDate: Date, 
+    userId: string,
+    startDate: Date,
     endDate: Date
   ): Promise<PaymentTransaction[]> {
     const allTransactions = await storage.getPaymentTransactionsByUser(userId)
-    return allTransactions.filter(t => 
-      t.createdAt >= startDate && t.createdAt <= endDate
-    )
+    return allTransactions.filter(t => t.createdAt >= startDate && t.createdAt <= endDate)
   }
 
   private async getInvoicesForPeriod(
-    userId: string, 
-    startDate: Date, 
+    userId: string,
+    startDate: Date,
     endDate: Date
   ): Promise<Invoice[]> {
     const allInvoices = await storage.getInvoicesByUser(userId)
-    return allInvoices.filter(i => 
-      i.createdAt >= startDate && i.createdAt <= endDate
-    )
+    return allInvoices.filter(i => i.createdAt >= startDate && i.createdAt <= endDate)
   }
 
   private calculateMetrics(
-    transactions: PaymentTransaction[], 
+    transactions: PaymentTransaction[],
     invoices: Invoice[],
     startDate: Date,
     endDate: Date
   ) {
     const successfulTransactions = transactions.filter(t => t.status === 'succeeded')
     const failedTransactions = transactions.filter(t => t.status === 'failed')
-    
+
     const totalRevenue = successfulTransactions.reduce((sum, t) => sum + t.amount, 0)
     const subscriptionRevenue = invoices
       .filter(i => i.status === 'paid')
       .reduce((sum, i) => sum + i.amount, 0)
     const oneTimePayments = totalRevenue - subscriptionRevenue
-    
+
     // Calculate refunds (negative amounts)
-    const refunds = Math.abs(successfulTransactions
-      .filter(t => t.amount < 0)
-      .reduce((sum, t) => sum + t.amount, 0))
+    const refunds = Math.abs(
+      successfulTransactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0)
+    )
 
     // Calculate MRR and ARR (simplified)
     const monthsDiff = this.getMonthsDifference(startDate, endDate)
@@ -368,22 +402,18 @@ export class PaymentAnalyticsService {
       mrr,
       arr,
       churnRate,
-      ltv
+      ltv,
     }
   }
 
-  private async calculateSubscriptionMetrics(
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ) {
+  private async calculateSubscriptionMetrics(userId: string, startDate: Date, endDate: Date) {
     // This would typically involve more complex subscription tracking
     return {
       newSubscriptions: 0,
       canceledSubscriptions: 0,
       upgrades: 0,
       downgrades: 0,
-      reactivations: 0
+      reactivations: 0,
     }
   }
 

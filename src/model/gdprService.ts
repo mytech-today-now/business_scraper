@@ -49,7 +49,7 @@ export class GDPRService {
    * Handle data export request (Right to Data Portability)
    */
   async requestDataExport(
-    userId: string, 
+    userId: string,
     requestedBy: string,
     exportFormat: 'json' | 'csv' | 'xml' = 'json'
   ): Promise<DataExportRequest> {
@@ -60,7 +60,7 @@ export class GDPRService {
         requestedAt: new Date(),
         status: 'pending',
         requestedBy,
-        exportFormat
+        exportFormat,
       }
 
       await this.storeDataExportRequest(request)
@@ -79,7 +79,7 @@ export class GDPRService {
       logger.info('GDPR', `Data export requested for user: ${userId}`, {
         requestId: request.id,
         requestedBy,
-        format: exportFormat
+        format: exportFormat,
       })
 
       return request
@@ -116,7 +116,7 @@ export class GDPRService {
         scheduledFor,
         status: immediateDelete ? 'pending' : 'scheduled',
         requestedBy,
-        immediateDelete
+        immediateDelete,
       }
 
       await this.storeDataDeletionRequest(request)
@@ -128,7 +128,7 @@ export class GDPRService {
         newValues: { scheduledFor, immediateDelete },
         severity: 'high',
         category: 'data',
-        complianceFlags: ['GDPR']
+        complianceFlags: ['GDPR'],
       })
 
       if (immediateDelete) {
@@ -138,7 +138,7 @@ export class GDPRService {
       logger.info('GDPR', `Data deletion requested for user: ${userId}`, {
         requestId: request.id,
         scheduledFor,
-        immediateDelete
+        immediateDelete,
       })
 
       return request
@@ -189,7 +189,7 @@ export class GDPRService {
         status: 'completed',
         completedAt: new Date(),
         downloadUrl,
-        expiresAt
+        expiresAt,
       })
 
       // Send notification (would integrate with email service)
@@ -201,7 +201,7 @@ export class GDPRService {
         newValues: { requestId, downloadUrl },
         severity: 'medium',
         category: 'data',
-        complianceFlags: ['GDPR']
+        complianceFlags: ['GDPR'],
       })
 
       logger.info('GDPR', `Data export completed for request: ${requestId}`)
@@ -224,7 +224,7 @@ export class GDPRService {
       if (!eligibilityCheck.eligible) {
         await this.updateDataDeletionRequest(requestId, {
           status: 'failed',
-          retentionReason: eligibilityCheck.reason
+          retentionReason: eligibilityCheck.reason,
         })
         return
       }
@@ -235,7 +235,7 @@ export class GDPRService {
       // Update request status
       await this.updateDataDeletionRequest(requestId, {
         status: 'completed',
-        completedAt: new Date()
+        completedAt: new Date(),
       })
 
       // Log completion
@@ -244,7 +244,7 @@ export class GDPRService {
         newValues: { requestId },
         severity: 'critical',
         category: 'data',
-        complianceFlags: ['GDPR']
+        complianceFlags: ['GDPR'],
       })
 
       logger.info('GDPR', `Data deletion completed for request: ${requestId}`)
@@ -257,7 +257,9 @@ export class GDPRService {
   /**
    * Check if user data can be deleted
    */
-  private async checkDeletionEligibility(userId: string): Promise<{ eligible: boolean, reason?: string }> {
+  private async checkDeletionEligibility(
+    userId: string
+  ): Promise<{ eligible: boolean; reason?: string }> {
     try {
       // Check for active sessions or recent activity
       const recentActivity = await this.getRecentUserActivity(userId, 30) // 30 days
@@ -297,7 +299,7 @@ export class GDPRService {
         auditLogs: await this.getUserAuditLogs(userId),
         scrapingHistory: await this.getUserScrapingHistory(userId),
         exportedAt: new Date(),
-        userId
+        userId,
       }
 
       return userData
@@ -317,7 +319,7 @@ export class GDPRService {
         this.deleteUserPaymentData(userId),
         this.deleteUserUsageData(userId),
         this.deleteUserScrapingHistory(userId),
-        this.anonymizeAuditLogs(userId)
+        this.anonymizeAuditLogs(userId),
       ])
 
       logger.info('GDPR', `All user data deleted for user: ${userId}`)
@@ -330,7 +332,10 @@ export class GDPRService {
   /**
    * Generate export file in requested format
    */
-  private async generateExportFile(data: UserDataCollection, format: 'json' | 'csv' | 'xml'): Promise<Buffer> {
+  private async generateExportFile(
+    data: UserDataCollection,
+    format: 'json' | 'csv' | 'xml'
+  ): Promise<Buffer> {
     try {
       switch (format) {
         case 'json':
@@ -369,14 +374,20 @@ export class GDPRService {
     return this.deletionRequests.find(req => req.id === id) || null
   }
 
-  private async updateDataExportRequest(id: string, updates: Partial<DataExportRequest>): Promise<void> {
+  private async updateDataExportRequest(
+    id: string,
+    updates: Partial<DataExportRequest>
+  ): Promise<void> {
     const index = this.exportRequests.findIndex(req => req.id === id)
     if (index !== -1) {
       this.exportRequests[index] = { ...this.exportRequests[index], ...updates }
     }
   }
 
-  private async updateDataDeletionRequest(id: string, updates: Partial<DataDeletionRequest>): Promise<void> {
+  private async updateDataDeletionRequest(
+    id: string,
+    updates: Partial<DataDeletionRequest>
+  ): Promise<void> {
     const index = this.deletionRequests.findIndex(req => req.id === id)
     if (index !== -1) {
       this.deletionRequests[index] = { ...this.deletionRequests[index], ...updates }
@@ -427,7 +438,11 @@ export class GDPRService {
     return `https://secure-downloads.example.com/exports/${userId}/${Date.now()}`
   }
 
-  private async sendDataExportNotification(userId: string, url: string, expires: Date): Promise<void> {
+  private async sendDataExportNotification(
+    userId: string,
+    url: string,
+    expires: Date
+  ): Promise<void> {
     // Implementation would send email notification
     logger.info('GDPR', `Export notification sent to user: ${userId}`)
   }

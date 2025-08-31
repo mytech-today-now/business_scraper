@@ -2,7 +2,9 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for setting up the Stripe payment system in the Business Scraper application. The payment system supports subscription-based billing with multiple tiers and secure payment processing.
+This guide provides comprehensive instructions for setting up the Stripe payment
+system in the Business Scraper application. The payment system supports
+subscription-based billing with multiple tiers and secure payment processing.
 
 ## Prerequisites
 
@@ -14,34 +16,40 @@ This guide provides comprehensive instructions for setting up the Stripe payment
 ## 1. Stripe Account Setup
 
 ### Create Stripe Account
+
 1. Sign up at https://stripe.com
 2. Complete account verification process
 3. Enable payment methods for your region
 4. Complete business information and tax settings
 
 ### Get API Keys
+
 1. Navigate to **Developers > API keys** in Stripe Dashboard
 2. Copy your **Publishable key** (starts with `pk_`)
 3. Copy your **Secret key** (starts with `sk_`)
 4. Keep these keys secure - never commit them to version control
 
 ### Create Products and Prices
+
 1. Navigate to **Products** in Stripe Dashboard
 2. Create the following products:
 
 #### Starter Plan
+
 - **Name**: Starter
 - **Description**: Perfect for small businesses getting started
 - **Monthly Price**: $29.00 USD
 - **Yearly Price**: $290.00 USD (17% discount)
 
 #### Professional Plan
-- **Name**: Professional  
+
+- **Name**: Professional
 - **Description**: Ideal for growing businesses with advanced needs
 - **Monthly Price**: $79.00 USD
 - **Yearly Price**: $790.00 USD (17% discount)
 
 #### Enterprise Plan
+
 - **Name**: Enterprise
 - **Description**: For large organizations with unlimited requirements
 - **Monthly Price**: $199.00 USD
@@ -52,6 +60,7 @@ This guide provides comprehensive instructions for setting up the Stripe payment
 ## 2. Webhook Configuration
 
 ### Create Webhook Endpoint
+
 1. Navigate to **Developers > Webhooks** in Stripe Dashboard
 2. Click **Add endpoint**
 3. Set endpoint URL to: `https://yourdomain.com/api/webhooks/stripe`
@@ -117,14 +126,17 @@ PAYMENT_CANCEL_URL=http://localhost:3000/payment/cancel
 
 ## 4. Database Migration
 
-The payment system requires database tables for storing subscription and payment data.
+The payment system requires database tables for storing subscription and payment
+data.
 
 ### Run Migration
+
 ```bash
 npm run db:migrate
 ```
 
 ### Manual Database Setup
+
 If automatic migration fails, create the following tables:
 
 ```sql
@@ -190,6 +202,7 @@ CREATE INDEX idx_feature_usage_user_id_date ON feature_usage(user_id, date);
 ## 5. Testing the Payment System
 
 ### Test Cards for Development
+
 Use these test card numbers in development mode:
 
 - **Success**: 4242 4242 4242 4242
@@ -198,6 +211,7 @@ Use these test card numbers in development mode:
 - **Insufficient Funds**: 4000 0000 0000 9995
 
 ### Testing Webhooks Locally
+
 1. Install Stripe CLI: https://stripe.com/docs/stripe-cli
 2. Login to Stripe CLI: `stripe login`
 3. Forward webhooks to local server:
@@ -208,6 +222,7 @@ Use these test card numbers in development mode:
 5. Update your development environment with the webhook secret
 
 ### Test Subscription Flow
+
 1. Navigate to `/pricing` page
 2. Select a subscription plan
 3. Use test card number: 4242 4242 4242 4242
@@ -218,6 +233,7 @@ Use these test card numbers in development mode:
 ## 6. Production Deployment
 
 ### Security Checklist
+
 - [ ] Use live Stripe keys (not test keys)
 - [ ] Webhook endpoint is HTTPS only
 - [ ] Environment variables are secure
@@ -226,6 +242,7 @@ Use these test card numbers in development mode:
 - [ ] CORS is properly configured
 
 ### Monitoring
+
 - Monitor webhook delivery in Stripe Dashboard
 - Set up alerts for failed payments
 - Monitor subscription metrics and churn
@@ -236,21 +253,25 @@ Use these test card numbers in development mode:
 ### Common Issues
 
 #### Webhook Signature Verification Failed
+
 - Verify webhook secret is correct
 - Check that endpoint URL matches exactly
 - Ensure webhook is receiving raw body (not parsed JSON)
 
 #### Payment Intent Creation Failed
+
 - Verify Stripe secret key is correct
 - Check that customer exists in Stripe
 - Validate payment amount and currency
 
 #### Subscription Not Created
+
 - Check webhook delivery in Stripe Dashboard
 - Verify database connection
 - Check application logs for errors
 
 ### Support Resources
+
 - Stripe Documentation: https://stripe.com/docs
 - Stripe Support: https://support.stripe.com
 - Application Logs: Check `/logs` directory

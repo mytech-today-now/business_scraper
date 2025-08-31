@@ -24,15 +24,15 @@ const mockConfig = {
     smtpPassword: 'testpassword',
     fromAddress: 'noreply@businessscraper.com',
     supportEmail: 'support@businessscraper.com',
-    templatePath: './src/templates/email'
+    templatePath: './src/templates/email',
   },
   app: {
-    baseUrl: 'https://app.businessscraper.com'
-  }
+    baseUrl: 'https://app.businessscraper.com',
+  },
 }
 
 const mockTransporter = {
-  sendMail: jest.fn()
+  sendMail: jest.fn(),
 }
 
 describe('Email-Payment Integration', () => {
@@ -50,7 +50,7 @@ describe('Email-Payment Integration', () => {
       const mockUser = {
         id: 'user123',
         email: 'customer@example.com',
-        name: 'John Customer'
+        name: 'John Customer',
       }
 
       // Mock payment intent
@@ -59,7 +59,7 @@ describe('Email-Payment Integration', () => {
         customer: 'cus_test123',
         amount: 2999,
         currency: 'usd',
-        description: 'Professional Plan Subscription'
+        description: 'Professional Plan Subscription',
       }
 
       // Mock getUserById to return our test user
@@ -74,7 +74,7 @@ describe('Email-Payment Integration', () => {
         to: 'customer@example.com',
         subject: 'Payment Confirmation - pi_test123',
         html: expect.stringContaining('John Customer'),
-        text: expect.stringContaining('John Customer')
+        text: expect.stringContaining('John Customer'),
       })
 
       // Verify audit log was created
@@ -84,7 +84,7 @@ describe('Email-Payment Integration', () => {
         expect.objectContaining({
           userId: 'user123',
           severity: 'low',
-          category: 'system'
+          category: 'system',
         })
       )
     })
@@ -95,7 +95,7 @@ describe('Email-Payment Integration', () => {
         customer: 'cus_nonexistent',
         amount: 2999,
         currency: 'usd',
-        description: 'Professional Plan Subscription'
+        description: 'Professional Plan Subscription',
       }
 
       // Mock getUserById to return null
@@ -116,7 +116,7 @@ describe('Email-Payment Integration', () => {
       const mockUser = {
         id: 'user456',
         email: 'customer@example.com',
-        name: 'Jane Customer'
+        name: 'Jane Customer',
       }
 
       const mockPaymentIntent = {
@@ -125,8 +125,8 @@ describe('Email-Payment Integration', () => {
         amount: 2999,
         currency: 'usd',
         last_payment_error: {
-          message: 'Your card was declined.'
-        }
+          message: 'Your card was declined.',
+        },
       }
 
       jest.spyOn(userPaymentService as any, 'getUserById').mockResolvedValue(mockUser)
@@ -138,7 +138,7 @@ describe('Email-Payment Integration', () => {
         to: 'customer@example.com',
         subject: 'Payment Failed - Action Required',
         html: expect.stringContaining('Jane Customer'),
-        text: expect.stringContaining('Jane Customer')
+        text: expect.stringContaining('Jane Customer'),
       })
     })
   })
@@ -148,20 +148,20 @@ describe('Email-Payment Integration', () => {
       const mockUser = {
         id: 'user789',
         email: 'subscriber@example.com',
-        name: 'Bob Subscriber'
+        name: 'Bob Subscriber',
       }
 
       const mockProfile = {
         userId: 'user789',
         stripeCustomerId: 'cus_test789',
-        email: 'subscriber@example.com'
+        email: 'subscriber@example.com',
       }
 
       const mockSubscription = {
         id: 'sub_test789',
         status: 'active',
         cancel_at_period_end: false,
-        trial_end: null
+        trial_end: null,
       }
 
       const mockPlan = {
@@ -169,7 +169,7 @@ describe('Email-Payment Integration', () => {
         priceCents: 2999,
         currency: 'USD',
         interval: 'month',
-        features: ['Advanced scraping', 'Priority support', 'API access']
+        features: ['Advanced scraping', 'Priority support', 'API access'],
       }
 
       // Mock methods
@@ -181,7 +181,7 @@ describe('Email-Payment Integration', () => {
       // Mock stripeService.createSubscription
       const mockStripeService = require('@/model/stripeService')
       mockStripeService.stripeService = {
-        createSubscription: jest.fn().mockResolvedValue(mockSubscription)
+        createSubscription: jest.fn().mockResolvedValue(mockSubscription),
       }
 
       const result = await userPaymentService.createSubscription('user789', 'price_professional')
@@ -192,7 +192,7 @@ describe('Email-Payment Integration', () => {
         to: 'subscriber@example.com',
         subject: 'Welcome to Professional Plan - Your subscription is active!',
         html: expect.stringContaining('Bob Subscriber'),
-        text: expect.stringContaining('Bob Subscriber')
+        text: expect.stringContaining('Bob Subscriber'),
       })
     })
   })
@@ -202,7 +202,7 @@ describe('Email-Payment Integration', () => {
       const mockUser = {
         id: 'user101',
         email: 'billing@example.com',
-        name: 'Alice Billing'
+        name: 'Alice Billing',
       }
 
       const invoiceDetails = {
@@ -210,7 +210,7 @@ describe('Email-Payment Integration', () => {
         amount: 2999,
         currency: 'USD',
         dueDate: new Date('2025-01-15'),
-        downloadUrl: 'https://app.businessscraper.com/invoices/INV-2025-001'
+        downloadUrl: 'https://app.businessscraper.com/invoices/INV-2025-001',
       }
 
       jest.spyOn(userPaymentService as any, 'getUserById').mockResolvedValue(mockUser)
@@ -222,7 +222,7 @@ describe('Email-Payment Integration', () => {
         to: 'billing@example.com',
         subject: 'Invoice INV-2025-001 - $29.99 due 1/15/2025',
         html: expect.stringContaining('Alice Billing'),
-        text: expect.stringContaining('Alice Billing')
+        text: expect.stringContaining('Alice Billing'),
       })
     })
   })
@@ -232,7 +232,7 @@ describe('Email-Payment Integration', () => {
       const mockUser = {
         id: 'user999',
         email: 'error@example.com',
-        name: 'Error User'
+        name: 'Error User',
       }
 
       const mockPaymentIntent = {
@@ -240,22 +240,22 @@ describe('Email-Payment Integration', () => {
         customer: 'cus_error',
         amount: 1000,
         currency: 'usd',
-        description: 'Test Payment'
+        description: 'Test Payment',
       }
 
       jest.spyOn(userPaymentService as any, 'getUserById').mockResolvedValue(mockUser)
       mockTransporter.sendMail.mockRejectedValue(new Error('SMTP server unavailable'))
 
-      await expect(
-        userPaymentService.recordPaymentSuccess(mockPaymentIntent)
-      ).rejects.toThrow('SMTP server unavailable')
+      await expect(userPaymentService.recordPaymentSuccess(mockPaymentIntent)).rejects.toThrow(
+        'SMTP server unavailable'
+      )
     })
 
     it('should handle audit service failures gracefully', async () => {
       const mockUser = {
         id: 'user888',
         email: 'audit@example.com',
-        name: 'Audit User'
+        name: 'Audit User',
       }
 
       const mockPaymentIntent = {
@@ -263,7 +263,7 @@ describe('Email-Payment Integration', () => {
         customer: 'cus_audit',
         amount: 1000,
         currency: 'usd',
-        description: 'Test Payment'
+        description: 'Test Payment',
       }
 
       jest.spyOn(userPaymentService as any, 'getUserById').mockResolvedValue(mockUser)
@@ -281,7 +281,7 @@ describe('Email-Payment Integration', () => {
       const mockUser = {
         id: 'user555',
         email: 'template@example.com',
-        name: 'Template User'
+        name: 'Template User',
       }
 
       const mockPaymentIntent = {
@@ -289,7 +289,7 @@ describe('Email-Payment Integration', () => {
         customer: 'cus_template',
         amount: 4999,
         currency: 'usd',
-        description: 'Enterprise Plan Subscription'
+        description: 'Enterprise Plan Subscription',
       }
 
       jest.spyOn(userPaymentService as any, 'getUserById').mockResolvedValue(mockUser)
@@ -297,7 +297,7 @@ describe('Email-Payment Integration', () => {
       await userPaymentService.recordPaymentSuccess(mockPaymentIntent)
 
       const emailCall = mockTransporter.sendMail.mock.calls[0][0]
-      
+
       // Verify all template variables are properly replaced
       expect(emailCall.html).toContain('Template User')
       expect(emailCall.html).toContain('$49.99')

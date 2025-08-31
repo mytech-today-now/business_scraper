@@ -328,14 +328,18 @@ export class DatabaseSecurityService {
   static createSecureConnectionConfig(baseConfig: any): any {
     const secureConfig = { ...baseConfig }
 
-    // Enable SSL in production
-    if (process.env.NODE_ENV === 'production') {
+    // For local development and containerized PostgreSQL, disable SSL
+    // Only enable SSL if explicitly configured with proper certificates
+    if (process.env.NODE_ENV === 'production' && baseConfig.ssl && process.env.DB_SSL_CA) {
       secureConfig.ssl = {
         rejectUnauthorized: true,
         ca: process.env.DB_SSL_CA,
         cert: process.env.DB_SSL_CERT,
         key: process.env.DB_SSL_KEY,
       }
+    } else {
+      // Explicitly disable SSL for local PostgreSQL containers
+      secureConfig.ssl = false
     }
 
     // Set secure connection timeouts

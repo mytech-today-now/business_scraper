@@ -78,7 +78,7 @@ export class AuditService {
         category: options.category || 'system',
         complianceFlags: options.complianceFlags || [],
         correlationId: options.correlationId || this.generateCorrelationId(),
-        sessionId: options.sessionId
+        sessionId: options.sessionId,
       }
 
       await this.storeAuditLog(auditLog)
@@ -88,7 +88,7 @@ export class AuditService {
         resource,
         userId: options.userId,
         severity: auditLog.severity,
-        correlationId: auditLog.correlationId
+        correlationId: auditLog.correlationId,
       })
     } catch (error) {
       logger.error('Audit', 'Failed to log audit event', error)
@@ -116,7 +116,7 @@ export class AuditService {
       sessionId,
       severity: 'high',
       category: 'payment',
-      complianceFlags: ['PCI_DSS', 'SOX']
+      complianceFlags: ['PCI_DSS', 'SOX'],
     })
   }
 
@@ -137,7 +137,7 @@ export class AuditService {
       ipAddress,
       severity: 'medium',
       category: 'data',
-      complianceFlags: ['GDPR']
+      complianceFlags: ['GDPR'],
     })
   }
 
@@ -158,7 +158,7 @@ export class AuditService {
       sessionId,
       severity: 'critical',
       category: 'security',
-      complianceFlags: ['SOC2', 'ISO27001']
+      complianceFlags: ['SOC2', 'ISO27001'],
     })
   }
 
@@ -174,7 +174,7 @@ export class AuditService {
     complianceFlags?: string[]
     limit?: number
     offset?: number
-  }): Promise<{ logs: AuditLog[], total: number }> {
+  }): Promise<{ logs: AuditLog[]; total: number }> {
     try {
       let filteredLogs = [...this.auditLogs]
 
@@ -200,7 +200,7 @@ export class AuditService {
       }
 
       if (filters.complianceFlags?.length) {
-        filteredLogs = filteredLogs.filter(log => 
+        filteredLogs = filteredLogs.filter(log =>
           filters.complianceFlags!.some(flag => log.complianceFlags?.includes(flag))
         )
       }
@@ -231,12 +231,10 @@ export class AuditService {
     try {
       const logs = await this.getAuditLogs({
         startDate,
-        endDate
+        endDate,
       })
 
-      const relevantLogs = logs.logs.filter(log =>
-        log.complianceFlags?.includes(complianceType)
-      )
+      const relevantLogs = logs.logs.filter(log => log.complianceFlags?.includes(complianceType))
 
       const report: ComplianceReport = {
         complianceType,
@@ -244,24 +242,20 @@ export class AuditService {
         totalEvents: relevantLogs.length,
         eventsByCategory: this.groupLogsByCategory(relevantLogs),
         eventsBySeverity: this.groupLogsBySeverity(relevantLogs),
-        securityIncidents: relevantLogs.filter(log =>
-          log.category === 'security' && log.severity === 'critical'
+        securityIncidents: relevantLogs.filter(
+          log => log.category === 'security' && log.severity === 'critical'
         ),
-        dataAccessEvents: relevantLogs.filter(log =>
-          log.category === 'data'
-        ),
-        paymentEvents: relevantLogs.filter(log =>
-          log.category === 'payment'
-        ),
+        dataAccessEvents: relevantLogs.filter(log => log.category === 'data'),
+        paymentEvents: relevantLogs.filter(log => log.category === 'payment'),
         generatedAt: new Date(),
-        reportId: this.generateReportId()
+        reportId: this.generateReportId(),
       }
 
       await this.storeComplianceReport(report)
-      
+
       logger.info('Audit', `Compliance report generated: ${complianceType}`, {
         reportId: report.reportId,
-        totalEvents: report.totalEvents
+        totalEvents: report.totalEvents,
       })
 
       return report
@@ -280,7 +274,7 @@ export class AuditService {
       const cutoffDate = new Date(Date.now() - retentionPeriod)
 
       const oldLogs = await this.getAuditLogs({
-        endDate: cutoffDate
+        endDate: cutoffDate,
       })
 
       if (oldLogs.logs.length > 0) {
@@ -290,7 +284,10 @@ export class AuditService {
         // Delete old logs
         await this.deleteAuditLogs(oldLogs.logs.map(log => log.id))
 
-        logger.info('Audit', `Data retention: Archived and deleted ${oldLogs.logs.length} old audit logs`)
+        logger.info(
+          'Audit',
+          `Data retention: Archived and deleted ${oldLogs.logs.length} old audit logs`
+        )
       }
     } catch (error) {
       logger.error('Audit', 'Failed to manage data retention', error)
@@ -308,7 +305,7 @@ export class AuditService {
       'ssn',
       'bank_account',
       'routing_number',
-      'payment_method_details'
+      'payment_method_details',
     ]
 
     const sanitized = { ...data }
@@ -349,7 +346,7 @@ export class AuditService {
    */
   private async storeAuditLog(log: AuditLog): Promise<void> {
     this.auditLogs.push(log)
-    
+
     // Maintain maximum log count
     if (this.auditLogs.length > this.maxLogs) {
       this.auditLogs = this.auditLogs.slice(-this.maxLogs)
@@ -379,17 +376,23 @@ export class AuditService {
   }
 
   private groupLogsByCategory(logs: AuditLog[]): Record<string, number> {
-    return logs.reduce((acc, log) => {
-      acc[log.category] = (acc[log.category] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    return logs.reduce(
+      (acc, log) => {
+        acc[log.category] = (acc[log.category] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
   }
 
   private groupLogsBySeverity(logs: AuditLog[]): Record<string, number> {
-    return logs.reduce((acc, log) => {
-      acc[log.severity] = (acc[log.severity] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    return logs.reduce(
+      (acc, log) => {
+        acc[log.severity] = (acc[log.severity] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
   }
 
   private async storeComplianceReport(report: ComplianceReport): Promise<void> {
@@ -410,7 +413,7 @@ export class AuditService {
     if (log.category === 'payment') {
       logger.info('Audit', 'Processing PCI DSS compliance for payment event', {
         logId: log.id,
-        action: log.action
+        action: log.action,
       })
     }
   }
@@ -420,7 +423,7 @@ export class AuditService {
     if (log.category === 'data') {
       logger.info('Audit', 'Processing GDPR compliance for data event', {
         logId: log.id,
-        action: log.action
+        action: log.action,
       })
     }
   }
@@ -430,7 +433,7 @@ export class AuditService {
     if (log.category === 'security') {
       logger.info('Audit', 'Processing SOC 2 compliance for security event', {
         logId: log.id,
-        action: log.action
+        action: log.action,
       })
     }
   }

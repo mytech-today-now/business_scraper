@@ -5,19 +5,18 @@
 
 import { userPaymentService } from './userPaymentService'
 import { logger } from '@/utils/logger'
-import { 
-  UserPaymentProfile, 
-  SubscriptionTier, 
+import {
+  UserPaymentProfile,
+  SubscriptionTier,
   PaymentStatus,
   FeatureAccessRules,
   SubscriptionPlan,
   PlanLimits,
   ServiceResponse,
-  ValidationError
+  ValidationError,
 } from '@/types/payment'
 
 export class PaymentValidationService {
-  
   // Default subscription plans configuration
   private readonly subscriptionPlans: SubscriptionPlan[] = [
     {
@@ -36,9 +35,9 @@ export class PaymentValidationService {
         apiAccess: false,
         prioritySupport: false,
         customIntegrations: false,
-        whiteLabel: false
+        whiteLabel: false,
       },
-      isActive: true
+      isActive: true,
     },
     {
       id: 'basic',
@@ -47,7 +46,12 @@ export class PaymentValidationService {
       stripePriceId: 'price_basic_monthly',
       monthlyPrice: 2900, // $29.00
       yearlyPrice: 29000, // $290.00 (save 2 months)
-      features: ['Advanced scraping', 'Up to 1,000 records', '10 exports per month', 'Basic filters'],
+      features: [
+        'Advanced scraping',
+        'Up to 1,000 records',
+        '10 exports per month',
+        'Basic filters',
+      ],
       limits: {
         maxBusinessRecords: 1000,
         maxExportsPerMonth: 10,
@@ -57,10 +61,10 @@ export class PaymentValidationService {
         apiAccess: false,
         prioritySupport: false,
         customIntegrations: false,
-        whiteLabel: false
+        whiteLabel: false,
       },
       isPopular: true,
-      isActive: true
+      isActive: true,
     },
     {
       id: 'professional',
@@ -69,7 +73,13 @@ export class PaymentValidationService {
       stripePriceId: 'price_professional_monthly',
       monthlyPrice: 9900, // $99.00
       yearlyPrice: 99000, // $990.00 (save 2 months)
-      features: ['Premium scraping', 'Up to 10,000 records', 'Unlimited exports', 'Advanced filters', 'API access'],
+      features: [
+        'Premium scraping',
+        'Up to 10,000 records',
+        'Unlimited exports',
+        'Advanced filters',
+        'API access',
+      ],
       limits: {
         maxBusinessRecords: 10000,
         maxExportsPerMonth: -1, // Unlimited
@@ -79,9 +89,9 @@ export class PaymentValidationService {
         apiAccess: true,
         prioritySupport: true,
         customIntegrations: false,
-        whiteLabel: false
+        whiteLabel: false,
       },
-      isActive: true
+      isActive: true,
     },
     {
       id: 'enterprise',
@@ -90,7 +100,14 @@ export class PaymentValidationService {
       stripePriceId: 'price_enterprise_monthly',
       monthlyPrice: 29900, // $299.00
       yearlyPrice: 299000, // $2,990.00 (save 2 months)
-      features: ['Enterprise scraping', 'Unlimited records', 'Unlimited exports', 'All features', 'White label', 'Custom integrations'],
+      features: [
+        'Enterprise scraping',
+        'Unlimited records',
+        'Unlimited exports',
+        'All features',
+        'White label',
+        'Custom integrations',
+      ],
       limits: {
         maxBusinessRecords: -1, // Unlimited
         maxExportsPerMonth: -1, // Unlimited
@@ -100,10 +117,10 @@ export class PaymentValidationService {
         apiAccess: true,
         prioritySupport: true,
         customIntegrations: true,
-        whiteLabel: true
+        whiteLabel: true,
       },
-      isActive: true
-    }
+      isActive: true,
+    },
   ]
 
   /**
@@ -113,20 +130,31 @@ export class PaymentValidationService {
     try {
       const profile = await userPaymentService.getUserPaymentProfile(userId)
       if (!profile) {
-        return { success: false, error: 'User payment profile not found', code: 'PROFILE_NOT_FOUND' }
+        return {
+          success: false,
+          error: 'User payment profile not found',
+          code: 'PROFILE_NOT_FOUND',
+        }
       }
 
       const rules = this.getFeatureAccessRules(profile.subscriptionTier)
       const hasAccess = this.checkFeatureAccess(feature, rules)
 
-      logger.info('PaymentValidationService', `Feature access check for user ${userId}, feature: ${feature}, access: ${hasAccess}`)
+      logger.info(
+        'PaymentValidationService',
+        `Feature access check for user ${userId}, feature: ${feature}, access: ${hasAccess}`
+      )
       return { success: true, data: hasAccess }
     } catch (error) {
-      logger.error('PaymentValidationService', `Failed to check feature access for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'PaymentValidationService',
+        `Failed to check feature access for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'FEATURE_ACCESS_CHECK_FAILED'
+        code: 'FEATURE_ACCESS_CHECK_FAILED',
       }
     }
   }
@@ -135,14 +163,18 @@ export class PaymentValidationService {
    * Validate if user can perform an action based on usage limits
    */
   async validateUsageLimit(
-    userId: string, 
+    userId: string,
     action: 'export' | 'search' | 'scrape' | 'record_storage',
     currentUsage: number
   ): Promise<ServiceResponse<boolean>> {
     try {
       const profile = await userPaymentService.getUserPaymentProfile(userId)
       if (!profile) {
-        return { success: false, error: 'User payment profile not found', code: 'PROFILE_NOT_FOUND' }
+        return {
+          success: false,
+          error: 'User payment profile not found',
+          code: 'PROFILE_NOT_FOUND',
+        }
       }
 
       const rules = this.getFeatureAccessRules(profile.subscriptionTier)
@@ -150,20 +182,24 @@ export class PaymentValidationService {
 
       if (!isWithinLimit) {
         const limitInfo = this.getLimitInfo(action, rules)
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: `Usage limit exceeded. Current: ${currentUsage}, Limit: ${limitInfo}`,
-          code: 'USAGE_LIMIT_EXCEEDED'
+          code: 'USAGE_LIMIT_EXCEEDED',
         }
       }
 
       return { success: true, data: true }
     } catch (error) {
-      logger.error('PaymentValidationService', `Failed to validate usage limit for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'PaymentValidationService',
+        `Failed to validate usage limit for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'USAGE_LIMIT_CHECK_FAILED'
+        code: 'USAGE_LIMIT_CHECK_FAILED',
       }
     }
   }
@@ -189,8 +225,8 @@ export class PaymentValidationService {
         maxDailySearches: plan.limits.maxSearchesPerDay,
         maxMonthlyExports: plan.limits.maxExportsPerMonth,
         maxBusinessRecords: plan.limits.maxBusinessRecords,
-        maxConcurrentScrapes: plan.limits.maxConcurrentScrapes
-      }
+        maxConcurrentScrapes: plan.limits.maxConcurrentScrapes,
+      },
     }
   }
 
@@ -201,26 +237,34 @@ export class PaymentValidationService {
     try {
       const profile = await userPaymentService.getUserPaymentProfile(userId)
       if (!profile) {
-        return { success: false, error: 'User payment profile not found', code: 'PROFILE_NOT_FOUND' }
+        return {
+          success: false,
+          error: 'User payment profile not found',
+          code: 'PROFILE_NOT_FOUND',
+        }
       }
 
       const isValid = this.isSubscriptionValid(profile)
-      
+
       if (!isValid) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: `Subscription is not valid. Status: ${profile.subscriptionStatus}`,
-          code: 'INVALID_SUBSCRIPTION'
+          code: 'INVALID_SUBSCRIPTION',
         }
       }
 
       return { success: true, data: true }
     } catch (error) {
-      logger.error('PaymentValidationService', `Failed to validate subscription for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'PaymentValidationService',
+        `Failed to validate subscription for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'SUBSCRIPTION_VALIDATION_FAILED'
+        code: 'SUBSCRIPTION_VALIDATION_FAILED',
       }
     }
   }
@@ -260,20 +304,20 @@ export class PaymentValidationService {
       }
 
       if (errors.length > 0) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: errors.join(', '),
-          code: 'VALIDATION_FAILED'
+          code: 'VALIDATION_FAILED',
         }
       }
 
       return { success: true, data: true }
     } catch (error) {
       logger.error('PaymentValidationService', 'Failed to validate payment data', error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: 'Payment data validation failed',
-        code: 'PAYMENT_DATA_VALIDATION_FAILED'
+        code: 'PAYMENT_DATA_VALIDATION_FAILED',
       }
     }
   }
@@ -281,11 +325,18 @@ export class PaymentValidationService {
   /**
    * Check if user can upgrade/downgrade to a specific tier
    */
-  async canChangeTier(userId: string, newTier: SubscriptionTier): Promise<ServiceResponse<boolean>> {
+  async canChangeTier(
+    userId: string,
+    newTier: SubscriptionTier
+  ): Promise<ServiceResponse<boolean>> {
     try {
       const profile = await userPaymentService.getUserPaymentProfile(userId)
       if (!profile) {
-        return { success: false, error: 'User payment profile not found', code: 'PROFILE_NOT_FOUND' }
+        return {
+          success: false,
+          error: 'User payment profile not found',
+          code: 'PROFILE_NOT_FOUND',
+        }
       }
 
       const currentPlan = this.getSubscriptionPlan(profile.subscriptionTier)
@@ -297,22 +348,26 @@ export class PaymentValidationService {
 
       // Check if it's a valid transition
       const canChange = this.isValidTierTransition(profile.subscriptionTier, newTier)
-      
+
       if (!canChange) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: `Cannot change from ${profile.subscriptionTier} to ${newTier}`,
-          code: 'INVALID_TIER_TRANSITION'
+          code: 'INVALID_TIER_TRANSITION',
         }
       }
 
       return { success: true, data: true }
     } catch (error) {
-      logger.error('PaymentValidationService', `Failed to validate tier change for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'PaymentValidationService',
+        `Failed to validate tier change for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'TIER_CHANGE_VALIDATION_FAILED'
+        code: 'TIER_CHANGE_VALIDATION_FAILED',
       }
     }
   }
@@ -336,16 +391,24 @@ export class PaymentValidationService {
     }
   }
 
-  private checkUsageLimit(action: string, currentUsage: number, rules: FeatureAccessRules): boolean {
+  private checkUsageLimit(
+    action: string,
+    currentUsage: number,
+    rules: FeatureAccessRules
+  ): boolean {
     switch (action) {
       case 'export':
         return rules.rules.maxMonthlyExports === -1 || currentUsage < rules.rules.maxMonthlyExports
       case 'search':
         return rules.rules.maxDailySearches === -1 || currentUsage < rules.rules.maxDailySearches
       case 'record_storage':
-        return rules.rules.maxBusinessRecords === -1 || currentUsage < rules.rules.maxBusinessRecords
+        return (
+          rules.rules.maxBusinessRecords === -1 || currentUsage < rules.rules.maxBusinessRecords
+        )
       case 'scrape':
-        return rules.rules.maxConcurrentScrapes === -1 || currentUsage < rules.rules.maxConcurrentScrapes
+        return (
+          rules.rules.maxConcurrentScrapes === -1 || currentUsage < rules.rules.maxConcurrentScrapes
+        )
       default:
         return false
     }
@@ -354,13 +417,21 @@ export class PaymentValidationService {
   private getLimitInfo(action: string, rules: FeatureAccessRules): string {
     switch (action) {
       case 'export':
-        return rules.rules.maxMonthlyExports === -1 ? 'Unlimited' : rules.rules.maxMonthlyExports.toString()
+        return rules.rules.maxMonthlyExports === -1
+          ? 'Unlimited'
+          : rules.rules.maxMonthlyExports.toString()
       case 'search':
-        return rules.rules.maxDailySearches === -1 ? 'Unlimited' : rules.rules.maxDailySearches.toString()
+        return rules.rules.maxDailySearches === -1
+          ? 'Unlimited'
+          : rules.rules.maxDailySearches.toString()
       case 'record_storage':
-        return rules.rules.maxBusinessRecords === -1 ? 'Unlimited' : rules.rules.maxBusinessRecords.toString()
+        return rules.rules.maxBusinessRecords === -1
+          ? 'Unlimited'
+          : rules.rules.maxBusinessRecords.toString()
       case 'scrape':
-        return rules.rules.maxConcurrentScrapes === -1 ? 'Unlimited' : rules.rules.maxConcurrentScrapes.toString()
+        return rules.rules.maxConcurrentScrapes === -1
+          ? 'Unlimited'
+          : rules.rules.maxConcurrentScrapes.toString()
       default:
         return 'Unknown'
     }
@@ -368,7 +439,7 @@ export class PaymentValidationService {
 
   private isSubscriptionValid(profile: UserPaymentProfile): boolean {
     const validStatuses: PaymentStatus[] = ['free', 'trial', 'active']
-    
+
     if (!validStatuses.includes(profile.subscriptionStatus)) {
       return false
     }
@@ -389,10 +460,10 @@ export class PaymentValidationService {
   private isValidTierTransition(currentTier: SubscriptionTier, newTier: SubscriptionTier): boolean {
     // Define valid transitions
     const validTransitions: Record<SubscriptionTier, SubscriptionTier[]> = {
-      'free': ['basic', 'professional', 'enterprise'],
-      'basic': ['free', 'professional', 'enterprise'],
-      'professional': ['free', 'basic', 'enterprise'],
-      'enterprise': ['free', 'basic', 'professional']
+      free: ['basic', 'professional', 'enterprise'],
+      basic: ['free', 'professional', 'enterprise'],
+      professional: ['free', 'basic', 'enterprise'],
+      enterprise: ['free', 'basic', 'professional'],
     }
 
     return validTransitions[currentTier]?.includes(newTier) || false

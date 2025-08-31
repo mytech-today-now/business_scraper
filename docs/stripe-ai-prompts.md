@@ -1,23 +1,28 @@
 # Stripe Payment Integration - AI Implementation Prompts
 
 **Business Scraper App - Complete Payment System Implementation**  
-*Version: 1.0.0 | Date: 2025-08-29 | Framework: Next.js 14 + TypeScript*
+_Version: 1.0.0 | Date: 2025-08-29 | Framework: Next.js 14 + TypeScript_
 
 ## Overview
 
-This document contains a series of AI prompts designed for Augment AI running in VS Code to implement a complete Stripe payment system into the Business Scraper App. Each prompt builds upon the previous work and includes detailed step-by-step instructions.
+This document contains a series of AI prompts designed for Augment AI running in
+VS Code to implement a complete Stripe payment system into the Business Scraper
+App. Each prompt builds upon the previous work and includes detailed
+step-by-step instructions.
 
 ---
 
 ## Prompt 1: Project Setup and Dependencies
 
 ### Objective
-Install and configure all necessary Stripe dependencies and update project configuration files.
+
+Install and configure all necessary Stripe dependencies and update project
+configuration files.
 
 ### Instructions for AI Assistant
 
-**Step 1: Install Stripe Dependencies**
-Execute the following commands in the terminal to install required packages:
+**Step 1: Install Stripe Dependencies** Execute the following commands in the
+terminal to install required packages:
 
 ```bash
 npm install stripe @stripe/stripe-js @stripe/react-stripe-js
@@ -26,8 +31,9 @@ npm install crypto-js jsonwebtoken
 npm install --save-dev @types/jsonwebtoken
 ```
 
-**Step 2: Verify Installation**
-After installation, check that the following packages appear in `package.json`:
+**Step 2: Verify Installation** After installation, check that the following
+packages appear in `package.json`:
+
 - `stripe`
 - `@stripe/stripe-js`
 - `@stripe/react-stripe-js`
@@ -35,6 +41,7 @@ After installation, check that the following packages appear in `package.json`:
 - `jsonwebtoken`
 
 **Step 3: Update Environment Configuration**
+
 1. Open the file `config/development.env.example`
 2. Add the following Stripe configuration variables:
 
@@ -55,9 +62,11 @@ PAYMENT_SUCCESS_URL=http://localhost:3000/payment/success
 PAYMENT_CANCEL_URL=http://localhost:3000/payment/cancel
 ```
 
-3. Copy the same configuration to `config/production.env.example` and `config/test.env.example`
+3. Copy the same configuration to `config/production.env.example` and
+   `config/test.env.example`
 
 **Step 4: Update Configuration Schema**
+
 1. Open `src/lib/config.ts`
 2. Locate the `configSchema` object
 3. Add the following validation rules:
@@ -85,24 +94,27 @@ payments: {
 ```
 
 **Validation Steps:**
+
 - Run `npm list` to confirm all packages are installed
 - Check that environment files contain Stripe configuration
 - Verify config.ts compiles without TypeScript errors
 - Test that the application starts without configuration errors
 
-**Next Steps:**
-Proceed to Prompt 2 for database schema implementation.
+**Next Steps:** Proceed to Prompt 2 for database schema implementation.
 
 ---
 
 ## Prompt 2: Database Schema Implementation
 
 ### Objective
-Create PostgreSQL database tables and indexes to support Stripe payment functionality.
+
+Create PostgreSQL database tables and indexes to support Stripe payment
+functionality.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Migration File**
+
 1. Navigate to the `database/migrations/` directory
 2. Create a new file named `002_stripe_payment_system.sql`
 3. Add the following SQL schema:
@@ -172,6 +184,7 @@ CREATE INDEX IF NOT EXISTS idx_usage_user_date ON feature_usage(user_id, date);
 ```
 
 **Step 2: Update IndexedDB Schema**
+
 1. Open `src/model/storage.ts`
 2. Locate the database interface definition
 3. Add the following to the interface:
@@ -208,29 +221,34 @@ paymentHistory: {
 ```
 
 **Step 3: Test Database Migration**
+
 1. Run the migration script to ensure it executes without errors
 2. Verify all tables are created with correct structure
 3. Check that indexes are properly created
 
 **Validation Steps:**
+
 - Confirm migration file exists and is properly formatted
 - Verify database tables are created successfully
 - Check that IndexedDB interface compiles without errors
 - Test that foreign key relationships work correctly
 
-**Next Steps:**
-Proceed to Prompt 3 for Model layer implementation.
+**Next Steps:** Proceed to Prompt 3 for Model layer implementation.
 
 ---
 
 ## Prompt 3: Model Layer Implementation - Comprehensive Payment Services
 
 ### Objective
-Create a comprehensive Model layer for payment functionality including Stripe service, user-payment integration, customer synchronization, and business rules validation.
+
+Create a comprehensive Model layer for payment functionality including Stripe
+service, user-payment integration, customer synchronization, and business rules
+validation.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Core Stripe Service File**
+
 1. Create a new file `src/model/stripeService.ts`
 2. Implement the following service class:
 
@@ -256,7 +274,7 @@ export class StripeService {
       const customer = await this.stripe.customers.create({
         email,
         name,
-        metadata: { source: 'business_scraper_app' }
+        metadata: { source: 'business_scraper_app' },
       })
       logger.info('StripeService', `Customer created: ${customer.id}`)
       return customer
@@ -266,7 +284,10 @@ export class StripeService {
     }
   }
 
-  async updateCustomer(customerId: string, updates: Partial<Stripe.CustomerUpdateParams>): Promise<Stripe.Customer> {
+  async updateCustomer(
+    customerId: string,
+    updates: Partial<Stripe.CustomerUpdateParams>
+  ): Promise<Stripe.Customer> {
     try {
       const customer = await this.stripe.customers.update(customerId, updates)
       logger.info('StripeService', `Customer updated: ${customerId}`)
@@ -300,7 +321,7 @@ export class StripeService {
         payment_behavior: 'default_incomplete',
         payment_settings: { save_default_payment_method: 'on_subscription' },
         expand: ['latest_invoice.payment_intent'],
-        metadata: metadata || {}
+        metadata: metadata || {},
       })
       return subscription
     } catch (error) {
@@ -314,7 +335,10 @@ export class StripeService {
     updates: Partial<Stripe.SubscriptionUpdateParams>
   ): Promise<Stripe.Subscription> {
     try {
-      const subscription = await this.stripe.subscriptions.update(subscriptionId, updates)
+      const subscription = await this.stripe.subscriptions.update(
+        subscriptionId,
+        updates
+      )
       logger.info('StripeService', `Subscription updated: ${subscriptionId}`)
       return subscription
     } catch (error) {
@@ -323,12 +347,21 @@ export class StripeService {
     }
   }
 
-  async cancelSubscription(subscriptionId: string, atPeriodEnd: boolean = true): Promise<Stripe.Subscription> {
+  async cancelSubscription(
+    subscriptionId: string,
+    atPeriodEnd: boolean = true
+  ): Promise<Stripe.Subscription> {
     try {
-      const subscription = await this.stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: atPeriodEnd
-      })
-      logger.info('StripeService', `Subscription ${atPeriodEnd ? 'scheduled for cancellation' : 'canceled'}: ${subscriptionId}`)
+      const subscription = await this.stripe.subscriptions.update(
+        subscriptionId,
+        {
+          cancel_at_period_end: atPeriodEnd,
+        }
+      )
+      logger.info(
+        'StripeService',
+        `Subscription ${atPeriodEnd ? 'scheduled for cancellation' : 'canceled'}: ${subscriptionId}`
+      )
       return subscription
     } catch (error) {
       logger.error('StripeService', 'Failed to cancel subscription', error)
@@ -349,7 +382,7 @@ export class StripeService {
         currency,
         customer: customerId,
         automatic_payment_methods: { enabled: true },
-        metadata: metadata || {}
+        metadata: metadata || {},
       })
       return paymentIntent
     } catch (error) {
@@ -359,20 +392,23 @@ export class StripeService {
   }
 
   // Invoice Management
-  async createInvoice(customerId: string, items: Stripe.InvoiceItemCreateParams[]): Promise<Stripe.Invoice> {
+  async createInvoice(
+    customerId: string,
+    items: Stripe.InvoiceItemCreateParams[]
+  ): Promise<Stripe.Invoice> {
     try {
       // Create invoice items
       for (const item of items) {
         await this.stripe.invoiceItems.create({
           customer: customerId,
-          ...item
+          ...item,
         })
       }
 
       // Create and finalize invoice
       const invoice = await this.stripe.invoices.create({
         customer: customerId,
-        auto_advance: true
+        auto_advance: true,
       })
 
       return await this.stripe.invoices.finalizeInvoice(invoice.id)
@@ -391,7 +427,11 @@ export class StripeService {
         this.config.payments.stripeWebhookSecret
       )
     } catch (error) {
-      logger.error('StripeService', 'Webhook signature verification failed', error)
+      logger.error(
+        'StripeService',
+        'Webhook signature verification failed',
+        error
+      )
       throw error
     }
   }
@@ -410,7 +450,7 @@ export class StripeService {
     try {
       const prices = await this.stripe.prices.list({
         product: productId,
-        active: true
+        active: true,
       })
       return prices.data
     } catch (error) {
@@ -424,6 +464,7 @@ export const stripeService = new StripeService()
 ```
 
 **Step 2: Create User-Payment Integration Service**
+
 1. Create a new file `src/model/userPaymentService.ts`
 2. Implement user-payment relationship management:
 
@@ -443,23 +484,29 @@ export const UserPaymentProfileSchema = z.object({
   defaultPaymentMethod: z.string().optional(),
   subscriptionStatus: z.enum(['free', 'premium', 'enterprise']),
   subscriptionId: z.string().optional(),
-  billingAddress: z.object({
-    line1: z.string().optional(),
-    line2: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-    postal_code: z.string().optional(),
-    country: z.string().optional()
-  }).optional(),
+  billingAddress: z
+    .object({
+      line1: z.string().optional(),
+      line2: z.string().optional(),
+      city: z.string().optional(),
+      state: z.string().optional(),
+      postal_code: z.string().optional(),
+      country: z.string().optional(),
+    })
+    .optional(),
   createdAt: z.date(),
-  updatedAt: z.date()
+  updatedAt: z.date(),
 })
 
 export type UserPaymentProfile = z.infer<typeof UserPaymentProfileSchema>
 
 export class UserPaymentService {
   // Create or retrieve Stripe customer for user
-  async ensureStripeCustomer(userId: string, email: string, name?: string): Promise<string> {
+  async ensureStripeCustomer(
+    userId: string,
+    email: string,
+    name?: string
+  ): Promise<string> {
     try {
       // Check if user already has a Stripe customer ID
       const existingProfile = await this.getUserPaymentProfile(userId)
@@ -476,37 +523,53 @@ export class UserPaymentService {
         email,
         name,
         subscriptionStatus: 'free',
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
-      logger.info('UserPaymentService', `Stripe customer created for user: ${userId}`)
+      logger.info(
+        'UserPaymentService',
+        `Stripe customer created for user: ${userId}`
+      )
       return customer.id
     } catch (error) {
-      logger.error('UserPaymentService', 'Failed to ensure Stripe customer', error)
+      logger.error(
+        'UserPaymentService',
+        'Failed to ensure Stripe customer',
+        error
+      )
       throw error
     }
   }
 
   // Get user payment profile
-  async getUserPaymentProfile(userId: string): Promise<UserPaymentProfile | null> {
+  async getUserPaymentProfile(
+    userId: string
+  ): Promise<UserPaymentProfile | null> {
     try {
       const profile = await storage.get('userPaymentProfiles', userId)
       return profile ? UserPaymentProfileSchema.parse(profile) : null
     } catch (error) {
-      logger.error('UserPaymentService', 'Failed to get user payment profile', error)
+      logger.error(
+        'UserPaymentService',
+        'Failed to get user payment profile',
+        error
+      )
       return null
     }
   }
 
   // Update user payment profile
-  async updateUserPaymentProfile(userId: string, updates: Partial<UserPaymentProfile>): Promise<void> {
+  async updateUserPaymentProfile(
+    userId: string,
+    updates: Partial<UserPaymentProfile>
+  ): Promise<void> {
     try {
       const existing = await this.getUserPaymentProfile(userId)
       const updated = {
         ...existing,
         ...updates,
         userId,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       if (!existing) {
@@ -514,9 +577,16 @@ export class UserPaymentService {
       }
 
       await storage.put('userPaymentProfiles', updated, userId)
-      logger.info('UserPaymentService', `User payment profile updated: ${userId}`)
+      logger.info(
+        'UserPaymentService',
+        `User payment profile updated: ${userId}`
+      )
     } catch (error) {
-      logger.error('UserPaymentService', 'Failed to update user payment profile', error)
+      logger.error(
+        'UserPaymentService',
+        'Failed to update user payment profile',
+        error
+      )
       throw error
     }
   }
@@ -529,18 +599,26 @@ export class UserPaymentService {
         return
       }
 
-      const stripeCustomer = await stripeService.getCustomer(profile.stripeCustomerId)
+      const stripeCustomer = await stripeService.getCustomer(
+        profile.stripeCustomerId
+      )
 
       // Update local profile with Stripe data
       await this.updateUserPaymentProfile(userId, {
         email: stripeCustomer.email || profile.email,
         name: stripeCustomer.name || profile.name,
-        defaultPaymentMethod: stripeCustomer.default_source as string || profile.defaultPaymentMethod
+        defaultPaymentMethod:
+          (stripeCustomer.default_source as string) ||
+          profile.defaultPaymentMethod,
       })
 
       logger.info('UserPaymentService', `User synced with Stripe: ${userId}`)
     } catch (error) {
-      logger.error('UserPaymentService', 'Failed to sync user with Stripe', error)
+      logger.error(
+        'UserPaymentService',
+        'Failed to sync user with Stripe',
+        error
+      )
       throw error
     }
   }
@@ -548,16 +626,23 @@ export class UserPaymentService {
   // Check if user has active subscription
   async hasActiveSubscription(userId: string): Promise<boolean> {
     try {
-      const subscription = await paymentStorage.getUserActiveSubscription(userId)
+      const subscription =
+        await paymentStorage.getUserActiveSubscription(userId)
       return subscription?.status === 'active'
     } catch (error) {
-      logger.error('UserPaymentService', 'Failed to check subscription status', error)
+      logger.error(
+        'UserPaymentService',
+        'Failed to check subscription status',
+        error
+      )
       return false
     }
   }
 
   // Get user's current subscription tier
-  async getUserSubscriptionTier(userId: string): Promise<'free' | 'premium' | 'enterprise'> {
+  async getUserSubscriptionTier(
+    userId: string
+  ): Promise<'free' | 'premium' | 'enterprise'> {
     try {
       const profile = await this.getUserPaymentProfile(userId)
       if (!profile) return 'free'
@@ -565,7 +650,11 @@ export class UserPaymentService {
       const hasActive = await this.hasActiveSubscription(userId)
       return hasActive ? profile.subscriptionStatus : 'free'
     } catch (error) {
-      logger.error('UserPaymentService', 'Failed to get subscription tier', error)
+      logger.error(
+        'UserPaymentService',
+        'Failed to get subscription tier',
+        error
+      )
       return 'free'
     }
   }
@@ -575,6 +664,7 @@ export const userPaymentService = new UserPaymentService()
 ```
 
 **Step 3: Create Payment Validation and Business Rules Service**
+
 1. Create a new file `src/model/paymentValidationService.ts`
 2. Implement business rules and validation:
 
@@ -598,11 +688,14 @@ export interface FeatureAccessResult {
 
 export class PaymentValidationService {
   // Validate payment amount
-  validatePaymentAmount(amount: number, currency: string = 'usd'): PaymentValidationResult {
+  validatePaymentAmount(
+    amount: number,
+    currency: string = 'usd'
+  ): PaymentValidationResult {
     const result: PaymentValidationResult = {
       isValid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     }
 
     // Minimum amount validation (Stripe minimums)
@@ -616,14 +709,18 @@ export class PaymentValidationService {
     const minAmount = minimums[currency.toLowerCase()] || 50
     if (amount < minAmount) {
       result.isValid = false
-      result.errors.push(`Minimum payment amount is ${minAmount / 100} ${currency.toUpperCase()}`)
+      result.errors.push(
+        `Minimum payment amount is ${minAmount / 100} ${currency.toUpperCase()}`
+      )
     }
 
     // Maximum amount validation (reasonable business limits)
     const maxAmount = 1000000 // $10,000
     if (amount > maxAmount) {
       result.isValid = false
-      result.errors.push(`Maximum payment amount is ${maxAmount / 100} ${currency.toUpperCase()}`)
+      result.errors.push(
+        `Maximum payment amount is ${maxAmount / 100} ${currency.toUpperCase()}`
+      )
     }
 
     return result
@@ -638,7 +735,7 @@ export class PaymentValidationService {
     const result: PaymentValidationResult = {
       isValid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     }
 
     try {
@@ -665,7 +762,8 @@ export class PaymentValidationService {
 
       // Validate downgrade restrictions
       if (currentPlanId) {
-        const currentPlan = await paymentStorage.getSubscriptionPlan(currentPlanId)
+        const currentPlan =
+          await paymentStorage.getSubscriptionPlan(currentPlanId)
         if (currentPlan && newPlan.priceCents < currentPlan.priceCents) {
           result.warnings.push('Downgrading will reduce available features')
         }
@@ -673,7 +771,11 @@ export class PaymentValidationService {
 
       return result
     } catch (error) {
-      logger.error('PaymentValidationService', 'Failed to validate subscription change', error)
+      logger.error(
+        'PaymentValidationService',
+        'Failed to validate subscription change',
+        error
+      )
       result.isValid = false
       result.errors.push('Validation failed')
       return result
@@ -681,19 +783,22 @@ export class PaymentValidationService {
   }
 
   // Check feature access based on subscription
-  async checkFeatureAccess(userId: string, featureType: string): Promise<FeatureAccessResult> {
+  async checkFeatureAccess(
+    userId: string,
+    featureType: string
+  ): Promise<FeatureAccessResult> {
     try {
       const tier = await userPaymentService.getUserSubscriptionTier(userId)
 
       // Define feature access rules
       const featureRules: Record<string, string[]> = {
-        'basic_scraping': ['free', 'premium', 'enterprise'],
-        'advanced_export': ['premium', 'enterprise'],
-        'premium_industries': ['premium', 'enterprise'],
-        'advanced_search': ['premium', 'enterprise'],
-        'unlimited_quota': ['enterprise'],
-        'priority_support': ['enterprise'],
-        'custom_integrations': ['enterprise']
+        basic_scraping: ['free', 'premium', 'enterprise'],
+        advanced_export: ['premium', 'enterprise'],
+        premium_industries: ['premium', 'enterprise'],
+        advanced_search: ['premium', 'enterprise'],
+        unlimited_quota: ['enterprise'],
+        priority_support: ['enterprise'],
+        custom_integrations: ['enterprise'],
       }
 
       const allowedTiers = featureRules[featureType] || []
@@ -703,13 +808,17 @@ export class PaymentValidationService {
         return {
           hasAccess: false,
           reason: `Feature requires ${allowedTiers.join(' or ')} subscription`,
-          upgradeRequired: true
+          upgradeRequired: true,
         }
       }
 
       // Check quota limits for free tier
       if (tier === 'free' && featureType === 'basic_scraping') {
-        const usage = await paymentStorage.getUserFeatureUsage(userId, featureType, new Date())
+        const usage = await paymentStorage.getUserFeatureUsage(
+          userId,
+          featureType,
+          new Date()
+        )
         const freeQuota = 100 // 100 scraping requests per day for free tier
 
         if (usage >= freeQuota) {
@@ -717,37 +826,44 @@ export class PaymentValidationService {
             hasAccess: false,
             reason: 'Daily quota exceeded',
             upgradeRequired: true,
-            quotaRemaining: 0
+            quotaRemaining: 0,
           }
         }
 
         return {
           hasAccess: true,
-          quotaRemaining: freeQuota - usage
+          quotaRemaining: freeQuota - usage,
         }
       }
 
       return { hasAccess: true }
     } catch (error) {
-      logger.error('PaymentValidationService', 'Failed to check feature access', error)
+      logger.error(
+        'PaymentValidationService',
+        'Failed to check feature access',
+        error
+      )
       return {
         hasAccess: false,
-        reason: 'Access check failed'
+        reason: 'Access check failed',
       }
     }
   }
 
   // Validate refund eligibility
-  async validateRefundEligibility(paymentIntentId: string): Promise<PaymentValidationResult> {
+  async validateRefundEligibility(
+    paymentIntentId: string
+  ): Promise<PaymentValidationResult> {
     const result: PaymentValidationResult = {
       isValid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     }
 
     try {
       // Get payment transaction
-      const transaction = await paymentStorage.getPaymentTransaction(paymentIntentId)
+      const transaction =
+        await paymentStorage.getPaymentTransaction(paymentIntentId)
       if (!transaction) {
         result.isValid = false
         result.errors.push('Payment transaction not found')
@@ -778,7 +894,11 @@ export class PaymentValidationService {
 
       return result
     } catch (error) {
-      logger.error('PaymentValidationService', 'Failed to validate refund eligibility', error)
+      logger.error(
+        'PaymentValidationService',
+        'Failed to validate refund eligibility',
+        error
+      )
       result.isValid = false
       result.errors.push('Refund validation failed')
       return result
@@ -790,6 +910,7 @@ export const paymentValidationService = new PaymentValidationService()
 ```
 
 **Step 4: Update Storage Integration**
+
 1. Open `src/model/storage.ts`
 2. Add payment-related storage interfaces to the existing schema:
 
@@ -844,25 +965,28 @@ subscriptionCache: {
 ```
 
 **Validation Steps:**
+
 - Confirm all new service files are created in correct locations
 - Check TypeScript compilation passes for all new services
 - Verify integration with existing storage system works
 - Test that all services can be imported without errors
 - Validate that business rules are properly implemented
 
-**Next Steps:**
-Proceed to Prompt 4 for Payment Models implementation.
+**Next Steps:** Proceed to Prompt 4 for Payment Models implementation.
 
 ---
 
 ## Prompt 4: Model Layer Implementation - Part 2 (Payment Models)
 
 ### Objective
-Create TypeScript models and Zod schemas for all payment-related data structures.
+
+Create TypeScript models and Zod schemas for all payment-related data
+structures.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Payment Models File**
+
 1. Create a new file `src/model/paymentModels.ts`
 2. Implement the following schemas and types:
 
@@ -920,7 +1044,12 @@ export type PaymentTransaction = z.infer<typeof PaymentTransactionSchema>
 export const FeatureUsageSchema = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
-  featureType: z.enum(['scraping_request', 'export', 'advanced_search', 'premium_industry']),
+  featureType: z.enum([
+    'scraping_request',
+    'export',
+    'advanced_search',
+    'premium_industry',
+  ]),
   usageCount: z.number().positive().default(1),
   date: z.date(),
   metadata: z.record(z.any()).optional(),
@@ -931,6 +1060,7 @@ export type FeatureUsage = z.infer<typeof FeatureUsageSchema>
 ```
 
 **Step 2: Create Payment Storage Service**
+
 1. Create a new file `src/model/paymentStorage.ts`
 2. Implement database operations for payment entities:
 
@@ -941,12 +1071,14 @@ import {
   SubscriptionPlan,
   UserSubscription,
   PaymentTransaction,
-  FeatureUsage
+  FeatureUsage,
 } from './paymentModels'
 
 export class PaymentStorage {
   // Subscription Plans
-  async createSubscriptionPlan(plan: Omit<SubscriptionPlan, 'id' | 'createdAt'>): Promise<SubscriptionPlan> {
+  async createSubscriptionPlan(
+    plan: Omit<SubscriptionPlan, 'id' | 'createdAt'>
+  ): Promise<SubscriptionPlan> {
     try {
       const query = `
         INSERT INTO subscription_plans (stripe_price_id, name, description, price_cents, currency, interval, features, is_active)
@@ -961,18 +1093,23 @@ export class PaymentStorage {
         plan.currency,
         plan.interval,
         JSON.stringify(plan.features),
-        plan.isActive
+        plan.isActive,
       ])
       return result.rows[0]
     } catch (error) {
-      logger.error('PaymentStorage', 'Failed to create subscription plan', error)
+      logger.error(
+        'PaymentStorage',
+        'Failed to create subscription plan',
+        error
+      )
       throw error
     }
   }
 
   async getActiveSubscriptionPlans(): Promise<SubscriptionPlan[]> {
     try {
-      const query = 'SELECT * FROM subscription_plans WHERE is_active = true ORDER BY price_cents ASC'
+      const query =
+        'SELECT * FROM subscription_plans WHERE is_active = true ORDER BY price_cents ASC'
       const result = await database.query(query)
       return result.rows
     } catch (error) {
@@ -982,7 +1119,9 @@ export class PaymentStorage {
   }
 
   // User Subscriptions
-  async createUserSubscription(subscription: Omit<UserSubscription, 'id' | 'createdAt' | 'updatedAt'>): Promise<UserSubscription> {
+  async createUserSubscription(
+    subscription: Omit<UserSubscription, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<UserSubscription> {
     try {
       const query = `
         INSERT INTO user_subscriptions (user_id, stripe_subscription_id, plan_id, status, current_period_start, current_period_end, cancel_at_period_end)
@@ -996,16 +1135,22 @@ export class PaymentStorage {
         subscription.status,
         subscription.currentPeriodStart,
         subscription.currentPeriodEnd,
-        subscription.cancelAtPeriodEnd
+        subscription.cancelAtPeriodEnd,
       ])
       return result.rows[0]
     } catch (error) {
-      logger.error('PaymentStorage', 'Failed to create user subscription', error)
+      logger.error(
+        'PaymentStorage',
+        'Failed to create user subscription',
+        error
+      )
       throw error
     }
   }
 
-  async getUserActiveSubscription(userId: string): Promise<UserSubscription | null> {
+  async getUserActiveSubscription(
+    userId: string
+  ): Promise<UserSubscription | null> {
     try {
       const query = `
         SELECT us.*, sp.name as plan_name, sp.features
@@ -1024,7 +1169,9 @@ export class PaymentStorage {
   }
 
   // Feature Usage Tracking
-  async recordFeatureUsage(usage: Omit<FeatureUsage, 'id' | 'createdAt'>): Promise<void> {
+  async recordFeatureUsage(
+    usage: Omit<FeatureUsage, 'id' | 'createdAt'>
+  ): Promise<void> {
     try {
       const query = `
         INSERT INTO feature_usage (user_id, feature_type, usage_count, date, metadata)
@@ -1037,7 +1184,7 @@ export class PaymentStorage {
         usage.featureType,
         usage.usageCount,
         usage.date,
-        JSON.stringify(usage.metadata)
+        JSON.stringify(usage.metadata),
       ])
     } catch (error) {
       logger.error('PaymentStorage', 'Failed to record feature usage', error)
@@ -1045,7 +1192,11 @@ export class PaymentStorage {
     }
   }
 
-  async getUserFeatureUsage(userId: string, featureType: string, date: Date): Promise<number> {
+  async getUserFeatureUsage(
+    userId: string,
+    featureType: string,
+    date: Date
+  ): Promise<number> {
     try {
       const query = `
         SELECT COALESCE(SUM(usage_count), 0) as total_usage
@@ -1065,24 +1216,26 @@ export const paymentStorage = new PaymentStorage()
 ```
 
 **Validation Steps:**
+
 - Verify all Zod schemas compile correctly
 - Check that TypeScript types are properly exported
 - Confirm database operations use correct SQL syntax
 - Test that storage service can be imported
 
-**Next Steps:**
-Proceed to Prompt 5 for API Layer implementation.
+**Next Steps:** Proceed to Prompt 5 for API Layer implementation.
 
 ---
 
 ## Prompt 5: API Layer Implementation - Webhooks and Endpoints
 
 ### Objective
+
 Create API routes for Stripe webhooks and payment processing endpoints.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Stripe Webhooks Handler**
+
 1. Create the directory structure `src/app/api/stripe/webhooks/`
 2. Create a new file `src/app/api/stripe/webhooks/route.ts`
 3. Implement the webhook handler:
@@ -1100,7 +1253,10 @@ export async function POST(request: NextRequest) {
     const signature = request.headers.get('stripe-signature')
 
     if (!signature) {
-      return NextResponse.json({ error: 'Missing stripe signature' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Missing stripe signature' },
+        { status: 400 }
+      )
     }
 
     const event = stripeService.verifyWebhookSignature(body, signature)
@@ -1114,7 +1270,9 @@ export async function POST(request: NextRequest) {
         break
 
       case 'customer.subscription.deleted':
-        await handleSubscriptionCancellation(event.data.object as Stripe.Subscription)
+        await handleSubscriptionCancellation(
+          event.data.object as Stripe.Subscription
+        )
         break
 
       case 'payment_intent.succeeded':
@@ -1132,7 +1290,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true })
   } catch (error) {
     logger.error('StripeWebhook', 'Webhook processing failed', error)
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Webhook processing failed' },
+      { status: 500 }
+    )
   }
 }
 
@@ -1148,7 +1309,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
       subscription.status,
       new Date(subscription.current_period_start * 1000),
       new Date(subscription.current_period_end * 1000),
-      subscription.id
+      subscription.id,
     ])
 
     logger.info('StripeWebhook', `Subscription updated: ${subscription.id}`)
@@ -1158,7 +1319,9 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   }
 }
 
-async function handleSubscriptionCancellation(subscription: Stripe.Subscription) {
+async function handleSubscriptionCancellation(
+  subscription: Stripe.Subscription
+) {
   try {
     const query = `
       UPDATE user_subscriptions
@@ -1184,7 +1347,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
       currency: paymentIntent.currency,
       status: 'succeeded',
       description: paymentIntent.description || 'One-time payment',
-      metadata: paymentIntent.metadata
+      metadata: paymentIntent.metadata,
     })
 
     logger.info('StripeWebhook', `Payment succeeded: ${paymentIntent.id}`)
@@ -1203,7 +1366,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
       currency: paymentIntent.currency,
       status: 'failed',
       description: paymentIntent.description || 'Failed payment',
-      metadata: paymentIntent.metadata
+      metadata: paymentIntent.metadata,
     })
 
     logger.info('StripeWebhook', `Payment failed: ${paymentIntent.id}`)
@@ -1215,6 +1378,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
 ```
 
 **Step 2: Create Payment API Endpoints**
+
 1. Create the directory `src/app/api/payments/`
 2. Create a new file `src/app/api/payments/route.ts`:
 
@@ -1239,7 +1403,7 @@ const CreateSubscriptionSchema = z.object({
 
 export async function POST(request: NextRequest) {
   return withApiSecurity(async () => {
-    return withValidation(CreatePaymentIntentSchema, async (data) => {
+    return withValidation(CreatePaymentIntentSchema, async data => {
       try {
         const paymentIntent = await stripeService.createPaymentIntent(
           data.amount,
@@ -1249,11 +1413,14 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
           clientSecret: paymentIntent.client_secret,
-          paymentIntentId: paymentIntent.id
+          paymentIntentId: paymentIntent.id,
         })
       } catch (error) {
         logger.error('PaymentAPI', 'Failed to create payment intent', error)
-        return NextResponse.json({ error: 'Payment creation failed' }, { status: 500 })
+        return NextResponse.json(
+          { error: 'Payment creation failed' },
+          { status: 500 }
+        )
       }
     })(request)
   })(request)
@@ -1261,6 +1428,7 @@ export async function POST(request: NextRequest) {
 ```
 
 **Step 3: Create Subscription Management API**
+
 1. Create the directory `src/app/api/subscriptions/`
 2. Create a new file `src/app/api/subscriptions/route.ts`:
 
@@ -1274,7 +1442,10 @@ export async function GET(request: NextRequest) {
     const plans = await paymentStorage.getActiveSubscriptionPlans()
     return NextResponse.json({ plans })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch plans' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to fetch plans' },
+      { status: 500 }
+    )
   }
 }
 
@@ -1282,37 +1453,46 @@ export async function POST(request: NextRequest) {
   try {
     const { priceId, customerId } = await request.json()
 
-    const subscription = await stripeService.createSubscription(customerId, priceId)
+    const subscription = await stripeService.createSubscription(
+      customerId,
+      priceId
+    )
 
     return NextResponse.json({
       subscriptionId: subscription.id,
-      clientSecret: subscription.latest_invoice?.payment_intent?.client_secret
+      clientSecret: subscription.latest_invoice?.payment_intent?.client_secret,
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Subscription creation failed' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Subscription creation failed' },
+      { status: 500 }
+    )
   }
 }
 ```
 
 **Validation Steps:**
+
 - Verify all API routes are created in correct directory structure
 - Check that webhook signature verification works
 - Test that payment intent creation returns proper response
 - Confirm subscription endpoints handle errors gracefully
 
-**Next Steps:**
-Proceed to Prompt 6 for View Layer implementation.
+**Next Steps:** Proceed to Prompt 6 for View Layer implementation.
 
 ---
 
 ## Prompt 6: View Layer Implementation - Payment Components
 
 ### Objective
-Create React components for payment forms, subscription plans, and billing management.
+
+Create React components for payment forms, subscription plans, and billing
+management.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Payment Form Component**
+
 1. Create a new file `src/view/components/PaymentForm.tsx`
 2. Implement the Stripe Elements payment form:
 
@@ -1436,6 +1616,7 @@ export function PaymentForm(props: PaymentFormProps) {
 ```
 
 **Step 2: Create Subscription Plans Component**
+
 1. Create a new file `src/view/components/SubscriptionPlans.tsx`:
 
 ```typescript
@@ -1525,24 +1706,27 @@ export function SubscriptionPlans({ onSelectPlan }: SubscriptionPlansProps) {
 ```
 
 **Validation Steps:**
+
 - Verify Stripe Elements integration works correctly
 - Check that payment form handles loading states properly
 - Confirm subscription plans display with correct styling
 - Test that error handling works for failed payments
 
-**Next Steps:**
-Proceed to Prompt 7 for Controller Layer implementation.
+**Next Steps:** Proceed to Prompt 7 for Controller Layer implementation.
 
 ---
 
 ## Prompt 7: Controller Layer Implementation - Payment State Management
 
 ### Objective
-Create React hooks for managing payment state, subscription management, and feature access control.
+
+Create React hooks for managing payment state, subscription management, and
+feature access control.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Payment Controller Hook**
+
 1. Create a new file `src/controller/usePaymentController.ts`
 2. Implement the payment state management hook:
 
@@ -1563,34 +1747,38 @@ export function usePaymentController() {
     isProcessing: false,
     currentSubscription: null,
     paymentHistory: [],
-    error: null
+    error: null,
   })
 
-  const processPayment = useCallback(async (amount: number, description?: string) => {
-    setState(prev => ({ ...prev, isProcessing: true, error: null }))
+  const processPayment = useCallback(
+    async (amount: number, description?: string) => {
+      setState(prev => ({ ...prev, isProcessing: true, error: null }))
 
-    try {
-      const response = await fetch('/api/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, description })
-      })
+      try {
+        const response = await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount, description }),
+        })
 
-      if (!response.ok) {
-        throw new Error('Payment failed')
+        if (!response.ok) {
+          throw new Error('Payment failed')
+        }
+
+        const result = await response.json()
+        return result
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Payment failed'
+        setState(prev => ({ ...prev, error: errorMessage }))
+        logger.error('PaymentController', 'Payment processing failed', error)
+        throw error
+      } finally {
+        setState(prev => ({ ...prev, isProcessing: false }))
       }
-
-      const result = await response.json()
-      return result
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Payment failed'
-      setState(prev => ({ ...prev, error: errorMessage }))
-      logger.error('PaymentController', 'Payment processing failed', error)
-      throw error
-    } finally {
-      setState(prev => ({ ...prev, isProcessing: false }))
-    }
-  }, [])
+    },
+    []
+  )
 
   const createSubscription = useCallback(async (plan: SubscriptionPlan) => {
     setState(prev => ({ ...prev, isProcessing: true, error: null }))
@@ -1599,7 +1787,7 @@ export function usePaymentController() {
       const response = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: plan.stripePriceId })
+        body: JSON.stringify({ priceId: plan.stripePriceId }),
       })
 
       if (!response.ok) {
@@ -1609,7 +1797,8 @@ export function usePaymentController() {
       const result = await response.json()
       return result
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Subscription failed'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Subscription failed'
       setState(prev => ({ ...prev, error: errorMessage }))
       logger.error('PaymentController', 'Subscription creation failed', error)
       throw error
@@ -1618,40 +1807,51 @@ export function usePaymentController() {
     }
   }, [])
 
-  const checkFeatureAccess = useCallback(async (featureType: string): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/features/access?type=${featureType}`)
-      const { hasAccess } = await response.json()
-      return hasAccess
-    } catch (error) {
-      logger.error('PaymentController', 'Feature access check failed', error)
-      return false
-    }
-  }, [])
+  const checkFeatureAccess = useCallback(
+    async (featureType: string): Promise<boolean> => {
+      try {
+        const response = await fetch(`/api/features/access?type=${featureType}`)
+        const { hasAccess } = await response.json()
+        return hasAccess
+      } catch (error) {
+        logger.error('PaymentController', 'Feature access check failed', error)
+        return false
+      }
+    },
+    []
+  )
 
-  const recordFeatureUsage = useCallback(async (featureType: string, metadata?: any) => {
-    try {
-      await fetch('/api/features/usage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ featureType, metadata })
-      })
-    } catch (error) {
-      logger.error('PaymentController', 'Failed to record feature usage', error)
-    }
-  }, [])
+  const recordFeatureUsage = useCallback(
+    async (featureType: string, metadata?: any) => {
+      try {
+        await fetch('/api/features/usage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ featureType, metadata }),
+        })
+      } catch (error) {
+        logger.error(
+          'PaymentController',
+          'Failed to record feature usage',
+          error
+        )
+      }
+    },
+    []
+  )
 
   return {
     ...state,
     processPayment,
     createSubscription,
     checkFeatureAccess,
-    recordFeatureUsage
+    recordFeatureUsage,
   }
 }
 ```
 
 **Step 2: Create Feature Access Control Hook**
+
 1. Create a new file `src/controller/useFeatureAccess.ts`:
 
 ```typescript
@@ -1672,7 +1872,7 @@ export function useFeatureAccess(userId?: string) {
     canUseAdvancedSearch: false,
     canAccessPremiumIndustries: false,
     scrapingQuotaRemaining: 0,
-    isLoading: true
+    isLoading: true,
   })
 
   const { checkFeatureAccess, recordFeatureUsage } = usePaymentController()
@@ -1686,7 +1886,7 @@ export function useFeatureAccess(userId?: string) {
       const [exportAccess, searchAccess, industriesAccess] = await Promise.all([
         checkFeatureAccess('export'),
         checkFeatureAccess('advanced_search'),
-        checkFeatureAccess('premium_industry')
+        checkFeatureAccess('premium_industry'),
       ])
 
       // Get remaining quota
@@ -1698,7 +1898,7 @@ export function useFeatureAccess(userId?: string) {
         canUseAdvancedSearch: searchAccess,
         canAccessPremiumIndustries: industriesAccess,
         scrapingQuotaRemaining: remaining,
-        isLoading: false
+        isLoading: false,
       })
     } catch (error) {
       console.error('Failed to check feature access:', error)
@@ -1710,39 +1910,45 @@ export function useFeatureAccess(userId?: string) {
     checkAllFeatures()
   }, [checkAllFeatures])
 
-  const useFeature = useCallback(async (featureType: string, metadata?: any) => {
-    await recordFeatureUsage(featureType, metadata)
-    // Refresh feature access after usage
-    await checkAllFeatures()
-  }, [recordFeatureUsage, checkAllFeatures])
+  const useFeature = useCallback(
+    async (featureType: string, metadata?: any) => {
+      await recordFeatureUsage(featureType, metadata)
+      // Refresh feature access after usage
+      await checkAllFeatures()
+    },
+    [recordFeatureUsage, checkAllFeatures]
+  )
 
   return {
     ...state,
     useFeature,
-    refreshAccess: checkAllFeatures
+    refreshAccess: checkAllFeatures,
   }
 }
 ```
 
 **Validation Steps:**
+
 - Verify hooks manage state correctly
 - Check that error handling works properly
 - Test that feature access checks return correct values
 - Confirm usage tracking updates quotas
 
-**Next Steps:**
-Proceed to Prompt 8 for Security and Testing implementation.
+**Next Steps:** Proceed to Prompt 8 for Security and Testing implementation.
 
 ---
 
 ## Prompt 8: Security Implementation and Testing
 
 ### Objective
-Implement security measures for payment processing and create comprehensive tests for the payment system.
+
+Implement security measures for payment processing and create comprehensive
+tests for the payment system.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Payment Security Middleware**
+
 1. Create a new file `src/lib/payment-security.ts`
 2. Implement security validation functions:
 
@@ -1756,7 +1962,7 @@ export function validatePaymentRequest(request: NextRequest): boolean {
   const origin = request.headers.get('origin')
   const allowedOrigins = [
     process.env.NEXT_PUBLIC_APP_URL,
-    'https://js.stripe.com'
+    'https://js.stripe.com',
   ]
 
   if (origin && !allowedOrigins.includes(origin)) {
@@ -1784,7 +1990,10 @@ export function sanitizePaymentData(data: any): any {
   delete sanitized.creditCard
 
   // Validate amount is positive number
-  if (sanitized.amount && (typeof sanitized.amount !== 'number' || sanitized.amount <= 0)) {
+  if (
+    sanitized.amount &&
+    (typeof sanitized.amount !== 'number' || sanitized.amount <= 0)
+  ) {
     throw new Error('Invalid payment amount')
   }
 
@@ -1806,6 +2015,7 @@ export function validateWebhookTimestamp(timestamp: string): boolean {
 ```
 
 **Step 2: Create Unit Tests for Stripe Service**
+
 1. Create a new file `tests/unit/model/stripeService.test.ts`
 2. Implement comprehensive unit tests:
 
@@ -1833,7 +2043,9 @@ const mockStripe = {
 describe('StripeService', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    ;(Stripe as jest.MockedClass<typeof Stripe>).mockImplementation(() => mockStripe as any)
+    ;(Stripe as jest.MockedClass<typeof Stripe>).mockImplementation(
+      () => mockStripe as any
+    )
   })
 
   describe('createCustomer', () => {
@@ -1841,12 +2053,15 @@ describe('StripeService', () => {
       const mockCustomer = { id: 'cus_test123', email: 'test@example.com' }
       mockStripe.customers.create.mockResolvedValue(mockCustomer)
 
-      const result = await stripeService.createCustomer('test@example.com', 'Test User')
+      const result = await stripeService.createCustomer(
+        'test@example.com',
+        'Test User'
+      )
 
       expect(mockStripe.customers.create).toHaveBeenCalledWith({
         email: 'test@example.com',
         name: 'Test User',
-        metadata: { source: 'business_scraper_app' }
+        metadata: { source: 'business_scraper_app' },
       })
       expect(result).toEqual(mockCustomer)
     })
@@ -1854,13 +2069,18 @@ describe('StripeService', () => {
     it('should handle customer creation errors', async () => {
       mockStripe.customers.create.mockRejectedValue(new Error('Stripe error'))
 
-      await expect(stripeService.createCustomer('test@example.com')).rejects.toThrow('Stripe error')
+      await expect(
+        stripeService.createCustomer('test@example.com')
+      ).rejects.toThrow('Stripe error')
     })
   })
 
   describe('createPaymentIntent', () => {
     it('should create payment intent successfully', async () => {
-      const mockPaymentIntent = { id: 'pi_test123', client_secret: 'pi_test123_secret' }
+      const mockPaymentIntent = {
+        id: 'pi_test123',
+        client_secret: 'pi_test123_secret',
+      }
       mockStripe.paymentIntents.create.mockResolvedValue(mockPaymentIntent)
 
       const result = await stripeService.createPaymentIntent(2000, 'usd')
@@ -1884,7 +2104,10 @@ describe('StripeService', () => {
       const mockEvent = { type: 'payment_intent.succeeded', data: {} }
       mockStripe.webhooks.constructEvent.mockReturnValue(mockEvent)
 
-      const result = stripeService.verifyWebhookSignature('payload', 'signature')
+      const result = stripeService.verifyWebhookSignature(
+        'payload',
+        'signature'
+      )
 
       expect(mockStripe.webhooks.constructEvent).toHaveBeenCalledWith(
         'payload',
@@ -1908,6 +2131,7 @@ describe('StripeService', () => {
 ```
 
 **Step 3: Create Integration Tests for Payment API**
+
 1. Create a new file `tests/integration/api/payments.test.ts`:
 
 ```typescript
@@ -1922,8 +2146,8 @@ describe('/api/payments', () => {
       body: JSON.stringify({
         amount: 2000,
         currency: 'usd',
-        description: 'Test payment'
-      })
+        description: 'Test payment',
+      }),
     })
 
     const response = await POST(request)
@@ -1940,8 +2164,8 @@ describe('/api/payments', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount: -100,
-        currency: 'usd'
-      })
+        currency: 'usd',
+      }),
     })
 
     const response = await POST(request)
@@ -1951,24 +2175,27 @@ describe('/api/payments', () => {
 ```
 
 **Validation Steps:**
+
 - Run all unit tests and ensure they pass
 - Verify security middleware blocks invalid requests
 - Test webhook signature validation with mock data
 - Check that payment API handles edge cases properly
 
-**Next Steps:**
-Proceed to Prompt 9 for final integration and deployment.
+**Next Steps:** Proceed to Prompt 9 for final integration and deployment.
 
 ---
 
 ## Prompt 9: Final Integration and Documentation Updates
 
 ### Objective
-Complete the Stripe integration by updating existing components, adding feature gates, and updating all documentation.
+
+Complete the Stripe integration by updating existing components, adding feature
+gates, and updating all documentation.
 
 ### Instructions for AI Assistant
 
 **Step 1: Update Main App Component for Payment Integration**
+
 1. Open `src/view/components/App.tsx`
 2. Add payment-related imports and integrate subscription status:
 
@@ -1994,6 +2221,7 @@ const { canExportAdvanced, canUseAdvancedSearch, scrapingQuotaRemaining } = useF
 ```
 
 **Step 2: Add Feature Gates to Existing Functionality**
+
 1. Open the main scraping component (likely in `src/view/components/`)
 2. Add feature access checks before premium operations:
 
@@ -2037,6 +2265,7 @@ const handleScrapingRequest = async () => {
 ```
 
 **Step 3: Create Feature Access API Endpoints**
+
 1. Create `src/app/api/features/access/route.ts`:
 
 ```typescript
@@ -2069,7 +2298,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ hasAccess })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to check access' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to check access' },
+      { status: 500 }
+    )
   }
 }
 ```
@@ -2089,25 +2321,31 @@ export async function POST(request: NextRequest) {
       featureType,
       usageCount: 1,
       date: new Date(),
-      metadata
+      metadata,
     })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to record usage' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to record usage' },
+      { status: 500 }
+    )
   }
 }
 ```
 
 **Step 4: Update Documentation Files**
+
 1. Update `README.md` to include payment system information:
 
 ```markdown
 ## Payment System
 
-The Business Scraper App includes a comprehensive Stripe-based payment system with:
+The Business Scraper App includes a comprehensive Stripe-based payment system
+with:
 
-- **Subscription Management**: Monthly and yearly plans with different feature tiers
+- **Subscription Management**: Monthly and yearly plans with different feature
+  tiers
 - **Feature Access Control**: Premium features gated behind subscription status
 - **Usage Tracking**: Monitor and limit feature usage based on plan
 - **Secure Payments**: PCI-compliant payment processing via Stripe
@@ -2132,6 +2370,7 @@ The Business Scraper App includes a comprehensive Stripe-based payment system wi
 ## [1.1.0] - 2025-08-29
 
 ### Added
+
 - Complete Stripe payment integration
 - Subscription management system
 - Feature access control and usage tracking
@@ -2141,11 +2380,13 @@ The Business Scraper App includes a comprehensive Stripe-based payment system wi
 - Unit and integration tests for payment functionality
 
 ### Changed
+
 - Updated main app component to include subscription status
 - Added feature gates to premium functionality
 - Enhanced configuration system for payment settings
 
 ### Security
+
 - Implemented PCI-compliant payment processing
 - Added webhook signature verification
 - Enhanced API security for payment endpoints
@@ -2158,6 +2399,7 @@ The Business Scraper App includes a comprehensive Stripe-based payment system wi
 ```
 
 **Step 5: Final Testing and Validation**
+
 1. Run the complete test suite:
 
 ```bash
@@ -2175,6 +2417,7 @@ npm run test:e2e
 4. Test feature access controls work as expected
 
 **Validation Steps:**
+
 - All tests pass successfully
 - Payment forms render and function correctly
 - Subscription plans display properly
@@ -2182,15 +2425,12 @@ npm run test:e2e
 - Documentation is complete and accurate
 - Version numbers are updated consistently
 
-**Final Deliverables:**
-✅ Complete Stripe payment system integrated
-✅ Feature access control implemented
-✅ Comprehensive testing suite
-✅ Security measures in place
-✅ Documentation updated
-✅ Ready for production deployment
+**Final Deliverables:** ✅ Complete Stripe payment system integrated ✅ Feature
+access control implemented ✅ Comprehensive testing suite ✅ Security measures
+in place ✅ Documentation updated ✅ Ready for production deployment
 
 **Post-Implementation Notes:**
+
 - Configure production Stripe keys before deployment
 - Set up monitoring for payment events
 - Train support team on subscription management
@@ -2201,11 +2441,14 @@ npm run test:e2e
 ## Prompt 10: User Management Integration
 
 ### Objective
-Integrate the payment system with the existing user management system and create user onboarding flows for payment setup.
+
+Integrate the payment system with the existing user management system and create
+user onboarding flows for payment setup.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create User Registration Enhancement**
+
 1. Open the existing user registration component
 2. Add payment profile initialization:
 
@@ -2227,10 +2470,13 @@ const handleUserRegistration = async (userData: UserRegistrationData) => {
 
     // Set initial free tier
     await userPaymentService.updateUserPaymentProfile(user.id, {
-      subscriptionStatus: 'free'
+      subscriptionStatus: 'free',
     })
 
-    logger.info('UserRegistration', `Payment profile created for user: ${user.id}`)
+    logger.info(
+      'UserRegistration',
+      `Payment profile created for user: ${user.id}`
+    )
   } catch (error) {
     logger.error('UserRegistration', 'Failed to create payment profile', error)
     // Handle gracefully - user can still use free features
@@ -2239,6 +2485,7 @@ const handleUserRegistration = async (userData: UserRegistrationData) => {
 ```
 
 **Step 2: Create User Profile Payment Section**
+
 1. Create a new file `src/view/components/UserPaymentProfile.tsx`:
 
 ```typescript
@@ -2355,6 +2602,7 @@ export function UserPaymentProfile({ userId }: UserPaymentProfileProps) {
 ```
 
 **Step 3: Create User Onboarding Flow**
+
 1. Create a new file `src/view/components/PaymentOnboarding.tsx`:
 
 ```typescript
@@ -2537,24 +2785,28 @@ export function PaymentOnboarding({ userId, onComplete }: PaymentOnboardingProps
 ```
 
 **Validation Steps:**
+
 - Verify user registration integrates payment profile creation
 - Test onboarding flow guides users through plan selection
 - Check that user profile displays payment information correctly
 - Confirm graceful error handling when payment setup fails
 
-**Next Steps:**
-Proceed to Prompt 11 for Payment Analytics and Reporting implementation.
+**Next Steps:** Proceed to Prompt 11 for Payment Analytics and Reporting
+implementation.
 
 ---
 
 ## Prompt 11: Payment Analytics and Reporting
 
 ### Objective
-Implement comprehensive analytics and reporting for payment data, subscription metrics, and revenue tracking.
+
+Implement comprehensive analytics and reporting for payment data, subscription
+metrics, and revenue tracking.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Payment Analytics Service**
+
 1. Create a new file `src/model/paymentAnalyticsService.ts`
 2. Implement analytics data collection and processing:
 
@@ -2600,43 +2852,63 @@ export interface FeatureUsageMetrics {
 
 export class PaymentAnalyticsService {
   // Calculate revenue metrics for a given period
-  async getRevenueMetrics(startDate: Date, endDate: Date): Promise<RevenueMetrics> {
+  async getRevenueMetrics(
+    startDate: Date,
+    endDate: Date
+  ): Promise<RevenueMetrics> {
     try {
-      const transactions = await paymentStorage.getTransactionsByDateRange(startDate, endDate)
-      const successfulTransactions = transactions.filter(t => t.status === 'succeeded')
+      const transactions = await paymentStorage.getTransactionsByDateRange(
+        startDate,
+        endDate
+      )
+      const successfulTransactions = transactions.filter(
+        t => t.status === 'succeeded'
+      )
 
-      const totalRevenue = successfulTransactions.reduce((sum, t) => sum + t.amountCents, 0) / 100
+      const totalRevenue =
+        successfulTransactions.reduce((sum, t) => sum + t.amountCents, 0) / 100
 
       // Calculate MRR (Monthly Recurring Revenue)
       const subscriptions = await paymentStorage.getActiveSubscriptions()
       const monthlyRecurringRevenue = subscriptions.reduce((sum, sub) => {
         const plan = sub.plan
         if (plan.interval === 'month') {
-          return sum + (plan.priceCents / 100)
+          return sum + plan.priceCents / 100
         } else if (plan.interval === 'year') {
-          return sum + (plan.priceCents / 100 / 12)
+          return sum + plan.priceCents / 100 / 12
         }
         return sum
       }, 0)
 
       // Calculate ARPU (Average Revenue Per User)
-      const uniqueUsers = new Set(successfulTransactions.map(t => t.userId)).size
-      const averageRevenuePerUser = uniqueUsers > 0 ? totalRevenue / uniqueUsers : 0
+      const uniqueUsers = new Set(successfulTransactions.map(t => t.userId))
+        .size
+      const averageRevenuePerUser =
+        uniqueUsers > 0 ? totalRevenue / uniqueUsers : 0
 
       // Calculate churn rate (simplified)
       const previousPeriodStart = new Date(startDate)
       previousPeriodStart.setMonth(previousPeriodStart.getMonth() - 1)
-      const previousSubscriptions = await paymentStorage.getSubscriptionsByDateRange(
+      const previousSubscriptions =
+        await paymentStorage.getSubscriptionsByDateRange(
+          previousPeriodStart,
+          startDate
+        )
+      const churnRate =
+        previousSubscriptions.length > 0
+          ? (previousSubscriptions.length - subscriptions.length) /
+            previousSubscriptions.length
+          : 0
+
+      // Calculate growth rate
+      const previousRevenue = await this.getRevenueForPeriod(
         previousPeriodStart,
         startDate
       )
-      const churnRate = previousSubscriptions.length > 0
-        ? (previousSubscriptions.length - subscriptions.length) / previousSubscriptions.length
-        : 0
-
-      // Calculate growth rate
-      const previousRevenue = await this.getRevenueForPeriod(previousPeriodStart, startDate)
-      const growthRate = previousRevenue > 0 ? (totalRevenue - previousRevenue) / previousRevenue : 0
+      const growthRate =
+        previousRevenue > 0
+          ? (totalRevenue - previousRevenue) / previousRevenue
+          : 0
 
       return {
         totalRevenue,
@@ -2644,10 +2916,14 @@ export class PaymentAnalyticsService {
         averageRevenuePerUser,
         churnRate: Math.max(0, churnRate),
         growthRate,
-        period: { start: startDate, end: endDate }
+        period: { start: startDate, end: endDate },
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', 'Failed to calculate revenue metrics', error)
+      logger.error(
+        'PaymentAnalyticsService',
+        'Failed to calculate revenue metrics',
+        error
+      )
       throw error
     }
   }
@@ -2656,20 +2932,30 @@ export class PaymentAnalyticsService {
   async getSubscriptionMetrics(): Promise<SubscriptionMetrics> {
     try {
       const allSubscriptions = await paymentStorage.getAllSubscriptions()
-      const activeSubscriptions = allSubscriptions.filter(s => s.status === 'active')
-      const canceledSubscriptions = allSubscriptions.filter(s => s.status === 'canceled')
-      const trialSubscriptions = allSubscriptions.filter(s => s.status === 'trialing')
+      const activeSubscriptions = allSubscriptions.filter(
+        s => s.status === 'active'
+      )
+      const canceledSubscriptions = allSubscriptions.filter(
+        s => s.status === 'canceled'
+      )
+      const trialSubscriptions = allSubscriptions.filter(
+        s => s.status === 'trialing'
+      )
 
       // Group by plan
-      const subscriptionsByPlan = allSubscriptions.reduce((acc, sub) => {
-        const planName = sub.plan?.name || 'Unknown'
-        acc[planName] = (acc[planName] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      const subscriptionsByPlan = allSubscriptions.reduce(
+        (acc, sub) => {
+          const planName = sub.plan?.name || 'Unknown'
+          acc[planName] = (acc[planName] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       // Calculate conversion rate (active subscriptions / total users)
       const totalUsers = await paymentStorage.getTotalUserCount()
-      const conversionRate = totalUsers > 0 ? activeSubscriptions.length / totalUsers : 0
+      const conversionRate =
+        totalUsers > 0 ? activeSubscriptions.length / totalUsers : 0
 
       return {
         totalSubscriptions: allSubscriptions.length,
@@ -2677,10 +2963,14 @@ export class PaymentAnalyticsService {
         canceledSubscriptions: canceledSubscriptions.length,
         trialSubscriptions: trialSubscriptions.length,
         subscriptionsByPlan,
-        conversionRate
+        conversionRate,
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', 'Failed to get subscription metrics', error)
+      logger.error(
+        'PaymentAnalyticsService',
+        'Failed to get subscription metrics',
+        error
+      )
       throw error
     }
   }
@@ -2696,42 +2986,62 @@ export class PaymentAnalyticsService {
       const monthStart = new Date()
       monthStart.setDate(1)
       monthStart.setHours(0, 0, 0, 0)
-      const newUsersThisMonth = await paymentStorage.getNewUserCount(monthStart, new Date())
+      const newUsersThisMonth = await paymentStorage.getNewUserCount(
+        monthStart,
+        new Date()
+      )
 
       // Calculate user growth rate
       const lastMonthStart = new Date(monthStart)
       lastMonthStart.setMonth(lastMonthStart.getMonth() - 1)
       const lastMonthUsers = await paymentStorage.getUserCountAsOf(monthStart)
-      const userGrowthRate = lastMonthUsers > 0 ? (totalUsers - lastMonthUsers) / lastMonthUsers : 0
+      const userGrowthRate =
+        lastMonthUsers > 0 ? (totalUsers - lastMonthUsers) / lastMonthUsers : 0
 
       return {
         totalUsers,
         paidUsers,
         freeUsers,
         newUsersThisMonth,
-        userGrowthRate
+        userGrowthRate,
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', 'Failed to get user metrics', error)
+      logger.error(
+        'PaymentAnalyticsService',
+        'Failed to get user metrics',
+        error
+      )
       throw error
     }
   }
 
   // Get feature usage analytics
-  async getFeatureUsageMetrics(startDate: Date, endDate: Date): Promise<FeatureUsageMetrics> {
+  async getFeatureUsageMetrics(
+    startDate: Date,
+    endDate: Date
+  ): Promise<FeatureUsageMetrics> {
     try {
-      const usageData = await paymentStorage.getFeatureUsageByDateRange(startDate, endDate)
+      const usageData = await paymentStorage.getFeatureUsageByDateRange(
+        startDate,
+        endDate
+      )
 
       // Total usage by feature
-      const totalUsage = usageData.reduce((acc, usage) => {
-        acc[usage.featureType] = (acc[usage.featureType] || 0) + usage.usageCount
-        return acc
-      }, {} as Record<string, number>)
+      const totalUsage = usageData.reduce(
+        (acc, usage) => {
+          acc[usage.featureType] =
+            (acc[usage.featureType] || 0) + usage.usageCount
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       // Usage by plan
       const usageByPlan: Record<string, Record<string, number>> = {}
       for (const usage of usageData) {
-        const userSubscription = await paymentStorage.getUserActiveSubscription(usage.userId)
+        const userSubscription = await paymentStorage.getUserActiveSubscription(
+          usage.userId
+        )
         const planName = userSubscription?.plan?.name || 'Free'
 
         if (!usageByPlan[planName]) {
@@ -2754,10 +3064,14 @@ export class PaymentAnalyticsService {
         totalUsage,
         usageByPlan,
         popularFeatures,
-        usageTrends
+        usageTrends,
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', 'Failed to get feature usage metrics', error)
+      logger.error(
+        'PaymentAnalyticsService',
+        'Failed to get feature usage metrics',
+        error
+      )
       throw error
     }
   }
@@ -2769,7 +3083,7 @@ export class PaymentAnalyticsService {
         this.getRevenueMetrics(startDate, endDate),
         this.getSubscriptionMetrics(),
         this.getUserMetrics(),
-        this.getFeatureUsageMetrics(startDate, endDate)
+        this.getFeatureUsageMetrics(startDate, endDate),
       ])
 
       return {
@@ -2778,20 +3092,32 @@ export class PaymentAnalyticsService {
         users,
         featureUsage,
         generatedAt: new Date(),
-        period: { start: startDate, end: endDate }
+        period: { start: startDate, end: endDate },
       }
     } catch (error) {
-      logger.error('PaymentAnalyticsService', 'Failed to generate analytics report', error)
+      logger.error(
+        'PaymentAnalyticsService',
+        'Failed to generate analytics report',
+        error
+      )
       throw error
     }
   }
 
   // Helper methods
-  private async getRevenueForPeriod(startDate: Date, endDate: Date): Promise<number> {
-    const transactions = await paymentStorage.getTransactionsByDateRange(startDate, endDate)
-    return transactions
-      .filter(t => t.status === 'succeeded')
-      .reduce((sum, t) => sum + t.amountCents, 0) / 100
+  private async getRevenueForPeriod(
+    startDate: Date,
+    endDate: Date
+  ): Promise<number> {
+    const transactions = await paymentStorage.getTransactionsByDateRange(
+      startDate,
+      endDate
+    )
+    return (
+      transactions
+        .filter(t => t.status === 'succeeded')
+        .reduce((sum, t) => sum + t.amountCents, 0) / 100
+    )
   }
 
   private async calculateUsageTrends(startDate: Date, endDate: Date) {
@@ -2804,12 +3130,19 @@ export class PaymentAnalyticsService {
       const dayEnd = new Date(currentDate)
       dayEnd.setHours(23, 59, 59, 999)
 
-      const dayUsage = await paymentStorage.getFeatureUsageByDateRange(dayStart, dayEnd)
+      const dayUsage = await paymentStorage.getFeatureUsageByDateRange(
+        dayStart,
+        dayEnd
+      )
 
-      const dailyTotals = dayUsage.reduce((acc, usage) => {
-        acc[usage.featureType] = (acc[usage.featureType] || 0) + usage.usageCount
-        return acc
-      }, {} as Record<string, number>)
+      const dailyTotals = dayUsage.reduce(
+        (acc, usage) => {
+          acc[usage.featureType] =
+            (acc[usage.featureType] || 0) + usage.usageCount
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       Object.entries(dailyTotals).forEach(([feature, usage]) => {
         trends.push({ date: new Date(currentDate), feature, usage })
@@ -2826,24 +3159,28 @@ export const paymentAnalyticsService = new PaymentAnalyticsService()
 ```
 
 **Validation Steps:**
+
 - Verify analytics calculations are mathematically correct
 - Test report generation with sample data
 - Check that metrics update in real-time
 - Confirm performance with large datasets
 
-**Next Steps:**
-Proceed to Prompt 12 for Compliance and Audit Logging implementation.
+**Next Steps:** Proceed to Prompt 12 for Compliance and Audit Logging
+implementation.
 
 ---
 
 ## Prompt 12: Compliance and Audit Logging
 
 ### Objective
-Implement comprehensive audit logging, compliance tracking, and data protection measures for payment processing.
+
+Implement comprehensive audit logging, compliance tracking, and data protection
+measures for payment processing.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Audit Logging Service**
+
 1. Create a new file `src/model/auditLoggingService.ts`
 2. Implement comprehensive audit trail functionality:
 
@@ -2871,9 +3208,15 @@ export const AuditEventSchema = z.object({
     'login_attempt',
     'password_changed',
     'email_changed',
-    'account_deleted'
+    'account_deleted',
   ]),
-  entityType: z.enum(['payment', 'subscription', 'customer', 'user', 'feature']),
+  entityType: z.enum([
+    'payment',
+    'subscription',
+    'customer',
+    'user',
+    'feature',
+  ]),
   entityId: z.string(),
   action: z.string(),
   details: z.record(z.any()),
@@ -2883,7 +3226,7 @@ export const AuditEventSchema = z.object({
   timestamp: z.date(),
   severity: z.enum(['low', 'medium', 'high', 'critical']),
   complianceFlags: z.array(z.string()).optional(),
-  retentionPeriod: z.number().optional() // days
+  retentionPeriod: z.number().optional(), // days
 })
 
 export type AuditEvent = z.infer<typeof AuditEventSchema>
@@ -2895,7 +3238,7 @@ export class AuditLoggingService {
       const auditEvent: AuditEvent = {
         ...event,
         id: crypto.randomUUID(),
-        timestamp: new Date()
+        timestamp: new Date(),
       }
 
       // Validate event
@@ -2907,7 +3250,10 @@ export class AuditLoggingService {
       // Also send to secure logging service for long-term storage
       await this.sendToSecureLogging(validatedEvent)
 
-      logger.info('AuditLoggingService', `Audit event logged: ${event.eventType}`)
+      logger.info(
+        'AuditLoggingService',
+        `Audit event logged: ${event.eventType}`
+      )
     } catch (error) {
       logger.error('AuditLoggingService', 'Failed to log audit event', error)
       // Don't throw - audit logging should not break main functionality
@@ -2932,13 +3278,13 @@ export class AuditLoggingService {
         ...details,
         amount: details.amount,
         currency: details.currency,
-        paymentMethod: details.paymentMethod
+        paymentMethod: details.paymentMethod,
       },
       ipAddress: this.extractIpAddress(request),
       userAgent: request?.headers.get('user-agent') || undefined,
       severity: eventType === 'payment_failed' ? 'medium' : 'low',
       complianceFlags: ['PCI_DSS', 'GDPR'],
-      retentionPeriod: 2555 // 7 years for financial records
+      retentionPeriod: 2555, // 7 years for financial records
     })
   }
 
@@ -2947,10 +3293,13 @@ export class AuditLoggingService {
     try {
       const events = await this.getEventsByDateRange(startDate, endDate)
 
-      const eventsByType = events.reduce((acc, event) => {
-        acc[event.eventType] = (acc[event.eventType] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      const eventsByType = events.reduce(
+        (acc, event) => {
+          acc[event.eventType] = (acc[event.eventType] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       return {
         reportId: crypto.randomUUID(),
@@ -2958,15 +3307,23 @@ export class AuditLoggingService {
         totalEvents: events.length,
         eventsByType,
         securityEvents: events.filter(e =>
-          ['login_attempt', 'password_changed', 'email_changed'].includes(e.eventType)
+          ['login_attempt', 'password_changed', 'email_changed'].includes(
+            e.eventType
+          )
         ),
-        paymentEvents: events.filter(e =>
-          e.eventType.startsWith('payment_') || e.eventType.startsWith('subscription_')
+        paymentEvents: events.filter(
+          e =>
+            e.eventType.startsWith('payment_') ||
+            e.eventType.startsWith('subscription_')
         ),
-        generatedAt: new Date()
+        generatedAt: new Date(),
       }
     } catch (error) {
-      logger.error('AuditLoggingService', 'Failed to generate compliance report', error)
+      logger.error(
+        'AuditLoggingService',
+        'Failed to generate compliance report',
+        error
+      )
       throw error
     }
   }
@@ -2975,7 +3332,12 @@ export class AuditLoggingService {
   private extractIpAddress(request?: Request): string | undefined {
     if (!request) return undefined
 
-    const headers = ['x-forwarded-for', 'x-real-ip', 'x-client-ip', 'cf-connecting-ip']
+    const headers = [
+      'x-forwarded-for',
+      'x-real-ip',
+      'x-client-ip',
+      'cf-connecting-ip',
+    ]
     for (const header of headers) {
       const value = request.headers.get(header)
       if (value) return value.split(',')[0].trim()
@@ -2990,10 +3352,13 @@ export class AuditLoggingService {
     }
   }
 
-  private async getEventsByDateRange(startDate: Date, endDate: Date): Promise<AuditEvent[]> {
+  private async getEventsByDateRange(
+    startDate: Date,
+    endDate: Date
+  ): Promise<AuditEvent[]> {
     const allEvents = await storage.getAll('auditEvents')
-    return allEvents.filter(event =>
-      event.timestamp >= startDate && event.timestamp <= endDate
+    return allEvents.filter(
+      event => event.timestamp >= startDate && event.timestamp <= endDate
     )
   }
 }
@@ -3002,24 +3367,28 @@ export const auditLoggingService = new AuditLoggingService()
 ```
 
 **Validation Steps:**
+
 - Verify audit events are logged correctly for all payment operations
 - Test compliance report generation with sample data
 - Check GDPR data export functionality
 - Confirm data deletion respects retention requirements
 
-**Next Steps:**
-Proceed to Prompt 13 for Email Notifications and Communication implementation.
+**Next Steps:** Proceed to Prompt 13 for Email Notifications and Communication
+implementation.
 
 ---
 
 ## Prompt 13: Email Notifications and Communication
 
 ### Objective
-Implement email notification system for payment events, subscription changes, and user communications.
+
+Implement email notification system for payment events, subscription changes,
+and user communications.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Email Service**
+
 1. Create a new file `src/model/emailService.ts`
 2. Implement email notification functionality:
 
@@ -3065,9 +3434,9 @@ export class EmailService {
           amount: `$${(paymentDetails.amount / 100).toFixed(2)}`,
           currency: paymentDetails.currency.toUpperCase(),
           description: paymentDetails.description,
-          receiptUrl: paymentDetails.receiptUrl || '#'
+          receiptUrl: paymentDetails.receiptUrl || '#',
         },
-        priority: 'normal'
+        priority: 'normal',
       })
 
       logger.info('EmailService', `Payment confirmation sent to: ${userEmail}`)
@@ -3092,9 +3461,10 @@ export class EmailService {
         variables: {
           planName: subscriptionDetails.planName,
           features: subscriptionDetails.features.join(', '),
-          nextBillingDate: subscriptionDetails.nextBillingDate.toLocaleDateString()
+          nextBillingDate:
+            subscriptionDetails.nextBillingDate.toLocaleDateString(),
         },
-        priority: 'normal'
+        priority: 'normal',
       })
 
       logger.info('EmailService', `Subscription welcome sent to: ${userEmail}`)
@@ -3121,14 +3491,21 @@ export class EmailService {
           amount: `$${(failureDetails.amount / 100).toFixed(2)}`,
           currency: failureDetails.currency.toUpperCase(),
           reason: failureDetails.reason,
-          retryUrl: failureDetails.retryUrl
+          retryUrl: failureDetails.retryUrl,
         },
-        priority: 'high'
+        priority: 'high',
       })
 
-      logger.info('EmailService', `Payment failure notification sent to: ${userEmail}`)
+      logger.info(
+        'EmailService',
+        `Payment failure notification sent to: ${userEmail}`
+      )
     } catch (error) {
-      logger.error('EmailService', 'Failed to send payment failure notification', error)
+      logger.error(
+        'EmailService',
+        'Failed to send payment failure notification',
+        error
+      )
     }
   }
 
@@ -3148,14 +3525,21 @@ export class EmailService {
         variables: {
           planName: cancellationDetails.planName,
           endDate: cancellationDetails.endDate.toLocaleDateString(),
-          reason: cancellationDetails.reason || 'Not specified'
+          reason: cancellationDetails.reason || 'Not specified',
         },
-        priority: 'normal'
+        priority: 'normal',
       })
 
-      logger.info('EmailService', `Subscription cancellation sent to: ${userEmail}`)
+      logger.info(
+        'EmailService',
+        `Subscription cancellation sent to: ${userEmail}`
+      )
     } catch (error) {
-      logger.error('EmailService', 'Failed to send subscription cancellation', error)
+      logger.error(
+        'EmailService',
+        'Failed to send subscription cancellation',
+        error
+      )
     }
   }
 
@@ -3169,7 +3553,7 @@ export class EmailService {
         to: notification.to,
         template: notification.template,
         variables: notification.variables,
-        priority: notification.priority
+        priority: notification.priority,
       })
     }
 
@@ -3201,7 +3585,7 @@ export class EmailService {
 
         View Receipt: {{receiptUrl}}
       `,
-      variables: {}
+      variables: {},
     }
   }
 }
@@ -3210,24 +3594,28 @@ export const emailService = new EmailService()
 ```
 
 **Validation Steps:**
+
 - Test email notifications for all payment events
 - Verify email templates render correctly with variables
 - Check that high-priority emails are sent immediately
 - Confirm email delivery tracking works
 
-**Next Steps:**
-Proceed to Prompt 14 for Performance Monitoring and Alerting implementation.
+**Next Steps:** Proceed to Prompt 14 for Performance Monitoring and Alerting
+implementation.
 
 ---
 
 ## Prompt 14: Performance Monitoring and Alerting
 
 ### Objective
-Implement comprehensive performance monitoring, alerting, and health checks for the payment system.
+
+Implement comprehensive performance monitoring, alerting, and health checks for
+the payment system.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Performance Monitoring Service**
+
 1. Create a new file `src/model/performanceMonitoringService.ts`
 2. Implement monitoring and alerting functionality:
 
@@ -3291,7 +3679,7 @@ export class PerformanceMonitoringService {
         threshold: this.getThresholdForMetric(metricType),
         status: this.calculateStatus(metricType, value),
         timestamp: new Date(),
-        context
+        context,
       }
 
       // Store metric
@@ -3306,9 +3694,16 @@ export class PerformanceMonitoringService {
       // Check alert rules
       await this.checkAlertRules(metric)
 
-      logger.debug('PerformanceMonitoringService', `Metric recorded: ${metricType} = ${value}`)
+      logger.debug(
+        'PerformanceMonitoringService',
+        `Metric recorded: ${metricType} = ${value}`
+      )
     } catch (error) {
-      logger.error('PerformanceMonitoringService', 'Failed to record metric', error)
+      logger.error(
+        'PerformanceMonitoringService',
+        'Failed to record metric',
+        error
+      )
     }
   }
 
@@ -3333,13 +3728,13 @@ export class PerformanceMonitoringService {
       await this.recordMetric('response_time', responseTime, {
         operation,
         success,
-        endpoint: 'payment_api'
+        endpoint: 'payment_api',
       })
 
       if (!success) {
         await this.recordMetric('error_rate', 1, {
           operation,
-          endpoint: 'payment_api'
+          endpoint: 'payment_api',
         })
       }
     }
@@ -3353,8 +3748,8 @@ export class PerformanceMonitoringService {
       // Simple health check - retrieve a test price
       const response = await fetch('https://api.stripe.com/v1/prices?limit=1', {
         headers: {
-          'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`
-        }
+          Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        },
       })
 
       const responseTime = Date.now() - startTime
@@ -3362,18 +3757,18 @@ export class PerformanceMonitoringService {
 
       await this.recordMetric('response_time', responseTime, {
         service: 'stripe_api',
-        endpoint: 'prices'
+        endpoint: 'prices',
       })
 
       await this.recordMetric('availability', isHealthy ? 1 : 0, {
-        service: 'stripe_api'
+        service: 'stripe_api',
       })
 
       return isHealthy
     } catch (error) {
       await this.recordMetric('availability', 0, {
         service: 'stripe_api',
-        error: error.message
+        error: error.message,
       })
       return false
     }
@@ -3389,23 +3784,35 @@ export class PerformanceMonitoringService {
 
       const dashboard = {
         overview: {
-          totalRequests: recentMetrics.filter(m => m.metricType === 'response_time').length,
+          totalRequests: recentMetrics.filter(
+            m => m.metricType === 'response_time'
+          ).length,
           averageResponseTime: this.calculateAverage(
-            recentMetrics.filter(m => m.metricType === 'response_time').map(m => m.value)
+            recentMetrics
+              .filter(m => m.metricType === 'response_time')
+              .map(m => m.value)
           ),
           errorRate: this.calculateErrorRate(recentMetrics),
-          uptime: this.calculateUptime(recentMetrics)
+          uptime: this.calculateUptime(recentMetrics),
         },
         alerts: {
-          active: Array.from(this.activeAlerts.values()).filter(a => a.status === 'active'),
-          resolved: Array.from(this.activeAlerts.values()).filter(a => a.status === 'resolved')
+          active: Array.from(this.activeAlerts.values()).filter(
+            a => a.status === 'active'
+          ),
+          resolved: Array.from(this.activeAlerts.values()).filter(
+            a => a.status === 'resolved'
+          ),
         },
-        trends: this.calculateTrends(recentMetrics, hours)
+        trends: this.calculateTrends(recentMetrics, hours),
       }
 
       return dashboard
     } catch (error) {
-      logger.error('PerformanceMonitoringService', 'Failed to get performance dashboard', error)
+      logger.error(
+        'PerformanceMonitoringService',
+        'Failed to get performance dashboard',
+        error
+      )
       throw error
     }
   }
@@ -3414,13 +3821,16 @@ export class PerformanceMonitoringService {
   async createAlertRule(rule: Omit<AlertRule, 'id'>): Promise<AlertRule> {
     const alertRule: AlertRule = {
       ...rule,
-      id: crypto.randomUUID()
+      id: crypto.randomUUID(),
     }
 
     this.alertRules.push(alertRule)
     await storage.put('alertRules', alertRule, alertRule.id)
 
-    logger.info('PerformanceMonitoringService', `Alert rule created: ${rule.name}`)
+    logger.info(
+      'PerformanceMonitoringService',
+      `Alert rule created: ${rule.name}`
+    )
     return alertRule
   }
 
@@ -3435,7 +3845,7 @@ export class PerformanceMonitoringService {
         threshold: 5000, // 5 seconds
         severity: 'high',
         enabled: true,
-        cooldownMinutes: 5
+        cooldownMinutes: 5,
       },
       {
         id: 'error_rate_high',
@@ -3445,7 +3855,7 @@ export class PerformanceMonitoringService {
         threshold: 0.05, // 5%
         severity: 'critical',
         enabled: true,
-        cooldownMinutes: 2
+        cooldownMinutes: 2,
       },
       {
         id: 'stripe_api_down',
@@ -3455,22 +3865,25 @@ export class PerformanceMonitoringService {
         threshold: 1,
         severity: 'critical',
         enabled: true,
-        cooldownMinutes: 1
-      }
+        cooldownMinutes: 1,
+      },
     ]
   }
 
   private getThresholdForMetric(metricType: string): number {
     const thresholds = {
-      'response_time': 2000, // 2 seconds
-      'error_rate': 0.01, // 1%
-      'throughput': 100, // requests per minute
-      'availability': 0.99 // 99%
+      response_time: 2000, // 2 seconds
+      error_rate: 0.01, // 1%
+      throughput: 100, // requests per minute
+      availability: 0.99, // 99%
     }
     return thresholds[metricType] || 0
   }
 
-  private calculateStatus(metricType: string, value: number): PerformanceMetric['status'] {
+  private calculateStatus(
+    metricType: string,
+    value: number
+  ): PerformanceMetric['status'] {
     const threshold = this.getThresholdForMetric(metricType)
 
     if (metricType === 'availability') {
@@ -3516,7 +3929,10 @@ export class PerformanceMonitoringService {
     }
   }
 
-  private async triggerAlert(rule: AlertRule, metric: PerformanceMetric): Promise<void> {
+  private async triggerAlert(
+    rule: AlertRule,
+    metric: PerformanceMetric
+  ): Promise<void> {
     // Check cooldown
     const existingAlert = this.activeAlerts.get(rule.id)
     if (existingAlert && existingAlert.status === 'active') {
@@ -3535,8 +3951,8 @@ export class PerformanceMonitoringService {
       status: 'active',
       context: {
         metric: metric,
-        rule: rule
-      }
+        rule: rule,
+      },
     }
 
     this.activeAlerts.set(rule.id, alert)
@@ -3545,7 +3961,10 @@ export class PerformanceMonitoringService {
     // Send alert notification
     await this.sendAlertNotification(alert)
 
-    logger.warn('PerformanceMonitoringService', `Alert triggered: ${alert.message}`)
+    logger.warn(
+      'PerformanceMonitoringService',
+      `Alert triggered: ${alert.message}`
+    )
   }
 
   private async sendAlertNotification(alert: Alert): Promise<void> {
@@ -3570,7 +3989,9 @@ export class PerformanceMonitoringService {
   }
 
   private calculateUptime(metrics: PerformanceMetric[]): number {
-    const availabilityMetrics = metrics.filter(m => m.metricType === 'availability')
+    const availabilityMetrics = metrics.filter(
+      m => m.metricType === 'availability'
+    )
     if (availabilityMetrics.length === 0) return 1
     return this.calculateAverage(availabilityMetrics.map(m => m.value))
   }
@@ -3586,16 +4007,23 @@ export class PerformanceMonitoringService {
       hourlyData.set(hour, existing)
     }
 
-    const trends = Array.from(hourlyData.entries()).map(([hour, hourMetrics]) => ({
-      hour,
-      responseTime: this.calculateAverage(
-        hourMetrics.filter(m => m.metricType === 'response_time').map(m => m.value)
-      ),
-      errorRate: this.calculateAverage(
-        hourMetrics.filter(m => m.metricType === 'error_rate').map(m => m.value)
-      ),
-      throughput: hourMetrics.filter(m => m.metricType === 'response_time').length
-    }))
+    const trends = Array.from(hourlyData.entries()).map(
+      ([hour, hourMetrics]) => ({
+        hour,
+        responseTime: this.calculateAverage(
+          hourMetrics
+            .filter(m => m.metricType === 'response_time')
+            .map(m => m.value)
+        ),
+        errorRate: this.calculateAverage(
+          hourMetrics
+            .filter(m => m.metricType === 'error_rate')
+            .map(m => m.value)
+        ),
+        throughput: hourMetrics.filter(m => m.metricType === 'response_time')
+          .length,
+      })
+    )
 
     return trends.sort((a, b) => a.hour.localeCompare(b.hour))
   }
@@ -3605,24 +4033,27 @@ export const performanceMonitoringService = new PerformanceMonitoringService()
 ```
 
 **Validation Steps:**
+
 - Test performance monitoring captures metrics correctly
 - Verify alert rules trigger at appropriate thresholds
 - Check dashboard displays real-time performance data
 - Confirm monitoring doesn't impact application performance
 
-**Next Steps:**
-Proceed to Prompt 15 for Dashboard Integration implementation.
+**Next Steps:** Proceed to Prompt 15 for Dashboard Integration implementation.
 
 ---
 
 ## Prompt 15: Dashboard Integration and Final Setup
 
 ### Objective
-Create a comprehensive admin dashboard for payment management, analytics, and system monitoring integration.
+
+Create a comprehensive admin dashboard for payment management, analytics, and
+system monitoring integration.
 
 ### Instructions for AI Assistant
 
 **Step 1: Create Admin Dashboard Component**
+
 1. Create a new file `src/view/components/AdminDashboard.tsx`
 2. Implement comprehensive dashboard functionality:
 
@@ -3989,17 +4420,20 @@ export function AdminDashboard() {
 ```
 
 **Step 2: Final Integration and Testing**
+
 1. Update the main application to include admin dashboard routing
 2. Add comprehensive end-to-end tests for the complete payment flow
 3. Update documentation with final implementation details
 
 **Validation Steps:**
+
 - Verify dashboard displays all metrics correctly
 - Test real-time updates of performance data
 - Check that compliance reports generate successfully
 - Confirm admin controls work properly
 
 **Final Implementation Checklist:**
+
 - [ ] All 15 prompts implemented successfully
 - [ ] Database migrations completed
 - [ ] API endpoints tested and secured
@@ -4015,14 +4449,18 @@ export function AdminDashboard() {
 
 ## Summary
 
-The implementation follows the project's MVC architecture, maintains security best practices, and includes comprehensive testing. The result is a production-ready payment system with subscription management, feature access control, and usage tracking.
+The implementation follows the project's MVC architecture, maintains security
+best practices, and includes comprehensive testing. The result is a
+production-ready payment system with subscription management, feature access
+control, and usage tracking.
 
-**Total Implementation Time Estimate:** 8-12 hours for an experienced developer following these prompts sequentially.
+**Total Implementation Time Estimate:** 8-12 hours for an experienced developer
+following these prompts sequentially.
 
 **Key Benefits:**
+
 - Monetization through subscription tiers
 - Controlled access to premium features
 - Scalable usage tracking system
 - PCI-compliant payment processing
 - Comprehensive error handling and logging
-

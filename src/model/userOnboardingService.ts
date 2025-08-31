@@ -6,28 +6,24 @@
 import { userPaymentService } from './userPaymentService'
 import { logger } from '@/utils/logger'
 import { storage } from './storage'
-import { 
-  User, 
-  UserRegistration, 
-  createDefaultUsageQuotas, 
+import {
+  User,
+  UserRegistration,
+  createDefaultUsageQuotas,
   validateUser,
-  validateUserRegistration 
+  validateUserRegistration,
 } from './types/user'
 import { hashPassword } from '@/lib/security'
 import { v4 as uuidv4 } from 'uuid'
 
 export class UserOnboardingService {
-  
   /**
    * Complete user onboarding process
    * @param userData - User registration data
    * @param selectedPlanId - Optional subscription plan ID
    * @returns Created user with complete profile
    */
-  async completeOnboarding(
-    userData: UserRegistration,
-    selectedPlanId?: string
-  ): Promise<User> {
+  async completeOnboarding(userData: UserRegistration, selectedPlanId?: string): Promise<User> {
     try {
       // Validate input data
       const validationResult = validateUserRegistration(userData)
@@ -78,30 +74,30 @@ export class UserOnboardingService {
         id: userId,
         email: userData.email,
         name: userData.name,
-        
+
         // Authentication fields
         passwordHash: hash,
         passwordSalt: salt,
         emailVerified: false,
         emailVerificationToken: uuidv4(),
-        
+
         // Payment-related fields
         subscriptionStatus: 'free',
-        
+
         // Usage tracking
         usageQuotas: createDefaultUsageQuotas('free'),
-        
+
         // Profile information
         timezone: userData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: userData.language || 'en',
-        
+
         // Account status
         isActive: true,
         loginAttempts: 0,
-        
+
         // Timestamps
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       // Validate the created user
@@ -113,7 +109,7 @@ export class UserOnboardingService {
       // Save to database
       await this.saveUserProfile(user)
       logger.info('UserOnboarding', `User profile created: ${userId}`)
-      
+
       return user
     } catch (error) {
       logger.error('UserOnboarding', 'Failed to create user profile', error)
@@ -136,7 +132,7 @@ export class UserOnboardingService {
 
       // Update user with Stripe customer ID
       await this.updateUserProfile(user.id, { stripeCustomerId })
-      
+
       logger.info('UserOnboarding', `Payment profile initialized for user: ${user.id}`)
     } catch (error) {
       logger.error('UserOnboarding', 'Failed to initialize payment profile', error)
@@ -157,7 +153,7 @@ export class UserOnboardingService {
       await this.updateUserProfile(user.id, {
         subscriptionStatus: 'active',
         subscriptionPlan: planId,
-        subscriptionEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+        subscriptionEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
       })
 
       logger.info('UserOnboarding', `Subscription setup completed for user: ${user.id}`)
@@ -176,15 +172,15 @@ export class UserOnboardingService {
   private async initializeUsageQuotas(user: User): Promise<User> {
     try {
       const quotas = createDefaultUsageQuotas(user.subscriptionPlan || 'free')
-      
+
       const updatedUser = {
         ...user,
         usageQuotas: quotas,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       await this.updateUserProfile(user.id, { usageQuotas: quotas })
-      
+
       logger.info('UserOnboarding', `Usage quotas initialized for user: ${user.id}`)
       return updatedUser
     } catch (error) {
@@ -202,12 +198,11 @@ export class UserOnboardingService {
       // Implementation would integrate with email service
       // For now, we'll just log the action
       logger.info('UserOnboarding', `Welcome email sent to: ${user.email}`)
-      
+
       // In a real implementation, this would:
       // 1. Generate email verification link
       // 2. Send welcome email with verification
       // 3. Include onboarding tips and next steps
-      
     } catch (error) {
       logger.error('UserOnboarding', 'Failed to send welcome email', error)
       // Don't throw - email failure shouldn't block onboarding
@@ -235,7 +230,7 @@ export class UserOnboardingService {
    */
   private async updateUserProfile(userId: string, updates: Partial<User>): Promise<void> {
     try {
-      const existingUser = await storage.getItem('users', userId) as User
+      const existingUser = (await storage.getItem('users', userId)) as User
       if (!existingUser) {
         throw new Error(`User not found: ${userId}`)
       }
@@ -243,7 +238,7 @@ export class UserOnboardingService {
       const updatedUser = {
         ...existingUser,
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       await storage.setItem('users', userId, updatedUser)
@@ -260,7 +255,7 @@ export class UserOnboardingService {
    */
   async getUserById(userId: string): Promise<User | null> {
     try {
-      const user = await storage.getItem('users', userId) as User
+      const user = (await storage.getItem('users', userId)) as User
       return user || null
     } catch (error) {
       logger.error('UserOnboarding', `Failed to get user: ${userId}`, error)
@@ -277,7 +272,7 @@ export class UserOnboardingService {
     try {
       // This is a simplified implementation
       // In a real database, you'd have an index on email
-      const allUsers = await storage.getAllItems('users') as User[]
+      const allUsers = (await storage.getAllItems('users')) as User[]
       return allUsers.find(user => user.email === email) || null
     } catch (error) {
       logger.error('UserOnboarding', `Failed to get user by email: ${email}`, error)
@@ -300,7 +295,7 @@ export class UserOnboardingService {
 
       await this.updateUserProfile(userId, {
         emailVerified: true,
-        emailVerificationToken: undefined
+        emailVerificationToken: undefined,
       })
 
       logger.info('UserOnboarding', `Email verified for user: ${userId}`)

@@ -73,7 +73,7 @@ export class MonitoringService {
         unit,
         timestamp: new Date(),
         tags,
-        threshold: this.alertThresholds.get(name)
+        threshold: this.alertThresholds.get(name),
       }
 
       // Store metric
@@ -105,7 +105,7 @@ export class MonitoringService {
    */
   async recordPaymentProcessingTime(duration: number, success: boolean): Promise<void> {
     await this.recordMetric('payment_processing_time', duration, 'ms', {
-      success: success.toString()
+      success: success.toString(),
     })
 
     if (!success) {
@@ -116,16 +116,20 @@ export class MonitoringService {
   /**
    * Record API response time
    */
-  async recordApiResponseTime(endpoint: string, duration: number, statusCode: number): Promise<void> {
+  async recordApiResponseTime(
+    endpoint: string,
+    duration: number,
+    statusCode: number
+  ): Promise<void> {
     await this.recordMetric('api_response_time', duration, 'ms', {
       endpoint,
-      status_code: statusCode.toString()
+      status_code: statusCode.toString(),
     })
 
     if (statusCode >= 400) {
       await this.recordMetric('api_errors', 1, 'count', {
         endpoint,
-        status_code: statusCode.toString()
+        status_code: statusCode.toString(),
       })
     }
   }
@@ -135,7 +139,7 @@ export class MonitoringService {
    */
   async recordDatabaseQueryTime(query: string, duration: number): Promise<void> {
     await this.recordMetric('database_query_time', duration, 'ms', {
-      query_type: this.getQueryType(query)
+      query_type: this.getQueryType(query),
     })
   }
 
@@ -167,7 +171,7 @@ export class MonitoringService {
         status: result.healthy ? 'healthy' : 'degraded',
         responseTime,
         lastCheck: new Date(),
-        details: result.details
+        details: result.details,
       }
 
       if (!result.healthy && result.error) {
@@ -180,7 +184,7 @@ export class MonitoringService {
         status: 'unhealthy',
         responseTime: Date.now() - startTime,
         lastCheck: new Date(),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     }
 
@@ -195,7 +199,7 @@ export class MonitoringService {
         description: `Health check failed: ${healthCheck.error}`,
         metric: `health_check_${serviceName}`,
         value: 0,
-        threshold: 1
+        threshold: 1,
       })
     }
 
@@ -226,7 +230,7 @@ export class MonitoringService {
       overall,
       services,
       activeAlerts: this.alerts.filter(a => !a.resolved).length,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     }
   }
 
@@ -246,7 +250,7 @@ export class MonitoringService {
       id: this.generateAlertId(),
       ...alertData,
       timestamp: new Date(),
-      resolved: false
+      resolved: false,
     }
 
     this.alerts.push(alert)
@@ -260,7 +264,7 @@ export class MonitoringService {
         resourceId: alert.id,
         newValues: alert,
         severity: alert.severity === 'critical' ? 'critical' : 'high',
-        category: 'system'
+        category: 'system',
       }
     )
 
@@ -280,17 +284,12 @@ export class MonitoringService {
       alert.resolved = true
       alert.resolvedAt = new Date()
 
-      securityLogger.logSecurityEvent(
-        'ALERT_RESOLVED',
-        'MEDIUM',
-        'monitoring',
-        {
-          userId: resolvedBy,
-          resourceId: alertId,
-          severity: 'medium',
-          category: 'system'
-        }
-      )
+      securityLogger.logSecurityEvent('ALERT_RESOLVED', 'MEDIUM', 'monitoring', {
+        userId: resolvedBy,
+        resourceId: alertId,
+        severity: 'medium',
+        category: 'system',
+      })
 
       logger.info('Monitoring', `Alert resolved: ${alert.title}`)
     }
@@ -299,13 +298,11 @@ export class MonitoringService {
   /**
    * Get performance metrics
    */
-  getMetrics(metricName?: string, timeRange?: { start: Date, end: Date }): PerformanceMetric[] {
+  getMetrics(metricName?: string, timeRange?: { start: Date; end: Date }): PerformanceMetric[] {
     if (metricName) {
       const metrics = this.metrics.get(metricName) || []
       if (timeRange) {
-        return metrics.filter(m =>
-          m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
-        )
+        return metrics.filter(m => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end)
       }
       return metrics
     }
@@ -315,9 +312,7 @@ export class MonitoringService {
     this.metrics.forEach(metrics => allMetrics.push(...metrics))
 
     if (timeRange) {
-      return allMetrics.filter(m =>
-        m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
-      )
+      return allMetrics.filter(m => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end)
     }
 
     return allMetrics
@@ -343,22 +338,22 @@ export class MonitoringService {
   private initializeThresholds(): void {
     this.alertThresholds.set('payment_processing_time', {
       warning: 5000, // 5 seconds
-      critical: 10000 // 10 seconds
+      critical: 10000, // 10 seconds
     })
 
     this.alertThresholds.set('api_response_time', {
       warning: 1000, // 1 second
-      critical: 3000 // 3 seconds
+      critical: 3000, // 3 seconds
     })
 
     this.alertThresholds.set('database_query_time', {
       warning: 500, // 500ms
-      critical: 2000 // 2 seconds
+      critical: 2000, // 2 seconds
     })
 
     this.alertThresholds.set('memory_heap_used', {
       warning: 500 * 1024 * 1024, // 500MB
-      critical: 1024 * 1024 * 1024 // 1GB
+      critical: 1024 * 1024 * 1024, // 1GB
     })
   }
 
@@ -401,7 +396,7 @@ export class MonitoringService {
         description: `${metric.name} is ${metric.value} ${metric.unit}, exceeding critical threshold of ${metric.threshold.critical} ${metric.unit}`,
         metric: metric.name,
         value: metric.value,
-        threshold: metric.threshold.critical
+        threshold: metric.threshold.critical,
       })
     } else if (metric.value >= metric.threshold.warning) {
       await this.createAlert({
@@ -411,7 +406,7 @@ export class MonitoringService {
         description: `${metric.name} is ${metric.value} ${metric.unit}, exceeding warning threshold of ${metric.threshold.warning} ${metric.unit}`,
         metric: metric.name,
         value: metric.value,
-        threshold: metric.threshold.warning
+        threshold: metric.threshold.warning,
       })
     }
   }
@@ -419,7 +414,9 @@ export class MonitoringService {
   /**
    * Check individual service health
    */
-  private async checkServiceHealth(serviceName: string): Promise<{ healthy: boolean, details?: any, error?: string }> {
+  private async checkServiceHealth(
+    serviceName: string
+  ): Promise<{ healthy: boolean; details?: any; error?: string }> {
     switch (serviceName) {
       case 'database':
         return this.checkDatabaseHealth()
@@ -437,43 +434,59 @@ export class MonitoringService {
   /**
    * Service-specific health checks
    */
-  private async checkDatabaseHealth(): Promise<{ healthy: boolean, details?: any, error?: string }> {
+  private async checkDatabaseHealth(): Promise<{
+    healthy: boolean
+    details?: any
+    error?: string
+  }> {
     try {
       // Implementation would check database connectivity
       // For now, return healthy status
       return { healthy: true, details: { connection: 'active' } }
     } catch (error) {
-      return { healthy: false, error: error instanceof Error ? error.message : 'Database connection failed' }
+      return {
+        healthy: false,
+        error: error instanceof Error ? error.message : 'Database connection failed',
+      }
     }
   }
 
-  private async checkStripeHealth(): Promise<{ healthy: boolean, details?: any, error?: string }> {
+  private async checkStripeHealth(): Promise<{ healthy: boolean; details?: any; error?: string }> {
     try {
       // Implementation would check Stripe API connectivity
       // For now, return healthy status
       return { healthy: true, details: { api: 'responsive' } }
     } catch (error) {
-      return { healthy: false, error: error instanceof Error ? error.message : 'Stripe API unavailable' }
+      return {
+        healthy: false,
+        error: error instanceof Error ? error.message : 'Stripe API unavailable',
+      }
     }
   }
 
-  private async checkEmailHealth(): Promise<{ healthy: boolean, details?: any, error?: string }> {
+  private async checkEmailHealth(): Promise<{ healthy: boolean; details?: any; error?: string }> {
     try {
       // Implementation would check email service connectivity
       // For now, return healthy status
       return { healthy: true, details: { smtp: 'connected' } }
     } catch (error) {
-      return { healthy: false, error: error instanceof Error ? error.message : 'Email service unavailable' }
+      return {
+        healthy: false,
+        error: error instanceof Error ? error.message : 'Email service unavailable',
+      }
     }
   }
 
-  private async checkStorageHealth(): Promise<{ healthy: boolean, details?: any, error?: string }> {
+  private async checkStorageHealth(): Promise<{ healthy: boolean; details?: any; error?: string }> {
     try {
       // Implementation would check storage system
       // For now, return healthy status
       return { healthy: true, details: { storage: 'available' } }
     } catch (error) {
-      return { healthy: false, error: error instanceof Error ? error.message : 'Storage system unavailable' }
+      return {
+        healthy: false,
+        error: error instanceof Error ? error.message : 'Storage system unavailable',
+      }
     }
   }
 

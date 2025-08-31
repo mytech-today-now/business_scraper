@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { analyticsService, RevenueMetrics, UserMetrics, FeatureUsageData } from '@/model/analyticsService'
+import {
+  analyticsService,
+  RevenueMetrics,
+  UserMetrics,
+  FeatureUsageData,
+} from '@/model/analyticsService'
 import { Card, CardContent, CardHeader, CardTitle } from '@/view/components/ui/Card'
 import { Select } from '@/view/components/ui/Select'
 import { LineChart, BarChart, PieChart } from '@/view/components/ui/Charts'
@@ -16,7 +21,7 @@ const TIME_RANGE_OPTIONS = [
   { value: '7d', label: 'Last 7 days' },
   { value: '30d', label: 'Last 30 days' },
   { value: '90d', label: 'Last 90 days' },
-  { value: '1y', label: 'Last year' }
+  { value: '1y', label: 'Last year' },
 ]
 
 /**
@@ -41,20 +46,20 @@ export const AnalyticsDashboard: React.FC = () => {
   const loadAnalytics = async () => {
     setLoading(true)
     setError(null)
-    
+
     try {
       const { startDate, endDate } = getDateRange(timeRange)
 
       // Track analytics dashboard view
       await analyticsService.trackEvent('feature_analytics_dashboard_view', {
         timeRange,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
 
       const [revenue, users, features] = await Promise.all([
         analyticsService.getRevenueMetrics(startDate, endDate),
         analyticsService.getUserMetrics(startDate, endDate),
-        analyticsService.getFeatureUsageAnalytics(startDate, endDate)
+        analyticsService.getFeatureUsageAnalytics(startDate, endDate),
       ])
 
       setRevenueMetrics(revenue)
@@ -66,7 +71,7 @@ export const AnalyticsDashboard: React.FC = () => {
         timeRange,
         revenueTotal: revenue.totalRevenue,
         userCount: users.totalUsers,
-        featureUsageTotal: features.totalFeatureUsage
+        featureUsageTotal: features.totalFeatureUsage,
       })
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load analytics'
@@ -110,7 +115,7 @@ export const AnalyticsDashboard: React.FC = () => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
     }).format(amount)
   }
 
@@ -135,7 +140,7 @@ export const AnalyticsDashboard: React.FC = () => {
     try {
       await analyticsService.trackEvent('feature_analytics_export', {
         timeRange,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
 
       // Create export data
@@ -144,12 +149,12 @@ export const AnalyticsDashboard: React.FC = () => {
         lastUpdated: lastUpdated?.toISOString(),
         revenueMetrics,
         userMetrics,
-        featureUsage
+        featureUsage,
       }
 
       // Create and download JSON file
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: 'application/json'
+        type: 'application/json',
       })
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -310,7 +315,9 @@ export const AnalyticsDashboard: React.FC = () => {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatPercentage(userMetrics.retentionRate)}</div>
+              <div className="text-2xl font-bold">
+                {formatPercentage(userMetrics.retentionRate)}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -326,7 +333,7 @@ export const AnalyticsDashboard: React.FC = () => {
             <BarChart
               data={featureUsage.topFeatures.map(([feature, count]) => ({
                 name: feature,
-                value: count
+                value: count,
               }))}
               height={300}
               showValues={true}

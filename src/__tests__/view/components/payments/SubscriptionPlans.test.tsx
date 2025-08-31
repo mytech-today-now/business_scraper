@@ -43,7 +43,9 @@ jest.mock('@/view/components/ui/Badge', () => ({
 
 jest.mock('lucide-react', () => ({
   CheckIcon: ({ className }: { className?: string }) => (
-    <div data-testid="check-icon" className={className}>✓</div>
+    <div data-testid="check-icon" className={className}>
+      ✓
+    </div>
   ),
 }))
 
@@ -136,9 +138,7 @@ describe('SubscriptionPlans', () => {
       render(<SubscriptionPlans {...defaultProps} />)
 
       const badges = screen.getAllByTestId('badge')
-      const popularBadge = badges.find(badge => 
-        badge.textContent === 'Most Popular'
-      )
+      const popularBadge = badges.find(badge => badge.textContent === 'Most Popular')
       expect(popularBadge).toBeInTheDocument()
     })
 
@@ -178,10 +178,8 @@ describe('SubscriptionPlans', () => {
       render(<SubscriptionPlans {...defaultProps} currentPlanId="pro" />)
 
       const buttons = screen.getAllByTestId('plan-button')
-      const proButton = buttons.find(button => 
-        button.textContent === 'Current Plan'
-      )
-      
+      const proButton = buttons.find(button => button.textContent === 'Current Plan')
+
       expect(proButton).toBeInTheDocument()
       expect(proButton).toBeDisabled()
     })
@@ -206,19 +204,11 @@ describe('SubscriptionPlans', () => {
     })
 
     it('should not disable current plan button during loading', () => {
-      render(
-        <SubscriptionPlans 
-          {...defaultProps} 
-          currentPlanId="basic" 
-          isLoading={true} 
-        />
-      )
+      render(<SubscriptionPlans {...defaultProps} currentPlanId="basic" isLoading={true} />)
 
       const buttons = screen.getAllByTestId('plan-button')
-      const currentPlanButton = buttons.find(button => 
-        button.textContent === 'Current Plan'
-      )
-      
+      const currentPlanButton = buttons.find(button => button.textContent === 'Current Plan')
+
       expect(currentPlanButton).toBeDisabled() // Should be disabled because it's current plan
     })
   })
@@ -236,12 +226,7 @@ describe('SubscriptionPlans', () => {
         },
       ]
 
-      render(
-        <SubscriptionPlans 
-          {...defaultProps} 
-          plans={plansWithDifferentPrices} 
-        />
-      )
+      render(<SubscriptionPlans {...defaultProps} plans={plansWithDifferentPrices} />)
 
       expect(screen.getByText('$5.00/month')).toBeInTheDocument()
       expect(screen.getByText('$123.45/month')).toBeInTheDocument()
@@ -254,12 +239,7 @@ describe('SubscriptionPlans', () => {
         priceCents: 9999,
       }
 
-      render(
-        <SubscriptionPlans 
-          {...defaultProps} 
-          plans={[yearlyPlan]} 
-        />
-      )
+      render(<SubscriptionPlans {...defaultProps} plans={[yearlyPlan]} />)
 
       expect(screen.getByText('$99.99/year')).toBeInTheDocument()
     })
@@ -270,12 +250,7 @@ describe('SubscriptionPlans', () => {
         priceCents: 0,
       }
 
-      render(
-        <SubscriptionPlans 
-          {...defaultProps} 
-          plans={[freePlan]} 
-        />
-      )
+      render(<SubscriptionPlans {...defaultProps} plans={[freePlan]} />)
 
       expect(screen.getByText('$0.00/month')).toBeInTheDocument()
     })
@@ -294,12 +269,7 @@ describe('SubscriptionPlans', () => {
         features: [],
       }
 
-      render(
-        <SubscriptionPlans 
-          {...defaultProps} 
-          plans={[planWithoutFeatures]} 
-        />
-      )
+      render(<SubscriptionPlans {...defaultProps} plans={[planWithoutFeatures]} />)
 
       expect(screen.getByTestId('plan-card')).toBeInTheDocument()
       expect(screen.queryByTestId('check-icon')).not.toBeInTheDocument()
@@ -309,15 +279,11 @@ describe('SubscriptionPlans', () => {
       const longNamePlan: SubscriptionPlan = {
         ...mockPlans[0],
         name: 'Very Long Plan Name That Might Overflow',
-        description: 'This is a very long description that might cause layout issues if not handled properly',
+        description:
+          'This is a very long description that might cause layout issues if not handled properly',
       }
 
-      render(
-        <SubscriptionPlans 
-          {...defaultProps} 
-          plans={[longNamePlan]} 
-        />
-      )
+      render(<SubscriptionPlans {...defaultProps} plans={[longNamePlan]} />)
 
       expect(screen.getByText('Very Long Plan Name That Might Overflow')).toBeInTheDocument()
     })

@@ -16,7 +16,7 @@ jest.mock('@/model/monitoringService', () => ({
     getActiveAlerts: jest.fn(),
     getAllAlerts: jest.fn(),
     recordMetric: jest.fn(),
-  }
+  },
 }))
 
 jest.mock('@/lib/database', () => ({
@@ -35,7 +35,7 @@ jest.mock('@/lib/metrics', () => ({
   metrics: {
     initialize: jest.fn(),
     getMetrics: jest.fn(),
-  }
+  },
 }))
 
 import { monitoringService } from '@/model/monitoringService'
@@ -47,23 +47,20 @@ import { metrics } from '@/lib/metrics'
 describe('Health Check Integration Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Setup default mocks
     ;(getConfig as jest.Mock).mockReturnValue({
       app: {
         environment: 'test',
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     })
-    
     ;(checkDatabaseConnection as jest.Mock).mockResolvedValue({
-      connected: true
+      connected: true,
     })
-    
     ;(performConfigHealthCheck as jest.Mock).mockResolvedValue({
-      status: 'healthy'
+      status: 'healthy',
     })
-    
     ;(monitoringService.getSystemHealth as jest.Mock).mockReturnValue({
       overall: 'healthy',
       services: [
@@ -71,13 +68,12 @@ describe('Health Check Integration Tests', () => {
           service: 'database',
           status: 'healthy',
           responseTime: 50,
-          lastCheck: new Date()
-        }
+          lastCheck: new Date(),
+        },
       ],
       activeAlerts: 0,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     })
-    
     ;(metrics.initialize as jest.Mock).mockResolvedValue(undefined)
     ;(metrics.getMetrics as jest.Mock).mockResolvedValue('# Prometheus metrics')
   })
@@ -85,7 +81,7 @@ describe('Health Check Integration Tests', () => {
   describe('Basic Health Check Endpoint', () => {
     it('should return healthy status when all systems are operational', async () => {
       const request = new NextRequest('http://localhost:3000/api/health')
-      
+
       const response = await healthCheckHandler(request)
       const data = await response.json()
 
@@ -99,14 +95,14 @@ describe('Health Check Integration Tests', () => {
         checks: {
           database: 'healthy',
           configuration: 'healthy',
-          memory: expect.any(String)
+          memory: expect.any(String),
         },
         monitoring: {
           overall: 'healthy',
           services: 1,
           activeAlerts: 0,
-          lastUpdated: expect.any(String)
-        }
+          lastUpdated: expect.any(String),
+        },
       })
     })
 
@@ -120,15 +116,15 @@ describe('Health Check Integration Tests', () => {
             status: 'unhealthy',
             responseTime: 0,
             lastCheck: new Date(),
-            error: 'Connection failed'
-          }
+            error: 'Connection failed',
+          },
         ],
         activeAlerts: 1,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       })
 
       const request = new NextRequest('http://localhost:3000/api/health')
-      
+
       const response = await healthCheckHandler(request)
       const data = await response.json()
 
@@ -140,11 +136,11 @@ describe('Health Check Integration Tests', () => {
 
     it('should return warning status when configuration has issues', async () => {
       ;(performConfigHealthCheck as jest.Mock).mockResolvedValue({
-        status: 'warning'
+        status: 'warning',
       })
 
       const request = new NextRequest('http://localhost:3000/api/health')
-      
+
       const response = await healthCheckHandler(request)
       const data = await response.json()
 
@@ -161,11 +157,11 @@ describe('Health Check Integration Tests', () => {
         heapTotal: 50 * 1024 * 1024, // 50MB
         heapUsed: 40 * 1024 * 1024, // 40MB
         external: 5 * 1024 * 1024, // 5MB
-        arrayBuffers: 1 * 1024 * 1024 // 1MB
+        arrayBuffers: 1 * 1024 * 1024, // 1MB
       })
 
       const request = new NextRequest('http://localhost:3000/api/health')
-      
+
       const response = await healthCheckHandler(request)
       const data = await response.json()
 
@@ -174,7 +170,7 @@ describe('Health Check Integration Tests', () => {
         rss: 100,
         heapTotal: 50,
         heapUsed: 40,
-        external: 5
+        external: 5,
       })
 
       // Restore original function
@@ -191,7 +187,7 @@ describe('Health Check Integration Tests', () => {
           value: 150,
           unit: 'ms',
           timestamp: new Date(),
-          tags: { endpoint: '/api/test' }
+          tags: { endpoint: '/api/test' },
         },
         {
           id: 'metric2',
@@ -199,10 +195,9 @@ describe('Health Check Integration Tests', () => {
           value: 50,
           unit: 'ms',
           timestamp: new Date(),
-          tags: { query_type: 'select' }
-        }
+          tags: { query_type: 'select' },
+        },
       ])
-
       ;(monitoringService.getActiveAlerts as jest.Mock).mockReturnValue([
         {
           id: 'alert1',
@@ -213,10 +208,9 @@ describe('Health Check Integration Tests', () => {
           timestamp: new Date(),
           metric: 'api_response_time',
           value: 1500,
-          threshold: 1000
-        }
+          threshold: 1000,
+        },
       ])
-
       ;(monitoringService.getAllAlerts as jest.Mock).mockReturnValue([
         {
           id: 'alert1',
@@ -225,7 +219,7 @@ describe('Health Check Integration Tests', () => {
           title: 'Slow API Response',
           description: 'API response time exceeded warning threshold',
           timestamp: new Date(),
-          resolved: false
+          resolved: false,
         },
         {
           id: 'alert2',
@@ -235,14 +229,16 @@ describe('Health Check Integration Tests', () => {
           description: 'Database connection failed',
           timestamp: new Date(),
           resolved: true,
-          resolvedAt: new Date()
-        }
+          resolvedAt: new Date(),
+        },
       ])
     })
 
     it('should return detailed health information with metrics', async () => {
-      const request = new NextRequest('http://localhost:3000/api/health/detailed?metrics=true&timeWindow=24')
-      
+      const request = new NextRequest(
+        'http://localhost:3000/api/health/detailed?metrics=true&timeWindow=24'
+      )
+
       const response = await detailedHealthHandler(request)
       const data = await response.json()
 
@@ -260,21 +256,21 @@ describe('Health Check Integration Tests', () => {
           degradedServices: expect.any(Number),
           unhealthyServices: expect.any(Number),
           activeAlerts: expect.any(Number),
-          lastUpdated: expect.any(String)
+          lastUpdated: expect.any(String),
         },
         services: expect.any(Array),
         metrics: {
           timeWindow: '24 hours',
           totalMetrics: expect.any(Number),
           uniqueMetrics: expect.any(Number),
-          summary: expect.any(Object)
-        }
+          summary: expect.any(Object),
+        },
       })
     })
 
     it('should return detailed health information with alerts', async () => {
       const request = new NextRequest('http://localhost:3000/api/health/detailed?alerts=true')
-      
+
       const response = await detailedHealthHandler(request)
       const data = await response.json()
 
@@ -289,15 +285,15 @@ describe('Health Check Integration Tests', () => {
             critical: expect.any(Number),
             high: expect.any(Number),
             medium: expect.any(Number),
-            low: expect.any(Number)
+            low: expect.any(Number),
           },
           byType: {
             performance: expect.any(Number),
             error: expect.any(Number),
             security: expect.any(Number),
-            business: expect.any(Number)
-          }
-        }
+            business: expect.any(Number),
+          },
+        },
       })
     })
 
@@ -307,17 +303,17 @@ describe('Health Check Integration Tests', () => {
         includeAlerts: true,
         timeWindow: 12,
         services: ['database'],
-        metricNames: ['api_response_time']
+        metricNames: ['api_response_time'],
       }
 
       const request = new NextRequest('http://localhost:3000/api/health/detailed', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       })
-      
+
       const response = await detailedHealthHandler(request)
       const data = await response.json()
 
@@ -331,7 +327,7 @@ describe('Health Check Integration Tests', () => {
   describe('Metrics Endpoint Integration', () => {
     it('should return Prometheus format by default', async () => {
       const request = new NextRequest('http://localhost:3000/api/metrics')
-      
+
       const response = await metricsHandler(request)
       const text = await response.text()
 
@@ -347,12 +343,12 @@ describe('Health Check Integration Tests', () => {
           name: 'test_metric',
           value: 100,
           unit: 'ms',
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       ])
 
       const request = new NextRequest('http://localhost:3000/api/metrics?format=json')
-      
+
       const response = await metricsHandler(request)
       const data = await response.json()
 
@@ -362,17 +358,17 @@ describe('Health Check Integration Tests', () => {
         system: {
           status: 'healthy',
           services: expect.any(Array),
-          activeAlerts: expect.any(Number)
+          activeAlerts: expect.any(Number),
         },
         metrics: expect.any(Array),
         alerts: expect.any(Array),
-        prometheus: expect.any(String)
+        prometheus: expect.any(String),
       })
     })
 
     it('should exclude monitoring data when requested', async () => {
       const request = new NextRequest('http://localhost:3000/api/metrics?monitoring=false')
-      
+
       const response = await metricsHandler(request)
       const text = await response.text()
 
@@ -388,17 +384,19 @@ describe('Health Check Integration Tests', () => {
       })
 
       const request = new NextRequest('http://localhost:3000/api/health')
-      
+
       const response = await healthCheckHandler(request)
 
       expect(response.status).toBe(503)
     })
 
     it('should handle metrics service failures', async () => {
-      ;(metrics.initialize as jest.Mock).mockRejectedValue(new Error('Metrics initialization failed'))
+      ;(metrics.initialize as jest.Mock).mockRejectedValue(
+        new Error('Metrics initialization failed')
+      )
 
       const request = new NextRequest('http://localhost:3000/api/metrics')
-      
+
       const response = await metricsHandler(request)
       const data = await response.json()
 

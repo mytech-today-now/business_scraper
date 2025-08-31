@@ -37,6 +37,9 @@ export function useResponsive() {
   })
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
     // Initialize with current window size
     const updateSize = () => {
       const width = window.innerWidth
@@ -101,7 +104,8 @@ export function useResponsive() {
   const isMobile = isBelow('md')
   const isTablet = isBetween('md', 'lg')
   const isDesktop = isAbove('lg')
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  const isTouchDevice =
+    typeof window !== 'undefined' ? 'ontouchstart' in window || navigator.maxTouchPoints > 0 : false
 
   return {
     // Breakpoint states

@@ -38,17 +38,13 @@ export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
   ({ className, defaultValue, value, onValueChange, children, ...props }, ref) => {
     const [internalValue, setInternalValue] = useState(defaultValue || '')
-    
+
     const currentValue = value !== undefined ? value : internalValue
     const handleValueChange = onValueChange || setInternalValue
 
     return (
       <TabsContext.Provider value={{ value: currentValue, onValueChange: handleValueChange }}>
-        <div
-          ref={ref}
-          className={clsx('w-full', className)}
-          {...props}
-        >
+        <div ref={ref} className={clsx('w-full', className)} {...props}>
           {children}
         </div>
       </TabsContext.Provider>
@@ -120,7 +116,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
         tabIndex={isSelected ? 0 : -1}
         disabled={disabled}
         onClick={() => !disabled && onValueChange(value)}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
             if (!disabled) onValueChange(value)
@@ -188,7 +184,7 @@ export interface ControlledTabsProps extends Omit<TabsProps, 'defaultValue'> {
   onValueChange: (value: string) => void
 }
 
-export const ControlledTabs: React.FC<ControlledTabsProps> = (props) => {
+export const ControlledTabs: React.FC<ControlledTabsProps> = props => {
   return <Tabs {...props} />
 }
 

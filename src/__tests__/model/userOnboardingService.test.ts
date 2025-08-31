@@ -22,13 +22,13 @@ const mockHashPassword = hashPassword as jest.MockedFunction<typeof hashPassword
 describe('UserOnboardingService', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Setup default mocks
     mockHashPassword.mockReturnValue({
       hash: 'hashed-password',
-      salt: 'salt-value'
+      salt: 'salt-value',
     })
-    
+
     mockUserPaymentService.ensureStripeCustomer.mockResolvedValue('cus_123')
     mockStorage.setItem.mockResolvedValue()
     mockStorage.getItem.mockResolvedValue(null)
@@ -41,7 +41,7 @@ describe('UserOnboardingService', () => {
       name: 'Test User',
       password: 'securePassword123',
       timezone: 'America/New_York',
-      language: 'en'
+      language: 'en',
     }
 
     test('should complete onboarding successfully without subscription', async () => {
@@ -72,10 +72,7 @@ describe('UserOnboardingService', () => {
     })
 
     test('should complete onboarding with subscription plan', async () => {
-      const result = await userOnboardingService.completeOnboarding(
-        validRegistration,
-        'pro-plan'
-      )
+      const result = await userOnboardingService.completeOnboarding(validRegistration, 'pro-plan')
 
       expect(result.subscriptionStatus).toBe('active')
       expect(result.subscriptionPlan).toBe('pro-plan')
@@ -83,9 +80,7 @@ describe('UserOnboardingService', () => {
     })
 
     test('should handle payment profile initialization failure gracefully', async () => {
-      mockUserPaymentService.ensureStripeCustomer.mockRejectedValue(
-        new Error('Stripe error')
-      )
+      mockUserPaymentService.ensureStripeCustomer.mockRejectedValue(new Error('Stripe error'))
 
       const result = await userOnboardingService.completeOnboarding(validRegistration)
 
@@ -98,24 +93,22 @@ describe('UserOnboardingService', () => {
       const invalidRegistration = {
         email: 'invalid-email',
         name: '',
-        password: '123'
+        password: '123',
       } as UserRegistration
 
-      await expect(
-        userOnboardingService.completeOnboarding(invalidRegistration)
-      ).rejects.toThrow('Invalid user data')
+      await expect(userOnboardingService.completeOnboarding(invalidRegistration)).rejects.toThrow(
+        'Invalid user data'
+      )
     })
 
     test('should set default timezone and language', async () => {
       const registrationWithoutOptionals: UserRegistration = {
         email: 'test@example.com',
         name: 'Test User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       }
 
-      const result = await userOnboardingService.completeOnboarding(
-        registrationWithoutOptionals
-      )
+      const result = await userOnboardingService.completeOnboarding(registrationWithoutOptionals)
 
       expect(result.timezone).toBeDefined()
       expect(result.language).toBe('en')
@@ -125,7 +118,7 @@ describe('UserOnboardingService', () => {
       const result1 = await userOnboardingService.completeOnboarding(validRegistration)
       const result2 = await userOnboardingService.completeOnboarding({
         ...validRegistration,
-        email: 'test2@example.com'
+        email: 'test2@example.com',
       })
 
       expect(result1.id).not.toBe(result2.id)
@@ -147,7 +140,7 @@ describe('UserOnboardingService', () => {
         isActive: true,
         loginAttempts: 0,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockStorage.getItem.mockResolvedValue(mockUser)
@@ -188,7 +181,7 @@ describe('UserOnboardingService', () => {
           isActive: true,
           loginAttempts: 0,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
         {
           id: 'user-2',
@@ -200,8 +193,8 @@ describe('UserOnboardingService', () => {
           isActive: true,
           loginAttempts: 0,
           createdAt: new Date(),
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       ]
 
       mockStorage.getAllItems.mockResolvedValue(mockUsers)
@@ -240,16 +233,13 @@ describe('UserOnboardingService', () => {
       isActive: true,
       loginAttempts: 0,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     test('should verify email with correct token', async () => {
       mockStorage.getItem.mockResolvedValue(mockUser)
 
-      const result = await userOnboardingService.verifyEmail(
-        'user-123',
-        'verification-token'
-      )
+      const result = await userOnboardingService.verifyEmail('user-123', 'verification-token')
 
       expect(result).toBe(true)
       expect(mockStorage.setItem).toHaveBeenCalledWith(
@@ -257,7 +247,7 @@ describe('UserOnboardingService', () => {
         'user-123',
         expect.objectContaining({
           emailVerified: true,
-          emailVerificationToken: undefined
+          emailVerificationToken: undefined,
         })
       )
     })
@@ -265,10 +255,7 @@ describe('UserOnboardingService', () => {
     test('should reject verification with incorrect token', async () => {
       mockStorage.getItem.mockResolvedValue(mockUser)
 
-      const result = await userOnboardingService.verifyEmail(
-        'user-123',
-        'wrong-token'
-      )
+      const result = await userOnboardingService.verifyEmail('user-123', 'wrong-token')
 
       expect(result).toBe(false)
       expect(mockStorage.setItem).not.toHaveBeenCalled()
@@ -277,10 +264,7 @@ describe('UserOnboardingService', () => {
     test('should reject verification for nonexistent user', async () => {
       mockStorage.getItem.mockResolvedValue(null)
 
-      const result = await userOnboardingService.verifyEmail(
-        'nonexistent',
-        'any-token'
-      )
+      const result = await userOnboardingService.verifyEmail('nonexistent', 'any-token')
 
       expect(result).toBe(false)
     })
@@ -288,10 +272,7 @@ describe('UserOnboardingService', () => {
     test('should handle storage errors gracefully', async () => {
       mockStorage.getItem.mockRejectedValue(new Error('Storage error'))
 
-      const result = await userOnboardingService.verifyEmail(
-        'user-123',
-        'verification-token'
-      )
+      const result = await userOnboardingService.verifyEmail('user-123', 'verification-token')
 
       expect(result).toBe(false)
     })
@@ -305,7 +286,7 @@ describe('UserOnboardingService', () => {
         userOnboardingService.completeOnboarding({
           email: 'test@example.com',
           name: 'Test User',
-          password: 'securePassword123'
+          password: 'securePassword123',
         })
       ).rejects.toThrow('Storage full')
     })
@@ -319,7 +300,7 @@ describe('UserOnboardingService', () => {
         userOnboardingService.completeOnboarding({
           email: 'test@example.com',
           name: 'Test User',
-          password: 'securePassword123'
+          password: 'securePassword123',
         })
       ).rejects.toThrow('Hashing failed')
     })
@@ -330,7 +311,7 @@ describe('UserOnboardingService', () => {
       const registration: UserRegistration = {
         email: 'test@example.com',
         name: 'Test User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       }
 
       // Test free plan (default)
@@ -349,7 +330,7 @@ describe('UserOnboardingService', () => {
       const result = await userOnboardingService.completeOnboarding({
         email: 'test@example.com',
         name: 'Test User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       })
 
       const now = new Date()

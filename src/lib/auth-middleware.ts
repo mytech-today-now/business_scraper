@@ -43,7 +43,7 @@ export function withAuth(
             endpoint: pathname,
             method: request.method,
             userAgent: request.headers.get('user-agent'),
-            message: `Authentication required for ${pathname}`
+            message: `Authentication required for ${pathname}`,
           },
           ip
         )
@@ -64,7 +64,7 @@ export function withAuth(
             method: request.method,
             sessionId: sessionId,
             userAgent: request.headers.get('user-agent'),
-            message: `Invalid session for ${pathname}`
+            message: `Invalid session for ${pathname}`,
           },
           ip
         )
@@ -83,7 +83,7 @@ export function withAuth(
         userAgent: request.headers.get('user-agent'),
         severity: 'low',
         category: 'security',
-        complianceFlags: ['SOC2']
+        complianceFlags: ['SOC2'],
       })
 
       // Create auth context

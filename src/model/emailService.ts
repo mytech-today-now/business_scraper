@@ -1,6 +1,6 @@
 /**
  * Email Notification Service
- * Comprehensive automated email notification system for payment events, 
+ * Comprehensive automated email notification system for payment events,
  * subscription changes, and customer communication with professional templates
  */
 
@@ -38,25 +38,47 @@ export class EmailService {
   private config = getConfig()
 
   constructor() {
-    this.initializeTransporter()
+    // Only initialize transporter at runtime, not during build or test
+    if (
+      typeof window === 'undefined' &&
+      process.env.NODE_ENV !== 'test' &&
+      process.env.NEXT_PHASE !== 'phase-production-build'
+    ) {
+      this.initializeTransporter()
+    }
   }
 
   private initializeTransporter(): void {
     try {
-      this.transporter = nodemailer.createTransporter({
+      // Skip initialization during build phase
+      if (process.env.NEXT_PHASE === 'phase-production-build') {
+        logger.info('Skipping email transporter initialization during build')
+        return
+      }
+
+      this.transporter = nodemailer.createTransport({
         host: this.config.email.smtpHost,
         port: this.config.email.smtpPort,
         secure: this.config.email.smtpSecure,
         auth: {
           user: this.config.email.smtpUser,
-          pass: this.config.email.smtpPassword
-        }
+          pass: this.config.email.smtpPassword,
+        },
       })
 
       logger.info('EmailService', 'SMTP transporter initialized successfully')
     } catch (error) {
       logger.error('EmailService', 'Failed to initialize SMTP transporter', error)
       throw error
+    }
+  }
+
+  /**
+   * Ensure transporter is initialized (for runtime use)
+   */
+  private ensureTransporter(): void {
+    if (!this.transporter && process.env.NEXT_PHASE !== 'phase-production-build') {
+      this.initializeTransporter()
     }
   }
 
@@ -85,15 +107,10 @@ export class EmailService {
         transactionId: paymentDetails.transactionId,
         date: paymentDetails.date.toLocaleDateString(),
         supportEmail: this.config.email.supportEmail,
-        dashboardUrl: `${this.config.app.baseUrl}/dashboard`
+        dashboardUrl: `${this.config.app.baseUrl}/dashboard`,
       }
 
-      await this.sendTemplatedEmail(
-        userEmail,
-        template,
-        variables,
-        userId
-      )
+      await this.sendTemplatedEmail(userEmail, template, variables, userId)
 
       logger.info('EmailService', `Payment confirmation sent to: ${userEmail}`)
     } catch (error) {
@@ -129,15 +146,10 @@ export class EmailService {
         features: subscriptionDetails.features.join(', '),
         nextBillingDate: subscriptionDetails.nextBillingDate.toLocaleDateString(),
         dashboardUrl: `${this.config.app.baseUrl}/dashboard`,
-        supportEmail: this.config.email.supportEmail
+        supportEmail: this.config.email.supportEmail,
       }
 
-      await this.sendTemplatedEmail(
-        userEmail,
-        template,
-        variables,
-        userId
-      )
+      await this.sendTemplatedEmail(userEmail, template, variables, userId)
 
       logger.info('EmailService', `Subscription welcome sent to: ${userEmail}`)
     } catch (error) {
@@ -169,15 +181,10 @@ export class EmailService {
         reason: failureDetails.reason,
         nextRetryDate: failureDetails.nextRetryDate?.toLocaleDateString() || 'N/A',
         updatePaymentUrl: `${this.config.app.baseUrl}/billing/payment-methods`,
-        supportEmail: this.config.email.supportEmail
+        supportEmail: this.config.email.supportEmail,
       }
 
-      await this.sendTemplatedEmail(
-        userEmail,
-        template,
-        variables,
-        userId
-      )
+      await this.sendTemplatedEmail(userEmail, template, variables, userId)
 
       logger.info('EmailService', `Payment failed notification sent to: ${userEmail}`)
     } catch (error) {
@@ -208,15 +215,10 @@ export class EmailService {
         endDate: cancellationDetails.endDate.toLocaleDateString(),
         reason: cancellationDetails.reason || 'Not specified',
         reactivateUrl: `${this.config.app.baseUrl}/pricing`,
-        supportEmail: this.config.email.supportEmail
+        supportEmail: this.config.email.supportEmail,
       }
 
-      await this.sendTemplatedEmail(
-        userEmail,
-        template,
-        variables,
-        userId
-      )
+      await this.sendTemplatedEmail(userEmail, template, variables, userId)
 
       logger.info('EmailService', `Subscription cancellation sent to: ${userEmail}`)
     } catch (error) {
@@ -250,15 +252,10 @@ export class EmailService {
         dueDate: invoiceDetails.dueDate.toLocaleDateString(),
         downloadUrl: invoiceDetails.downloadUrl,
         paymentUrl: `${this.config.app.baseUrl}/billing/pay-invoice`,
-        supportEmail: this.config.email.supportEmail
+        supportEmail: this.config.email.supportEmail,
       }
 
-      await this.sendTemplatedEmail(
-        userEmail,
-        template,
-        variables,
-        userId
-      )
+      await this.sendTemplatedEmail(userEmail, template, variables, userId)
 
       logger.info('EmailService', `Invoice notification sent to: ${userEmail}`)
     } catch (error) {
@@ -276,6 +273,8 @@ export class EmailService {
     variables: Record<string, any>,
     userId?: string
   ): Promise<void> {
+    this.ensureTransporter()
+
     if (!this.transporter) {
       throw new Error('Email transporter not initialized')
     }
@@ -290,7 +289,7 @@ export class EmailService {
       templateId: template.id,
       variables,
       status: 'pending',
-      userId
+      userId,
     }
 
     try {
@@ -301,7 +300,7 @@ export class EmailService {
         to,
         subject: notification.subject,
         html: notification.htmlContent,
-        text: notification.textContent
+        text: notification.textContent,
       })
 
       await this.updateNotificationStatus(notification.id, 'sent', new Date())
@@ -312,9 +311,8 @@ export class EmailService {
         resourceId: notification.id,
         newValues: { to, templateId: template.id },
         severity: 'low',
-        category: 'system'
+        category: 'system',
       })
-
     } catch (error) {
       await this.updateNotificationStatus(
         notification.id,
@@ -346,7 +344,7 @@ export class EmailService {
   private formatCurrency(amount: number, currency: string): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency.toUpperCase()
+      currency: currency.toUpperCase(),
     }).format(amount / 100)
   }
 
@@ -378,7 +376,15 @@ export class EmailService {
           <p>If you have any questions, please contact us at {{supportEmail}}.</p>
         `,
         textContent: `Payment Confirmed\n\nHi {{userName}},\n\nYour payment of {{amount}} for {{description}} has been successfully processed.\n\nTransaction ID: {{transactionId}}\nDate: {{date}}\n\nView Dashboard: {{dashboardUrl}}\n\nIf you have any questions, please contact us at {{supportEmail}}.`,
-        variables: ['userName', 'amount', 'description', 'transactionId', 'date', 'supportEmail', 'dashboardUrl']
+        variables: [
+          'userName',
+          'amount',
+          'description',
+          'transactionId',
+          'date',
+          'supportEmail',
+          'dashboardUrl',
+        ],
       },
       subscription_welcome: {
         id: 'subscription_welcome',
@@ -394,7 +400,16 @@ export class EmailService {
           <p>If you have any questions, please contact us at {{supportEmail}}.</p>
         `,
         textContent: `Welcome to {{planName}}!\n\nHi {{userName}},\n\nThank you for subscribing to {{planName}} at {{price}}/{{interval}}.\n\nFeatures included: {{features}}\nNext billing date: {{nextBillingDate}}\n\nAccess Your Dashboard: {{dashboardUrl}}\n\nIf you have any questions, please contact us at {{supportEmail}}.`,
-        variables: ['userName', 'planName', 'price', 'interval', 'features', 'nextBillingDate', 'dashboardUrl', 'supportEmail']
+        variables: [
+          'userName',
+          'planName',
+          'price',
+          'interval',
+          'features',
+          'nextBillingDate',
+          'dashboardUrl',
+          'supportEmail',
+        ],
       },
       payment_failed: {
         id: 'payment_failed',
@@ -410,7 +425,14 @@ export class EmailService {
           <p>If you have any questions, please contact us at {{supportEmail}}.</p>
         `,
         textContent: `Payment Failed\n\nHi {{userName}},\n\nWe were unable to process your payment of {{amount}}.\n\nReason: {{reason}}\nNext retry: {{nextRetryDate}}\n\nUpdate Payment Method: {{updatePaymentUrl}}\n\nIf you have any questions, please contact us at {{supportEmail}}.`,
-        variables: ['userName', 'amount', 'reason', 'nextRetryDate', 'updatePaymentUrl', 'supportEmail']
+        variables: [
+          'userName',
+          'amount',
+          'reason',
+          'nextRetryDate',
+          'updatePaymentUrl',
+          'supportEmail',
+        ],
       },
       subscription_cancelled: {
         id: 'subscription_cancelled',
@@ -426,7 +448,7 @@ export class EmailService {
           <p>If you have any questions, please contact us at {{supportEmail}}.</p>
         `,
         textContent: `Subscription Cancelled\n\nHi {{userName}},\n\nYour {{planName}} subscription has been cancelled.\n\nEnd date: {{endDate}}\nReason: {{reason}}\n\nReactivate Subscription: {{reactivateUrl}}\n\nIf you have any questions, please contact us at {{supportEmail}}.`,
-        variables: ['userName', 'planName', 'endDate', 'reason', 'reactivateUrl', 'supportEmail']
+        variables: ['userName', 'planName', 'endDate', 'reason', 'reactivateUrl', 'supportEmail'],
       },
       invoice_notification: {
         id: 'invoice_notification',
@@ -441,8 +463,16 @@ export class EmailService {
           <p>If you have any questions, please contact us at {{supportEmail}}.</p>
         `,
         textContent: `Invoice {{invoiceNumber}}\n\nHi {{userName}},\n\nYour invoice for {{amount}} is due on {{dueDate}}.\n\nDownload Invoice: {{downloadUrl}}\nPay Now: {{paymentUrl}}\n\nIf you have any questions, please contact us at {{supportEmail}}.`,
-        variables: ['userName', 'invoiceNumber', 'amount', 'dueDate', 'downloadUrl', 'paymentUrl', 'supportEmail']
-      }
+        variables: [
+          'userName',
+          'invoiceNumber',
+          'amount',
+          'dueDate',
+          'downloadUrl',
+          'paymentUrl',
+          'supportEmail',
+        ],
+      },
     }
 
     return templates[templateId] || templates.payment_confirmation
@@ -454,7 +484,7 @@ export class EmailService {
     logger.debug('EmailService', 'Storing email notification', {
       id: notification.id,
       to: notification.to,
-      templateId: notification.templateId
+      templateId: notification.templateId,
     })
   }
 
@@ -469,7 +499,7 @@ export class EmailService {
       id,
       status,
       sentAt,
-      errorMessage
+      errorMessage,
     })
   }
 }

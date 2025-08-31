@@ -5,22 +5,33 @@
 
 import { DatabaseSecurityService } from '@/lib/databaseSecurity'
 import { SecureDatabase } from '@/lib/secureDatabase'
-import { Pool } from 'pg'
 
-// Mock pg module
-jest.mock('pg', () => ({
-  Pool: jest.fn().mockImplementation(() => ({
-    connect: jest.fn().mockResolvedValue({
-      query: jest.fn(),
-      release: jest.fn(),
-    }),
-    query: jest.fn(),
-    end: jest.fn(),
-    totalCount: 5,
-    idleCount: 2,
-    waitingCount: 0,
-    on: jest.fn(),
-  })),
+// Mock postgres.js module
+jest.mock('postgres', () => {
+  const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
+  mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
+  mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+  mockSql.end = jest.fn().mockResolvedValue(undefined)
+
+  return jest.fn().mockImplementation(() => mockSql)
+})
+
+// Mock postgres-connection module
+jest.mock('@/lib/postgres-connection', () => ({
+  createPostgresConnection: jest.fn().mockImplementation(() => {
+    const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
+    mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
+    mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+    mockSql.end = jest.fn().mockResolvedValue(undefined)
+    return mockSql
+  }),
+  getPostgresConnection: jest.fn().mockImplementation(() => {
+    const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
+    mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
+    mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+    mockSql.end = jest.fn().mockResolvedValue(undefined)
+    return mockSql
+  }),
 }))
 
 describe('Database Security Service', () => {

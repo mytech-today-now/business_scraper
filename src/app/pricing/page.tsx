@@ -26,14 +26,17 @@ interface PlanCardProps {
 }
 
 function PlanCard({ plan, isPopular, onSelectPlan, isLoading }: PlanCardProps): JSX.Element {
-  const monthlyPrice = plan.interval === 'year' 
-    ? centsTodollars(plan.priceCents) / 12 
-    : centsTodollars(plan.priceCents)
+  const monthlyPrice =
+    plan.interval === 'year'
+      ? centsTodollars(plan.priceCents) / 12
+      : centsTodollars(plan.priceCents)
 
   const yearlyDiscount = plan.interval === 'year' ? '17% off' : null
 
   return (
-    <Card className={`relative ${isPopular ? 'border-primary shadow-lg scale-105' : 'border-border'}`}>
+    <Card
+      className={`relative ${isPopular ? 'border-primary shadow-lg scale-105' : 'border-border'}`}
+    >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <div className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
@@ -42,19 +45,15 @@ function PlanCard({ plan, isPopular, onSelectPlan, isLoading }: PlanCardProps): 
           </div>
         </div>
       )}
-      
+
       <CardHeader className="text-center pb-4">
         <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
         <div className="mt-2">
-          <div className="text-3xl font-bold">
-            {formatCurrency(plan.priceCents, plan.currency)}
-          </div>
+          <div className="text-3xl font-bold">{formatCurrency(plan.priceCents, plan.currency)}</div>
           <div className="text-sm text-muted-foreground">
             per {plan.interval}
             {plan.interval === 'year' && (
-              <span className="ml-2 text-green-600 font-medium">
-                ({yearlyDiscount})
-              </span>
+              <span className="ml-2 text-green-600 font-medium">({yearlyDiscount})</span>
             )}
           </div>
           {plan.interval === 'year' && (
@@ -136,7 +135,7 @@ export default function PricingPage(): JSX.Element {
     isLoading: paymentLoading,
     createSubscription,
     hasActiveSubscription,
-    getCurrentPlan
+    getCurrentPlan,
   } = usePaymentController()
 
   // Load plans on component mount
@@ -167,7 +166,7 @@ export default function PricingPage(): JSX.Element {
   const handleSelectPlan = async (plan: SubscriptionPlan) => {
     try {
       setProcessingPlan(plan.id)
-      
+
       // Check if user already has an active subscription
       if (hasActiveSubscription()) {
         const currentPlan = getCurrentPlan()
@@ -175,7 +174,7 @@ export default function PricingPage(): JSX.Element {
           toast.success('You already have this plan!')
           return
         }
-        
+
         // TODO: Handle plan upgrades/downgrades
         toast.info('Plan changes will be available soon. Please contact support.')
         return
@@ -183,7 +182,7 @@ export default function PricingPage(): JSX.Element {
 
       // Create subscription
       await createSubscription(plan.id)
-      
+
       toast.success('Subscription created successfully!')
       logger.info('PricingPage', 'Plan selected and subscription created', { planId: plan.id })
     } catch (error) {
@@ -222,20 +221,16 @@ export default function PricingPage(): JSX.Element {
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Start scraping business data with our powerful tools. 
-          Upgrade or downgrade at any time.
+          Start scraping business data with our powerful tools. Upgrade or downgrade at any time.
         </p>
 
-        <PricingToggle 
-          interval={selectedInterval} 
-          onIntervalChange={setSelectedInterval} 
-        />
+        <PricingToggle interval={selectedInterval} onIntervalChange={setSelectedInterval} />
       </div>
 
       {/* Pricing Cards */}
       <div className="container mx-auto px-4 pb-16">
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {filteredPlans.map((plan) => (
+          {filteredPlans.map(plan => (
             <PlanCard
               key={plan.id}
               plan={plan}
@@ -253,7 +248,8 @@ export default function PricingPage(): JSX.Element {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Why Choose Business Scraper?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our platform provides everything you need to find and connect with potential customers.
+              Our platform provides everything you need to find and connect with potential
+              customers.
             </p>
           </div>
 
@@ -284,7 +280,8 @@ export default function PricingPage(): JSX.Element {
               </div>
               <h3 className="font-semibold mb-2">Easy to Use</h3>
               <p className="text-sm text-muted-foreground">
-                Intuitive interface that gets you started in minutes with no technical knowledge required.
+                Intuitive interface that gets you started in minutes with no technical knowledge
+                required.
               </p>
             </div>
           </div>

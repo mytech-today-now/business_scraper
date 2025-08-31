@@ -13,7 +13,7 @@ import {
   AlertTriangle,
   Activity,
   Download,
-  Settings
+  Settings,
 } from 'lucide-react'
 
 // Import existing services
@@ -48,16 +48,16 @@ export function AdminDashboard() {
       // Load data from existing services
       const [analyticsResult, performanceData] = await Promise.all([
         paymentAnalyticsService.generateUserAnalytics('admin', startDate, endDate),
-        monitoringService.getPerformanceDashboard(24)
+        monitoringService.getPerformanceDashboard(24),
       ])
 
       // Extract analytics data
       const analytics = analyticsResult.success ? analyticsResult.data : null
-      
+
       setData({
         analytics,
         performance: performanceData,
-        alerts: performanceData?.alerts?.active || []
+        alerts: performanceData?.alerts?.active || [],
       })
     } catch (error) {
       console.error('Failed to load dashboard data:', error)
@@ -167,14 +167,11 @@ export function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics?.metrics?.activeUsers || 0}
-            </div>
+            <div className="text-2xl font-bold">{analytics?.metrics?.activeUsers || 0}</div>
             <p className="text-xs text-muted-foreground">
-              {analytics?.metrics?.userGrowthRate ?
-                `${(analytics.metrics.userGrowthRate * 100).toFixed(1)}% growth rate` :
-                'No growth data'
-              }
+              {analytics?.metrics?.userGrowthRate
+                ? `${(analytics.metrics.userGrowthRate * 100).toFixed(1)}% growth rate`
+                : 'No growth data'}
             </p>
           </CardContent>
         </Card>
@@ -235,17 +232,19 @@ export function AdminDashboard() {
                   </div>
                   <div className="flex justify-between">
                     <span>Growth Rate:</span>
-                    <span className={`font-medium ${
-                      (analytics?.metrics?.growthRate || 0) >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <span
+                      className={`font-medium ${
+                        (analytics?.metrics?.growthRate || 0) >= 0
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                      }`}
+                    >
                       {((analytics?.metrics?.growthRate || 0) * 100).toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Transaction Count:</span>
-                    <span className="font-medium">
-                      {analytics?.metrics?.transactionCount || 0}
-                    </span>
+                    <span className="font-medium">{analytics?.metrics?.transactionCount || 0}</span>
                   </div>
                 </div>
               </CardContent>

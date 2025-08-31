@@ -24,15 +24,15 @@ const mockConfig = {
     smtpPassword: 'testpassword',
     fromAddress: 'noreply@businessscraper.com',
     supportEmail: 'support@businessscraper.com',
-    templatePath: './src/templates/email'
+    templatePath: './src/templates/email',
   },
   app: {
-    baseUrl: 'https://app.businessscraper.com'
-  }
+    baseUrl: 'https://app.businessscraper.com',
+  },
 }
 
 const mockTransporter = {
-  sendMail: jest.fn()
+  sendMail: jest.fn(),
 }
 
 describe('EmailService', () => {
@@ -43,7 +43,7 @@ describe('EmailService', () => {
     ;(getConfig as jest.Mock).mockReturnValue(mockConfig)
     ;(nodemailer.createTransporter as jest.Mock).mockReturnValue(mockTransporter)
     ;(auditService.logAuditEvent as jest.Mock).mockResolvedValue(undefined)
-    
+
     emailServiceInstance = new EmailService()
   })
 
@@ -55,8 +55,8 @@ describe('EmailService', () => {
         secure: false,
         auth: {
           user: 'test@example.com',
-          pass: 'testpassword'
-        }
+          pass: 'testpassword',
+        },
       })
     })
 
@@ -74,7 +74,7 @@ describe('EmailService', () => {
       currency: 'USD',
       description: 'Professional Plan',
       transactionId: 'pi_test123',
-      date: new Date('2025-01-01')
+      date: new Date('2025-01-01'),
     }
 
     beforeEach(() => {
@@ -94,7 +94,7 @@ describe('EmailService', () => {
         to: 'user@example.com',
         subject: 'Payment Confirmation - pi_test123',
         html: expect.stringContaining('John Doe'),
-        text: expect.stringContaining('John Doe')
+        text: expect.stringContaining('John Doe'),
       })
 
       expect(auditService.logAuditEvent).toHaveBeenCalledWith(
@@ -103,7 +103,7 @@ describe('EmailService', () => {
         expect.objectContaining({
           userId: 'user123',
           severity: 'low',
-          category: 'system'
+          category: 'system',
         })
       )
     })
@@ -149,7 +149,7 @@ describe('EmailService', () => {
       currency: 'USD',
       interval: 'month',
       features: ['Advanced scraping', 'Priority support', 'API access'],
-      nextBillingDate: new Date('2025-02-01')
+      nextBillingDate: new Date('2025-02-01'),
     }
 
     beforeEach(() => {
@@ -169,7 +169,7 @@ describe('EmailService', () => {
         to: 'user@example.com',
         subject: 'Welcome to Professional Plan - Your subscription is active!',
         html: expect.stringContaining('Jane Smith'),
-        text: expect.stringContaining('Jane Smith')
+        text: expect.stringContaining('Jane Smith'),
       })
     })
 
@@ -191,7 +191,7 @@ describe('EmailService', () => {
       amount: 2999,
       currency: 'USD',
       reason: 'Your card was declined',
-      nextRetryDate: new Date('2025-01-05')
+      nextRetryDate: new Date('2025-01-05'),
     }
 
     beforeEach(() => {
@@ -211,7 +211,7 @@ describe('EmailService', () => {
         to: 'user@example.com',
         subject: 'Payment Failed - Action Required',
         html: expect.stringContaining('Bob Johnson'),
-        text: expect.stringContaining('Bob Johnson')
+        text: expect.stringContaining('Bob Johnson'),
       })
     })
 
@@ -233,7 +233,7 @@ describe('EmailService', () => {
     const cancellationDetails = {
       planName: 'Professional Plan',
       endDate: new Date('2025-02-01'),
-      reason: 'User requested cancellation'
+      reason: 'User requested cancellation',
     }
 
     beforeEach(() => {
@@ -253,7 +253,7 @@ describe('EmailService', () => {
         to: 'user@example.com',
         subject: 'Subscription Cancelled - Professional Plan',
         html: expect.stringContaining('Alice Brown'),
-        text: expect.stringContaining('Alice Brown')
+        text: expect.stringContaining('Alice Brown'),
       })
     })
   })
@@ -264,7 +264,7 @@ describe('EmailService', () => {
       amount: 2999,
       currency: 'USD',
       dueDate: new Date('2025-01-15'),
-      downloadUrl: 'https://app.businessscraper.com/invoices/INV-2025-001'
+      downloadUrl: 'https://app.businessscraper.com/invoices/INV-2025-001',
     }
 
     beforeEach(() => {
@@ -284,7 +284,7 @@ describe('EmailService', () => {
         to: 'user@example.com',
         subject: 'Invoice INV-2025-001 - $29.99 due 1/15/2025',
         html: expect.stringContaining('Charlie Wilson'),
-        text: expect.stringContaining('Charlie Wilson')
+        text: expect.stringContaining('Charlie Wilson'),
       })
     })
   })
@@ -296,7 +296,7 @@ describe('EmailService', () => {
         currency: 'USD',
         description: 'Test Payment',
         transactionId: 'test_123',
-        date: new Date('2025-01-01')
+        date: new Date('2025-01-01'),
       }
 
       await emailServiceInstance.sendPaymentConfirmation(
@@ -329,17 +329,13 @@ describe('EmailService', () => {
       ;(service as any).transporter = null
 
       await expect(
-        service.sendPaymentConfirmation(
-          'test@example.com',
-          'Test User',
-          {
-            amount: 1000,
-            currency: 'USD',
-            description: 'Test',
-            transactionId: 'test',
-            date: new Date()
-          }
-        )
+        service.sendPaymentConfirmation('test@example.com', 'Test User', {
+          amount: 1000,
+          currency: 'USD',
+          description: 'Test',
+          transactionId: 'test',
+          date: new Date(),
+        })
       ).rejects.toThrow('Email transporter not initialized')
     })
   })

@@ -171,7 +171,7 @@ export interface PaymentAnalytics {
 }
 
 // Webhook event types
-export type StripeWebhookEvent = 
+export type StripeWebhookEvent =
   | 'customer.created'
   | 'customer.updated'
   | 'customer.deleted'

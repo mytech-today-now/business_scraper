@@ -11,11 +11,11 @@ const mockLogger = logger as jest.Mocked<typeof logger>
 
 describe('AnalyticsService', () => {
   let analyticsService: AnalyticsService
-  
+
   beforeEach(() => {
     jest.clearAllMocks()
     analyticsService = new AnalyticsService()
-    
+
     // Mock sessionStorage
     Object.defineProperty(window, 'sessionStorage', {
       value: {
@@ -26,7 +26,7 @@ describe('AnalyticsService', () => {
       },
       writable: true,
     })
-    
+
     // Mock navigator
     Object.defineProperty(window, 'navigator', {
       value: {
@@ -66,16 +66,12 @@ describe('AnalyticsService', () => {
     it('should handle tracking errors gracefully', async () => {
       const eventType = 'test_event'
       const error = new Error('Storage error')
-      
+
       mockStorage.saveAnalyticsEvent.mockRejectedValue(error)
 
       await analyticsService.trackEvent(eventType, {})
 
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        'Analytics',
-        'Failed to track event',
-        error
-      )
+      expect(mockLogger.error).toHaveBeenCalledWith('Analytics', 'Failed to track event', error)
     })
 
     it('should generate unique event IDs', async () => {
@@ -97,13 +93,10 @@ describe('AnalyticsService', () => {
   describe('setUserId', () => {
     it('should set user ID for tracking', () => {
       const userId = 'user123'
-      
+
       analyticsService.setUserId(userId)
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Analytics',
-        `User ID set: ${userId}`
-      )
+      expect(mockLogger.info).toHaveBeenCalledWith('Analytics', `User ID set: ${userId}`)
     })
   })
 
@@ -111,11 +104,11 @@ describe('AnalyticsService', () => {
     it('should calculate revenue metrics correctly', async () => {
       const startDate = new Date('2023-01-01')
       const endDate = new Date('2023-01-31')
-      
+
       // Mock private methods by setting up the service with test data
       const mockTransactions = [
         { amountCents: 10000 }, // $100
-        { amountCents: 5000 },  // $50
+        { amountCents: 5000 }, // $50
       ]
       const mockSubscriptions = [
         { status: 'active', priceCents: 2000, interval: 'month' }, // $20/month
@@ -123,14 +116,14 @@ describe('AnalyticsService', () => {
       ]
 
       // Mock the private methods by overriding them
-      jest.spyOn(analyticsService as any, 'getTransactionsInPeriod')
+      jest
+        .spyOn(analyticsService as any, 'getTransactionsInPeriod')
         .mockResolvedValue(mockTransactions)
-      jest.spyOn(analyticsService as any, 'getActiveSubscriptions')
+      jest
+        .spyOn(analyticsService as any, 'getActiveSubscriptions')
         .mockResolvedValue(mockSubscriptions)
-      jest.spyOn(analyticsService as any, 'calculateChurnRate')
-        .mockResolvedValue(0.05) // 5% churn
-      jest.spyOn(analyticsService as any, 'calculateConversionRate')
-        .mockResolvedValue(0.15) // 15% conversion
+      jest.spyOn(analyticsService as any, 'calculateChurnRate').mockResolvedValue(0.05) // 5% churn
+      jest.spyOn(analyticsService as any, 'calculateConversionRate').mockResolvedValue(0.15) // 15% conversion
 
       const metrics = await analyticsService.getRevenueMetrics(startDate, endDate)
 
@@ -140,7 +133,7 @@ describe('AnalyticsService', () => {
         averageRevenuePerUser: 75, // $150 / 2 subscriptions
         churnRate: 0.05,
         lifetimeValue: 1500, // $75 / 0.05
-        conversionRate: 0.15
+        conversionRate: 0.15,
       })
     })
 
@@ -149,11 +142,11 @@ describe('AnalyticsService', () => {
       const endDate = new Date('2023-01-31')
       const error = new Error('Database error')
 
-      jest.spyOn(analyticsService as any, 'getTransactionsInPeriod')
-        .mockRejectedValue(error)
+      jest.spyOn(analyticsService as any, 'getTransactionsInPeriod').mockRejectedValue(error)
 
-      await expect(analyticsService.getRevenueMetrics(startDate, endDate))
-        .rejects.toThrow('Database error')
+      await expect(analyticsService.getRevenueMetrics(startDate, endDate)).rejects.toThrow(
+        'Database error'
+      )
 
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Analytics',
@@ -182,7 +175,7 @@ describe('AnalyticsService', () => {
         activeUsers: 800,
         newUsers: 100,
         retentionRate: 0.85,
-        engagementScore: 0.75
+        engagementScore: 0.75,
       })
     })
 
@@ -193,8 +186,9 @@ describe('AnalyticsService', () => {
 
       jest.spyOn(analyticsService as any, 'getTotalUsers').mockRejectedValue(error)
 
-      await expect(analyticsService.getUserMetrics(startDate, endDate))
-        .rejects.toThrow('Database error')
+      await expect(analyticsService.getUserMetrics(startDate, endDate)).rejects.toThrow(
+        'Database error'
+      )
 
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Analytics',
@@ -208,36 +202,36 @@ describe('AnalyticsService', () => {
     it('should calculate feature usage analytics correctly', async () => {
       const startDate = new Date('2023-01-01')
       const endDate = new Date('2023-01-31')
-      
+
       const mockEvents: AnalyticsEvent[] = [
         {
           id: '1',
           eventType: 'feature_search',
           eventData: {},
           timestamp: new Date(),
-          sessionId: 'session1'
+          sessionId: 'session1',
         },
         {
           id: '2',
           eventType: 'feature_search',
           eventData: {},
           timestamp: new Date(),
-          sessionId: 'session1'
+          sessionId: 'session1',
         },
         {
           id: '3',
           eventType: 'feature_export',
           eventData: {},
           timestamp: new Date(),
-          sessionId: 'session2'
+          sessionId: 'session2',
         },
         {
           id: '4',
           eventType: 'user_login',
           eventData: {},
           timestamp: new Date(),
-          sessionId: 'session3'
-        }
+          sessionId: 'session3',
+        },
       ]
 
       mockStorage.getAnalyticsEvents.mockResolvedValue(mockEvents)
@@ -247,13 +241,13 @@ describe('AnalyticsService', () => {
       expect(analytics).toEqual({
         featureUsage: {
           search: 2,
-          export: 1
+          export: 1,
         },
         topFeatures: [
           ['search', 2],
-          ['export', 1]
+          ['export', 1],
         ],
-        totalFeatureUsage: 3
+        totalFeatureUsage: 3,
       })
     })
 
@@ -264,8 +258,9 @@ describe('AnalyticsService', () => {
 
       mockStorage.getAnalyticsEvents.mockRejectedValue(error)
 
-      await expect(analyticsService.getFeatureUsageAnalytics(startDate, endDate))
-        .rejects.toThrow('Database error')
+      await expect(analyticsService.getFeatureUsageAnalytics(startDate, endDate)).rejects.toThrow(
+        'Database error'
+      )
 
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Analytics',

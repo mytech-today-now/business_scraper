@@ -531,20 +531,20 @@ export class EnhancedScrapingEngine {
           success: success.toString(),
           pages_scraped: pagesScraped.toString(),
           contacts_found: contactsFound.toString(),
-          retries: job.retries.toString()
+          retries: job.retries.toString(),
         })
 
         // Record scraping success/failure rate
         await monitoringService.recordMetric('scraping_job_result', success ? 1 : 0, 'count', {
           url: job.url,
-          domain: new URL(job.url).hostname
+          domain: new URL(job.url).hostname,
         })
 
         // Record pages per minute metric
         const pagesPerMinute = pagesScraped / (duration / 60000)
         await monitoringService.recordMetric('scraping_pages_per_minute', pagesPerMinute, 'rate', {
           job_id: job.id,
-          domain: new URL(job.url).hostname
+          domain: new URL(job.url).hostname,
         })
       }
     }

@@ -143,7 +143,7 @@ export function getDatabaseConfig(): DatabaseConfig {
           database: url.pathname.slice(1), // Remove leading slash
           username: url.username,
           password: url.password,
-          ssl: url.searchParams.get('ssl') === 'true' || dbConfig.ssl,
+          ssl: false, // Force SSL to false for local PostgreSQL containers
           poolMin: dbConfig.poolMin,
           poolMax: dbConfig.poolMax,
           idleTimeout: dbConfig.idleTimeout,
@@ -162,7 +162,7 @@ export function getDatabaseConfig(): DatabaseConfig {
         database: dbConfig.name,
         username: dbConfig.user,
         password: dbConfig.password,
-        ssl: dbConfig.ssl,
+        ssl: false, // Force SSL to false for local PostgreSQL containers
         poolMin: dbConfig.poolMin,
         poolMax: dbConfig.poolMax,
         idleTimeout: dbConfig.idleTimeout,
@@ -189,7 +189,7 @@ export function getDatabaseConfig(): DatabaseConfig {
           database: url.pathname.slice(1),
           username: url.username,
           password: url.password,
-          ssl: url.searchParams.get('ssl') === 'true',
+          ssl: false, // Force SSL to false for local PostgreSQL containers
           poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
           poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
           idleTimeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '30000'),
@@ -207,7 +207,7 @@ export function getDatabaseConfig(): DatabaseConfig {
         database: process.env.DB_NAME || 'business_scraper_db',
         username: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
-        ssl: process.env.DB_SSL === 'true',
+        ssl: false, // Explicitly disable SSL for local PostgreSQL container
         poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
         poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
         idleTimeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '30000'),
@@ -264,7 +264,18 @@ export interface DatabaseInterface {
 
 // Database factory function
 export async function createDatabase(config?: DatabaseConfig): Promise<DatabaseInterface> {
-  const dbConfig = config || getDatabaseConfig()
+  // Use connection string approach to explicitly disable SSL at the driver level
+  const connectionString = `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'SecurePassword123'}@${process.env.DB_HOST || 'postgres'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'business_scraper'}?sslmode=disable`
+
+  // Create configuration using connection string to bypass all SSL complexity
+  const dbConfig = {
+    connectionString,
+    ssl: false, // Explicitly disable SSL as additional safeguard
+    connectionTimeoutMillis: 5000,
+    idleTimeoutMillis: 30000,
+    max: 10,
+    type: 'postgresql' as const
+  }
 
   if (dbConfig.type === 'postgresql') {
     // Import PostgreSQL implementation (server-side only)
@@ -290,37 +301,45 @@ export async function createDatabase(config?: DatabaseConfig): Promise<DatabaseI
 
 // Connection health check
 export async function checkDatabaseConnection(config?: DatabaseConfig): Promise<ConnectionStatus> {
-  const dbConfig = config || getDatabaseConfig()
+  // Use connection string approach to explicitly disable SSL at the driver level
+  const connectionString = `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'SecurePassword123'}@${process.env.DB_HOST || 'postgres'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'business_scraper'}?sslmode=disable`
+
+  // Create configuration using connection string to bypass all SSL complexity
+  const finalConfig = {
+    connectionString,
+    ssl: false, // Explicitly disable SSL as additional safeguard
+    connectionTimeoutMillis: 5000,
+    idleTimeoutMillis: 30000,
+    max: 10
+  }
   const lastChecked = new Date()
 
   try {
     if (dbConfig.type === 'postgresql' && typeof window === 'undefined') {
-      // Server-side PostgreSQL check
-      const { Pool } = await import('pg')
-      const pool = new Pool({
-        host: dbConfig.host,
-        port: dbConfig.port,
-        database: dbConfig.database,
-        user: dbConfig.username,
-        password: dbConfig.password,
-        ssl: dbConfig.ssl,
-        connectionTimeoutMillis: dbConfig.connectionTimeout,
-      })
+      // Server-side PostgreSQL check using postgres.js
+      const { testPostgresConnection } = await import('./postgres-connection')
 
-      try {
-        const client = await pool.connect()
-        await client.query('SELECT 1')
-        client.release()
-        await pool.end()
+      const connectionConfig = {
+        host: finalConfig.host,
+        port: finalConfig.port,
+        database: finalConfig.database,
+        username: finalConfig.user,
+        password: finalConfig.password,
+        ssl: false, // Explicitly disable SSL
+        max: finalConfig.max,
+        connect_timeout: Math.floor((finalConfig.connectionTimeoutMillis || 5000) / 1000),
+      }
 
+      const isConnected = await testPostgresConnection(connectionConfig)
+
+      if (isConnected) {
         return {
           connected: true,
           type: 'postgresql',
           lastChecked,
         }
-      } catch (error) {
-        await pool.end()
-        throw error
+      } else {
+        throw new Error('Connection test failed')
       }
     } else {
       // IndexedDB check (client-side)
@@ -359,26 +378,30 @@ export async function getMigrationStatus(): Promise<MigrationInfo[]> {
 
   if (config.type === 'postgresql' && typeof window === 'undefined') {
     try {
-      const { Pool } = await import('pg')
-      const pool = new Pool({
+      const { createPostgresConnection } = await import('./postgres-connection')
+
+      const connectionConfig = {
         host: config.host,
         port: config.port,
         database: config.database,
-        user: config.username,
+        username: config.username,
         password: config.password,
-        ssl: config.ssl,
-      })
+        ssl: false, // Explicitly disable SSL
+        connect_timeout: Math.floor((config.connectionTimeout || 5000) / 1000),
+      }
+
+      const sql = createPostgresConnection(connectionConfig)
 
       try {
-        const result = await pool.query(`
+        const result = await sql`
           SELECT version, name, applied_at, checksum
           FROM schema_migrations
           ORDER BY version
-        `)
+        `
 
-        await pool.end()
+        await sql.end()
 
-        return result.rows.map(row => ({
+        return result.map(row => ({
           version: row.version,
           name: row.name,
           applied: true,
@@ -386,7 +409,7 @@ export async function getMigrationStatus(): Promise<MigrationInfo[]> {
           checksum: row.checksum,
         }))
       } catch (error) {
-        await pool.end()
+        await sql.end()
         throw error
       }
     } catch (error) {

@@ -19,7 +19,7 @@ const mockLink = {
   download: '',
   click: jest.fn(),
 }
-jest.spyOn(document, 'createElement').mockImplementation((tagName) => {
+jest.spyOn(document, 'createElement').mockImplementation(tagName => {
   if (tagName === 'a') {
     return mockLink as any
   }
@@ -35,7 +35,7 @@ describe('AnalyticsDashboard', () => {
     averageRevenuePerUser: 125,
     churnRate: 0.05,
     lifetimeValue: 2500,
-    conversionRate: 0.15
+    conversionRate: 0.15,
   }
 
   const mockUserMetrics = {
@@ -43,26 +43,26 @@ describe('AnalyticsDashboard', () => {
     activeUsers: 800,
     newUsers: 150,
     retentionRate: 0.85,
-    engagementScore: 0.75
+    engagementScore: 0.75,
   }
 
   const mockFeatureUsage = {
     featureUsage: {
       search: 500,
       export: 200,
-      scraping: 300
+      scraping: 300,
     },
     topFeatures: [
       ['search', 500],
       ['scraping', 300],
-      ['export', 200]
+      ['export', 200],
     ] as [string, number][],
-    totalFeatureUsage: 1000
+    totalFeatureUsage: 1000,
   }
 
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Setup default mock implementations
     mockAnalyticsService.trackEvent.mockResolvedValue()
     mockAnalyticsService.getRevenueMetrics.mockResolvedValue(mockRevenueMetrics)
@@ -72,7 +72,7 @@ describe('AnalyticsDashboard', () => {
 
   it('should render loading state initially', () => {
     render(<AnalyticsDashboard />)
-    
+
     expect(screen.getByText('Loading analytics...')).toBeInTheDocument()
   })
 
@@ -115,7 +115,7 @@ describe('AnalyticsDashboard', () => {
         'feature_analytics_dashboard_view',
         expect.objectContaining({
           timeRange: '30d',
-          timestamp: expect.any(String)
+          timestamp: expect.any(String),
         })
       )
     })
@@ -184,7 +184,7 @@ describe('AnalyticsDashboard', () => {
         'feature_analytics_export',
         expect.objectContaining({
           timeRange: '30d',
-          timestamp: expect.any(String)
+          timestamp: expect.any(String),
         })
       )
     })
@@ -274,18 +274,16 @@ describe('AnalyticsDashboard', () => {
 
     // Test different time ranges
     const timeRanges = ['7d', '90d', '1y']
-    
+
     for (const range of timeRanges) {
       jest.clearAllMocks()
       mockAnalyticsService.getRevenueMetrics.mockResolvedValue(mockRevenueMetrics)
-      
+
       const timeRangeSelect = screen.getByRole('button', { name: /select time range/i })
       fireEvent.click(timeRangeSelect)
 
       const option = screen.getByText(
-        range === '7d' ? 'Last 7 days' :
-        range === '90d' ? 'Last 90 days' :
-        'Last year'
+        range === '7d' ? 'Last 7 days' : range === '90d' ? 'Last 90 days' : 'Last year'
       )
       fireEvent.click(option)
 

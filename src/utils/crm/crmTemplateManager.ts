@@ -50,6 +50,8 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
    * Load custom templates from localStorage
    */
   private loadCustomTemplates(): void {
+    if (typeof window === 'undefined') return
+
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY)
       if (stored) {
@@ -66,6 +68,8 @@ export class CRMTemplateManagerImpl implements CRMTemplateManager {
    * Save custom templates to localStorage
    */
   private saveCustomTemplates(): void {
+    if (typeof window === 'undefined') return
+
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.customTemplates))
       logger.info('CRMTemplateManager', `Saved ${this.customTemplates.length} custom templates`)

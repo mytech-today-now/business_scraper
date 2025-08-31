@@ -64,7 +64,7 @@ export class DataRetentionService {
         archivalRequired: true,
         complianceRequirements: ['SOX', 'PCI_DSS', 'SOC2'],
         autoDelete: false, // Keep archived
-        legalHoldExempt: false
+        legalHoldExempt: false,
       },
       {
         id: 'user_data_gdpr',
@@ -74,7 +74,7 @@ export class DataRetentionService {
         archivalRequired: true,
         complianceRequirements: ['GDPR'],
         autoDelete: true,
-        legalHoldExempt: true
+        legalHoldExempt: true,
       },
       {
         id: 'business_data_5_years',
@@ -84,7 +84,7 @@ export class DataRetentionService {
         archivalRequired: true,
         complianceRequirements: ['Business'],
         autoDelete: false,
-        legalHoldExempt: false
+        legalHoldExempt: false,
       },
       {
         id: 'session_data_30_days',
@@ -94,7 +94,7 @@ export class DataRetentionService {
         archivalRequired: false,
         complianceRequirements: ['Security'],
         autoDelete: true,
-        legalHoldExempt: true
+        legalHoldExempt: true,
       },
       {
         id: 'export_files_7_days',
@@ -104,8 +104,8 @@ export class DataRetentionService {
         archivalRequired: false,
         complianceRequirements: ['GDPR'],
         autoDelete: true,
-        legalHoldExempt: true
-      }
+        legalHoldExempt: true,
+      },
     ]
 
     this.retentionPolicies = defaultPolicies
@@ -130,16 +130,16 @@ export class DataRetentionService {
         newValues: {
           policiesExecuted: this.retentionPolicies.length,
           jobsCreated: jobs.length,
-          totalItemsProcessed: jobs.reduce((sum, job) => sum + job.itemsProcessed, 0)
+          totalItemsProcessed: jobs.reduce((sum, job) => sum + job.itemsProcessed, 0),
         },
         severity: 'medium',
         category: 'data',
-        complianceFlags: ['GDPR', 'SOX', 'PCI_DSS']
+        complianceFlags: ['GDPR', 'SOX', 'PCI_DSS'],
       })
 
       logger.info('DataRetention', 'Data retention policy execution completed', {
         policiesExecuted: this.retentionPolicies.length,
-        jobsCreated: jobs.length
+        jobsCreated: jobs.length,
       })
 
       return jobs
@@ -161,7 +161,7 @@ export class DataRetentionService {
       itemsProcessed: 0,
       itemsArchived: 0,
       itemsDeleted: 0,
-      errors: []
+      errors: [],
     }
 
     try {
@@ -196,7 +196,7 @@ export class DataRetentionService {
       logger.info('DataRetention', `Retention policy completed: ${policy.name}`, {
         itemsProcessed: job.itemsProcessed,
         itemsArchived: job.itemsArchived,
-        itemsDeleted: job.itemsDeleted
+        itemsDeleted: job.itemsDeleted,
       })
 
       return job
@@ -213,9 +213,13 @@ export class DataRetentionService {
   /**
    * Process audit logs according to retention policy
    */
-  private async processAuditLogs(policy: RetentionPolicy, cutoffDate: Date, job: RetentionJob): Promise<void> {
+  private async processAuditLogs(
+    policy: RetentionPolicy,
+    cutoffDate: Date,
+    job: RetentionJob
+  ): Promise<void> {
     const oldLogs = await auditService.getAuditLogs({
-      endDate: cutoffDate
+      endDate: cutoffDate,
     })
 
     job.itemsProcessed = oldLogs.logs.length
@@ -239,7 +243,11 @@ export class DataRetentionService {
   /**
    * Process user data according to retention policy
    */
-  private async processUserData(policy: RetentionPolicy, cutoffDate: Date, job: RetentionJob): Promise<void> {
+  private async processUserData(
+    policy: RetentionPolicy,
+    cutoffDate: Date,
+    job: RetentionJob
+  ): Promise<void> {
     // This would integrate with user management system
     // For now, we'll simulate the process
     const oldUserData = await this.getOldUserData(cutoffDate)
@@ -262,7 +270,11 @@ export class DataRetentionService {
   /**
    * Process business data according to retention policy
    */
-  private async processBusinessData(policy: RetentionPolicy, cutoffDate: Date, job: RetentionJob): Promise<void> {
+  private async processBusinessData(
+    policy: RetentionPolicy,
+    cutoffDate: Date,
+    job: RetentionJob
+  ): Promise<void> {
     try {
       await storage.initialize()
       const oldBusinessData = await this.getOldBusinessData(cutoffDate)
@@ -289,7 +301,11 @@ export class DataRetentionService {
   /**
    * Process session data according to retention policy
    */
-  private async processSessionData(policy: RetentionPolicy, cutoffDate: Date, job: RetentionJob): Promise<void> {
+  private async processSessionData(
+    policy: RetentionPolicy,
+    cutoffDate: Date,
+    job: RetentionJob
+  ): Promise<void> {
     const oldSessions = await this.getOldSessionData(cutoffDate)
     job.itemsProcessed = oldSessions.length
 
@@ -302,7 +318,11 @@ export class DataRetentionService {
   /**
    * Process export files according to retention policy
    */
-  private async processExportFiles(policy: RetentionPolicy, cutoffDate: Date, job: RetentionJob): Promise<void> {
+  private async processExportFiles(
+    policy: RetentionPolicy,
+    cutoffDate: Date,
+    job: RetentionJob
+  ): Promise<void> {
     const oldExportFiles = await this.getOldExportFiles(cutoffDate)
     job.itemsProcessed = oldExportFiles.length
 
@@ -315,10 +335,14 @@ export class DataRetentionService {
   /**
    * Archive data to long-term storage
    */
-  private async archiveData(dataType: string, data: any[], policy: RetentionPolicy): Promise<DataArchive> {
+  private async archiveData(
+    dataType: string,
+    data: any[],
+    policy: RetentionPolicy
+  ): Promise<DataArchive> {
     const archiveId = this.generateArchiveId()
     const archiveDate = new Date()
-    const retentionUntil = new Date(archiveDate.getTime() + (policy.retentionPeriod * 2)) // Keep archive for double the retention period
+    const retentionUntil = new Date(archiveDate.getTime() + policy.retentionPeriod * 2) // Keep archive for double the retention period
 
     // Simulate data compression and storage
     const compressedData = JSON.stringify(data)
@@ -333,14 +357,14 @@ export class DataRetentionService {
       compressedSize,
       checksum,
       retentionUntil,
-      location: `archives/${dataType}/${archiveId}.json.gz`
+      location: `archives/${dataType}/${archiveId}.json.gz`,
     }
 
     // In production, this would store to secure long-term storage (S3, etc.)
     logger.info('DataRetention', `Data archived: ${dataType}`, {
       archiveId,
       itemCount: data.length,
-      compressedSize
+      compressedSize,
     })
 
     return archive
@@ -391,7 +415,9 @@ export class DataRetentionService {
     }
 
     if (filters?.startDate) {
-      filteredArchives = filteredArchives.filter(archive => archive.archiveDate >= filters.startDate!)
+      filteredArchives = filteredArchives.filter(
+        archive => archive.archiveDate >= filters.startDate!
+      )
     }
 
     if (filters?.endDate) {
@@ -415,7 +441,7 @@ export class DataRetentionService {
     let hash = 0
     for (let i = 0; i < data.length; i++) {
       const char = data.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash = hash & hash // Convert to 32-bit integer
     }
     return hash.toString(16)

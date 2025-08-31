@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import {
-  PaymentElement,
-  useStripe,
-  useElements
-} from '@stripe/react-stripe-js'
+import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { Button } from '@/view/components/ui/Button'
 import { Alert } from '@/view/components/ui/Alert'
 import { Spinner } from '@/view/components/ui/Spinner'
@@ -21,7 +17,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   onError,
   amount,
   currency = 'usd',
-  description
+  description,
 }) => {
   const stripe = useStripe()
   const elements = useElements()
@@ -49,9 +45,9 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
       const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/payment/success`
+          return_url: `${window.location.origin}/payment/success`,
         },
-        redirect: 'if_required'
+        redirect: 'if_required',
       })
 
       if (confirmError) {
@@ -71,7 +67,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   const formatAmount = (cents: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency.toUpperCase()
+      currency: currency.toUpperCase(),
     }).format(cents / 100)
   }
 
@@ -80,24 +76,18 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
       <div className="bg-gray-50 p-4 rounded-lg">
         <h3 className="font-semibold text-lg mb-2">Payment Details</h3>
         <p className="text-gray-600 mb-2">{description}</p>
-        <p className="text-2xl font-bold text-blue-600">
-          {formatAmount(amount)}
-        </p>
+        <p className="text-2xl font-bold text-blue-600">{formatAmount(amount)}</p>
       </div>
 
       <div className="space-y-4">
         <PaymentElement
           options={{
-            layout: 'tabs'
+            layout: 'tabs',
           }}
         />
       </div>
 
-      {error && (
-        <Alert variant="error">
-          {error}
-        </Alert>
-      )}
+      {error && <Alert variant="error">{error}</Alert>}
 
       <Button
         type="submit"

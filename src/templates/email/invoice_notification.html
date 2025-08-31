@@ -1,213 +1,227 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice {{invoiceNumber}}</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
-            line-height: 1.6; 
-            color: #333; 
-            margin: 0; 
-            padding: 0; 
-            background-color: #f4f4f4; 
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+          sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+      .content {
+        padding: 40px 30px;
+        background: #ffffff;
+      }
+      .content h2 {
+        color: #333;
+        margin-top: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .content p {
+        margin: 16px 0;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .invoice-details {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin: 25px 0;
+        border-left: 4px solid #667eea;
+      }
+      .invoice-details h3 {
+        margin-top: 0;
+        color: #333;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .invoice-details p {
+        margin: 8px 0;
+        font-size: 15px;
+      }
+      .invoice-details strong {
+        color: #333;
+        font-weight: 600;
+      }
+      .amount-due {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      .amount-due h4 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .amount-due .amount {
+        font-size: 24px;
+        font-weight: bold;
+        color: #856404;
+        margin: 10px 0;
+      }
+      .button {
+        display: inline-block;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: transform 0.2s ease;
+        margin: 0 10px;
+      }
+      .button:hover {
+        transform: translateY(-1px);
+      }
+      .button.secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      }
+      .button-container {
+        text-align: center;
+        margin: 30px 0;
+      }
+      .footer {
+        padding: 25px 30px;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        background-color: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+      }
+      .footer p {
+        margin: 8px 0;
+      }
+      .footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+      .invoice-icon {
+        width: 60px;
+        height: 60px;
+        background: #667eea;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          margin: 0;
+          box-shadow: none;
         }
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background-color: #ffffff; 
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        .content {
+          padding: 30px 20px;
         }
-        .header { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            padding: 30px 20px; 
-            text-align: center; 
+        .header {
+          padding: 25px 20px;
         }
-        .header h1 { 
-            margin: 0; 
-            font-size: 28px; 
-            font-weight: 600; 
+        .header h1 {
+          font-size: 24px;
         }
-        .content { 
-            padding: 40px 30px; 
-            background: #ffffff; 
+        .invoice-details {
+          padding: 20px;
         }
-        .content h2 { 
-            color: #333; 
-            margin-top: 0; 
-            font-size: 24px; 
-            font-weight: 600; 
+        .button {
+          padding: 12px 24px;
+          font-size: 15px;
+          margin: 5px;
+          display: block;
+          margin-bottom: 10px;
         }
-        .content p { 
-            margin: 16px 0; 
-            font-size: 16px; 
-            line-height: 1.6; 
-        }
-        .invoice-details { 
-            background: #f8f9fa; 
-            padding: 25px; 
-            border-radius: 8px; 
-            margin: 25px 0; 
-            border-left: 4px solid #667eea; 
-        }
-        .invoice-details h3 { 
-            margin-top: 0; 
-            color: #333; 
-            font-size: 18px; 
-            font-weight: 600; 
-        }
-        .invoice-details p { 
-            margin: 8px 0; 
-            font-size: 15px; 
-        }
-        .invoice-details strong { 
-            color: #333; 
-            font-weight: 600; 
-        }
-        .amount-due { 
-            background: #fff3cd; 
-            border: 1px solid #ffeaa7; 
-            color: #856404; 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin: 20px 0; 
-            text-align: center; 
-        }
-        .amount-due h4 { 
-            margin: 0; 
-            font-size: 18px; 
-            font-weight: 600; 
-        }
-        .amount-due .amount { 
-            font-size: 24px; 
-            font-weight: bold; 
-            color: #856404; 
-            margin: 10px 0; 
-        }
-        .button { 
-            display: inline-block; 
-            padding: 14px 28px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 6px; 
-            font-weight: 600; 
-            font-size: 16px; 
-            transition: transform 0.2s ease; 
-            margin: 0 10px; 
-        }
-        .button:hover { 
-            transform: translateY(-1px); 
-        }
-        .button.secondary { 
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%); 
-        }
-        .button-container { 
-            text-align: center; 
-            margin: 30px 0; 
-        }
-        .footer { 
-            padding: 25px 30px; 
-            text-align: center; 
-            font-size: 14px; 
-            color: #666; 
-            background-color: #f8f9fa; 
-            border-top: 1px solid #e9ecef; 
-        }
-        .footer p { 
-            margin: 8px 0; 
-        }
-        .footer a { 
-            color: #667eea; 
-            text-decoration: none; 
-        }
-        .invoice-icon { 
-            width: 60px; 
-            height: 60px; 
-            background: #667eea; 
-            border-radius: 50%; 
-            margin: 0 auto 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-size: 24px; 
-            font-weight: bold; 
-        }
-        @media only screen and (max-width: 600px) {
-            .container { 
-                margin: 0; 
-                box-shadow: none; 
-            }
-            .content { 
-                padding: 30px 20px; 
-            }
-            .header { 
-                padding: 25px 20px; 
-            }
-            .header h1 { 
-                font-size: 24px; 
-            }
-            .invoice-details { 
-                padding: 20px; 
-            }
-            .button { 
-                padding: 12px 24px; 
-                font-size: 15px; 
-                margin: 5px; 
-                display: block; 
-                margin-bottom: 10px; 
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="header">
-            <h1>Invoice {{invoiceNumber}}</h1>
+      <div class="header">
+        <h1>Invoice {{invoiceNumber}}</h1>
+      </div>
+
+      <div class="content">
+        <div class="invoice-icon">📄</div>
+
+        <h2>Your invoice is ready</h2>
+
+        <p>Hi {{userName}},</p>
+
+        <p>
+          Your invoice for this billing period is now available. Please review the details below and
+          make your payment by the due date to avoid any service interruption.
+        </p>
+
+        <div class="invoice-details">
+          <h3>Invoice Details</h3>
+          <p><strong>Invoice Number:</strong> {{invoiceNumber}}</p>
+          <p><strong>Amount:</strong> {{amount}}</p>
+          <p><strong>Due Date:</strong> {{dueDate}}</p>
         </div>
 
-        <div class="content">
-            <div class="invoice-icon">📄</div>
-            
-            <h2>Your invoice is ready</h2>
-            
-            <p>Hi {{userName}},</p>
-
-            <p>Your invoice for this billing period is now available. Please review the details below and make your payment by the due date to avoid any service interruption.</p>
-
-            <div class="invoice-details">
-                <h3>Invoice Details</h3>
-                <p><strong>Invoice Number:</strong> {{invoiceNumber}}</p>
-                <p><strong>Amount:</strong> {{amount}}</p>
-                <p><strong>Due Date:</strong> {{dueDate}}</p>
-            </div>
-
-            <div class="amount-due">
-                <h4>Amount Due</h4>
-                <div class="amount">{{amount}}</div>
-                <p>Payment due by {{dueDate}}</p>
-            </div>
-
-            <p>You can download your invoice and make a payment using the buttons below. We accept all major credit cards and payment methods.</p>
-
-            <div class="button-container">
-                <a href="{{paymentUrl}}" class="button">Pay Now</a>
-                <a href="{{downloadUrl}}" class="button secondary">Download Invoice</a>
-            </div>
-
-            <p>If you have any questions about this invoice or need assistance with payment, please don't hesitate to contact our billing support team. We're here to help!</p>
-
-            <p><strong>Important:</strong> To ensure uninterrupted service, please make your payment by {{dueDate}}. Late payments may result in service suspension.</p>
+        <div class="amount-due">
+          <h4>Amount Due</h4>
+          <div class="amount">{{amount}}</div>
+          <p>Payment due by {{dueDate}}</p>
         </div>
 
-        <div class="footer">
-            <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
-            <p>© 2025 Business Scraper App. All rights reserved.</p>
-            <p>This is an automated message. Please do not reply to this email.</p>
+        <p>
+          You can download your invoice and make a payment using the buttons below. We accept all
+          major credit cards and payment methods.
+        </p>
+
+        <div class="button-container">
+          <a href="{{paymentUrl}}" class="button">Pay Now</a>
+          <a href="{{downloadUrl}}" class="button secondary">Download Invoice</a>
         </div>
+
+        <p>
+          If you have any questions about this invoice or need assistance with payment, please don't
+          hesitate to contact our billing support team. We're here to help!
+        </p>
+
+        <p>
+          <strong>Important:</strong> To ensure uninterrupted service, please make your payment by
+          {{dueDate}}. Late payments may result in service suspension.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+        <p>© 2025 Business Scraper App. All rights reserved.</p>
+        <p>This is an automated message. Please do not reply to this email.</p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

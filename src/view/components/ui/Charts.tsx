@@ -55,11 +55,14 @@ export const LineChart: React.FC<LineChartProps> = ({
   strokeColor = '#3b82f6',
   strokeWidth = 2,
   showDots = true,
-  className
+  className,
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className={clsx('flex items-center justify-center', className)} style={{ width, height }}>
+      <div
+        className={clsx('flex items-center justify-center', className)}
+        style={{ width, height }}
+      >
         <p className="text-muted-foreground">No data available</p>
       </div>
     )
@@ -74,11 +77,13 @@ export const LineChart: React.FC<LineChartProps> = ({
   const chartHeight = height - 2 * padding
 
   // Generate path for line
-  const pathData = data.map((point, index) => {
-    const x = padding + (index / (data.length - 1)) * chartWidth
-    const y = padding + ((maxValue - point.value) / valueRange) * chartHeight
-    return `${index === 0 ? 'M' : 'L'} ${x} ${y}`
-  }).join(' ')
+  const pathData = data
+    .map((point, index) => {
+      const x = padding + (index / (data.length - 1)) * chartWidth
+      const y = padding + ((maxValue - point.value) / valueRange) * chartHeight
+      return `${index === 0 ? 'M' : 'L'} ${x} ${y}`
+    })
+    .join(' ')
 
   return (
     <div className={clsx('relative', className)}>
@@ -86,11 +91,17 @@ export const LineChart: React.FC<LineChartProps> = ({
         {/* Grid lines */}
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e5e7eb" strokeWidth="1" opacity="0.3"/>
+            <path
+              d="M 40 0 L 0 0 0 40"
+              fill="none"
+              stroke="#e5e7eb"
+              strokeWidth="1"
+              opacity="0.3"
+            />
           </pattern>
         </defs>
         <rect width={width} height={height} fill="url(#grid)" />
-        
+
         {/* Line path */}
         <path
           d={pathData}
@@ -100,24 +111,25 @@ export const LineChart: React.FC<LineChartProps> = ({
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        
+
         {/* Data points */}
-        {showDots && data.map((point, index) => {
-          const x = padding + (index / (data.length - 1)) * chartWidth
-          const y = padding + ((maxValue - point.value) / valueRange) * chartHeight
-          return (
-            <circle
-              key={index}
-              cx={x}
-              cy={y}
-              r="4"
-              fill={strokeColor}
-              className="hover:r-6 transition-all"
-            >
-              <title>{`${point.name}: ${point.value}`}</title>
-            </circle>
-          )
-        })}
+        {showDots &&
+          data.map((point, index) => {
+            const x = padding + (index / (data.length - 1)) * chartWidth
+            const y = padding + ((maxValue - point.value) / valueRange) * chartHeight
+            return (
+              <circle
+                key={index}
+                cx={x}
+                cy={y}
+                r="4"
+                fill={strokeColor}
+                className="hover:r-6 transition-all"
+              >
+                <title>{`${point.name}: ${point.value}`}</title>
+              </circle>
+            )
+          })}
       </svg>
     </div>
   )
@@ -132,11 +144,14 @@ export const BarChart: React.FC<BarChartProps> = ({
   height = 200,
   barColor = '#3b82f6',
   showValues = true,
-  className
+  className,
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className={clsx('flex items-center justify-center', className)} style={{ width, height }}>
+      <div
+        className={clsx('flex items-center justify-center', className)}
+        style={{ width, height }}
+      >
         <p className="text-muted-foreground">No data available</p>
       </div>
     )
@@ -146,8 +161,8 @@ export const BarChart: React.FC<BarChartProps> = ({
   const padding = 20
   const chartWidth = width - 2 * padding
   const chartHeight = height - 2 * padding
-  const barWidth = chartWidth / data.length * 0.8
-  const barSpacing = chartWidth / data.length * 0.2
+  const barWidth = (chartWidth / data.length) * 0.8
+  const barSpacing = (chartWidth / data.length) * 0.2
 
   return (
     <div className={clsx('relative', className)}>
@@ -170,7 +185,7 @@ export const BarChart: React.FC<BarChartProps> = ({
               >
                 <title>{`${point.name}: ${point.value}`}</title>
               </rect>
-              
+
               {/* Value label */}
               {showValues && (
                 <text
@@ -182,7 +197,7 @@ export const BarChart: React.FC<BarChartProps> = ({
                   {point.value}
                 </text>
               )}
-              
+
               {/* Name label */}
               <text
                 x={x + barWidth / 2}
@@ -209,11 +224,14 @@ export const PieChart: React.FC<PieChartProps> = ({
   height = 200,
   showLabels = true,
   showPercentages = true,
-  className
+  className,
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className={clsx('flex items-center justify-center', className)} style={{ width, height }}>
+      <div
+        className={clsx('flex items-center justify-center', className)}
+        style={{ width, height }}
+      >
         <p className="text-muted-foreground">No data available</p>
       </div>
     )
@@ -226,8 +244,16 @@ export const PieChart: React.FC<PieChartProps> = ({
 
   let currentAngle = 0
   const colors = [
-    '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
-    '#06b6d4', '#84cc16', '#f97316', '#ec4899', '#6366f1'
+    '#3b82f6',
+    '#ef4444',
+    '#10b981',
+    '#f59e0b',
+    '#8b5cf6',
+    '#06b6d4',
+    '#84cc16',
+    '#f97316',
+    '#ec4899',
+    '#6366f1',
   ]
 
   const slices = data.map((point, index) => {
@@ -247,7 +273,7 @@ export const PieChart: React.FC<PieChartProps> = ({
       `M ${centerX} ${centerY}`,
       `L ${x1} ${y1}`,
       `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-      'Z'
+      'Z',
     ].join(' ')
 
     currentAngle += sliceAngle
@@ -256,7 +282,7 @@ export const PieChart: React.FC<PieChartProps> = ({
       ...point,
       pathData,
       percentage,
-      color: point.color || colors[index % colors.length]
+      color: point.color || colors[index % colors.length],
     }
   })
 
@@ -274,16 +300,13 @@ export const PieChart: React.FC<PieChartProps> = ({
           </path>
         ))}
       </svg>
-      
+
       {/* Legend */}
       {showLabels && (
         <div className="mt-4 flex flex-wrap gap-2">
           {slices.map((slice, index) => (
             <div key={index} className="flex items-center gap-1 text-xs">
-              <div
-                className="w-3 h-3 rounded-sm"
-                style={{ backgroundColor: slice.color }}
-              />
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: slice.color }} />
               <span>
                 {slice.name}
                 {showPercentages && ` (${slice.percentage.toFixed(1)}%)`}

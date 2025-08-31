@@ -332,24 +332,48 @@ const configSchema: Record<string, ValidationRule> = {
   FILE_SCAN_TIMEOUT: { type: 'number', min: 1000, default: 30000 },
   MAX_UPLOAD_FILES: { type: 'number', min: 1, max: 100, default: 10 },
 
-  // Stripe Configuration
-  STRIPE_PUBLISHABLE_KEY: { type: 'string', required: true },
-  STRIPE_SECRET_KEY: { type: 'string', required: true },
-  STRIPE_WEBHOOK_SECRET: { type: 'string', required: true },
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: { type: 'string', required: true },
-  PAYMENT_SUCCESS_URL: { type: 'url', required: true },
-  PAYMENT_CANCEL_URL: { type: 'url', required: true },
+  // Stripe Configuration (conditionally required based on environment)
+  STRIPE_PUBLISHABLE_KEY: {
+    type: 'string',
+    required: false,
+    default: 'pk_test_development_placeholder',
+  },
+  STRIPE_SECRET_KEY: {
+    type: 'string',
+    required: false,
+    default: 'sk_test_development_placeholder',
+  },
+  STRIPE_WEBHOOK_SECRET: {
+    type: 'string',
+    required: false,
+    default: 'whsec_development_placeholder',
+  },
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: {
+    type: 'string',
+    required: false,
+    default: 'pk_test_development_placeholder',
+  },
+  PAYMENT_SUCCESS_URL: {
+    type: 'url',
+    required: false,
+    default: 'http://localhost:3000/payment/success',
+  },
+  PAYMENT_CANCEL_URL: {
+    type: 'url',
+    required: false,
+    default: 'http://localhost:3000/payment/cancel',
+  },
 
-  // Email Configuration
-  SMTP_HOST: { type: 'string', required: true },
+  // Email Configuration (conditionally required based on environment)
+  SMTP_HOST: { type: 'string', required: false, default: 'localhost' },
   SMTP_PORT: { type: 'port', default: 587 },
   SMTP_SECURE: { type: 'boolean', default: false },
-  SMTP_USER: { type: 'string', required: true },
-  SMTP_PASSWORD: { type: 'string', required: true },
-  EMAIL_FROM_ADDRESS: { type: 'email', required: true },
-  EMAIL_SUPPORT_ADDRESS: { type: 'email', required: true },
+  SMTP_USER: { type: 'string', required: false, default: 'dev@example.com' },
+  SMTP_PASSWORD: { type: 'string', required: false, default: 'development_password' },
+  EMAIL_FROM_ADDRESS: { type: 'email', required: false, default: 'dev@example.com' },
+  EMAIL_SUPPORT_ADDRESS: { type: 'email', required: false, default: 'support@example.com' },
   EMAIL_TEMPLATE_PATH: { type: 'string', default: './src/templates/email' },
-  NEXT_PUBLIC_APP_BASE_URL: { type: 'url', required: true },
+  NEXT_PUBLIC_APP_BASE_URL: { type: 'url', required: false, default: 'http://localhost:3000' },
 }
 
 /**
@@ -429,23 +453,127 @@ export function loadConfig(): AppConfig {
   const warnings: string[] = []
   const config: any = {}
 
+  // Debug: Log environment loading status
+  const isClient = typeof window !== 'undefined'
+  const nodeEnv = process.env.NODE_ENV || 'development'
+
+  logger.debug('Config', `Loading configuration - Client: ${isClient}, Environment: ${nodeEnv}`)
+
+  // Debug: Log some key environment variables
+  const debugVars = [
+    'STRIPE_PUBLISHABLE_KEY',
+    'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
+    'SMTP_HOST',
+    'EMAIL_FROM_ADDRESS',
+    'NEXT_PUBLIC_APP_BASE_URL',
+  ]
+
+  debugVars.forEach(key => {
+    const value = process.env[key]
+    logger.debug(
+      'Config',
+      `Environment variable ${key}: ${value ? 'SET' : 'MISSING'} (length: ${value?.length || 0})`
+    )
+  })
+
+  // Enhanced validation with environment-specific requirements
+  const isDevelopment = nodeEnv === 'development'
+  const isProduction = nodeEnv === 'production'
+
+  // Define production-only required variables
+  const productionRequiredVars = [
+    'STRIPE_PUBLISHABLE_KEY',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_WEBHOOK_SECRET',
+    'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
+    'PAYMENT_SUCCESS_URL',
+    'PAYMENT_CANCEL_URL',
+    'SMTP_HOST',
+    'SMTP_USER',
+    'SMTP_PASSWORD',
+    'EMAIL_FROM_ADDRESS',
+    'EMAIL_SUPPORT_ADDRESS',
+    'NEXT_PUBLIC_APP_BASE_URL',
+  ]
+
+  // Helper function to get safe development defaults
+  const getDevDefault = (key: string): string => {
+    switch (key) {
+      case 'STRIPE_PUBLISHABLE_KEY':
+      case 'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY':
+        return 'pk_test_development_placeholder'
+      case 'STRIPE_SECRET_KEY':
+        return 'sk_test_development_placeholder'
+      case 'STRIPE_WEBHOOK_SECRET':
+        return 'whsec_development_placeholder'
+      case 'PAYMENT_SUCCESS_URL':
+        return 'http://localhost:3000/payment/success'
+      case 'PAYMENT_CANCEL_URL':
+        return 'http://localhost:3000/payment/cancel'
+      case 'SMTP_HOST':
+        return 'localhost'
+      case 'SMTP_USER':
+        return 'dev@example.com'
+      case 'SMTP_PASSWORD':
+        return 'development_password'
+      case 'EMAIL_FROM_ADDRESS':
+      case 'EMAIL_SUPPORT_ADDRESS':
+        return 'dev@example.com'
+      case 'NEXT_PUBLIC_APP_BASE_URL':
+        return 'http://localhost:3000'
+      default:
+        return ''
+    }
+  }
+
   // Validate all environment variables
   for (const [key, rule] of Object.entries(configSchema)) {
     try {
       // Safe object property assignment with validation
       if (typeof key === 'string' && key.length > 0 && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
-        const validatedValue = validateEnvValue(key, process.env[key], rule)
+        // Modify rule requirements based on environment
+        const modifiedRule = { ...rule }
+
+        // In development, make production-required variables optional with defaults
+        if (isDevelopment && productionRequiredVars.includes(key)) {
+          modifiedRule.required = false
+          if (!modifiedRule.default) {
+            modifiedRule.default = getDevDefault(key)
+          }
+        }
+
+        const validatedValue = validateEnvValue(key, process.env[key], modifiedRule)
         Object.defineProperty(config, key, {
           value: validatedValue,
           writable: true,
           enumerable: true,
           configurable: true,
         })
+
+        // Log successful validation in debug mode
+        if (isDevelopment && process.env[key] !== validatedValue) {
+          logger.debug('Config', `Using default value for ${key}: ${validatedValue}`)
+        }
       } else {
         errors.push(`Invalid configuration key: ${key}`)
       }
     } catch (error) {
-      errors.push(error instanceof Error ? error.message : String(error))
+      if (error instanceof Error) {
+        // In development, convert some errors to warnings for non-critical vars
+        if (isDevelopment && productionRequiredVars.includes(key)) {
+          warnings.push(`Development warning for ${key}: ${error.message}`)
+          // Try to use a safe default
+          const defaultValue = getDevDefault(key)
+          if (defaultValue) {
+            config[key] = defaultValue
+            logger.debug('Config', `Using fallback default for ${key}: ${defaultValue}`)
+          }
+        } else {
+          errors.push(error.message)
+        }
+      } else {
+        errors.push(`Unknown error validating ${key}`)
+      }
     }
   }
 

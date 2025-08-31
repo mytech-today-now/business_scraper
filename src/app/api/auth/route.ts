@@ -88,7 +88,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           username,
           reason: 'invalid_credentials',
           userAgent: request.headers.get('user-agent'),
-          message: `Failed login attempt for username: ${username}`
+          message: `Failed login attempt for username: ${username}`,
         },
         ip
       )
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       userAgent: request.headers.get('user-agent'),
       severity: 'medium',
       category: 'security',
-      complianceFlags: ['SOC2', 'GDPR']
+      complianceFlags: ['SOC2', 'GDPR'],
     })
 
     logger.info('Auth', `Successful login from IP: ${ip}`)
@@ -152,7 +152,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
         userAgent: request.headers.get('user-agent'),
         severity: 'low',
         category: 'security',
-        complianceFlags: ['SOC2']
+        complianceFlags: ['SOC2'],
       })
 
       invalidateSession(sessionId)

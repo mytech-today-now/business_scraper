@@ -3,7 +3,9 @@
 ## ❌ **Integration Tests - MULTIPLE CRITICAL ISSUES IDENTIFIED**
 
 ### **Current Integration Test Status:**
-- **❌ API Tests**: Missing function imports (enhancedScrapePost, dataManagementPost, etc.)
+
+- **❌ API Tests**: Missing function imports (enhancedScrapePost,
+  dataManagementPost, etc.)
 - **❌ Mock Configuration**: NextRequest mock incompatible with Next.js 14
 - **❌ AI/ML Tests**: TensorFlow model initialization failures
 - **❌ Azure Integration**: API endpoint mismatch and credential handling
@@ -14,7 +16,9 @@
 ### **Critical Issues Breakdown:**
 
 #### **1. API Route Import Failures** ❌
+
 **Problem**: Functions not found
+
 ```
 ReferenceError: enhancedScrapePost is not defined
 ReferenceError: dataManagementPost is not defined
@@ -22,6 +26,7 @@ ReferenceError: dataManagementGet is not defined
 ```
 
 **Root Cause**: Import statements referencing non-existent exports
+
 ```typescript
 // FAILING IMPORTS
 import {
@@ -33,12 +38,15 @@ import {
 **Solution**: Fix import paths and ensure API route exports exist
 
 #### **2. NextRequest Mock Incompatibility** ❌
+
 **Problem**: Mock conflicts with Next.js 14
+
 ```
 TypeError: Cannot set property url of #<NextRequest> which has only a getter
 ```
 
 **Root Cause**: Jest setup MockRequest class incompatible with NextRequest
+
 ```javascript
 // PROBLEMATIC MOCK in jest.setup.js
 global.Request = class MockRequest {
@@ -49,12 +57,15 @@ global.Request = class MockRequest {
 **Solution**: Update mock to be compatible with Next.js 14 NextRequest API
 
 #### **3. TensorFlow Model Initialization** ❌
+
 **Problem**: AI/ML tests failing
+
 ```
 TypeError: Cannot read properties of undefined (reading 'compile')
 ```
 
 **Root Cause**: TensorFlow model not properly initialized in test environment
+
 ```typescript
 // FAILING CODE
 this.model.compile({
@@ -64,10 +75,13 @@ this.model.compile({
 })
 ```
 
-**Solution**: Mock TensorFlow properly or skip AI tests in integration environment
+**Solution**: Mock TensorFlow properly or skip AI tests in integration
+environment
 
 #### **4. Azure AI Integration Mismatch** ❌
+
 **Problem**: API endpoint and error message mismatches
+
 ```
 Expected: "https://businessscraper.cognitiveservices.azure.com/bing/v7.0/custom/search"
 Received: "https://businessscraper.cognitiveservices.azure.com/v7.0/custom/search"
@@ -79,7 +93,9 @@ Received: "Bing Grounding Custom Search API error: 401"
 **Solution**: Update test expectations to match actual implementation
 
 #### **5. CRM Export Service Issues** ❌
+
 **Problem**: Blob API and validation logic errors
+
 ```
 TypeError: result.blob.text is not a function
 expect(received).toBe(expected) // Expected: 3, Received: 4
@@ -88,7 +104,9 @@ expect(received).toBe(expected) // Expected: 3, Received: 4
 **Solution**: Fix blob mocking and validation logic in CRM tests
 
 #### **6. Missing Testing Dependencies** ❌
+
 **Problem**: Missing @testing-library/dom
+
 ```
 Cannot find module '@testing-library/dom' from 'node_modules/@testing-library/user-event'
 ```
@@ -96,7 +114,9 @@ Cannot find module '@testing-library/dom' from 'node_modules/@testing-library/us
 **Solution**: Install missing testing library dependencies
 
 #### **7. Jest Configuration Issues** ❌
+
 **Problem**: SWC transformer syntax errors
+
 ```
 × Expected '>', got 'data'
 Syntax Error in testHelpers.ts
@@ -109,6 +129,7 @@ Syntax Error in testHelpers.ts
 #### **High Priority (Blocking):**
 
 1. **Fix API Route Imports**
+
 ```typescript
 // CORRECT IMPORTS
 import { POST as enhancedScrapePost } from '../../app/api/enhanced-scrape/route'
@@ -118,13 +139,14 @@ import { GET as dataManagementGet } from '../../app/api/data-management/route'
 ```
 
 2. **Fix NextRequest Mock**
+
 ```javascript
 // UPDATED MOCK
 global.Request = class MockRequest {
   constructor(input, init = {}) {
     Object.defineProperty(this, 'url', {
       value: typeof input === 'string' ? input : input.url,
-      writable: false
+      writable: false,
     })
     this.method = init.method || 'GET'
     this.headers = new Map(Object.entries(init.headers || {}))
@@ -134,11 +156,13 @@ global.Request = class MockRequest {
 ```
 
 3. **Install Missing Dependencies**
+
 ```bash
 npm install --save-dev @testing-library/dom
 ```
 
 4. **Fix TensorFlow Mocking**
+
 ```typescript
 // MOCK TENSORFLOW
 jest.mock('@tensorflow/tfjs-node', () => ({
@@ -146,14 +170,14 @@ jest.mock('@tensorflow/tfjs-node', () => ({
     add: jest.fn(),
     compile: jest.fn(),
     fit: jest.fn(),
-    predict: jest.fn()
+    predict: jest.fn(),
   })),
   layers: {
-    dense: jest.fn()
+    dense: jest.fn(),
   },
   train: {
-    adam: jest.fn()
-  }
+    adam: jest.fn(),
+  },
 }))
 ```
 
@@ -181,6 +205,7 @@ jest.mock('@tensorflow/tfjs-node', () => ({
 - **❌ Virtualized Table**: 1 failing test (missing dependency)
 
 ### **Estimated Fix Time:**
+
 - **Critical Issues**: 2-4 hours
 - **All Issues**: 6-8 hours
 - **Testing & Validation**: 2-3 hours
@@ -194,11 +219,14 @@ jest.mock('@tensorflow/tfjs-node', () => ({
 
 ### **Summary:**
 
-Integration tests are **EXTENSIVELY CONFIGURED** but have **CRITICAL COMPATIBILITY ISSUES** with:
+Integration tests are **EXTENSIVELY CONFIGURED** but have **CRITICAL
+COMPATIBILITY ISSUES** with:
+
 - **Next.js 14 API changes** (NextRequest mocking)
 - **Missing dependencies** (@testing-library/dom)
 - **Import path mismatches** (API route exports)
 - **TensorFlow initialization** (AI/ML tests)
 - **Test environment setup** (Jest configuration)
 
-Once these 7 critical issues are resolved, the integration test suite will be fully operational with comprehensive coverage across all application layers.
+Once these 7 critical issues are resolved, the integration test suite will be
+fully operational with comprehensive coverage across all application layers.

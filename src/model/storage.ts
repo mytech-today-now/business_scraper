@@ -13,7 +13,7 @@ import {
   PaymentTransaction,
   Invoice,
   PaymentAuditLog,
-  PaymentAnalytics
+  PaymentAnalytics,
 } from '@/types/payment'
 import { User } from './types/user'
 import { logger } from '@/utils/logger'
@@ -292,7 +292,10 @@ export class StorageService {
             paymentTransactionsStore.createIndex('by-user-id', 'userId')
             paymentTransactionsStore.createIndex('by-status', 'status')
             paymentTransactionsStore.createIndex('by-created-date', 'createdAt')
-            paymentTransactionsStore.createIndex('by-stripe-payment-intent-id', 'stripePaymentIntentId')
+            paymentTransactionsStore.createIndex(
+              'by-stripe-payment-intent-id',
+              'stripePaymentIntentId'
+            )
 
             // Invoices store
             const invoicesStore = db.createObjectStore('invoices', {

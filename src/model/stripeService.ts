@@ -7,13 +7,13 @@
 import Stripe from 'stripe'
 import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
-import { 
-  PaymentError, 
-  SubscriptionError, 
+import {
+  PaymentError,
+  SubscriptionError,
   ServiceResponse,
   PaymentTransaction,
   StripeWebhookEvent,
-  WebhookProcessingResult
+  WebhookProcessingResult,
 } from '@/types/payment'
 
 export class StripeService {
@@ -28,15 +28,19 @@ export class StripeService {
   }
 
   // Customer Management
-  async createCustomer(email: string, name?: string, metadata?: Record<string, string>): Promise<Stripe.Customer> {
+  async createCustomer(
+    email: string,
+    name?: string,
+    metadata?: Record<string, string>
+  ): Promise<Stripe.Customer> {
     try {
       const customer = await this.stripe.customers.create({
         email,
         name,
-        metadata: { 
+        metadata: {
           source: 'business_scraper_app',
-          ...metadata 
-        }
+          ...metadata,
+        },
       })
       logger.info('StripeService', `Customer created: ${customer.id}`)
       return customer
@@ -61,7 +65,7 @@ export class StripeService {
   }
 
   async updateCustomer(
-    customerId: string, 
+    customerId: string,
     updates: Partial<Stripe.CustomerUpdateParams>
   ): Promise<Stripe.Customer> {
     try {
@@ -98,24 +102,21 @@ export class StripeService {
         expand: ['latest_invoice.payment_intent'],
         trial_period_days: options?.trialPeriodDays,
         proration_behavior: options?.prorationBehavior || 'create_prorations',
-        metadata: options?.metadata || {}
+        metadata: options?.metadata || {},
       })
-      
+
       logger.info('StripeService', `Subscription created: ${subscription.id}`)
       return subscription
     } catch (error) {
       logger.error('StripeService', 'Failed to create subscription', error)
-      throw new SubscriptionError(
-        'Failed to create subscription',
-        'SUBSCRIPTION_CREATION_FAILED'
-      )
+      throw new SubscriptionError('Failed to create subscription', 'SUBSCRIPTION_CREATION_FAILED')
     }
   }
 
   async getSubscription(subscriptionId: string): Promise<Stripe.Subscription | null> {
     try {
       const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
-        expand: ['latest_invoice', 'customer', 'default_payment_method']
+        expand: ['latest_invoice', 'customer', 'default_payment_method'],
       })
       return subscription
     } catch (error) {
@@ -148,13 +149,13 @@ export class StripeService {
   ): Promise<Stripe.Subscription> {
     try {
       const subscription = await this.stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: cancelAtPeriodEnd
+        cancel_at_period_end: cancelAtPeriodEnd,
       })
-      
+
       if (!cancelAtPeriodEnd) {
         await this.stripe.subscriptions.cancel(subscriptionId)
       }
-      
+
       logger.info('StripeService', `Subscription canceled: ${subscriptionId}`)
       return subscription
     } catch (error) {
@@ -186,9 +187,9 @@ export class StripeService {
         automatic_payment_methods: { enabled: true },
         metadata: options?.metadata || {},
         description: options?.description,
-        setup_future_usage: options?.setupFutureUsage
+        setup_future_usage: options?.setupFutureUsage,
       })
-      
+
       logger.info('StripeService', `Payment intent created: ${paymentIntent.id}`)
       return paymentIntent
     } catch (error) {
@@ -207,9 +208,9 @@ export class StripeService {
   ): Promise<Stripe.PaymentIntent> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.confirm(paymentIntentId, {
-        payment_method: paymentMethodId
+        payment_method: paymentMethodId,
       })
-      
+
       logger.info('StripeService', `Payment intent confirmed: ${paymentIntentId}`)
       return paymentIntent
     } catch (error) {
@@ -229,9 +230,9 @@ export class StripeService {
   ): Promise<Stripe.PaymentMethod> {
     try {
       const paymentMethod = await this.stripe.paymentMethods.attach(paymentMethodId, {
-        customer: customerId
+        customer: customerId,
       })
-      
+
       logger.info('StripeService', `Payment method attached: ${paymentMethodId}`)
       return paymentMethod
     } catch (error) {
@@ -259,15 +260,22 @@ export class StripeService {
     }
   }
 
-  async listPaymentMethods(customerId: string, type: string = 'card'): Promise<Stripe.PaymentMethod[]> {
+  async listPaymentMethods(
+    customerId: string,
+    type: string = 'card'
+  ): Promise<Stripe.PaymentMethod[]> {
     try {
       const paymentMethods = await this.stripe.paymentMethods.list({
         customer: customerId,
-        type: type as Stripe.PaymentMethodListParams.Type
+        type: type as Stripe.PaymentMethodListParams.Type,
       })
       return paymentMethods.data
     } catch (error) {
-      logger.error('StripeService', `Failed to list payment methods for customer: ${customerId}`, error)
+      logger.error(
+        'StripeService',
+        `Failed to list payment methods for customer: ${customerId}`,
+        error
+      )
       return []
     }
   }
@@ -287,7 +295,7 @@ export class StripeService {
     try {
       const invoices = await this.stripe.invoices.list({
         customer: customerId,
-        limit
+        limit,
       })
       return invoices.data
     } catch (error) {
@@ -319,7 +327,7 @@ export class StripeService {
     try {
       const customers = await this.stripe.customers.list({
         email,
-        limit: 1
+        limit: 1,
       })
       return customers.data.length > 0 ? customers.data[0] : null
     } catch (error) {
@@ -331,7 +339,7 @@ export class StripeService {
   formatAmount(amount: number, currency: string = 'usd'): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency.toUpperCase()
+      currency: currency.toUpperCase(),
     }).format(amount / 100)
   }
 }

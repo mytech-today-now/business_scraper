@@ -19,22 +19,22 @@ jest.mock('@/lib/config', () => ({
     stripe: {
       publishableKey: 'pk_test_mock',
       secretKey: 'sk_test_mock',
-      webhookSecret: 'whsec_test_mock'
+      webhookSecret: 'whsec_test_mock',
     },
     payment: {
       successUrl: 'http://localhost:3000/success',
-      cancelUrl: 'http://localhost:3000/cancel'
-    }
+      cancelUrl: 'http://localhost:3000/cancel',
+    },
   }),
   getPaymentConfig: jest.fn().mockReturnValue({
     stripe: {
       publishableKey: 'pk_test_mock',
       secretKey: 'sk_test_mock',
-      webhookSecret: 'whsec_test_mock'
+      webhookSecret: 'whsec_test_mock',
     },
     successUrl: 'http://localhost:3000/success',
-    cancelUrl: 'http://localhost:3000/cancel'
-  })
+    cancelUrl: 'http://localhost:3000/cancel',
+  }),
 }))
 
 // Type the mocked services
@@ -47,13 +47,13 @@ describe('PaymentController', () => {
   const mockUser = {
     id: 'user-123',
     email: 'test@example.com',
-    name: 'Test User'
+    name: 'Test User',
   }
 
   beforeEach(() => {
     paymentController = new PaymentController()
     jest.clearAllMocks()
-    
+
     // Reset controller state
     paymentController['isInitialized'] = false
     paymentController['currentUser'] = null
@@ -79,13 +79,12 @@ describe('PaymentController', () => {
           interval: 'month',
           features: ['Feature 1'],
           isActive: true,
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ]
 
       // Mock the private method
-      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans')
-        .mockResolvedValue(mockPlans)
+      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans').mockResolvedValue(mockPlans)
 
       const initSpy = jest.fn()
       paymentController.on('payment:initialized', initSpy)
@@ -103,8 +102,7 @@ describe('PaymentController', () => {
 
     it('should handle initialization errors', async () => {
       const error = new Error('Failed to load plans')
-      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans')
-        .mockRejectedValue(error)
+      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans').mockRejectedValue(error)
 
       const errorSpy = jest.fn()
       paymentController.on('payment:error', errorSpy)
@@ -121,9 +119,9 @@ describe('PaymentController', () => {
 
     it('should not reinitialize if already initialized', async () => {
       paymentController['isInitialized'] = true
-      
+
       await paymentController.initializePaymentSystem()
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith(
         'PaymentController',
         'Payment system already initialized'
@@ -143,17 +141,15 @@ describe('PaymentController', () => {
           interval: 'month',
           features: ['Feature 1'],
           isActive: true,
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ]
-      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans')
-        .mockResolvedValue(mockPlans)
+      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans').mockResolvedValue(mockPlans)
       await paymentController.initializePaymentSystem()
     })
 
     it('should set current user successfully', async () => {
-      jest.spyOn(paymentController as any, 'getMockUserSubscription')
-        .mockResolvedValue(null)
+      jest.spyOn(paymentController as any, 'getMockUserSubscription').mockResolvedValue(null)
 
       const userSpy = jest.fn()
       const subscriptionSpy = jest.fn()
@@ -174,9 +170,10 @@ describe('PaymentController', () => {
     it('should handle invalid user object', async () => {
       const invalidUser = { email: 'test@example.com' } // missing id
 
-      await expect(paymentController.setCurrentUser(invalidUser as any))
-        .rejects.toThrow('Invalid user object provided')
-      
+      await expect(paymentController.setCurrentUser(invalidUser as any)).rejects.toThrow(
+        'Invalid user object provided'
+      )
+
       expect(mockLogger.error).toHaveBeenCalledWith(
         'PaymentController',
         'Failed to set current user',
@@ -192,10 +189,11 @@ describe('PaymentController', () => {
         status: 'active' as const,
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(),
-        createdAt: new Date()
+        createdAt: new Date(),
       }
 
-      jest.spyOn(paymentController as any, 'getMockUserSubscription')
+      jest
+        .spyOn(paymentController as any, 'getMockUserSubscription')
         .mockResolvedValue(mockSubscription)
 
       await paymentController.setCurrentUser(mockUser)
@@ -217,11 +215,10 @@ describe('PaymentController', () => {
           interval: 'month',
           features: ['Feature 1'],
           isActive: true,
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ]
-      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans')
-        .mockResolvedValue(mockPlans)
+      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans').mockResolvedValue(mockPlans)
       await paymentController.initializePaymentSystem()
       await paymentController.setCurrentUser(mockUser)
     })
@@ -232,12 +229,14 @@ describe('PaymentController', () => {
         userId: mockUser.id,
         planId: 'plan-1',
         status: 'active',
-        createdAt: new Date()
+        createdAt: new Date(),
       }
 
-      jest.spyOn(paymentController as any, 'createMockSubscription')
+      jest
+        .spyOn(paymentController as any, 'createMockSubscription')
         .mockResolvedValue(mockSubscription)
-      jest.spyOn(paymentController as any, 'getMockUserSubscription')
+      jest
+        .spyOn(paymentController as any, 'getMockUserSubscription')
         .mockResolvedValue(null)
         .mockResolvedValueOnce(null) // First call during setCurrentUser
         .mockResolvedValueOnce(mockSubscription) // Second call after subscription creation
@@ -266,8 +265,7 @@ describe('PaymentController', () => {
 
     it('should handle subscription creation errors', async () => {
       const error = new Error('Payment failed')
-      jest.spyOn(paymentController as any, 'createMockSubscription')
-        .mockRejectedValue(error)
+      jest.spyOn(paymentController as any, 'createMockSubscription').mockRejectedValue(error)
 
       const errorSpy = jest.fn()
       paymentController.on('payment:error', errorSpy)
@@ -283,15 +281,15 @@ describe('PaymentController', () => {
     })
 
     it('should handle invalid plan ID', async () => {
-      await expect(paymentController.createSubscription('invalid-plan'))
-        .rejects.toThrow('Plan not found: invalid-plan')
+      await expect(paymentController.createSubscription('invalid-plan')).rejects.toThrow(
+        'Plan not found: invalid-plan'
+      )
     })
 
     it('should handle subscription creation without user', async () => {
       paymentController['currentUser'] = null
 
-      await expect(paymentController.createSubscription('plan-1'))
-        .rejects.toThrow('No user set')
+      await expect(paymentController.createSubscription('plan-1')).rejects.toThrow('No user set')
     })
 
     it('should cancel subscription successfully', async () => {
@@ -302,15 +300,13 @@ describe('PaymentController', () => {
         status: 'active' as const,
         currentPeriodStart: new Date(),
         currentPeriodEnd: new Date(),
-        createdAt: new Date()
+        createdAt: new Date(),
       }
 
       paymentController['userSubscription'] = mockSubscription
 
-      jest.spyOn(paymentController as any, 'cancelMockSubscription')
-        .mockResolvedValue(undefined)
-      jest.spyOn(paymentController as any, 'getMockUserSubscription')
-        .mockResolvedValue(null)
+      jest.spyOn(paymentController as any, 'cancelMockSubscription').mockResolvedValue(undefined)
+      jest.spyOn(paymentController as any, 'getMockUserSubscription').mockResolvedValue(null)
 
       const cancelSpy = jest.fn()
       paymentController.on('subscription:canceled', cancelSpy)
@@ -327,8 +323,9 @@ describe('PaymentController', () => {
     it('should handle cancellation without active subscription', async () => {
       paymentController['userSubscription'] = null
 
-      await expect(paymentController.cancelSubscription())
-        .rejects.toThrow('No active subscription to cancel')
+      await expect(paymentController.cancelSubscription()).rejects.toThrow(
+        'No active subscription to cancel'
+      )
     })
   })
 
@@ -338,8 +335,7 @@ describe('PaymentController', () => {
     })
 
     it('should check feature access correctly', async () => {
-      jest.spyOn(paymentController as any, 'mockCheckFeatureAccess')
-        .mockResolvedValue(true)
+      jest.spyOn(paymentController as any, 'mockCheckFeatureAccess').mockResolvedValue(true)
 
       const hasAccess = await paymentController.checkFeatureAccess('advanced_search')
 
@@ -347,8 +343,7 @@ describe('PaymentController', () => {
     })
 
     it('should handle feature access denial', async () => {
-      jest.spyOn(paymentController as any, 'mockCheckFeatureAccess')
-        .mockResolvedValue(false)
+      jest.spyOn(paymentController as any, 'mockCheckFeatureAccess').mockResolvedValue(false)
 
       const deniedSpy = jest.fn()
       paymentController.on('access:denied', deniedSpy)
@@ -358,7 +353,7 @@ describe('PaymentController', () => {
       expect(hasAccess).toBe(false)
       expect(deniedSpy).toHaveBeenCalledWith({
         featureType: 'advanced_search',
-        reason: 'subscription_required'
+        reason: 'subscription_required',
       })
     })
 
@@ -376,8 +371,7 @@ describe('PaymentController', () => {
 
     it('should record feature usage', async () => {
       const metadata = { searchQuery: 'test' }
-      jest.spyOn(paymentController as any, 'mockRecordFeatureUsage')
-        .mockResolvedValue(undefined)
+      jest.spyOn(paymentController as any, 'mockRecordFeatureUsage').mockResolvedValue(undefined)
 
       const usageSpy = jest.fn()
       paymentController.on('usage:recorded', usageSpy)
@@ -386,7 +380,7 @@ describe('PaymentController', () => {
 
       expect(usageSpy).toHaveBeenCalledWith({
         featureType: 'advanced_search',
-        metadata
+        metadata,
       })
       expect(mockLogger.debug).toHaveBeenCalledWith(
         'PaymentController',
@@ -407,12 +401,10 @@ describe('PaymentController', () => {
 
     it('should handle feature usage recording errors', async () => {
       const error = new Error('Recording failed')
-      jest.spyOn(paymentController as any, 'mockRecordFeatureUsage')
-        .mockRejectedValue(error)
+      jest.spyOn(paymentController as any, 'mockRecordFeatureUsage').mockRejectedValue(error)
 
-      await expect(paymentController.recordFeatureUsage('advanced_search'))
-        .rejects.toThrow(error)
-      
+      await expect(paymentController.recordFeatureUsage('advanced_search')).rejects.toThrow(error)
+
       expect(mockLogger.error).toHaveBeenCalledWith(
         'PaymentController',
         'Failed to record feature usage',
@@ -448,10 +440,10 @@ describe('PaymentController', () => {
 
     it('should return deep copies of objects to prevent mutation', async () => {
       await paymentController.setCurrentUser(mockUser)
-      
+
       const user = paymentController.getCurrentUser()
       user!.name = 'Modified Name'
-      
+
       expect(paymentController.getCurrentUser()!.name).toBe('Test User')
     })
   })

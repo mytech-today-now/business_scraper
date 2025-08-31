@@ -38,7 +38,7 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
           degradedServices: systemHealth.services.filter(s => s.status === 'degraded').length,
           unhealthyServices: systemHealth.services.filter(s => s.status === 'unhealthy').length,
           activeAlerts: systemHealth.activeAlerts,
-          lastUpdated: systemHealth.lastUpdated
+          lastUpdated: systemHealth.lastUpdated,
         },
         services: systemHealth.services.map(service => ({
           name: service.service,
@@ -46,18 +46,18 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
           responseTime: service.responseTime,
           lastCheck: service.lastCheck,
           error: service.error,
-          details: service.details
-        }))
+          details: service.details,
+        })),
       }
 
       // Include metrics if requested
       if (includeMetrics) {
         const endTime = new Date()
-        const startTimeMetrics = new Date(endTime.getTime() - (timeWindow * 60 * 60 * 1000))
-        
+        const startTimeMetrics = new Date(endTime.getTime() - timeWindow * 60 * 60 * 1000)
+
         const allMetrics = monitoringService.getMetrics(undefined, {
           start: startTimeMetrics,
-          end: endTime
+          end: endTime,
         })
 
         // Group metrics by name for summary
@@ -72,10 +72,10 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
               average: 0,
               min: Number.MAX_VALUE,
               max: Number.MIN_VALUE,
-              values: []
+              values: [],
             }
           }
-          
+
           const summary = metricsSummary[metric.name]
           summary.count++
           summary.latest = metric
@@ -86,7 +86,8 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
 
         // Calculate averages
         Object.values(metricsSummary).forEach((summary: any) => {
-          summary.average = summary.values.reduce((a: number, b: number) => a + b, 0) / summary.values.length
+          summary.average =
+            summary.values.reduce((a: number, b: number) => a + b, 0) / summary.values.length
           delete summary.values // Remove raw values to reduce response size
         })
 
@@ -94,7 +95,7 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
           timeWindow: `${timeWindow} hours`,
           totalMetrics: allMetrics.length,
           uniqueMetrics: Object.keys(metricsSummary).length,
-          summary: metricsSummary
+          summary: metricsSummary,
         }
       }
 
@@ -113,7 +114,7 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
             timestamp: alert.timestamp,
             metric: alert.metric,
             value: alert.value,
-            threshold: alert.threshold
+            threshold: alert.threshold,
           })),
           summary: {
             total: allAlerts.length,
@@ -123,15 +124,15 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
               critical: activeAlerts.filter(a => a.severity === 'critical').length,
               high: activeAlerts.filter(a => a.severity === 'high').length,
               medium: activeAlerts.filter(a => a.severity === 'medium').length,
-              low: activeAlerts.filter(a => a.severity === 'low').length
+              low: activeAlerts.filter(a => a.severity === 'low').length,
             },
             byType: {
               performance: activeAlerts.filter(a => a.type === 'performance').length,
               error: activeAlerts.filter(a => a.type === 'error').length,
               security: activeAlerts.filter(a => a.type === 'security').length,
-              business: activeAlerts.filter(a => a.type === 'business').length
-            }
-          }
+              business: activeAlerts.filter(a => a.type === 'business').length,
+            },
+          },
         }
       }
 
@@ -143,17 +144,22 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
           heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024), // MB
           heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024), // MB
           external: Math.round(memUsage.external / 1024 / 1024), // MB
-          heapUsagePercent: Math.round((memUsage.heapUsed / memUsage.heapTotal) * 100)
+          heapUsagePercent: Math.round((memUsage.heapUsed / memUsage.heapTotal) * 100),
         }
       }
 
       // Record detailed health check metric
-      await monitoringService.recordMetric('detailed_health_check_response_time', responseTime, 'ms', {
-        status: systemHealth.overall,
-        includeMetrics: includeMetrics.toString(),
-        includeAlerts: includeAlerts.toString(),
-        timeWindow: timeWindow.toString()
-      })
+      await monitoringService.recordMetric(
+        'detailed_health_check_response_time',
+        responseTime,
+        'ms',
+        {
+          status: systemHealth.overall,
+          includeMetrics: includeMetrics.toString(),
+          includeAlerts: includeAlerts.toString(),
+          timeWindow: timeWindow.toString(),
+        }
+      )
 
       // Determine HTTP status
       const httpStatus = systemHealth.overall === 'unhealthy' ? 503 : 200
@@ -163,7 +169,7 @@ async function detailedHealthCheckHandler(request: NextRequest): Promise<NextRes
         responseTime,
         includeMetrics,
         includeAlerts,
-        timeWindow
+        timeWindow,
       })
 
       return { detailedHealth, statusCode: httpStatus }
@@ -192,12 +198,12 @@ async function customHealthCheckHandler(request: NextRequest): Promise<NextRespo
   const result = await handleAsyncApiOperation(
     async () => {
       const body = await request.json()
-      const { 
-        includeMetrics = false, 
-        includeAlerts = false, 
+      const {
+        includeMetrics = false,
+        includeAlerts = false,
         timeWindow = 24,
         services = [],
-        metricNames = []
+        metricNames = [],
       } = body
 
       const startTime = Date.now()
@@ -213,13 +219,13 @@ async function customHealthCheckHandler(request: NextRequest): Promise<NextRespo
           includeAlerts,
           timeWindow,
           services,
-          metricNames
-        }
+          metricNames,
+        },
       }
 
       // Filter services if specific services requested
       if (services.length > 0) {
-        customHealth.services = systemHealth.services.filter(service => 
+        customHealth.services = systemHealth.services.filter(service =>
           services.includes(service.service)
         )
       } else {
@@ -229,22 +235,22 @@ async function customHealthCheckHandler(request: NextRequest): Promise<NextRespo
       // Include specific metrics if requested
       if (includeMetrics && metricNames.length > 0) {
         const endTime = new Date()
-        const startTimeMetrics = new Date(endTime.getTime() - (timeWindow * 60 * 60 * 1000))
-        
+        const startTimeMetrics = new Date(endTime.getTime() - timeWindow * 60 * 60 * 1000)
+
         const specificMetrics: Record<string, any> = {}
         metricNames.forEach((metricName: string) => {
           const metrics = monitoringService.getMetrics(metricName, {
             start: startTimeMetrics,
-            end: endTime
+            end: endTime,
           })
-          
+
           if (metrics.length > 0) {
             specificMetrics[metricName] = {
               count: metrics.length,
               latest: metrics[metrics.length - 1],
               average: metrics.reduce((sum, m) => sum + m.value, 0) / metrics.length,
               min: Math.min(...metrics.map(m => m.value)),
-              max: Math.max(...metrics.map(m => m.value))
+              max: Math.max(...metrics.map(m => m.value)),
             }
           }
         })

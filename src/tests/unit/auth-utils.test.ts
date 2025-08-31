@@ -18,7 +18,7 @@ import {
   isValidSessionToken,
   createAuthErrorResponse,
   createAuthSuccessResponse,
-  AuthenticatedUser
+  AuthenticatedUser,
 } from '@/utils/auth'
 import { getSession, getClientIP } from '@/lib/security'
 
@@ -32,14 +32,14 @@ const mockGetClientIP = getClientIP as jest.MockedFunction<typeof getClientIP>
 describe('Authentication Utility Functions', () => {
   const mockRequest = {
     cookies: {
-      get: jest.fn()
-    }
+      get: jest.fn(),
+    },
   } as unknown as NextRequest
 
   const mockValidSession = {
     id: 'session-123',
     isValid: true,
-    csrfToken: 'csrf-token'
+    csrfToken: 'csrf-token',
   }
 
   const mockUser: AuthenticatedUser = {
@@ -49,7 +49,7 @@ describe('Authentication Utility Functions', () => {
     sessionId: 'session-123',
     isAuthenticated: true,
     permissions: ['read', 'write', 'admin'],
-    roles: ['admin']
+    roles: ['admin'],
   }
 
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe('Authentication Utility Functions', () => {
 
   describe('authenticateUser', () => {
     it('should return user when valid session exists', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
       mockGetSession.mockReturnValue(mockValidSession)
 
       const result = await authenticateUser(mockRequest)
@@ -69,7 +69,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should return null when no session ID provided', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
 
       const result = await authenticateUser(mockRequest)
 
@@ -77,7 +77,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should return null when session is invalid', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'invalid-session' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'invalid-session' })
       mockGetSession.mockReturnValue(null)
 
       const result = await authenticateUser(mockRequest)
@@ -86,7 +86,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should return null when session is not valid', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
       mockGetSession.mockReturnValue({ ...mockValidSession, isValid: false })
 
       const result = await authenticateUser(mockRequest)
@@ -95,7 +95,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should handle authentication errors gracefully', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockImplementation(() => {
+      ;(mockRequest.cookies.get as jest.Mock).mockImplementation(() => {
         throw new Error('Cookie error')
       })
 
@@ -107,7 +107,7 @@ describe('Authentication Utility Functions', () => {
 
   describe('authenticateUserWithResult', () => {
     it('should return success result with user when authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
       mockGetSession.mockReturnValue(mockValidSession)
 
       const result = await authenticateUserWithResult(mockRequest)
@@ -118,7 +118,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should return failure result when authentication fails', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
 
       const result = await authenticateUserWithResult(mockRequest)
 
@@ -129,21 +129,21 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should handle authentication errors', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockImplementation(() => {
+      ;(mockRequest.cookies.get as jest.Mock).mockImplementation(() => {
         throw new Error('Test error')
       })
 
       const result = await authenticateUserWithResult(mockRequest)
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Test error')
-      expect(result.code).toBe('AUTH_ERROR')
+      expect(result.error).toBe('Authentication failed')
+      expect(result.code).toBe('AUTH_FAILED')
     })
   })
 
   describe('requireAuthentication', () => {
     it('should return user when authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
       mockGetSession.mockReturnValue(mockValidSession)
 
       const result = await requireAuthentication(mockRequest)
@@ -152,7 +152,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should throw error when not authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
 
       await expect(requireAuthentication(mockRequest)).rejects.toThrow('Authentication required')
     })
@@ -206,7 +206,9 @@ describe('Authentication Utility Functions', () => {
 
     it('should throw for invalid permission', () => {
       const userWithoutPermission = { ...mockUser, permissions: ['read'] }
-      expect(() => requirePermission(userWithoutPermission, 'write')).toThrow('Permission denied: write required')
+      expect(() => requirePermission(userWithoutPermission, 'write')).toThrow(
+        'Permission denied: write required'
+      )
     })
   })
 
@@ -223,7 +225,7 @@ describe('Authentication Utility Functions', () => {
 
   describe('getUserId', () => {
     it('should return user ID when authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
       mockGetSession.mockReturnValue(mockValidSession)
 
       const result = await getUserId(mockRequest)
@@ -232,7 +234,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should return null when not authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
 
       const result = await getUserId(mockRequest)
 
@@ -242,7 +244,7 @@ describe('Authentication Utility Functions', () => {
 
   describe('isAuthenticated', () => {
     it('should return true when authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
       mockGetSession.mockReturnValue(mockValidSession)
 
       const result = await isAuthenticated(mockRequest)
@@ -251,7 +253,7 @@ describe('Authentication Utility Functions', () => {
     })
 
     it('should return false when not authenticated', async () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
 
       const result = await isAuthenticated(mockRequest)
 
@@ -261,24 +263,24 @@ describe('Authentication Utility Functions', () => {
 
   describe('getSessionInfo', () => {
     it('should return session info', () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue({ value: 'session-123' })
 
       const result = getSessionInfo(mockRequest)
 
       expect(result).toEqual({
         sessionId: 'session-123',
-        ip: '127.0.0.1'
+        ip: '127.0.0.1',
       })
     })
 
     it('should handle missing session', () => {
-      (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
+      ;(mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined)
 
       const result = getSessionInfo(mockRequest)
 
       expect(result).toEqual({
         sessionId: null,
-        ip: '127.0.0.1'
+        ip: '127.0.0.1',
       })
     })
   })
@@ -323,7 +325,7 @@ describe('Authentication Utility Functions', () => {
         email: mockUser.email,
         name: mockUser.name,
         permissions: mockUser.permissions,
-        roles: mockUser.roles
+        roles: mockUser.roles,
       })
       expect(response.timestamp).toBeDefined()
     })

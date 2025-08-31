@@ -5,21 +5,19 @@
  * Handles running and rolling back database migrations for multi-user collaboration
  */
 
-const { Pool } = require('pg')
+const postgres = require('postgres')
 const fs = require('fs')
 const path = require('path')
 
-// Database configuration
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'business_scraper',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'password',
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-}
+// Database configuration for postgres.js
+const connectionString = `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'password'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'business_scraper'}`
 
-const pool = new Pool(dbConfig)
+const sql = postgres(connectionString, {
+  ssl: false, // Explicitly disable SSL to solve persistent SSL issues
+  max: 10,
+  idle_timeout: 30,
+  connect_timeout: 30,
+})
 
 // Migration files
 const migrations = {
@@ -93,10 +91,10 @@ async function executeSqlFile(filePath) {
       throw new Error(`Migration file not found: ${fullPath}`)
     }
 
-    const sql = fs.readFileSync(fullPath, 'utf8')
+    const sqlContent = fs.readFileSync(fullPath, 'utf8')
     console.log(`Executing: ${filePath}`)
 
-    const result = await pool.query(sql)
+    const result = await sql.unsafe(sqlContent)
     console.log(`✓ Successfully executed: ${filePath}`)
 
     return result
@@ -111,7 +109,7 @@ async function executeSqlFile(filePath) {
  */
 async function ensureMigrationLogsTable() {
   try {
-    await pool.query(`
+    await sql`
       CREATE TABLE IF NOT EXISTS migration_logs (
         id SERIAL PRIMARY KEY,
         migration_name VARCHAR(255) NOT NULL,
@@ -121,7 +119,7 @@ async function ensureMigrationLogsTable() {
         error_message TEXT,
         affected_rows INTEGER DEFAULT 0
       )
-    `)
+    `
   } catch (error) {
     console.error('Error creating migration_logs table:', error.message)
     throw error
@@ -135,19 +133,19 @@ async function getMigrationStatus() {
   try {
     await ensureMigrationLogsTable()
 
-    const result = await pool.query(`
-      SELECT 
+    const result = await sql`
+      SELECT
         migration_name,
         status,
         started_at,
         completed_at,
         affected_rows,
         error_message
-      FROM migration_logs 
+      FROM migration_logs
       ORDER BY started_at DESC
-    `)
+    `
 
-    return result.rows
+    return result
   } catch (error) {
     console.error('Error getting migration status:', error.message)
     return []
@@ -229,12 +227,12 @@ async function resetDatabase() {
 
   try {
     // Drop all tables
-    await pool.query(`
+    await sql`
       DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;
       GRANT ALL ON SCHEMA public TO postgres;
       GRANT ALL ON SCHEMA public TO public;
-    `)
+    `
 
     console.log('✓ Database reset successfully')
   } catch (error) {
@@ -323,7 +321,7 @@ async function main() {
     console.error('\n✗ Migration failed:', error.message)
     process.exit(1)
   } finally {
-    await pool.end()
+    await sql.end()
   }
 }
 

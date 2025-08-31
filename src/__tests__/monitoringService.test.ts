@@ -12,13 +12,13 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-  }
+  },
 }))
 
 jest.mock('@/lib/securityLogger', () => ({
   securityLogger: {
     logSecurityEvent: jest.fn(),
-  }
+  },
 }))
 
 describe('MonitoringService', () => {
@@ -50,7 +50,7 @@ describe('MonitoringService', () => {
         name: metricName,
         value,
         unit,
-        tags
+        tags,
       })
       expect(metrics[0].id).toBeDefined()
       expect(metrics[0].timestamp).toBeInstanceOf(Date)
@@ -71,8 +71,8 @@ describe('MonitoringService', () => {
         unit: 'ms',
         tags: {
           endpoint,
-          status_code: statusCode.toString()
-        }
+          status_code: statusCode.toString(),
+        },
       })
     })
 
@@ -89,8 +89,8 @@ describe('MonitoringService', () => {
         value: duration,
         unit: 'ms',
         tags: {
-          query_type: 'select'
-        }
+          query_type: 'select',
+        },
       })
     })
 
@@ -107,8 +107,8 @@ describe('MonitoringService', () => {
         value: duration,
         unit: 'ms',
         tags: {
-          success: 'true'
-        }
+          success: 'true',
+        },
       })
     })
 
@@ -126,7 +126,7 @@ describe('MonitoringService', () => {
       expect(failureMetrics[0]).toMatchObject({
         name: 'payment_failures',
         value: 1,
-        unit: 'count'
+        unit: 'count',
       })
     })
 
@@ -156,7 +156,7 @@ describe('MonitoringService', () => {
         service: serviceName,
         status: 'healthy',
         lastCheck: expect.any(Date),
-        responseTime: expect.any(Number)
+        responseTime: expect.any(Number),
       })
     })
 
@@ -167,14 +167,16 @@ describe('MonitoringService', () => {
         overall: expect.stringMatching(/^(healthy|degraded|unhealthy)$/),
         services: expect.any(Array),
         activeAlerts: expect.any(Number),
-        lastUpdated: expect.any(Date)
+        lastUpdated: expect.any(Date),
       })
     })
 
     it('should mark system as unhealthy when services are unhealthy', async () => {
       // Mock a service health check to fail
       const originalCheckServiceHealth = (monitoringService as any).checkServiceHealth
-      ;(monitoringService as any).checkServiceHealth = jest.fn().mockRejectedValue(new Error('Service down'))
+      ;(monitoringService as any).checkServiceHealth = jest
+        .fn()
+        .mockRejectedValue(new Error('Service down'))
 
       await monitoringService.performHealthCheck('database')
       const systemHealth = monitoringService.getSystemHealth()
@@ -195,7 +197,7 @@ describe('MonitoringService', () => {
         description: 'API response time exceeded threshold',
         metric: 'api_response_time',
         value: 5000,
-        threshold: 3000
+        threshold: 3000,
       }
 
       const alert = await monitoringService.createAlert(alertData)
@@ -204,7 +206,7 @@ describe('MonitoringService', () => {
         ...alertData,
         id: expect.any(String),
         timestamp: expect.any(Date),
-        resolved: false
+        resolved: false,
       })
 
       const activeAlerts = monitoringService.getActiveAlerts()
@@ -217,7 +219,7 @@ describe('MonitoringService', () => {
         type: 'performance',
         severity: 'medium',
         title: 'Test Alert',
-        description: 'Test alert description'
+        description: 'Test alert description',
       })
 
       await monitoringService.resolveAlert(alert.id, 'test-user')
@@ -235,15 +237,17 @@ describe('MonitoringService', () => {
     it('should create critical alert for unhealthy service', async () => {
       // Mock a service health check to fail
       const originalCheckServiceHealth = (monitoringService as any).checkServiceHealth
-      ;(monitoringService as any).checkServiceHealth = jest.fn().mockRejectedValue(new Error('Service down'))
+      ;(monitoringService as any).checkServiceHealth = jest
+        .fn()
+        .mockRejectedValue(new Error('Service down'))
 
       await monitoringService.performHealthCheck('database')
 
       const activeAlerts = monitoringService.getActiveAlerts()
       expect(activeAlerts.length).toBeGreaterThan(0)
-      
-      const serviceAlert = activeAlerts.find(alert => 
-        alert.title.includes('database') && alert.severity === 'critical'
+
+      const serviceAlert = activeAlerts.find(
+        alert => alert.title.includes('database') && alert.severity === 'critical'
       )
       expect(serviceAlert).toBeDefined()
 
@@ -258,8 +262,8 @@ describe('MonitoringService', () => {
       await monitoringService.recordMetric('api_response_time', 1500, 'ms') // Warning threshold is 1000ms
 
       const activeAlerts = monitoringService.getActiveAlerts()
-      const warningAlert = activeAlerts.find(alert => 
-        alert.severity === 'medium' && alert.title.includes('Warning threshold exceeded')
+      const warningAlert = activeAlerts.find(
+        alert => alert.severity === 'medium' && alert.title.includes('Warning threshold exceeded')
       )
       expect(warningAlert).toBeDefined()
     })
@@ -269,8 +273,9 @@ describe('MonitoringService', () => {
       await monitoringService.recordMetric('api_response_time', 4000, 'ms') // Critical threshold is 3000ms
 
       const activeAlerts = monitoringService.getActiveAlerts()
-      const criticalAlert = activeAlerts.find(alert => 
-        alert.severity === 'critical' && alert.title.includes('Critical threshold exceeded')
+      const criticalAlert = activeAlerts.find(
+        alert =>
+          alert.severity === 'critical' && alert.title.includes('Critical threshold exceeded')
       )
       expect(criticalAlert).toBeDefined()
     })
@@ -286,22 +291,24 @@ describe('MonitoringService', () => {
       // Mock timestamps for testing
       const originalRecordMetric = monitoringService.recordMetric.bind(monitoringService)
       let callCount = 0
-      
-      monitoringService.recordMetric = jest.fn().mockImplementation(async (name, value, unit, tags) => {
-        const result = await originalRecordMetric(name, value, unit, tags)
-        
-        // Manually set timestamps for testing
-        const metrics = monitoringService.getMetrics(name)
-        if (metrics.length > 0) {
-          const metric = metrics[metrics.length - 1]
-          if (callCount === 0) metric.timestamp = twoHoursAgo
-          else if (callCount === 1) metric.timestamp = oneHourAgo
-          else metric.timestamp = now
-        }
-        callCount++
-        
-        return result
-      })
+
+      monitoringService.recordMetric = jest
+        .fn()
+        .mockImplementation(async (name, value, unit, tags) => {
+          const result = await originalRecordMetric(name, value, unit, tags)
+
+          // Manually set timestamps for testing
+          const metrics = monitoringService.getMetrics(name)
+          if (metrics.length > 0) {
+            const metric = metrics[metrics.length - 1]
+            if (callCount === 0) metric.timestamp = twoHoursAgo
+            else if (callCount === 1) metric.timestamp = oneHourAgo
+            else metric.timestamp = now
+          }
+          callCount++
+
+          return result
+        })
 
       await monitoringService.recordMetric('test_metric', 100, 'ms')
       await monitoringService.recordMetric('test_metric', 200, 'ms')
@@ -314,7 +321,7 @@ describe('MonitoringService', () => {
 
       const recentMetrics = monitoringService.getMetrics('test_metric', {
         start: oneHourAgo,
-        end: now
+        end: now,
       })
 
       expect(recentMetrics.length).toBeLessThanOrEqual(2) // Should exclude metrics older than 1 hour

@@ -48,6 +48,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <meta name="apple-mobile-web-app-title" content="Business Scraper" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-TileColor" content="#2563eb" />
+        <link rel="preload" href="/favicon.ico" as="image" type="image/x-icon" />
+        <link rel="dns-prefetch" href="https://js.stripe.com" />
+        <link rel="preconnect" href="https://js.stripe.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#2563eb" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/favicon.png" />

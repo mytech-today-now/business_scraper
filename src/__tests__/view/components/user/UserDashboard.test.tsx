@@ -29,7 +29,7 @@ describe('UserDashboard', () => {
     isActive: true,
     loginAttempts: 0,
     createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01')
+    updatedAt: new Date('2024-01-01'),
   }
 
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe('UserDashboard', () => {
     test('should display last login when available', () => {
       const userWithLastLogin = {
         ...baseUser,
-        lastLoginAt: new Date('2024-01-15')
+        lastLoginAt: new Date('2024-01-15'),
       }
       render(<UserDashboard user={userWithLastLogin} onUpdateUser={mockOnUpdateUser} />)
 
@@ -81,8 +81,8 @@ describe('UserDashboard', () => {
         usageQuotas: {
           ...baseUser.usageQuotas,
           scrapingRequests: { used: 5, limit: 10, resetDate: new Date('2024-02-01') },
-          exports: { used: 2, limit: 5, resetDate: new Date('2024-02-01') }
-        }
+          exports: { used: 2, limit: 5, resetDate: new Date('2024-02-01') },
+        },
       }
 
       render(<UserDashboard user={userWithUsage} onUpdateUser={mockOnUpdateUser} />)
@@ -98,8 +98,8 @@ describe('UserDashboard', () => {
         ...baseUser,
         usageQuotas: {
           ...baseUser.usageQuotas,
-          scrapingRequests: { used: 0, limit: 10, resetDate: new Date('2024-02-01') }
-        }
+          scrapingRequests: { used: 0, limit: 10, resetDate: new Date('2024-02-01') },
+        },
       }
 
       render(<UserDashboard user={userWithQuotas} onUpdateUser={mockOnUpdateUser} />)
@@ -112,7 +112,7 @@ describe('UserDashboard', () => {
       const enterpriseUser = {
         ...baseUser,
         subscriptionPlan: 'enterprise',
-        usageQuotas: createDefaultUsageQuotas('enterprise')
+        usageQuotas: createDefaultUsageQuotas('enterprise'),
       }
 
       render(<UserDashboard user={enterpriseUser} onUpdateUser={mockOnUpdateUser} />)
@@ -128,7 +128,7 @@ describe('UserDashboard', () => {
         ...baseUser,
         stripeCustomerId: 'cus_123',
         paymentMethodLast4: '1234',
-        paymentMethodBrand: 'visa'
+        paymentMethodBrand: 'visa',
       }
 
       render(<UserDashboard user={userWithPayment} onUpdateUser={mockOnUpdateUser} />)
@@ -146,8 +146,8 @@ describe('UserDashboard', () => {
           city: 'Anytown',
           state: 'CA',
           postalCode: '12345',
-          country: 'US'
-        }
+          country: 'US',
+        },
       }
 
       render(<UserDashboard user={userWithBilling} onUpdateUser={mockOnUpdateUser} />)
@@ -171,7 +171,7 @@ describe('UserDashboard', () => {
         ...baseUser,
         subscriptionStatus: 'active' as const,
         subscriptionPlan: 'pro',
-        subscriptionEndsAt: new Date('2024-12-31')
+        subscriptionEndsAt: new Date('2024-12-31'),
       }
 
       render(<UserDashboard user={activeSubscriber} onUpdateUser={mockOnUpdateUser} />)
@@ -188,7 +188,7 @@ describe('UserDashboard', () => {
       const activeSubscriber = {
         ...baseUser,
         subscriptionStatus: 'active' as const,
-        subscriptionPlan: 'pro'
+        subscriptionPlan: 'pro',
       }
 
       // Mock window.confirm
@@ -203,7 +203,7 @@ describe('UserDashboard', () => {
       await waitFor(() => {
         expect(mockOnUpdateUser).toHaveBeenCalledWith(
           expect.objectContaining({
-            subscriptionStatus: 'canceled'
+            subscriptionStatus: 'canceled',
           })
         )
       })
@@ -216,7 +216,7 @@ describe('UserDashboard', () => {
       const activeSubscriber = {
         ...baseUser,
         subscriptionStatus: 'active' as const,
-        subscriptionPlan: 'pro'
+        subscriptionPlan: 'pro',
       }
 
       // Mock window.confirm to return false
@@ -246,7 +246,11 @@ describe('UserDashboard', () => {
       render(<UserDashboard user={baseUser} onUpdateUser={mockOnUpdateUser} />)
 
       expect(screen.getByText('Upgrade Your Account')).toBeInTheDocument()
-      expect(screen.getByText('Get access to advanced features and higher usage limits with a paid plan.')).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          'Get access to advanced features and higher usage limits with a paid plan.'
+        )
+      ).toBeInTheDocument()
       expect(screen.getByText('View Plans')).toBeInTheDocument()
     })
 
@@ -263,7 +267,7 @@ describe('UserDashboard', () => {
       const paidUser = {
         ...baseUser,
         subscriptionStatus: 'active' as const,
-        subscriptionPlan: 'pro'
+        subscriptionPlan: 'pro',
       }
 
       render(<UserDashboard user={paidUser} onUpdateUser={mockOnUpdateUser} />)
@@ -274,9 +278,7 @@ describe('UserDashboard', () => {
 
   describe('Error Handling', () => {
     test('should display error message when data loading fails', async () => {
-      mockUserPaymentService.getUserPaymentProfile.mockRejectedValue(
-        new Error('Network error')
-      )
+      mockUserPaymentService.getUserPaymentProfile.mockRejectedValue(new Error('Network error'))
 
       render(<UserDashboard user={baseUser} onUpdateUser={mockOnUpdateUser} />)
 
@@ -289,7 +291,7 @@ describe('UserDashboard', () => {
       const activeSubscriber = {
         ...baseUser,
         subscriptionStatus: 'active' as const,
-        subscriptionPlan: 'pro'
+        subscriptionPlan: 'pro',
       }
 
       // Mock window.confirm
@@ -327,13 +329,13 @@ describe('UserDashboard', () => {
         { status: 'active', expectedText: 'Active' },
         { status: 'past_due', expectedText: 'Past Due' },
         { status: 'canceled', expectedText: 'Canceled' },
-        { status: 'incomplete', expectedText: 'Incomplete' }
+        { status: 'incomplete', expectedText: 'Incomplete' },
       ]
 
       statuses.forEach(({ status, expectedText }) => {
         const userWithStatus = {
           ...baseUser,
-          subscriptionStatus: status as any
+          subscriptionStatus: status as any,
         }
 
         const { unmount } = render(
@@ -359,7 +361,7 @@ describe('UserDashboard', () => {
       const activeSubscriber = {
         ...baseUser,
         subscriptionStatus: 'active' as const,
-        subscriptionPlan: 'pro'
+        subscriptionPlan: 'pro',
       }
 
       render(<UserDashboard user={activeSubscriber} onUpdateUser={mockOnUpdateUser} />)

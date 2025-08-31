@@ -959,7 +959,7 @@ export function App(): JSX.Element {
     analyticsService.trackEvent('app_initialized', {
       timestamp: new Date().toISOString(),
       isMobile,
-      hasResults
+      hasResults,
     })
   }, [])
 
@@ -968,7 +968,7 @@ export function App(): JSX.Element {
     analyticsService.trackEvent('navigation_tab_change', {
       activeTab,
       timestamp: new Date().toISOString(),
-      isMobile
+      isMobile,
     })
   }, [activeTab, isMobile])
 
@@ -980,7 +980,7 @@ export function App(): JSX.Element {
     analyticsService.trackEvent('feature_tab_navigation', {
       fromTab: activeTab,
       toTab: tab,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   }
 

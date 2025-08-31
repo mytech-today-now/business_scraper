@@ -60,12 +60,14 @@ export class ComplianceReportingService {
   /**
    * Generate comprehensive compliance report
    */
-  async generateComplianceReport(request: ComplianceReportRequest): Promise<DetailedComplianceReport> {
+  async generateComplianceReport(
+    request: ComplianceReportRequest
+  ): Promise<DetailedComplianceReport> {
     try {
       logger.info('ComplianceReporting', `Generating ${request.complianceType} report`, {
         startDate: request.startDate,
         endDate: request.endDate,
-        requestedBy: request.requestedBy
+        requestedBy: request.requestedBy,
       })
 
       // Get base audit report
@@ -110,7 +112,7 @@ export class ComplianceReportingService {
         riskAssessment,
         recommendations,
         complianceScore,
-        previousPeriodComparison
+        previousPeriodComparison,
       }
 
       // Store report
@@ -124,17 +126,17 @@ export class ComplianceReportingService {
           complianceType: request.complianceType,
           period: `${request.startDate.toISOString()} - ${request.endDate.toISOString()}`,
           complianceScore: complianceScore,
-          riskLevel: riskAssessment.overallRisk
+          riskLevel: riskAssessment.overallRisk,
         },
         severity: 'medium',
         category: 'system',
-        complianceFlags: [request.complianceType]
+        complianceFlags: [request.complianceType],
       })
 
       logger.info('ComplianceReporting', `Compliance report generated successfully`, {
         reportId: detailedReport.reportId,
         complianceScore,
-        riskLevel: riskAssessment.overallRisk
+        riskLevel: riskAssessment.overallRisk,
       })
 
       return detailedReport
@@ -147,23 +149,28 @@ export class ComplianceReportingService {
   /**
    * Generate GDPR-specific report
    */
-  async generateGDPRReport(startDate: Date, endDate: Date, requestedBy: string): Promise<DetailedComplianceReport> {
+  async generateGDPRReport(
+    startDate: Date,
+    endDate: Date,
+    requestedBy: string
+  ): Promise<DetailedComplianceReport> {
     const request: ComplianceReportRequest = {
       complianceType: 'GDPR',
       startDate,
       endDate,
       includeDetails: true,
       format: 'json',
-      requestedBy
+      requestedBy,
     }
 
     const report = await this.generateComplianceReport(request)
 
     // Add GDPR-specific data
     const gdprRequests = await gdprService.getUserRequests('all') // Would need to implement this
-    
+
     // Enhance report with GDPR-specific metrics
-    report.metrics.userRightsRequests = gdprRequests.exportRequests.length + gdprRequests.deletionRequests.length
+    report.metrics.userRightsRequests =
+      gdprRequests.exportRequests.length + gdprRequests.deletionRequests.length
 
     return report
   }
@@ -171,14 +178,18 @@ export class ComplianceReportingService {
   /**
    * Generate PCI DSS report
    */
-  async generatePCIDSSReport(startDate: Date, endDate: Date, requestedBy: string): Promise<DetailedComplianceReport> {
+  async generatePCIDSSReport(
+    startDate: Date,
+    endDate: Date,
+    requestedBy: string
+  ): Promise<DetailedComplianceReport> {
     const request: ComplianceReportRequest = {
       complianceType: 'PCI_DSS',
       startDate,
       endDate,
       includeDetails: true,
       format: 'json',
-      requestedBy
+      requestedBy,
     }
 
     return await this.generateComplianceReport(request)
@@ -187,14 +198,18 @@ export class ComplianceReportingService {
   /**
    * Generate SOC 2 report
    */
-  async generateSOC2Report(startDate: Date, endDate: Date, requestedBy: string): Promise<DetailedComplianceReport> {
+  async generateSOC2Report(
+    startDate: Date,
+    endDate: Date,
+    requestedBy: string
+  ): Promise<DetailedComplianceReport> {
     const request: ComplianceReportRequest = {
       complianceType: 'SOC2',
       startDate,
       endDate,
       includeDetails: true,
       format: 'json',
-      requestedBy
+      requestedBy,
     }
 
     return await this.generateComplianceReport(request)
@@ -237,27 +252,27 @@ export class ComplianceReportingService {
     const auditLogs = await auditService.getAuditLogs({
       startDate,
       endDate,
-      complianceFlags: [complianceType]
+      complianceFlags: [complianceType],
     })
 
     const logs = auditLogs.logs
 
     return {
       totalEvents: logs.length,
-      securityIncidents: logs.filter(log => 
-        log.category === 'security' && log.severity === 'critical'
+      securityIncidents: logs.filter(
+        log => log.category === 'security' && log.severity === 'critical'
       ).length,
       dataAccessEvents: logs.filter(log => log.category === 'data').length,
       paymentEvents: logs.filter(log => log.category === 'payment').length,
-      userRightsRequests: logs.filter(log => 
-        log.action.includes('data_export') || log.action.includes('data_deletion')
+      userRightsRequests: logs.filter(
+        log => log.action.includes('data_export') || log.action.includes('data_deletion')
       ).length,
-      dataBreaches: logs.filter(log => 
-        log.action.includes('data_breach') || log.action.includes('unauthorized_access')
+      dataBreaches: logs.filter(
+        log => log.action.includes('data_breach') || log.action.includes('unauthorized_access')
       ).length,
-      complianceViolations: logs.filter(log => 
-        log.severity === 'critical' && log.action.includes('violation')
-      ).length
+      complianceViolations: logs.filter(
+        log => log.severity === 'critical' && log.action.includes('violation')
+      ).length,
     }
   }
 
@@ -278,7 +293,7 @@ export class ComplianceReportingService {
         description: `${metrics.securityIncidents} critical security incidents detected`,
         severity: metrics.securityIncidents > 5 ? 'critical' : 'high',
         impact: 'High - potential data compromise',
-        likelihood: 'Medium'
+        likelihood: 'Medium',
       })
     }
 
@@ -289,7 +304,7 @@ export class ComplianceReportingService {
         description: `${metrics.dataBreaches} potential data breaches detected`,
         severity: 'critical',
         impact: 'Critical - regulatory penalties possible',
-        likelihood: 'High'
+        likelihood: 'High',
       })
     }
 
@@ -300,7 +315,7 @@ export class ComplianceReportingService {
         description: `${metrics.complianceViolations} compliance violations detected`,
         severity: 'high',
         impact: 'High - regulatory action possible',
-        likelihood: 'Medium'
+        likelihood: 'Medium',
       })
     }
 
@@ -322,7 +337,7 @@ export class ComplianceReportingService {
     return {
       overallRisk,
       riskFactors,
-      mitigationStrategies: this.generateMitigationStrategies(riskFactors, complianceType)
+      mitigationStrategies: this.generateMitigationStrategies(riskFactors, complianceType),
     }
   }
 
@@ -372,7 +387,10 @@ export class ComplianceReportingService {
   /**
    * Calculate compliance score (0-100)
    */
-  private calculateComplianceScore(metrics: ComplianceMetrics, riskAssessment: RiskAssessment): number {
+  private calculateComplianceScore(
+    metrics: ComplianceMetrics,
+    riskAssessment: RiskAssessment
+  ): number {
     let score = 100
 
     // Deduct points for incidents
@@ -399,7 +417,10 @@ export class ComplianceReportingService {
   /**
    * Generate mitigation strategies
    */
-  private generateMitigationStrategies(riskFactors: RiskFactor[], complianceType: string): string[] {
+  private generateMitigationStrategies(
+    riskFactors: RiskFactor[],
+    complianceType: string
+  ): string[] {
     const strategies: string[] = []
 
     riskFactors.forEach(factor => {
@@ -425,7 +446,9 @@ export class ComplianceReportingService {
   /**
    * Get previous period comparison
    */
-  private async getPreviousPeriodComparison(request: ComplianceReportRequest): Promise<ComplianceComparison | undefined> {
+  private async getPreviousPeriodComparison(
+    request: ComplianceReportRequest
+  ): Promise<ComplianceComparison | undefined> {
     const periodLength = request.endDate.getTime() - request.startDate.getTime()
     const previousStartDate = new Date(request.startDate.getTime() - periodLength)
     const previousEndDate = new Date(request.endDate.getTime() - periodLength)
@@ -447,7 +470,7 @@ export class ComplianceReportingService {
         totalEvents: currentMetrics.totalEvents - previousMetrics.totalEvents,
         securityIncidents: currentMetrics.securityIncidents - previousMetrics.securityIncidents,
         dataAccessEvents: currentMetrics.dataAccessEvents - previousMetrics.dataAccessEvents,
-        paymentEvents: currentMetrics.paymentEvents - previousMetrics.paymentEvents
+        paymentEvents: currentMetrics.paymentEvents - previousMetrics.paymentEvents,
       }
 
       const trendAnalysis: string[] = []
@@ -461,7 +484,7 @@ export class ComplianceReportingService {
       return {
         previousPeriod: { startDate: previousStartDate, endDate: previousEndDate },
         metricsChange,
-        trendAnalysis
+        trendAnalysis,
       }
     } catch (error) {
       logger.warn('ComplianceReporting', 'Failed to generate previous period comparison', error)

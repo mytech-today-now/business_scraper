@@ -25,15 +25,14 @@ import {
   formatCurrency,
   isSubscriptionActive,
   getDaysUntilExpiration,
-  getFeatureUsageSummary
+  getFeatureUsageSummary,
 } from '@/model/types/payment'
 
 describe('Payment Models and Data Structures', () => {
-  
   // ============================================================================
   // SUBSCRIPTION PLAN TESTS
   // ============================================================================
-  
+
   describe('SubscriptionPlan', () => {
     const validSubscriptionPlan: SubscriptionPlan = {
       id: 'plan_123',
@@ -45,7 +44,7 @@ describe('Payment Models and Data Structures', () => {
       interval: 'month',
       features: ['Advanced Search', 'API Access', 'Priority Support'],
       isActive: true,
-      createdAt: new Date('2024-01-01T00:00:00Z')
+      createdAt: new Date('2024-01-01T00:00:00Z'),
     }
 
     it('should validate valid subscription plan data', () => {
@@ -58,7 +57,7 @@ describe('Payment Models and Data Structures', () => {
     it('should reject subscription plan with missing required fields', () => {
       const invalidPlan = { ...validSubscriptionPlan }
       delete (invalidPlan as any).id
-      
+
       const result = validateSubscriptionPlan(invalidPlan)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('id: Required')
@@ -66,7 +65,7 @@ describe('Payment Models and Data Structures', () => {
 
     it('should reject subscription plan with invalid price', () => {
       const invalidPlan = { ...validSubscriptionPlan, priceCents: -100 }
-      
+
       const result = validateSubscriptionPlan(invalidPlan)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('priceCents: Price must be non-negative')
@@ -74,7 +73,7 @@ describe('Payment Models and Data Structures', () => {
 
     it('should reject subscription plan with invalid currency', () => {
       const invalidPlan = { ...validSubscriptionPlan, currency: 'usd' }
-      
+
       const result = validateSubscriptionPlan(invalidPlan)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('currency: Currency must be uppercase')
@@ -82,7 +81,7 @@ describe('Payment Models and Data Structures', () => {
 
     it('should reject subscription plan with invalid interval', () => {
       const invalidPlan = { ...validSubscriptionPlan, interval: 'week' as any }
-      
+
       const result = validateSubscriptionPlan(invalidPlan)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('interval: Interval must be month or year')
@@ -98,7 +97,7 @@ describe('Payment Models and Data Structures', () => {
   // ============================================================================
   // USER SUBSCRIPTION TESTS
   // ============================================================================
-  
+
   describe('UserSubscription', () => {
     const validUserSubscription: UserSubscription = {
       id: 'sub_123',
@@ -110,7 +109,7 @@ describe('Payment Models and Data Structures', () => {
       currentPeriodEnd: new Date('2024-02-01T00:00:00Z'),
       cancelAtPeriodEnd: false,
       createdAt: new Date('2024-01-01T00:00:00Z'),
-      updatedAt: new Date('2024-01-01T00:00:00Z')
+      updatedAt: new Date('2024-01-01T00:00:00Z'),
     }
 
     it('should validate valid user subscription data', () => {
@@ -122,7 +121,7 @@ describe('Payment Models and Data Structures', () => {
 
     it('should reject user subscription with invalid status', () => {
       const invalidSubscription = { ...validUserSubscription, status: 'invalid' as any }
-      
+
       const result = validateUserSubscription(invalidSubscription)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('status: Invalid subscription status')
@@ -130,11 +129,11 @@ describe('Payment Models and Data Structures', () => {
 
     it('should validate subscription activity correctly', () => {
       expect(isSubscriptionActive(validUserSubscription)).toBe(false) // Past date
-      
+
       const activeSubscription = {
         ...validUserSubscription,
         currentPeriodStart: new Date(Date.now() - 86400000), // Yesterday
-        currentPeriodEnd: new Date(Date.now() + 86400000) // Tomorrow
+        currentPeriodEnd: new Date(Date.now() + 86400000), // Tomorrow
       }
       expect(isSubscriptionActive(activeSubscription)).toBe(true)
     })
@@ -142,14 +141,14 @@ describe('Payment Models and Data Structures', () => {
     it('should calculate days until expiration correctly', () => {
       const futureSubscription = {
         ...validUserSubscription,
-        currentPeriodEnd: new Date(Date.now() + 86400000 * 5) // 5 days from now
+        currentPeriodEnd: new Date(Date.now() + 86400000 * 5), // 5 days from now
       }
       const days = getDaysUntilExpiration(futureSubscription)
       expect(days).toBe(5)
-      
+
       const expiredSubscription = {
         ...validUserSubscription,
-        currentPeriodEnd: new Date(Date.now() - 86400000) // Yesterday
+        currentPeriodEnd: new Date(Date.now() - 86400000), // Yesterday
       }
       expect(getDaysUntilExpiration(expiredSubscription)).toBeNull()
     })
@@ -163,7 +162,7 @@ describe('Payment Models and Data Structures', () => {
   // ============================================================================
   // PAYMENT TRANSACTION TESTS
   // ============================================================================
-  
+
   describe('PaymentTransaction', () => {
     const validPaymentTransaction: PaymentTransaction = {
       id: 'txn_123',
@@ -174,7 +173,7 @@ describe('Payment Models and Data Structures', () => {
       status: 'succeeded',
       description: 'Monthly subscription payment',
       metadata: { planId: 'plan_123', period: 'monthly' },
-      createdAt: new Date('2024-01-01T00:00:00Z')
+      createdAt: new Date('2024-01-01T00:00:00Z'),
     }
 
     it('should validate valid payment transaction data', () => {
@@ -186,7 +185,7 @@ describe('Payment Models and Data Structures', () => {
 
     it('should reject payment transaction with invalid amount', () => {
       const invalidTransaction = { ...validPaymentTransaction, amountCents: 0 }
-      
+
       const result = validatePaymentTransaction(invalidTransaction)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('amountCents: Amount must be positive')
@@ -201,7 +200,7 @@ describe('Payment Models and Data Structures', () => {
   // ============================================================================
   // FEATURE USAGE TESTS
   // ============================================================================
-  
+
   describe('FeatureUsage', () => {
     const validFeatureUsage: FeatureUsage = {
       id: 'usage_123',
@@ -210,7 +209,7 @@ describe('Payment Models and Data Structures', () => {
       usageCount: 10,
       date: new Date('2024-01-01T00:00:00Z'),
       metadata: { searchQuery: 'restaurants', location: 'New York' },
-      createdAt: new Date('2024-01-01T12:00:00Z')
+      createdAt: new Date('2024-01-01T12:00:00Z'),
     }
 
     it('should validate valid feature usage data', () => {
@@ -222,7 +221,7 @@ describe('Payment Models and Data Structures', () => {
 
     it('should reject feature usage with invalid feature type', () => {
       const invalidUsage = { ...validFeatureUsage, featureType: 'invalid_feature' as any }
-      
+
       const result = validateFeatureUsage(invalidUsage)
       expect(result.success).toBe(false)
       expect(result.errors).toContain('featureType: Invalid feature type')
@@ -232,15 +231,15 @@ describe('Payment Models and Data Structures', () => {
       const usageRecords: FeatureUsage[] = [
         { ...validFeatureUsage, featureType: 'scraping_request', usageCount: 5 },
         { ...validFeatureUsage, featureType: 'export', usageCount: 3 },
-        { ...validFeatureUsage, featureType: 'scraping_request', usageCount: 2 }
+        { ...validFeatureUsage, featureType: 'scraping_request', usageCount: 2 },
       ]
-      
+
       const summary = getFeatureUsageSummary(
         usageRecords,
         new Date('2024-01-01'),
         new Date('2024-01-02')
       )
-      
+
       expect(summary['scraping_request']).toBe(7)
       expect(summary['export']).toBe(3)
     })
@@ -254,17 +253,17 @@ describe('Payment Models and Data Structures', () => {
   // ============================================================================
   // UTILITY FUNCTION TESTS
   // ============================================================================
-  
+
   describe('Utility Functions', () => {
     it('should convert cents to dollars correctly', () => {
       expect(centsTodollars(2999)).toBe(29.99)
-      expect(centsTodollars(100)).toBe(1.00)
-      expect(centsTodollars(0)).toBe(0.00)
+      expect(centsTodollars(100)).toBe(1.0)
+      expect(centsTodollars(0)).toBe(0.0)
     })
 
     it('should convert dollars to cents correctly', () => {
       expect(dollarsToCents(29.99)).toBe(2999)
-      expect(dollarsToCents(1.00)).toBe(100)
+      expect(dollarsToCents(1.0)).toBe(100)
       expect(dollarsToCents(0)).toBe(0)
     })
 
@@ -290,7 +289,7 @@ describe('Payment Models and Data Structures', () => {
         interval: 'month',
         features: ['Feature 1'],
         isActive: true,
-        createdAt: new Date()
+        createdAt: new Date(),
       }
 
       expect(() => SubscriptionPlanSchema.parse(validPlan)).not.toThrow()
@@ -339,7 +338,7 @@ describe('Payment Models and Data Structures', () => {
         currentPeriodEnd: new Date('2024-02-01T00:00:00Z'),
         cancelAtPeriodEnd: false,
         createdAt: new Date('2024-01-01T00:00:00Z'),
-        updatedAt: new Date('2024-01-01T00:00:00Z')
+        updatedAt: new Date('2024-01-01T00:00:00Z'),
       }
 
       expect(isSubscriptionActive(expiredSubscription)).toBe(false)
@@ -357,7 +356,7 @@ describe('Payment Models and Data Structures', () => {
         SUBSCRIPTION_STATUSES,
         PAYMENT_STATUSES,
         FEATURE_TYPES,
-        BILLING_INTERVALS
+        BILLING_INTERVALS,
       } = require('@/model/types/payment')
 
       expect(SUPPORTED_CURRENCIES).toBeDefined()

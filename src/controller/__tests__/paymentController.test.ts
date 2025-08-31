@@ -21,9 +21,9 @@ describe('PaymentController', () => {
     mockUser = {
       id: 'test-user-123',
       email: 'test@example.com',
-      name: 'Test User'
+      name: 'Test User',
     }
-    
+
     // Clear all mocks
     jest.clearAllMocks()
   })
@@ -49,7 +49,9 @@ describe('PaymentController', () => {
       paymentController.on('payment:error', errorSpy)
 
       // Mock loadSubscriptionPlans to throw error
-      jest.spyOn(paymentController as any, 'getMockSubscriptionPlans').mockRejectedValue(new Error('Init failed'))
+      jest
+        .spyOn(paymentController as any, 'getMockSubscriptionPlans')
+        .mockRejectedValue(new Error('Init failed'))
 
       await expect(paymentController.initializePaymentSystem()).rejects.toThrow('Init failed')
       expect(errorSpy).toHaveBeenCalled()
@@ -61,7 +63,10 @@ describe('PaymentController', () => {
 
       await paymentController.initializePaymentSystem()
 
-      expect(loggerSpy).toHaveBeenCalledWith('PaymentController', 'Payment system already initialized')
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'PaymentController',
+        'Payment system already initialized'
+      )
     })
   })
 
@@ -91,7 +96,9 @@ describe('PaymentController', () => {
 
     it('should handle plan loading errors', async () => {
       const newController = new PaymentController()
-      jest.spyOn(newController as any, 'getMockSubscriptionPlans').mockRejectedValue(new Error('Plans failed'))
+      jest
+        .spyOn(newController as any, 'getMockSubscriptionPlans')
+        .mockRejectedValue(new Error('Plans failed'))
 
       await expect(newController.loadSubscriptionPlans()).rejects.toThrow('Plans failed')
     })
@@ -113,9 +120,15 @@ describe('PaymentController', () => {
     })
 
     it('should reject invalid user objects', async () => {
-      await expect(paymentController.setCurrentUser(null)).rejects.toThrow('Invalid user object provided')
-      await expect(paymentController.setCurrentUser({})).rejects.toThrow('Invalid user object provided')
-      await expect(paymentController.setCurrentUser({ name: 'No ID' })).rejects.toThrow('Invalid user object provided')
+      await expect(paymentController.setCurrentUser(null)).rejects.toThrow(
+        'Invalid user object provided'
+      )
+      await expect(paymentController.setCurrentUser({})).rejects.toThrow(
+        'Invalid user object provided'
+      )
+      await expect(paymentController.setCurrentUser({ name: 'No ID' })).rejects.toThrow(
+        'Invalid user object provided'
+      )
     })
 
     it('should load user payment data after setting user', async () => {
@@ -128,7 +141,9 @@ describe('PaymentController', () => {
     })
 
     it('should handle user payment data loading errors', async () => {
-      jest.spyOn(paymentController as any, 'getMockUserSubscription').mockRejectedValue(new Error('Load failed'))
+      jest
+        .spyOn(paymentController as any, 'getMockUserSubscription')
+        .mockRejectedValue(new Error('Load failed'))
 
       await expect(paymentController.setCurrentUser(mockUser)).rejects.toThrow('Load failed')
     })
@@ -165,14 +180,18 @@ describe('PaymentController', () => {
     })
 
     it('should reject subscription creation with invalid plan', async () => {
-      await expect(paymentController.createSubscription('invalid-plan')).rejects.toThrow('Plan not found: invalid-plan')
+      await expect(paymentController.createSubscription('invalid-plan')).rejects.toThrow(
+        'Plan not found: invalid-plan'
+      )
     })
 
     it('should handle subscription creation errors', async () => {
       const errorSpy = jest.fn()
       paymentController.on('payment:error', errorSpy)
 
-      jest.spyOn(paymentController as any, 'createMockSubscription').mockRejectedValue(new Error('Creation failed'))
+      jest
+        .spyOn(paymentController as any, 'createMockSubscription')
+        .mockRejectedValue(new Error('Creation failed'))
 
       await expect(paymentController.createSubscription('basic')).rejects.toThrow('Creation failed')
       expect(errorSpy).toHaveBeenCalled()
@@ -182,7 +201,7 @@ describe('PaymentController', () => {
     it('should cancel subscription successfully', async () => {
       // First create a subscription
       await paymentController.createSubscription('basic')
-      
+
       // Mock that user has a subscription
       jest.spyOn(paymentController, 'getUserSubscription').mockReturnValue({
         id: 'sub-123',
@@ -194,7 +213,7 @@ describe('PaymentController', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       const canceledSpy = jest.fn()
@@ -206,7 +225,9 @@ describe('PaymentController', () => {
     })
 
     it('should reject cancellation without active subscription', async () => {
-      await expect(paymentController.cancelSubscription()).rejects.toThrow('No active subscription to cancel')
+      await expect(paymentController.cancelSubscription()).rejects.toThrow(
+        'No active subscription to cancel'
+      )
     })
   })
 
@@ -230,7 +251,9 @@ describe('PaymentController', () => {
     })
 
     it('should handle feature access check errors', async () => {
-      jest.spyOn(paymentController as any, 'mockCheckFeatureAccess').mockRejectedValue(new Error('Access check failed'))
+      jest
+        .spyOn(paymentController as any, 'mockCheckFeatureAccess')
+        .mockRejectedValue(new Error('Access check failed'))
 
       const hasAccess = await paymentController.checkFeatureAccess('scraping_request')
       expect(hasAccess).toBe(false)
@@ -262,9 +285,13 @@ describe('PaymentController', () => {
     })
 
     it('should handle usage recording errors', async () => {
-      jest.spyOn(paymentController as any, 'mockRecordFeatureUsage').mockRejectedValue(new Error('Recording failed'))
+      jest
+        .spyOn(paymentController as any, 'mockRecordFeatureUsage')
+        .mockRejectedValue(new Error('Recording failed'))
 
-      await expect(paymentController.recordFeatureUsage('scraping_request')).rejects.toThrow('Recording failed')
+      await expect(paymentController.recordFeatureUsage('scraping_request')).rejects.toThrow(
+        'Recording failed'
+      )
     })
   })
 

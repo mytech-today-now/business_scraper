@@ -21,11 +21,11 @@ describe('FeatureAccessController', () => {
   beforeEach(() => {
     featureAccessController = new FeatureAccessController()
     mockPaymentController = paymentController as jest.Mocked<typeof paymentController>
-    
+
     mockUser = {
       id: 'test-user-123',
       email: 'test@example.com',
-      name: 'Test User'
+      name: 'Test User',
     }
 
     mockSubscription = {
@@ -38,7 +38,7 @@ describe('FeatureAccessController', () => {
       currentPeriodEnd: new Date(Date.now() + 23 * 24 * 60 * 60 * 1000),
       cancelAtPeriodEnd: false,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     // Reset mocks
@@ -120,14 +120,14 @@ describe('FeatureAccessController', () => {
   describe('Plan Type Detection', () => {
     it('should return free for null subscription', () => {
       mockPaymentController.getUserSubscription.mockReturnValue(null)
-      
+
       const planType = (featureAccessController as any).getPlanType(null)
       expect(planType).toBe('free')
     })
 
     it('should return free for inactive subscription', () => {
       const inactiveSubscription = { ...mockSubscription, status: 'canceled' as const }
-      
+
       const planType = (featureAccessController as any).getPlanType(inactiveSubscription)
       expect(planType).toBe('free')
     })
@@ -139,7 +139,7 @@ describe('FeatureAccessController', () => {
 
     it('should default to free for unrecognized plan', () => {
       const unknownSubscription = { ...mockSubscription, planId: 'unknown-plan' }
-      
+
       const planType = (featureAccessController as any).getPlanType(unknownSubscription)
       expect(planType).toBe('free')
     })
@@ -185,7 +185,7 @@ describe('FeatureAccessController', () => {
 
     it('should handle cache for multiple users', async () => {
       const user2 = { id: 'user-2', email: 'user2@example.com' }
-      
+
       jest.spyOn(featureAccessController as any, 'getMockCurrentUsage').mockResolvedValue(5)
 
       // Cache for first user
@@ -255,13 +255,14 @@ describe('FeatureAccessController', () => {
     })
 
     it('should return usage summary for all features', async () => {
-      jest.spyOn(featureAccessController as any, 'getMockCurrentUsage')
+      jest
+        .spyOn(featureAccessController as any, 'getMockCurrentUsage')
         .mockImplementation((userId: string, featureType: string) => {
           const usage: Record<string, number> = {
             scraping_request: 25,
             export: 10,
             advanced_search: 3,
-            api_access: 0
+            api_access: 0,
           }
           return Promise.resolve(usage[featureType] || 0)
         })
@@ -316,25 +317,25 @@ describe('FeatureAccessController', () => {
   describe('Event Handling', () => {
     it('should clear cache when subscription is loaded', () => {
       mockPaymentController.getCurrentUser.mockReturnValue(mockUser)
-      
+
       const clearCacheSpy = jest.spyOn(featureAccessController, 'clearUsageCache')
-      
+
       // Simulate subscription loaded event
       ;(featureAccessController as any).onSubscriptionLoaded(mockSubscription)
-      
+
       expect(clearCacheSpy).toHaveBeenCalledWith(mockUser.id)
     })
 
     it('should invalidate cache when usage is recorded', () => {
       mockPaymentController.getCurrentUser.mockReturnValue(mockUser)
-      
+
       // Populate cache first
       const cacheKey = `${mockUser.id}:scraping_request`
       ;(featureAccessController as any).lastCacheUpdate.set(cacheKey, new Date())
-      
+
       // Simulate usage recorded event
       ;(featureAccessController as any).onUsageRecorded({ featureType: 'scraping_request' })
-      
+
       expect((featureAccessController as any).lastCacheUpdate.has(cacheKey)).toBe(false)
     })
 
@@ -347,7 +348,7 @@ describe('FeatureAccessController', () => {
 
       expect(mockPaymentController.emit).toHaveBeenCalledWith('access:denied', {
         featureType: 'advanced_search',
-        reason: 'plan_restriction'
+        reason: 'plan_restriction',
       })
     })
   })

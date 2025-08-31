@@ -10,7 +10,7 @@ import { UserRegistration, createDefaultUsageQuotas } from '@/model/types/user'
 
 // Mock external dependencies but test real integration between our services
 jest.mock('@/lib/security', () => ({
-  hashPassword: jest.fn(() => ({ hash: 'hashed-password', salt: 'salt-value' }))
+  hashPassword: jest.fn(() => ({ hash: 'hashed-password', salt: 'salt-value' })),
 }))
 
 jest.mock('@/utils/logger', () => ({
@@ -18,23 +18,23 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
-    debug: jest.fn()
-  }
+    debug: jest.fn(),
+  },
 }))
 
 // Mock Stripe service
 jest.mock('@/model/stripeService', () => ({
   stripeService: {
     createCustomer: jest.fn(() => Promise.resolve({ id: 'cus_test123' })),
-    getCustomer: jest.fn(() => Promise.resolve({ id: 'cus_test123' }))
-  }
+    getCustomer: jest.fn(() => Promise.resolve({ id: 'cus_test123' })),
+  },
 }))
 
 describe('User Management Integration', () => {
   beforeEach(async () => {
     // Initialize storage for each test
     await storage.initialize()
-    
+
     // Clear any existing data
     jest.clearAllMocks()
   })
@@ -45,7 +45,7 @@ describe('User Management Integration', () => {
       name: 'Integration Test User',
       password: 'securePassword123',
       timezone: 'America/New_York',
-      language: 'en'
+      language: 'en',
     }
 
     test('should complete full onboarding flow with payment setup', async () => {
@@ -115,7 +115,7 @@ describe('User Management Integration', () => {
         const registration: UserRegistration = {
           email: `user${i}@example.com`,
           name: `User ${i}`,
-          password: 'securePassword123'
+          password: 'securePassword123',
         }
 
         const user = await userOnboardingService.completeOnboarding(registration)
@@ -146,7 +146,7 @@ describe('User Management Integration', () => {
       const user = await userOnboardingService.completeOnboarding({
         email: 'quota@example.com',
         name: 'Quota User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       })
 
       // Verify initial quotas
@@ -165,7 +165,7 @@ describe('User Management Integration', () => {
         { plan: 'free', expectedScraping: 10, expectedExports: 5 },
         { plan: 'basic', expectedScraping: 100, expectedExports: 50 },
         { plan: 'pro', expectedScraping: 1000, expectedExports: 500 },
-        { plan: 'enterprise', expectedScraping: -1, expectedExports: -1 }
+        { plan: 'enterprise', expectedScraping: -1, expectedExports: -1 },
       ]
 
       for (const { plan, expectedScraping, expectedExports } of plans) {
@@ -173,7 +173,7 @@ describe('User Management Integration', () => {
           {
             email: `${plan}@example.com`,
             name: `${plan} User`,
-            password: 'securePassword123'
+            password: 'securePassword123',
           },
           plan === 'free' ? undefined : plan
         )
@@ -189,7 +189,7 @@ describe('User Management Integration', () => {
       const user = await userOnboardingService.completeOnboarding({
         email: 'payment@example.com',
         name: 'Payment User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       })
 
       // Verify Stripe customer was created
@@ -206,15 +206,15 @@ describe('User Management Integration', () => {
     test('should gracefully handle payment service failures', async () => {
       // Mock payment service to fail
       const originalEnsureStripeCustomer = userPaymentService.ensureStripeCustomer
-      userPaymentService.ensureStripeCustomer = jest.fn().mockRejectedValue(
-        new Error('Stripe service unavailable')
-      )
+      userPaymentService.ensureStripeCustomer = jest
+        .fn()
+        .mockRejectedValue(new Error('Stripe service unavailable'))
 
       // User onboarding should still succeed
       const user = await userOnboardingService.completeOnboarding({
         email: 'failsafe@example.com',
         name: 'Failsafe User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       })
 
       expect(user).toBeDefined()
@@ -232,7 +232,7 @@ describe('User Management Integration', () => {
       const registration: UserRegistration = {
         email: 'persistence@example.com',
         name: 'Persistence User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       }
 
       // Create user
@@ -255,13 +255,11 @@ describe('User Management Integration', () => {
       const registrations = Array.from({ length: 5 }, (_, i) => ({
         email: `concurrent${i}@example.com`,
         name: `Concurrent User ${i}`,
-        password: 'securePassword123'
+        password: 'securePassword123',
       }))
 
       // Create users concurrently
-      const userPromises = registrations.map(reg =>
-        userOnboardingService.completeOnboarding(reg)
-      )
+      const userPromises = registrations.map(reg => userOnboardingService.completeOnboarding(reg))
 
       const users = await Promise.all(userPromises)
 
@@ -273,9 +271,7 @@ describe('User Management Integration', () => {
       })
 
       // Verify all users can be retrieved
-      const retrievalPromises = users.map(user =>
-        userOnboardingService.getUserById(user.id)
-      )
+      const retrievalPromises = users.map(user => userOnboardingService.getUserById(user.id))
 
       const retrievedUsers = await Promise.all(retrievalPromises)
       retrievedUsers.forEach((retrieved, index) => {
@@ -289,7 +285,7 @@ describe('User Management Integration', () => {
       const registration: UserRegistration = {
         email: 'duplicate@example.com',
         name: 'First User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       }
 
       // Create first user
@@ -300,7 +296,7 @@ describe('User Management Integration', () => {
       const duplicateRegistration: UserRegistration = {
         email: 'duplicate@example.com',
         name: 'Second User',
-        password: 'differentPassword123'
+        password: 'differentPassword123',
       }
 
       // This should succeed as we don't have unique email constraint in current implementation
@@ -314,7 +310,7 @@ describe('User Management Integration', () => {
       const user = await userOnboardingService.completeOnboarding({
         email: 'verification@example.com',
         name: 'Verification User',
-        password: 'securePassword123'
+        password: 'securePassword123',
       })
 
       // Try to verify with wrong token

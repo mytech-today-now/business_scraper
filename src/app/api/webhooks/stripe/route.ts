@@ -20,7 +20,7 @@ export const runtime = 'nodejs'
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIP(request)
-  
+
   try {
     // Get raw body for signature verification
     const body = await request.text()
@@ -28,10 +28,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!signature) {
       logger.error('StripeWebhook', 'Missing stripe-signature header', { ip })
-      return NextResponse.json(
-        { error: 'Missing signature' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing signature' }, { status: 400 })
     }
 
     // Verify webhook signature
@@ -40,25 +37,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       event = stripeService.verifyWebhookSignature(body, signature)
     } catch (error) {
       logger.error('StripeWebhook', 'Webhook signature verification failed', { error, ip })
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     }
 
     logger.info('StripeWebhook', `Processing event: ${event.type}`, {
       eventId: event.id,
       ip,
-      created: new Date(event.created * 1000).toISOString()
+      created: new Date(event.created * 1000).toISOString(),
     })
 
     // Process webhook event
     try {
       await processWebhookEvent(event)
-      
+
       logger.info('StripeWebhook', `Successfully processed event: ${event.type}`, {
         eventId: event.id,
-        ip
+        ip,
       })
 
       return NextResponse.json({ received: true })
@@ -66,28 +60,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       logger.error('StripeWebhook', `Failed to process event: ${event.type}`, {
         error,
         eventId: event.id,
-        ip
+        ip,
       })
-      
+
       // Return 200 to prevent Stripe from retrying if it's a business logic error
       // Return 500 for actual processing errors that should be retried
       const shouldRetry = error instanceof Error && error.message.includes('retry')
-      
+
       return NextResponse.json(
-        { 
+        {
           error: 'Webhook processing failed',
           eventId: event.id,
-          shouldRetry
+          shouldRetry,
         },
         { status: shouldRetry ? 500 : 200 }
       )
     }
   } catch (error) {
     logger.error('StripeWebhook', 'Webhook request processing failed', { error, ip })
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 400 })
   }
 }
 
@@ -152,7 +143,7 @@ async function processWebhookEvent(event: Stripe.Event): Promise<void> {
 
     default:
       logger.info('StripeWebhook', `Unhandled event type: ${event.type}`, {
-        eventId: event.id
+        eventId: event.id,
       })
   }
 }
@@ -164,7 +155,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription): Prom
   try {
     const customerId = subscription.customer as string
     const userId = await getUserIdFromCustomerId(customerId)
-    
+
     if (!userId) {
       logger.warn('StripeWebhook', `No user found for customer: ${customerId}`)
       return
@@ -177,12 +168,15 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription): Prom
       currentPeriodStart: new Date(subscription.current_period_start * 1000),
       currentPeriodEnd: new Date(subscription.current_period_end * 1000),
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
-      trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : undefined
+      trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : undefined,
     })
 
     logger.info('StripeWebhook', `Subscription updated: ${subscription.id} for user: ${userId}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to update subscription', { error, subscriptionId: subscription.id })
+    logger.error('StripeWebhook', 'Failed to update subscription', {
+      error,
+      subscriptionId: subscription.id,
+    })
     throw error
   }
 }
@@ -194,7 +188,7 @@ async function handleSubscriptionCancellation(subscription: Stripe.Subscription)
   try {
     const customerId = subscription.customer as string
     const userId = await getUserIdFromCustomerId(customerId)
-    
+
     if (!userId) {
       logger.warn('StripeWebhook', `No user found for customer: ${customerId}`)
       return
@@ -203,12 +197,15 @@ async function handleSubscriptionCancellation(subscription: Stripe.Subscription)
     // Update user subscription to canceled
     await userPaymentService.updateUserPaymentProfile(userId, {
       subscriptionStatus: 'canceled',
-      cancelAtPeriodEnd: true
+      cancelAtPeriodEnd: true,
     })
 
     logger.info('StripeWebhook', `Subscription canceled: ${subscription.id} for user: ${userId}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to cancel subscription', { error, subscriptionId: subscription.id })
+    logger.error('StripeWebhook', 'Failed to cancel subscription', {
+      error,
+      subscriptionId: subscription.id,
+    })
     throw error
   }
 }
@@ -220,7 +217,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent): Promis
   try {
     const customerId = paymentIntent.customer as string
     const userId = await getUserIdFromCustomerId(customerId)
-    
+
     if (!userId) {
       logger.warn('StripeWebhook', `No user found for customer: ${customerId}`)
       return
@@ -230,10 +227,13 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent): Promis
     // This would typically update a payment transaction record
     logger.info('StripeWebhook', `Payment succeeded: ${paymentIntent.id} for user: ${userId}`, {
       amount: paymentIntent.amount,
-      currency: paymentIntent.currency
+      currency: paymentIntent.currency,
     })
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to record payment success', { error, paymentIntentId: paymentIntent.id })
+    logger.error('StripeWebhook', 'Failed to record payment success', {
+      error,
+      paymentIntentId: paymentIntent.id,
+    })
     throw error
   }
 }
@@ -245,7 +245,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent): Promis
   try {
     const customerId = paymentIntent.customer as string
     const userId = await getUserIdFromCustomerId(customerId)
-    
+
     if (!userId) {
       logger.warn('StripeWebhook', `No user found for customer: ${customerId}`)
       return
@@ -255,10 +255,13 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent): Promis
     logger.warn('StripeWebhook', `Payment failed: ${paymentIntent.id} for user: ${userId}`, {
       amount: paymentIntent.amount,
       currency: paymentIntent.currency,
-      lastPaymentError: paymentIntent.last_payment_error
+      lastPaymentError: paymentIntent.last_payment_error,
     })
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to record payment failure', { error, paymentIntentId: paymentIntent.id })
+    logger.error('StripeWebhook', 'Failed to record payment failure', {
+      error,
+      paymentIntentId: paymentIntent.id,
+    })
     throw error
   }
 }
@@ -270,7 +273,10 @@ async function handlePaymentCancellation(paymentIntent: Stripe.PaymentIntent): P
   try {
     logger.info('StripeWebhook', `Payment canceled: ${paymentIntent.id}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle payment cancellation', { error, paymentIntentId: paymentIntent.id })
+    logger.error('StripeWebhook', 'Failed to handle payment cancellation', {
+      error,
+      paymentIntentId: paymentIntent.id,
+    })
     throw error
   }
 }
@@ -282,7 +288,7 @@ async function handleInvoicePaymentSuccess(invoice: Stripe.Invoice): Promise<voi
   try {
     const customerId = invoice.customer as string
     const userId = await getUserIdFromCustomerId(customerId)
-    
+
     if (!userId) {
       logger.warn('StripeWebhook', `No user found for customer: ${customerId}`)
       return
@@ -290,10 +296,13 @@ async function handleInvoicePaymentSuccess(invoice: Stripe.Invoice): Promise<voi
 
     logger.info('StripeWebhook', `Invoice payment succeeded: ${invoice.id} for user: ${userId}`, {
       amount: invoice.amount_paid,
-      currency: invoice.currency
+      currency: invoice.currency,
     })
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to process invoice payment', { error, invoiceId: invoice.id })
+    logger.error('StripeWebhook', 'Failed to process invoice payment', {
+      error,
+      invoiceId: invoice.id,
+    })
     throw error
   }
 }
@@ -305,7 +314,7 @@ async function handleInvoicePaymentFailure(invoice: Stripe.Invoice): Promise<voi
   try {
     const customerId = invoice.customer as string
     const userId = await getUserIdFromCustomerId(customerId)
-    
+
     if (!userId) {
       logger.warn('StripeWebhook', `No user found for customer: ${customerId}`)
       return
@@ -313,7 +322,10 @@ async function handleInvoicePaymentFailure(invoice: Stripe.Invoice): Promise<voi
 
     logger.warn('StripeWebhook', `Invoice payment failed: ${invoice.id} for user: ${userId}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle invoice payment failure', { error, invoiceId: invoice.id })
+    logger.error('StripeWebhook', 'Failed to handle invoice payment failure', {
+      error,
+      invoiceId: invoice.id,
+    })
     throw error
   }
 }
@@ -324,10 +336,13 @@ async function handleInvoicePaymentFailure(invoice: Stripe.Invoice): Promise<voi
 async function handleCustomerCreated(customer: Stripe.Customer): Promise<void> {
   try {
     logger.info('StripeWebhook', `Customer created: ${customer.id}`, {
-      email: customer.email
+      email: customer.email,
     })
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle customer creation', { error, customerId: customer.id })
+    logger.error('StripeWebhook', 'Failed to handle customer creation', {
+      error,
+      customerId: customer.id,
+    })
     throw error
   }
 }
@@ -339,7 +354,10 @@ async function handleCustomerUpdated(customer: Stripe.Customer): Promise<void> {
   try {
     logger.info('StripeWebhook', `Customer updated: ${customer.id}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle customer update', { error, customerId: customer.id })
+    logger.error('StripeWebhook', 'Failed to handle customer update', {
+      error,
+      customerId: customer.id,
+    })
     throw error
   }
 }
@@ -351,7 +369,10 @@ async function handleCustomerDeleted(customer: Stripe.Customer): Promise<void> {
   try {
     logger.info('StripeWebhook', `Customer deleted: ${customer.id}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle customer deletion', { error, customerId: customer.id })
+    logger.error('StripeWebhook', 'Failed to handle customer deletion', {
+      error,
+      customerId: customer.id,
+    })
     throw error
   }
 }
@@ -363,7 +384,10 @@ async function handlePaymentMethodAttached(paymentMethod: Stripe.PaymentMethod):
   try {
     logger.info('StripeWebhook', `Payment method attached: ${paymentMethod.id}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle payment method attachment', { error, paymentMethodId: paymentMethod.id })
+    logger.error('StripeWebhook', 'Failed to handle payment method attachment', {
+      error,
+      paymentMethodId: paymentMethod.id,
+    })
     throw error
   }
 }
@@ -375,7 +399,10 @@ async function handlePaymentMethodDetached(paymentMethod: Stripe.PaymentMethod):
   try {
     logger.info('StripeWebhook', `Payment method detached: ${paymentMethod.id}`)
   } catch (error) {
-    logger.error('StripeWebhook', 'Failed to handle payment method detachment', { error, paymentMethodId: paymentMethod.id })
+    logger.error('StripeWebhook', 'Failed to handle payment method detachment', {
+      error,
+      paymentMethodId: paymentMethod.id,
+    })
     throw error
   }
 }

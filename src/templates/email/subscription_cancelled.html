@@ -1,197 +1,215 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Subscription Cancelled</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
-            line-height: 1.6; 
-            color: #333; 
-            margin: 0; 
-            padding: 0; 
-            background-color: #f4f4f4; 
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+          sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+      .content {
+        padding: 40px 30px;
+        background: #ffffff;
+      }
+      .content h2 {
+        color: #333;
+        margin-top: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .content p {
+        margin: 16px 0;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .cancellation-details {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin: 25px 0;
+        border-left: 4px solid #6c757d;
+      }
+      .cancellation-details h3 {
+        margin-top: 0;
+        color: #333;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .cancellation-details p {
+        margin: 8px 0;
+        font-size: 15px;
+      }
+      .cancellation-details strong {
+        color: #333;
+        font-weight: 600;
+      }
+      .info-box {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      .info-box h4 {
+        margin-top: 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .button {
+        display: inline-block;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: transform 0.2s ease;
+      }
+      .button:hover {
+        transform: translateY(-1px);
+      }
+      .button-container {
+        text-align: center;
+        margin: 30px 0;
+      }
+      .footer {
+        padding: 25px 30px;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        background-color: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+      }
+      .footer p {
+        margin: 8px 0;
+      }
+      .footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+      .cancel-icon {
+        width: 60px;
+        height: 60px;
+        background: #6c757d;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          margin: 0;
+          box-shadow: none;
         }
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background-color: #ffffff; 
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        .content {
+          padding: 30px 20px;
         }
-        .header { 
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%); 
-            color: white; 
-            padding: 30px 20px; 
-            text-align: center; 
+        .header {
+          padding: 25px 20px;
         }
-        .header h1 { 
-            margin: 0; 
-            font-size: 28px; 
-            font-weight: 600; 
+        .header h1 {
+          font-size: 24px;
         }
-        .content { 
-            padding: 40px 30px; 
-            background: #ffffff; 
+        .cancellation-details {
+          padding: 20px;
         }
-        .content h2 { 
-            color: #333; 
-            margin-top: 0; 
-            font-size: 24px; 
-            font-weight: 600; 
+        .button {
+          padding: 12px 24px;
+          font-size: 15px;
         }
-        .content p { 
-            margin: 16px 0; 
-            font-size: 16px; 
-            line-height: 1.6; 
-        }
-        .cancellation-details { 
-            background: #f8f9fa; 
-            padding: 25px; 
-            border-radius: 8px; 
-            margin: 25px 0; 
-            border-left: 4px solid #6c757d; 
-        }
-        .cancellation-details h3 { 
-            margin-top: 0; 
-            color: #333; 
-            font-size: 18px; 
-            font-weight: 600; 
-        }
-        .cancellation-details p { 
-            margin: 8px 0; 
-            font-size: 15px; 
-        }
-        .cancellation-details strong { 
-            color: #333; 
-            font-weight: 600; 
-        }
-        .info-box { 
-            background: #d1ecf1; 
-            border: 1px solid #bee5eb; 
-            color: #0c5460; 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin: 20px 0; 
-        }
-        .info-box h4 { 
-            margin-top: 0; 
-            font-size: 16px; 
-            font-weight: 600; 
-        }
-        .button { 
-            display: inline-block; 
-            padding: 14px 28px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 6px; 
-            font-weight: 600; 
-            font-size: 16px; 
-            transition: transform 0.2s ease; 
-        }
-        .button:hover { 
-            transform: translateY(-1px); 
-        }
-        .button-container { 
-            text-align: center; 
-            margin: 30px 0; 
-        }
-        .footer { 
-            padding: 25px 30px; 
-            text-align: center; 
-            font-size: 14px; 
-            color: #666; 
-            background-color: #f8f9fa; 
-            border-top: 1px solid #e9ecef; 
-        }
-        .footer p { 
-            margin: 8px 0; 
-        }
-        .footer a { 
-            color: #667eea; 
-            text-decoration: none; 
-        }
-        .cancel-icon { 
-            width: 60px; 
-            height: 60px; 
-            background: #6c757d; 
-            border-radius: 50%; 
-            margin: 0 auto 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-size: 24px; 
-            font-weight: bold; 
-        }
-        @media only screen and (max-width: 600px) {
-            .container { 
-                margin: 0; 
-                box-shadow: none; 
-            }
-            .content { 
-                padding: 30px 20px; 
-            }
-            .header { 
-                padding: 25px 20px; 
-            }
-            .header h1 { 
-                font-size: 24px; 
-            }
-            .cancellation-details { 
-                padding: 20px; 
-            }
-            .button { 
-                padding: 12px 24px; 
-                font-size: 15px; 
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="header">
-            <h1>Subscription Cancelled</h1>
+      <div class="header">
+        <h1>Subscription Cancelled</h1>
+      </div>
+
+      <div class="content">
+        <div class="cancel-icon">✕</div>
+
+        <h2>We're sorry to see you go</h2>
+
+        <p>Hi {{userName}},</p>
+
+        <p>
+          We've processed your cancellation request for your {{planName}} subscription. While we're
+          sad to see you go, we understand that circumstances change.
+        </p>
+
+        <div class="cancellation-details">
+          <h3>Cancellation Details</h3>
+          <p><strong>Plan:</strong> {{planName}}</p>
+          <p><strong>End date:</strong> {{endDate}}</p>
+          <p><strong>Reason:</strong> {{reason}}</p>
         </div>
 
-        <div class="content">
-            <div class="cancel-icon">✕</div>
-            
-            <h2>We're sorry to see you go</h2>
-            
-            <p>Hi {{userName}},</p>
-
-            <p>We've processed your cancellation request for your {{planName}} subscription. While we're sad to see you go, we understand that circumstances change.</p>
-
-            <div class="cancellation-details">
-                <h3>Cancellation Details</h3>
-                <p><strong>Plan:</strong> {{planName}}</p>
-                <p><strong>End date:</strong> {{endDate}}</p>
-                <p><strong>Reason:</strong> {{reason}}</p>
-            </div>
-
-            <div class="info-box">
-                <h4>What happens now?</h4>
-                <p>Your subscription will remain active until {{endDate}}. After this date, you'll lose access to premium features, but your account and data will be preserved.</p>
-            </div>
-
-            <p>If you change your mind, you can easily reactivate your subscription at any time before {{endDate}}. All your data and settings will be exactly as you left them.</p>
-
-            <div class="button-container">
-                <a href="{{reactivateUrl}}" class="button">Reactivate Subscription</a>
-            </div>
-
-            <p>We'd love to have you back in the future! If there's anything we could have done better or if you have feedback about your experience, please let us know. Your input helps us improve our service for everyone.</p>
-
-            <p>Thank you for being part of our community. If you need any assistance or have questions about your cancellation, our support team is always here to help.</p>
+        <div class="info-box">
+          <h4>What happens now?</h4>
+          <p>
+            Your subscription will remain active until {{endDate}}. After this date, you'll lose
+            access to premium features, but your account and data will be preserved.
+          </p>
         </div>
 
-        <div class="footer">
-            <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
-            <p>© 2025 Business Scraper App. All rights reserved.</p>
-            <p>This is an automated message. Please do not reply to this email.</p>
+        <p>
+          If you change your mind, you can easily reactivate your subscription at any time before
+          {{endDate}}. All your data and settings will be exactly as you left them.
+        </p>
+
+        <div class="button-container">
+          <a href="{{reactivateUrl}}" class="button">Reactivate Subscription</a>
         </div>
+
+        <p>
+          We'd love to have you back in the future! If there's anything we could have done better or
+          if you have feedback about your experience, please let us know. Your input helps us
+          improve our service for everyone.
+        </p>
+
+        <p>
+          Thank you for being part of our community. If you need any assistance or have questions
+          about your cancellation, our support team is always here to help.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+        <p>© 2025 Business Scraper App. All rights reserved.</p>
+        <p>This is an automated message. Please do not reply to this email.</p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

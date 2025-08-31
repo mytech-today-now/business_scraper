@@ -5,7 +5,10 @@
 
 import { NextRequest } from 'next/server'
 import { POST as webhookHandler } from '@/app/api/webhooks/stripe/route'
-import { POST as createPaymentIntentHandler, GET as getPaymentIntentHandler } from '@/app/api/payments/create-intent/route'
+import {
+  POST as createPaymentIntentHandler,
+  GET as getPaymentIntentHandler,
+} from '@/app/api/payments/create-intent/route'
 import { stripeService } from '@/model/stripeService'
 import { userPaymentService } from '@/model/userPaymentService'
 import { authenticateUser } from '@/utils/auth'
@@ -29,7 +32,7 @@ describe('Payment API Integration Tests', () => {
     sessionId: 'session-123',
     isAuthenticated: true,
     permissions: ['read', 'write', 'admin'],
-    roles: ['admin']
+    roles: ['admin'],
   }
 
   beforeEach(() => {
@@ -46,8 +49,8 @@ describe('Payment API Integration Tests', () => {
       return {
         text: jest.fn().mockResolvedValue(body),
         headers: {
-          get: jest.fn().mockImplementation((name: string) => headers.get(name))
-        }
+          get: jest.fn().mockImplementation((name: string) => headers.get(name)),
+        },
       } as unknown as NextRequest
     }
 
@@ -62,10 +65,10 @@ describe('Payment API Integration Tests', () => {
             customer: 'cus_123',
             status: 'active',
             current_period_start: Date.now() / 1000,
-            current_period_end: (Date.now() / 1000) + 86400,
-            cancel_at_period_end: false
-          }
-        }
+            current_period_end: Date.now() / 1000 + 86400,
+            cancel_at_period_end: false,
+          },
+        },
       }
 
       mockStripeService.verifyWebhookSignature.mockReturnValue(mockEvent as any)
@@ -75,7 +78,10 @@ describe('Payment API Integration Tests', () => {
       const response = await webhookHandler(request)
 
       expect(response.status).toBe(200)
-      expect(mockStripeService.verifyWebhookSignature).toHaveBeenCalledWith('webhook-body', 'valid-signature')
+      expect(mockStripeService.verifyWebhookSignature).toHaveBeenCalledWith(
+        'webhook-body',
+        'valid-signature'
+      )
     })
 
     it('should reject webhook without signature', async () => {
@@ -111,10 +117,10 @@ describe('Payment API Integration Tests', () => {
             customer: 'cus_123',
             status: 'active',
             current_period_start: Date.now() / 1000,
-            current_period_end: (Date.now() / 1000) + 86400,
-            cancel_at_period_end: false
-          }
-        }
+            current_period_end: Date.now() / 1000 + 86400,
+            cancel_at_period_end: false,
+          },
+        },
       }
 
       mockStripeService.verifyWebhookSignature.mockReturnValue(mockEvent as any)
@@ -137,9 +143,9 @@ describe('Payment API Integration Tests', () => {
             id: 'pi_123',
             customer: 'cus_123',
             amount: 2999,
-            currency: 'usd'
-          }
-        }
+            currency: 'usd',
+          },
+        },
       }
 
       mockStripeService.verifyWebhookSignature.mockReturnValue(mockEvent as any)
@@ -155,7 +161,7 @@ describe('Payment API Integration Tests', () => {
         id: 'evt_123',
         type: 'unknown.event.type',
         created: Date.now() / 1000,
-        data: { object: {} }
+        data: { object: {} },
       }
 
       mockStripeService.verifyWebhookSignature.mockReturnValue(mockEvent as any)
@@ -176,14 +182,14 @@ describe('Payment API Integration Tests', () => {
         method,
         json: jest.fn().mockResolvedValue(body),
         headers: {
-          get: jest.fn().mockImplementation((name: string) => headers.get(name))
+          get: jest.fn().mockImplementation((name: string) => headers.get(name)),
         },
         cookies: {
-          get: jest.fn().mockReturnValue({ value: 'session-123' })
+          get: jest.fn().mockReturnValue({ value: 'session-123' }),
         },
         nextUrl: {
-          pathname: '/api/payments/create-intent'
-        }
+          pathname: '/api/payments/create-intent',
+        },
       } as unknown as NextRequest
     }
 
@@ -192,7 +198,7 @@ describe('Payment API Integration Tests', () => {
         amountCents: 2999,
         currency: 'USD',
         description: 'Test payment',
-        metadata: { test: 'data' }
+        metadata: { test: 'data' },
       }
 
       const mockPaymentIntent = {
@@ -200,7 +206,7 @@ describe('Payment API Integration Tests', () => {
         client_secret: 'pi_123_secret',
         status: 'requires_payment_method',
         amount: 2999,
-        currency: 'usd'
+        currency: 'usd',
       }
 
       mockAuthenticateUser.mockResolvedValue(mockUser)
@@ -221,7 +227,7 @@ describe('Payment API Integration Tests', () => {
       const requestBody = {
         amountCents: 2999,
         currency: 'USD',
-        description: 'Test payment'
+        description: 'Test payment',
       }
 
       mockAuthenticateUser.mockResolvedValue(null)
@@ -238,7 +244,7 @@ describe('Payment API Integration Tests', () => {
       const requestBody = {
         amountCents: -100, // Invalid amount
         currency: 'USD',
-        description: 'Test payment'
+        description: 'Test payment',
       }
 
       mockAuthenticateUser.mockResolvedValue(mockUser)
@@ -255,7 +261,7 @@ describe('Payment API Integration Tests', () => {
       const requestBody = {
         amountCents: 2999,
         currency: 'USD',
-        description: 'Test payment'
+        description: 'Test payment',
       }
 
       mockAuthenticateUser.mockResolvedValue(mockUser)
@@ -282,8 +288,8 @@ describe('Payment API Integration Tests', () => {
         method: 'GET',
         url: url.toString(),
         cookies: {
-          get: jest.fn().mockReturnValue({ value: 'session-123' })
-        }
+          get: jest.fn().mockReturnValue({ value: 'session-123' }),
+        },
       } as unknown as NextRequest
     }
 
@@ -294,11 +300,11 @@ describe('Payment API Integration Tests', () => {
         amount: 2999,
         currency: 'usd',
         customer: 'cus_123',
-        client_secret: 'pi_123_secret'
+        client_secret: 'pi_123_secret',
       }
 
       const mockUserProfile = {
-        stripeCustomerId: 'cus_123'
+        stripeCustomerId: 'cus_123',
       }
 
       mockAuthenticateUser.mockResolvedValue(mockUser)
@@ -307,13 +313,13 @@ describe('Payment API Integration Tests', () => {
       // Mock Stripe API call
       const mockStripe = {
         paymentIntents: {
-          retrieve: jest.fn().mockResolvedValue(mockPaymentIntent)
-        }
+          retrieve: jest.fn().mockResolvedValue(mockPaymentIntent),
+        },
       }
-      
+
       // Mock the dynamic import
       jest.doMock('stripe', () => ({
-        default: jest.fn().mockImplementation(() => mockStripe)
+        default: jest.fn().mockImplementation(() => mockStripe),
       }))
 
       const request = createMockGetRequest('pi_123')
@@ -339,11 +345,11 @@ describe('Payment API Integration Tests', () => {
     it('should reject unauthorized access to payment intent', async () => {
       const mockPaymentIntent = {
         id: 'pi_123',
-        customer: 'cus_different'
+        customer: 'cus_different',
       }
 
       const mockUserProfile = {
-        stripeCustomerId: 'cus_123'
+        stripeCustomerId: 'cus_123',
       }
 
       mockAuthenticateUser.mockResolvedValue(mockUser)
@@ -352,12 +358,12 @@ describe('Payment API Integration Tests', () => {
       // Mock Stripe API call
       const mockStripe = {
         paymentIntents: {
-          retrieve: jest.fn().mockResolvedValue(mockPaymentIntent)
-        }
+          retrieve: jest.fn().mockResolvedValue(mockPaymentIntent),
+        },
       }
-      
+
       jest.doMock('stripe', () => ({
-        default: jest.fn().mockImplementation(() => mockStripe)
+        default: jest.fn().mockImplementation(() => mockStripe),
       }))
 
       const request = createMockGetRequest('pi_123')

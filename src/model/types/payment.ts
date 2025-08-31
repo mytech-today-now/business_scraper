@@ -84,47 +84,60 @@ export interface FeatureUsage {
  */
 export const SubscriptionPlanSchema = z.object({
   id: z.string().min(1, 'Plan ID is required').max(100, 'Plan ID too long'),
-  stripePriceId: z.string().min(1, 'Stripe Price ID is required').max(200, 'Stripe Price ID too long'),
+  stripePriceId: z
+    .string()
+    .min(1, 'Stripe Price ID is required')
+    .max(200, 'Stripe Price ID too long'),
   name: z.string().min(1, 'Plan name is required').max(100, 'Plan name too long'),
-  description: z.string().min(1, 'Plan description is required').max(500, 'Plan description too long'),
+  description: z
+    .string()
+    .min(1, 'Plan description is required')
+    .max(500, 'Plan description too long'),
   priceCents: z.number().int().min(0, 'Price must be non-negative').max(10000000, 'Price too high'),
-  currency: z.string().length(3, 'Currency must be 3 characters').regex(/^[A-Z]{3}$/, 'Currency must be uppercase'),
-  interval: z.enum(['month', 'year'], { errorMap: () => ({ message: 'Interval must be month or year' }) }),
-  features: z.array(z.string().min(1, 'Feature cannot be empty')).min(1, 'At least one feature required'),
+  currency: z
+    .string()
+    .length(3, 'Currency must be 3 characters')
+    .regex(/^[A-Z]{3}$/, 'Currency must be uppercase'),
+  interval: z.enum(['month', 'year'], {
+    errorMap: () => ({ message: 'Interval must be month or year' }),
+  }),
+  features: z
+    .array(z.string().min(1, 'Feature cannot be empty'))
+    .min(1, 'At least one feature required'),
   isActive: z.boolean(),
-  createdAt: z.date()
+  createdAt: z.date(),
 })
 
 /**
  * User Subscription Schema
  * Validates user subscription data with status constraints
  */
-export const UserSubscriptionSchema = z.object({
-  id: z.string().min(1, 'Subscription ID is required').max(100, 'Subscription ID too long'),
-  userId: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
-  stripeSubscriptionId: z.string().min(1, 'Stripe Subscription ID is required').max(200, 'Stripe Subscription ID too long'),
-  planId: z.string().min(1, 'Plan ID is required').max(100, 'Plan ID too long'),
-  status: z.enum(['active', 'canceled', 'past_due', 'unpaid', 'incomplete'], {
-    errorMap: () => ({ message: 'Invalid subscription status' })
-  }),
-  currentPeriodStart: z.date(),
-  currentPeriodEnd: z.date(),
-  cancelAtPeriodEnd: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date()
-}).refine(
-  (data) => data.currentPeriodEnd > data.currentPeriodStart,
-  {
+export const UserSubscriptionSchema = z
+  .object({
+    id: z.string().min(1, 'Subscription ID is required').max(100, 'Subscription ID too long'),
+    userId: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
+    stripeSubscriptionId: z
+      .string()
+      .min(1, 'Stripe Subscription ID is required')
+      .max(200, 'Stripe Subscription ID too long'),
+    planId: z.string().min(1, 'Plan ID is required').max(100, 'Plan ID too long'),
+    status: z.enum(['active', 'canceled', 'past_due', 'unpaid', 'incomplete'], {
+      errorMap: () => ({ message: 'Invalid subscription status' }),
+    }),
+    currentPeriodStart: z.date(),
+    currentPeriodEnd: z.date(),
+    cancelAtPeriodEnd: z.boolean(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  })
+  .refine(data => data.currentPeriodEnd > data.currentPeriodStart, {
     message: 'Current period end must be after start',
-    path: ['currentPeriodEnd']
-  }
-).refine(
-  (data) => data.updatedAt >= data.createdAt,
-  {
+    path: ['currentPeriodEnd'],
+  })
+  .refine(data => data.updatedAt >= data.createdAt, {
     message: 'Updated date must be after or equal to created date',
-    path: ['updatedAt']
-  }
-)
+    path: ['updatedAt'],
+  })
 
 /**
  * Payment Transaction Schema
@@ -135,36 +148,42 @@ export const PaymentTransactionSchema = z.object({
   userId: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
   stripePaymentIntentId: z.string().max(200, 'Stripe Payment Intent ID too long').optional(),
   amountCents: z.number().int().min(1, 'Amount must be positive').max(10000000, 'Amount too high'),
-  currency: z.string().length(3, 'Currency must be 3 characters').regex(/^[A-Z]{3}$/, 'Currency must be uppercase'),
+  currency: z
+    .string()
+    .length(3, 'Currency must be 3 characters')
+    .regex(/^[A-Z]{3}$/, 'Currency must be uppercase'),
   status: z.enum(['pending', 'succeeded', 'failed', 'canceled'], {
-    errorMap: () => ({ message: 'Invalid payment status' })
+    errorMap: () => ({ message: 'Invalid payment status' }),
   }),
   description: z.string().min(1, 'Description is required').max(500, 'Description too long'),
   metadata: z.record(z.any()).optional(),
-  createdAt: z.date()
+  createdAt: z.date(),
 })
 
 /**
  * Feature Usage Schema
  * Validates feature usage tracking data
  */
-export const FeatureUsageSchema = z.object({
-  id: z.string().min(1, 'Usage ID is required').max(100, 'Usage ID too long'),
-  userId: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
-  featureType: z.enum(['scraping_request', 'export', 'advanced_search', 'api_access'], {
-    errorMap: () => ({ message: 'Invalid feature type' })
-  }),
-  usageCount: z.number().int().min(1, 'Usage count must be positive').max(1000000, 'Usage count too high'),
-  date: z.date(),
-  metadata: z.record(z.any()).optional(),
-  createdAt: z.date()
-}).refine(
-  (data) => data.date <= data.createdAt,
-  {
+export const FeatureUsageSchema = z
+  .object({
+    id: z.string().min(1, 'Usage ID is required').max(100, 'Usage ID too long'),
+    userId: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
+    featureType: z.enum(['scraping_request', 'export', 'advanced_search', 'api_access'], {
+      errorMap: () => ({ message: 'Invalid feature type' }),
+    }),
+    usageCount: z
+      .number()
+      .int()
+      .min(1, 'Usage count must be positive')
+      .max(1000000, 'Usage count too high'),
+    date: z.date(),
+    metadata: z.record(z.any()).optional(),
+    createdAt: z.date(),
+  })
+  .refine(data => data.date <= data.createdAt, {
     message: 'Usage date cannot be in the future relative to creation',
-    path: ['date']
-  }
-)
+    path: ['date'],
+  })
 
 // ============================================================================
 // VALIDATION FUNCTIONS
@@ -187,7 +206,7 @@ export function validateSubscriptionPlan(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -211,7 +230,7 @@ export function validateUserSubscription(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -235,7 +254,7 @@ export function validatePaymentTransaction(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -259,7 +278,7 @@ export function validateFeatureUsage(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -401,7 +420,13 @@ export const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'] as const
 /**
  * Valid subscription statuses
  */
-export const SUBSCRIPTION_STATUSES = ['active', 'canceled', 'past_due', 'unpaid', 'incomplete'] as const
+export const SUBSCRIPTION_STATUSES = [
+  'active',
+  'canceled',
+  'past_due',
+  'unpaid',
+  'incomplete',
+] as const
 
 /**
  * Valid payment statuses
@@ -411,7 +436,12 @@ export const PAYMENT_STATUSES = ['pending', 'succeeded', 'failed', 'canceled'] a
 /**
  * Valid feature types for usage tracking
  */
-export const FEATURE_TYPES = ['scraping_request', 'export', 'advanced_search', 'api_access'] as const
+export const FEATURE_TYPES = [
+  'scraping_request',
+  'export',
+  'advanced_search',
+  'api_access',
+] as const
 
 /**
  * Valid billing intervals

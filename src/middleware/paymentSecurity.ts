@@ -25,20 +25,20 @@ const PAYMENT_RATE_LIMITS: Record<string, PaymentRateLimitConfig> = {
     windowMs: 15 * 60 * 1000, // 15 minutes
     maxRequests: 10,
     skipSuccessfulRequests: false,
-    skipFailedRequests: false
+    skipFailedRequests: false,
   },
   webhook: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 100,
     skipSuccessfulRequests: true,
-    skipFailedRequests: false
+    skipFailedRequests: false,
   },
   subscription: {
     windowMs: 60 * 60 * 1000, // 1 hour
     maxRequests: 5,
     skipSuccessfulRequests: false,
-    skipFailedRequests: false
-  }
+    skipFailedRequests: false,
+  },
 }
 
 // Stripe webhook IPs (updated list)
@@ -48,7 +48,7 @@ const STRIPE_WEBHOOK_IPS = [
   '54.187.216.72',
   '54.241.31.99',
   '54.241.31.102',
-  '54.241.34.107'
+  '54.241.34.107',
 ]
 
 // Sensitive payment fields that should be sanitized
@@ -66,7 +66,7 @@ const SENSITIVE_PAYMENT_FIELDS = [
   'account_number',
   'accountNumber',
   'pin',
-  'password'
+  'password',
 ]
 
 /**
@@ -78,7 +78,7 @@ export async function paymentRateLimit(
 ): Promise<NextResponse | null> {
   const ip = getClientIP(request)
   const config = PAYMENT_RATE_LIMITS[limitType]
-  
+
   try {
     const isAllowed = await advancedRateLimitService.checkRateLimit(
       `payment_${limitType}`,
@@ -89,20 +89,20 @@ export async function paymentRateLimit(
 
     if (!isAllowed) {
       logger.warn('PaymentSecurity', `Payment rate limit exceeded for ${limitType} from IP: ${ip}`)
-      
+
       return NextResponse.json(
-        { 
+        {
           error: 'Too many payment requests, please try again later',
-          retryAfter: Math.ceil(config.windowMs / 1000)
+          retryAfter: Math.ceil(config.windowMs / 1000),
         },
-        { 
+        {
           status: 429,
           headers: {
             'Retry-After': String(Math.ceil(config.windowMs / 1000)),
             'X-RateLimit-Limit': String(config.maxRequests),
             'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': String(Date.now() + config.windowMs)
-          }
+            'X-RateLimit-Reset': String(Date.now() + config.windowMs),
+          },
         }
       )
     }
@@ -131,7 +131,7 @@ export function validateWebhookSignature(
 
     // Remove 'v1=' prefix if present (Stripe format)
     const cleanSignature = signature.replace(/^v1=/, '')
-    
+
     const expectedSignature = crypto
       .createHmac('sha256', secret)
       .update(payload, 'utf8')
@@ -185,14 +185,14 @@ export function sanitizePaymentData(data: any): any {
 export function validatePaymentCSRFToken(request: NextRequest): boolean {
   try {
     const sessionId = request.cookies.get('session-id')?.value
-    
+
     if (!sessionId) {
       logger.warn('PaymentSecurity', 'No session ID found for CSRF validation')
       return false
     }
 
     const result = csrfProtectionService.validateFormSubmission(request, sessionId)
-    
+
     if (!result.isValid) {
       logger.warn('PaymentSecurity', `CSRF validation failed: ${result.error}`)
       return false
@@ -211,7 +211,7 @@ export function validatePaymentCSRFToken(request: NextRequest): boolean {
 export function validateWebhookIP(request: NextRequest): boolean {
   try {
     const clientIP = getClientIP(request)
-    
+
     if (!clientIP) {
       logger.warn('PaymentSecurity', 'No client IP found for webhook validation')
       return false
@@ -219,7 +219,7 @@ export function validateWebhookIP(request: NextRequest): boolean {
 
     // Check if IP is in the allowed list
     const isAllowed = STRIPE_WEBHOOK_IPS.includes(clientIP)
-    
+
     if (!isAllowed) {
       logger.warn('PaymentSecurity', `Webhook request from unauthorized IP: ${clientIP}`)
     }
@@ -250,7 +250,7 @@ export function withPaymentSecurity(
       rateLimitType = 'payment',
       validateWebhook = false,
       sanitizeRequest = true,
-      sanitizeResponse = true
+      sanitizeResponse = true,
     } = options
 
     const ip = getClientIP(request)
@@ -266,19 +266,13 @@ export function withPaymentSecurity(
 
       // Validate webhook IP if required
       if (validateWebhook && !validateWebhookIP(request)) {
-        return NextResponse.json(
-          { error: 'Unauthorized webhook source' },
-          { status: 403 }
-        )
+        return NextResponse.json({ error: 'Unauthorized webhook source' }, { status: 403 })
       }
 
       // Validate CSRF token for state-changing requests
       if (requireCSRF && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
         if (!validatePaymentCSRFToken(request)) {
-          return NextResponse.json(
-            { error: 'Invalid CSRF token' },
-            { status: 403 }
-          )
+          return NextResponse.json({ error: 'Invalid CSRF token' }, { status: 403 })
         }
       }
 
@@ -287,14 +281,14 @@ export function withPaymentSecurity(
         try {
           const body = await request.json()
           const sanitizedBody = sanitizePaymentData(body)
-          
+
           // Create new request with sanitized body
           const sanitizedRequest = new NextRequest(request.url, {
             method: request.method,
             headers: request.headers,
-            body: JSON.stringify(sanitizedBody)
+            body: JSON.stringify(sanitizedBody),
           })
-          
+
           request = sanitizedRequest
         } catch (error) {
           // If body parsing fails, continue with original request
@@ -310,10 +304,10 @@ export function withPaymentSecurity(
         try {
           const responseData = await response.json()
           const sanitizedData = sanitizePaymentData(responseData)
-          
+
           return NextResponse.json(sanitizedData, {
             status: response.status,
-            headers: response.headers
+            headers: response.headers,
           })
         } catch (error) {
           // If response parsing fails, return original response
@@ -324,11 +318,8 @@ export function withPaymentSecurity(
       return response
     } catch (error) {
       logger.error('PaymentSecurity', `Payment security middleware error for ${pathname}`, error)
-      
-      return NextResponse.json(
-        { error: 'Payment processing error' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Payment processing error' }, { status: 500 })
     }
   }
 }
@@ -345,20 +336,17 @@ export function withStripeWebhookSecurity(
       // Validate webhook signature
       const signature = request.headers.get('stripe-signature')
       const payload = await request.text()
-      
+
       if (!signature || !validateWebhookSignature(payload, signature, webhookSecret)) {
         logger.warn('PaymentSecurity', 'Invalid Stripe webhook signature')
-        return NextResponse.json(
-          { error: 'Invalid webhook signature' },
-          { status: 401 }
-        )
+        return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 401 })
       }
 
       // Create new request with the payload for the handler
       const webhookRequest = new NextRequest(request.url, {
         method: request.method,
         headers: request.headers,
-        body: payload
+        body: payload,
       })
 
       return handler(webhookRequest)
@@ -368,7 +356,7 @@ export function withStripeWebhookSecurity(
       rateLimitType: 'webhook',
       validateWebhook: true,
       sanitizeRequest: false,
-      sanitizeResponse: false
+      sanitizeResponse: false,
     }
   )
 }

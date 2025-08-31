@@ -5,7 +5,7 @@
 
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/view/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
@@ -36,26 +36,26 @@ function CommonReasons(): JSX.Element {
       title: 'Need more information?',
       description: 'Check out our detailed feature comparison and FAQ',
       action: 'View Features',
-      href: '/features'
+      href: '/features',
     },
     {
       title: 'Want to try before buying?',
       description: 'Start with our free trial to explore all features',
       action: 'Start Free Trial',
-      href: '/trial'
+      href: '/trial',
     },
     {
       title: 'Have questions?',
       description: 'Our support team is here to help you choose the right plan',
       action: 'Contact Support',
-      href: '/support'
+      href: '/support',
     },
     {
       title: 'Looking for a different plan?',
       description: 'We have flexible options to fit your needs',
       action: 'View All Plans',
-      href: '/pricing'
-    }
+      href: '/pricing',
+    },
   ]
 
   return (
@@ -72,10 +72,10 @@ function CommonReasons(): JSX.Element {
                 <div className="flex-1">
                   <h4 className="font-medium mb-1">{reason.title}</h4>
                   <p className="text-sm text-muted-foreground mb-3">{reason.description}</p>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={() => window.location.href = reason.href}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => (window.location.href = reason.href)}
                     className="w-full sm:w-auto"
                   >
                     {reason.action}
@@ -107,8 +107,8 @@ function AlternativeOptions(): JSX.Element {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Need a custom solution or have specific requirements? 
-            Our sales team can help you find the perfect plan.
+            Need a custom solution or have specific requirements? Our sales team can help you find
+            the perfect plan.
           </p>
           <Button variant="outline" className="w-full">
             Schedule a Call
@@ -122,8 +122,7 @@ function AlternativeOptions(): JSX.Element {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Explore our free tools and resources to get started 
-            with business data collection.
+            Explore our free tools and resources to get started with business data collection.
           </p>
           <Button variant="outline" className="w-full">
             Browse Free Tools
@@ -146,13 +145,13 @@ function FeedbackSection(): JSX.Element {
 
     try {
       setIsSubmitting(true)
-      
+
       // TODO: Submit feedback to API
       logger.info('PaymentCancel', 'Feedback submitted', { feedback })
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       alert('Thank you for your feedback!')
       setFeedback('')
     } catch (error) {
@@ -174,16 +173,14 @@ function FeedbackSection(): JSX.Element {
         </p>
         <textarea
           value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
+          onChange={e => setFeedback(e.target.value)}
           placeholder="Tell us what we could do better..."
           className="w-full p-3 border rounded-md resize-none h-24"
           maxLength={500}
         />
         <div className="flex justify-between items-center">
-          <span className="text-xs text-muted-foreground">
-            {feedback.length}/500 characters
-          </span>
-          <Button 
+          <span className="text-xs text-muted-foreground">{feedback.length}/500 characters</span>
+          <Button
             onClick={handleSubmitFeedback}
             disabled={!feedback.trim() || isSubmitting}
             size="sm"
@@ -197,9 +194,9 @@ function FeedbackSection(): JSX.Element {
 }
 
 /**
- * Main Payment Cancel Page Component
+ * Payment Cancel Content Component (with search params)
  */
-export default function PaymentCancelPage(): JSX.Element {
+function PaymentCancelContent(): JSX.Element {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -211,7 +208,7 @@ export default function PaymentCancelPage(): JSX.Element {
     // Log payment cancellation
     logger.info('PaymentCancel', 'Payment cancel page loaded', {
       sessionId,
-      reason
+      reason,
     })
   }, [sessionId, reason])
 
@@ -237,19 +234,11 @@ export default function PaymentCancelPage(): JSX.Element {
 
         {/* Quick Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button 
-            onClick={handleReturnToPricing}
-            size="lg"
-            className="flex items-center gap-2"
-          >
+          <Button onClick={handleReturnToPricing} size="lg" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to Pricing
           </Button>
-          <Button 
-            onClick={handleGoHome}
-            variant="outline"
-            size="lg"
-          >
+          <Button onClick={handleGoHome} variant="outline" size="lg">
             Go to Homepage
           </Button>
         </div>
@@ -287,11 +276,31 @@ export default function PaymentCancelPage(): JSX.Element {
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground">
           <p>
-            We're here to help you succeed. Don't hesitate to reach out if you need assistance 
+            We're here to help you succeed. Don't hesitate to reach out if you need assistance
             choosing the right plan for your business.
           </p>
         </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * Main Payment Cancel Page Component with Suspense
+ */
+export default function PaymentCancelPage(): JSX.Element {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <PaymentCancelContent />
+    </Suspense>
   )
 }

@@ -1,1630 +1,811 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stripe Payment Integration Guide - Business Scraper App</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #635bff;
-            border-bottom: 3px solid #635bff;
-            padding-bottom: 10px;
-        }
-        h2 {
-            color: #424770;
-            margin-top: 30px;
-            border-left: 4px solid #635bff;
-            padding-left: 15px;
-        }
-        h3 {
-            color: #525f7f;
-            margin-top: 25px;
-        }
-        .code-block {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 10px 0;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-        }
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 4px solid #f39c12;
-        }
-        .info {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 4px solid #17a2b8;
-        }
-        .success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 4px solid #28a745;
-        }
-        .toc {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .toc ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .toc li {
-            margin: 8px 0;
-        }
-        .toc a {
-            color: #635bff;
-            text-decoration: none;
-        }
-        .toc a:hover {
-            text-decoration: underline;
-        }
-        .prompt-section {
-            background: #e8f5e8;
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .file-structure {
-            background: #f1f3f4;
-            border-left: 4px solid #4285f4;
-            padding: 15px;
-            margin: 15px 0;
-            font-family: monospace;
-        }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #635bff;
+        border-bottom: 3px solid #635bff;
+        padding-bottom: 10px;
+      }
+      h2 {
+        color: #424770;
+        margin-top: 30px;
+        border-left: 4px solid #635bff;
+        padding-left: 15px;
+      }
+      h3 {
+        color: #525f7f;
+        margin-top: 25px;
+      }
+      .code-block {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 10px 0;
+        overflow-x: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+      }
+      .warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        border-left: 4px solid #f39c12;
+      }
+      .info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        border-left: 4px solid #17a2b8;
+      }
+      .success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        border-left: 4px solid #28a745;
+      }
+      .toc {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .toc ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      .toc li {
+        margin: 8px 0;
+      }
+      .toc a {
+        color: #635bff;
+        text-decoration: none;
+      }
+      .toc a:hover {
+        text-decoration: underline;
+      }
+      .prompt-section {
+        background: #e8f5e8;
+        border: 2px solid #28a745;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 30px 0;
+      }
+      .file-structure {
+        background: #f1f3f4;
+        border-left: 4px solid #4285f4;
+        padding: 15px;
+        margin: 15px 0;
+        font-family: monospace;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🚀 Stripe Payment Integration Guide</h1>
-        <p><strong>Business Scraper App - Complete Payment System Implementation</strong></p>
-        <p><em>Version: 1.0.0 | Date: 2025-08-29 | Framework: Next.js 14 + TypeScript</em></p>
+      <h1>🚀 Stripe Payment Integration Guide</h1>
+      <p><strong>Business Scraper App - Complete Payment System Implementation</strong></p>
+      <p><em>Version: 1.0.0 | Date: 2025-08-29 | Framework: Next.js 14 + TypeScript</em></p>
 
-        <div class="info">
-            <strong>📋 Overview:</strong> This comprehensive guide provides step-by-step instructions for integrating a complete Stripe payment system into the Business Scraper App, including subscription management, one-time payments, billing history, and premium feature access control.
-        </div>
+      <div class="info">
+        <strong>📋 Overview:</strong> This comprehensive guide provides step-by-step instructions
+        for integrating a complete Stripe payment system into the Business Scraper App, including
+        subscription management, one-time payments, billing history, and premium feature access
+        control.
+      </div>
 
-        <div class="toc">
-            <h3>📚 Table of Contents</h3>
-            <ul>
-                <li><a href="#prerequisites">1. Prerequisites & Dependencies</a></li>
-                <li><a href="#database">2. Database Schema Updates</a></li>
-                <li><a href="#configuration">3. Configuration & Environment Setup</a></li>
-                <li><a href="#model-layer">4. Model Layer Implementation</a></li>
-                <li><a href="#api-layer">5. API Layer & Webhooks</a></li>
-                <li><a href="#view-layer">6. View Layer & UI Components</a></li>
-                <li><a href="#controller-layer">7. Controller Layer & State Management</a></li>
-                <li><a href="#security">8. Security & PCI Compliance</a></li>
-                <li><a href="#testing">9. Testing Strategy</a></li>
-                <li><a href="#deployment">10. Deployment Considerations</a></li>
-                <li><a href="#augment-prompt">11. Complete Augment AI Implementation Prompt</a></li>
-            </ul>
-        </div>
+      <div class="toc">
+        <h3>📚 Table of Contents</h3>
+        <ul>
+          <li><a href="#prerequisites">1. Prerequisites & Dependencies</a></li>
+          <li><a href="#database">2. Database Schema Updates</a></li>
+          <li><a href="#configuration">3. Configuration & Environment Setup</a></li>
+          <li><a href="#model-layer">4. Model Layer Implementation</a></li>
+          <li><a href="#api-layer">5. API Layer & Webhooks</a></li>
+          <li><a href="#view-layer">6. View Layer & UI Components</a></li>
+          <li><a href="#controller-layer">7. Controller Layer & State Management</a></li>
+          <li><a href="#security">8. Security & PCI Compliance</a></li>
+          <li><a href="#testing">9. Testing Strategy</a></li>
+          <li><a href="#deployment">10. Deployment Considerations</a></li>
+          <li><a href="#augment-prompt">11. Complete Augment AI Implementation Prompt</a></li>
+        </ul>
+      </div>
 
-        <h2 id="prerequisites">1. 📦 Prerequisites & Dependencies</h2>
-        
-        <h3>Required Stripe Dependencies</h3>
+      <h2 id="prerequisites">1. 📦 Prerequisites & Dependencies</h2>
+
+      <h3>Required Stripe Dependencies</h3>
+      <div class="code-block">
+        npm install stripe @stripe/stripe-js @stripe/react-stripe-js npm install --save-dev
+        @types/stripe
+      </div>
+
+      <h3>Additional Dependencies</h3>
+      <div class="code-block">
+        npm install crypto-js jsonwebtoken npm install --save-dev @types/jsonwebtoken
+      </div>
+
+      <div class="warning">
+        <strong>⚠️ Important:</strong> Ensure you have a Stripe account and access to both test and
+        live API keys. Never commit API keys to version control.
+      </div>
+
+      <h2 id="database">2. 🗄️ Database Schema Updates</h2>
+
+      <h3>PostgreSQL Schema Additions</h3>
+      <div class="code-block">
+        -- Users table (if not exists) CREATE TABLE IF NOT EXISTS users ( id UUID PRIMARY KEY
+        DEFAULT gen_random_uuid(), email VARCHAR(255) UNIQUE NOT NULL, name VARCHAR(255),
+        stripe_customer_id VARCHAR(255) UNIQUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ); -- Subscription plans CREATE TABLE
+        subscription_plans ( id UUID PRIMARY KEY DEFAULT gen_random_uuid(), stripe_price_id
+        VARCHAR(255) UNIQUE NOT NULL, name VARCHAR(255) NOT NULL, description TEXT, price_cents
+        INTEGER NOT NULL, currency VARCHAR(3) DEFAULT 'usd', interval VARCHAR(20) NOT NULL, --
+        'month', 'year' features JSONB, is_active BOOLEAN DEFAULT true, created_at TIMESTAMP DEFAULT
+        CURRENT_TIMESTAMP ); -- User subscriptions CREATE TABLE user_subscriptions ( id UUID PRIMARY
+        KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        stripe_subscription_id VARCHAR(255) UNIQUE NOT NULL, plan_id UUID REFERENCES
+        subscription_plans(id), status VARCHAR(50) NOT NULL, -- 'active', 'canceled', 'past_due',
+        etc. current_period_start TIMESTAMP, current_period_end TIMESTAMP, cancel_at_period_end
+        BOOLEAN DEFAULT false, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP ); -- Payment transactions CREATE TABLE payment_transactions ( id
+        UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id UUID REFERENCES users(id) ON DELETE
+        CASCADE, stripe_payment_intent_id VARCHAR(255) UNIQUE, amount_cents INTEGER NOT NULL,
+        currency VARCHAR(3) DEFAULT 'usd', status VARCHAR(50) NOT NULL, description TEXT, metadata
+        JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ); -- Usage tracking for premium
+        features CREATE TABLE feature_usage ( id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id
+        UUID REFERENCES users(id) ON DELETE CASCADE, feature_type VARCHAR(100) NOT NULL, --
+        'scraping_request', 'export', 'advanced_search' usage_count INTEGER DEFAULT 1, date DATE
+        DEFAULT CURRENT_DATE, metadata JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ); --
+        Indexes for performance CREATE INDEX idx_users_stripe_customer ON users(stripe_customer_id);
+        CREATE INDEX idx_subscriptions_user ON user_subscriptions(user_id); CREATE INDEX
+        idx_subscriptions_stripe ON user_subscriptions(stripe_subscription_id); CREATE INDEX
+        idx_transactions_user ON payment_transactions(user_id); CREATE INDEX idx_usage_user_date ON
+        feature_usage(user_id, date);
+      </div>
+
+      <h3>IndexedDB Schema Updates</h3>
+      <div class="code-block">
+        // Add to src/model/storage.ts interface interface BusinessScraperDB extends DBSchema { //
+        ... existing stores ... userProfile: { key: string value: { id: string email: string name:
+        string subscriptionStatus: 'free' | 'premium' | 'enterprise' subscriptionPlan?: string
+        usageQuotas: { scrapingRequests: number exports: number advancedSearches: number }
+        createdAt: Date updatedAt: Date } } paymentHistory: { key: string value: { id: string
+        amount: number currency: string status: string description: string date: Date } } }
+      </div>
+
+      <h2 id="configuration">3. ⚙️ Configuration & Environment Setup</h2>
+
+      <h3>Environment Variables (.env.local)</h3>
+      <div class="code-block">
+        # Stripe Configuration STRIPE_PUBLISHABLE_KEY=pk_test_... STRIPE_SECRET_KEY=sk_test_...
+        STRIPE_WEBHOOK_SECRET=whsec_... # Production keys (for deployment)
+        STRIPE_PUBLISHABLE_KEY_LIVE=pk_live_... STRIPE_SECRET_KEY_LIVE=sk_live_...
+        STRIPE_WEBHOOK_SECRET_LIVE=whsec_... # Payment Configuration
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+        PAYMENT_SUCCESS_URL=http://localhost:3000/payment/success
+        PAYMENT_CANCEL_URL=http://localhost:3000/payment/cancel
+      </div>
+
+      <h3>Configuration Schema Updates (src/lib/config.ts)</h3>
+      <div class="code-block">
+        // Add to configSchema const configSchema: Record&lt;string, ValidationRule&gt; = { // ...
+        existing config ... // Stripe Configuration 'STRIPE_PUBLISHABLE_KEY': { type: 'string',
+        required: true }, 'STRIPE_SECRET_KEY': { type: 'string', required: true },
+        'STRIPE_WEBHOOK_SECRET': { type: 'string', required: true },
+        'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY': { type: 'string', required: true },
+        'PAYMENT_SUCCESS_URL': { type: 'url', required: true }, 'PAYMENT_CANCEL_URL': { type: 'url',
+        required: true }, } // Add to AppConfig interface export interface AppConfig { // ...
+        existing config ... payments: { stripePublishableKey: string stripeSecretKey: string
+        stripeWebhookSecret: string successUrl: string cancelUrl: string } }
+      </div>
+
+      <div class="info">
+        <strong>💡 Next Steps:</strong> This is the foundation. The complete implementation
+        continues with detailed Model, API, View, and Controller layers, plus comprehensive testing
+        and security measures.
+      </div>
+
+      <h2 id="model-layer">4. 🏗️ Model Layer Implementation</h2>
+
+      <h3>Stripe Service (src/model/stripeService.ts)</h3>
+      <div class="code-block">
+        import Stripe from 'stripe' import { getConfig } from '@/lib/config' import { logger } from
+        '@/utils/logger' export class StripeService { private stripe: Stripe private config =
+        getConfig() constructor() { this.stripe = new Stripe(this.config.payments.stripeSecretKey, {
+        apiVersion: '2023-10-16', typescript: true, }) } // Customer Management async
+        createCustomer(email: string, name?: string): Promise&lt;Stripe.Customer&gt; { try { const
+        customer = await this.stripe.customers.create({ email, name, metadata: { source:
+        'business_scraper_app' } }) logger.info('StripeService', `Customer created: ${customer.id}`)
+        return customer } catch (error) { logger.error('StripeService', 'Failed to create customer',
+        error) throw error } } // Subscription Management async createSubscription( customerId:
+        string, priceId: string ): Promise&lt;Stripe.Subscription&gt; { try { const subscription =
+        await this.stripe.subscriptions.create({ customer: customerId, items: [{ price: priceId }],
+        payment_behavior: 'default_incomplete', payment_settings: { save_default_payment_method:
+        'on_subscription' }, expand: ['latest_invoice.payment_intent'], }) return subscription }
+        catch (error) { logger.error('StripeService', 'Failed to create subscription', error) throw
+        error } } // Payment Intent for one-time payments async createPaymentIntent( amount: number,
+        currency: string = 'usd', customerId?: string ): Promise&lt;Stripe.PaymentIntent&gt; { try {
+        const paymentIntent = await this.stripe.paymentIntents.create({ amount, currency, customer:
+        customerId, automatic_payment_methods: { enabled: true }, }) return paymentIntent } catch
+        (error) { logger.error('StripeService', 'Failed to create payment intent', error) throw
+        error } } // Webhook signature verification verifyWebhookSignature(payload: string,
+        signature: string): Stripe.Event { try { return this.stripe.webhooks.constructEvent(
+        payload, signature, this.config.payments.stripeWebhookSecret ) } catch (error) {
+        logger.error('StripeService', 'Webhook signature verification failed', error) throw error }
+        } } export const stripeService = new StripeService()
+      </div>
+
+      <h3>Payment Models (src/model/paymentModels.ts)</h3>
+      <div class="code-block">
+        import { z } from 'zod' // Subscription Plan Schema export const SubscriptionPlanSchema =
+        z.object({ id: z.string().uuid(), stripePriceId: z.string(), name: z.string(), description:
+        z.string().optional(), priceCents: z.number().positive(), currency:
+        z.string().length(3).default('usd'), interval: z.enum(['month', 'year']), features:
+        z.record(z.any()).optional(), isActive: z.boolean().default(true), createdAt: z.date(), })
+        export type SubscriptionPlan = z.infer&lt;typeof SubscriptionPlanSchema&gt; // User
+        Subscription Schema export const UserSubscriptionSchema = z.object({ id: z.string().uuid(),
+        userId: z.string().uuid(), stripeSubscriptionId: z.string(), planId: z.string().uuid(),
+        status: z.enum(['active', 'canceled', 'past_due', 'unpaid', 'incomplete']),
+        currentPeriodStart: z.date(), currentPeriodEnd: z.date(), cancelAtPeriodEnd:
+        z.boolean().default(false), createdAt: z.date(), updatedAt: z.date(), }) export type
+        UserSubscription = z.infer&lt;typeof UserSubscriptionSchema&gt; // Payment Transaction
+        Schema export const PaymentTransactionSchema = z.object({ id: z.string().uuid(), userId:
+        z.string().uuid(), stripePaymentIntentId: z.string().optional(), amountCents:
+        z.number().positive(), currency: z.string().length(3).default('usd'), status:
+        z.enum(['succeeded', 'pending', 'failed', 'canceled']), description: z.string().optional(),
+        metadata: z.record(z.any()).optional(), createdAt: z.date(), }) export type
+        PaymentTransaction = z.infer&lt;typeof PaymentTransactionSchema&gt; // Feature Usage Schema
+        export const FeatureUsageSchema = z.object({ id: z.string().uuid(), userId:
+        z.string().uuid(), featureType: z.enum(['scraping_request', 'export', 'advanced_search',
+        'premium_industry']), usageCount: z.number().positive().default(1), date: z.date(),
+        metadata: z.record(z.any()).optional(), createdAt: z.date(), }) export type FeatureUsage =
+        z.infer&lt;typeof FeatureUsageSchema&gt;
+      </div>
+
+      <h3>Payment Database Service (src/model/paymentStorage.ts)</h3>
+      <div class="code-block">
+        import { database } from '@/lib/postgresql-database' import { logger } from '@/utils/logger'
+        import { SubscriptionPlan, UserSubscription, PaymentTransaction, FeatureUsage } from
+        './paymentModels' export class PaymentStorage { // Subscription Plans async
+        createSubscriptionPlan(plan: Omit&lt;SubscriptionPlan, 'id' | 'createdAt'&gt;):
+        Promise&lt;SubscriptionPlan&gt; { try { const query = ` INSERT INTO subscription_plans
+        (stripe_price_id, name, description, price_cents, currency, interval, features, is_active)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING * ` const result = await
+        database.query(query, [ plan.stripePriceId, plan.name, plan.description, plan.priceCents,
+        plan.currency, plan.interval, JSON.stringify(plan.features), plan.isActive ]) return
+        result.rows[0] } catch (error) { logger.error('PaymentStorage', 'Failed to create
+        subscription plan', error) throw error } } async getActiveSubscriptionPlans():
+        Promise&lt;SubscriptionPlan[]&gt; { try { const query = 'SELECT * FROM subscription_plans
+        WHERE is_active = true ORDER BY price_cents ASC' const result = await database.query(query)
+        return result.rows } catch (error) { logger.error('PaymentStorage', 'Failed to get
+        subscription plans', error) throw error } } // User Subscriptions async
+        createUserSubscription(subscription: Omit&lt;UserSubscription, 'id' | 'createdAt' |
+        'updatedAt'&gt;): Promise&lt;UserSubscription&gt; { try { const query = ` INSERT INTO
+        user_subscriptions (user_id, stripe_subscription_id, plan_id, status, current_period_start,
+        current_period_end, cancel_at_period_end) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING * `
+        const result = await database.query(query, [ subscription.userId,
+        subscription.stripeSubscriptionId, subscription.planId, subscription.status,
+        subscription.currentPeriodStart, subscription.currentPeriodEnd,
+        subscription.cancelAtPeriodEnd ]) return result.rows[0] } catch (error) {
+        logger.error('PaymentStorage', 'Failed to create user subscription', error) throw error } }
+        async getUserActiveSubscription(userId: string): Promise&lt;UserSubscription | null&gt; {
+        try { const query = ` SELECT us.*, sp.name as plan_name, sp.features FROM user_subscriptions
+        us JOIN subscription_plans sp ON us.plan_id = sp.id WHERE us.user_id = $1 AND us.status =
+        'active' ORDER BY us.created_at DESC LIMIT 1 ` const result = await database.query(query,
+        [userId]) return result.rows[0] || null } catch (error) { logger.error('PaymentStorage',
+        'Failed to get user subscription', error) throw error } } // Feature Usage Tracking async
+        recordFeatureUsage(usage: Omit&lt;FeatureUsage, 'id' | 'createdAt'&gt;): Promise&lt;void&gt;
+        { try { const query = ` INSERT INTO feature_usage (user_id, feature_type, usage_count, date,
+        metadata) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id, feature_type, date) DO UPDATE
+        SET usage_count = feature_usage.usage_count + $3 ` await database.query(query, [
+        usage.userId, usage.featureType, usage.usageCount, usage.date,
+        JSON.stringify(usage.metadata) ]) } catch (error) { logger.error('PaymentStorage', 'Failed
+        to record feature usage', error) throw error } } async getUserFeatureUsage(userId: string,
+        featureType: string, date: Date): Promise&lt;number&gt; { try { const query = ` SELECT
+        COALESCE(SUM(usage_count), 0) as total_usage FROM feature_usage WHERE user_id = $1 AND
+        feature_type = $2 AND date = $3 ` const result = await database.query(query, [userId,
+        featureType, date]) return parseInt(result.rows[0].total_usage) } catch (error) {
+        logger.error('PaymentStorage', 'Failed to get feature usage', error) throw error } } }
+        export const paymentStorage = new PaymentStorage()
+      </div>
+
+      <h2 id="api-layer">5. 🔌 API Layer & Webhooks</h2>
+
+      <h3>Stripe Webhooks (src/app/api/stripe/webhooks/route.ts)</h3>
+      <div class="code-block">
+        import { NextRequest, NextResponse } from 'next/server' import { stripeService } from
+        '@/model/stripeService' import { paymentStorage } from '@/model/paymentStorage' import {
+        logger } from '@/utils/logger' import Stripe from 'stripe' export async function
+        POST(request: NextRequest) { try { const body = await request.text() const signature =
+        request.headers.get('stripe-signature') if (!signature) { return NextResponse.json({ error:
+        'Missing stripe signature' }, { status: 400 }) } const event =
+        stripeService.verifyWebhookSignature(body, signature) logger.info('StripeWebhook',
+        `Processing event: ${event.type}`) switch (event.type) { case
+        'customer.subscription.created': case 'customer.subscription.updated': await
+        handleSubscriptionUpdate(event.data.object as Stripe.Subscription) break case
+        'customer.subscription.deleted': await handleSubscriptionCancellation(event.data.object as
+        Stripe.Subscription) break case 'payment_intent.succeeded': await
+        handlePaymentSuccess(event.data.object as Stripe.PaymentIntent) break case
+        'payment_intent.payment_failed': await handlePaymentFailure(event.data.object as
+        Stripe.PaymentIntent) break default: logger.info('StripeWebhook', `Unhandled event type:
+        ${event.type}`) } return NextResponse.json({ received: true }) } catch (error) {
+        logger.error('StripeWebhook', 'Webhook processing failed', error) return NextResponse.json({
+        error: 'Webhook processing failed' }, { status: 500 }) } } async function
+        handleSubscriptionUpdate(subscription: Stripe.Subscription) { try { // Update subscription
+        in database const query = ` UPDATE user_subscriptions SET status = $1, current_period_start
+        = $2, current_period_end = $3, updated_at = CURRENT_TIMESTAMP WHERE stripe_subscription_id =
+        $4 ` await database.query(query, [ subscription.status, new
+        Date(subscription.current_period_start * 1000), new Date(subscription.current_period_end *
+        1000), subscription.id ]) logger.info('StripeWebhook', `Subscription updated:
+        ${subscription.id}`) } catch (error) { logger.error('StripeWebhook', 'Failed to update
+        subscription', error) throw error } } async function handlePaymentSuccess(paymentIntent:
+        Stripe.PaymentIntent) { try { // Record successful payment await
+        paymentStorage.createPaymentTransaction({ userId: paymentIntent.metadata.userId,
+        stripePaymentIntentId: paymentIntent.id, amountCents: paymentIntent.amount, currency:
+        paymentIntent.currency, status: 'succeeded', description: paymentIntent.description ||
+        'One-time payment', metadata: paymentIntent.metadata }) logger.info('StripeWebhook',
+        `Payment succeeded: ${paymentIntent.id}`) } catch (error) { logger.error('StripeWebhook',
+        'Failed to record payment success', error) throw error } }
+      </div>
+
+      <h3>Payment API Endpoints (src/app/api/payments/route.ts)</h3>
+      <div class="code-block">
+        import { NextRequest, NextResponse } from 'next/server' import { stripeService } from
+        '@/model/stripeService' import { paymentStorage } from '@/model/paymentStorage' import {
+        withApiSecurity } from '@/lib/api-security' import { withValidation } from
+        '@/lib/validation-middleware' import { z } from 'zod' const CreatePaymentIntentSchema =
+        z.object({ amount: z.number().positive(), currency: z.string().length(3).default('usd'),
+        description: z.string().optional(), }) const CreateSubscriptionSchema = z.object({ priceId:
+        z.string(), customerId: z.string().optional(), }) export async function POST(request:
+        NextRequest) { return withApiSecurity(async () => { return
+        withValidation(CreatePaymentIntentSchema, async (data) => { try { const paymentIntent =
+        await stripeService.createPaymentIntent( data.amount, data.currency, data.customerId )
+        return NextResponse.json({ clientSecret: paymentIntent.client_secret, paymentIntentId:
+        paymentIntent.id }) } catch (error) { logger.error('PaymentAPI', 'Failed to create payment
+        intent', error) return NextResponse.json({ error: 'Payment creation failed' }, { status: 500
+        }) } })(request) })(request) }
+      </div>
+
+      <h3>Subscription Management API (src/app/api/subscriptions/route.ts)</h3>
+      <div class="code-block">
+        import { NextRequest, NextResponse } from 'next/server' import { stripeService } from
+        '@/model/stripeService' import { paymentStorage } from '@/model/paymentStorage' export async
+        function GET(request: NextRequest) { try { const plans = await
+        paymentStorage.getActiveSubscriptionPlans() return NextResponse.json({ plans }) } catch
+        (error) { return NextResponse.json({ error: 'Failed to fetch plans' }, { status: 500 }) } }
+        export async function POST(request: NextRequest) { try { const { priceId, customerId } =
+        await request.json() const subscription = await stripeService.createSubscription(customerId,
+        priceId) return NextResponse.json({ subscriptionId: subscription.id, clientSecret:
+        subscription.latest_invoice?.payment_intent?.client_secret }) } catch (error) { return
+        NextResponse.json({ error: 'Subscription creation failed' }, { status: 500 }) } }
+      </div>
+
+      <h2 id="view-layer">6. 🎨 View Layer & UI Components</h2>
+
+      <h3>Payment Form Component (src/view/components/PaymentForm.tsx)</h3>
+      <div class="code-block">
+        'use client' import React, { useState } from 'react' import { loadStripe } from
+        '@stripe/stripe-js' import { Elements, CardElement, useStripe, useElements } from
+        '@stripe/react-stripe-js' import { Button } from './ui/Button' import { Card, CardHeader,
+        CardTitle, CardContent } from './ui/Card' import { useConfig } from
+        '@/controller/ConfigContext' import { logger } from '@/utils/logger' const stripePromise =
+        loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!) interface PaymentFormProps {
+        amount: number currency?: string description?: string onSuccess: (paymentIntent: any) =&gt;
+        void onError: (error: string) =&gt; void } function PaymentFormInner({ amount, currency =
+        'usd', description, onSuccess, onError }: PaymentFormProps) { const stripe = useStripe()
+        const elements = useElements() const [isProcessing, setIsProcessing] = useState(false) const
+        handleSubmit = async (event: React.FormEvent) => { event.preventDefault() if (!stripe ||
+        !elements) { return } setIsProcessing(true) try { // Create payment intent const response =
+        await fetch('/api/payments', { method: 'POST', headers: { 'Content-Type': 'application/json'
+        }, body: JSON.stringify({ amount, currency, description }) }) const { clientSecret } = await
+        response.json() // Confirm payment const { error, paymentIntent } = await
+        stripe.confirmCardPayment(clientSecret, { payment_method: { card:
+        elements.getElement(CardElement)!, } }) if (error) { onError(error.message || 'Payment
+        failed') } else if (paymentIntent?.status === 'succeeded') { onSuccess(paymentIntent) } }
+        catch (error) { onError('Payment processing failed') logger.error('PaymentForm', 'Payment
+        failed', error) } finally { setIsProcessing(false) } } return ( &lt;Card className="w-full
+        max-w-md"&gt; &lt;CardHeader&gt; &lt;CardTitle&gt;Payment Details&lt;/CardTitle&gt;
+        &lt;/CardHeader&gt; &lt;CardContent&gt; &lt;form onSubmit={handleSubmit}
+        className="space-y-4"&gt; &lt;div className="p-4 border rounded-md"&gt; &lt;CardElement
+        options={{ style: { base: { fontSize: '16px', color: '#424770', '::placeholder': { color:
+        '#aab7c4', }, }, }, }} /&gt; &lt;/div&gt; &lt;div className="text-sm text-gray-600"&gt;
+        Amount: ${(amount / 100).toFixed(2)} {currency.toUpperCase()} &lt;/div&gt; &lt;Button
+        type="submit" disabled={!stripe || isProcessing} className="w-full" &gt; {isProcessing ?
+        'Processing...' : `Pay $${(amount / 100).toFixed(2)}`} &lt;/Button&gt; &lt;/form&gt;
+        &lt;/CardContent&gt; &lt;/Card&gt; ) } export function PaymentForm(props: PaymentFormProps)
+        { return ( &lt;Elements stripe={stripePromise}&gt; &lt;PaymentFormInner {...props} /&gt;
+        &lt;/Elements&gt; ) }
+      </div>
+
+      <h3>Subscription Plans Component (src/view/components/SubscriptionPlans.tsx)</h3>
+      <div class="code-block">
+        'use client' import React, { useState, useEffect } from 'react' import { Card, CardHeader,
+        CardTitle, CardContent } from './ui/Card' import { Button } from './ui/Button' import {
+        Check, Star } from 'lucide-react' import { SubscriptionPlan } from '@/model/paymentModels'
+        interface SubscriptionPlansProps { onSelectPlan: (plan: SubscriptionPlan) =&gt; void }
+        export function SubscriptionPlans({ onSelectPlan }: SubscriptionPlansProps) { const [plans,
+        setPlans] = useState&lt;SubscriptionPlan[]&gt;([]) const [loading, setLoading] =
+        useState(true) useEffect(() => { fetchPlans() }, []) const fetchPlans = async () => { try {
+        const response = await fetch('/api/subscriptions') const { plans } = await response.json()
+        setPlans(plans) } catch (error) { console.error('Failed to fetch plans:', error) } finally {
+        setLoading(false) } } if (loading) { return &lt;div className="text-center"&gt;Loading
+        plans...&lt;/div&gt; } return ( &lt;div className="grid grid-cols-1 md:grid-cols-3
+        gap-6"&gt; {plans.map((plan) =&gt; ( &lt;Card key={plan.id} className={`relative
+        ${plan.name.includes('Pro') ? 'border-blue-500 shadow-lg' : ''}`}&gt;
+        {plan.name.includes('Pro') && ( &lt;div className="absolute -top-3 left-1/2 transform
+        -translate-x-1/2"&gt; &lt;span className="bg-blue-500 text-white px-3 py-1 rounded-full
+        text-sm flex items-center"&gt; &lt;Star className="w-4 h-4 mr-1" /&gt; Popular &lt;/span&gt;
+        &lt;/div&gt; )} &lt;CardHeader className="text-center"&gt; &lt;CardTitle
+        className="text-2xl"&gt;{plan.name}&lt;/CardTitle&gt; &lt;div className="text-3xl
+        font-bold"&gt; ${(plan.priceCents / 100).toFixed(0)} &lt;span className="text-lg font-normal
+        text-gray-600"&gt;/{plan.interval}&lt;/span&gt; &lt;/div&gt; {plan.description && ( &lt;p
+        className="text-gray-600"&gt;{plan.description}&lt;/p&gt; )} &lt;/CardHeader&gt;
+        &lt;CardContent&gt; &lt;ul className="space-y-3 mb-6"&gt; {plan.features &&
+        Object.entries(plan.features).map(([feature, included]) =&gt; ( &lt;li key={feature}
+        className="flex items-center"&gt; &lt;Check className="w-5 h-5 text-green-500 mr-2" /&gt;
+        &lt;span className="capitalize"&gt;{feature.replace('_', ' ')}&lt;/span&gt; &lt;/li&gt; ))}
+        &lt;/ul&gt; &lt;Button onClick={() =&gt; onSelectPlan(plan)} className="w-full"
+        variant={plan.name.includes('Pro') ? 'default' : 'outline'} &gt; Choose {plan.name}
+        &lt;/Button&gt; &lt;/CardContent&gt; &lt;/Card&gt; ))} &lt;/div&gt; ) }
+      </div>
+
+      <h2 id="controller-layer">7. 🎮 Controller Layer & State Management</h2>
+
+      <h3>Payment Controller (src/controller/usePaymentController.ts)</h3>
+      <div class="code-block">
+        import { useState, useCallback } from 'react' import { logger } from '@/utils/logger' import
+        { SubscriptionPlan, PaymentTransaction } from '@/model/paymentModels' interface PaymentState
+        { isProcessing: boolean currentSubscription: any | null paymentHistory: PaymentTransaction[]
+        error: string | null } export function usePaymentController() { const [state, setState] =
+        useState&lt;PaymentState&gt;({ isProcessing: false, currentSubscription: null,
+        paymentHistory: [], error: null }) const processPayment = useCallback(async (amount: number,
+        description?: string) =&gt; { setState(prev =&gt; ({ ...prev, isProcessing: true, error:
+        null })) try { const response = await fetch('/api/payments', { method: 'POST', headers: {
+        'Content-Type': 'application/json' }, body: JSON.stringify({ amount, description }) }) if
+        (!response.ok) { throw new Error('Payment failed') } const result = await response.json()
+        return result } catch (error) { const errorMessage = error instanceof Error ? error.message
+        : 'Payment failed' setState(prev =&gt; ({ ...prev, error: errorMessage }))
+        logger.error('PaymentController', 'Payment processing failed', error) throw error } finally
+        { setState(prev =&gt; ({ ...prev, isProcessing: false })) } }, []) const createSubscription
+        = useCallback(async (plan: SubscriptionPlan) =&gt; { setState(prev =&gt; ({ ...prev,
+        isProcessing: true, error: null })) try { const response = await fetch('/api/subscriptions',
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        priceId: plan.stripePriceId }) }) if (!response.ok) { throw new Error('Subscription creation
+        failed') } const result = await response.json() return result } catch (error) { const
+        errorMessage = error instanceof Error ? error.message : 'Subscription failed' setState(prev
+        =&gt; ({ ...prev, error: errorMessage })) logger.error('PaymentController', 'Subscription
+        creation failed', error) throw error } finally { setState(prev =&gt; ({ ...prev,
+        isProcessing: false })) } }, []) const checkFeatureAccess = useCallback(async (featureType:
+        string): Promise&lt;boolean&gt; =&gt; { try { const response = await
+        fetch(`/api/features/access?type=${featureType}`) const { hasAccess } = await
+        response.json() return hasAccess } catch (error) { logger.error('PaymentController',
+        'Feature access check failed', error) return false } }, []) const recordFeatureUsage =
+        useCallback(async (featureType: string, metadata?: any) =&gt; { try { await
+        fetch('/api/features/usage', { method: 'POST', headers: { 'Content-Type': 'application/json'
+        }, body: JSON.stringify({ featureType, metadata }) }) } catch (error) {
+        logger.error('PaymentController', 'Failed to record feature usage', error) } }, []) return {
+        ...state, processPayment, createSubscription, checkFeatureAccess, recordFeatureUsage } }
+      </div>
+
+      <h2 id="security">8. 🔒 Security & PCI Compliance</h2>
+
+      <h3>Security Middleware (src/lib/payment-security.ts)</h3>
+      <div class="code-block">
+        import { NextRequest } from 'next/server' import { logger } from '@/utils/logger' import
+        crypto from 'crypto' export function validatePaymentRequest(request: NextRequest): boolean {
+        // Validate request origin const origin = request.headers.get('origin') const allowedOrigins
+        = [ process.env.NEXT_PUBLIC_APP_URL, 'https://js.stripe.com' ] if (origin &&
+        !allowedOrigins.includes(origin)) { logger.warn('PaymentSecurity', `Invalid origin:
+        ${origin}`) return false } // Validate content type for POST requests if (request.method ===
+        'POST') { const contentType = request.headers.get('content-type') if
+        (!contentType?.includes('application/json')) { logger.warn('PaymentSecurity', 'Invalid
+        content type for payment request') return false } } return true } export function
+        sanitizePaymentData(data: any): any { // Remove any potentially dangerous fields const
+        sanitized = { ...data } delete sanitized.password delete sanitized.ssn delete
+        sanitized.creditCard // Validate amount is positive number if (sanitized.amount && (typeof
+        sanitized.amount !== 'number' || sanitized.amount <= 0)) { throw new Error('Invalid payment
+        amount') } return sanitized } export function generateIdempotencyKey(): string { return
+        crypto.randomUUID() }
+      </div>
+
+      <h3>PCI Compliance Checklist</h3>
+      <div class="info">
+        <strong>🛡️ PCI DSS Compliance Requirements:</strong>
+        <ul>
+          <li>✅ Never store credit card data (handled by Stripe)</li>
+          <li>✅ Use HTTPS for all payment-related communications</li>
+          <li>✅ Validate webhook signatures from Stripe</li>
+          <li>✅ Implement proper access controls for payment APIs</li>
+          <li>✅ Log all payment-related activities</li>
+          <li>✅ Use environment variables for sensitive configuration</li>
+          <li>✅ Implement rate limiting on payment endpoints</li>
+          <li>✅ Sanitize all input data</li>
+        </ul>
+      </div>
+
+      <h2 id="testing">9. 🧪 Testing Strategy</h2>
+
+      <h3>Payment Service Tests (tests/unit/model/stripeService.test.ts)</h3>
+      <div class="code-block">
+        import { stripeService } from '@/model/stripeService' import Stripe from 'stripe' // Mock
+        Stripe jest.mock('stripe') const mockStripe = { customers: { create: jest.fn(), },
+        subscriptions: { create: jest.fn(), }, paymentIntents: { create: jest.fn(), }, webhooks: {
+        constructEvent: jest.fn(), }, } describe('StripeService', () => { beforeEach(() => {
+        jest.clearAllMocks() ;(Stripe as jest.MockedClass&lt;typeof
+        Stripe&gt;).mockImplementation(() =&gt; mockStripe as any) }) describe('createCustomer', ()
+        => { it('should create a customer successfully', async () =&gt; { const mockCustomer = { id:
+        'cus_test123', email: 'test@example.com' }
+        mockStripe.customers.create.mockResolvedValue(mockCustomer) const result = await
+        stripeService.createCustomer('test@example.com', 'Test User')
+        expect(mockStripe.customers.create).toHaveBeenCalledWith({ email: 'test@example.com', name:
+        'Test User', metadata: { source: 'business_scraper_app' } })
+        expect(result).toEqual(mockCustomer) }) it('should handle customer creation errors', async
+        () =&gt; { mockStripe.customers.create.mockRejectedValue(new Error('Stripe error')) await
+        expect(stripeService.createCustomer('test@example.com')).rejects.toThrow('Stripe error') })
+        }) describe('createPaymentIntent', () => { it('should create payment intent successfully',
+        async () =&gt; { const mockPaymentIntent = { id: 'pi_test123', client_secret:
+        'pi_test123_secret' } mockStripe.paymentIntents.create.mockResolvedValue(mockPaymentIntent)
+        const result = await stripeService.createPaymentIntent(2000, 'usd')
+        expect(mockStripe.paymentIntents.create).toHaveBeenCalledWith({ amount: 2000, currency:
+        'usd', customer: undefined, automatic_payment_methods: { enabled: true }, })
+        expect(result).toEqual(mockPaymentIntent) }) }) describe('verifyWebhookSignature', () => {
+        it('should verify webhook signature successfully', () =&gt; { const mockEvent = { type:
+        'payment_intent.succeeded', data: {} }
+        mockStripe.webhooks.constructEvent.mockReturnValue(mockEvent) const result =
+        stripeService.verifyWebhookSignature('payload', 'signature')
+        expect(mockStripe.webhooks.constructEvent).toHaveBeenCalledWith( 'payload', 'signature',
+        expect.any(String) ) expect(result).toEqual(mockEvent) }) }) })
+      </div>
+
+      <h3>E2E Payment Tests (tests/e2e/payment.spec.ts)</h3>
+      <div class="code-block">
+        import { test, expect } from '@playwright/test' test.describe('Payment Flow', () => {
+        test('should complete subscription purchase', async ({ page }) =&gt; { // Navigate to
+        subscription page await page.goto('/subscription') // Select a plan await
+        page.click('[data-testid="plan-pro"]') // Fill payment form with test card await
+        page.fill('[data-testid="card-number"]', '4242424242424242') await
+        page.fill('[data-testid="card-expiry"]', '12/25') await
+        page.fill('[data-testid="card-cvc"]', '123') // Submit payment await
+        page.click('[data-testid="submit-payment"]') // Wait for success await
+        expect(page.locator('[data-testid="payment-success"]')).toBeVisible() await
+        expect(page.locator('text=Subscription activated')).toBeVisible() }) test('should handle
+        payment failure gracefully', async ({ page }) =&gt; { await page.goto('/subscription') await
+        page.click('[data-testid="plan-basic"]') // Use declined test card await
+        page.fill('[data-testid="card-number"]', '4000000000000002') await
+        page.fill('[data-testid="card-expiry"]', '12/25') await
+        page.fill('[data-testid="card-cvc"]', '123') await
+        page.click('[data-testid="submit-payment"]') // Expect error message await
+        expect(page.locator('[data-testid="payment-error"]')).toBeVisible() await
+        expect(page.locator('text=Your card was declined')).toBeVisible() }) test('should enforce
+        premium feature access', async ({ page }) =&gt; { // Try to access premium feature without
+        subscription await page.goto('/premium-export') // Should redirect to subscription page
+        await expect(page.locator('text=Upgrade to access this feature')).toBeVisible() await
+        expect(page.locator('[data-testid="subscription-plans"]')).toBeVisible() }) })
+      </div>
+
+      <h2 id="deployment">10. 🚀 Deployment Considerations</h2>
+
+      <h3>Environment Configuration</h3>
+      <div class="code-block">
+        # Production Environment Variables STRIPE_PUBLISHABLE_KEY_LIVE=pk_live_...
+        STRIPE_SECRET_KEY_LIVE=sk_live_... STRIPE_WEBHOOK_SECRET_LIVE=whsec_... # Security Headers
+        NEXT_PUBLIC_APP_URL=https://yourdomain.com
+        PAYMENT_SUCCESS_URL=https://yourdomain.com/payment/success
+        PAYMENT_CANCEL_URL=https://yourdomain.com/payment/cancel # Database (Production)
+        DATABASE_URL=postgresql://user:password@host:port/database?sslmode=require
+      </div>
+
+      <h3>Deployment Checklist</h3>
+      <div class="success">
+        <strong>✅ Pre-Deployment Checklist:</strong>
+        <ul>
+          <li>✅ Test all payment flows with Stripe test cards</li>
+          <li>✅ Verify webhook endpoints are accessible</li>
+          <li>✅ Configure production Stripe keys</li>
+          <li>✅ Set up SSL certificates (required for payments)</li>
+          <li>✅ Configure CORS for Stripe domains</li>
+          <li>✅ Test subscription lifecycle (create, update, cancel)</li>
+          <li>✅ Verify feature access controls</li>
+          <li>✅ Set up monitoring and alerting</li>
+          <li>✅ Configure backup and recovery procedures</li>
+          <li>✅ Document payment processes for support team</li>
+        </ul>
+      </div>
+
+      <h2 id="augment-prompt">11. 🤖 Complete Augment AI Implementation Prompt</h2>
+
+      <div class="prompt-section">
+        <h3>🎯 Copy and Paste This Prompt into Augment AI</h3>
         <div class="code-block">
-npm install stripe @stripe/stripe-js @stripe/react-stripe-js
-npm install --save-dev @types/stripe
+          Implement a complete Stripe payment system for the Business Scraper App with the following
+          comprehensive requirements: ## CORE REQUIREMENTS ### 1. Dependencies Installation Install
+          the following packages using npm: - stripe @stripe/stripe-js @stripe/react-stripe-js -
+          @types/stripe (dev dependency) - crypto-js jsonwebtoken - @types/jsonwebtoken (dev
+          dependency) ### 2. Database Schema Implementation Create PostgreSQL migration files in
+          database/migrations/ with the following tables: - users (id, email, name,
+          stripe_customer_id, created_at, updated_at) - subscription_plans (id, stripe_price_id,
+          name, description, price_cents, currency, interval, features, is_active, created_at) -
+          user_subscriptions (id, user_id, stripe_subscription_id, plan_id, status,
+          current_period_start, current_period_end, cancel_at_period_end, created_at, updated_at) -
+          payment_transactions (id, user_id, stripe_payment_intent_id, amount_cents, currency,
+          status, description, metadata, created_at) - feature_usage (id, user_id, feature_type,
+          usage_count, date, metadata, created_at) Add appropriate indexes for performance
+          optimization. ### 3. Configuration Updates Update src/lib/config.ts to include: - Stripe
+          API keys (publishable, secret, webhook secret) - Payment URLs (success, cancel) - Add
+          validation rules for all Stripe-related environment variables - Update AppConfig interface
+          with payments configuration section ### 4. Model Layer Implementation Create the following
+          files in src/model/: **src/model/stripeService.ts:** - StripeService class with methods
+          for customer management, subscription creation, payment intents, and webhook verification
+          - Proper error handling and logging - Export singleton instance
+          **src/model/paymentModels.ts:** - Zod schemas for SubscriptionPlan, UserSubscription,
+          PaymentTransaction, FeatureUsage - TypeScript type exports
+          **src/model/paymentStorage.ts:** - PaymentStorage class with database operations for all
+          payment-related entities - Methods for CRUD operations on subscriptions, transactions, and
+          feature usage - Export singleton instance ### 5. API Layer Implementation Create the
+          following API routes in src/app/api/: **src/app/api/stripe/webhooks/route.ts:** - Handle
+          Stripe webhook events (subscription updates, payment success/failure) - Verify webhook
+          signatures - Update database based on webhook events - Comprehensive error handling
+          **src/app/api/payments/route.ts:** - POST endpoint for creating payment intents - Input
+          validation using Zod schemas - Security middleware integration
+          **src/app/api/subscriptions/route.ts:** - GET endpoint for fetching subscription plans -
+          POST endpoint for creating subscriptions - Proper error handling and validation
+          **src/app/api/features/access/route.ts:** - GET endpoint to check feature access based on
+          subscription - Return boolean access status **src/app/api/features/usage/route.ts:** -
+          POST endpoint to record feature usage - Track usage quotas and limits ### 6. View Layer
+          Implementation Create the following components in src/view/components/:
+          **src/view/components/PaymentForm.tsx:** - React component using Stripe Elements - Card
+          input with proper styling - Payment processing with loading states - Error handling and
+          success callbacks - Integration with Stripe's secure payment flow
+          **src/view/components/SubscriptionPlans.tsx:** - Display available subscription plans -
+          Plan comparison with features - Plan selection functionality - Responsive design with
+          Tailwind CSS **src/view/components/BillingHistory.tsx:** - Display user's payment history
+          - Transaction status and details - Export functionality for billing records
+          **src/view/components/SubscriptionManager.tsx:** - Current subscription status -
+          Upgrade/downgrade options - Cancellation functionality - Usage tracking display ### 7.
+          Controller Layer Implementation Create the following controllers in src/controller/:
+          **src/controller/usePaymentController.ts:** - React hook for payment state management -
+          Methods for processing payments, creating subscriptions - Feature access checking and
+          usage recording - Error state management **src/controller/useSubscriptionController.ts:**
+          - React hook for subscription management - Current subscription status tracking - Plan
+          change functionality - Billing cycle management ### 8. Security Implementation Create
+          src/lib/payment-security.ts with: - Payment request validation - Input sanitization for
+          payment data - Idempotency key generation - PCI compliance helpers ### 9. Feature Access
+          Control Implement premium feature gating throughout the application: - Modify existing
+          scraping functionality to check subscription status - Add usage quotas for free tier users
+          - Premium export formats (advanced Excel, PDF with branding) - Advanced search
+          capabilities for premium users - Industry expansion features for enterprise users ### 10.
+          UI Integration Update the main App component (src/view/components/App.tsx) to include: -
+          Subscription status indicator - Payment/billing menu options - Feature access
+          notifications - Upgrade prompts for premium features ### 11. Testing Implementation Create
+          comprehensive tests: - Unit tests for all payment services and models - Integration tests
+          for API endpoints - E2E tests for complete payment flows - Security tests for payment
+          validation - Webhook testing with mock Stripe events ### 12. Configuration Files Update
+          the following configuration files: - Add Stripe environment variables to .env.example -
+          Update package.json with new dependencies - Add payment-related scripts if needed ### 13.
+          Documentation Updates After implementation, update: - README.md with payment system
+          documentation - CHANGELOG.md with detailed changes - VERSION file with appropriate version
+          bump - API_DOCUMENTATION.md with new payment endpoints ## IMPLEMENTATION GUIDELINES ###
+          Architecture Compliance - Follow the existing MVC architecture pattern - Maintain
+          separation of concerns between Model, View, and Controller layers - Use existing error
+          handling and logging patterns - Follow TypeScript strict mode requirements ### Security
+          Requirements - Never store credit card information - Use HTTPS for all payment
+          communications - Validate all webhook signatures - Implement proper input sanitization -
+          Use environment variables for sensitive data - Add rate limiting to payment endpoints ###
+          Testing Requirements - Achieve minimum 85% test coverage for all payment-related code -
+          Test both success and failure scenarios - Use Stripe test cards for E2E testing - Mock
+          Stripe API calls in unit tests - Test webhook handling thoroughly ### Error Handling -
+          Implement graceful error handling for all payment operations - Provide user-friendly error
+          messages - Log all payment-related errors for debugging - Implement retry logic for
+          transient failures - Handle network timeouts appropriately ### Performance Considerations
+          - Implement proper database indexing - Use connection pooling for database operations -
+          Cache subscription plan data appropriately - Optimize webhook processing - Implement
+          proper loading states in UI ### Integration Points - Integrate with existing business
+          scraping functionality - Add payment gates to premium features - Update export
+          functionality with subscription checks - Modify industry selection based on subscription
+          tier - Add usage tracking to existing scraping operations ## SPECIFIC FEATURE
+          IMPLEMENTATIONS ### Premium Feature Gating Implement subscription-based access control
+          for: 1. **Advanced Export Formats**: Premium users get Excel with advanced formatting,
+          branded PDFs 2. **Unlimited Scraping**: Free tier limited to 100 requests/month, premium
+          unlimited 3. **Advanced Industries**: Enterprise categories only for paid subscribers 4.
+          **Priority Support**: Premium users get priority in processing queues 5. **API Access**:
+          Programmatic access only for enterprise subscribers ### Subscription Tiers Implement three
+          subscription tiers: 1. **Free Tier**: 100 scraping requests/month, basic export formats,
+          standard industries 2. **Pro Tier ($29/month)**: Unlimited scraping, advanced exports, all
+          industries, priority processing 3. **Enterprise Tier ($99/month)**: Everything in Pro +
+          API access, custom industries, dedicated support ### Usage Tracking Implement
+          comprehensive usage tracking: - Track scraping requests per user per day/month - Monitor
+          export operations - Log premium feature usage - Generate usage reports for billing -
+          Implement quota enforcement ## DEPLOYMENT REQUIREMENTS ### Environment Setup - Configure
+          production Stripe keys - Set up webhook endpoints - Configure SSL certificates - Set up
+          monitoring and alerting - Configure backup procedures ### Testing Checklist Before
+          deployment, verify: - All payment flows work with test cards - Webhooks are properly
+          configured - Feature access controls function correctly - Subscription lifecycle works
+          end-to-end - Error handling works as expected - Security measures are in place ## SUCCESS
+          CRITERIA The implementation is complete when: 1. Users can successfully subscribe to paid
+          plans 2. Payment processing works reliably 3. Feature access is properly gated by
+          subscription status 4. Webhooks update subscription status correctly 5. All tests pass
+          with 85%+ coverage 6. Security requirements are met 7. Documentation is updated 8. The
+          system handles errors gracefully 9. Performance requirements are met 10. The integration
+          with existing features is seamless Follow the existing code patterns, maintain
+          architectural consistency, and ensure all implementations follow the project's coding
+          standards and guidelines.
         </div>
-
-        <h3>Additional Dependencies</h3>
-        <div class="code-block">
-npm install crypto-js jsonwebtoken
-npm install --save-dev @types/jsonwebtoken
-        </div>
-
-        <div class="warning">
-            <strong>⚠️ Important:</strong> Ensure you have a Stripe account and access to both test and live API keys. Never commit API keys to version control.
-        </div>
-
-        <h2 id="database">2. 🗄️ Database Schema Updates</h2>
-
-        <h3>PostgreSQL Schema Additions</h3>
-        <div class="code-block">
--- Users table (if not exists)
-CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255),
-    stripe_customer_id VARCHAR(255) UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Subscription plans
-CREATE TABLE subscription_plans (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    stripe_price_id VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price_cents INTEGER NOT NULL,
-    currency VARCHAR(3) DEFAULT 'usd',
-    interval VARCHAR(20) NOT NULL, -- 'month', 'year'
-    features JSONB,
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- User subscriptions
-CREATE TABLE user_subscriptions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    stripe_subscription_id VARCHAR(255) UNIQUE NOT NULL,
-    plan_id UUID REFERENCES subscription_plans(id),
-    status VARCHAR(50) NOT NULL, -- 'active', 'canceled', 'past_due', etc.
-    current_period_start TIMESTAMP,
-    current_period_end TIMESTAMP,
-    cancel_at_period_end BOOLEAN DEFAULT false,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Payment transactions
-CREATE TABLE payment_transactions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    stripe_payment_intent_id VARCHAR(255) UNIQUE,
-    amount_cents INTEGER NOT NULL,
-    currency VARCHAR(3) DEFAULT 'usd',
-    status VARCHAR(50) NOT NULL,
-    description TEXT,
-    metadata JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Usage tracking for premium features
-CREATE TABLE feature_usage (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    feature_type VARCHAR(100) NOT NULL, -- 'scraping_request', 'export', 'advanced_search'
-    usage_count INTEGER DEFAULT 1,
-    date DATE DEFAULT CURRENT_DATE,
-    metadata JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Indexes for performance
-CREATE INDEX idx_users_stripe_customer ON users(stripe_customer_id);
-CREATE INDEX idx_subscriptions_user ON user_subscriptions(user_id);
-CREATE INDEX idx_subscriptions_stripe ON user_subscriptions(stripe_subscription_id);
-CREATE INDEX idx_transactions_user ON payment_transactions(user_id);
-CREATE INDEX idx_usage_user_date ON feature_usage(user_id, date);
-        </div>
-
-        <h3>IndexedDB Schema Updates</h3>
-        <div class="code-block">
-// Add to src/model/storage.ts interface
-interface BusinessScraperDB extends DBSchema {
-  // ... existing stores ...
-  userProfile: {
-    key: string
-    value: {
-      id: string
-      email: string
-      name: string
-      subscriptionStatus: 'free' | 'premium' | 'enterprise'
-      subscriptionPlan?: string
-      usageQuotas: {
-        scrapingRequests: number
-        exports: number
-        advancedSearches: number
-      }
-      createdAt: Date
-      updatedAt: Date
-    }
-  }
-  paymentHistory: {
-    key: string
-    value: {
-      id: string
-      amount: number
-      currency: string
-      status: string
-      description: string
-      date: Date
-    }
-  }
-}
-        </div>
-
-        <h2 id="configuration">3. ⚙️ Configuration & Environment Setup</h2>
-
-        <h3>Environment Variables (.env.local)</h3>
-        <div class="code-block">
-# Stripe Configuration
-STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-
-# Production keys (for deployment)
-STRIPE_PUBLISHABLE_KEY_LIVE=pk_live_...
-STRIPE_SECRET_KEY_LIVE=sk_live_...
-STRIPE_WEBHOOK_SECRET_LIVE=whsec_...
-
-# Payment Configuration
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
-PAYMENT_SUCCESS_URL=http://localhost:3000/payment/success
-PAYMENT_CANCEL_URL=http://localhost:3000/payment/cancel
-        </div>
-
-        <h3>Configuration Schema Updates (src/lib/config.ts)</h3>
-        <div class="code-block">
-// Add to configSchema
-const configSchema: Record&lt;string, ValidationRule&gt; = {
-  // ... existing config ...
-  
-  // Stripe Configuration
-  'STRIPE_PUBLISHABLE_KEY': { type: 'string', required: true },
-  'STRIPE_SECRET_KEY': { type: 'string', required: true },
-  'STRIPE_WEBHOOK_SECRET': { type: 'string', required: true },
-  'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY': { type: 'string', required: true },
-  'PAYMENT_SUCCESS_URL': { type: 'url', required: true },
-  'PAYMENT_CANCEL_URL': { type: 'url', required: true },
-}
-
-// Add to AppConfig interface
-export interface AppConfig {
-  // ... existing config ...
-  payments: {
-    stripePublishableKey: string
-    stripeSecretKey: string
-    stripeWebhookSecret: string
-    successUrl: string
-    cancelUrl: string
-  }
-}
-        </div>
-
-        <div class="info">
-            <strong>💡 Next Steps:</strong> This is the foundation. The complete implementation continues with detailed Model, API, View, and Controller layers, plus comprehensive testing and security measures.
-        </div>
-
-        <h2 id="model-layer">4. 🏗️ Model Layer Implementation</h2>
-
-        <h3>Stripe Service (src/model/stripeService.ts)</h3>
-        <div class="code-block">
-import Stripe from 'stripe'
-import { getConfig } from '@/lib/config'
-import { logger } from '@/utils/logger'
-
-export class StripeService {
-  private stripe: Stripe
-  private config = getConfig()
-
-  constructor() {
-    this.stripe = new Stripe(this.config.payments.stripeSecretKey, {
-      apiVersion: '2023-10-16',
-      typescript: true,
-    })
-  }
-
-  // Customer Management
-  async createCustomer(email: string, name?: string): Promise&lt;Stripe.Customer&gt; {
-    try {
-      const customer = await this.stripe.customers.create({
-        email,
-        name,
-        metadata: { source: 'business_scraper_app' }
-      })
-      logger.info('StripeService', `Customer created: ${customer.id}`)
-      return customer
-    } catch (error) {
-      logger.error('StripeService', 'Failed to create customer', error)
-      throw error
-    }
-  }
-
-  // Subscription Management
-  async createSubscription(
-    customerId: string,
-    priceId: string
-  ): Promise&lt;Stripe.Subscription&gt; {
-    try {
-      const subscription = await this.stripe.subscriptions.create({
-        customer: customerId,
-        items: [{ price: priceId }],
-        payment_behavior: 'default_incomplete',
-        payment_settings: { save_default_payment_method: 'on_subscription' },
-        expand: ['latest_invoice.payment_intent'],
-      })
-      return subscription
-    } catch (error) {
-      logger.error('StripeService', 'Failed to create subscription', error)
-      throw error
-    }
-  }
-
-  // Payment Intent for one-time payments
-  async createPaymentIntent(
-    amount: number,
-    currency: string = 'usd',
-    customerId?: string
-  ): Promise&lt;Stripe.PaymentIntent&gt; {
-    try {
-      const paymentIntent = await this.stripe.paymentIntents.create({
-        amount,
-        currency,
-        customer: customerId,
-        automatic_payment_methods: { enabled: true },
-      })
-      return paymentIntent
-    } catch (error) {
-      logger.error('StripeService', 'Failed to create payment intent', error)
-      throw error
-    }
-  }
-
-  // Webhook signature verification
-  verifyWebhookSignature(payload: string, signature: string): Stripe.Event {
-    try {
-      return this.stripe.webhooks.constructEvent(
-        payload,
-        signature,
-        this.config.payments.stripeWebhookSecret
-      )
-    } catch (error) {
-      logger.error('StripeService', 'Webhook signature verification failed', error)
-      throw error
-    }
-  }
-}
-
-export const stripeService = new StripeService()
-        </div>
-
-        <h3>Payment Models (src/model/paymentModels.ts)</h3>
-        <div class="code-block">
-import { z } from 'zod'
-
-// Subscription Plan Schema
-export const SubscriptionPlanSchema = z.object({
-  id: z.string().uuid(),
-  stripePriceId: z.string(),
-  name: z.string(),
-  description: z.string().optional(),
-  priceCents: z.number().positive(),
-  currency: z.string().length(3).default('usd'),
-  interval: z.enum(['month', 'year']),
-  features: z.record(z.any()).optional(),
-  isActive: z.boolean().default(true),
-  createdAt: z.date(),
-})
-
-export type SubscriptionPlan = z.infer&lt;typeof SubscriptionPlanSchema&gt;
-
-// User Subscription Schema
-export const UserSubscriptionSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  stripeSubscriptionId: z.string(),
-  planId: z.string().uuid(),
-  status: z.enum(['active', 'canceled', 'past_due', 'unpaid', 'incomplete']),
-  currentPeriodStart: z.date(),
-  currentPeriodEnd: z.date(),
-  cancelAtPeriodEnd: z.boolean().default(false),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-})
-
-export type UserSubscription = z.infer&lt;typeof UserSubscriptionSchema&gt;
-
-// Payment Transaction Schema
-export const PaymentTransactionSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  stripePaymentIntentId: z.string().optional(),
-  amountCents: z.number().positive(),
-  currency: z.string().length(3).default('usd'),
-  status: z.enum(['succeeded', 'pending', 'failed', 'canceled']),
-  description: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
-  createdAt: z.date(),
-})
-
-export type PaymentTransaction = z.infer&lt;typeof PaymentTransactionSchema&gt;
-
-// Feature Usage Schema
-export const FeatureUsageSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  featureType: z.enum(['scraping_request', 'export', 'advanced_search', 'premium_industry']),
-  usageCount: z.number().positive().default(1),
-  date: z.date(),
-  metadata: z.record(z.any()).optional(),
-  createdAt: z.date(),
-})
-
-export type FeatureUsage = z.infer&lt;typeof FeatureUsageSchema&gt;
-        </div>
-
-        <h3>Payment Database Service (src/model/paymentStorage.ts)</h3>
-        <div class="code-block">
-import { database } from '@/lib/postgresql-database'
-import { logger } from '@/utils/logger'
-import {
-  SubscriptionPlan,
-  UserSubscription,
-  PaymentTransaction,
-  FeatureUsage
-} from './paymentModels'
-
-export class PaymentStorage {
-  // Subscription Plans
-  async createSubscriptionPlan(plan: Omit&lt;SubscriptionPlan, 'id' | 'createdAt'&gt;): Promise&lt;SubscriptionPlan&gt; {
-    try {
-      const query = `
-        INSERT INTO subscription_plans (stripe_price_id, name, description, price_cents, currency, interval, features, is_active)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING *
-      `
-      const result = await database.query(query, [
-        plan.stripePriceId,
-        plan.name,
-        plan.description,
-        plan.priceCents,
-        plan.currency,
-        plan.interval,
-        JSON.stringify(plan.features),
-        plan.isActive
-      ])
-      return result.rows[0]
-    } catch (error) {
-      logger.error('PaymentStorage', 'Failed to create subscription plan', error)
-      throw error
-    }
-  }
-
-  async getActiveSubscriptionPlans(): Promise&lt;SubscriptionPlan[]&gt; {
-    try {
-      const query = 'SELECT * FROM subscription_plans WHERE is_active = true ORDER BY price_cents ASC'
-      const result = await database.query(query)
-      return result.rows
-    } catch (error) {
-      logger.error('PaymentStorage', 'Failed to get subscription plans', error)
-      throw error
-    }
-  }
-
-  // User Subscriptions
-  async createUserSubscription(subscription: Omit&lt;UserSubscription, 'id' | 'createdAt' | 'updatedAt'&gt;): Promise&lt;UserSubscription&gt; {
-    try {
-      const query = `
-        INSERT INTO user_subscriptions (user_id, stripe_subscription_id, plan_id, status, current_period_start, current_period_end, cancel_at_period_end)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING *
-      `
-      const result = await database.query(query, [
-        subscription.userId,
-        subscription.stripeSubscriptionId,
-        subscription.planId,
-        subscription.status,
-        subscription.currentPeriodStart,
-        subscription.currentPeriodEnd,
-        subscription.cancelAtPeriodEnd
-      ])
-      return result.rows[0]
-    } catch (error) {
-      logger.error('PaymentStorage', 'Failed to create user subscription', error)
-      throw error
-    }
-  }
-
-  async getUserActiveSubscription(userId: string): Promise&lt;UserSubscription | null&gt; {
-    try {
-      const query = `
-        SELECT us.*, sp.name as plan_name, sp.features
-        FROM user_subscriptions us
-        JOIN subscription_plans sp ON us.plan_id = sp.id
-        WHERE us.user_id = $1 AND us.status = 'active'
-        ORDER BY us.created_at DESC
-        LIMIT 1
-      `
-      const result = await database.query(query, [userId])
-      return result.rows[0] || null
-    } catch (error) {
-      logger.error('PaymentStorage', 'Failed to get user subscription', error)
-      throw error
-    }
-  }
-
-  // Feature Usage Tracking
-  async recordFeatureUsage(usage: Omit&lt;FeatureUsage, 'id' | 'createdAt'&gt;): Promise&lt;void&gt; {
-    try {
-      const query = `
-        INSERT INTO feature_usage (user_id, feature_type, usage_count, date, metadata)
-        VALUES ($1, $2, $3, $4, $5)
-        ON CONFLICT (user_id, feature_type, date)
-        DO UPDATE SET usage_count = feature_usage.usage_count + $3
-      `
-      await database.query(query, [
-        usage.userId,
-        usage.featureType,
-        usage.usageCount,
-        usage.date,
-        JSON.stringify(usage.metadata)
-      ])
-    } catch (error) {
-      logger.error('PaymentStorage', 'Failed to record feature usage', error)
-      throw error
-    }
-  }
-
-  async getUserFeatureUsage(userId: string, featureType: string, date: Date): Promise&lt;number&gt; {
-    try {
-      const query = `
-        SELECT COALESCE(SUM(usage_count), 0) as total_usage
-        FROM feature_usage
-        WHERE user_id = $1 AND feature_type = $2 AND date = $3
-      `
-      const result = await database.query(query, [userId, featureType, date])
-      return parseInt(result.rows[0].total_usage)
-    } catch (error) {
-      logger.error('PaymentStorage', 'Failed to get feature usage', error)
-      throw error
-    }
-  }
-}
-
-export const paymentStorage = new PaymentStorage()
-        </div>
-
-        <h2 id="api-layer">5. 🔌 API Layer & Webhooks</h2>
-
-        <h3>Stripe Webhooks (src/app/api/stripe/webhooks/route.ts)</h3>
-        <div class="code-block">
-import { NextRequest, NextResponse } from 'next/server'
-import { stripeService } from '@/model/stripeService'
-import { paymentStorage } from '@/model/paymentStorage'
-import { logger } from '@/utils/logger'
-import Stripe from 'stripe'
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.text()
-    const signature = request.headers.get('stripe-signature')
-
-    if (!signature) {
-      return NextResponse.json({ error: 'Missing stripe signature' }, { status: 400 })
-    }
-
-    const event = stripeService.verifyWebhookSignature(body, signature)
-
-    logger.info('StripeWebhook', `Processing event: ${event.type}`)
-
-    switch (event.type) {
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdate(event.data.object as Stripe.Subscription)
-        break
-
-      case 'customer.subscription.deleted':
-        await handleSubscriptionCancellation(event.data.object as Stripe.Subscription)
-        break
-
-      case 'payment_intent.succeeded':
-        await handlePaymentSuccess(event.data.object as Stripe.PaymentIntent)
-        break
-
-      case 'payment_intent.payment_failed':
-        await handlePaymentFailure(event.data.object as Stripe.PaymentIntent)
-        break
-
-      default:
-        logger.info('StripeWebhook', `Unhandled event type: ${event.type}`)
-    }
-
-    return NextResponse.json({ received: true })
-  } catch (error) {
-    logger.error('StripeWebhook', 'Webhook processing failed', error)
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
-  }
-}
-
-async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
-  try {
-    // Update subscription in database
-    const query = `
-      UPDATE user_subscriptions
-      SET status = $1, current_period_start = $2, current_period_end = $3, updated_at = CURRENT_TIMESTAMP
-      WHERE stripe_subscription_id = $4
-    `
-    await database.query(query, [
-      subscription.status,
-      new Date(subscription.current_period_start * 1000),
-      new Date(subscription.current_period_end * 1000),
-      subscription.id
-    ])
-
-    logger.info('StripeWebhook', `Subscription updated: ${subscription.id}`)
-  } catch (error) {
-    logger.error('StripeWebhook', 'Failed to update subscription', error)
-    throw error
-  }
-}
-
-async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
-  try {
-    // Record successful payment
-    await paymentStorage.createPaymentTransaction({
-      userId: paymentIntent.metadata.userId,
-      stripePaymentIntentId: paymentIntent.id,
-      amountCents: paymentIntent.amount,
-      currency: paymentIntent.currency,
-      status: 'succeeded',
-      description: paymentIntent.description || 'One-time payment',
-      metadata: paymentIntent.metadata
-    })
-
-    logger.info('StripeWebhook', `Payment succeeded: ${paymentIntent.id}`)
-  } catch (error) {
-    logger.error('StripeWebhook', 'Failed to record payment success', error)
-    throw error
-  }
-}
-        </div>
-
-        <h3>Payment API Endpoints (src/app/api/payments/route.ts)</h3>
-        <div class="code-block">
-import { NextRequest, NextResponse } from 'next/server'
-import { stripeService } from '@/model/stripeService'
-import { paymentStorage } from '@/model/paymentStorage'
-import { withApiSecurity } from '@/lib/api-security'
-import { withValidation } from '@/lib/validation-middleware'
-import { z } from 'zod'
-
-const CreatePaymentIntentSchema = z.object({
-  amount: z.number().positive(),
-  currency: z.string().length(3).default('usd'),
-  description: z.string().optional(),
-})
-
-const CreateSubscriptionSchema = z.object({
-  priceId: z.string(),
-  customerId: z.string().optional(),
-})
-
-export async function POST(request: NextRequest) {
-  return withApiSecurity(async () => {
-    return withValidation(CreatePaymentIntentSchema, async (data) => {
-      try {
-        const paymentIntent = await stripeService.createPaymentIntent(
-          data.amount,
-          data.currency,
-          data.customerId
-        )
-
-        return NextResponse.json({
-          clientSecret: paymentIntent.client_secret,
-          paymentIntentId: paymentIntent.id
-        })
-      } catch (error) {
-        logger.error('PaymentAPI', 'Failed to create payment intent', error)
-        return NextResponse.json({ error: 'Payment creation failed' }, { status: 500 })
-      }
-    })(request)
-  })(request)
-}
-        </div>
-
-        <h3>Subscription Management API (src/app/api/subscriptions/route.ts)</h3>
-        <div class="code-block">
-import { NextRequest, NextResponse } from 'next/server'
-import { stripeService } from '@/model/stripeService'
-import { paymentStorage } from '@/model/paymentStorage'
-
-export async function GET(request: NextRequest) {
-  try {
-    const plans = await paymentStorage.getActiveSubscriptionPlans()
-    return NextResponse.json({ plans })
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch plans' }, { status: 500 })
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const { priceId, customerId } = await request.json()
-
-    const subscription = await stripeService.createSubscription(customerId, priceId)
-
-    return NextResponse.json({
-      subscriptionId: subscription.id,
-      clientSecret: subscription.latest_invoice?.payment_intent?.client_secret
-    })
-  } catch (error) {
-    return NextResponse.json({ error: 'Subscription creation failed' }, { status: 500 })
-  }
-}
-        </div>
-
-        <h2 id="view-layer">6. 🎨 View Layer & UI Components</h2>
-
-        <h3>Payment Form Component (src/view/components/PaymentForm.tsx)</h3>
-        <div class="code-block">
-'use client'
-
-import React, { useState } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements
-} from '@stripe/react-stripe-js'
-import { Button } from './ui/Button'
-import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
-import { useConfig } from '@/controller/ConfigContext'
-import { logger } from '@/utils/logger'
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
-
-interface PaymentFormProps {
-  amount: number
-  currency?: string
-  description?: string
-  onSuccess: (paymentIntent: any) =&gt; void
-  onError: (error: string) =&gt; void
-}
-
-function PaymentFormInner({ amount, currency = 'usd', description, onSuccess, onError }: PaymentFormProps) {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [isProcessing, setIsProcessing] = useState(false)
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-
-    if (!stripe || !elements) {
-      return
-    }
-
-    setIsProcessing(true)
-
-    try {
-      // Create payment intent
-      const response = await fetch('/api/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, currency, description })
-      })
-
-      const { clientSecret } = await response.json()
-
-      // Confirm payment
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement)!,
-        }
-      })
-
-      if (error) {
-        onError(error.message || 'Payment failed')
-      } else if (paymentIntent?.status === 'succeeded') {
-        onSuccess(paymentIntent)
-      }
-    } catch (error) {
-      onError('Payment processing failed')
-      logger.error('PaymentForm', 'Payment failed', error)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
-  return (
-    &lt;Card className="w-full max-w-md"&gt;
-      &lt;CardHeader&gt;
-        &lt;CardTitle&gt;Payment Details&lt;/CardTitle&gt;
-      &lt;/CardHeader&gt;
-      &lt;CardContent&gt;
-        &lt;form onSubmit={handleSubmit} className="space-y-4"&gt;
-          &lt;div className="p-4 border rounded-md"&gt;
-            &lt;CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: '16px',
-                    color: '#424770',
-                    '::placeholder': {
-                      color: '#aab7c4',
-                    },
-                  },
-                },
-              }}
-            /&gt;
-          &lt;/div&gt;
-
-          &lt;div className="text-sm text-gray-600"&gt;
-            Amount: ${(amount / 100).toFixed(2)} {currency.toUpperCase()}
-          &lt;/div&gt;
-
-          &lt;Button
-            type="submit"
-            disabled={!stripe || isProcessing}
-            className="w-full"
-          &gt;
-            {isProcessing ? 'Processing...' : `Pay $${(amount / 100).toFixed(2)}`}
-          &lt;/Button&gt;
-        &lt;/form&gt;
-      &lt;/CardContent&gt;
-    &lt;/Card&gt;
-  )
-}
-
-export function PaymentForm(props: PaymentFormProps) {
-  return (
-    &lt;Elements stripe={stripePromise}&gt;
-      &lt;PaymentFormInner {...props} /&gt;
-    &lt;/Elements&gt;
-  )
-}
-        </div>
-
-        <h3>Subscription Plans Component (src/view/components/SubscriptionPlans.tsx)</h3>
-        <div class="code-block">
-'use client'
-
-import React, { useState, useEffect } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
-import { Button } from './ui/Button'
-import { Check, Star } from 'lucide-react'
-import { SubscriptionPlan } from '@/model/paymentModels'
-
-interface SubscriptionPlansProps {
-  onSelectPlan: (plan: SubscriptionPlan) =&gt; void
-}
-
-export function SubscriptionPlans({ onSelectPlan }: SubscriptionPlansProps) {
-  const [plans, setPlans] = useState&lt;SubscriptionPlan[]&gt;([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchPlans()
-  }, [])
-
-  const fetchPlans = async () => {
-    try {
-      const response = await fetch('/api/subscriptions')
-      const { plans } = await response.json()
-      setPlans(plans)
-    } catch (error) {
-      console.error('Failed to fetch plans:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
-    return &lt;div className="text-center"&gt;Loading plans...&lt;/div&gt;
-  }
-
-  return (
-    &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;
-      {plans.map((plan) =&gt; (
-        &lt;Card key={plan.id} className={`relative ${plan.name.includes('Pro') ? 'border-blue-500 shadow-lg' : ''}`}&gt;
-          {plan.name.includes('Pro') && (
-            &lt;div className="absolute -top-3 left-1/2 transform -translate-x-1/2"&gt;
-              &lt;span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm flex items-center"&gt;
-                &lt;Star className="w-4 h-4 mr-1" /&gt;
-                Popular
-              &lt;/span&gt;
-            &lt;/div&gt;
-          )}
-
-          &lt;CardHeader className="text-center"&gt;
-            &lt;CardTitle className="text-2xl"&gt;{plan.name}&lt;/CardTitle&gt;
-            &lt;div className="text-3xl font-bold"&gt;
-              ${(plan.priceCents / 100).toFixed(0)}
-              &lt;span className="text-lg font-normal text-gray-600"&gt;/{plan.interval}&lt;/span&gt;
-            &lt;/div&gt;
-            {plan.description && (
-              &lt;p className="text-gray-600"&gt;{plan.description}&lt;/p&gt;
-            )}
-          &lt;/CardHeader&gt;
-
-          &lt;CardContent&gt;
-            &lt;ul className="space-y-3 mb-6"&gt;
-              {plan.features && Object.entries(plan.features).map(([feature, included]) =&gt; (
-                &lt;li key={feature} className="flex items-center"&gt;
-                  &lt;Check className="w-5 h-5 text-green-500 mr-2" /&gt;
-                  &lt;span className="capitalize"&gt;{feature.replace('_', ' ')}&lt;/span&gt;
-                &lt;/li&gt;
-              ))}
-            &lt;/ul&gt;
-
-            &lt;Button
-              onClick={() =&gt; onSelectPlan(plan)}
-              className="w-full"
-              variant={plan.name.includes('Pro') ? 'default' : 'outline'}
-            &gt;
-              Choose {plan.name}
-            &lt;/Button&gt;
-          &lt;/CardContent&gt;
-        &lt;/Card&gt;
-      ))}
-    &lt;/div&gt;
-  )
-}
-        </div>
-
-        <h2 id="controller-layer">7. 🎮 Controller Layer & State Management</h2>
-
-        <h3>Payment Controller (src/controller/usePaymentController.ts)</h3>
-        <div class="code-block">
-import { useState, useCallback } from 'react'
-import { logger } from '@/utils/logger'
-import { SubscriptionPlan, PaymentTransaction } from '@/model/paymentModels'
-
-interface PaymentState {
-  isProcessing: boolean
-  currentSubscription: any | null
-  paymentHistory: PaymentTransaction[]
-  error: string | null
-}
-
-export function usePaymentController() {
-  const [state, setState] = useState&lt;PaymentState&gt;({
-    isProcessing: false,
-    currentSubscription: null,
-    paymentHistory: [],
-    error: null
-  })
-
-  const processPayment = useCallback(async (amount: number, description?: string) =&gt; {
-    setState(prev =&gt; ({ ...prev, isProcessing: true, error: null }))
-
-    try {
-      const response = await fetch('/api/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, description })
-      })
-
-      if (!response.ok) {
-        throw new Error('Payment failed')
-      }
-
-      const result = await response.json()
-      return result
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Payment failed'
-      setState(prev =&gt; ({ ...prev, error: errorMessage }))
-      logger.error('PaymentController', 'Payment processing failed', error)
-      throw error
-    } finally {
-      setState(prev =&gt; ({ ...prev, isProcessing: false }))
-    }
-  }, [])
-
-  const createSubscription = useCallback(async (plan: SubscriptionPlan) =&gt; {
-    setState(prev =&gt; ({ ...prev, isProcessing: true, error: null }))
-
-    try {
-      const response = await fetch('/api/subscriptions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: plan.stripePriceId })
-      })
-
-      if (!response.ok) {
-        throw new Error('Subscription creation failed')
-      }
-
-      const result = await response.json()
-      return result
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Subscription failed'
-      setState(prev =&gt; ({ ...prev, error: errorMessage }))
-      logger.error('PaymentController', 'Subscription creation failed', error)
-      throw error
-    } finally {
-      setState(prev =&gt; ({ ...prev, isProcessing: false }))
-    }
-  }, [])
-
-  const checkFeatureAccess = useCallback(async (featureType: string): Promise&lt;boolean&gt; =&gt; {
-    try {
-      const response = await fetch(`/api/features/access?type=${featureType}`)
-      const { hasAccess } = await response.json()
-      return hasAccess
-    } catch (error) {
-      logger.error('PaymentController', 'Feature access check failed', error)
-      return false
-    }
-  }, [])
-
-  const recordFeatureUsage = useCallback(async (featureType: string, metadata?: any) =&gt; {
-    try {
-      await fetch('/api/features/usage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ featureType, metadata })
-      })
-    } catch (error) {
-      logger.error('PaymentController', 'Failed to record feature usage', error)
-    }
-  }, [])
-
-  return {
-    ...state,
-    processPayment,
-    createSubscription,
-    checkFeatureAccess,
-    recordFeatureUsage
-  }
-}
-        </div>
-
-        <h2 id="security">8. 🔒 Security & PCI Compliance</h2>
-
-        <h3>Security Middleware (src/lib/payment-security.ts)</h3>
-        <div class="code-block">
-import { NextRequest } from 'next/server'
-import { logger } from '@/utils/logger'
-import crypto from 'crypto'
-
-export function validatePaymentRequest(request: NextRequest): boolean {
-  // Validate request origin
-  const origin = request.headers.get('origin')
-  const allowedOrigins = [
-    process.env.NEXT_PUBLIC_APP_URL,
-    'https://js.stripe.com'
-  ]
-
-  if (origin && !allowedOrigins.includes(origin)) {
-    logger.warn('PaymentSecurity', `Invalid origin: ${origin}`)
-    return false
-  }
-
-  // Validate content type for POST requests
-  if (request.method === 'POST') {
-    const contentType = request.headers.get('content-type')
-    if (!contentType?.includes('application/json')) {
-      logger.warn('PaymentSecurity', 'Invalid content type for payment request')
-      return false
-    }
-  }
-
-  return true
-}
-
-export function sanitizePaymentData(data: any): any {
-  // Remove any potentially dangerous fields
-  const sanitized = { ...data }
-  delete sanitized.password
-  delete sanitized.ssn
-  delete sanitized.creditCard
-
-  // Validate amount is positive number
-  if (sanitized.amount && (typeof sanitized.amount !== 'number' || sanitized.amount <= 0)) {
-    throw new Error('Invalid payment amount')
-  }
-
-  return sanitized
-}
-
-export function generateIdempotencyKey(): string {
-  return crypto.randomUUID()
-}
-        </div>
-
-        <h3>PCI Compliance Checklist</h3>
-        <div class="info">
-            <strong>🛡️ PCI DSS Compliance Requirements:</strong>
-            <ul>
-                <li>✅ Never store credit card data (handled by Stripe)</li>
-                <li>✅ Use HTTPS for all payment-related communications</li>
-                <li>✅ Validate webhook signatures from Stripe</li>
-                <li>✅ Implement proper access controls for payment APIs</li>
-                <li>✅ Log all payment-related activities</li>
-                <li>✅ Use environment variables for sensitive configuration</li>
-                <li>✅ Implement rate limiting on payment endpoints</li>
-                <li>✅ Sanitize all input data</li>
-            </ul>
-        </div>
-
-        <h2 id="testing">9. 🧪 Testing Strategy</h2>
-
-        <h3>Payment Service Tests (tests/unit/model/stripeService.test.ts)</h3>
-        <div class="code-block">
-import { stripeService } from '@/model/stripeService'
-import Stripe from 'stripe'
-
-// Mock Stripe
-jest.mock('stripe')
-const mockStripe = {
-  customers: {
-    create: jest.fn(),
-  },
-  subscriptions: {
-    create: jest.fn(),
-  },
-  paymentIntents: {
-    create: jest.fn(),
-  },
-  webhooks: {
-    constructEvent: jest.fn(),
-  },
-}
-
-describe('StripeService', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-    ;(Stripe as jest.MockedClass&lt;typeof Stripe&gt;).mockImplementation(() =&gt; mockStripe as any)
-  })
-
-  describe('createCustomer', () => {
-    it('should create a customer successfully', async () =&gt; {
-      const mockCustomer = { id: 'cus_test123', email: 'test@example.com' }
-      mockStripe.customers.create.mockResolvedValue(mockCustomer)
-
-      const result = await stripeService.createCustomer('test@example.com', 'Test User')
-
-      expect(mockStripe.customers.create).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        name: 'Test User',
-        metadata: { source: 'business_scraper_app' }
-      })
-      expect(result).toEqual(mockCustomer)
-    })
-
-    it('should handle customer creation errors', async () =&gt; {
-      mockStripe.customers.create.mockRejectedValue(new Error('Stripe error'))
-
-      await expect(stripeService.createCustomer('test@example.com')).rejects.toThrow('Stripe error')
-    })
-  })
-
-  describe('createPaymentIntent', () => {
-    it('should create payment intent successfully', async () =&gt; {
-      const mockPaymentIntent = { id: 'pi_test123', client_secret: 'pi_test123_secret' }
-      mockStripe.paymentIntents.create.mockResolvedValue(mockPaymentIntent)
-
-      const result = await stripeService.createPaymentIntent(2000, 'usd')
-
-      expect(mockStripe.paymentIntents.create).toHaveBeenCalledWith({
-        amount: 2000,
-        currency: 'usd',
-        customer: undefined,
-        automatic_payment_methods: { enabled: true },
-      })
-      expect(result).toEqual(mockPaymentIntent)
-    })
-  })
-
-  describe('verifyWebhookSignature', () => {
-    it('should verify webhook signature successfully', () =&gt; {
-      const mockEvent = { type: 'payment_intent.succeeded', data: {} }
-      mockStripe.webhooks.constructEvent.mockReturnValue(mockEvent)
-
-      const result = stripeService.verifyWebhookSignature('payload', 'signature')
-
-      expect(mockStripe.webhooks.constructEvent).toHaveBeenCalledWith(
-        'payload',
-        'signature',
-        expect.any(String)
-      )
-      expect(result).toEqual(mockEvent)
-    })
-  })
-})
-        </div>
-
-        <h3>E2E Payment Tests (tests/e2e/payment.spec.ts)</h3>
-        <div class="code-block">
-import { test, expect } from '@playwright/test'
-
-test.describe('Payment Flow', () => {
-  test('should complete subscription purchase', async ({ page }) =&gt; {
-    // Navigate to subscription page
-    await page.goto('/subscription')
-
-    // Select a plan
-    await page.click('[data-testid="plan-pro"]')
-
-    // Fill payment form with test card
-    await page.fill('[data-testid="card-number"]', '4242424242424242')
-    await page.fill('[data-testid="card-expiry"]', '12/25')
-    await page.fill('[data-testid="card-cvc"]', '123')
-
-    // Submit payment
-    await page.click('[data-testid="submit-payment"]')
-
-    // Wait for success
-    await expect(page.locator('[data-testid="payment-success"]')).toBeVisible()
-    await expect(page.locator('text=Subscription activated')).toBeVisible()
-  })
-
-  test('should handle payment failure gracefully', async ({ page }) =&gt; {
-    await page.goto('/subscription')
-    await page.click('[data-testid="plan-basic"]')
-
-    // Use declined test card
-    await page.fill('[data-testid="card-number"]', '4000000000000002')
-    await page.fill('[data-testid="card-expiry"]', '12/25')
-    await page.fill('[data-testid="card-cvc"]', '123')
-
-    await page.click('[data-testid="submit-payment"]')
-
-    // Expect error message
-    await expect(page.locator('[data-testid="payment-error"]')).toBeVisible()
-    await expect(page.locator('text=Your card was declined')).toBeVisible()
-  })
-
-  test('should enforce premium feature access', async ({ page }) =&gt; {
-    // Try to access premium feature without subscription
-    await page.goto('/premium-export')
-
-    // Should redirect to subscription page
-    await expect(page.locator('text=Upgrade to access this feature')).toBeVisible()
-    await expect(page.locator('[data-testid="subscription-plans"]')).toBeVisible()
-  })
-})
-        </div>
-
-        <h2 id="deployment">10. 🚀 Deployment Considerations</h2>
-
-        <h3>Environment Configuration</h3>
-        <div class="code-block">
-# Production Environment Variables
-STRIPE_PUBLISHABLE_KEY_LIVE=pk_live_...
-STRIPE_SECRET_KEY_LIVE=sk_live_...
-STRIPE_WEBHOOK_SECRET_LIVE=whsec_...
-
-# Security Headers
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
-PAYMENT_SUCCESS_URL=https://yourdomain.com/payment/success
-PAYMENT_CANCEL_URL=https://yourdomain.com/payment/cancel
-
-# Database (Production)
-DATABASE_URL=postgresql://user:password@host:port/database?sslmode=require
-        </div>
-
-        <h3>Deployment Checklist</h3>
-        <div class="success">
-            <strong>✅ Pre-Deployment Checklist:</strong>
-            <ul>
-                <li>✅ Test all payment flows with Stripe test cards</li>
-                <li>✅ Verify webhook endpoints are accessible</li>
-                <li>✅ Configure production Stripe keys</li>
-                <li>✅ Set up SSL certificates (required for payments)</li>
-                <li>✅ Configure CORS for Stripe domains</li>
-                <li>✅ Test subscription lifecycle (create, update, cancel)</li>
-                <li>✅ Verify feature access controls</li>
-                <li>✅ Set up monitoring and alerting</li>
-                <li>✅ Configure backup and recovery procedures</li>
-                <li>✅ Document payment processes for support team</li>
-            </ul>
-        </div>
-
-        <h2 id="augment-prompt">11. 🤖 Complete Augment AI Implementation Prompt</h2>
-
-        <div class="prompt-section">
-            <h3>🎯 Copy and Paste This Prompt into Augment AI</h3>
-            <div class="code-block">
-Implement a complete Stripe payment system for the Business Scraper App with the following comprehensive requirements:
-
-## CORE REQUIREMENTS
-
-### 1. Dependencies Installation
-Install the following packages using npm:
-- stripe @stripe/stripe-js @stripe/react-stripe-js
-- @types/stripe (dev dependency)
-- crypto-js jsonwebtoken
-- @types/jsonwebtoken (dev dependency)
-
-### 2. Database Schema Implementation
-Create PostgreSQL migration files in database/migrations/ with the following tables:
-- users (id, email, name, stripe_customer_id, created_at, updated_at)
-- subscription_plans (id, stripe_price_id, name, description, price_cents, currency, interval, features, is_active, created_at)
-- user_subscriptions (id, user_id, stripe_subscription_id, plan_id, status, current_period_start, current_period_end, cancel_at_period_end, created_at, updated_at)
-- payment_transactions (id, user_id, stripe_payment_intent_id, amount_cents, currency, status, description, metadata, created_at)
-- feature_usage (id, user_id, feature_type, usage_count, date, metadata, created_at)
-
-Add appropriate indexes for performance optimization.
-
-### 3. Configuration Updates
-Update src/lib/config.ts to include:
-- Stripe API keys (publishable, secret, webhook secret)
-- Payment URLs (success, cancel)
-- Add validation rules for all Stripe-related environment variables
-- Update AppConfig interface with payments configuration section
-
-### 4. Model Layer Implementation
-Create the following files in src/model/:
-
-**src/model/stripeService.ts:**
-- StripeService class with methods for customer management, subscription creation, payment intents, and webhook verification
-- Proper error handling and logging
-- Export singleton instance
-
-**src/model/paymentModels.ts:**
-- Zod schemas for SubscriptionPlan, UserSubscription, PaymentTransaction, FeatureUsage
-- TypeScript type exports
-
-**src/model/paymentStorage.ts:**
-- PaymentStorage class with database operations for all payment-related entities
-- Methods for CRUD operations on subscriptions, transactions, and feature usage
-- Export singleton instance
-
-### 5. API Layer Implementation
-Create the following API routes in src/app/api/:
-
-**src/app/api/stripe/webhooks/route.ts:**
-- Handle Stripe webhook events (subscription updates, payment success/failure)
-- Verify webhook signatures
-- Update database based on webhook events
-- Comprehensive error handling
-
-**src/app/api/payments/route.ts:**
-- POST endpoint for creating payment intents
-- Input validation using Zod schemas
-- Security middleware integration
-
-**src/app/api/subscriptions/route.ts:**
-- GET endpoint for fetching subscription plans
-- POST endpoint for creating subscriptions
-- Proper error handling and validation
-
-**src/app/api/features/access/route.ts:**
-- GET endpoint to check feature access based on subscription
-- Return boolean access status
-
-**src/app/api/features/usage/route.ts:**
-- POST endpoint to record feature usage
-- Track usage quotas and limits
-
-### 6. View Layer Implementation
-Create the following components in src/view/components/:
-
-**src/view/components/PaymentForm.tsx:**
-- React component using Stripe Elements
-- Card input with proper styling
-- Payment processing with loading states
-- Error handling and success callbacks
-- Integration with Stripe's secure payment flow
-
-**src/view/components/SubscriptionPlans.tsx:**
-- Display available subscription plans
-- Plan comparison with features
-- Plan selection functionality
-- Responsive design with Tailwind CSS
-
-**src/view/components/BillingHistory.tsx:**
-- Display user's payment history
-- Transaction status and details
-- Export functionality for billing records
-
-**src/view/components/SubscriptionManager.tsx:**
-- Current subscription status
-- Upgrade/downgrade options
-- Cancellation functionality
-- Usage tracking display
-
-### 7. Controller Layer Implementation
-Create the following controllers in src/controller/:
-
-**src/controller/usePaymentController.ts:**
-- React hook for payment state management
-- Methods for processing payments, creating subscriptions
-- Feature access checking and usage recording
-- Error state management
-
-**src/controller/useSubscriptionController.ts:**
-- React hook for subscription management
-- Current subscription status tracking
-- Plan change functionality
-- Billing cycle management
-
-### 8. Security Implementation
-Create src/lib/payment-security.ts with:
-- Payment request validation
-- Input sanitization for payment data
-- Idempotency key generation
-- PCI compliance helpers
-
-### 9. Feature Access Control
-Implement premium feature gating throughout the application:
-- Modify existing scraping functionality to check subscription status
-- Add usage quotas for free tier users
-- Premium export formats (advanced Excel, PDF with branding)
-- Advanced search capabilities for premium users
-- Industry expansion features for enterprise users
-
-### 10. UI Integration
-Update the main App component (src/view/components/App.tsx) to include:
-- Subscription status indicator
-- Payment/billing menu options
-- Feature access notifications
-- Upgrade prompts for premium features
-
-### 11. Testing Implementation
-Create comprehensive tests:
-- Unit tests for all payment services and models
-- Integration tests for API endpoints
-- E2E tests for complete payment flows
-- Security tests for payment validation
-- Webhook testing with mock Stripe events
-
-### 12. Configuration Files
-Update the following configuration files:
-- Add Stripe environment variables to .env.example
-- Update package.json with new dependencies
-- Add payment-related scripts if needed
-
-### 13. Documentation Updates
-After implementation, update:
-- README.md with payment system documentation
-- CHANGELOG.md with detailed changes
-- VERSION file with appropriate version bump
-- API_DOCUMENTATION.md with new payment endpoints
-
-## IMPLEMENTATION GUIDELINES
-
-### Architecture Compliance
-- Follow the existing MVC architecture pattern
-- Maintain separation of concerns between Model, View, and Controller layers
-- Use existing error handling and logging patterns
-- Follow TypeScript strict mode requirements
-
-### Security Requirements
-- Never store credit card information
-- Use HTTPS for all payment communications
-- Validate all webhook signatures
-- Implement proper input sanitization
-- Use environment variables for sensitive data
-- Add rate limiting to payment endpoints
-
-### Testing Requirements
-- Achieve minimum 85% test coverage for all payment-related code
-- Test both success and failure scenarios
-- Use Stripe test cards for E2E testing
-- Mock Stripe API calls in unit tests
-- Test webhook handling thoroughly
-
-### Error Handling
-- Implement graceful error handling for all payment operations
-- Provide user-friendly error messages
-- Log all payment-related errors for debugging
-- Implement retry logic for transient failures
-- Handle network timeouts appropriately
-
-### Performance Considerations
-- Implement proper database indexing
-- Use connection pooling for database operations
-- Cache subscription plan data appropriately
-- Optimize webhook processing
-- Implement proper loading states in UI
-
-### Integration Points
-- Integrate with existing business scraping functionality
-- Add payment gates to premium features
-- Update export functionality with subscription checks
-- Modify industry selection based on subscription tier
-- Add usage tracking to existing scraping operations
-
-## SPECIFIC FEATURE IMPLEMENTATIONS
-
-### Premium Feature Gating
-Implement subscription-based access control for:
-1. **Advanced Export Formats**: Premium users get Excel with advanced formatting, branded PDFs
-2. **Unlimited Scraping**: Free tier limited to 100 requests/month, premium unlimited
-3. **Advanced Industries**: Enterprise categories only for paid subscribers
-4. **Priority Support**: Premium users get priority in processing queues
-5. **API Access**: Programmatic access only for enterprise subscribers
-
-### Subscription Tiers
-Implement three subscription tiers:
-1. **Free Tier**: 100 scraping requests/month, basic export formats, standard industries
-2. **Pro Tier ($29/month)**: Unlimited scraping, advanced exports, all industries, priority processing
-3. **Enterprise Tier ($99/month)**: Everything in Pro + API access, custom industries, dedicated support
-
-### Usage Tracking
-Implement comprehensive usage tracking:
-- Track scraping requests per user per day/month
-- Monitor export operations
-- Log premium feature usage
-- Generate usage reports for billing
-- Implement quota enforcement
-
-## DEPLOYMENT REQUIREMENTS
-
-### Environment Setup
-- Configure production Stripe keys
-- Set up webhook endpoints
-- Configure SSL certificates
-- Set up monitoring and alerting
-- Configure backup procedures
-
-### Testing Checklist
-Before deployment, verify:
-- All payment flows work with test cards
-- Webhooks are properly configured
-- Feature access controls function correctly
-- Subscription lifecycle works end-to-end
-- Error handling works as expected
-- Security measures are in place
-
-## SUCCESS CRITERIA
-
-The implementation is complete when:
-1. Users can successfully subscribe to paid plans
-2. Payment processing works reliably
-3. Feature access is properly gated by subscription status
-4. Webhooks update subscription status correctly
-5. All tests pass with 85%+ coverage
-6. Security requirements are met
-7. Documentation is updated
-8. The system handles errors gracefully
-9. Performance requirements are met
-10. The integration with existing features is seamless
-
-Follow the existing code patterns, maintain architectural consistency, and ensure all implementations follow the project's coding standards and guidelines.
-            </div>
-        </div>
-
-        <div class="success">
-            <h3>🎉 Implementation Complete!</h3>
-            <p>This comprehensive guide provides everything needed to implement a full Stripe payment system in the Business Scraper App. The Augment AI prompt above contains all the detailed requirements and specifications needed for a complete implementation.</p>
-
-            <p><strong>Next Steps:</strong></p>
-            <ol>
-                <li>Copy the Augment AI prompt above</li>
-                <li>Paste it into Augment AI in VS Code</li>
-                <li>Review the implementation as it's created</li>
-                <li>Test thoroughly with Stripe test cards</li>
-                <li>Deploy with production Stripe keys</li>
-            </ol>
-        </div>
-
-        <div class="info">
-            <strong>📚 Additional Resources:</strong>
-            <ul>
-                <li><a href="https://stripe.com/docs" target="_blank">Stripe Documentation</a></li>
-                <li><a href="https://stripe.com/docs/testing" target="_blank">Stripe Testing Guide</a></li>
-                <li><a href="https://stripe.com/docs/webhooks" target="_blank">Stripe Webhooks Guide</a></li>
-                <li><a href="https://stripe.com/docs/security" target="_blank">Stripe Security Best Practices</a></li>
-            </ul>
-        </div>
-
-        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #dee2e6; text-align: center; color: #6c757d;">
-            <p><strong>Business Scraper App - Stripe Integration Guide</strong></p>
-            <p>Generated on 2025-08-29 | Version 1.0.0</p>
-            <p>For support and updates, refer to the project documentation.</p>
-        </footer>
+      </div>
+
+      <div class="success">
+        <h3>🎉 Implementation Complete!</h3>
+        <p>
+          This comprehensive guide provides everything needed to implement a full Stripe payment
+          system in the Business Scraper App. The Augment AI prompt above contains all the detailed
+          requirements and specifications needed for a complete implementation.
+        </p>
+
+        <p><strong>Next Steps:</strong></p>
+        <ol>
+          <li>Copy the Augment AI prompt above</li>
+          <li>Paste it into Augment AI in VS Code</li>
+          <li>Review the implementation as it's created</li>
+          <li>Test thoroughly with Stripe test cards</li>
+          <li>Deploy with production Stripe keys</li>
+        </ol>
+      </div>
+
+      <div class="info">
+        <strong>📚 Additional Resources:</strong>
+        <ul>
+          <li><a href="https://stripe.com/docs" target="_blank">Stripe Documentation</a></li>
+          <li>
+            <a href="https://stripe.com/docs/testing" target="_blank">Stripe Testing Guide</a>
+          </li>
+          <li>
+            <a href="https://stripe.com/docs/webhooks" target="_blank">Stripe Webhooks Guide</a>
+          </li>
+          <li>
+            <a href="https://stripe.com/docs/security" target="_blank"
+              >Stripe Security Best Practices</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <footer
+        style="
+          margin-top: 50px;
+          padding-top: 20px;
+          border-top: 1px solid #dee2e6;
+          text-align: center;
+          color: #6c757d;
+        "
+      >
+        <p><strong>Business Scraper App - Stripe Integration Guide</strong></p>
+        <p>Generated on 2025-08-29 | Version 1.0.0</p>
+        <p>For support and updates, refer to the project documentation.</p>
+      </footer>
     </div>
-</body>
+  </body>
 </html>

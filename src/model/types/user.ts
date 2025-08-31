@@ -58,7 +58,7 @@ export interface User {
   id: string
   email: string
   name: string
-  
+
   // Authentication fields
   passwordHash?: string
   passwordSalt?: string
@@ -66,7 +66,7 @@ export interface User {
   emailVerificationToken?: string
   passwordResetToken?: string
   passwordResetExpires?: Date
-  
+
   // Payment-related fields
   stripeCustomerId?: string
   subscriptionStatus: 'free' | 'active' | 'past_due' | 'canceled' | 'incomplete'
@@ -75,22 +75,22 @@ export interface User {
   paymentMethodLast4?: string
   paymentMethodBrand?: string
   billingAddress?: BillingAddress
-  
+
   // Usage tracking
   usageQuotas: UsageQuotas
-  
+
   // Profile information
   profilePicture?: string
   phoneNumber?: string
   timezone?: string
   language?: string
-  
+
   // Account status
   isActive: boolean
   lastLoginAt?: Date
   loginAttempts: number
   lockedUntil?: Date
-  
+
   // Timestamps
   createdAt: Date
   updatedAt: Date
@@ -136,7 +136,10 @@ export const BillingAddressSchema = z.object({
   city: z.string().min(1, 'City is required').max(50, 'City name too long'),
   state: z.string().min(1, 'State is required').max(50, 'State name too long'),
   postalCode: z.string().min(1, 'Postal code is required').max(20, 'Postal code too long'),
-  country: z.string().length(2, 'Country must be 2-letter code').regex(/^[A-Z]{2}$/, 'Country must be uppercase')
+  country: z
+    .string()
+    .length(2, 'Country must be 2-letter code')
+    .regex(/^[A-Z]{2}$/, 'Country must be uppercase'),
 })
 
 /**
@@ -146,7 +149,7 @@ export const BillingAddressSchema = z.object({
 const UsageQuotaItemSchema = z.object({
   used: z.number().int().min(0, 'Usage count cannot be negative'),
   limit: z.number().int().min(-1, 'Limit must be -1 (unlimited) or positive'),
-  resetDate: z.date()
+  resetDate: z.date(),
 })
 
 /**
@@ -157,68 +160,73 @@ export const UsageQuotasSchema = z.object({
   scrapingRequests: UsageQuotaItemSchema,
   exports: UsageQuotaItemSchema,
   advancedSearches: UsageQuotaItemSchema,
-  apiCalls: UsageQuotaItemSchema
+  apiCalls: UsageQuotaItemSchema,
 })
 
 /**
  * User Schema
  * Validates complete user data with comprehensive rules
  */
-export const UserSchema = z.object({
-  id: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
-  email: z.string().email('Invalid email format').max(255, 'Email too long'),
-  name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
-  
-  // Authentication fields
-  passwordHash: z.string().max(255, 'Password hash too long').optional(),
-  passwordSalt: z.string().max(255, 'Password salt too long').optional(),
-  emailVerified: z.boolean(),
-  emailVerificationToken: z.string().max(255, 'Verification token too long').optional(),
-  passwordResetToken: z.string().max(255, 'Reset token too long').optional(),
-  passwordResetExpires: z.date().optional(),
-  
-  // Payment-related fields
-  stripeCustomerId: z.string().max(255, 'Stripe customer ID too long').optional(),
-  subscriptionStatus: z.enum(['free', 'active', 'past_due', 'canceled', 'incomplete'], {
-    errorMap: () => ({ message: 'Invalid subscription status' })
-  }),
-  subscriptionPlan: z.string().max(100, 'Subscription plan too long').optional(),
-  subscriptionEndsAt: z.date().optional(),
-  paymentMethodLast4: z.string().length(4, 'Last 4 digits must be exactly 4 characters').regex(/^\d{4}$/, 'Last 4 must be digits').optional(),
-  paymentMethodBrand: z.string().max(50, 'Payment method brand too long').optional(),
-  billingAddress: BillingAddressSchema.optional(),
-  
-  // Usage tracking
-  usageQuotas: UsageQuotasSchema,
-  
-  // Profile information
-  profilePicture: z.string().url('Invalid profile picture URL').optional(),
-  phoneNumber: z.string().max(20, 'Phone number too long').optional(),
-  timezone: z.string().max(50, 'Timezone too long').optional(),
-  language: z.string().length(2, 'Language must be 2-letter code').optional(),
-  
-  // Account status
-  isActive: z.boolean(),
-  lastLoginAt: z.date().optional(),
-  loginAttempts: z.number().int().min(0, 'Login attempts cannot be negative').max(100, 'Login attempts too high'),
-  lockedUntil: z.date().optional(),
-  
-  // Timestamps
-  createdAt: z.date(),
-  updatedAt: z.date()
-}).refine(
-  (data) => data.updatedAt >= data.createdAt,
-  {
+export const UserSchema = z
+  .object({
+    id: z.string().min(1, 'User ID is required').max(100, 'User ID too long'),
+    email: z.string().email('Invalid email format').max(255, 'Email too long'),
+    name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
+
+    // Authentication fields
+    passwordHash: z.string().max(255, 'Password hash too long').optional(),
+    passwordSalt: z.string().max(255, 'Password salt too long').optional(),
+    emailVerified: z.boolean(),
+    emailVerificationToken: z.string().max(255, 'Verification token too long').optional(),
+    passwordResetToken: z.string().max(255, 'Reset token too long').optional(),
+    passwordResetExpires: z.date().optional(),
+
+    // Payment-related fields
+    stripeCustomerId: z.string().max(255, 'Stripe customer ID too long').optional(),
+    subscriptionStatus: z.enum(['free', 'active', 'past_due', 'canceled', 'incomplete'], {
+      errorMap: () => ({ message: 'Invalid subscription status' }),
+    }),
+    subscriptionPlan: z.string().max(100, 'Subscription plan too long').optional(),
+    subscriptionEndsAt: z.date().optional(),
+    paymentMethodLast4: z
+      .string()
+      .length(4, 'Last 4 digits must be exactly 4 characters')
+      .regex(/^\d{4}$/, 'Last 4 must be digits')
+      .optional(),
+    paymentMethodBrand: z.string().max(50, 'Payment method brand too long').optional(),
+    billingAddress: BillingAddressSchema.optional(),
+
+    // Usage tracking
+    usageQuotas: UsageQuotasSchema,
+
+    // Profile information
+    profilePicture: z.string().url('Invalid profile picture URL').optional(),
+    phoneNumber: z.string().max(20, 'Phone number too long').optional(),
+    timezone: z.string().max(50, 'Timezone too long').optional(),
+    language: z.string().length(2, 'Language must be 2-letter code').optional(),
+
+    // Account status
+    isActive: z.boolean(),
+    lastLoginAt: z.date().optional(),
+    loginAttempts: z
+      .number()
+      .int()
+      .min(0, 'Login attempts cannot be negative')
+      .max(100, 'Login attempts too high'),
+    lockedUntil: z.date().optional(),
+
+    // Timestamps
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  })
+  .refine(data => data.updatedAt >= data.createdAt, {
     message: 'Updated date must be after or equal to created date',
-    path: ['updatedAt']
-  }
-).refine(
-  (data) => !data.passwordResetExpires || data.passwordResetExpires > new Date(),
-  {
+    path: ['updatedAt'],
+  })
+  .refine(data => !data.passwordResetExpires || data.passwordResetExpires > new Date(), {
     message: 'Password reset expiration must be in the future',
-    path: ['passwordResetExpires']
-  }
-)
+    path: ['passwordResetExpires'],
+  })
 
 /**
  * User Profile Update Schema
@@ -231,7 +239,7 @@ export const UserProfileUpdateSchema = z.object({
   timezone: z.string().max(50, 'Timezone too long').optional(),
   language: z.string().length(2, 'Language must be 2-letter code').optional(),
   profilePicture: z.string().url('Invalid profile picture URL').optional(),
-  billingAddress: BillingAddressSchema.optional()
+  billingAddress: BillingAddressSchema.optional(),
 })
 
 /**
@@ -241,9 +249,12 @@ export const UserProfileUpdateSchema = z.object({
 export const UserRegistrationSchema = z.object({
   email: z.string().email('Invalid email format').max(255, 'Email too long'),
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
-  password: z.string().min(8, 'Password must be at least 8 characters').max(128, 'Password too long'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password too long'),
   timezone: z.string().max(50, 'Timezone too long').optional(),
-  language: z.string().length(2, 'Language must be 2-letter code').optional()
+  language: z.string().length(2, 'Language must be 2-letter code').optional(),
 })
 
 // ============================================================================
@@ -267,7 +278,7 @@ export function validateUser(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -291,7 +302,7 @@ export function validateUserProfileUpdate(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -315,7 +326,7 @@ export function validateUserRegistration(data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
       }
     }
     return { success: false, errors: ['Unknown validation error'] }
@@ -374,7 +385,7 @@ export function createDefaultUsageQuotas(planType: string = 'free'): UsageQuotas
     free: { scrapingRequests: 10, exports: 5, advancedSearches: 0, apiCalls: 0 },
     basic: { scrapingRequests: 100, exports: 50, advancedSearches: 10, apiCalls: 0 },
     pro: { scrapingRequests: 1000, exports: 500, advancedSearches: 100, apiCalls: 50 },
-    enterprise: { scrapingRequests: -1, exports: -1, advancedSearches: -1, apiCalls: -1 }
+    enterprise: { scrapingRequests: -1, exports: -1, advancedSearches: -1, apiCalls: -1 },
   }
 
   const quotas = quotaMap[planType] || quotaMap.free
@@ -383,7 +394,7 @@ export function createDefaultUsageQuotas(planType: string = 'free'): UsageQuotas
     scrapingRequests: { used: 0, limit: quotas.scrapingRequests, resetDate },
     exports: { used: 0, limit: quotas.exports, resetDate },
     advancedSearches: { used: 0, limit: quotas.advancedSearches, resetDate },
-    apiCalls: { used: 0, limit: quotas.apiCalls, resetDate }
+    apiCalls: { used: 0, limit: quotas.apiCalls, resetDate },
   }
 }
 
@@ -428,8 +439,10 @@ export function isAccountLocked(user: User): boolean {
  * @returns True if user has active subscription
  */
 export function hasActiveSubscription(user: User): boolean {
-  return user.subscriptionStatus === 'active' &&
-         (!user.subscriptionEndsAt || user.subscriptionEndsAt > new Date())
+  return (
+    user.subscriptionStatus === 'active' &&
+    (!user.subscriptionEndsAt || user.subscriptionEndsAt > new Date())
+  )
 }
 
 /**
@@ -452,10 +465,16 @@ export function resetUsageQuotas(quotas: UsageQuotas, planType: string = 'free')
 
   // Keep the same reset dates but update limits and reset usage
   return {
-    scrapingRequests: { ...newQuotas.scrapingRequests, resetDate: quotas.scrapingRequests.resetDate },
+    scrapingRequests: {
+      ...newQuotas.scrapingRequests,
+      resetDate: quotas.scrapingRequests.resetDate,
+    },
     exports: { ...newQuotas.exports, resetDate: quotas.exports.resetDate },
-    advancedSearches: { ...newQuotas.advancedSearches, resetDate: quotas.advancedSearches.resetDate },
-    apiCalls: { ...newQuotas.apiCalls, resetDate: quotas.apiCalls.resetDate }
+    advancedSearches: {
+      ...newQuotas.advancedSearches,
+      resetDate: quotas.advancedSearches.resetDate,
+    },
+    apiCalls: { ...newQuotas.apiCalls, resetDate: quotas.apiCalls.resetDate },
   }
 }
 
@@ -466,12 +485,23 @@ export function resetUsageQuotas(quotas: UsageQuotas, planType: string = 'free')
 /**
  * Valid subscription statuses
  */
-export const USER_SUBSCRIPTION_STATUSES = ['free', 'active', 'past_due', 'canceled', 'incomplete'] as const
+export const USER_SUBSCRIPTION_STATUSES = [
+  'free',
+  'active',
+  'past_due',
+  'canceled',
+  'incomplete',
+] as const
 
 /**
  * Valid quota feature types
  */
-export const QUOTA_FEATURE_TYPES = ['scrapingRequests', 'exports', 'advancedSearches', 'apiCalls'] as const
+export const QUOTA_FEATURE_TYPES = [
+  'scrapingRequests',
+  'exports',
+  'advancedSearches',
+  'apiCalls',
+] as const
 
 /**
  * Default plan quotas
@@ -480,5 +510,5 @@ export const DEFAULT_PLAN_QUOTAS = {
   free: { scrapingRequests: 10, exports: 5, advancedSearches: 0, apiCalls: 0 },
   basic: { scrapingRequests: 100, exports: 50, advancedSearches: 10, apiCalls: 0 },
   pro: { scrapingRequests: 1000, exports: 500, advancedSearches: 100, apiCalls: 50 },
-  enterprise: { scrapingRequests: -1, exports: -1, advancedSearches: -1, apiCalls: -1 }
+  enterprise: { scrapingRequests: -1, exports: -1, advancedSearches: -1, apiCalls: -1 },
 } as const

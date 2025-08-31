@@ -60,7 +60,7 @@ export class AnalyticsService {
           sessionStorage.setItem('analytics_session_id', this.sessionId)
         }
       }
-      
+
       logger.info('Analytics', `Session initialized: ${this.sessionId}`)
     } catch (error) {
       logger.error('Analytics', 'Failed to initialize session', error)
@@ -91,16 +91,16 @@ export class AnalyticsService {
         eventData,
         timestamp: new Date(),
         sessionId: this.sessionId,
-        userAgent: typeof window !== 'undefined' ? navigator.userAgent : undefined
+        userAgent: typeof window !== 'undefined' ? navigator.userAgent : undefined,
       }
 
       await this.storeEvent(event)
       await this.processEventInRealTime(event)
 
-      logger.info('Analytics', `Event tracked: ${eventType}`, { 
-        userId: event.userId, 
+      logger.info('Analytics', `Event tracked: ${eventType}`, {
+        userId: event.userId,
         sessionId: event.sessionId,
-        eventData 
+        eventData,
       })
     } catch (error) {
       logger.error('Analytics', 'Failed to track event', error)
@@ -128,7 +128,7 @@ export class AnalyticsService {
         averageRevenuePerUser,
         churnRate,
         lifetimeValue,
-        conversionRate
+        conversionRate,
       }
     } catch (error) {
       logger.error('Analytics', 'Failed to get revenue metrics', error)
@@ -152,7 +152,7 @@ export class AnalyticsService {
         activeUsers,
         newUsers,
         retentionRate,
-        engagementScore
+        engagementScore,
       }
     } catch (error) {
       logger.error('Analytics', 'Failed to get user metrics', error)
@@ -167,22 +167,25 @@ export class AnalyticsService {
     try {
       const events = await this.getEventsInPeriod(startDate, endDate)
 
-      const featureUsage = events.reduce((acc, event) => {
-        if (event.eventType.startsWith('feature_')) {
-          const feature = event.eventType.replace('feature_', '')
-          acc[feature] = (acc[feature] || 0) + 1
-        }
-        return acc
-      }, {} as Record<string, number>)
+      const featureUsage = events.reduce(
+        (acc, event) => {
+          if (event.eventType.startsWith('feature_')) {
+            const feature = event.eventType.replace('feature_', '')
+            acc[feature] = (acc[feature] || 0) + 1
+          }
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       const topFeatures = Object.entries(featureUsage)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 10) as [string, number][]
 
       return {
         featureUsage,
         topFeatures,
-        totalFeatureUsage: Object.values(featureUsage).reduce((sum, count) => sum + count, 0)
+        totalFeatureUsage: Object.values(featureUsage).reduce((sum, count) => sum + count, 0),
       }
     } catch (error) {
       logger.error('Analytics', 'Failed to get feature usage analytics', error)
@@ -196,10 +199,8 @@ export class AnalyticsService {
   private calculateMRR(subscriptions: any[]): number {
     return subscriptions.reduce((mrr, sub) => {
       if (sub.status === 'active') {
-        const monthlyAmount = sub.interval === 'year'
-          ? sub.priceCents / 12
-          : sub.priceCents
-        return mrr + (monthlyAmount / 100)
+        const monthlyAmount = sub.interval === 'year' ? sub.priceCents / 12 : sub.priceCents
+        return mrr + monthlyAmount / 100
       }
       return mrr
     }, 0)
@@ -303,15 +304,33 @@ export class AnalyticsService {
   }
 
   // Additional helper methods with placeholder implementations
-  private async getTotalUsers(): Promise<number> { return 0 }
-  private async getActiveUsers(start: Date, end: Date): Promise<number> { return 0 }
-  private async getNewUsers(start: Date, end: Date): Promise<number> { return 0 }
-  private async calculateRetentionRate(start: Date, end: Date): Promise<number> { return 0 }
-  private async calculateEngagementScore(start: Date, end: Date): Promise<number> { return 0 }
-  private async getActiveUsersAtDate(date: Date): Promise<number> { return 0 }
-  private async getChurnedUsers(start: Date, end: Date): Promise<number> { return 0 }
-  private async getUniqueVisitors(start: Date, end: Date): Promise<number> { return 0 }
-  private async getConversions(start: Date, end: Date): Promise<number> { return 0 }
+  private async getTotalUsers(): Promise<number> {
+    return 0
+  }
+  private async getActiveUsers(start: Date, end: Date): Promise<number> {
+    return 0
+  }
+  private async getNewUsers(start: Date, end: Date): Promise<number> {
+    return 0
+  }
+  private async calculateRetentionRate(start: Date, end: Date): Promise<number> {
+    return 0
+  }
+  private async calculateEngagementScore(start: Date, end: Date): Promise<number> {
+    return 0
+  }
+  private async getActiveUsersAtDate(date: Date): Promise<number> {
+    return 0
+  }
+  private async getChurnedUsers(start: Date, end: Date): Promise<number> {
+    return 0
+  }
+  private async getUniqueVisitors(start: Date, end: Date): Promise<number> {
+    return 0
+  }
+  private async getConversions(start: Date, end: Date): Promise<number> {
+    return 0
+  }
 }
 
 export const analyticsService = new AnalyticsService()

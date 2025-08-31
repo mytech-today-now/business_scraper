@@ -3,7 +3,12 @@
  * Comprehensive tests for GDPR compliance features
  */
 
-import { gdprService, GDPRService, DataExportRequest, DataDeletionRequest } from '@/model/gdprService'
+import {
+  gdprService,
+  GDPRService,
+  DataExportRequest,
+  DataDeletionRequest,
+} from '@/model/gdprService'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({
@@ -63,7 +68,7 @@ describe('GDPRService', () => {
 
     it('should log data access for audit compliance', async () => {
       const auditService = require('@/model/auditService')
-      
+
       await testGDPRService.requestDataExport('user_123', 'admin_user')
 
       expect(auditService.auditService.logDataAccess).toHaveBeenCalledWith(
@@ -79,9 +84,9 @@ describe('GDPRService', () => {
       const auditService = require('@/model/auditService')
       auditService.auditService.logDataAccess.mockRejectedValueOnce(new Error('Audit error'))
 
-      await expect(
-        testGDPRService.requestDataExport('user_123', 'admin_user')
-      ).rejects.toThrow('Audit error')
+      await expect(testGDPRService.requestDataExport('user_123', 'admin_user')).rejects.toThrow(
+        'Audit error'
+      )
     })
   })
 
@@ -91,7 +96,11 @@ describe('GDPRService', () => {
       const requestedBy = 'admin_user'
       const immediateDelete = true
 
-      const request = await testGDPRService.requestDataDeletion(userId, requestedBy, immediateDelete)
+      const request = await testGDPRService.requestDataDeletion(
+        userId,
+        requestedBy,
+        immediateDelete
+      )
 
       expect(request.userId).toBe(userId)
       expect(request.requestedBy).toBe(requestedBy)
@@ -106,11 +115,15 @@ describe('GDPRService', () => {
       const requestedBy = 'admin_user'
       const immediateDelete = false
 
-      const request = await testGDPRService.requestDataDeletion(userId, requestedBy, immediateDelete)
+      const request = await testGDPRService.requestDataDeletion(
+        userId,
+        requestedBy,
+        immediateDelete
+      )
 
       expect(request.immediateDelete).toBe(false)
       expect(request.status).toBe('scheduled')
-      
+
       // Should be scheduled for 30 days from now
       const expectedDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       const timeDiff = Math.abs(request.scheduledFor.getTime() - expectedDate.getTime())
@@ -119,7 +132,7 @@ describe('GDPRService', () => {
 
     it('should log audit event for deletion request', async () => {
       const auditService = require('@/model/auditService')
-      
+
       await testGDPRService.requestDataDeletion('user_123', 'admin_user')
 
       expect(auditService.auditService.logAuditEvent).toHaveBeenCalledWith(
@@ -130,7 +143,7 @@ describe('GDPRService', () => {
           resourceId: 'user_123',
           severity: 'high',
           category: 'data',
-          complianceFlags: ['GDPR']
+          complianceFlags: ['GDPR'],
         })
       )
     })
@@ -140,12 +153,12 @@ describe('GDPRService', () => {
       const testService = new GDPRService()
       jest.spyOn(testService as any, 'checkDeletionEligibility').mockResolvedValueOnce({
         eligible: false,
-        reason: 'Active subscription exists'
+        reason: 'Active subscription exists',
       })
 
-      await expect(
-        testService.requestDataDeletion('user_123', 'admin_user')
-      ).rejects.toThrow('Cannot delete data: Active subscription exists')
+      await expect(testService.requestDataDeletion('user_123', 'admin_user')).rejects.toThrow(
+        'Cannot delete data: Active subscription exists'
+      )
     })
   })
 
@@ -189,7 +202,9 @@ describe('GDPRService', () => {
     it('should handle export processing errors', async () => {
       // Mock collectUserData to throw error
       const testService = new GDPRService()
-      jest.spyOn(testService as any, 'collectUserData').mockRejectedValueOnce(new Error('Collection error'))
+      jest
+        .spyOn(testService as any, 'collectUserData')
+        .mockRejectedValueOnce(new Error('Collection error'))
 
       const request = await testService.requestDataExport('user_123', 'admin_user')
 
@@ -217,7 +232,7 @@ describe('GDPRService', () => {
       const request = await testGDPRService.requestDataDeletion('user_123', 'admin_user', false)
 
       expect(request.status).toBe('scheduled')
-      
+
       // Should not be processed immediately
       const userRequests = await testGDPRService.getUserRequests('user_123')
       expect(userRequests.deletionRequests[0].status).toBe('scheduled')
@@ -227,17 +242,19 @@ describe('GDPRService', () => {
   describe('data collection', () => {
     it('should collect comprehensive user data', async () => {
       const testService = new GDPRService()
-      
+
       // Mock the private method for testing
-      const collectUserData = jest.spyOn(testService as any, 'collectUserData').mockResolvedValueOnce({
-        profile: { userId: 'user_123', name: 'Test User' },
-        paymentData: { userId: 'user_123', cards: [] },
-        usageData: { userId: 'user_123', sessions: [] },
-        auditLogs: [],
-        scrapingHistory: [],
-        exportedAt: new Date(),
-        userId: 'user_123'
-      })
+      const collectUserData = jest
+        .spyOn(testService as any, 'collectUserData')
+        .mockResolvedValueOnce({
+          profile: { userId: 'user_123', name: 'Test User' },
+          paymentData: { userId: 'user_123', cards: [] },
+          usageData: { userId: 'user_123', sessions: [] },
+          auditLogs: [],
+          scrapingHistory: [],
+          exportedAt: new Date(),
+          userId: 'user_123',
+        })
 
       const userData = await (testService as any).collectUserData('user_123')
 
@@ -259,14 +276,14 @@ describe('GDPRService', () => {
       auditLogs: [],
       scrapingHistory: [],
       exportedAt: new Date(),
-      userId: 'user_123'
+      userId: 'user_123',
     }
 
     it('should generate JSON export file', async () => {
       const testService = new GDPRService()
-      
+
       const buffer = await (testService as any).generateExportFile(testData, 'json')
-      
+
       expect(buffer).toBeInstanceOf(Buffer)
       const jsonData = JSON.parse(buffer.toString())
       expect(jsonData.userId).toBe('user_123')
@@ -274,25 +291,25 @@ describe('GDPRService', () => {
 
     it('should generate CSV export file', async () => {
       const testService = new GDPRService()
-      
+
       const buffer = await (testService as any).generateExportFile(testData, 'csv')
-      
+
       expect(buffer).toBeInstanceOf(Buffer)
       expect(buffer.toString()).toContain('CSV export placeholder')
     })
 
     it('should generate XML export file', async () => {
       const testService = new GDPRService()
-      
+
       const buffer = await (testService as any).generateExportFile(testData, 'xml')
-      
+
       expect(buffer).toBeInstanceOf(Buffer)
       expect(buffer.toString()).toContain('<xml>')
     })
 
     it('should throw error for unsupported format', async () => {
       const testService = new GDPRService()
-      
+
       await expect(
         (testService as any).generateExportFile(testData, 'unsupported')
       ).rejects.toThrow('Unsupported export format: unsupported')
@@ -302,13 +319,13 @@ describe('GDPRService', () => {
   describe('deletion eligibility', () => {
     it('should check deletion eligibility correctly', async () => {
       const testService = new GDPRService()
-      
+
       // Mock getRecentUserActivity
       jest.spyOn(testService as any, 'getRecentUserActivity').mockResolvedValueOnce({
         hasActiveSession: false,
-        recentScrapingJobs: 0
+        recentScrapingJobs: 0,
       })
-      
+
       jest.spyOn(testService as any, 'checkLegalHold').mockResolvedValueOnce(false)
 
       const eligibility = await (testService as any).checkDeletionEligibility('user_123')
@@ -318,10 +335,10 @@ describe('GDPRService', () => {
 
     it('should reject deletion for active sessions', async () => {
       const testService = new GDPRService()
-      
+
       jest.spyOn(testService as any, 'getRecentUserActivity').mockResolvedValueOnce({
         hasActiveSession: true,
-        recentScrapingJobs: 0
+        recentScrapingJobs: 0,
       })
 
       const eligibility = await (testService as any).checkDeletionEligibility('user_123')
@@ -332,10 +349,10 @@ describe('GDPRService', () => {
 
     it('should reject deletion for recent scraping activities', async () => {
       const testService = new GDPRService()
-      
+
       jest.spyOn(testService as any, 'getRecentUserActivity').mockResolvedValueOnce({
         hasActiveSession: false,
-        recentScrapingJobs: 5
+        recentScrapingJobs: 5,
       })
 
       const eligibility = await (testService as any).checkDeletionEligibility('user_123')
@@ -346,12 +363,12 @@ describe('GDPRService', () => {
 
     it('should reject deletion for legal holds', async () => {
       const testService = new GDPRService()
-      
+
       jest.spyOn(testService as any, 'getRecentUserActivity').mockResolvedValueOnce({
         hasActiveSession: false,
-        recentScrapingJobs: 0
+        recentScrapingJobs: 0,
       })
-      
+
       jest.spyOn(testService as any, 'checkLegalHold').mockResolvedValueOnce(true)
 
       const eligibility = await (testService as any).checkDeletionEligibility('user_123')
@@ -367,19 +384,19 @@ describe('GDPRService', () => {
       mockStorage.storage.initialize.mockRejectedValueOnce(new Error('Storage error'))
 
       const testService = new GDPRService()
-      
-      await expect(
-        (testService as any).collectUserData('user_123')
-      ).rejects.toThrow('Storage error')
+
+      await expect((testService as any).collectUserData('user_123')).rejects.toThrow(
+        'Storage error'
+      )
     })
 
     it('should handle audit logging errors gracefully', async () => {
       const auditService = require('@/model/auditService')
       auditService.auditService.logDataAccess.mockRejectedValueOnce(new Error('Audit error'))
 
-      await expect(
-        testGDPRService.requestDataExport('user_123', 'admin_user')
-      ).rejects.toThrow('Audit error')
+      await expect(testGDPRService.requestDataExport('user_123', 'admin_user')).rejects.toThrow(
+        'Audit error'
+      )
     })
   })
 })

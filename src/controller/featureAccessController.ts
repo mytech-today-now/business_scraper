@@ -26,32 +26,32 @@ const FEATURE_LIMITS: Record<string, FeatureLimits> = {
     scraping_request: 10,
     export: 5,
     advanced_search: 0,
-    api_access: 0
+    api_access: 0,
   },
   basic: {
     scraping_request: 100,
     export: 50,
     advanced_search: 10,
-    api_access: 0
+    api_access: 0,
   },
   pro: {
     scraping_request: 1000,
     export: 500,
     advanced_search: 100,
-    api_access: 50
+    api_access: 50,
   },
   enterprise: {
     scraping_request: -1, // unlimited
     export: -1,
     advanced_search: -1,
-    api_access: -1
-  }
+    api_access: -1,
+  },
 }
 
 /**
  * Feature access denial reasons
  */
-export type AccessDenialReason = 
+export type AccessDenialReason =
   | 'subscription_required'
   | 'usage_limit_exceeded'
   | 'plan_restriction'
@@ -97,7 +97,7 @@ export class FeatureAccessController {
       if (!user) {
         return {
           hasAccess: false,
-          reason: 'subscription_required'
+          reason: 'subscription_required',
         }
       }
 
@@ -120,7 +120,7 @@ export class FeatureAccessController {
       logger.error('FeatureAccessController', 'Failed to check feature access', error)
       return {
         hasAccess: false,
-        reason: 'feature_disabled'
+        reason: 'feature_disabled',
       }
     }
   }
@@ -134,11 +134,11 @@ export class FeatureAccessController {
 
     // Check if feature is available in current plan
     const limit = FEATURE_LIMITS[planType]?.[featureType as keyof FeatureLimits]
-    
+
     if (limit === undefined) {
       return {
         hasAccess: false,
-        reason: 'feature_disabled'
+        reason: 'feature_disabled',
       }
     }
 
@@ -148,8 +148,8 @@ export class FeatureAccessController {
         reason: 'plan_restriction',
         upgradeRequired: {
           minimumPlan: this.getMinimumPlanForFeature(featureType),
-          upgradeUrl: '/upgrade'
-        }
+          upgradeUrl: '/upgrade',
+        },
       }
     }
 
@@ -173,7 +173,7 @@ export class FeatureAccessController {
     if (limit === 0) {
       return {
         hasAccess: false,
-        reason: 'plan_restriction'
+        reason: 'plan_restriction',
       }
     }
 
@@ -187,14 +187,14 @@ export class FeatureAccessController {
         reason: 'usage_limit_exceeded',
         currentUsage,
         usageLimit: limit,
-        resetDate: this.getUsageResetDate()
+        resetDate: this.getUsageResetDate(),
       }
     }
 
     return {
       hasAccess: true,
       currentUsage,
-      usageLimit: limit
+      usageLimit: limit,
     }
   }
 
@@ -207,19 +207,22 @@ export class FeatureAccessController {
 
     const userId = user.id
     const cacheKey = `${userId}:${featureType}`
-    
+
     // Check cache first
     const cachedUsage = this.usageCache.get(userId)?.get(featureType)
     const lastUpdate = this.lastCacheUpdate.get(cacheKey)
-    
-    if (cachedUsage !== undefined && lastUpdate && 
-        (Date.now() - lastUpdate.getTime()) < this.CACHE_TTL) {
+
+    if (
+      cachedUsage !== undefined &&
+      lastUpdate &&
+      Date.now() - lastUpdate.getTime() < this.CACHE_TTL
+    ) {
       return cachedUsage
     }
 
     // Mock usage data until userPaymentService is implemented
     const usage = await this.getMockCurrentUsage(userId, featureType)
-    
+
     // Update cache
     if (!this.usageCache.has(userId)) {
       this.usageCache.set(userId, new Map())
@@ -253,14 +256,14 @@ export class FeatureAccessController {
    */
   private getMinimumPlanForFeature(featureType: string): string {
     const plans = ['basic', 'pro', 'enterprise']
-    
+
     for (const plan of plans) {
       const limit = FEATURE_LIMITS[plan]?.[featureType as keyof FeatureLimits]
       if (limit && limit > 0) {
         return plan
       }
     }
-    
+
     return 'basic'
   }
 
@@ -278,7 +281,10 @@ export class FeatureAccessController {
    */
   private emitAccessDenied(featureType: string, reason: AccessDenialReason): void {
     paymentController.emit('access:denied', { featureType, reason })
-    logger.info('FeatureAccessController', `Access denied for feature: ${featureType}, reason: ${reason}`)
+    logger.info(
+      'FeatureAccessController',
+      `Access denied for feature: ${featureType}, reason: ${reason}`
+    )
   }
 
   /**
@@ -359,7 +365,7 @@ export class FeatureAccessController {
       scraping_request: Math.floor(Math.random() * 5),
       export: Math.floor(Math.random() * 3),
       advanced_search: Math.floor(Math.random() * 2),
-      api_access: 0
+      api_access: 0,
     }
 
     return mockUsage[featureType] || 0

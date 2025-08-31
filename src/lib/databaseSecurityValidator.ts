@@ -3,9 +3,10 @@
  * Business Scraper Application - Security Compliance Checker
  */
 
-import { Pool } from 'pg'
+import postgres from 'postgres'
 import { logger } from '@/utils/logger'
 import { getDatabaseConfig } from './database'
+import { createPostgresConnection } from './postgres-connection'
 
 /**
  * Security check result
@@ -22,7 +23,7 @@ export interface SecurityCheckResult {
  * Database security validation service
  */
 export class DatabaseSecurityValidator {
-  private pool: Pool | null = null
+  private sql: postgres.Sql | null = null
 
   /**
    * Initialize database connection for validation
@@ -31,13 +32,13 @@ export class DatabaseSecurityValidator {
     try {
       const config = getDatabaseConfig()
       if (config.type === 'postgresql') {
-        this.pool = new Pool({
+        this.sql = createPostgresConnection({
           host: config.host,
           port: config.port,
           database: config.database,
-          user: config.username,
+          username: config.username,
           password: config.password,
-          ssl: config.ssl,
+          ssl: false, // Explicitly disable SSL for local PostgreSQL container
           max: 1, // Only need one connection for validation
         })
       }
@@ -53,7 +54,7 @@ export class DatabaseSecurityValidator {
   async validateSecurity(): Promise<SecurityCheckResult[]> {
     const results: SecurityCheckResult[] = []
 
-    if (!this.pool) {
+    if (!this.sql) {
       results.push({
         checkName: 'Database Connection',
         status: 'FAIL',

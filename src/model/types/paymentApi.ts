@@ -115,7 +115,12 @@ export interface CreatePaymentIntentResponse {
   /** Client secret for payment confirmation */
   clientSecret: string
   /** Payment status */
-  status: 'requires_payment_method' | 'requires_confirmation' | 'requires_action' | 'processing' | 'succeeded'
+  status:
+    | 'requires_payment_method'
+    | 'requires_confirmation'
+    | 'requires_action'
+    | 'processing'
+    | 'succeeded'
 }
 
 /**
@@ -268,7 +273,12 @@ export interface ApiErrorResponse {
  */
 export interface PaymentErrorResponse extends ApiErrorResponse {
   /** Payment-specific error type */
-  type: 'card_error' | 'validation_error' | 'api_error' | 'authentication_error' | 'rate_limit_error'
+  type:
+    | 'card_error'
+    | 'validation_error'
+    | 'api_error'
+    | 'authentication_error'
+    | 'rate_limit_error'
   /** Decline code (for card errors) */
   declineCode?: string
   /** Suggested action for the user */
@@ -324,7 +334,7 @@ export interface ApiResponse<T> {
 /**
  * Webhook event types for payment notifications
  */
-export type PaymentWebhookEvent = 
+export type PaymentWebhookEvent =
   | 'subscription.created'
   | 'subscription.updated'
   | 'subscription.deleted'

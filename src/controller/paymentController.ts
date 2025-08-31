@@ -10,7 +10,7 @@ import {
   UserSubscription,
   PaymentTransaction,
   FeatureUsage,
-  isSubscriptionActive
+  isSubscriptionActive,
 } from '@/model/types/payment'
 
 /**
@@ -140,7 +140,10 @@ export class PaymentController extends EventEmitter {
         throw new Error(`Plan not found: ${planId}`)
       }
 
-      logger.info('PaymentController', `Creating subscription for user ${this.currentUser.id} with plan ${planId}`)
+      logger.info(
+        'PaymentController',
+        `Creating subscription for user ${this.currentUser.id} with plan ${planId}`
+      )
 
       // Mock subscription creation until services are implemented
       const mockSubscription = await this.createMockSubscription(this.currentUser.id, planId)
@@ -175,10 +178,10 @@ export class PaymentController extends EventEmitter {
 
       // Mock cancellation until userPaymentService is implemented
       await this.cancelMockSubscription(this.userSubscription.id)
-      
+
       await this.loadUserPaymentData()
       this.emit('subscription:canceled')
-      
+
       logger.info('PaymentController', 'Successfully canceled subscription')
     } catch (error) {
       logger.error('PaymentController', 'Failed to cancel subscription', error)
@@ -198,7 +201,7 @@ export class PaymentController extends EventEmitter {
     try {
       // Mock feature access check until userPaymentService is implemented
       const hasAccess = await this.mockCheckFeatureAccess(this.currentUser.id, featureType)
-      
+
       if (!hasAccess) {
         this.emit('access:denied', { featureType, reason: 'subscription_required' })
       }
@@ -222,9 +225,12 @@ export class PaymentController extends EventEmitter {
     try {
       // Mock usage recording until userPaymentService is implemented
       await this.mockRecordFeatureUsage(this.currentUser.id, featureType, metadata)
-      
+
       this.emit('usage:recorded', { featureType, metadata })
-      logger.debug('PaymentController', `Recorded feature usage: ${featureType} for user ${this.currentUser.id}`)
+      logger.debug(
+        'PaymentController',
+        `Recorded feature usage: ${featureType} for user ${this.currentUser.id}`
+      )
     } catch (error) {
       logger.error('PaymentController', 'Failed to record feature usage', error)
       throw error
@@ -294,7 +300,7 @@ export class PaymentController extends EventEmitter {
         interval: 'month',
         features: ['10 scraping requests', '5 exports', 'Basic support'],
         isActive: true,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
         id: 'basic',
@@ -306,7 +312,7 @@ export class PaymentController extends EventEmitter {
         interval: 'month',
         features: ['100 scraping requests', '50 exports', '10 advanced searches', 'Email support'],
         isActive: true,
-        createdAt: new Date()
+        createdAt: new Date(),
       },
       {
         id: 'pro',
@@ -316,10 +322,16 @@ export class PaymentController extends EventEmitter {
         priceCents: 9900,
         currency: 'USD',
         interval: 'month',
-        features: ['1000 scraping requests', '500 exports', '100 advanced searches', '50 API calls', 'Priority support'],
+        features: [
+          '1000 scraping requests',
+          '500 exports',
+          '100 advanced searches',
+          '50 API calls',
+          'Priority support',
+        ],
         isActive: true,
-        createdAt: new Date()
-      }
+        createdAt: new Date(),
+      },
     ]
   }
 
@@ -335,7 +347,7 @@ export class PaymentController extends EventEmitter {
       userId,
       planId,
       status: 'active',
-      createdAt: new Date()
+      createdAt: new Date(),
     }
   }
 
@@ -349,11 +361,24 @@ export class PaymentController extends EventEmitter {
     return true
   }
 
-  private async mockRecordFeatureUsage(userId: string, featureType: string, metadata?: any): Promise<void> {
+  private async mockRecordFeatureUsage(
+    userId: string,
+    featureType: string,
+    metadata?: any
+  ): Promise<void> {
     // Mock usage recording
-    logger.debug('PaymentController', `Mock usage recording: ${featureType} for user ${userId}`, metadata)
+    logger.debug(
+      'PaymentController',
+      `Mock usage recording: ${featureType} for user ${userId}`,
+      metadata
+    )
   }
 }
 
 // Export singleton instance
 export const paymentController = new PaymentController()
+
+// React hook for using payment controller
+export const usePaymentController = () => {
+  return paymentController
+}

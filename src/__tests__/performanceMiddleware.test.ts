@@ -12,7 +12,7 @@ import {
   withPaymentPerformanceTracking,
   withPerformanceTracking,
   withScrapingPerformanceTracking,
-  createPerformanceMiddleware
+  createPerformanceMiddleware,
 } from '@/middleware/performanceMiddleware'
 
 // Mock dependencies
@@ -22,7 +22,7 @@ jest.mock('@/model/monitoringService', () => ({
     recordDatabaseQueryTime: jest.fn(),
     recordPaymentProcessingTime: jest.fn(),
     recordMetric: jest.fn(),
-  }
+  },
 }))
 
 jest.mock('@/utils/logger', () => ({
@@ -31,7 +31,7 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-  }
+  },
 }))
 
 import { monitoringService } from '@/model/monitoringService'
@@ -43,22 +43,22 @@ describe('Performance Middleware', () => {
   })
 
   describe('performanceMiddleware (Pages Router)', () => {
-    it('should track API response time', (done) => {
+    it('should track API response time', done => {
       const req = {
         method: 'GET',
-        url: '/api/test'
+        url: '/api/test',
       } as NextApiRequest
 
       const res = {
         statusCode: 200,
-        end: jest.fn()
+        end: jest.fn(),
       } as unknown as NextApiResponse
 
       const next = jest.fn()
 
       // Override res.end to simulate response completion
       const originalEnd = res.end
-      res.end = function(chunk?: any, encoding?: any) {
+      res.end = function (chunk?: any, encoding?: any) {
         // Simulate some processing time
         setTimeout(() => {
           expect(monitoringService.recordApiResponseTime).toHaveBeenCalledWith(
@@ -66,39 +66,36 @@ describe('Performance Middleware', () => {
             expect.any(Number),
             200
           )
-          expect(logger.debug).toHaveBeenCalledWith(
-            'Performance',
-            'Request started: GET /api/test'
-          )
+          expect(logger.debug).toHaveBeenCalledWith('Performance', 'Request started: GET /api/test')
           done()
         }, 10)
-        
+
         return originalEnd.call(this, chunk, encoding)
       }
 
       performanceMiddleware(req, res, next)
-      
+
       expect(next).toHaveBeenCalled()
-      
+
       // Simulate response end
       res.end()
     })
 
-    it('should log slow requests', (done) => {
+    it('should log slow requests', done => {
       const req = {
         method: 'POST',
-        url: '/api/slow'
+        url: '/api/slow',
       } as NextApiRequest
 
       const res = {
         statusCode: 200,
-        end: jest.fn()
+        end: jest.fn(),
       } as unknown as NextApiResponse
 
       const next = jest.fn()
 
       const originalEnd = res.end
-      res.end = function(chunk?: any, encoding?: any) {
+      res.end = function (chunk?: any, encoding?: any) {
         // Simulate slow response
         setTimeout(() => {
           expect(logger.warn).toHaveBeenCalledWith(
@@ -107,7 +104,7 @@ describe('Performance Middleware', () => {
           )
           done()
         }, 1100) // More than 1000ms threshold
-        
+
         return originalEnd.call(this, chunk, encoding)
       }
 
@@ -119,7 +116,7 @@ describe('Performance Middleware', () => {
   describe('appRouterPerformanceMiddleware', () => {
     it('should track App Router request performance', () => {
       const request = new NextRequest('http://localhost:3000/api/test', {
-        method: 'GET'
+        method: 'GET',
       })
 
       const response = appRouterPerformanceMiddleware(request)
@@ -177,8 +174,8 @@ describe('Performance Middleware', () => {
 
     it('should log slow database queries', async () => {
       const queryName = 'slow_query'
-      const queryFunction = jest.fn().mockImplementation(() => 
-        new Promise(resolve => setTimeout(() => resolve({}), 600)) // 600ms
+      const queryFunction = jest.fn().mockImplementation(
+        () => new Promise(resolve => setTimeout(() => resolve({}), 600)) // 600ms
       )
 
       await withDatabasePerformanceTracking(queryName, queryFunction)
@@ -214,7 +211,9 @@ describe('Performance Middleware', () => {
       const error = new Error('Payment gateway error')
       const paymentFunction = jest.fn().mockRejectedValue(error)
 
-      await expect(withPaymentPerformanceTracking(operation, paymentFunction)).rejects.toThrow(error)
+      await expect(withPaymentPerformanceTracking(operation, paymentFunction)).rejects.toThrow(
+        error
+      )
 
       expect(monitoringService.recordPaymentProcessingTime).toHaveBeenCalledWith(
         expect.any(Number),
@@ -236,7 +235,7 @@ describe('Performance Middleware', () => {
       const options = {
         slowThreshold: 500,
         metricName: 'custom_metric',
-        tags: { type: 'test' }
+        tags: { type: 'test' },
       }
 
       const result = await withPerformanceTracking(operationName, operation, options)
@@ -249,7 +248,7 @@ describe('Performance Middleware', () => {
         expect.objectContaining({
           operation: operationName,
           success: 'true',
-          type: 'test'
+          type: 'test',
         })
       )
     })
@@ -266,7 +265,7 @@ describe('Performance Middleware', () => {
         'ms',
         expect.objectContaining({
           operation: operationName,
-          success: 'true'
+          success: 'true',
         })
       )
     })
@@ -285,36 +284,36 @@ describe('Performance Middleware', () => {
         'ms',
         expect.objectContaining({
           url,
-          domain: 'example.com'
+          domain: 'example.com',
         })
       )
     })
   })
 
   describe('createPerformanceMiddleware', () => {
-    it('should create custom middleware with specified options', (done) => {
+    it('should create custom middleware with specified options', done => {
       const options = {
         slowThreshold: 200,
         enableLogging: true,
-        metricPrefix: 'custom'
+        metricPrefix: 'custom',
       }
 
       const customMiddleware = createPerformanceMiddleware(options)
 
       const req = {
         method: 'GET',
-        url: '/api/custom'
+        url: '/api/custom',
       } as NextApiRequest
 
       const res = {
         statusCode: 200,
-        end: jest.fn()
+        end: jest.fn(),
       } as unknown as NextApiResponse
 
       const next = jest.fn()
 
       const originalEnd = res.end
-      res.end = function(chunk?: any, encoding?: any) {
+      res.end = function (chunk?: any, encoding?: any) {
         setTimeout(() => {
           expect(monitoringService.recordMetric).toHaveBeenCalledWith(
             'custom_response_time',
@@ -322,12 +321,12 @@ describe('Performance Middleware', () => {
             'ms',
             expect.objectContaining({
               endpoint: '/api/custom',
-              method: 'GET'
+              method: 'GET',
             })
           )
           done()
         }, 10)
-        
+
         return originalEnd.call(this, chunk, encoding)
       }
 

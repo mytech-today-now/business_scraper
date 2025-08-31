@@ -25,14 +25,17 @@ export interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
  * Spinner component for loading states
  */
 export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  ({ 
-    className, 
-    size = 'md', 
-    variant = 'default',
-    label = 'Loading...',
-    showLabel = false,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      size = 'md',
+      variant = 'default',
+      label = 'Loading...',
+      showLabel = false,
+      ...props
+    },
+    ref
+  ) => {
     const sizeClasses = {
       xs: 'h-3 w-3',
       sm: 'h-4 w-4',
@@ -46,7 +49,8 @@ export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
       primary: 'border-blue-200 border-t-blue-600 dark:border-blue-800 dark:border-t-blue-400',
       secondary: 'border-gray-200 border-t-gray-500 dark:border-gray-700 dark:border-t-gray-400',
       success: 'border-green-200 border-t-green-600 dark:border-green-800 dark:border-t-green-400',
-      warning: 'border-yellow-200 border-t-yellow-600 dark:border-yellow-800 dark:border-t-yellow-400',
+      warning:
+        'border-yellow-200 border-t-yellow-600 dark:border-yellow-800 dark:border-t-yellow-400',
       error: 'border-red-200 border-t-red-600 dark:border-red-800 dark:border-t-red-400',
     }
 
@@ -61,10 +65,7 @@ export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
     return (
       <div
         ref={ref}
-        className={clsx(
-          'inline-flex items-center gap-2',
-          className
-        )}
+        className={clsx('inline-flex items-center gap-2', className)}
         role="status"
         aria-label={label}
         {...props}
@@ -77,9 +78,7 @@ export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
           )}
         />
         {showLabel && (
-          <span className={clsx('text-muted-foreground', labelSizeClasses[size])}>
-            {label}
-          </span>
+          <span className={clsx('text-muted-foreground', labelSizeClasses[size])}>{label}</span>
         )}
         <span className="sr-only">{label}</span>
       </div>
@@ -105,7 +104,7 @@ export const SpinnerOverlay: React.FC<SpinnerOverlayProps> = ({
   label = 'Loading...',
   backdrop = true,
   size = 'lg',
-  variant = 'primary'
+  variant = 'primary',
 }) => {
   if (!isVisible) return null
 
@@ -143,12 +142,7 @@ export const InlineSpinner: React.FC<InlineSpinnerProps> = ({
   ...props
 }) => {
   return (
-    <Spinner
-      size={size}
-      variant={variant}
-      className={clsx('inline-block', className)}
-      {...props}
-    />
+    <Spinner size={size} variant={variant} className={clsx('inline-block', className)} {...props} />
   )
 }
 

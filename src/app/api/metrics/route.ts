@@ -28,18 +28,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         system: {
           status: systemHealth.overall,
           services: systemHealth.services,
-          activeAlerts: systemHealth.activeAlerts
+          activeAlerts: systemHealth.activeAlerts,
         },
         metrics: includeMonitoring ? allMetrics.slice(-100) : [], // Last 100 metrics
         alerts: includeMonitoring ? activeAlerts : [],
-        prometheus: await metrics.getMetrics()
+        prometheus: await metrics.getMetrics(),
       }
 
       // Record metrics API access
       const responseTime = Date.now() - startTime
       await monitoringService.recordMetric('metrics_api_response_time', responseTime, 'ms', {
         format: 'json',
-        include_monitoring: includeMonitoring.toString()
+        include_monitoring: includeMonitoring.toString(),
       })
 
       return NextResponse.json(jsonResponse, {
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           Pragma: 'no-cache',
           Expires: '0',
-        }
+        },
       })
     }
 
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const responseTime = Date.now() - startTime
     await monitoringService.recordMetric('metrics_api_response_time', responseTime, 'ms', {
       format: 'prometheus',
-      include_monitoring: includeMonitoring.toString()
+      include_monitoring: includeMonitoring.toString(),
     })
 
     return new NextResponse(metricsData, {
@@ -140,7 +140,8 @@ function formatMonitoringMetricsForPrometheus(): string {
   // Add system health metrics
   lines.push('# HELP system_health Overall system health status')
   lines.push('# TYPE system_health gauge')
-  const healthValue = systemHealth.overall === 'healthy' ? 1 : systemHealth.overall === 'degraded' ? 0.5 : 0
+  const healthValue =
+    systemHealth.overall === 'healthy' ? 1 : systemHealth.overall === 'degraded' ? 0.5 : 0
   lines.push(`system_health ${healthValue}`)
 
   lines.push('# HELP active_alerts Number of active alerts')
@@ -157,7 +158,8 @@ function formatMonitoringMetricsForPrometheus(): string {
 
   // Group metrics by name for Prometheus format
   const metricGroups: Record<string, any[]> = {}
-  allMetrics.slice(-100).forEach(metric => { // Last 100 metrics to avoid overwhelming output
+  allMetrics.slice(-100).forEach(metric => {
+    // Last 100 metrics to avoid overwhelming output
     if (!metricGroups[metric.name]) {
       metricGroups[metric.name] = []
     }
@@ -171,8 +173,11 @@ function formatMonitoringMetricsForPrometheus(): string {
     lines.push(`# TYPE ${sanitizedName} gauge`)
 
     metricList.forEach(metric => {
-      const labels = metric.tags ?
-        Object.entries(metric.tags).map(([key, value]) => `${key}="${value}"`).join(',') : ''
+      const labels = metric.tags
+        ? Object.entries(metric.tags)
+            .map(([key, value]) => `${key}="${value}"`)
+            .join(',')
+        : ''
       const labelString = labels ? `{${labels}}` : ''
       const timestamp = new Date(metric.timestamp).getTime()
 

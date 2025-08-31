@@ -2,7 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { PaymentValidationService, paymentValidationService } from '@/model/paymentValidationService'
+import {
+  PaymentValidationService,
+  paymentValidationService,
+} from '@/model/paymentValidationService'
 import { userPaymentService } from '@/model/userPaymentService'
 import { UserPaymentProfile, SubscriptionTier, PaymentStatus } from '@/types/payment'
 
@@ -13,8 +16,8 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
-    debug: jest.fn()
-  }
+    debug: jest.fn(),
+  },
 }))
 
 const mockUserPaymentService = userPaymentService as jest.Mocked<typeof userPaymentService>
@@ -35,7 +38,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -53,7 +56,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -71,7 +74,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'professional',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -100,7 +103,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -118,7 +121,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -136,7 +139,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'professional',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -154,7 +157,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -175,7 +178,7 @@ describe('PaymentValidationService', () => {
         subscriptionTier: 'basic',
         currentPeriodEnd: new Date(Date.now() + 86400000), // Tomorrow
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -194,7 +197,7 @@ describe('PaymentValidationService', () => {
         subscriptionTier: 'basic',
         trialEnd: new Date(Date.now() + 86400000), // Tomorrow
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -213,7 +216,7 @@ describe('PaymentValidationService', () => {
         subscriptionTier: 'basic',
         trialEnd: new Date(Date.now() - 86400000), // Yesterday
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -231,7 +234,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'canceled',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -316,7 +319,7 @@ describe('PaymentValidationService', () => {
       const paymentData = {
         amount: 2000,
         currency: 'usd',
-        email: 'test@example.com'
+        email: 'test@example.com',
       }
 
       const result = service.validatePaymentData(paymentData)
@@ -328,7 +331,7 @@ describe('PaymentValidationService', () => {
     it('should reject invalid amount', () => {
       const paymentData = {
         amount: -100,
-        currency: 'usd'
+        currency: 'usd',
       }
 
       const result = service.validatePaymentData(paymentData)
@@ -339,7 +342,7 @@ describe('PaymentValidationService', () => {
 
     it('should reject missing currency', () => {
       const paymentData = {
-        amount: 2000
+        amount: 2000,
       }
 
       const result = service.validatePaymentData(paymentData)
@@ -352,7 +355,7 @@ describe('PaymentValidationService', () => {
       const paymentData = {
         amount: 2000,
         currency: 'usd',
-        email: 'invalid-email'
+        email: 'invalid-email',
       }
 
       const result = service.validatePaymentData(paymentData)
@@ -370,7 +373,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -388,7 +391,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'professional',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)
@@ -415,7 +418,7 @@ describe('PaymentValidationService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockUserPaymentService.getUserPaymentProfile.mockResolvedValue(mockProfile)

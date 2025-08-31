@@ -16,14 +16,14 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
   plans,
   currentPlanId,
   onSelectPlan,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null)
 
   const formatPrice = (cents: number, interval: string) => {
     const price = new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
     }).format(cents / 100)
     return `${price}/${interval}`
   }
@@ -33,7 +33,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {plans.map((plan) => (
+      {plans.map(plan => (
         <Card
           key={plan.id}
           className={`relative p-6 ${
@@ -52,9 +52,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
           )}
 
           <div className="text-center mb-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              {plan.name}
-            </h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
             <p className="text-gray-600 mb-4">{plan.description}</p>
             <div className="text-3xl font-bold text-blue-600">
               {formatPrice(plan.priceCents, plan.interval)}
@@ -79,11 +77,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
             className="w-full"
             variant={isCurrentPlan(plan.id) ? 'secondary' : 'default'}
           >
-            {isCurrentPlan(plan.id)
-              ? 'Current Plan'
-              : isLoading
-              ? 'Processing...'
-              : 'Select Plan'}
+            {isCurrentPlan(plan.id) ? 'Current Plan' : isLoading ? 'Processing...' : 'Select Plan'}
           </Button>
         </Card>
       ))}

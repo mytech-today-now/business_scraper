@@ -15,7 +15,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/business_scraper
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/business_scraper?sslmode=disable
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
       - RATE_LIMIT_REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}

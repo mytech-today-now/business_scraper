@@ -24,7 +24,7 @@ export function performanceMiddleware(
 
   // Override res.end to capture response time
   const originalEnd = res.end
-  res.end = function(chunk?: any, encoding?: any) {
+  res.end = function (chunk?: any, encoding?: any) {
     const duration = Date.now() - startTime
     const statusCode = res.statusCode
 
@@ -33,7 +33,10 @@ export function performanceMiddleware(
 
     // Log slow requests
     if (duration > 1000) {
-      logger.warn('Performance', `Slow request detected: ${req.method} ${endpoint} took ${duration}ms`)
+      logger.warn(
+        'Performance',
+        `Slow request detected: ${req.method} ${endpoint} took ${duration}ms`
+      )
     }
 
     // Call original end method
@@ -46,7 +49,9 @@ export function performanceMiddleware(
 /**
  * Performance middleware for Next.js App Router
  */
-export function appRouterPerformanceMiddleware(request: NextRequest): NextResponse | Promise<NextResponse> {
+export function appRouterPerformanceMiddleware(
+  request: NextRequest
+): NextResponse | Promise<NextResponse> {
   const startTime = Date.now()
   const endpoint = request.nextUrl.pathname
   const method = request.method
@@ -59,7 +64,10 @@ export function appRouterPerformanceMiddleware(request: NextRequest): NextRespon
 
   // Add performance tracking to response headers for client-side monitoring
   response.headers.set('X-Request-Start-Time', startTime.toString())
-  response.headers.set('X-Request-ID', `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
+  response.headers.set(
+    'X-Request-ID',
+    `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  )
 
   // Schedule async performance recording
   setImmediate(async () => {
@@ -71,7 +79,10 @@ export function appRouterPerformanceMiddleware(request: NextRequest): NextRespon
 
       // Log slow requests
       if (duration > 1000) {
-        logger.warn('Performance', `Slow App Router request: ${method} ${endpoint} took ${duration}ms`)
+        logger.warn(
+          'Performance',
+          `Slow App Router request: ${method} ${endpoint} took ${duration}ms`
+        )
       }
     } catch (error) {
       logger.error('Performance', 'Failed to record API performance metric', error)
@@ -135,7 +146,11 @@ export function withPaymentPerformanceTracking<T>(
       const duration = Date.now() - startTime
       await monitoringService.recordPaymentProcessingTime(duration, false)
 
-      logger.error('Performance', `Payment operation failed: ${operation} after ${duration}ms`, error)
+      logger.error(
+        'Performance',
+        `Payment operation failed: ${operation} after ${duration}ms`,
+        error
+      )
       reject(error)
     }
   })
@@ -166,7 +181,7 @@ export function withPerformanceTracking<T>(
       await monitoringService.recordMetric(metricName, duration, 'ms', {
         operation: operationName,
         success: 'true',
-        ...options?.tags
+        ...options?.tags,
       })
 
       if (duration > slowThreshold) {
@@ -183,7 +198,7 @@ export function withPerformanceTracking<T>(
         operation: operationName,
         success: 'false',
         error: error instanceof Error ? error.message : 'unknown',
-        ...options?.tags
+        ...options?.tags,
       })
 
       logger.error('Performance', `Operation failed: ${operationName} after ${duration}ms`, error)
@@ -199,18 +214,14 @@ export function withScrapingPerformanceTracking<T>(
   url: string,
   scrapingFunction: () => Promise<T>
 ): Promise<T> {
-  return withPerformanceTracking(
-    `scraping_${new URL(url).hostname}`,
-    scrapingFunction,
-    {
-      slowThreshold: 30000, // 30 seconds for scraping operations
-      metricName: 'scraping_duration',
-      tags: {
-        url: url,
-        domain: new URL(url).hostname
-      }
-    }
-  )
+  return withPerformanceTracking(`scraping_${new URL(url).hostname}`, scrapingFunction, {
+    slowThreshold: 30000, // 30 seconds for scraping operations
+    metricName: 'scraping_duration',
+    tags: {
+      url: url,
+      domain: new URL(url).hostname,
+    },
+  })
 }
 
 /**
@@ -221,18 +232,14 @@ export function withCachePerformanceTracking<T>(
   cacheOperation: () => Promise<T>,
   operationType: 'get' | 'set' | 'delete' | 'clear'
 ): Promise<T> {
-  return withPerformanceTracking(
-    `cache_${operationType}`,
-    cacheOperation,
-    {
-      slowThreshold: 100, // 100ms for cache operations
-      metricName: 'cache_operation_duration',
-      tags: {
-        operation: operationType,
-        cache_key: cacheKey
-      }
-    }
-  )
+  return withPerformanceTracking(`cache_${operationType}`, cacheOperation, {
+    slowThreshold: 100, // 100ms for cache operations
+    metricName: 'cache_operation_duration',
+    tags: {
+      operation: operationType,
+      cache_key: cacheKey,
+    },
+  })
 }
 
 /**
@@ -243,18 +250,14 @@ export function withFilePerformanceTracking<T>(
   fileOperation: () => Promise<T>,
   operationType: 'read' | 'write' | 'delete' | 'upload' | 'download'
 ): Promise<T> {
-  return withPerformanceTracking(
-    `file_${operationType}`,
-    fileOperation,
-    {
-      slowThreshold: 5000, // 5 seconds for file operations
-      metricName: 'file_operation_duration',
-      tags: {
-        operation: operationType,
-        file_name: fileName
-      }
-    }
-  )
+  return withPerformanceTracking(`file_${operationType}`, fileOperation, {
+    slowThreshold: 5000, // 5 seconds for file operations
+    metricName: 'file_operation_duration',
+    tags: {
+      operation: operationType,
+      file_name: fileName,
+    },
+  })
 }
 
 /**
@@ -265,18 +268,14 @@ export function withExternalApiPerformanceTracking<T>(
   endpoint: string,
   apiCall: () => Promise<T>
 ): Promise<T> {
-  return withPerformanceTracking(
-    `external_api_${apiName}`,
-    apiCall,
-    {
-      slowThreshold: 5000, // 5 seconds for external API calls
-      metricName: 'external_api_duration',
-      tags: {
-        api_name: apiName,
-        endpoint: endpoint
-      }
-    }
-  )
+  return withPerformanceTracking(`external_api_${apiName}`, apiCall, {
+    slowThreshold: 5000, // 5 seconds for external API calls
+    metricName: 'external_api_duration',
+    tags: {
+      api_name: apiName,
+      endpoint: endpoint,
+    },
+  })
 }
 
 /**
@@ -304,7 +303,7 @@ export function createPerformanceMiddleware(options?: {
     }
 
     const originalEnd = res.end
-    res.end = function(chunk?: any, encoding?: any) {
+    res.end = function (chunk?: any, encoding?: any) {
       const duration = Date.now() - startTime
       const statusCode = res.statusCode
 
@@ -312,11 +311,14 @@ export function createPerformanceMiddleware(options?: {
       monitoringService.recordMetric(`${metricPrefix}_response_time`, duration, 'ms', {
         endpoint,
         method: req.method || 'unknown',
-        status_code: statusCode.toString()
+        status_code: statusCode.toString(),
       })
 
       if (duration > slowThreshold && enableLogging) {
-        logger.warn('Performance', `Slow custom request: ${req.method} ${endpoint} took ${duration}ms`)
+        logger.warn(
+          'Performance',
+          `Slow custom request: ${req.method} ${endpoint} took ${duration}ms`
+        )
       }
 
       originalEnd.call(this, chunk, encoding)

@@ -15,9 +15,9 @@ jest.mock('@/lib/config', () => ({
   getConfig: () => ({
     payments: {
       stripeSecretKey: 'sk_test_mock_key',
-      stripeWebhookSecret: 'whsec_mock_secret'
-    }
-  })
+      stripeWebhookSecret: 'whsec_mock_secret',
+    },
+  }),
 }))
 
 // Mock logger
@@ -26,8 +26,8 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
-    debug: jest.fn()
-  }
+    debug: jest.fn(),
+  },
 }))
 
 describe('StripeService', () => {
@@ -36,37 +36,37 @@ describe('StripeService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Create mock Stripe instance
     mockStripe = {
       customers: {
         create: jest.fn(),
         retrieve: jest.fn(),
         update: jest.fn(),
-        list: jest.fn()
+        list: jest.fn(),
       },
       subscriptions: {
         create: jest.fn(),
         retrieve: jest.fn(),
         update: jest.fn(),
-        cancel: jest.fn()
+        cancel: jest.fn(),
       },
       paymentIntents: {
         create: jest.fn(),
-        confirm: jest.fn()
+        confirm: jest.fn(),
       },
       paymentMethods: {
         attach: jest.fn(),
         detach: jest.fn(),
-        list: jest.fn()
+        list: jest.fn(),
       },
       invoices: {
         retrieve: jest.fn(),
-        list: jest.fn()
+        list: jest.fn(),
       },
       webhooks: {
-        constructEvent: jest.fn()
-      }
+        constructEvent: jest.fn(),
+      },
     } as any
 
     MockedStripe.mockImplementation(() => mockStripe)
@@ -78,7 +78,7 @@ describe('StripeService', () => {
       const mockCustomer = {
         id: 'cus_test123',
         email: 'test@example.com',
-        name: 'Test User'
+        name: 'Test User',
       } as Stripe.Customer
 
       mockStripe.customers.create.mockResolvedValue(mockCustomer)
@@ -90,8 +90,8 @@ describe('StripeService', () => {
         email: 'test@example.com',
         name: 'Test User',
         metadata: {
-          source: 'business_scraper_app'
-        }
+          source: 'business_scraper_app',
+        },
       })
     })
 
@@ -105,7 +105,7 @@ describe('StripeService', () => {
     it('should retrieve a customer successfully', async () => {
       const mockCustomer = {
         id: 'cus_test123',
-        email: 'test@example.com'
+        email: 'test@example.com',
       } as Stripe.Customer
 
       mockStripe.customers.retrieve.mockResolvedValue(mockCustomer)
@@ -127,7 +127,7 @@ describe('StripeService', () => {
     it('should update a customer successfully', async () => {
       const mockCustomer = {
         id: 'cus_test123',
-        email: 'updated@example.com'
+        email: 'updated@example.com',
       } as Stripe.Customer
 
       mockStripe.customers.update.mockResolvedValue(mockCustomer)
@@ -135,7 +135,9 @@ describe('StripeService', () => {
       const result = await service.updateCustomer('cus_test123', { email: 'updated@example.com' })
 
       expect(result).toEqual(mockCustomer)
-      expect(mockStripe.customers.update).toHaveBeenCalledWith('cus_test123', { email: 'updated@example.com' })
+      expect(mockStripe.customers.update).toHaveBeenCalledWith('cus_test123', {
+        email: 'updated@example.com',
+      })
     })
   })
 
@@ -144,7 +146,7 @@ describe('StripeService', () => {
       const mockSubscription = {
         id: 'sub_test123',
         customer: 'cus_test123',
-        status: 'active'
+        status: 'active',
       } as Stripe.Subscription
 
       mockStripe.subscriptions.create.mockResolvedValue(mockSubscription)
@@ -160,20 +162,22 @@ describe('StripeService', () => {
         expand: ['latest_invoice.payment_intent'],
         trial_period_days: undefined,
         proration_behavior: 'create_prorations',
-        metadata: {}
+        metadata: {},
       })
     })
 
     it('should handle subscription creation failure', async () => {
       mockStripe.subscriptions.create.mockRejectedValue(new Error('Stripe error'))
 
-      await expect(service.createSubscription('cus_test123', 'price_test123')).rejects.toThrow(SubscriptionError)
+      await expect(service.createSubscription('cus_test123', 'price_test123')).rejects.toThrow(
+        SubscriptionError
+      )
     })
 
     it('should retrieve a subscription successfully', async () => {
       const mockSubscription = {
         id: 'sub_test123',
-        status: 'active'
+        status: 'active',
       } as Stripe.Subscription
 
       mockStripe.subscriptions.retrieve.mockResolvedValue(mockSubscription)
@@ -182,14 +186,14 @@ describe('StripeService', () => {
 
       expect(result).toEqual(mockSubscription)
       expect(mockStripe.subscriptions.retrieve).toHaveBeenCalledWith('sub_test123', {
-        expand: ['latest_invoice', 'customer', 'default_payment_method']
+        expand: ['latest_invoice', 'customer', 'default_payment_method'],
       })
     })
 
     it('should cancel a subscription successfully', async () => {
       const mockSubscription = {
         id: 'sub_test123',
-        cancel_at_period_end: true
+        cancel_at_period_end: true,
       } as Stripe.Subscription
 
       mockStripe.subscriptions.update.mockResolvedValue(mockSubscription)
@@ -198,7 +202,7 @@ describe('StripeService', () => {
 
       expect(result).toEqual(mockSubscription)
       expect(mockStripe.subscriptions.update).toHaveBeenCalledWith('sub_test123', {
-        cancel_at_period_end: true
+        cancel_at_period_end: true,
       })
     })
   })
@@ -208,7 +212,7 @@ describe('StripeService', () => {
       const mockPaymentIntent = {
         id: 'pi_test123',
         amount: 2000,
-        currency: 'usd'
+        currency: 'usd',
       } as Stripe.PaymentIntent
 
       mockStripe.paymentIntents.create.mockResolvedValue(mockPaymentIntent)
@@ -223,14 +227,14 @@ describe('StripeService', () => {
         automatic_payment_methods: { enabled: true },
         metadata: {},
         description: undefined,
-        setup_future_usage: undefined
+        setup_future_usage: undefined,
       })
     })
 
     it('should confirm a payment intent successfully', async () => {
       const mockPaymentIntent = {
         id: 'pi_test123',
-        status: 'succeeded'
+        status: 'succeeded',
       } as Stripe.PaymentIntent
 
       mockStripe.paymentIntents.confirm.mockResolvedValue(mockPaymentIntent)
@@ -239,7 +243,7 @@ describe('StripeService', () => {
 
       expect(result).toEqual(mockPaymentIntent)
       expect(mockStripe.paymentIntents.confirm).toHaveBeenCalledWith('pi_test123', {
-        payment_method: 'pm_test123'
+        payment_method: 'pm_test123',
       })
     })
   })
@@ -248,7 +252,7 @@ describe('StripeService', () => {
     it('should attach a payment method successfully', async () => {
       const mockPaymentMethod = {
         id: 'pm_test123',
-        customer: 'cus_test123'
+        customer: 'cus_test123',
       } as Stripe.PaymentMethod
 
       mockStripe.paymentMethods.attach.mockResolvedValue(mockPaymentMethod)
@@ -257,7 +261,7 @@ describe('StripeService', () => {
 
       expect(result).toEqual(mockPaymentMethod)
       expect(mockStripe.paymentMethods.attach).toHaveBeenCalledWith('pm_test123', {
-        customer: 'cus_test123'
+        customer: 'cus_test123',
       })
     })
 
@@ -265,8 +269,8 @@ describe('StripeService', () => {
       const mockPaymentMethods = {
         data: [
           { id: 'pm_test123', type: 'card' },
-          { id: 'pm_test456', type: 'card' }
-        ]
+          { id: 'pm_test456', type: 'card' },
+        ],
       } as Stripe.ApiList<Stripe.PaymentMethod>
 
       mockStripe.paymentMethods.list.mockResolvedValue(mockPaymentMethods)
@@ -276,7 +280,7 @@ describe('StripeService', () => {
       expect(result).toEqual(mockPaymentMethods.data)
       expect(mockStripe.paymentMethods.list).toHaveBeenCalledWith({
         customer: 'cus_test123',
-        type: 'card'
+        type: 'card',
       })
     })
   })
@@ -285,7 +289,7 @@ describe('StripeService', () => {
     it('should verify webhook signature successfully', () => {
       const mockEvent = {
         id: 'evt_test123',
-        type: 'customer.created'
+        type: 'customer.created',
       } as Stripe.Event
 
       mockStripe.webhooks.constructEvent.mockReturnValue(mockEvent)
@@ -312,7 +316,7 @@ describe('StripeService', () => {
   describe('Utility Methods', () => {
     it('should find customer by email successfully', async () => {
       const mockCustomers = {
-        data: [{ id: 'cus_test123', email: 'test@example.com' }]
+        data: [{ id: 'cus_test123', email: 'test@example.com' }],
       } as Stripe.ApiList<Stripe.Customer>
 
       mockStripe.customers.list.mockResolvedValue(mockCustomers)
@@ -322,7 +326,7 @@ describe('StripeService', () => {
       expect(result).toEqual(mockCustomers.data[0])
       expect(mockStripe.customers.list).toHaveBeenCalledWith({
         email: 'test@example.com',
-        limit: 1
+        limit: 1,
       })
     })
 

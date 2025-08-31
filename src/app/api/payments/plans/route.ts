@@ -23,10 +23,10 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Basic search filters',
       'CSV export',
       'Email support',
-      '30-day data retention'
+      '30-day data retention',
     ],
     isActive: true,
-    createdAt: new Date('2024-01-01')
+    createdAt: new Date('2024-01-01'),
   },
   {
     id: 'professional',
@@ -43,10 +43,10 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Priority email support',
       '90-day data retention',
       'API access',
-      'Custom industry categories'
+      'Custom industry categories',
     ],
     isActive: true,
-    createdAt: new Date('2024-01-01')
+    createdAt: new Date('2024-01-01'),
   },
   {
     id: 'enterprise',
@@ -65,10 +65,10 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Full API access',
       'Custom integrations',
       'Dedicated account manager',
-      'SLA guarantee'
+      'SLA guarantee',
     ],
     isActive: true,
-    createdAt: new Date('2024-01-01')
+    createdAt: new Date('2024-01-01'),
   },
   {
     id: 'starter-yearly',
@@ -84,10 +84,10 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'CSV export',
       'Email support',
       '30-day data retention',
-      '2 months free with annual billing'
+      '2 months free with annual billing',
     ],
     isActive: true,
-    createdAt: new Date('2024-01-01')
+    createdAt: new Date('2024-01-01'),
   },
   {
     id: 'professional-yearly',
@@ -105,10 +105,10 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       '90-day data retention',
       'API access',
       'Custom industry categories',
-      '2 months free with annual billing'
+      '2 months free with annual billing',
     ],
     isActive: true,
-    createdAt: new Date('2024-01-01')
+    createdAt: new Date('2024-01-01'),
   },
   {
     id: 'enterprise-yearly',
@@ -128,11 +128,11 @@ const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Custom integrations',
       'Dedicated account manager',
       'SLA guarantee',
-      '2 months free with annual billing'
+      '2 months free with annual billing',
     ],
     isActive: true,
-    createdAt: new Date('2024-01-01')
-  }
+    createdAt: new Date('2024-01-01'),
+  },
 ]
 
 /**
@@ -159,16 +159,16 @@ async function handleGetPlans(request: NextRequest): Promise<NextResponse> {
       success: true,
       plans: sortedPlans,
       count: sortedPlans.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to fetch subscription plans', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to fetch subscription plans',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -184,13 +184,13 @@ async function handleGetPlanById(planId: string): Promise<NextResponse> {
     logger.info('PaymentsAPI', 'Fetching subscription plan by ID', { planId })
 
     const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId && p.isActive)
-    
+
     if (!plan) {
       return NextResponse.json(
         {
           success: false,
           error: 'Plan not found',
-          message: `No active plan found with ID: ${planId}`
+          message: `No active plan found with ID: ${planId}`,
         },
         { status: 404 }
       )
@@ -199,16 +199,16 @@ async function handleGetPlanById(planId: string): Promise<NextResponse> {
     return NextResponse.json({
       success: true,
       plan,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to fetch subscription plan', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to fetch subscription plan',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -232,7 +232,7 @@ export const GET = withApiSecurity(
   {
     requireAuth: false,
     rateLimit: 'general',
-    logRequests: true
+    logRequests: true,
   }
 )
 

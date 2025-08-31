@@ -4,25 +4,27 @@
 
 ### **Current Docker Configuration Status: ✅ PRODUCTION READY**
 
-The business scraper application now features comprehensive Docker containerization with integrated security scanning capabilities.
+The business scraper application now features comprehensive Docker
+containerization with integrated security scanning capabilities.
 
 ---
 
 ## 📊 **DOCKER CONFIGURATION OVERVIEW**
 
-| Component | Status | Configuration | Issues |
-|-----------|--------|---------------|---------|
-| **Dockerfile.production** | ⚠️ BUILD ISSUES | Multi-stage production build | Next.js static generation conflicts |
-| **Dockerfile.simple** | ⚠️ BUILD ISSUES | Single-stage development build | Node.js `fs` module resolution |
-| **.dockerignore** | ✅ CONFIGURED | Optimized build context | None |
-| **Security Scanning** | ✅ CONFIGURED | Trivy + CI/CD integration | None |
-| **Container Security** | ✅ CONFIGURED | Non-root user, Alpine base | None |
+| Component                 | Status          | Configuration                  | Issues                              |
+| ------------------------- | --------------- | ------------------------------ | ----------------------------------- |
+| **Dockerfile.production** | ⚠️ BUILD ISSUES | Multi-stage production build   | Next.js static generation conflicts |
+| **Dockerfile.simple**     | ⚠️ BUILD ISSUES | Single-stage development build | Node.js `fs` module resolution      |
+| **.dockerignore**         | ✅ CONFIGURED   | Optimized build context        | None                                |
+| **Security Scanning**     | ✅ CONFIGURED   | Trivy + CI/CD integration      | None                                |
+| **Container Security**    | ✅ CONFIGURED   | Non-root user, Alpine base     | None                                |
 
 ---
 
 ## 🔧 **DOCKER BUILD CONFIGURATION**
 
 ### **1. ✅ Production Dockerfile (Dockerfile.production)**
+
 - **Multi-stage build** with deps, builder, and runner stages
 - **Alpine Linux base** for minimal attack surface
 - **Non-root user** (nextjs:nodejs) for security
@@ -31,20 +33,24 @@ The business scraper application now features comprehensive Docker containerizat
 - **Security hardening** with minimal system packages
 
 **Current Issues:**
+
 - Next.js static generation conflicts with dynamic API routes
 - Platform-specific dependency resolution (Windows → Linux)
 
 ### **2. ✅ Simple Dockerfile (Dockerfile.simple)**
+
 - **Single-stage build** for development and testing
 - **Chromium integration** for Puppeteer support
 - **Container-specific Next.js config** to avoid build conflicts
 - **Force npm install** to handle platform dependencies
 
 **Current Issues:**
+
 - Node.js `fs` module resolution in browser environment
 - ServiceWorkerRegistration component compatibility
 
 ### **3. ✅ Docker Ignore Configuration (.dockerignore)**
+
 - **Optimized build context** excluding unnecessary files
 - **Security-focused** exclusion of sensitive files (.env, secrets)
 - **Performance optimized** excluding node_modules, build artifacts
@@ -55,6 +61,7 @@ The business scraper application now features comprehensive Docker containerizat
 ## 🛡️ **CONTAINER SECURITY SCANNING**
 
 ### **1. ✅ Trivy Integration (CI/CD Pipeline)**
+
 ```yaml
 # Integrated in .github/workflows/ci-cd.yml
 - name: Run Trivy vulnerability scanner on Docker image
@@ -67,12 +74,14 @@ The business scraper application now features comprehensive Docker containerizat
 ```
 
 **Features:**
+
 - **Automated vulnerability scanning** on every build
 - **SARIF format output** for GitHub Security tab integration
 - **Multi-severity detection** (Critical, High, Medium)
 - **Continuous monitoring** with scheduled scans
 
 ### **2. ✅ Standalone Security Scan Workflow**
+
 - **Dedicated security workflow** (docker-security-scan.yml)
 - **Daily automated scans** at 2 AM UTC
 - **Docker Scout integration** for CVE detection
@@ -80,6 +89,7 @@ The business scraper application now features comprehensive Docker containerizat
 - **Security report generation** with detailed findings
 
 ### **3. ✅ Security Hardening Measures**
+
 - **Non-root user execution** (nextjs:nodejs, UID 1001)
 - **Minimal base image** (Alpine Linux)
 - **Read-only filesystem** where possible
@@ -93,6 +103,7 @@ The business scraper application now features comprehensive Docker containerizat
 ### **Production Deployment Options:**
 
 #### **Option 1: Fix Build Issues (Recommended)**
+
 1. **Resolve Next.js SSR conflicts**:
    - Add `typeof window !== 'undefined'` checks
    - Configure dynamic imports for client-side modules
@@ -104,11 +115,13 @@ The business scraper application now features comprehensive Docker containerizat
    - Add proper environment detection
 
 #### **Option 2: Runtime-Only Container**
+
 1. **Skip build step** in container
 2. **Use development server** with `npm run dev`
 3. **External build process** with volume mounting
 
 #### **Option 3: Simplified Configuration**
+
 1. **Disable static generation** completely
 2. **Use server-side rendering** only
 3. **Runtime environment configuration**
@@ -118,6 +131,7 @@ The business scraper application now features comprehensive Docker containerizat
 ## 📋 **DOCKER COMMANDS**
 
 ### **Build Commands:**
+
 ```bash
 # Production build (requires fixes)
 docker build -f Dockerfile.production -t business-scraper:prod .
@@ -130,6 +144,7 @@ docker build -f Dockerfile.simple -t business-scraper:security-scan .
 ```
 
 ### **Security Scanning:**
+
 ```bash
 # Manual Trivy scan
 trivy image business-scraper:security-scan
@@ -142,6 +157,7 @@ trivy fs .
 ```
 
 ### **Container Execution:**
+
 ```bash
 # Run container (when build works)
 docker run -p 3000:3000 business-scraper:dev
@@ -160,14 +176,16 @@ docker run -p 3000:3000 -v $(pwd):/app business-scraper:dev
 ### **Critical Issues:**
 
 1. **Next.js Static Generation Conflict**
-   - **Problem**: API routes requiring runtime data fail during static generation
+   - **Problem**: API routes requiring runtime data fail during static
+     generation
    - **Solution**: Add `export const dynamic = 'force-dynamic'` to API routes
    - **Files**: `src/app/api/audit/stats/route.ts` (already fixed)
 
 2. **Node.js Module Resolution**
    - **Problem**: `fs` module can't be resolved in browser environment
    - **Solution**: Configure webpack externals or use dynamic imports
-   - **Files**: `src/utils/logger.ts`, `src/components/ServiceWorkerRegistration.tsx`
+   - **Files**: `src/utils/logger.ts`,
+     `src/components/ServiceWorkerRegistration.tsx`
 
 3. **Platform-Specific Dependencies**
    - **Problem**: Windows-specific packages fail on Linux containers
@@ -187,6 +205,7 @@ docker run -p 3000:3000 -v $(pwd):/app business-scraper:dev
 ## 🎯 **SECURITY COMPLIANCE**
 
 ### **✅ Security Standards Met:**
+
 - **Container vulnerability scanning** with Trivy
 - **Base image security** with Alpine Linux
 - **Non-root execution** for runtime security
@@ -195,6 +214,7 @@ docker run -p 3000:3000 -v $(pwd):/app business-scraper:dev
 - **Automated security monitoring** in CI/CD pipeline
 
 ### **📊 Security Metrics:**
+
 - **0 known vulnerabilities** in base configuration
 - **Automated daily scans** for continuous monitoring
 - **SARIF integration** with GitHub Security tab
@@ -211,6 +231,8 @@ Docker configuration is **EXTENSIVELY CONFIGURED** with:
 - **✅ Security hardening** with non-root execution and minimal base images
 - **⚠️ Build issues requiring fixes** for complete deployment readiness
 
-**Estimated time to resolve build issues**: 2-4 hours for SSR compatibility fixes
+**Estimated time to resolve build issues**: 2-4 hours for SSR compatibility
+fixes
 
-The Docker security infrastructure is **production-ready** and provides enterprise-grade container security scanning and monitoring capabilities.
+The Docker security infrastructure is **production-ready** and provides
+enterprise-grade container security scanning and monitoring capabilities.

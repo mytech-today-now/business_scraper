@@ -124,13 +124,18 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
         overall: systemHealth.overall,
         services: systemHealth.services.length,
         activeAlerts: systemHealth.activeAlerts,
-        lastUpdated: systemHealth.lastUpdated
+        lastUpdated: systemHealth.lastUpdated,
       }
 
       // Record health check metric
-      await monitoringService.recordMetric('health_check_response_time', healthCheck.responseTime, 'ms', {
-        status: healthCheck.status
-      })
+      await monitoringService.recordMetric(
+        'health_check_response_time',
+        healthCheck.responseTime,
+        'ms',
+        {
+          status: healthCheck.status,
+        }
+      )
 
       // Determine overall status (combine existing checks with monitoring service)
       const checks = Object.values(healthCheck.checks)

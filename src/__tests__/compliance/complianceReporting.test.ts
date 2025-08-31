@@ -3,7 +3,11 @@
  * Comprehensive tests for compliance reporting features
  */
 
-import { complianceReportingService, ComplianceReportingService, ComplianceReportRequest } from '@/model/complianceReportingService'
+import {
+  complianceReportingService,
+  ComplianceReportingService,
+  ComplianceReportRequest,
+} from '@/model/complianceReportingService'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({
@@ -27,7 +31,7 @@ jest.mock('@/model/auditService', () => ({
       dataAccessEvents: [],
       paymentEvents: [],
       generatedAt: new Date(),
-      reportId: 'test_report_123'
+      reportId: 'test_report_123',
     }),
     getAuditLogs: jest.fn().mockResolvedValue({
       logs: [
@@ -37,7 +41,7 @@ jest.mock('@/model/auditService', () => ({
           category: 'data',
           severity: 'medium',
           complianceFlags: ['GDPR'],
-          timestamp: new Date()
+          timestamp: new Date(),
         },
         {
           id: 'log_2',
@@ -45,12 +49,12 @@ jest.mock('@/model/auditService', () => ({
           category: 'security',
           severity: 'critical',
           complianceFlags: ['SOC2'],
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       ],
-      total: 2
+      total: 2,
     }),
-    logAuditEvent: jest.fn().mockResolvedValue(undefined)
+    logAuditEvent: jest.fn().mockResolvedValue(undefined),
   },
 }))
 
@@ -58,8 +62,8 @@ jest.mock('@/model/gdprService', () => ({
   gdprService: {
     getUserRequests: jest.fn().mockResolvedValue({
       exportRequests: [{ id: 'export_1' }],
-      deletionRequests: [{ id: 'delete_1' }]
-    })
+      deletionRequests: [{ id: 'delete_1' }],
+    }),
   },
 }))
 
@@ -78,7 +82,7 @@ describe('ComplianceReportingService', () => {
       endDate: new Date('2024-01-31'),
       includeDetails: true,
       format: 'json',
-      requestedBy: 'admin_user'
+      requestedBy: 'admin_user',
     }
 
     it('should generate comprehensive compliance report', async () => {
@@ -97,7 +101,7 @@ describe('ComplianceReportingService', () => {
     it('should include previous period comparison when requested', async () => {
       const report = await testReportingService.generateComplianceReport({
         ...baseRequest,
-        includeDetails: true
+        includeDetails: true,
       })
 
       expect(report.previousPeriodComparison).toBeDefined()
@@ -106,7 +110,7 @@ describe('ComplianceReportingService', () => {
     it('should exclude previous period comparison when not requested', async () => {
       const report = await testReportingService.generateComplianceReport({
         ...baseRequest,
-        includeDetails: false
+        includeDetails: false,
       })
 
       expect(report.previousPeriodComparison).toBeUndefined()
@@ -114,7 +118,7 @@ describe('ComplianceReportingService', () => {
 
     it('should log audit event for report generation', async () => {
       const auditService = require('@/model/auditService')
-      
+
       await testReportingService.generateComplianceReport(baseRequest)
 
       expect(auditService.auditService.logAuditEvent).toHaveBeenCalledWith(
@@ -124,7 +128,7 @@ describe('ComplianceReportingService', () => {
           userId: 'admin_user',
           severity: 'medium',
           category: 'system',
-          complianceFlags: ['GDPR']
+          complianceFlags: ['GDPR'],
         })
       )
     })
@@ -135,7 +139,7 @@ describe('ComplianceReportingService', () => {
       for (const complianceType of complianceTypes) {
         const report = await testReportingService.generateComplianceReport({
           ...baseRequest,
-          complianceType
+          complianceType,
         })
 
         expect(report.complianceType).toBe(complianceType)
@@ -162,7 +166,11 @@ describe('ComplianceReportingService', () => {
       const endDate = new Date('2024-01-31')
       const requestedBy = 'admin_user'
 
-      const report = await testReportingService.generatePCIDSSReport(startDate, endDate, requestedBy)
+      const report = await testReportingService.generatePCIDSSReport(
+        startDate,
+        endDate,
+        requestedBy
+      )
 
       expect(report.complianceType).toBe('PCI_DSS')
     })
@@ -202,9 +210,9 @@ describe('ComplianceReportingService', () => {
 
     it('should filter reports by compliance type', async () => {
       const reports = await testReportingService.getComplianceReports({
-        complianceType: 'GDPR'
+        complianceType: 'GDPR',
       })
-      
+
       expect(reports.length).toBeGreaterThanOrEqual(1)
       expect(reports.every(r => r.complianceType === 'GDPR')).toBe(true)
     })
@@ -212,17 +220,17 @@ describe('ComplianceReportingService', () => {
     it('should filter reports by date range', async () => {
       const reports = await testReportingService.getComplianceReports({
         startDate: new Date('2024-01-01'),
-        endDate: new Date('2024-01-31')
+        endDate: new Date('2024-01-31'),
       })
-      
+
       expect(reports.length).toBeGreaterThanOrEqual(1)
     })
 
     it('should sort reports by generation date (newest first)', async () => {
       const reports = await testReportingService.getComplianceReports()
-      
+
       for (let i = 1; i < reports.length; i++) {
-        expect(reports[i-1].generatedAt.getTime()).toBeGreaterThanOrEqual(
+        expect(reports[i - 1].generatedAt.getTime()).toBeGreaterThanOrEqual(
           reports[i].generatedAt.getTime()
         )
       }
@@ -232,7 +240,7 @@ describe('ComplianceReportingService', () => {
   describe('calculateComplianceMetrics', () => {
     it('should calculate metrics correctly', async () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = await (testService as any).calculateComplianceMetrics(
         new Date('2024-01-01'),
         new Date('2024-01-31'),
@@ -252,7 +260,7 @@ describe('ComplianceReportingService', () => {
   describe('performRiskAssessment', () => {
     it('should assess low risk for no incidents', async () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = {
         totalEvents: 10,
         securityIncidents: 0,
@@ -260,14 +268,10 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 0,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
-      const riskAssessment = await (testService as any).performRiskAssessment(
-        [],
-        metrics,
-        'GDPR'
-      )
+      const riskAssessment = await (testService as any).performRiskAssessment([], metrics, 'GDPR')
 
       expect(riskAssessment.overallRisk).toBe('low')
       expect(riskAssessment.riskFactors).toHaveLength(0)
@@ -275,7 +279,7 @@ describe('ComplianceReportingService', () => {
 
     it('should assess high risk for security incidents', async () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = {
         totalEvents: 10,
         securityIncidents: 3,
@@ -283,14 +287,10 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 0,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
-      const riskAssessment = await (testService as any).performRiskAssessment(
-        [],
-        metrics,
-        'GDPR'
-      )
+      const riskAssessment = await (testService as any).performRiskAssessment([], metrics, 'GDPR')
 
       expect(riskAssessment.overallRisk).toBe('high')
       expect(riskAssessment.riskFactors.length).toBeGreaterThan(0)
@@ -299,7 +299,7 @@ describe('ComplianceReportingService', () => {
 
     it('should assess critical risk for data breaches', async () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = {
         totalEvents: 10,
         securityIncidents: 1,
@@ -307,14 +307,10 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 1,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
-      const riskAssessment = await (testService as any).performRiskAssessment(
-        [],
-        metrics,
-        'GDPR'
-      )
+      const riskAssessment = await (testService as any).performRiskAssessment([], metrics, 'GDPR')
 
       expect(riskAssessment.overallRisk).toBe('critical')
       expect(riskAssessment.riskFactors.some(f => f.category === 'Data Protection')).toBe(true)
@@ -324,7 +320,7 @@ describe('ComplianceReportingService', () => {
   describe('generateRecommendations', () => {
     it('should generate recommendations based on risk assessment', async () => {
       const testService = new ComplianceReportingService()
-      
+
       const riskAssessment = {
         overallRisk: 'critical' as const,
         riskFactors: [
@@ -333,10 +329,10 @@ describe('ComplianceReportingService', () => {
             description: 'Multiple security incidents',
             severity: 'critical' as const,
             impact: 'High',
-            likelihood: 'Medium'
-          }
+            likelihood: 'Medium',
+          },
         ],
-        mitigationStrategies: []
+        mitigationStrategies: [],
       }
 
       const metrics = {
@@ -346,7 +342,7 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 0,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
       const recommendations = await (testService as any).generateRecommendations(
@@ -361,11 +357,11 @@ describe('ComplianceReportingService', () => {
 
     it('should generate GDPR-specific recommendations', async () => {
       const testService = new ComplianceReportingService()
-      
+
       const riskAssessment = {
         overallRisk: 'medium' as const,
         riskFactors: [],
-        mitigationStrategies: []
+        mitigationStrategies: [],
       }
 
       const metrics = {
@@ -375,7 +371,7 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 15, // High user rights requests
         dataBreaches: 0,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
       const recommendations = await (testService as any).generateRecommendations(
@@ -392,7 +388,7 @@ describe('ComplianceReportingService', () => {
   describe('calculateComplianceScore', () => {
     it('should calculate perfect score for no incidents', () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = {
         totalEvents: 10,
         securityIncidents: 0,
@@ -400,13 +396,13 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 0,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
       const riskAssessment = {
         overallRisk: 'low' as const,
         riskFactors: [],
-        mitigationStrategies: []
+        mitigationStrategies: [],
       }
 
       const score = (testService as any).calculateComplianceScore(metrics, riskAssessment)
@@ -415,7 +411,7 @@ describe('ComplianceReportingService', () => {
 
     it('should deduct points for security incidents', () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = {
         totalEvents: 10,
         securityIncidents: 2,
@@ -423,13 +419,13 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 0,
-        complianceViolations: 0
+        complianceViolations: 0,
       }
 
       const riskAssessment = {
         overallRisk: 'medium' as const,
         riskFactors: [],
-        mitigationStrategies: []
+        mitigationStrategies: [],
       }
 
       const score = (testService as any).calculateComplianceScore(metrics, riskAssessment)
@@ -438,7 +434,7 @@ describe('ComplianceReportingService', () => {
 
     it('should ensure score never goes below 0', () => {
       const testService = new ComplianceReportingService()
-      
+
       const metrics = {
         totalEvents: 10,
         securityIncidents: 20,
@@ -446,13 +442,13 @@ describe('ComplianceReportingService', () => {
         paymentEvents: 2,
         userRightsRequests: 1,
         dataBreaches: 10,
-        complianceViolations: 5
+        complianceViolations: 5,
       }
 
       const riskAssessment = {
         overallRisk: 'critical' as const,
         riskFactors: [],
-        mitigationStrategies: []
+        mitigationStrategies: [],
       }
 
       const score = (testService as any).calculateComplianceScore(metrics, riskAssessment)
@@ -463,7 +459,9 @@ describe('ComplianceReportingService', () => {
   describe('error handling', () => {
     it('should handle audit service errors gracefully', async () => {
       const auditService = require('@/model/auditService')
-      auditService.auditService.generateComplianceReport.mockRejectedValueOnce(new Error('Audit error'))
+      auditService.auditService.generateComplianceReport.mockRejectedValueOnce(
+        new Error('Audit error')
+      )
 
       const request: ComplianceReportRequest = {
         complianceType: 'GDPR',
@@ -471,12 +469,12 @@ describe('ComplianceReportingService', () => {
         endDate: new Date('2024-01-31'),
         includeDetails: true,
         format: 'json',
-        requestedBy: 'admin_user'
+        requestedBy: 'admin_user',
       }
 
-      await expect(
-        testReportingService.generateComplianceReport(request)
-      ).rejects.toThrow('Audit error')
+      await expect(testReportingService.generateComplianceReport(request)).rejects.toThrow(
+        'Audit error'
+      )
     })
 
     it('should handle previous period comparison errors gracefully', async () => {
@@ -489,11 +487,11 @@ describe('ComplianceReportingService', () => {
         endDate: new Date('2024-01-31'),
         includeDetails: true,
         format: 'json',
-        requestedBy: 'admin_user'
+        requestedBy: 'admin_user',
       }
 
       const report = await testReportingService.generateComplianceReport(request)
-      
+
       // Should still generate report without previous period comparison
       expect(report).toBeDefined()
       expect(report.previousPeriodComparison).toBeUndefined()

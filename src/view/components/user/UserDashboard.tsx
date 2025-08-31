@@ -17,10 +17,7 @@ interface UserDashboardProps {
   onUpdateUser: (user: User) => void
 }
 
-export const UserDashboard: React.FC<UserDashboardProps> = ({
-  user,
-  onUpdateUser
-}) => {
+export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onUpdateUser }) => {
   const [subscription, setSubscription] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -51,12 +48,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       const updatedUser = {
         ...user,
         subscriptionStatus: 'canceled' as const,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
-      
+
       onUpdateUser(updatedUser)
       await loadUserData()
-      
+
       logger.info('UserDashboard', `Subscription canceled for user: ${user.id}`)
     } catch (error) {
       logger.error('UserDashboard', 'Failed to cancel subscription', error)
@@ -68,13 +65,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   const getSubscriptionStatusBadge = (status: string) => {
     const statusMap = {
-      'free': { variant: 'secondary' as const, label: 'Free' },
-      'active': { variant: 'success' as const, label: 'Active' },
-      'past_due': { variant: 'warning' as const, label: 'Past Due' },
-      'canceled': { variant: 'secondary' as const, label: 'Canceled' },
-      'incomplete': { variant: 'warning' as const, label: 'Incomplete' }
+      free: { variant: 'secondary' as const, label: 'Free' },
+      active: { variant: 'success' as const, label: 'Active' },
+      past_due: { variant: 'warning' as const, label: 'Past Due' },
+      canceled: { variant: 'secondary' as const, label: 'Canceled' },
+      incomplete: { variant: 'warning' as const, label: 'Incomplete' },
     }
-    
+
     const config = statusMap[status as keyof typeof statusMap] || statusMap.free
     return <Badge variant={config.variant}>{config.label}</Badge>
   }
@@ -201,7 +198,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     <p>{user.billingAddress.line1}</p>
                     {user.billingAddress.line2 && <p>{user.billingAddress.line2}</p>}
                     <p>
-                      {user.billingAddress.city}, {user.billingAddress.state} {user.billingAddress.postalCode}
+                      {user.billingAddress.city}, {user.billingAddress.state}{' '}
+                      {user.billingAddress.postalCode}
                     </p>
                     <p>{user.billingAddress.country}</p>
                   </div>
@@ -231,17 +229,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 </div>
               )}
               <div className="flex flex-wrap gap-4">
-                <Button variant="outline">
-                  Change Plan
-                </Button>
-                <Button variant="outline">
-                  Update Payment Method
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={handleCancelSubscription}
-                  disabled={loading}
-                >
+                <Button variant="outline">Change Plan</Button>
+                <Button variant="outline">Update Payment Method</Button>
+                <Button variant="destructive" onClick={handleCancelSubscription} disabled={loading}>
                   {loading ? 'Canceling...' : 'Cancel Subscription'}
                 </Button>
               </div>

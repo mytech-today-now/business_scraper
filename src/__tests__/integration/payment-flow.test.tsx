@@ -3,6 +3,7 @@
  * End-to-end payment flow tests with Stripe integration and error handling
  */
 
+import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PaymentForm } from '@/view/components/payments/PaymentForm'
@@ -15,18 +16,18 @@ jest.mock('@stripe/react-stripe-js', () => ({
   PaymentElement: () => <div data-testid="payment-element" />,
   useStripe: () => ({
     confirmPayment: jest.fn().mockResolvedValue({
-      paymentIntent: { status: 'succeeded', id: 'pi_123' }
+      paymentIntent: { status: 'succeeded', id: 'pi_123' },
     }),
     createPaymentMethod: jest.fn().mockResolvedValue({
-      paymentMethod: { id: 'pm_123' }
-    })
+      paymentMethod: { id: 'pm_123' },
+    }),
   }),
   useElements: () => ({
     submit: jest.fn().mockResolvedValue({ error: null }),
     getElement: jest.fn().mockReturnValue({
-      getValue: jest.fn().mockReturnValue({ complete: true })
-    })
-  })
+      getValue: jest.fn().mockReturnValue({ complete: true }),
+    }),
+  }),
 }))
 
 // Mock payment controller
@@ -39,7 +40,7 @@ jest.mock('@/view/components/payments/PaymentForm', () => ({
       <div data-testid="payment-description">{description}</div>
       <div data-testid="payment-amount">${(amount / 100).toFixed(2)}</div>
       <div data-testid="payment-element" />
-      <button 
+      <button
         data-testid="submit-payment"
         onClick={async () => {
           try {
@@ -54,20 +55,18 @@ jest.mock('@/view/components/payments/PaymentForm', () => ({
         Pay ${(amount / 100).toFixed(2)}
       </button>
     </div>
-  )
+  ),
 }))
 
 jest.mock('@/view/components/payments/StripeProvider', () => ({
-  StripeProvider: ({ children }: any) => (
-    <div data-testid="stripe-provider">{children}</div>
-  )
+  StripeProvider: ({ children }: any) => <div data-testid="stripe-provider">{children}</div>,
 }))
 
 describe('Payment Flow Integration', () => {
   const defaultProps = {
     amount: 999,
     currency: 'usd',
-    description: 'Test payment'
+    description: 'Test payment',
   }
 
   beforeEach(() => {
@@ -82,11 +81,7 @@ describe('Payment Flow Integration', () => {
 
       render(
         <StripeProvider>
-          <PaymentForm
-            {...defaultProps}
-            onSuccess={onSuccess}
-            onError={onError}
-          />
+          <PaymentForm {...defaultProps} onSuccess={onSuccess} onError={onError} />
         </StripeProvider>
       )
 
@@ -105,7 +100,7 @@ describe('Payment Flow Integration', () => {
       await waitFor(() => {
         expect(onSuccess).toHaveBeenCalledWith({
           status: 'succeeded',
-          id: 'pi_123'
+          id: 'pi_123',
         })
       })
 
@@ -115,10 +110,10 @@ describe('Payment Flow Integration', () => {
     it('should handle subscription creation flow', async () => {
       const user = userEvent.setup()
       const mockPaymentController = paymentController as jest.Mocked<typeof paymentController>
-      
+
       mockPaymentController.createSubscription = jest.fn().mockResolvedValue({
         id: 'sub_123',
-        status: 'active'
+        status: 'active',
       })
 
       const onSuccess = jest.fn()
@@ -147,12 +142,12 @@ describe('Payment Flow Integration', () => {
   describe('payment error handling', () => {
     it('should handle payment errors gracefully', async () => {
       const user = userEvent.setup()
-      
+
       // Mock payment failure
       jest.mocked(require('@stripe/react-stripe-js').useStripe).mockReturnValue({
         confirmPayment: jest.fn().mockResolvedValue({
-          error: { message: 'Your card was declined.' }
-        })
+          error: { message: 'Your card was declined.' },
+        }),
       })
 
       const onSuccess = jest.fn()
@@ -162,10 +157,7 @@ describe('Payment Flow Integration', () => {
       const ErrorPaymentForm = ({ onError }: any) => (
         <div data-testid="payment-form">
           <div data-testid="payment-element" />
-          <button 
-            data-testid="submit-payment"
-            onClick={() => onError('Your card was declined.')}
-          >
+          <button data-testid="submit-payment" onClick={() => onError('Your card was declined.')}>
             Pay $9.99
           </button>
           <div data-testid="error-message" style={{ display: 'none' }}>
@@ -192,10 +184,10 @@ describe('Payment Flow Integration', () => {
 
     it('should handle network errors', async () => {
       const user = userEvent.setup()
-      
+
       // Mock network error
       jest.mocked(require('@stripe/react-stripe-js').useStripe).mockReturnValue({
-        confirmPayment: jest.fn().mockRejectedValue(new Error('Network error'))
+        confirmPayment: jest.fn().mockRejectedValue(new Error('Network error')),
       })
 
       const onSuccess = jest.fn()
@@ -204,10 +196,7 @@ describe('Payment Flow Integration', () => {
       const NetworkErrorForm = ({ onError }: any) => (
         <div data-testid="payment-form">
           <div data-testid="payment-element" />
-          <button 
-            data-testid="submit-payment"
-            onClick={() => onError('Network error occurred')}
-          >
+          <button data-testid="submit-payment" onClick={() => onError('Network error occurred')}>
             Pay $9.99
           </button>
         </div>
@@ -235,7 +224,7 @@ describe('Payment Flow Integration', () => {
       const InsufficientFundsForm = ({ onError }: any) => (
         <div data-testid="payment-form">
           <div data-testid="payment-element" />
-          <button 
+          <button
             data-testid="submit-payment"
             onClick={() => onError('Your card has insufficient funds.')}
           >
@@ -268,7 +257,7 @@ describe('Payment Flow Integration', () => {
       const ValidationForm = ({ onError }: any) => (
         <div data-testid="payment-form">
           <div data-testid="payment-element" />
-          <button 
+          <button
             data-testid="submit-payment"
             onClick={() => {
               // Simulate validation failure
@@ -302,7 +291,7 @@ describe('Payment Flow Integration', () => {
       const InvalidCardForm = ({ onError }: any) => (
         <div data-testid="payment-form">
           <div data-testid="payment-element" />
-          <button 
+          <button
             data-testid="submit-payment"
             onClick={() => onError('Your card number is invalid.')}
           >
@@ -338,7 +327,7 @@ describe('Payment Flow Integration', () => {
         return (
           <div data-testid="payment-form">
             <div data-testid="payment-element" />
-            <button 
+            <button
               data-testid="submit-payment"
               disabled={isLoading}
               onClick={async () => {
@@ -380,7 +369,7 @@ describe('Payment Flow Integration', () => {
       const TimeoutForm = ({ onError }: any) => (
         <div data-testid="payment-form">
           <div data-testid="payment-element" />
-          <button 
+          <button
             data-testid="submit-payment"
             onClick={() => {
               setTimeout(() => {
@@ -412,11 +401,11 @@ describe('Payment Flow Integration', () => {
     it('should handle subscription upgrade flow', async () => {
       const user = userEvent.setup()
       const mockPaymentController = paymentController as jest.Mocked<typeof paymentController>
-      
+
       mockPaymentController.createSubscription = jest.fn().mockResolvedValue({
         id: 'sub_456',
         status: 'active',
-        planId: 'plan_pro'
+        planId: 'plan_pro',
       })
 
       const onSuccess = jest.fn()
@@ -444,12 +433,12 @@ describe('Payment Flow Integration', () => {
 
     it('should handle subscription cancellation', async () => {
       const mockPaymentController = paymentController as jest.Mocked<typeof paymentController>
-      
+
       mockPaymentController.cancelSubscription = jest.fn().mockResolvedValue(undefined)
 
       const CancelForm = () => (
         <div data-testid="cancel-form">
-          <button 
+          <button
             data-testid="cancel-subscription"
             onClick={async () => {
               await mockPaymentController.cancelSubscription()

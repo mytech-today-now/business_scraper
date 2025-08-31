@@ -39,7 +39,7 @@ describe('AuditService', () => {
         ipAddress: '192.168.1.1',
         severity: 'high' as const,
         category: 'security' as const,
-        complianceFlags: ['SOC2', 'GDPR']
+        complianceFlags: ['SOC2', 'GDPR'],
       }
 
       await testAuditService.logAuditEvent(action, resource, options)
@@ -47,7 +47,7 @@ describe('AuditService', () => {
       // Verify audit log was created
       const logs = await testAuditService.getAuditLogs({})
       expect(logs.logs).toHaveLength(1)
-      
+
       const log = logs.logs[0]
       expect(log.action).toBe(action)
       expect(log.resource).toBe(resource)
@@ -62,7 +62,7 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({})
       const log = logs.logs[0]
-      
+
       expect(log.severity).toBe('medium')
       expect(log.category).toBe('system')
       expect(log.complianceFlags).toEqual([])
@@ -82,10 +82,10 @@ describe('AuditService', () => {
     it('should log payment event with sanitized data', async () => {
       const paymentData = {
         id: 'payment_123',
-        amount: 100.00,
+        amount: 100.0,
         card_number: '4111111111111111',
         cvv: '123',
-        customer_id: 'cust_456'
+        customer_id: 'cust_456',
       }
 
       await testAuditService.logPaymentEvent(
@@ -97,16 +97,16 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({ category: 'payment' })
       expect(logs.logs).toHaveLength(1)
-      
+
       const log = logs.logs[0]
       expect(log.category).toBe('payment')
       expect(log.severity).toBe('high')
       expect(log.complianceFlags).toContain('PCI_DSS')
-      
+
       // Verify sensitive data is sanitized
       expect(log.newValues?.card_number).toBe('****-****-****-1111')
       expect(log.newValues?.cvv).toBe('[REDACTED]')
-      expect(log.newValues?.amount).toBe(100.00) // Non-sensitive data preserved
+      expect(log.newValues?.amount).toBe(100.0) // Non-sensitive data preserved
     })
   })
 
@@ -121,7 +121,7 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({ category: 'data' })
       expect(logs.logs).toHaveLength(1)
-      
+
       const log = logs.logs[0]
       expect(log.action).toBe('data_access')
       expect(log.resource).toBe('user_data')
@@ -135,7 +135,7 @@ describe('AuditService', () => {
       const details = {
         threat_type: 'brute_force',
         attempts: 5,
-        blocked: true
+        blocked: true,
       }
 
       await testAuditService.logSecurityEvent(
@@ -147,7 +147,7 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({ category: 'security' })
       expect(logs.logs).toHaveLength(1)
-      
+
       const log = logs.logs[0]
       expect(log.severity).toBe('critical')
       expect(log.category).toBe('security')
@@ -161,17 +161,17 @@ describe('AuditService', () => {
       await testAuditService.logAuditEvent('action1', 'resource1', {
         userId: 'user1',
         category: 'security',
-        severity: 'high'
+        severity: 'high',
       })
       await testAuditService.logAuditEvent('action2', 'resource2', {
         userId: 'user2',
         category: 'data',
-        severity: 'medium'
+        severity: 'medium',
       })
       await testAuditService.logAuditEvent('action3', 'resource3', {
         userId: 'user1',
         category: 'payment',
-        severity: 'critical'
+        severity: 'critical',
       })
     })
 
@@ -211,27 +211,23 @@ describe('AuditService', () => {
       // Create test audit data
       const startDate = new Date('2024-01-01')
       const endDate = new Date('2024-01-31')
-      
+
       await testAuditService.logAuditEvent('security_incident', 'security', {
         severity: 'critical',
         category: 'security',
-        complianceFlags: ['SOC2']
+        complianceFlags: ['SOC2'],
       })
-      
+
       await testAuditService.logPaymentEvent('payment_processed', { id: 'pay_123' })
-      
+
       await testAuditService.logDataAccess('user_123', 'profile', 'admin')
     })
 
     it('should generate GDPR compliance report', async () => {
       const startDate = new Date('2024-01-01')
       const endDate = new Date('2024-01-31')
-      
-      const report = await testAuditService.generateComplianceReport(
-        startDate,
-        endDate,
-        'GDPR'
-      )
+
+      const report = await testAuditService.generateComplianceReport(startDate, endDate, 'GDPR')
 
       expect(report.complianceType).toBe('GDPR')
       expect(report.period.startDate).toEqual(startDate)
@@ -243,12 +239,8 @@ describe('AuditService', () => {
     it('should include relevant events in compliance report', async () => {
       const startDate = new Date('2024-01-01')
       const endDate = new Date('2024-01-31')
-      
-      const report = await testAuditService.generateComplianceReport(
-        startDate,
-        endDate,
-        'SOC2'
-      )
+
+      const report = await testAuditService.generateComplianceReport(startDate, endDate, 'SOC2')
 
       expect(report.securityIncidents).toBeDefined()
       expect(report.dataAccessEvents).toBeDefined()
@@ -260,7 +252,7 @@ describe('AuditService', () => {
     it('should manage data retention according to policy', async () => {
       // Create old audit logs (simulate 8 years old)
       const oldDate = new Date(Date.now() - 8 * 365 * 24 * 60 * 60 * 1000)
-      
+
       // This would normally create logs with old timestamps
       // For testing, we'll verify the method executes without error
       await expect(testAuditService.manageDataRetention()).resolves.not.toThrow()
@@ -275,8 +267,8 @@ describe('AuditService', () => {
         cvv: '123',
         ssn: '123-45-6789',
         bank_account: '123456789',
-        amount: 100.00,
-        customer_id: 'cust_123'
+        amount: 100.0,
+        customer_id: 'cust_123',
       }
 
       // Access private method for testing
@@ -286,7 +278,7 @@ describe('AuditService', () => {
       expect(sanitized.cvv).toBe('[REDACTED]')
       expect(sanitized.ssn).toBe('[REDACTED]')
       expect(sanitized.bank_account).toBe('[REDACTED]')
-      expect(sanitized.amount).toBe(100.00) // Non-sensitive preserved
+      expect(sanitized.amount).toBe(100.0) // Non-sensitive preserved
       expect(sanitized.customer_id).toBe('cust_123') // Non-sensitive preserved
     })
   })
@@ -318,7 +310,7 @@ describe('AuditService', () => {
     it('should process PCI DSS compliance flags', async () => {
       await testAuditService.logAuditEvent('payment_test', 'payment', {
         category: 'payment',
-        complianceFlags: ['PCI_DSS']
+        complianceFlags: ['PCI_DSS'],
       })
 
       const logs = await testAuditService.getAuditLogs({ complianceFlags: ['PCI_DSS'] })
@@ -329,7 +321,7 @@ describe('AuditService', () => {
     it('should process GDPR compliance flags', async () => {
       await testAuditService.logAuditEvent('data_test', 'user_data', {
         category: 'data',
-        complianceFlags: ['GDPR']
+        complianceFlags: ['GDPR'],
       })
 
       const logs = await testAuditService.getAuditLogs({ complianceFlags: ['GDPR'] })
@@ -340,7 +332,7 @@ describe('AuditService', () => {
     it('should process SOC2 compliance flags', async () => {
       await testAuditService.logAuditEvent('security_test', 'security', {
         category: 'security',
-        complianceFlags: ['SOC2']
+        complianceFlags: ['SOC2'],
       })
 
       const logs = await testAuditService.getAuditLogs({ complianceFlags: ['SOC2'] })

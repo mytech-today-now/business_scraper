@@ -34,7 +34,7 @@ const nextConfig = {
 
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Don't resolve 'fs', 'net', 'tls' modules on the client-side
+      // Don't resolve Node.js modules on the client-side
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
@@ -49,6 +49,25 @@ const nextConfig = {
         assert: false,
         os: false,
         path: false,
+        dns: false,
+        child_process: false,
+        worker_threads: false,
+        perf_hooks: false,
+        inspector: false,
+        async_hooks: false,
+        cluster: false,
+        dgram: false,
+        module: false,
+        readline: false,
+        repl: false,
+        v8: false,
+        vm: false,
+        constants: false,
+        events: false,
+        util: false,
+        querystring: false,
+        punycode: false,
+        buffer: false,
       }
     }
     return config
@@ -86,7 +105,7 @@ const nextConfig = {
           },
           {
             key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
+            value: 'credentialless',
           },
           {
             key: 'Cross-Origin-Opener-Policy',
@@ -103,35 +122,35 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: 'https://api.stripe.com'
+            value: 'https://api.stripe.com',
           },
           {
             key: 'Access-Control-Allow-Methods',
-            value: 'POST'
+            value: 'POST',
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'stripe-signature, content-type'
-          }
-        ]
+            value: 'stripe-signature, content-type',
+          },
+        ],
       },
       {
         source: '/api/payments/:path*',
         headers: [
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff'
+            value: 'nosniff',
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
+            value: 'DENY',
           },
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          }
-        ]
-      }
+            value: '1; mode=block',
+          },
+        ],
+      },
     ]
   },
 
@@ -146,17 +165,12 @@ const nextConfig = {
 
   // Experimental features for better build performance
   experimental: {
-    // Disable static generation for API routes that require runtime data
-    isrMemoryCacheSize: 0,
+    // Modern experimental features
+    optimizePackageImports: ['lucide-react'],
   },
 
   // Configure static export behavior
   trailingSlash: false,
-
-  // Skip static generation for dynamic API routes
-  async generateStaticParams() {
-    return []
-  },
 
   // Temporarily disable TypeScript checking during build
   typescript: {

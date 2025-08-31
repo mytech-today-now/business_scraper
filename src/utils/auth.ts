@@ -46,7 +46,7 @@ export async function authenticateUser(request: NextRequest): Promise<Authentica
 
     // Validate session using existing security system
     const session = getSession(sessionId)
-    
+
     if (!session || !session.isValid) {
       logger.warn('Auth', `Invalid session: ${sessionId} from IP: ${ip}`)
       return null
@@ -61,7 +61,7 @@ export async function authenticateUser(request: NextRequest): Promise<Authentica
       sessionId: session.id,
       isAuthenticated: true,
       permissions: ['read', 'write', 'admin'],
-      roles: ['admin']
+      roles: ['admin'],
     }
 
     logger.debug('Auth', `User authenticated: ${user.id} from IP: ${ip}`)
@@ -79,25 +79,25 @@ export async function authenticateUser(request: NextRequest): Promise<Authentica
 export async function authenticateUserWithResult(request: NextRequest): Promise<AuthResult> {
   try {
     const user = await authenticateUser(request)
-    
+
     if (!user) {
       return {
         success: false,
         error: 'Authentication failed',
-        code: 'AUTH_FAILED'
+        code: 'AUTH_FAILED',
       }
     }
 
     return {
       success: true,
-      user
+      user,
     }
   } catch (error) {
     logger.error('Auth', 'Authentication error', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown authentication error',
-      code: 'AUTH_ERROR'
+      code: 'AUTH_ERROR',
     }
   }
 }
@@ -108,7 +108,7 @@ export async function authenticateUserWithResult(request: NextRequest): Promise<
  */
 export async function requireAuthentication(request: NextRequest): Promise<AuthenticatedUser> {
   const user = await authenticateUser(request)
-  
+
   if (!user) {
     const ip = getClientIP(request)
     logger.warn('Auth', `Authentication required but not provided from IP: ${ip}`)
@@ -179,7 +179,7 @@ export async function isAuthenticated(request: NextRequest): Promise<boolean> {
 export function getSessionInfo(request: NextRequest): { sessionId: string | null; ip: string } {
   const sessionId = request.cookies.get('session-id')?.value || null
   const ip = getClientIP(request)
-  
+
   return { sessionId, ip }
 }
 
@@ -193,7 +193,11 @@ export function logAuthEvent(
   ip?: string,
   details?: Record<string, any>
 ): void {
-  logger.info('AuthEvent', `${event.toUpperCase()}: ${userId || 'unknown'} from ${ip || 'unknown'}`, details)
+  logger.info(
+    'AuthEvent',
+    `${event.toUpperCase()}: ${userId || 'unknown'} from ${ip || 'unknown'}`,
+    details
+  )
 }
 
 /**
@@ -215,7 +219,7 @@ export function createAuthErrorResponse(message: string, code: string = 'AUTH_FA
     error: message,
     code,
     timestamp: new Date().toISOString(),
-    authenticated: false
+    authenticated: false,
   }
 }
 
@@ -223,7 +227,10 @@ export function createAuthErrorResponse(message: string, code: string = 'AUTH_FA
  * Create authentication success response data
  * Standardized success response for authentication
  */
-export function createAuthSuccessResponse(user: AuthenticatedUser, message: string = 'Authentication successful') {
+export function createAuthSuccessResponse(
+  user: AuthenticatedUser,
+  message: string = 'Authentication successful'
+) {
   return {
     message,
     user: {
@@ -231,9 +238,9 @@ export function createAuthSuccessResponse(user: AuthenticatedUser, message: stri
       email: user.email,
       name: user.name,
       permissions: user.permissions,
-      roles: user.roles
+      roles: user.roles,
     },
     timestamp: new Date().toISOString(),
-    authenticated: true
+    authenticated: true,
   }
 }

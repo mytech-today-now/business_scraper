@@ -29,25 +29,26 @@ export interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
  * Progress bar component for displaying progress and usage indicators
  */
 export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
-  ({ 
-    className,
-    value,
-    max = 100,
-    variant = 'default',
-    size = 'md',
-    showLabel = false,
-    label,
-    animated = false,
-    striped = false,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      value,
+      max = 100,
+      variant = 'default',
+      size = 'md',
+      showLabel = false,
+      label,
+      animated = false,
+      striped = false,
+      ...props
+    },
+    ref
+  ) => {
     // Ensure value is within bounds
     const normalizedValue = Math.max(0, Math.min(value, max))
     const percentage = (normalizedValue / max) * 100
 
-    const baseClasses = [
-      'relative overflow-hidden rounded-full bg-secondary',
-    ]
+    const baseClasses = ['relative overflow-hidden rounded-full bg-secondary']
 
     const sizeClasses = {
       sm: 'h-1',
@@ -63,16 +64,16 @@ export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
       info: 'bg-blue-500',
     }
 
-    const stripedClasses = striped ? 'bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:1rem_1rem]' : ''
+    const stripedClasses = striped
+      ? 'bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:1rem_1rem]'
+      : ''
     const animatedClasses = animated ? 'animate-pulse' : ''
 
     return (
       <div className="w-full">
         {showLabel && (
           <div className="flex justify-between items-center mb-1">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {label}
-            </span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               {Math.round(percentage)}%
             </span>
@@ -80,11 +81,7 @@ export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
         )}
         <div
           ref={ref}
-          className={clsx(
-            baseClasses,
-            sizeClasses[size],
-            className
-          )}
+          className={clsx(baseClasses, sizeClasses[size], className)}
           role="progressbar"
           aria-valuenow={normalizedValue}
           aria-valuemin={0}
@@ -126,20 +123,23 @@ export interface CircularProgressProps extends React.HTMLAttributes<HTMLDivEleme
  * Circular progress component
  */
 export const CircularProgress = React.forwardRef<HTMLDivElement, CircularProgressProps>(
-  ({
-    className,
-    value,
-    max = 100,
-    size = 40,
-    strokeWidth = 4,
-    variant = 'default',
-    showLabel = false,
-    label,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      value,
+      max = 100,
+      size = 40,
+      strokeWidth = 4,
+      variant = 'default',
+      showLabel = false,
+      label,
+      ...props
+    },
+    ref
+  ) => {
     const normalizedValue = Math.max(0, Math.min(value, max))
     const percentage = (normalizedValue / max) * 100
-    
+
     const radius = (size - strokeWidth) / 2
     const circumference = radius * 2 * Math.PI
     const strokeDasharray = circumference
@@ -159,11 +159,7 @@ export const CircularProgress = React.forwardRef<HTMLDivElement, CircularProgres
         className={clsx('relative inline-flex items-center justify-center', className)}
         {...props}
       >
-        <svg
-          width={size}
-          height={size}
-          className="transform -rotate-90"
-        >
+        <svg width={size} height={size} className="transform -rotate-90">
           {/* Background circle */}
           <circle
             cx={size / 2}
@@ -184,17 +180,12 @@ export const CircularProgress = React.forwardRef<HTMLDivElement, CircularProgres
             strokeDasharray={strokeDasharray}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            className={clsx(
-              'transition-all duration-300 ease-in-out',
-              variantColors[variant]
-            )}
+            className={clsx('transition-all duration-300 ease-in-out', variantColors[variant])}
           />
         </svg>
         {showLabel && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs font-medium">
-              {label || `${Math.round(percentage)}%`}
-            </span>
+            <span className="text-xs font-medium">{label || `${Math.round(percentage)}%`}</span>
           </div>
         )}
       </div>
@@ -220,12 +211,7 @@ export interface MultiStepProgressProps extends React.HTMLAttributes<HTMLDivElem
  * Multi-step progress component
  */
 export const MultiStepProgress = React.forwardRef<HTMLDivElement, MultiStepProgressProps>(
-  ({
-    className,
-    steps,
-    variant = 'default',
-    ...props
-  }, ref) => {
+  ({ className, steps, variant = 'default', ...props }, ref) => {
     const variantClasses = {
       default: 'bg-primary border-primary text-primary-foreground',
       success: 'bg-green-500 border-green-500 text-white',
@@ -235,11 +221,7 @@ export const MultiStepProgress = React.forwardRef<HTMLDivElement, MultiStepProgr
     }
 
     return (
-      <div
-        ref={ref}
-        className={clsx('flex items-center', className)}
-        {...props}
-      >
+      <div ref={ref} className={clsx('flex items-center', className)} {...props}>
         {steps.map((step, index) => (
           <React.Fragment key={index}>
             <div className="flex flex-col items-center">
@@ -306,7 +288,7 @@ export const UsageProgress: React.FC<UsageProgressProps> = ({
 }) => {
   const isUnlimited = limit === -1
   const percentage = isUnlimited ? 0 : Math.min((used / limit) * 100, 100)
-  
+
   // Auto-select variant based on usage
   let autoVariant = variant
   if (variant === 'default' && !isUnlimited) {
@@ -323,12 +305,8 @@ export const UsageProgress: React.FC<UsageProgressProps> = ({
   return (
     <div className={clsx('space-y-2', className)} {...props}>
       <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          {label}
-        </span>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          {formatUsage(used, limit)}
-        </span>
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">{formatUsage(used, limit)}</span>
       </div>
       <ProgressBar
         value={isUnlimited ? 0 : used}

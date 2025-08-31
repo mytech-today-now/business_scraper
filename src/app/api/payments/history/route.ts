@@ -21,17 +21,17 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
   try {
     // TODO: Get user ID from authentication
     const userId = 'temp-user-id' // Replace with actual user authentication
-    
+
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '10')
     const startingAfter = searchParams.get('starting_after')
     const customerId = searchParams.get('customer_id')
 
-    logger.info('PaymentsAPI', 'Fetching payment history', { 
-      userId, 
-      limit, 
+    logger.info('PaymentsAPI', 'Fetching payment history', {
+      userId,
+      limit,
       startingAfter,
-      customerId 
+      customerId,
     })
 
     if (!customerId) {
@@ -42,7 +42,7 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
         hasMore: false,
         count: 0,
         message: 'No customer ID found for user',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
     }
 
@@ -81,7 +81,7 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
         description: pi.description || 'Payment',
         created: pi.created,
         metadata: pi.metadata,
-        paymentMethod: pi.payment_method_types?.[0] || 'unknown'
+        paymentMethod: pi.payment_method_types?.[0] || 'unknown',
       })),
       ...invoices.data.map(invoice => ({
         id: invoice.id,
@@ -92,8 +92,8 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
         description: invoice.description || `Invoice ${invoice.number}`,
         created: invoice.created,
         metadata: invoice.metadata || {},
-        paymentMethod: 'subscription'
-      }))
+        paymentMethod: 'subscription',
+      })),
     ]
 
     // Sort by creation date (newest first)
@@ -102,10 +102,10 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
     // Take only the requested limit
     const limitedTransactions = transactions.slice(0, limit)
 
-    logger.info('PaymentsAPI', 'Payment history retrieved', { 
+    logger.info('PaymentsAPI', 'Payment history retrieved', {
       userId,
       customerId,
-      transactionCount: limitedTransactions.length
+      transactionCount: limitedTransactions.length,
     })
 
     return NextResponse.json({
@@ -113,16 +113,16 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
       transactions: limitedTransactions,
       hasMore: transactions.length > limit,
       count: limitedTransactions.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to fetch payment history', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to fetch payment history',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -135,5 +135,5 @@ async function handleGetPaymentHistory(request: NextRequest): Promise<NextRespon
 export const GET = withApiSecurity(handleGetPaymentHistory, {
   requireAuth: false, // TODO: Enable when auth is implemented
   rateLimit: 'general',
-  logRequests: true
+  logRequests: true,
 })

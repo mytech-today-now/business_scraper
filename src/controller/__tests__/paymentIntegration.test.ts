@@ -20,16 +20,16 @@ describe('Payment System Integration', () => {
   beforeEach(async () => {
     paymentController = new PaymentController()
     featureAccessController = new FeatureAccessController()
-    
+
     mockUser = {
       id: 'integration-test-user',
       email: 'integration@example.com',
-      name: 'Integration Test User'
+      name: 'Integration Test User',
     }
 
     // Initialize payment system
     await paymentController.initializePaymentSystem()
-    
+
     jest.clearAllMocks()
   })
 
@@ -67,7 +67,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Check upgraded access
@@ -86,7 +86,7 @@ describe('Payment System Integration', () => {
 
       // Create and then cancel subscription
       await paymentController.createSubscription('pro')
-      
+
       // Mock active subscription
       jest.spyOn(paymentController, 'getUserSubscription').mockReturnValue({
         id: 'sub-to-cancel',
@@ -98,7 +98,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Verify pro access
@@ -136,7 +136,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Mock usage at limit
@@ -150,8 +150,9 @@ describe('Payment System Integration', () => {
       expect(accessResult.usageLimit).toBe(100)
 
       // Record usage should still work (for tracking purposes)
-      await expect(paymentController.recordFeatureUsage('scraping_request', { test: true }))
-        .resolves.toBeUndefined()
+      await expect(
+        paymentController.recordFeatureUsage('scraping_request', { test: true })
+      ).resolves.toBeUndefined()
     })
 
     it('should handle enterprise unlimited access correctly', async () => {
@@ -166,7 +167,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Mock very high usage
@@ -201,14 +202,14 @@ describe('Payment System Integration', () => {
       await paymentController.recordFeatureUsage('export', { format: 'csv' })
       expect(usageRecordedSpy).toHaveBeenCalledWith({
         featureType: 'export',
-        metadata: { format: 'csv' }
+        metadata: { format: 'csv' },
       })
 
       // Try to access restricted feature (should trigger access:denied)
       await featureAccessController.canAccessFeature('api_access') // not available on free tier
       expect(accessDeniedSpy).toHaveBeenCalledWith({
         featureType: 'api_access',
-        reason: 'plan_restriction'
+        reason: 'plan_restriction',
       })
     })
 
@@ -234,7 +235,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       // Trigger subscription loaded event (simulates cache invalidation)
@@ -265,7 +266,9 @@ describe('Payment System Integration', () => {
       await paymentController.setCurrentUser(mockUser)
 
       // Mock feature access to throw error
-      jest.spyOn(featureAccessController, 'canAccessFeature').mockRejectedValue(new Error('Feature access error'))
+      jest
+        .spyOn(featureAccessController, 'canAccessFeature')
+        .mockRejectedValue(new Error('Feature access error'))
 
       // Payment controller should handle the error gracefully
       const hasAccess = await paymentController.checkFeatureAccess('scraping_request')
@@ -288,17 +291,18 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Mock different usage levels for different features
-      jest.spyOn(featureAccessController as any, 'getMockCurrentUsage')
+      jest
+        .spyOn(featureAccessController as any, 'getMockCurrentUsage')
         .mockImplementation((userId: string, featureType: string) => {
           const usage: Record<string, number> = {
-            scraping_request: 75,  // 75/100
-            export: 30,           // 30/50
-            advanced_search: 8,   // 8/10
-            api_access: 0         // 0/0 (not available in basic)
+            scraping_request: 75, // 75/100
+            export: 30, // 30/50
+            advanced_search: 8, // 8/10
+            api_access: 0, // 0/0 (not available in basic)
           }
           return Promise.resolve(usage[featureType] || 0)
         })
@@ -309,7 +313,7 @@ describe('Payment System Integration', () => {
         scraping_request: { used: 75, limit: 100 },
         export: { used: 30, limit: 50 },
         advanced_search: { used: 8, limit: 10 },
-        api_access: { used: 0, limit: 0 }
+        api_access: { used: 0, limit: 0 },
       })
     })
   })
@@ -329,7 +333,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Verify basic plan limits
@@ -350,7 +354,7 @@ describe('Payment System Integration', () => {
         currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         cancelAtPeriodEnd: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       // Verify pro plan limits

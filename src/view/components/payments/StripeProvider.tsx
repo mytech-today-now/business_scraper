@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
@@ -11,10 +13,7 @@ interface StripeProviderProps {
   clientSecret?: string
 }
 
-export const StripeProvider: React.FC<StripeProviderProps> = ({
-  children,
-  clientSecret
-}) => {
+export const StripeProvider: React.FC<StripeProviderProps> = ({ children, clientSecret }) => {
   const options = {
     clientSecret,
     appearance: {
@@ -26,9 +25,9 @@ export const StripeProvider: React.FC<StripeProviderProps> = ({
         colorDanger: '#e53e3e',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         spacingUnit: '4px',
-        borderRadius: '8px'
-      }
-    }
+        borderRadius: '8px',
+      },
+    },
   }
 
   return (

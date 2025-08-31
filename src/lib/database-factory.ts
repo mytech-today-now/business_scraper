@@ -36,7 +36,7 @@ export async function getDatabaseInstance(): Promise<DatabaseInterface> {
         database: process.env.DB_NAME || 'business_scraper',
         username: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
-        ssl: process.env.DB_SSL === 'true',
+        ssl: false, // Explicitly disable SSL for local PostgreSQL container
         poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
         poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
         idleTimeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),

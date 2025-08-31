@@ -21,7 +21,7 @@ async function handleGetSubscription(request: NextRequest): Promise<NextResponse
   try {
     // TODO: Get user ID from authentication
     const userId = 'temp-user-id' // Replace with actual user authentication
-    
+
     logger.info('PaymentsAPI', 'Fetching user subscription', { userId })
 
     // TODO: Implement database lookup for user's Stripe customer ID
@@ -30,18 +30,18 @@ async function handleGetSubscription(request: NextRequest): Promise<NextResponse
       {
         success: false,
         error: 'No subscription found',
-        message: 'User does not have an active subscription'
+        message: 'User does not have an active subscription',
       },
       { status: 404 }
     )
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to fetch subscription', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to fetch subscription',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -62,7 +62,7 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
         {
           success: false,
           error: 'Missing required fields',
-          message: 'Plan ID is required'
+          message: 'Plan ID is required',
         },
         { status: 400 }
       )
@@ -73,13 +73,13 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
     // Get plan details to find Stripe price ID
     const plansResponse = await fetch(`${request.nextUrl.origin}/api/payments/plans?id=${planId}`)
     const plansData = await plansResponse.json()
-    
+
     if (!plansData.success) {
       return NextResponse.json(
         {
           success: false,
           error: 'Invalid plan',
-          message: 'Selected plan not found'
+          message: 'Selected plan not found',
         },
         { status: 400 }
       )
@@ -94,7 +94,7 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
       // Try to find existing customer by email
       const existingCustomers = await stripe.customers.list({
         email: customerEmail,
-        limit: 1
+        limit: 1,
       })
 
       if (existingCustomers.data.length > 0) {
@@ -106,8 +106,8 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
           email: customerEmail,
           metadata: {
             planId: planId,
-            source: 'business_scraper_app'
-          }
+            source: 'business_scraper_app',
+          },
         })
         logger.info('PaymentsAPI', 'Created new customer', { customerId: customer.id })
       }
@@ -152,10 +152,10 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
       },
     })
 
-    logger.info('PaymentsAPI', 'Subscription created', { 
+    logger.info('PaymentsAPI', 'Subscription created', {
       subscriptionId: subscription.id,
       customerId: customer.id,
-      planId 
+      planId,
     })
 
     // TODO: Save subscription to database
@@ -170,19 +170,20 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
         currentPeriodEnd: subscription.current_period_end,
         planId: planId,
       },
-      clientSecret: (subscription.latest_invoice as Stripe.Invoice)?.payment_intent 
-        ? ((subscription.latest_invoice as Stripe.Invoice).payment_intent as Stripe.PaymentIntent)?.client_secret
+      clientSecret: (subscription.latest_invoice as Stripe.Invoice)?.payment_intent
+        ? ((subscription.latest_invoice as Stripe.Invoice).payment_intent as Stripe.PaymentIntent)
+            ?.client_secret
         : null,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to create subscription', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to create subscription',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -197,7 +198,7 @@ async function handleCancelSubscription(request: NextRequest): Promise<NextRespo
   try {
     // TODO: Get user ID from authentication and find their subscription
     const userId = 'temp-user-id'
-    
+
     logger.info('PaymentsAPI', 'Canceling subscription', { userId })
 
     // TODO: Implement subscription cancellation
@@ -209,18 +210,18 @@ async function handleCancelSubscription(request: NextRequest): Promise<NextRespo
       {
         success: false,
         error: 'Not implemented',
-        message: 'Subscription cancellation not yet implemented'
+        message: 'Subscription cancellation not yet implemented',
       },
       { status: 501 }
     )
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to cancel subscription', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to cancel subscription',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -233,17 +234,17 @@ async function handleCancelSubscription(request: NextRequest): Promise<NextRespo
 export const GET = withApiSecurity(handleGetSubscription, {
   requireAuth: false, // TODO: Enable when auth is implemented
   rateLimit: 'general',
-  logRequests: true
+  logRequests: true,
 })
 
 export const POST = withApiSecurity(handleCreateSubscription, {
   requireAuth: false, // TODO: Enable when auth is implemented
   rateLimit: 'general',
-  logRequests: true
+  logRequests: true,
 })
 
 export const DELETE = withApiSecurity(handleCancelSubscription, {
   requireAuth: false, // TODO: Enable when auth is implemented
   rateLimit: 'general',
-  logRequests: true
+  logRequests: true,
 })

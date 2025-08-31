@@ -16,11 +16,13 @@ jest.mock('@stripe/react-stripe-js', () => ({
 }))
 
 jest.mock('@stripe/stripe-js', () => ({
-  loadStripe: jest.fn(() => Promise.resolve({
-    elements: jest.fn(),
-    confirmPayment: jest.fn(),
-    createPaymentMethod: jest.fn(),
-  })),
+  loadStripe: jest.fn(() =>
+    Promise.resolve({
+      elements: jest.fn(),
+      confirmPayment: jest.fn(),
+      createPaymentMethod: jest.fn(),
+    })
+  ),
 }))
 
 // Mock config
@@ -57,7 +59,7 @@ describe('StripeProvider', () => {
 
     it('should render with client secret when provided', () => {
       const clientSecret = 'pi_test_123456789_secret_test'
-      
+
       render(
         <StripeProvider clientSecret={clientSecret}>
           <TestChild />
@@ -83,7 +85,7 @@ describe('StripeProvider', () => {
   describe('Configuration', () => {
     it('should load Stripe with correct publishable key', async () => {
       const { loadStripe } = require('@stripe/stripe-js')
-      
+
       render(
         <StripeProvider>
           <TestChild />
@@ -95,7 +97,7 @@ describe('StripeProvider', () => {
 
     it('should pass correct options when client secret is provided', () => {
       const clientSecret = 'pi_test_123456789_secret_test'
-      
+
       render(
         <StripeProvider clientSecret={clientSecret}>
           <TestChild />

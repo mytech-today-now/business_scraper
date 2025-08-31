@@ -21,11 +21,10 @@ import {
   isAccountLocked,
   hasActiveSubscription,
   getUserDisplayName,
-  resetUsageQuotas
+  resetUsageQuotas,
 } from '@/model/types/user'
 
 describe('User Model Types', () => {
-  
   describe('User Interface Validation', () => {
     const validUser: User = {
       id: 'user-123',
@@ -37,7 +36,7 @@ describe('User Model Types', () => {
       isActive: true,
       loginAttempts: 0,
       createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01')
+      updatedAt: new Date('2024-01-01'),
     }
 
     test('should validate a complete valid user', () => {
@@ -81,13 +80,13 @@ describe('User Model Types', () => {
           city: 'Anytown',
           state: 'CA',
           postalCode: '12345',
-          country: 'US'
+          country: 'US',
         },
         profilePicture: 'https://example.com/avatar.jpg',
         phoneNumber: '+1234567890',
         timezone: 'America/New_York',
         language: 'en',
-        lastLoginAt: new Date('2024-01-15')
+        lastLoginAt: new Date('2024-01-15'),
       }
 
       const result = validateUser(userWithOptionals)
@@ -101,7 +100,7 @@ describe('User Model Types', () => {
       city: 'Anytown',
       state: 'CA',
       postalCode: '12345',
-      country: 'US'
+      country: 'US',
     }
 
     test('should validate complete billing address', () => {
@@ -134,7 +133,7 @@ describe('User Model Types', () => {
     test('should reject quotas with negative usage', () => {
       const invalidQuotas = {
         ...validQuotas,
-        scrapingRequests: { ...validQuotas.scrapingRequests, used: -1 }
+        scrapingRequests: { ...validQuotas.scrapingRequests, used: -1 },
       }
       expect(isUsageQuotas(invalidQuotas)).toBe(false)
     })
@@ -142,7 +141,7 @@ describe('User Model Types', () => {
     test('should accept unlimited quotas', () => {
       const unlimitedQuotas = {
         ...validQuotas,
-        scrapingRequests: { ...validQuotas.scrapingRequests, limit: -1 }
+        scrapingRequests: { ...validQuotas.scrapingRequests, limit: -1 },
       }
       expect(isUsageQuotas(unlimitedQuotas)).toBe(true)
     })
@@ -152,7 +151,7 @@ describe('User Model Types', () => {
     const validRegistration: UserRegistration = {
       email: 'newuser@example.com',
       name: 'New User',
-      password: 'securePassword123'
+      password: 'securePassword123',
     }
 
     test('should validate user registration', () => {
@@ -179,7 +178,7 @@ describe('User Model Types', () => {
       const withOptionals = {
         ...validRegistration,
         timezone: 'America/New_York',
-        language: 'en'
+        language: 'en',
       }
       const result = validateUserRegistration(withOptionals)
       expect(result.success).toBe(true)
@@ -190,7 +189,7 @@ describe('User Model Types', () => {
     test('should validate profile update with partial data', () => {
       const update: UserProfileUpdate = {
         name: 'Updated Name',
-        phoneNumber: '+1234567890'
+        phoneNumber: '+1234567890',
       }
       const result = validateUserProfileUpdate(update)
       expect(result.success).toBe(true)
@@ -254,7 +253,10 @@ describe('User Model Types', () => {
       })
 
       test('should return false for unlimited quota', () => {
-        const unlimited = { ...quotas, scrapingRequests: { ...quotas.scrapingRequests, limit: -1, used: 1000 } }
+        const unlimited = {
+          ...quotas,
+          scrapingRequests: { ...quotas.scrapingRequests, limit: -1, used: 1000 },
+        }
         expect(isQuotaExceeded(unlimited, 'scrapingRequests')).toBe(false)
       })
     })
@@ -289,7 +291,7 @@ describe('User Model Types', () => {
         isActive: true,
         loginAttempts: 0,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       test('should return false for unlocked account', () => {
@@ -318,7 +320,7 @@ describe('User Model Types', () => {
         isActive: true,
         loginAttempts: 0,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       test('should return false for free user', () => {
@@ -329,7 +331,7 @@ describe('User Model Types', () => {
         const activeUser = {
           ...baseUser,
           subscriptionStatus: 'active' as const,
-          subscriptionEndsAt: new Date(Date.now() + 86400000)
+          subscriptionEndsAt: new Date(Date.now() + 86400000),
         }
         expect(hasActiveSubscription(activeUser)).toBe(true)
       })
@@ -338,7 +340,7 @@ describe('User Model Types', () => {
         const expiredUser = {
           ...baseUser,
           subscriptionStatus: 'active' as const,
-          subscriptionEndsAt: new Date(Date.now() - 86400000)
+          subscriptionEndsAt: new Date(Date.now() - 86400000),
         }
         expect(hasActiveSubscription(expiredUser)).toBe(false)
       })
@@ -348,7 +350,7 @@ describe('User Model Types', () => {
       test('should return name when available', () => {
         const user = {
           name: 'John Doe',
-          email: 'john@example.com'
+          email: 'john@example.com',
         } as User
         expect(getUserDisplayName(user)).toBe('John Doe')
       })
@@ -356,7 +358,7 @@ describe('User Model Types', () => {
       test('should return email when name is empty', () => {
         const user = {
           name: '',
-          email: 'john@example.com'
+          email: 'john@example.com',
         } as User
         expect(getUserDisplayName(user)).toBe('john@example.com')
       })
@@ -375,7 +377,7 @@ describe('User Model Types', () => {
         isActive: true,
         loginAttempts: 0,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       expect(isUser(validUser)).toBe(true)

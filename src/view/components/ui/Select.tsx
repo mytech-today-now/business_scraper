@@ -119,11 +119,7 @@ export const Select: React.FC<SelectProps> = ({
   }
 
   return (
-    <div
-      ref={selectRef}
-      className={clsx('relative', className)}
-      onKeyDown={handleKeyDown}
-    >
+    <div ref={selectRef} className={clsx('relative', className)} onKeyDown={handleKeyDown}>
       {/* Select trigger */}
       <button
         type="button"
@@ -144,10 +140,7 @@ export const Select: React.FC<SelectProps> = ({
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
-          className={clsx(
-            'h-4 w-4 opacity-50 transition-transform',
-            isOpen && 'rotate-180'
-          )}
+          className={clsx('h-4 w-4 opacity-50 transition-transform', isOpen && 'rotate-180')}
         />
       </button>
 
@@ -177,9 +170,7 @@ export const Select: React.FC<SelectProps> = ({
                 aria-selected={value === option.value}
               >
                 <span className="flex-1">{option.label}</span>
-                {value === option.value && (
-                  <Check className="h-4 w-4" />
-                )}
+                {value === option.value && <Check className="h-4 w-4" />}
               </li>
             ))}
           </ul>

@@ -263,6 +263,8 @@ export class SearchEngineManager {
    * Save state to localStorage
    */
   private saveState(): void {
+    if (typeof window === 'undefined') return
+
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state))
     } catch (error) {
@@ -274,6 +276,8 @@ export class SearchEngineManager {
    * Load state from localStorage
    */
   private loadState(): void {
+    if (typeof window === 'undefined') return
+
     try {
       const saved = localStorage.getItem(this.STORAGE_KEY)
       if (saved) {

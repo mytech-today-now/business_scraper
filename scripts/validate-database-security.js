@@ -139,25 +139,21 @@ async function testDatabaseConnection() {
   printHeader('TESTING DATABASE CONNECTION')
 
   try {
-    const { Pool } = require('pg')
+    const postgres = require('postgres')
 
-    const pool = new Pool({
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || '5432'),
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      ssl: process.env.DB_SSL === 'true',
-      connectionTimeoutMillis: 5000,
+    const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME}`
+
+    const sql = postgres(connectionString, {
+      ssl: false, // Explicitly disable SSL to solve persistent SSL issues
+      max: 1,
+      idle_timeout: 30,
+      connect_timeout: 5,
     })
 
-    // Test basic connection
-    const client = await pool.connect()
+    // Test basic connection and query
+    const result = await sql`SELECT version()`
     printStatus('PASS', 'Database connection successful')
-
-    // Test basic query
-    const result = await client.query('SELECT version()')
-    printStatus('PASS', `PostgreSQL version: ${result.rows[0].version.split(' ')[1]}`)
+    printStatus('PASS', `PostgreSQL version: ${result[0].version.split(' ')[1]}`)
 
     // Check current user
     const userResult = await client.query('SELECT current_user, session_user')
@@ -176,8 +172,7 @@ async function testDatabaseConnection() {
       printStatus('PASS', 'Connected user does not have superuser privileges')
     }
 
-    client.release()
-    await pool.end()
+    await sql.end()
 
     return true
   } catch (error) {
@@ -299,8 +294,7 @@ async function runSecurityValidation() {
       printStatus('WARNING', 'Could not check connection limits')
     }
 
-    client.release()
-    await pool.end()
+    await sql.end()
 
     return true
   } catch (error) {

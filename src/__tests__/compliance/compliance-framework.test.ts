@@ -15,15 +15,18 @@ import { AuditService, AuditEventType, AuditSeverity } from '@/lib/compliance/au
 import { ConsentService, ConsentType, ConsentStatus, LegalBasis } from '@/lib/compliance/consent'
 import { DataRetentionService } from '@/lib/compliance/retention'
 
-// Mock database pool
-const mockPool = {
-  query: jest.fn(),
-  connect: jest.fn(),
-  end: jest.fn(),
-}
+// Mock postgres.js
+const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
+mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
+mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+mockSql.end = jest.fn().mockResolvedValue(undefined)
 
-jest.mock('pg', () => ({
-  Pool: jest.fn(() => mockPool),
+jest.mock('postgres', () => jest.fn().mockImplementation(() => mockSql))
+
+// Mock postgres-connection module
+jest.mock('@/lib/postgres-connection', () => ({
+  createPostgresConnection: jest.fn().mockImplementation(() => mockSql),
+  getPostgresConnection: jest.fn().mockImplementation(() => mockSql),
 }))
 
 describe('Enterprise Compliance & Security Framework', () => {

@@ -11,7 +11,7 @@ import { ExtendedSession } from '@/lib/auth'
 // Database connection for audit logs
 const auditPool = new Pool({
   connectionString: process.env.AUDIT_DATABASE_URL || process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: false, // Explicitly disable SSL for local PostgreSQL container
 })
 
 // Audit event types

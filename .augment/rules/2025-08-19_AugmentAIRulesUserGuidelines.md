@@ -1,7 +1,8 @@
 ---
-type: "always_apply"
-description: "Example description"
+type: 'always_apply'
+description: 'Example description'
 ---
+
 # Augment AI Rules & User Guidelines – General Application Development
 
 This document defines the standards, workflows, and guidelines for any computer

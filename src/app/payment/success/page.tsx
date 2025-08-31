@@ -5,7 +5,7 @@
 
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/view/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
@@ -41,22 +41,22 @@ function NextSteps(): JSX.Element {
       title: 'Configure Your Settings',
       description: 'Set up your scraping preferences and search criteria',
       action: () => router.push('/dashboard/settings'),
-      buttonText: 'Go to Settings'
+      buttonText: 'Go to Settings',
     },
     {
       icon: <ArrowRight className="w-5 h-5" />,
       title: 'Start Your First Scrape',
       description: 'Begin collecting business data with our powerful tools',
       action: () => router.push('/dashboard'),
-      buttonText: 'Start Scraping'
+      buttonText: 'Start Scraping',
     },
     {
       icon: <Download className="w-5 h-5" />,
       title: 'Download Your Data',
       description: 'Export your results in multiple formats',
       action: () => router.push('/dashboard/exports'),
-      buttonText: 'View Exports'
-    }
+      buttonText: 'View Exports',
+    },
   ]
 
   return (
@@ -67,15 +67,13 @@ function NextSteps(): JSX.Element {
           <Card key={index} className="border-l-4 border-l-primary">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <div className="bg-primary/10 p-2 rounded-lg">
-                  {step.icon}
-                </div>
+                <div className="bg-primary/10 p-2 rounded-lg">{step.icon}</div>
                 <div className="flex-1">
                   <h4 className="font-medium mb-1">{step.title}</h4>
                   <p className="text-sm text-muted-foreground mb-3">{step.description}</p>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     onClick={step.action}
                     className="w-full sm:w-auto"
                   >
@@ -100,7 +98,11 @@ interface SubscriptionDetailsProps {
   interval?: string
 }
 
-function SubscriptionDetails({ planName, amount, interval }: SubscriptionDetailsProps): JSX.Element {
+function SubscriptionDetails({
+  planName,
+  amount,
+  interval,
+}: SubscriptionDetailsProps): JSX.Element {
   if (!planName) return <></>
 
   return (
@@ -135,9 +137,9 @@ function SubscriptionDetails({ planName, amount, interval }: SubscriptionDetails
 }
 
 /**
- * Main Payment Success Page Component
+ * Payment Success Content Component (with search params)
  */
-export default function PaymentSuccessPage(): JSX.Element {
+function PaymentSuccessContent(): JSX.Element {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
@@ -159,7 +161,7 @@ export default function PaymentSuccessPage(): JSX.Element {
     logger.info('PaymentSuccess', 'Payment success page loaded', {
       sessionId,
       paymentIntent,
-      planId
+      planId,
     })
 
     // Load subscription details
@@ -169,17 +171,17 @@ export default function PaymentSuccessPage(): JSX.Element {
   const loadSubscriptionData = async () => {
     try {
       setIsLoading(true)
-      
+
       // Reload current subscription
       await loadCurrentSubscription()
-      
+
       // Get current plan details
       const currentPlan = getCurrentPlan()
       if (currentPlan) {
         setSubscriptionDetails({
           planName: currentPlan.name,
           amount: `$${(currentPlan.priceCents / 100).toFixed(2)}`,
-          interval: currentPlan.interval
+          interval: currentPlan.interval,
         })
       }
     } catch (error) {
@@ -211,7 +213,7 @@ export default function PaymentSuccessPage(): JSX.Element {
 
         {/* Subscription Details */}
         {!isLoading && (
-          <SubscriptionDetails 
+          <SubscriptionDetails
             planName={subscriptionDetails.planName}
             amount={subscriptionDetails.amount}
             interval={subscriptionDetails.interval}
@@ -220,19 +222,11 @@ export default function PaymentSuccessPage(): JSX.Element {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button 
-            onClick={handleContinueToDashboard}
-            size="lg"
-            className="flex items-center gap-2"
-          >
+          <Button onClick={handleContinueToDashboard} size="lg" className="flex items-center gap-2">
             <ArrowRight className="w-4 h-4" />
             Go to Dashboard
           </Button>
-          <Button 
-            onClick={handleManageSubscription}
-            variant="outline"
-            size="lg"
-          >
+          <Button onClick={handleManageSubscription} variant="outline" size="lg">
             Manage Subscription
           </Button>
         </div>
@@ -261,11 +255,31 @@ export default function PaymentSuccessPage(): JSX.Element {
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground">
           <p>
-            You will receive a confirmation email shortly. 
-            If you have any questions, please don't hesitate to contact our support team.
+            You will receive a confirmation email shortly. If you have any questions, please don't
+            hesitate to contact our support team.
           </p>
         </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * Main Payment Success Page Component with Suspense
+ */
+export default function PaymentSuccessPage(): JSX.Element {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Loading payment confirmation...</p>
+          </div>
+        </div>
+      }
+    >
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }

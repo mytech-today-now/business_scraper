@@ -16,8 +16,8 @@ jest.mock('@/utils/logger', () => ({
     info: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
-    debug: jest.fn()
-  }
+    debug: jest.fn(),
+  },
 }))
 
 const mockStripeService = stripeService as jest.Mocked<typeof stripeService>
@@ -40,7 +40,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       const mockCustomer = { id: 'cus_existing123' } as Stripe.Customer
@@ -64,10 +64,14 @@ describe('UserPaymentService', () => {
       const result = await service.ensureStripeCustomer('user123', 'test@example.com', 'Test User')
 
       expect(result).toBe('cus_new123')
-      expect(mockStripeService.createCustomer).toHaveBeenCalledWith('test@example.com', 'Test User', {
-        userId: 'user123',
-        createdBy: 'business_scraper_app'
-      })
+      expect(mockStripeService.createCustomer).toHaveBeenCalledWith(
+        'test@example.com',
+        'Test User',
+        {
+          userId: 'user123',
+          createdBy: 'business_scraper_app',
+        }
+      )
     })
 
     it('should create new customer if existing customer not found in Stripe', async () => {
@@ -78,7 +82,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       const mockNewCustomer = { id: 'cus_new123' } as Stripe.Customer
@@ -98,7 +102,9 @@ describe('UserPaymentService', () => {
       mockStorage.getItem.mockResolvedValue(null)
       mockStripeService.createCustomer.mockRejectedValue(new Error('Stripe error'))
 
-      await expect(service.ensureStripeCustomer('user123', 'test@example.com')).rejects.toThrow(PaymentError)
+      await expect(service.ensureStripeCustomer('user123', 'test@example.com')).rejects.toThrow(
+        PaymentError
+      )
     })
   })
 
@@ -110,7 +116,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -146,13 +152,13 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01')
+        updatedAt: new Date('2023-01-01'),
       }
 
       const updates = {
         email: 'new@example.com',
         subscriptionStatus: 'active' as const,
-        subscriptionTier: 'basic' as const
+        subscriptionTier: 'basic' as const,
       }
 
       mockStorage.getItem.mockResolvedValue(existingProfile)
@@ -171,7 +177,7 @@ describe('UserPaymentService', () => {
       const updates = {
         email: 'new@example.com',
         subscriptionStatus: 'active' as const,
-        subscriptionTier: 'basic' as const
+        subscriptionTier: 'basic' as const,
       }
 
       mockStorage.getItem.mockResolvedValue(null)
@@ -195,15 +201,15 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       const mockSubscription = {
         id: 'sub_test123',
         status: 'active',
         current_period_start: 1640995200, // 2022-01-01
-        current_period_end: 1643673600,   // 2022-02-01
-        cancel_at_period_end: false
+        current_period_end: 1643673600, // 2022-02-01
+        cancel_at_period_end: false,
       } as Stripe.Subscription
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -214,10 +220,14 @@ describe('UserPaymentService', () => {
 
       expect(result.success).toBe(true)
       expect(result.data).toEqual(mockSubscription)
-      expect(mockStripeService.createSubscription).toHaveBeenCalledWith('cus_test123', 'price_test123', {
-        trialPeriodDays: undefined,
-        metadata: { userId: 'user123' }
-      })
+      expect(mockStripeService.createSubscription).toHaveBeenCalledWith(
+        'cus_test123',
+        'price_test123',
+        {
+          trialPeriodDays: undefined,
+          metadata: { userId: 'user123' },
+        }
+      )
     })
 
     it('should handle missing Stripe customer', async () => {
@@ -227,7 +237,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -248,13 +258,13 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       const mockSubscription = {
         id: 'sub_test123',
         status: 'canceled',
-        cancel_at_period_end: true
+        cancel_at_period_end: true,
       } as Stripe.Subscription
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -274,7 +284,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -295,7 +305,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       const mockPaymentMethods = [
@@ -306,10 +316,10 @@ describe('UserPaymentService', () => {
             brand: 'visa',
             last4: '4242',
             exp_month: 12,
-            exp_year: 2025
+            exp_year: 2025,
           },
-          created: 1640995200
-        }
+          created: 1640995200,
+        },
       ] as Stripe.PaymentMethod[]
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -342,13 +352,13 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       const mockCustomer = {
         id: 'cus_test123',
         email: 'new@example.com',
-        name: 'Updated Name'
+        name: 'Updated Name',
       } as Stripe.Customer
 
       const mockSubscription = {
@@ -356,7 +366,7 @@ describe('UserPaymentService', () => {
         status: 'active',
         current_period_start: 1640995200,
         current_period_end: 1643673600,
-        cancel_at_period_end: false
+        cancel_at_period_end: false,
       } as Stripe.Subscription
 
       mockStorage.getItem.mockResolvedValue(mockProfile)
@@ -379,7 +389,7 @@ describe('UserPaymentService', () => {
         subscriptionStatus: 'active',
         subscriptionTier: 'basic',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       mockStorage.getItem.mockResolvedValue(mockProfile)

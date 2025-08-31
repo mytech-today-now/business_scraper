@@ -27,7 +27,7 @@ async function handleCreateBillingPortalSession(request: NextRequest): Promise<N
         {
           success: false,
           error: 'Missing required fields',
-          message: 'Customer ID is required'
+          message: 'Customer ID is required',
         },
         { status: 400 }
       )
@@ -45,26 +45,26 @@ async function handleCreateBillingPortalSession(request: NextRequest): Promise<N
       return_url: portalReturnUrl,
     })
 
-    logger.info('PaymentsAPI', 'Billing portal session created', { 
+    logger.info('PaymentsAPI', 'Billing portal session created', {
       sessionId: portalSession.id,
       customerId,
-      returnUrl: portalReturnUrl
+      returnUrl: portalReturnUrl,
     })
 
     return NextResponse.json({
       success: true,
       url: portalSession.url,
       sessionId: portalSession.id,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('PaymentsAPI', 'Failed to create billing portal session', error)
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to create billing portal session',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -77,5 +77,5 @@ async function handleCreateBillingPortalSession(request: NextRequest): Promise<N
 export const POST = withApiSecurity(handleCreateBillingPortalSession, {
   requireAuth: false, // TODO: Enable when auth is implemented
   rateLimit: 'general',
-  logRequests: true
+  logRequests: true,
 })

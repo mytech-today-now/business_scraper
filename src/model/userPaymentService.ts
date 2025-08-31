@@ -15,12 +15,11 @@ import {
   PaymentMethodInfo,
   ServiceResponse,
   PaymentError,
-  SubscriptionError
+  SubscriptionError,
 } from '@/types/payment'
 import Stripe from 'stripe'
 
 export class UserPaymentService {
-  
   /**
    * Create or retrieve Stripe customer for user
    */
@@ -39,7 +38,7 @@ export class UserPaymentService {
       // Create new Stripe customer
       const customer = await stripeService.createCustomer(email, name, {
         userId,
-        createdBy: 'business_scraper_app'
+        createdBy: 'business_scraper_app',
       })
 
       // Store customer ID in user profile
@@ -49,17 +48,14 @@ export class UserPaymentService {
         name,
         subscriptionStatus: 'free',
         subscriptionTier: 'free',
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
 
       logger.info('UserPaymentService', `Stripe customer created for user: ${userId}`)
       return customer.id
     } catch (error) {
       logger.error('UserPaymentService', 'Failed to ensure Stripe customer', error)
-      throw new PaymentError(
-        'Failed to create or retrieve customer',
-        'CUSTOMER_ENSURE_FAILED'
-      )
+      throw new PaymentError('Failed to create or retrieve customer', 'CUSTOMER_ENSURE_FAILED')
     }
   }
 
@@ -82,12 +78,12 @@ export class UserPaymentService {
    * Update user payment profile
    */
   async updateUserPaymentProfile(
-    userId: string, 
+    userId: string,
     updates: Partial<UserPaymentProfile>
   ): Promise<UserPaymentProfile> {
     try {
       const existingProfile = await this.getUserPaymentProfile(userId)
-      
+
       const updatedProfile: UserPaymentProfile = {
         userId,
         email: updates.email || existingProfile?.email || '',
@@ -96,20 +92,21 @@ export class UserPaymentService {
         createdAt: existingProfile?.createdAt || new Date(),
         updatedAt: new Date(),
         ...existingProfile,
-        ...updates
+        ...updates,
       }
 
       // Store updated profile
       await storage.setItem('userPaymentProfiles', userId, updatedProfile)
-      
+
       logger.info('UserPaymentService', `Payment profile updated for user: ${userId}`)
       return updatedProfile
     } catch (error) {
-      logger.error('UserPaymentService', `Failed to update payment profile for user: ${userId}`, error)
-      throw new PaymentError(
-        'Failed to update payment profile',
-        'PROFILE_UPDATE_FAILED'
+      logger.error(
+        'UserPaymentService',
+        `Failed to update payment profile for user: ${userId}`,
+        error
       )
+      throw new PaymentError('Failed to update payment profile', 'PROFILE_UPDATE_FAILED')
     }
   }
 
@@ -127,10 +124,7 @@ export class UserPaymentService {
     try {
       const profile = await this.getUserPaymentProfile(userId)
       if (!profile?.stripeCustomerId) {
-        throw new SubscriptionError(
-          'User does not have a Stripe customer',
-          'NO_STRIPE_CUSTOMER'
-        )
+        throw new SubscriptionError('User does not have a Stripe customer', 'NO_STRIPE_CUSTOMER')
       }
 
       const subscription = await stripeService.createSubscription(
@@ -140,8 +134,8 @@ export class UserPaymentService {
           trialPeriodDays: options?.trialPeriodDays,
           metadata: {
             userId,
-            ...options?.metadata
-          }
+            ...options?.metadata,
+          },
         }
       )
 
@@ -149,7 +143,7 @@ export class UserPaymentService {
       await this.updateUserPaymentProfile(userId, {
         subscriptionId: subscription.id,
         subscriptionStatus: this.mapStripeStatusToPaymentStatus(subscription.status),
-        subscriptionTier: this.getSubscriptionTierFromPriceId(priceId)
+        subscriptionTier: this.getSubscriptionTierFromPriceId(priceId),
       })
 
       // Send subscription welcome email
@@ -166,20 +160,23 @@ export class UserPaymentService {
             currency: plan.currency,
             interval: plan.interval,
             features: plan.features,
-            nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+            nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
           },
           user.id
         )
       }
 
-      logger.info('UserPaymentService', `Subscription created and welcome email sent for user: ${userId}`)
+      logger.info(
+        'UserPaymentService',
+        `Subscription created and welcome email sent for user: ${userId}`
+      )
       return { success: true, data: subscription }
     } catch (error) {
       logger.error('UserPaymentService', `Failed to create subscription for user: ${userId}`, error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: error instanceof SubscriptionError ? error.code : 'SUBSCRIPTION_CREATION_FAILED'
+        code: error instanceof SubscriptionError ? error.code : 'SUBSCRIPTION_CREATION_FAILED',
       }
     }
   }
@@ -208,7 +205,7 @@ export class UserPaymentService {
       // Update user profile
       await this.updateUserPaymentProfile(userId, {
         subscriptionStatus: this.mapStripeStatusToPaymentStatus(subscription.status),
-        cancelAtPeriodEnd: subscription.cancel_at_period_end
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
       })
 
       // Send subscription cancellation email
@@ -222,7 +219,7 @@ export class UserPaymentService {
           {
             planName: plan.name,
             endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-            reason: 'User requested cancellation'
+            reason: 'User requested cancellation',
           },
           user.id
         )
@@ -232,10 +229,10 @@ export class UserPaymentService {
       return { success: true, data: subscription }
     } catch (error) {
       logger.error('UserPaymentService', `Failed to cancel subscription for user: ${userId}`, error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: error instanceof SubscriptionError ? error.code : 'SUBSCRIPTION_CANCELLATION_FAILED'
+        code: error instanceof SubscriptionError ? error.code : 'SUBSCRIPTION_CANCELLATION_FAILED',
       }
     }
   }
@@ -250,10 +247,7 @@ export class UserPaymentService {
     try {
       const profile = await this.getUserPaymentProfile(userId)
       if (!profile?.stripeCustomerId) {
-        throw new PaymentError(
-          'User does not have a Stripe customer',
-          'NO_STRIPE_CUSTOMER'
-        )
+        throw new PaymentError('User does not have a Stripe customer', 'NO_STRIPE_CUSTOMER')
       }
 
       // Update Stripe customer
@@ -264,23 +258,27 @@ export class UserPaymentService {
           city: billingAddress.city,
           state: billingAddress.state,
           postal_code: billingAddress.postalCode,
-          country: billingAddress.country
-        }
+          country: billingAddress.country,
+        },
       })
 
       // Update local profile
       const updatedProfile = await this.updateUserPaymentProfile(userId, {
-        billingAddress
+        billingAddress,
       })
 
       logger.info('UserPaymentService', `Billing address updated for user: ${userId}`)
       return { success: true, data: updatedProfile }
     } catch (error) {
-      logger.error('UserPaymentService', `Failed to update billing address for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'UserPaymentService',
+        `Failed to update billing address for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'BILLING_ADDRESS_UPDATE_FAILED'
+        code: 'BILLING_ADDRESS_UPDATE_FAILED',
       }
     }
   }
@@ -296,18 +294,20 @@ export class UserPaymentService {
       }
 
       const paymentMethods = await stripeService.listPaymentMethods(profile.stripeCustomerId)
-      
+
       return paymentMethods.map(pm => ({
         id: pm.id,
         type: pm.type as any,
-        card: pm.card ? {
-          brand: pm.card.brand,
-          last4: pm.card.last4,
-          expMonth: pm.card.exp_month,
-          expYear: pm.card.exp_year
-        } : undefined,
+        card: pm.card
+          ? {
+              brand: pm.card.brand,
+              last4: pm.card.last4,
+              expMonth: pm.card.exp_month,
+              expYear: pm.card.exp_year,
+            }
+          : undefined,
         isDefault: pm.id === profile.defaultPaymentMethodId,
-        createdAt: new Date(pm.created * 1000)
+        createdAt: new Date(pm.created * 1000),
       }))
     } catch (error) {
       logger.error('UserPaymentService', `Failed to get payment methods for user: ${userId}`, error)
@@ -325,32 +325,33 @@ export class UserPaymentService {
     try {
       const profile = await this.getUserPaymentProfile(userId)
       if (!profile?.stripeCustomerId) {
-        throw new PaymentError(
-          'User does not have a Stripe customer',
-          'NO_STRIPE_CUSTOMER'
-        )
+        throw new PaymentError('User does not have a Stripe customer', 'NO_STRIPE_CUSTOMER')
       }
 
       // Update Stripe customer default payment method
       await stripeService.updateCustomer(profile.stripeCustomerId, {
         invoice_settings: {
-          default_payment_method: paymentMethodId
-        }
+          default_payment_method: paymentMethodId,
+        },
       })
 
       // Update local profile
       await this.updateUserPaymentProfile(userId, {
-        defaultPaymentMethodId: paymentMethodId
+        defaultPaymentMethodId: paymentMethodId,
       })
 
       logger.info('UserPaymentService', `Default payment method set for user: ${userId}`)
       return { success: true, data: true }
     } catch (error) {
-      logger.error('UserPaymentService', `Failed to set default payment method for user: ${userId}`, error)
-      return { 
-        success: false, 
+      logger.error(
+        'UserPaymentService',
+        `Failed to set default payment method for user: ${userId}`,
+        error
+      )
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'DEFAULT_PAYMENT_METHOD_FAILED'
+        code: 'DEFAULT_PAYMENT_METHOD_FAILED',
       }
     }
   }
@@ -362,19 +363,13 @@ export class UserPaymentService {
     try {
       const profile = await this.getUserPaymentProfile(userId)
       if (!profile?.stripeCustomerId) {
-        throw new PaymentError(
-          'User does not have a Stripe customer',
-          'NO_STRIPE_CUSTOMER'
-        )
+        throw new PaymentError('User does not have a Stripe customer', 'NO_STRIPE_CUSTOMER')
       }
 
       // Get latest data from Stripe
       const customer = await stripeService.getCustomer(profile.stripeCustomerId)
       if (!customer) {
-        throw new PaymentError(
-          'Stripe customer not found',
-          'STRIPE_CUSTOMER_NOT_FOUND'
-        )
+        throw new PaymentError('Stripe customer not found', 'STRIPE_CUSTOMER_NOT_FOUND')
       }
 
       let subscription: Stripe.Subscription | null = null
@@ -385,7 +380,7 @@ export class UserPaymentService {
       // Update profile with Stripe data
       const updates: Partial<UserPaymentProfile> = {
         email: customer.email || profile.email,
-        name: customer.name || profile.name
+        name: customer.name || profile.name,
       }
 
       if (subscription) {
@@ -393,7 +388,9 @@ export class UserPaymentService {
         updates.currentPeriodStart = new Date(subscription.current_period_start * 1000)
         updates.currentPeriodEnd = new Date(subscription.current_period_end * 1000)
         updates.cancelAtPeriodEnd = subscription.cancel_at_period_end
-        updates.trialEnd = subscription.trial_end ? new Date(subscription.trial_end * 1000) : undefined
+        updates.trialEnd = subscription.trial_end
+          ? new Date(subscription.trial_end * 1000)
+          : undefined
       }
 
       const updatedProfile = await this.updateUserPaymentProfile(userId, updates)
@@ -402,10 +399,10 @@ export class UserPaymentService {
       return { success: true, data: updatedProfile }
     } catch (error) {
       logger.error('UserPaymentService', `Failed to sync user data with Stripe: ${userId}`, error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        code: 'STRIPE_SYNC_FAILED'
+        code: 'STRIPE_SYNC_FAILED',
       }
     }
   }
@@ -431,12 +428,15 @@ export class UserPaymentService {
           currency: paymentIntent.currency,
           description: paymentIntent.description || 'Payment',
           transactionId: paymentIntent.id,
-          date: new Date()
+          date: new Date(),
         },
         user.id
       )
 
-      logger.info('UserPaymentService', `Payment success recorded and email sent for user: ${user.id}`)
+      logger.info(
+        'UserPaymentService',
+        `Payment success recorded and email sent for user: ${user.id}`
+      )
     } catch (error) {
       logger.error('UserPaymentService', 'Failed to record payment success', error)
       throw error
@@ -462,12 +462,15 @@ export class UserPaymentService {
         {
           amount: paymentIntent.amount,
           currency: paymentIntent.currency,
-          reason: paymentIntent.last_payment_error?.message || 'Payment failed'
+          reason: paymentIntent.last_payment_error?.message || 'Payment failed',
         },
         user.id
       )
 
-      logger.info('UserPaymentService', `Payment failure recorded and email sent for user: ${user.id}`)
+      logger.info(
+        'UserPaymentService',
+        `Payment failure recorded and email sent for user: ${user.id}`
+      )
     } catch (error) {
       logger.error('UserPaymentService', 'Failed to record payment failure', error)
       throw error
@@ -511,7 +514,9 @@ export class UserPaymentService {
   /**
    * Helper method to get user by ID (placeholder implementation)
    */
-  private async getUserById(customerId: string): Promise<{ id: string; email: string; name?: string } | null> {
+  private async getUserById(
+    customerId: string
+  ): Promise<{ id: string; email: string; name?: string } | null> {
     try {
       // This would typically query your user database
       // For now, we'll use a placeholder implementation
@@ -520,7 +525,7 @@ export class UserPaymentService {
         return {
           id: profile.userId,
           email: profile.email,
-          name: profile.name
+          name: profile.name,
         }
       }
       return null
@@ -554,45 +559,52 @@ export class UserPaymentService {
    * Get subscription plan details from price ID
    */
   private async getSubscriptionPlan(priceId: string): Promise<{
-    name: string;
-    priceCents: number;
-    currency: string;
-    interval: string;
-    features: string[];
+    name: string
+    priceCents: number
+    currency: string
+    interval: string
+    features: string[]
   } | null> {
     // This would typically query your pricing configuration
     // For now, we'll use a placeholder implementation
     const plans: Record<string, any> = {
-      'price_basic': {
+      price_basic: {
         name: 'Basic Plan',
         priceCents: 999,
         currency: 'USD',
         interval: 'month',
-        features: ['Basic scraping', 'Email support', '1,000 searches/month']
+        features: ['Basic scraping', 'Email support', '1,000 searches/month'],
       },
-      'price_professional': {
+      price_professional: {
         name: 'Professional Plan',
         priceCents: 2999,
         currency: 'USD',
         interval: 'month',
-        features: ['Advanced scraping', 'Priority support', '10,000 searches/month', 'API access']
+        features: ['Advanced scraping', 'Priority support', '10,000 searches/month', 'API access'],
       },
-      'price_enterprise': {
+      price_enterprise: {
         name: 'Enterprise Plan',
         priceCents: 9999,
         currency: 'USD',
         interval: 'month',
-        features: ['Unlimited scraping', '24/7 support', 'Unlimited searches', 'Custom integrations']
-      }
+        features: [
+          'Unlimited scraping',
+          '24/7 support',
+          'Unlimited searches',
+          'Custom integrations',
+        ],
+      },
     }
 
-    return plans[priceId] || {
-      name: 'Unknown Plan',
-      priceCents: 0,
-      currency: 'USD',
-      interval: 'month',
-      features: []
-    }
+    return (
+      plans[priceId] || {
+        name: 'Unknown Plan',
+        priceCents: 0,
+        currency: 'USD',
+        interval: 'month',
+        features: [],
+      }
+    )
   }
 
   /**
