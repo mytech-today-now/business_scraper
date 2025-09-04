@@ -85,12 +85,12 @@ export class SecureDatabase {
       // but we can check if the connection is still valid
       return {
         connected: true,
-        info: 'postgres.js connection active'
+        info: 'postgres.js connection active',
       }
     } catch (error) {
       return {
         connected: false,
-        info: error instanceof Error ? error.message : 'Unknown error'
+        info: error instanceof Error ? error.message : 'Unknown error',
       }
     }
   }
@@ -150,11 +150,10 @@ export class SecureDatabase {
 
       // Use postgres.js unsafe method for parameterized queries
       // postgres.js handles parameters differently - we need to use template literals or unsafe method
-      const queryPromise = params && params.length > 0
-        ? this.sql.unsafe(text, params)
-        : this.sql.unsafe(text)
+      const queryPromise =
+        params && params.length > 0 ? this.sql.unsafe(text, params) : this.sql.unsafe(text)
 
-      const result = await Promise.race([queryPromise, timeoutPromise]) as any[]
+      const result = (await Promise.race([queryPromise, timeoutPromise])) as any[]
 
       const executionTime = Date.now() - startTime
       const secureResult: SecureQueryResult<T> = {
@@ -217,7 +216,7 @@ export class SecureDatabase {
    */
   async transaction<T>(callback: (tx: DatabaseTransaction) => Promise<T>): Promise<T> {
     // postgres.js has built-in transaction support
-    return await this.sql.begin(async (sql) => {
+    return await this.sql.begin(async sql => {
       const transaction: DatabaseTransaction = {
         query: async (text: string, params?: any[], _options?: SecureQueryOptions) => {
           const validation = this.securityService.validateQuery(text, params)
@@ -226,9 +225,8 @@ export class SecureDatabase {
           }
 
           const startTime = Date.now()
-          const result = params && params.length > 0
-            ? await sql.unsafe(text, params)
-            : await sql.unsafe(text)
+          const result =
+            params && params.length > 0 ? await sql.unsafe(text, params) : await sql.unsafe(text)
 
           return {
             rows: result,
@@ -272,9 +270,10 @@ export class SecureDatabase {
     try {
       // postgres.js automatically handles prepared statements
       // We can use the regular query method as it will prepare and cache the statement
-      const result = params && params.length > 0
-        ? await this.sql.unsafe(text, params)
-        : await this.sql.unsafe(text)
+      const result =
+        params && params.length > 0
+          ? await this.sql.unsafe(text, params)
+          : await this.sql.unsafe(text)
 
       return {
         rows: result,
@@ -285,7 +284,7 @@ export class SecureDatabase {
     } catch (error) {
       logger.error('SecureDatabase', 'Prepared statement execution failed', {
         name,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
       throw error
     }

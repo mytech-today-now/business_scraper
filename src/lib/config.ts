@@ -221,7 +221,7 @@ const configSchema: Record<string, ValidationRule> = {
   // Database
   DATABASE_URL: { type: 'url', required: false },
   DB_TYPE: { type: 'string', choices: ['postgresql', 'indexeddb'], default: 'indexeddb' },
-  DB_HOST: { type: 'string', default: 'localhost' },
+  DB_HOST: { type: 'string', default: 'postgres' },
   DB_PORT: { type: 'port', default: 5432 },
   DB_NAME: { type: 'string', default: 'business_scraper_db' },
   DB_USER: { type: 'string', default: 'postgres' },

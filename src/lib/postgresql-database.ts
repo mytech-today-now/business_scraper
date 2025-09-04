@@ -998,19 +998,40 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   }
 }
 
-// Create and export database instance
-const databaseConfig: DatabaseConfig = {
-  type: 'postgresql',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME || 'business_scraper',
-  username: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'password',
-  ssl: false, // Explicitly disable SSL for local PostgreSQL container
-  poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
-  poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
-  idleTimeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '30000'),
-  connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '5000'),
+// Lazy-loaded database instance
+let databaseInstance: PostgreSQLDatabase | null = null
+
+function getDatabaseConfig(): DatabaseConfig {
+  return {
+    type: 'postgresql',
+    host: process.env.DB_HOST || 'postgres',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME || 'business_scraper',
+    username: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'password',
+    ssl: false, // Explicitly disable SSL for local PostgreSQL container
+    poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
+    poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
+    idleTimeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '30000'),
+    connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '30000'),
+  }
 }
 
-export const database = new PostgreSQLDatabase(databaseConfig)
+export function getDatabase(): PostgreSQLDatabase {
+  if (!databaseInstance) {
+    const databaseConfig = getDatabaseConfig()
+    databaseInstance = new PostgreSQLDatabase(databaseConfig)
+  }
+  return databaseInstance
+}
+
+// For backward compatibility - lazy-loaded
+let _database: PostgreSQLDatabase | null = null
+export const database = new Proxy({} as PostgreSQLDatabase, {
+  get(target, prop) {
+    if (!_database) {
+      _database = getDatabase()
+    }
+    return (_database as any)[prop]
+  }
+})
