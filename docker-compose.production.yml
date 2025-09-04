@@ -15,7 +15,15 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      # Database Configuration
+      - DB_TYPE=postgresql
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/business_scraper?sslmode=disable
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=business_scraper
+      - DB_USER=postgres
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      # Redis Configuration
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
       - RATE_LIMIT_REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
