@@ -10,7 +10,7 @@ import { SecureDatabase } from '@/lib/secureDatabase'
 jest.mock('postgres', () => {
   const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
   mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-  mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+  mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
   mockSql.end = jest.fn().mockResolvedValue(undefined)
 
   return jest.fn().mockImplementation(() => mockSql)
@@ -21,14 +21,14 @@ jest.mock('@/lib/postgres-connection', () => ({
   createPostgresConnection: jest.fn().mockImplementation(() => {
     const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
     mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-    mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+    mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
     mockSql.end = jest.fn().mockResolvedValue(undefined)
     return mockSql
   }),
   getPostgresConnection: jest.fn().mockImplementation(() => {
     const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
     mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-    mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+    mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
     mockSql.end = jest.fn().mockResolvedValue(undefined)
     return mockSql
   }),
