@@ -202,12 +202,27 @@ export function useSearchStreaming(): UseSearchStreamingReturn {
           }
         }
 
-        eventSource.onerror = () => {
-          logger.warn('useSearchStreaming', 'Streaming connection error')
+        eventSource.onerror = event => {
+          const errorDetails = {
+            readyState: eventSource.readyState,
+            url: eventSource.url,
+            retryCount: retryCountRef.current,
+            timestamp: new Date().toISOString(),
+          }
+
+          logger.warn('useSearchStreaming', 'Streaming connection error', errorDetails)
           setProgress(prev => ({ ...prev, connectionStatus: 'reconnecting' }))
+
+          // Close the current connection to prevent resource leaks
+          eventSource.close()
 
           if (retryCountRef.current < mergedOptions.maxRetries) {
             retryCountRef.current++
+            logger.info(
+              'useSearchStreaming',
+              `Retrying connection (${retryCountRef.current}/${mergedOptions.maxRetries})`
+            )
+
             retryTimeoutRef.current = setTimeout(() => {
               if (currentQueryRef.current) {
                 startStreaming(
@@ -216,13 +231,21 @@ export function useSearchStreaming(): UseSearchStreamingReturn {
                   options
                 )
               }
-            }, mergedOptions.retryDelay)
+            }, mergedOptions.retryDelay * retryCountRef.current) // Exponential backoff
           } else if (mergedOptions.enableFallback) {
+            logger.info('useSearchStreaming', 'Max retries reached, falling back to batch search')
             cleanup()
             fallbackToBatchSearch(query, location, mergedOptions.maxResults)
           } else {
-            setError('Streaming connection failed after maximum retries')
-            setProgress(prev => ({ ...prev, status: 'error', connectionStatus: 'disconnected' }))
+            const errorMessage = 'Streaming connection failed after maximum retries'
+            logger.error('useSearchStreaming', errorMessage, errorDetails)
+            setError(errorMessage)
+            setProgress(prev => ({
+              ...prev,
+              status: 'error',
+              connectionStatus: 'disconnected',
+              errorMessage,
+            }))
             cleanup()
           }
         }

@@ -38,7 +38,7 @@ export interface UseZipCodeInputOptions {
  * Custom hook for ZIP code input handling
  */
 export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
-  const { initialValue = '', onValidZipCode, onInvalidInput, debounceMs = 500 } = options
+  const { initialValue = '', onValidZipCode, onInvalidInput, debounceMs = 1000 } = options
 
   const [state, setState] = useState<ZipCodeInputState>({
     value: '',
@@ -70,16 +70,25 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
         }
 
         if (parseResult.error) {
-          newState.error = parseResult.error
-          newState.isValid = false
-          newState.value = ''
+          // Don't treat incomplete input as an error - just a typing state
+          if (parseResult.error === 'Incomplete input - continue typing') {
+            newState.error = null
+            newState.warning = 'Continue typing...'
+            newState.isValid = false
+            newState.value = ''
+            // Don't call error callback for incomplete input
+          } else {
+            newState.error = parseResult.error
+            newState.isValid = false
+            newState.value = ''
 
-          // Call error callback
-          if (onInvalidInput) {
-            onInvalidInput(parseResult.error)
+            // Call error callback for actual errors
+            if (onInvalidInput) {
+              onInvalidInput(parseResult.error)
+            }
+
+            logger.warn('ZipCodeInput', `Invalid input: ${parseResult.error}`)
           }
-
-          logger.warn('ZipCodeInput', `Invalid input: ${parseResult.error}`)
         } else if (parseResult.zipCode) {
           newState.value = parseResult.zipCode
           newState.isValid = true
