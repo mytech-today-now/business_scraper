@@ -65,13 +65,17 @@ const cspConfigs: Record<string, CSPConfig> = {
     scriptSrc: [
       "'self'",
       "'unsafe-eval'", // Required for Next.js development
-      "'unsafe-inline'", // Required for development hot reload
-      "'nonce-{nonce}'", // Placeholder for dynamic nonce
+      "'unsafe-inline'", // Required for development hot reload and React DevTools
+      // Note: In development, we use unsafe-inline for easier debugging
+      // Nonces are not used in development to avoid conflicts with unsafe-inline
+      'https://js.stripe.com', // Stripe.js library
+      'https://vercel.live', // Vercel development tools
     ],
     styleSrc: [
       "'self'",
-      "'unsafe-inline'", // Required for CSS-in-JS and Tailwind
-      "'nonce-{nonce}'", // Placeholder for dynamic nonce
+      "'unsafe-inline'", // Required for CSS-in-JS, Tailwind, and React inline styles in development
+      // Note: In development, we use unsafe-inline for easier debugging
+      // Nonces are not used in development to avoid conflicts with unsafe-inline
     ],
     imgSrc: [
       "'self'",
@@ -90,10 +94,13 @@ const cspConfigs: Record<string, CSPConfig> = {
       'https://*.cognitiveservices.azure.com', // Azure services
       'https://api.duckduckgo.com', // Search API
       'https://duckduckgo.com', // Search service
+      'https://api.stripe.com', // Stripe API
+      'https://checkout.stripe.com', // Stripe Checkout
+      'https://js.stripe.com', // Stripe.js library
     ],
     objectSrc: ["'none'"],
     mediaSrc: ["'self'"],
-    frameSrc: ["'none'"],
+    frameSrc: ["'self'", 'https://js.stripe.com', 'https://hooks.stripe.com', 'https://checkout.stripe.com'],
     frameAncestors: ["'none'"],
     baseUri: ["'self'"],
     formAction: ["'self'"],
@@ -111,11 +118,48 @@ const cspConfigs: Record<string, CSPConfig> = {
       "'self'",
       "'unsafe-eval'", // Still needed for some Next.js features
       "'nonce-{nonce}'", // Use nonces for inline scripts
+      'https://js.stripe.com', // Stripe.js library
+      // Add specific hashes for known safe inline scripts (updated with current violations)
+      "'sha256-Q+8tPsjVtiDsjF/Cv8FMOpg2Yg91oKFKDAJat1PPb2g='",
+      "'sha256-x6H1bC+RRVj8E0k3vb6/WKyN24h5doxTA+DpnEW+glI='",
+      "'sha256-w5bq2yF5OAaXG6HURdITkIBCp4xw6B/EMtny4WSHt+s='",
+      "'sha256-JL/y8kA7Q8QthoFHPhMwHvXDIs8tNuM/yotj5L9sjdI='",
+      "'sha256-3hiRNYmbR1ph5hd0c32tNycNet1m3ac0HyEXQXEGJyQ='",
+      "'sha256-3QcKhPKGFSJ3p54YDwQ88l5Wvq88en250fatWxsL/NY='",
+      // Additional hashes from console violations
+      "'sha256-dyzCnHa/jBIBK24sOTThWknRfCH9dOwxEfkI5ncCmjA='",
+      "'sha256-3Jo+kaAFL9InHda238UqrgJCIyhTOvTz0irzB6vhDK0='",
+      "'sha256-6GzLhHSjaZcGUzFDzkfHLHGNka2lY3DfhCBteNxRPyU='",
+      "'sha256-JTWJpbXq8BOpW73/Z/q3955e75Sg8pHZ83hhuSlOz5w='",
+      "'sha256-q0DFzdS56c2q1C0qsJfPbfLEEe7Hn8kwIx+W4ZKBGbs='",
+      "'sha256-BGpzNjr9NuUr69xKfNtJ7M+GUjku1mQG9t1u5x4Ayng='",
+      "'sha256-novOumJTR/bLM3a87imJruNYYuV1Mewp9v6XNg0LT2g='",
+      "'sha256-li15+uLSlqLclRNFUz4D5UwK6yKiknaCrlcj+q8+zW0='",
+      "'sha256-lUog9ElEAEf90cQXdvoDgK8diTTAXYqu++aPBXOmZrg='",
+      "'sha256-6k72MmYzwHn9tPy8L25fiipaDpw6IH65REwaAMn8JC4='",
+      "'sha256-1vPpzEwO0H5nfl6olZiRgSqKPtPz2ZveWRM/fhJ19Pc='",
+      // Additional hashes from recent console violations
+      "'sha256-2lt0bFJlc5Kaphf4LkrOMIrdaHAEYNx8N9WCufhBrCo='",
+      "'sha256-oolAXs2Cdo3WdBhu4uUyDkOe8GFEQ1wq7uqTsMiKW9U='",
+      "'sha256-z05Y9BUQz7PEpWh9sitkqC+x0N4+SQix0AsyRlpYy7Q='",
+      "'sha256-JM7ucALGjjhHJ6z0bfjR6Dx5+OvnghD+JZoXdsywlzM='",
+      "'sha256-VySdMvYwvSwI5wjrw1P0Bfo7JRandOP0fPX3lt9vjaI='",
     ],
     styleSrc: [
       "'self'",
-      "'unsafe-inline'", // Required for Tailwind and CSS-in-JS
       "'nonce-{nonce}'", // Use nonces for inline styles
+      "'unsafe-inline'", // Temporarily allow for compatibility - will be removed after full CSP implementation
+      // Add specific hashes for known safe inline styles
+      "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='",
+      "'sha256-Nqnn8clbgv+5l0PgxcTOldg8mkMKrFn4TvPL+rYUUGg='",
+      "'sha256-13vrThxdyT64GcXoTNGVoRRoL0a7EGBmOJ+lemEWyws='",
+      "'sha256-QZ52fjvWgIOIOPr+gRIJZ7KjzNeTBm50Z+z9dH4N1/8='",
+      "'sha256-yOU6eaJ75xfag0gVFUvld5ipLRGUy94G17B1uL683EU='",
+      "'sha256-OpTmykz0m3o5HoX53cykwPhUeU4OECxHQlKXpB0QJPQ='",
+      "'sha256-SSIM0kI/u45y4gqkri9aH+la6wn2R+xtcBj3Lzh7qQo='",
+      "'sha256-ZH/+PJIjvP1BctwYxclIuiMu1wItb0aasjpXYXOmU0Y='",
+      "'sha256-58jqDtherY9NOM+ziRgSqQY0078tAZ+qtTBjMgbM9po='",
+      "'sha256-7Ri/I+PfhgtpcL7hT4A0VJKI6g3pK0ZvIN09RQV4ZhI='",
     ],
     imgSrc: [
       "'self'",
@@ -134,10 +178,14 @@ const cspConfigs: Record<string, CSPConfig> = {
       'https://*.cognitiveservices.azure.com', // Azure services
       'https://api.duckduckgo.com', // Search API
       'https://duckduckgo.com', // Search service
+      'https://api.stripe.com', // Stripe API
+      'https://checkout.stripe.com', // Stripe Checkout
+      'https://js.stripe.com', // Stripe.js
+      'https://js.stripe.com/basil/', // Stripe.js basil
     ],
     objectSrc: ["'none'"],
     mediaSrc: ["'self'"],
-    frameSrc: ["'none'"],
+    frameSrc: ["'self'", 'https://js.stripe.com', 'https://hooks.stripe.com', 'https://checkout.stripe.com'],
     frameAncestors: ["'none'"],
     baseUri: ["'self'"],
     formAction: ["'self'"],
@@ -193,10 +241,16 @@ export function getCSPConfig(environment?: string): CSPConfig {
  */
 export function buildCSPHeader(config: CSPConfig, nonce?: string): string {
   const directives: string[] = []
+  const isDevelopment = process.env.NODE_ENV === 'development'
 
-  // Replace nonce placeholders with actual nonce
-  const replaceNonce = (sources: string[]) =>
-    sources.map(src => src.replace('{nonce}', nonce || ''))
+  // Replace nonce placeholders with actual nonce (only in production)
+  const replaceNonce = (sources: string[]) => {
+    if (isDevelopment) {
+      // In development, don't add nonces to preserve unsafe-inline functionality
+      return sources.filter(src => !src.includes('{nonce}'))
+    }
+    return sources.map(src => src.replace('{nonce}', nonce || ''))
+  }
 
   // Core directives
   if (config.defaultSrc.length) {
