@@ -342,10 +342,10 @@ export class DatabaseSecurityService {
       secureConfig.ssl = false
     }
 
-    // Set secure connection timeouts
+    // Set secure connection timeouts - increased to allow for database initialization
     secureConfig.connectionTimeoutMillis = Math.min(
       secureConfig.connectionTimeoutMillis || 5000,
-      10000
+      35000 // Increased from 10000 to 35000 to allow for proper database initialization
     )
     secureConfig.idleTimeoutMillis = Math.min(secureConfig.idleTimeoutMillis || 30000, 60000)
     secureConfig.query_timeout = Math.min(secureConfig.query_timeout || 30000, 60000)

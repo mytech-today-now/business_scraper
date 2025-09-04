@@ -136,7 +136,11 @@ export class MemoryMonitor extends EventEmitter {
       if (typeof window !== 'undefined' && 'performance' in window) {
         // Browser environment
         const memory = (performance as any).memory
-        if (memory) {
+        if (
+          memory &&
+          typeof memory.usedJSHeapSize === 'number' &&
+          typeof memory.totalJSHeapSize === 'number'
+        ) {
           return {
             used: memory.usedJSHeapSize,
             total: memory.totalJSHeapSize,
@@ -144,7 +148,11 @@ export class MemoryMonitor extends EventEmitter {
             timestamp: Date.now(),
           }
         }
-      } else if (typeof process !== 'undefined' && process.memoryUsage) {
+      } else if (
+        typeof process !== 'undefined' &&
+        process.memoryUsage &&
+        typeof process.memoryUsage === 'function'
+      ) {
         // Node.js environment
         const usage = process.memoryUsage()
         return {
@@ -165,7 +173,14 @@ export class MemoryMonitor extends EventEmitter {
    */
   private getBrowserMemoryStats(): BrowserMemoryStats | null {
     try {
-      if (typeof process !== 'undefined' && process.memoryUsage) {
+      // Only use Node.js process.memoryUsage in server-side environments
+      if (
+        typeof window === 'undefined' &&
+        typeof process !== 'undefined' &&
+        process &&
+        process.memoryUsage &&
+        typeof process.memoryUsage === 'function'
+      ) {
         const usage = process.memoryUsage()
         return {
           heapUsed: usage.heapUsed,
@@ -174,6 +189,12 @@ export class MemoryMonitor extends EventEmitter {
           rss: usage.rss,
           timestamp: Date.now(),
         }
+      }
+
+      // For browser environments, return null as browser memory stats
+      // are handled by getCurrentMemoryStats() using performance.memory
+      if (typeof window !== 'undefined') {
+        return null
       }
     } catch (error) {
       logger.error('MemoryMonitor', 'Failed to get browser memory stats', error)

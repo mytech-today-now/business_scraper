@@ -110,6 +110,13 @@ export class AddressInputHandler {
 
       const trimmedInput = input.trim()
 
+      // Early return for incomplete input (less than 5 characters)
+      // This prevents premature validation warnings while user is typing
+      if (trimmedInput.length < 5) {
+        result.error = 'Incomplete input - continue typing'
+        return result
+      }
+
       // Strategy 1: Check if input is already just a ZIP code
       const zipOnlyMatch = trimmedInput.match(this.ZIP_ONLY_REGEX)
       if (zipOnlyMatch) {

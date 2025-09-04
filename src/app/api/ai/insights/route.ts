@@ -21,7 +21,7 @@ async function initializeServerDatabase() {
     const { PostgreSQLDatabase } = await import('@/lib/postgresql-database')
 
     const config = {
-      host: process.env.DB_HOST || 'localhost',
+      host: process.env.DB_HOST || 'postgres',
       port: parseInt(process.env.DB_PORT || '5432'),
       database: process.env.DB_NAME || 'business_scraper',
       username: process.env.DB_USER || 'postgres',

@@ -89,8 +89,16 @@ export function usePerformanceMonitoring(config: Partial<PerformanceMonitoringCo
    * Get current memory usage
    */
   const getMemoryUsage = useCallback((): number => {
-    if (typeof window !== 'undefined' && 'performance' in window && 'memory' in performance) {
-      return (performance as any).memory?.usedJSHeapSize || 0
+    try {
+      if (typeof window !== 'undefined' && 'performance' in window && 'memory' in performance) {
+        const memory = (performance as any).memory
+        if (memory && typeof memory.usedJSHeapSize === 'number') {
+          return memory.usedJSHeapSize
+        }
+      }
+    } catch (error) {
+      // Silently handle memory API access errors
+      console.warn('Memory monitoring not available:', error)
     }
     return 0
   }, [])

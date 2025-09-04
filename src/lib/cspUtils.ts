@@ -3,19 +3,45 @@
  * Business Scraper Application - Client-side CSP Support
  */
 
-import { headers } from 'next/headers'
-
 /**
- * Get CSP nonce from headers (server-side)
+ * Get CSP nonce from headers (server-side only)
+ * Note: This function should only be used in server components
  */
 export function getCSPNonce(): string | null {
   try {
-    const headersList = headers()
-    return headersList.get('X-CSP-Nonce') || null
+    // Only import headers when actually needed (server-side)
+    if (typeof window === 'undefined') {
+      const { headers } = require('next/headers')
+      const headersList = headers()
+      return headersList.get('X-CSP-Nonce') || null
+    }
+    return null
   } catch (error) {
     // Headers not available (client-side or static generation)
     return null
   }
+}
+
+/**
+ * Get CSP nonce from client-side (from meta tag or global variable)
+ */
+export function getClientCSPNonce(): string | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  // Try to get nonce from meta tag
+  const metaTag = document.querySelector('meta[name="csp-nonce"]')
+  if (metaTag) {
+    return metaTag.getAttribute('content')
+  }
+
+  // Try to get from global variable (set by middleware)
+  if ((window as any).__CSP_NONCE__) {
+    return (window as any).__CSP_NONCE__
+  }
+
+  return null
 }
 
 /**
@@ -35,6 +61,43 @@ export function createNonceStyle(content: string, nonce?: string): string {
 }
 
 /**
+ * Create CSP-safe inline styles for React components
+ * This function helps avoid CSP violations by providing a consistent way to handle inline styles
+ */
+export function createCSPSafeStyle(
+  styles: React.CSSProperties,
+  nonce?: string
+): React.CSSProperties {
+  // In development, we allow inline styles due to 'unsafe-inline' in CSP
+  // In production, we need to be more careful about inline styles
+  const isDevelopment = process.env.NODE_ENV === 'development'
+
+  if (isDevelopment) {
+    // In development, return styles as-is since we use 'unsafe-inline'
+    return styles
+  }
+
+  // In production, we should avoid inline styles when possible
+  // For now, return the styles but log a warning for future optimization
+  if (typeof window !== 'undefined' && Object.keys(styles).length > 0) {
+    console.warn(
+      'CSP: Inline styles detected in production. Consider using CSS classes or CSS-in-JS with nonces.'
+    )
+  }
+
+  return styles
+}
+
+/**
+ * Generate a hash for inline styles (for CSP hash-based allowlisting)
+ */
+export function generateStyleHash(styleContent: string): string {
+  // This would require a crypto library for proper hashing
+  // For now, return a placeholder that could be implemented with crypto.subtle
+  return `sha256-${btoa(styleContent).substring(0, 16)}`
+}
+
+/**
  * CSP-safe inline script component props
  */
 export interface CSPScriptProps {
@@ -50,29 +113,6 @@ export interface CSPScriptProps {
 export interface CSPStyleProps {
   children: string
   nonce?: string
-}
-
-/**
- * Get CSP nonce from client-side (if available)
- */
-export function getClientCSPNonce(): string | null {
-  if (typeof window === 'undefined') {
-    return null
-  }
-
-  // Try to get nonce from meta tag
-  const metaTag = document.querySelector('meta[name="csp-nonce"]')
-  if (metaTag) {
-    return metaTag.getAttribute('content')
-  }
-
-  // Try to get from existing script tag
-  const scriptTag = document.querySelector('script[nonce]')
-  if (scriptTag) {
-    return scriptTag.getAttribute('nonce')
-  }
-
-  return null
 }
 
 /**

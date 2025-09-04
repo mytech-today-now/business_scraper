@@ -1,6 +1,6 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-6.5.0-blue.svg)
+![Version](https://img.shields.io/badge/version-6.6.4-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
@@ -16,11 +16,27 @@ Controls**, **End-to-End Encryption**, **Role-Based Access Control**,
 Authentication**, **Real-Time Consent Management**, and **Privacy-First
 Architecture**.
 
+## 🚀 **LATEST RELEASE (v6.6.4)** - Production Docker Deployment
+
+**🐳 Complete Production Docker Deployment**: Successfully recompiled, rebuilt, and redeployed the entire application using Docker with production-grade infrastructure including PostgreSQL and Redis.
+
+**Key Achievements**: ✅ Fresh Docker image build ✅ Production stack deployment ✅ Database connectivity configured ✅ All services running ✅ API endpoints verified ✅ Application deployed on port 3000
+
+**Deployment Status**: 🟢 **LIVE** - Production application is currently running and accessible at `http://localhost:3000`
+
+**Infrastructure**: 🐳 Docker containers (app, PostgreSQL, Redis) ✅ Production environment ✅ Secure configuration ✅ Health monitoring
+
 ## 🚀 **MAJOR RELEASE (v6.5.0)** - PostgreSQL Client Migration & Performance Enhancement
 
-**🔧 Database Architecture Modernization**: Successfully migrated from pg library to postgres.js for improved performance, better SSL handling, and modern development experience. This major release resolves persistent SSL configuration issues, provides faster query execution, and establishes a future-proof database architecture with enhanced developer experience.
+**🔧 Database Architecture Modernization**: Successfully migrated from pg
+library to postgres.js for improved performance, better SSL handling, and modern
+development experience. This major release resolves persistent SSL configuration
+issues, provides faster query execution, and establishes a future-proof database
+architecture with enhanced developer experience.
 
-**Key Benefits**: ✅ Resolved SSL connection issues ✅ Improved query performance ✅ Modern tagged template literals ✅ Better error handling ✅ Enhanced TypeScript support
+**Key Benefits**: ✅ Resolved SSL connection issues ✅ Improved query
+performance ✅ Modern tagged template literals ✅ Better error handling ✅
+Enhanced TypeScript support
 
 ## 🚀 **Previous Release (v6.4.0)** - Admin Dashboard Integration and Final Setup
 
@@ -2003,7 +2019,8 @@ modern Next.js architecture:
 
 ### Database & Cache Layer
 
-- **PostgreSQL Database**: Production-grade persistent storage with postgres.js client
+- **PostgreSQL Database**: Production-grade persistent storage with postgres.js
+  client
   - Modern postgres.js client library for improved performance and SSL handling
   - Business data storage and retrieval with tagged template literals
   - Configuration management with enhanced connection pooling

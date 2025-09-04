@@ -147,11 +147,38 @@ export class MonitoringService {
    * Record memory usage
    */
   async recordMemoryUsage(): Promise<void> {
-    if (typeof process !== 'undefined') {
-      const memUsage = process.memoryUsage()
-      await this.recordMetric('memory_heap_used', memUsage.heapUsed, 'bytes')
-      await this.recordMetric('memory_heap_total', memUsage.heapTotal, 'bytes')
-      await this.recordMetric('memory_rss', memUsage.rss, 'bytes')
+    try {
+      // Enhanced environment detection for memory monitoring
+      if (
+        typeof process !== 'undefined' &&
+        process &&
+        process.memoryUsage &&
+        typeof process.memoryUsage === 'function' &&
+        typeof window === 'undefined' // Ensure we're in Node.js environment
+      ) {
+        const memUsage = process.memoryUsage()
+        await this.recordMetric('memory_heap_used', memUsage.heapUsed, 'bytes')
+        await this.recordMetric('memory_heap_total', memUsage.heapTotal, 'bytes')
+        await this.recordMetric('memory_rss', memUsage.rss, 'bytes')
+      } else if (
+        typeof window !== 'undefined' &&
+        window &&
+        'performance' in window &&
+        window.performance &&
+        'memory' in window.performance
+      ) {
+        // Browser environment - use Performance API
+        const memory = (window.performance as any).memory
+        if (memory && typeof memory.usedJSHeapSize === 'number') {
+          await this.recordMetric('memory_heap_used', memory.usedJSHeapSize, 'bytes')
+          await this.recordMetric('memory_heap_total', memory.totalJSHeapSize, 'bytes')
+          await this.recordMetric('memory_heap_limit', memory.jsHeapSizeLimit, 'bytes')
+        }
+      }
+      // Silently skip if no memory monitoring APIs are available
+    } catch (error) {
+      // Log error but don't throw to prevent breaking the health check cycle
+      logger.warn('MonitoringService', 'Failed to record memory usage', error)
     }
   }
 

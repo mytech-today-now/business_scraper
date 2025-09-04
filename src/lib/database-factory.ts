@@ -31,7 +31,7 @@ export async function getDatabaseInstance(): Promise<DatabaseInterface> {
     // Server-side: Use PostgreSQL
     if (!serverDatabase) {
       const config = {
-        host: process.env.DB_HOST || 'localhost',
+        host: process.env.DB_HOST || 'postgres',
         port: parseInt(process.env.DB_PORT || '5432'),
         database: process.env.DB_NAME || 'business_scraper',
         username: process.env.DB_USER || 'postgres',
@@ -40,7 +40,7 @@ export async function getDatabaseInstance(): Promise<DatabaseInterface> {
         poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
         poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
         idleTimeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
-        connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '5000'),
+        connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '30000'),
       }
 
       try {

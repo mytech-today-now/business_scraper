@@ -11,11 +11,18 @@ import { logger } from '@/utils/logger'
 import { getSecurityConfig } from '@/lib/config'
 import { getPostgresConnection } from './postgres-connection'
 
-// Database connection for NextAuth using postgres.js
-const sql = getPostgresConnection({
-  connectionString: process.env.DATABASE_URL || process.env.NEXTAUTH_DATABASE_URL,
-  ssl: false, // Explicitly disable SSL for local PostgreSQL container
-})
+// Lazy-loaded database connection for NextAuth
+let sql: any = null
+
+function getAuthDatabase() {
+  if (!sql) {
+    sql = getPostgresConnection({
+      connectionString: process.env.DATABASE_URL || process.env.NEXTAUTH_DATABASE_URL,
+      ssl: false, // Explicitly disable SSL for local PostgreSQL container
+    })
+  }
+  return sql
+}
 
 // User roles and permissions
 export enum UserRole {
@@ -140,7 +147,8 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Query user from database using postgres.js
-          const result = await sql`
+          const authDb = getAuthDatabase()
+          const result = await authDb`
             SELECT * FROM users WHERE email = ${credentials.email} AND is_active = true
           `
 
@@ -173,7 +181,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Update last login
-          await sql`UPDATE users SET last_login = NOW() WHERE id = ${user.id}`
+          await authDb`UPDATE users SET last_login = NOW() WHERE id = ${user.id}`
 
           // Get user permissions
           const permissions = ROLE_PERMISSIONS[user.role as UserRole] || []
@@ -262,7 +270,8 @@ export const authOptions: NextAuthOptions = {
 async function verifyMFACode(userId: string, code: string): Promise<boolean> {
   try {
     // Get user's MFA secret from database
-    const result = await sql`
+    const authDb = getAuthDatabase()
+    const result = await authDb`
       SELECT mfa_secret FROM users WHERE id = ${userId} AND mfa_enabled = true
     `
 
@@ -299,7 +308,8 @@ async function verifyMFACode(userId: string, code: string): Promise<boolean> {
  */
 async function logSecurityEvent(eventType: string, data: any): Promise<void> {
   try {
-    await sql`
+    const authDb = getAuthDatabase()
+    await authDb`
       INSERT INTO security_audit_log (event_type, event_data, created_at)
       VALUES (${eventType}, ${JSON.stringify(data)}, NOW())
     `
@@ -348,7 +358,8 @@ export async function generateMFASecret(
     })
 
     // Store secret in database (encrypted)
-    await sql`
+    const authDb = getAuthDatabase()
+    await authDb`
       UPDATE users SET mfa_secret = ${secret.base32}, mfa_enabled = false WHERE id = ${userId}
     `
 
@@ -380,7 +391,8 @@ export async function enableMFA(userId: string, verificationCode: string): Promi
     }
 
     // Enable MFA
-    await sql`UPDATE users SET mfa_enabled = true WHERE id = ${userId}`
+    const authDb = getAuthDatabase()
+    await authDb`UPDATE users SET mfa_enabled = true WHERE id = ${userId}`
 
     logger.info('Auth', `MFA enabled for user: ${userId}`)
     return true
@@ -395,7 +407,8 @@ export async function enableMFA(userId: string, verificationCode: string): Promi
  */
 export async function disableMFA(userId: string): Promise<boolean> {
   try {
-    await sql`UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = ${userId}`
+    const authDb = getAuthDatabase()
+    await authDb`UPDATE users SET mfa_enabled = false, mfa_secret = NULL WHERE id = ${userId}`
 
     logger.info('Auth', `MFA disabled for user: ${userId}`)
     return true

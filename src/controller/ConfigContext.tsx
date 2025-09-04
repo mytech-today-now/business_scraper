@@ -54,6 +54,8 @@ export type ConfigAction =
   | { type: 'TOGGLE_INDUSTRY'; payload: string }
   | { type: 'SELECT_ALL_INDUSTRIES' }
   | { type: 'DESELECT_ALL_INDUSTRIES' }
+  | { type: 'SELECT_SUB_CATEGORY_INDUSTRIES'; payload: string }
+  | { type: 'DESELECT_SUB_CATEGORY_INDUSTRIES'; payload: string }
   | { type: 'SET_SUB_CATEGORIES'; payload: IndustrySubCategory[] }
   | { type: 'ADD_SUB_CATEGORY'; payload: IndustrySubCategory }
   | { type: 'UPDATE_SUB_CATEGORY'; payload: IndustrySubCategory }
@@ -176,6 +178,47 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         },
       }
 
+    case 'SELECT_SUB_CATEGORY_INDUSTRIES': {
+      const subCategoryId = action.payload
+      const industriesInSubCategory = state.industries
+        .filter(industry => industry.subCategoryId === subCategoryId)
+        .map(industry => industry.id)
+
+      const newSelectedIndustries = [
+        ...state.selectedIndustries.filter(id => !industriesInSubCategory.includes(id)),
+        ...industriesInSubCategory
+      ]
+
+      return {
+        ...state,
+        selectedIndustries: newSelectedIndustries,
+        config: {
+          ...state.config,
+          industries: newSelectedIndustries,
+        },
+      }
+    }
+
+    case 'DESELECT_SUB_CATEGORY_INDUSTRIES': {
+      const subCategoryId = action.payload
+      const industriesInSubCategory = state.industries
+        .filter(industry => industry.subCategoryId === subCategoryId)
+        .map(industry => industry.id)
+
+      const newSelectedIndustries = state.selectedIndustries.filter(
+        id => !industriesInSubCategory.includes(id)
+      )
+
+      return {
+        ...state,
+        selectedIndustries: newSelectedIndustries,
+        config: {
+          ...state.config,
+          industries: newSelectedIndustries,
+        },
+      }
+    }
+
     case 'SET_SUB_CATEGORIES':
       return {
         ...state,
@@ -288,6 +331,8 @@ export interface ConfigContextType {
   toggleIndustry: (id: string) => void
   selectAllIndustries: () => void
   deselectAllIndustries: () => void
+  selectSubCategoryIndustries: (subCategoryId: string) => void
+  deselectSubCategoryIndustries: (subCategoryId: string) => void
 
   // Sub-category methods
   addSubCategory: (subCategory: Omit<IndustrySubCategory, 'id'>) => Promise<void>
@@ -811,6 +856,20 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   }
 
   /**
+   * Select all industries in a sub-category
+   */
+  const selectSubCategoryIndustries = (subCategoryId: string) => {
+    dispatch({ type: 'SELECT_SUB_CATEGORY_INDUSTRIES', payload: subCategoryId })
+  }
+
+  /**
+   * Deselect all industries in a sub-category
+   */
+  const deselectSubCategoryIndustries = (subCategoryId: string) => {
+    dispatch({ type: 'DESELECT_SUB_CATEGORY_INDUSTRIES', payload: subCategoryId })
+  }
+
+  /**
    * Toggle dark mode
    */
   const toggleDarkMode = () => {
@@ -997,6 +1056,8 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,
+    selectSubCategoryIndustries,
+    deselectSubCategoryIndustries,
     addSubCategory,
     updateSubCategory,
     removeSubCategory,

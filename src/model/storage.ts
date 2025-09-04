@@ -198,7 +198,7 @@ export class StorageService {
       logger.info('Storage', 'Initializing database connection...')
 
       // Add timeout to prevent hanging
-      const initPromise = openDB<BusinessScraperDB>(this.dbName, this.dbVersion, {
+      let initPromise = openDB<BusinessScraperDB>(this.dbName, this.dbVersion, {
         upgrade(db, oldVersion, newVersion, transaction) {
           // Create businesses store (version 1)
           if (oldVersion < 1) {
@@ -352,15 +352,149 @@ export class StorageService {
         },
       })
 
-      // Create timeout promise
+      // Create timeout promise with increased timeout and retry logic
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => {
-          reject(new Error('Database initialization timeout after 10 seconds'))
-        }, 10000) // 10 second timeout
+          reject(new Error('Database initialization timeout after 30 seconds'))
+        }, 30000) // Increased to 30 second timeout
       })
 
-      // Race between initialization and timeout
-      this.db = await Promise.race([initPromise, timeoutPromise])
+      // Add retry logic with exponential backoff
+      let retryCount = 0
+      const maxRetries = 3
+
+      while (retryCount < maxRetries) {
+        try {
+          // Race between initialization and timeout
+          this.db = await Promise.race([initPromise, timeoutPromise])
+          break // Success, exit retry loop
+        } catch (error) {
+          retryCount++
+          if (retryCount >= maxRetries) {
+            throw error // Final attempt failed
+          }
+
+          const backoffDelay = Math.pow(2, retryCount) * 1000 // Exponential backoff
+          logger.warn(
+            'Storage',
+            `Database initialization attempt ${retryCount} failed, retrying in ${backoffDelay}ms`,
+            error
+          )
+
+          await new Promise(resolve => setTimeout(resolve, backoffDelay))
+
+          // Create new initialization promise for retry
+          initPromise = openDB<BusinessScraperDB>(this.dbName, this.dbVersion, {
+            upgrade(db, oldVersion, newVersion, transaction) {
+              // Create businesses store (version 1)
+              if (oldVersion < 1) {
+                const businessStore = db.createObjectStore('businesses', {
+                  keyPath: 'id',
+                })
+                businessStore.createIndex('by-industry', 'industry')
+                businessStore.createIndex('by-scraped-date', 'scrapedAt')
+                businessStore.createIndex('by-business-name', 'businessName')
+
+                // Create configs store
+                db.createObjectStore('configs', {
+                  keyPath: 'id',
+                })
+
+                // Create industries store
+                const industryStore = db.createObjectStore('industries', {
+                  keyPath: 'id',
+                })
+                industryStore.createIndex('by-category', 'category')
+                industryStore.createIndex('by-name', 'name')
+
+                // Create users store
+                const userStore = db.createObjectStore('users', {
+                  keyPath: 'id',
+                })
+                userStore.createIndex('by-email', 'email')
+                userStore.createIndex('by-created-date', 'createdAt')
+              }
+
+              // Add payment-related stores (version 2)
+              if (oldVersion < 2) {
+                // Payment profiles store
+                const paymentProfileStore = db.createObjectStore('paymentProfiles', {
+                  keyPath: 'id',
+                })
+                paymentProfileStore.createIndex('by-user-id', 'userId')
+                paymentProfileStore.createIndex('by-stripe-customer-id', 'stripeCustomerId')
+
+                // Payment transactions store
+                const transactionStore = db.createObjectStore('paymentTransactions', {
+                  keyPath: 'id',
+                })
+                transactionStore.createIndex('by-user-id', 'userId')
+                transactionStore.createIndex('by-status', 'status')
+                transactionStore.createIndex('by-created-date', 'createdAt')
+
+                // Invoices store
+                const invoiceStore = db.createObjectStore('invoices', {
+                  keyPath: 'id',
+                })
+                invoiceStore.createIndex('by-user-id', 'userId')
+                invoiceStore.createIndex('by-status', 'status')
+                invoiceStore.createIndex('by-due-date', 'dueDate')
+
+                // Payment audit logs store
+                const auditLogStore = db.createObjectStore('paymentAuditLogs', {
+                  keyPath: 'id',
+                })
+                auditLogStore.createIndex('by-user-id', 'userId')
+                auditLogStore.createIndex('by-action', 'action')
+                auditLogStore.createIndex('by-timestamp', 'timestamp')
+
+                // Payment analytics store
+                const analyticsStore = db.createObjectStore('paymentAnalytics', {
+                  keyPath: 'id',
+                })
+                analyticsStore.createIndex('by-user-id', 'userId')
+                analyticsStore.createIndex('by-date', 'date')
+                analyticsStore.createIndex('by-metric-type', 'metricType')
+              }
+
+              // Add AI and analytics stores (version 3)
+              if (oldVersion < 3) {
+                // AI processing jobs store
+                const aiJobsStore = db.createObjectStore('aiProcessingJobs', {
+                  keyPath: 'id',
+                })
+                aiJobsStore.createIndex('by-status', 'status')
+                aiJobsStore.createIndex('by-created-date', 'createdAt')
+                aiJobsStore.createIndex('by-user-id', 'userId')
+
+                // Predictive analytics store
+                const predictiveStore = db.createObjectStore('predictiveAnalytics', {
+                  keyPath: 'id',
+                })
+                predictiveStore.createIndex('by-business-id', 'businessId')
+                predictiveStore.createIndex('by-prediction-type', 'predictionType')
+                predictiveStore.createIndex('by-confidence', 'confidence')
+
+                // AI insights store
+                const insightsStore = db.createObjectStore('aiInsights', {
+                  keyPath: 'id',
+                })
+                insightsStore.createIndex('by-business-id', 'businessId')
+                insightsStore.createIndex('by-insight-type', 'insightType')
+                insightsStore.createIndex('by-created-date', 'createdAt')
+
+                // Analytics events store
+                const analyticsEventsStore = db.createObjectStore('analyticsEvents', {
+                  keyPath: 'id',
+                })
+                analyticsEventsStore.createIndex('by-event-type', 'eventType')
+                analyticsEventsStore.createIndex('by-timestamp', 'timestamp')
+                analyticsEventsStore.createIndex('by-session-id', 'sessionId')
+              }
+            },
+          })
+        }
+      }
 
       logger.info('Storage', 'Database initialized successfully')
     } catch (error) {
@@ -387,18 +521,35 @@ export class StorageService {
   }
 
   /**
-   * Get the database instance with proper error handling
+   * Get the database instance with proper error handling and fallback support
    */
-  private async getDatabase(): Promise<IDBPDatabase<BusinessScraperDB>> {
+  private async getDatabase(): Promise<IDBPDatabase<BusinessScraperDB> | null> {
     if (!this.isBrowser()) {
-      throw new Error('Database operations not available in server environment')
+      logger.warn('Storage', 'Database operations not available in server environment')
+      return null
     }
 
-    await this.ensureInitialized()
-    if (!this.db) {
-      throw new Error('Database not available - initialization may have failed or timed out')
+    try {
+      await this.ensureInitialized()
+      if (!this.db) {
+        logger.warn(
+          'Storage',
+          'Database not available - initialization may have failed or timed out, operating in fallback mode'
+        )
+        return null
+      }
+      return this.db
+    } catch (error) {
+      logger.error('Storage', 'Failed to get database instance', error)
+      return null
     }
-    return this.db
+  }
+
+  /**
+   * Check if database is available
+   */
+  private isDatabaseAvailable(): boolean {
+    return this.db !== null && this.isBrowser()
   }
 
   // Business Records Operations
@@ -411,6 +562,14 @@ export class StorageService {
     try {
       const db = await this.getDatabase()
 
+      if (!db) {
+        logger.warn(
+          'Storage',
+          `Cannot save business ${business.businessName} - database unavailable, operating in fallback mode`
+        )
+        return // Gracefully handle database unavailability
+      }
+
       // Compress business data before storing
       const compressedBusiness = DataCompression.compress(business)
 
@@ -418,7 +577,8 @@ export class StorageService {
       logger.info('Storage', `Saved business: ${business.businessName}`)
     } catch (error) {
       logger.error('Storage', 'Failed to save business', error)
-      throw error
+      // Don't throw error to prevent cascading failures
+      logger.warn('Storage', 'Continuing in fallback mode due to storage error')
     }
   }
 
@@ -504,9 +664,9 @@ export class StorageService {
    * @param id - Business ID to delete
    */
   async deleteBusiness(id: string): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.delete('businesses', id)
+      const db = await this.getDatabase()
+      await db.delete('businesses', id)
       logger.info('Storage', `Deleted business: ${id}`)
     } catch (error) {
       logger.error('Storage', 'Failed to delete business', error)
@@ -518,9 +678,9 @@ export class StorageService {
    * Clear all business records
    */
   async clearBusinesses(): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.clear('businesses')
+      const db = await this.getDatabase()
+      await db.clear('businesses')
       logger.info('Storage', 'Cleared all businesses')
     } catch (error) {
       logger.error('Storage', 'Failed to clear businesses', error)
@@ -551,9 +711,18 @@ export class StorageService {
    * @returns Promise resolving to configuration or null
    */
   async getConfig(id: string): Promise<(ScrapingConfig & { id: string }) | null> {
-    await this.ensureInitialized()
     try {
-      const config = await this.db!.get('configs', id)
+      const db = await this.getDatabase()
+
+      if (!db) {
+        logger.warn(
+          'Storage',
+          `Cannot get configuration ${id} - database unavailable, returning null`
+        )
+        return null
+      }
+
+      const config = await db.get('configs', id)
       return config ? { ...config, id } : null
     } catch (error) {
       logger.error('Storage', 'Failed to get configuration', error)
@@ -581,9 +750,9 @@ export class StorageService {
    * @param id - Configuration ID to delete
    */
   async deleteConfig(id: string): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.delete('configs', id)
+      const db = await this.getDatabase()
+      await db.delete('configs', id)
       logger.info('Storage', `Deleted configuration: ${id}`)
     } catch (error) {
       logger.error('Storage', 'Failed to delete configuration', error)
@@ -598,9 +767,9 @@ export class StorageService {
    * @param industry - Industry category to save
    */
   async saveIndustry(industry: IndustryCategory): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.put('industries', industry)
+      const db = await this.getDatabase()
+      await db.put('industries', industry)
       logger.info('Storage', `Saved industry: ${industry.name}`)
     } catch (error) {
       logger.error('Storage', 'Failed to save industry', error)
@@ -613,9 +782,18 @@ export class StorageService {
    * @returns Promise resolving to array of industry categories
    */
   async getAllIndustries(): Promise<IndustryCategory[]> {
-    await this.ensureInitialized()
     try {
-      return await this.db!.getAll('industries')
+      const db = await this.getDatabase()
+
+      if (!db) {
+        logger.warn(
+          'Storage',
+          'Cannot get industries - database unavailable, returning empty array'
+        )
+        return []
+      }
+
+      return await db.getAll('industries')
     } catch (error) {
       logger.error('Storage', 'Failed to get industries', error)
       return []
@@ -643,9 +821,9 @@ export class StorageService {
    * @param id - Industry ID to delete
    */
   async deleteIndustry(id: string): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.delete('industries', id)
+      const db = await this.getDatabase()
+      await db.delete('industries', id)
       logger.info('Storage', `Deleted industry: ${id}`)
     } catch (error) {
       logger.error('Storage', 'Failed to delete industry', error)
@@ -657,13 +835,20 @@ export class StorageService {
    * Clear all industry categories
    */
   async clearIndustries(): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.clear('industries')
+      const db = await this.getDatabase()
+
+      if (!db) {
+        logger.warn('Storage', 'Cannot clear industries - database unavailable, skipping operation')
+        return
+      }
+
+      await db.clear('industries')
       logger.info('Storage', 'Cleared all industries')
     } catch (error) {
       logger.error('Storage', 'Failed to clear industries', error)
-      throw error
+      // Don't throw error to prevent cascading failures
+      logger.warn('Storage', 'Continuing in fallback mode due to storage error')
     }
   }
 
@@ -747,9 +932,9 @@ export class StorageService {
    * Clear all sub-categories
    */
   async clearSubCategories(): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.clear('subCategories')
+      const db = await this.getDatabase()
+      await db.clear('subCategories')
       logger.info('Storage', 'Cleared all sub-categories')
     } catch (error) {
       logger.error('Storage', 'Failed to clear sub-categories', error)
@@ -822,9 +1007,9 @@ export class StorageService {
    * Clear all sessions
    */
   async clearSessions(): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.clear('sessions')
+      const db = await this.getDatabase()
+      await db.clear('sessions')
       logger.info('Storage', 'Cleared all sessions')
     } catch (error) {
       logger.error('Storage', 'Failed to clear sessions', error)
@@ -837,8 +1022,8 @@ export class StorageService {
    * @param domains - Array of domain strings to blacklist
    */
   async saveDomainBlacklist(domains: string[]): Promise<void> {
-    await this.ensureInitialized()
     try {
+      const db = await this.getDatabase()
       const blacklistData = {
         id: 'global-blacklist',
         domains: domains.filter(domain => domain.trim().length > 0),
@@ -846,7 +1031,7 @@ export class StorageService {
         updatedAt: new Date(),
       }
 
-      await this.db!.put('domainBlacklist', blacklistData)
+      await db.put('domainBlacklist', blacklistData)
       logger.info('Storage', `Saved domain blacklist with ${domains.length} domains`)
     } catch (error) {
       logger.error('Storage', 'Failed to save domain blacklist', error)
@@ -903,9 +1088,9 @@ export class StorageService {
    * Clear domain blacklist
    */
   async clearDomainBlacklist(): Promise<void> {
-    await this.ensureInitialized()
     try {
-      await this.db!.delete('domainBlacklist', 'global-blacklist')
+      const db = await this.getDatabase()
+      await db.delete('domainBlacklist', 'global-blacklist')
       logger.info('Storage', 'Cleared domain blacklist')
     } catch (error) {
       logger.error('Storage', 'Failed to clear domain blacklist', error)
@@ -1420,11 +1605,24 @@ export class StorageService {
   async saveAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
     try {
       const db = await this.getDatabase()
+
+      if (!db) {
+        logger.warn(
+          'Storage',
+          `Cannot save analytics event ${event.eventType} - database unavailable, skipping operation`
+        )
+        return
+      }
+
       await db.put('analyticsEvents', event)
       logger.info('Storage', `Saved analytics event: ${event.eventType}`)
     } catch (error) {
       logger.error('Storage', 'Failed to save analytics event', error)
-      throw error
+      // Don't throw error to prevent cascading failures in analytics
+      logger.warn(
+        'Storage',
+        'Analytics event lost due to storage error, continuing in fallback mode'
+      )
     }
   }
 

@@ -18,7 +18,7 @@ import { DataRetentionService } from '@/lib/compliance/retention'
 // Mock postgres.js
 const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
 mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-mockSql.begin = jest.fn().mockImplementation((fn) => fn(mockSql))
+mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
 mockSql.end = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('postgres', () => jest.fn().mockImplementation(() => mockSql))

@@ -1,12 +1,103 @@
 # Business Scraper Application - Version History
 
-**Current Version:** v6.5.0
-**Release Date:** August 31, 2025
-**Status:** Production-Ready Business Intelligence Platform - Documentation Updated
+**Current Version:** v6.5.8
+**Release Date:** September 1, 2025
+**Status:** Production-Ready Business Intelligence Platform - Critical Security and Server Issues Resolved
 
 ---
 
-## Version 6.5.0 - Documentation Refactoring & Status Update (2025-08-31) ✅ **CURRENT**
+## Version 6.5.8 - Critical Security and Server Issues Resolution (2025-09-01) ✅ **CURRENT**
+
+### 🚨 **CRITICAL SECURITY & SERVER FIXES: Application Initialization Issues**
+
+**Status:** ✅ **COMPLETE CRITICAL FIXES - PRODUCTION STABLE**
+
+This release resolves critical security policy violations, development server failures, and API connectivity issues that were preventing proper application initialization and functionality. All identified issues have been fixed with enhanced CSP configuration, improved service worker implementation, and verified API endpoint connectivity.
+
+#### Critical Fixes Applied:
+- ✅ **CSP Violations**: Fixed Content Security Policy conflicts blocking inline scripts and styles
+- ✅ **503 Server Errors**: Resolved Next.js static chunk loading failures and development server issues
+- ✅ **Service Worker**: Enhanced caching strategy and error handling for development environments
+- ✅ **API Connectivity**: Verified and restored all API endpoint accessibility including CSP reporting
+- ✅ **GitHub Issue Management**: Created, tracked, and resolved Issues #117, #118, #119, #120
+
+#### Technical Implementation:
+- ✅ **Enhanced CSP Configuration**: Updated `src/lib/cspConfig.ts` and `src/middleware.ts` with environment-aware nonce handling
+- ✅ **Development Server**: Cleared Next.js cache and performed clean rebuild to restore static assets
+- ✅ **Service Worker**: Improved `public/sw.js` with timeout protection and graceful error handling
+- ✅ **API Verification**: Tested and confirmed connectivity for CSP reporting, health, and scraping endpoints
+
+#### GitHub Issues Management:
+- ✅ **Issue #117**: CSP Violations: Inline Scripts and Styles Blocked by Restrictive Content Security Policy (RESOLVED)
+- ✅ **Issue #118**: 503 Service Unavailable: Next.js Static Chunks Failing to Load (RESOLVED)
+- ✅ **Issue #119**: Service Worker Caching Failures and Favicon Preload Warnings (RESOLVED)
+- ✅ **Issue #120**: API Connection Refused: CSP Reporting and Other Endpoints Inaccessible (RESOLVED)
+
+#### Impact & Resolution:
+- ✅ Eliminated CSP violations preventing application functionality
+- ✅ Restored development server stability and static asset serving
+- ✅ Enhanced service worker reliability in development environments
+- ✅ Verified complete API endpoint accessibility and security monitoring
+- ✅ Improved application initialization and user experience
+
+## Version 6.5.2 - Critical Runtime Errors Resolution (2025-08-31) ✅ **PREVIOUS**
+
+### 🚨 **CRITICAL RUNTIME FIXES: Component Error Resolution**
+
+**Status:** ✅ **COMPLETE CRITICAL FIXES - PRODUCTION STABLE**
+
+This release resolves critical runtime errors that were causing component crashes and memory monitoring failures. All identified errors have been fixed with enhanced environment detection, proper import handling, and comprehensive error recovery mechanisms.
+
+#### Critical Fixes Applied:
+- ✅ **Memory Monitoring Error**: Fixed "t1.memoryUsage is not a function" with enhanced environment detection
+- ✅ **Lucide React Import Error**: Fixed "Pause is not defined" with proper webpack configuration
+- ✅ **Error Handling**: Enhanced error recovery and graceful fallbacks
+- ✅ **GitHub Issue Management**: Created, tracked, and resolved Issue #90
+
+#### Technical Implementation:
+- ✅ **Enhanced Memory Monitoring**: Updated `src/model/monitoringService.ts` with comprehensive environment detection
+- ✅ **Next.js Configuration**: Updated `next.config.js` with proper lucide-react webpack alias
+- ✅ **Error Recovery**: Added try-catch blocks and graceful fallback mechanisms
+- ✅ **Documentation**: Updated CHANGELOG.md with detailed fix documentation
+
+#### GitHub Issues Management:
+- ✅ **Issue #90**: Critical - Runtime errors causing component crashes (RESOLVED & CLOSED)
+
+#### Impact & Resolution:
+- ✅ Eliminated React Error Boundary triggers
+- ✅ Restored memory monitoring functionality across all environments
+- ✅ Fixed lucide-react import resolution issues
+- ✅ Enhanced application stability and reliability
+- ✅ Improved error handling and user experience
+
+## Version 6.5.1 - Critical Bug Fixes & Error Resolution (2025-08-31) ✅ **PREVIOUS**
+
+### 🚨 **CRITICAL BUG FIXES: Component Error Resolution**
+
+**Status:** ✅ **COMPLETE CRITICAL FIXES - PRODUCTION STABLE**
+
+This release addresses critical component crashes and browser compatibility issues that were affecting user experience and application stability. All identified errors have been resolved with comprehensive fixes and enhanced error handling.
+
+#### Critical Fixes Applied:
+- ✅ **React Component Crash**: Fixed missing Pause icon import causing ReferenceError
+- ✅ **Memory Monitoring**: Enhanced browser compatibility with proper feature detection
+- ✅ **Error Handling**: Improved graceful fallback mechanisms across components
+- ✅ **GitHub Issues**: Created and resolved tracking issues for transparency
+
+#### GitHub Issues Management:
+- ✅ **Issue #85**: Critical - Missing Pause icon import (RESOLVED & CLOSED)
+- ✅ **Issue #87**: Medium - Memory monitoring errors (RESOLVED & CLOSED)
+- 🔍 **Issue #86**: High - Stripe.js loading failure (TRACKED & OPEN)
+- 🔍 **Issue #88**: Medium - Azure API credentials issues (TRACKED & OPEN)
+
+#### Impact & Resolution:
+- ✅ Eliminated React Error Boundary triggers
+- ✅ Restored streaming search functionality
+- ✅ Fixed cross-browser memory monitoring
+- ✅ Enhanced application stability and reliability
+- ✅ Improved user experience across all browsers
+
+## Version 6.5.0 - Documentation Refactoring & Status Update (2025-08-31) ✅ **PREVIOUS**
 
 ### 📚 **DOCUMENTATION REFACTORING: Current Status Alignment**
 

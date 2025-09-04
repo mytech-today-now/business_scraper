@@ -120,24 +120,31 @@ export function usePerformanceMetrics(
    * Update memory usage metrics
    */
   const updateMemoryUsage = useCallback(() => {
-    if ('memory' in performance) {
-      const memoryInfo = (performance as any).memory
-      const currentMemory = memoryInfo.usedJSHeapSize
+    try {
+      if (typeof window !== 'undefined' && 'performance' in window && 'memory' in performance) {
+        const memoryInfo = (performance as any).memory
+        if (memoryInfo && typeof memoryInfo.usedJSHeapSize === 'number') {
+          const currentMemory = memoryInfo.usedJSHeapSize
 
-      // Log warning if memory usage exceeds threshold
-      if (currentMemory > thresholds.maxMemoryUsage) {
-        logger.warn(`${componentName} memory usage exceeded threshold`, {
-          memoryUsage: currentMemory,
-          threshold: thresholds.maxMemoryUsage,
-          componentName,
-        })
+          // Log warning if memory usage exceeds threshold
+          if (currentMemory > thresholds.maxMemoryUsage) {
+            logger.warn(`${componentName} memory usage exceeded threshold`, {
+              memoryUsage: currentMemory,
+              threshold: thresholds.maxMemoryUsage,
+              componentName,
+            })
+          }
+
+          setMetrics(prev => ({
+            ...prev,
+            memoryUsage: currentMemory,
+            peakMemoryUsage: Math.max(prev.peakMemoryUsage, currentMemory),
+          }))
+        }
       }
-
-      setMetrics(prev => ({
-        ...prev,
-        memoryUsage: currentMemory,
-        peakMemoryUsage: Math.max(prev.peakMemoryUsage, currentMemory),
-      }))
+    } catch (error) {
+      // Silently handle memory API access errors
+      console.warn('Memory monitoring not available in updateMemoryUsage:', error)
     }
   }, [componentName, thresholds.maxMemoryUsage])
 

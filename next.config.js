@@ -1,23 +1,7 @@
 /** @type {import('next').NextConfig} */
 
-// CSP configuration for static headers
-const getStaticCSPHeader = () => {
-  // Basic CSP for static responses (will be enhanced by middleware)
-  return [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https:",
-    "font-src 'self' data:",
-    "connect-src 'self' https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com https://api.stripe.com https://checkout.stripe.com",
-    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
-    "object-src 'none'",
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "form-action 'self' https://checkout.stripe.com",
-    'upgrade-insecure-requests',
-  ].join('; ')
-}
+// Note: CSP is now handled entirely by middleware to ensure proper nonce support
+// Static CSP headers removed to prevent conflicts with dynamic nonce-based CSP
 
 const nextConfig = {
   // Image optimization configuration
@@ -70,19 +54,27 @@ const nextConfig = {
         buffer: false,
       }
     }
+
+    // Ensure proper handling of lucide-react imports
+    try {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'lucide-react': require.resolve('lucide-react'),
+      }
+    } catch (error) {
+      console.warn('lucide-react not found, skipping alias configuration')
+    }
+
     return config
   },
 
-  // Enhanced security headers with CSP
+  // Basic security headers (CSP handled by middleware for proper nonce support)
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: getStaticCSPHeader(),
-          },
+          // CSP removed - handled by middleware with proper nonce support
           {
             key: 'X-Frame-Options',
             value: 'DENY',
@@ -103,10 +95,11 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
           },
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'credentialless',
-          },
+          // COEP disabled to allow Stripe.js loading
+          // {
+          //   key: 'Cross-Origin-Embedder-Policy',
+          //   value: 'unsafe-none',
+          // },
           {
             key: 'Cross-Origin-Opener-Policy',
             value: 'same-origin',
@@ -155,17 +148,16 @@ const nextConfig = {
   },
 
   // Production optimizations
-  swcMinify: true,
   compress: true,
   poweredByHeader: false,
   generateEtags: false,
 
-  // Enable standalone output for Docker deployment
-  output: 'standalone',
+  // Enable standalone output for Docker deployment (only in production)
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 
   // Experimental features for better build performance
   experimental: {
-    // Modern experimental features
+    // Re-enable lucide-react optimization with proper configuration
     optimizePackageImports: ['lucide-react'],
   },
 
