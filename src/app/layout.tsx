@@ -6,6 +6,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary'
 import { ServiceWorkerRegistration } from '../components/ServiceWorkerRegistration'
 import { StripeProvider } from '@/view/components/payments/StripeProvider'
 import { PaymentSystemInitializer } from '../components/PaymentSystemInitializer'
+import { getCSPNonce } from '@/lib/cspUtils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,8 +17,8 @@ export const metadata: Metadata = {
   authors: [{ name: 'Business Scraper Team' }],
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
     ],
     shortcut: '/favicon.ico',
     apple: '/favicon.png',
@@ -34,6 +35,9 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+  // Get CSP nonce for this request (server-side only)
+  const nonce = getCSPNonce()
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -48,12 +52,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <meta name="apple-mobile-web-app-title" content="Business Scraper" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-TileColor" content="#2563eb" />
-        <link rel="preload" href="/favicon.ico" as="image" type="image/x-icon" />
+        {/* CSP nonce for client-side access */}
+        {nonce && <meta name="csp-nonce" content={nonce} />}
+        {/* Removed favicon preload to prevent unused resource warning - favicon is loaded via metadata.icons */}
         <link rel="dns-prefetch" href="https://js.stripe.com" />
         <link rel="preconnect" href="https://js.stripe.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#2563eb" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/favicon.png" />
+        {/* Set global CSP nonce for client-side access */}
+        {nonce && (
+          <script
+            nonce={nonce}
+            dangerouslySetInnerHTML={{
+              __html: `window.__CSP_NONCE__ = '${nonce}';`,
+            }}
+          />
+        )}
       </head>
       <body className={inter.className}>
         <ErrorBoundary level="page" showDetails={process.env.NODE_ENV === 'development'}>
