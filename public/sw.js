@@ -5,13 +5,12 @@ const CACHE_NAME = 'business-scraper-v1.0.0'
 const STATIC_CACHE_NAME = 'business-scraper-static-v1.0.0'
 const DYNAMIC_CACHE_NAME = 'business-scraper-dynamic-v1.0.0'
 
-// Static assets to cache immediately
+// Static assets to cache immediately (only include assets that definitely exist)
 const STATIC_ASSETS = [
-  '/',
-  '/favicon.ico',
-  '/favicon.png',
   '/manifest.json',
-  // Add other static assets as needed
+  '/favicon.png', // Use PNG favicon as primary (more reliable than ICO)
+  // Note: favicon.ico removed temporarily due to server errors
+  // Root path '/' removed to prevent caching failures during development
 ]
 
 // API endpoints to cache
@@ -34,19 +33,53 @@ const MAX_CACHE_SIZE = 100
  */
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...')
-  
+
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME)
-      .then((cache) => {
+      .then(async (cache) => {
         console.log('[SW] Caching static assets')
-        return cache.addAll(STATIC_ASSETS)
-      })
-      .then(() => {
-        console.log('[SW] Static assets cached successfully')
+
+        // Cache assets individually to handle 404s gracefully
+        const cachePromises = STATIC_ASSETS.map(async (asset) => {
+          try {
+            // Add timeout to prevent hanging requests
+            const controller = new AbortController()
+            const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+            const response = await fetch(asset, {
+              signal: controller.signal,
+              cache: 'no-cache' // Ensure fresh fetch during development
+            })
+            clearTimeout(timeoutId)
+
+            if (response.ok) {
+              await cache.put(asset, response)
+              console.log(`[SW] Cached: ${asset}`)
+            } else {
+              // Only log warnings for unexpected errors (not 404s for optional assets)
+              if (response.status !== 404 || !asset.includes('favicon')) {
+                console.warn(`[SW] Skipped caching ${asset}: ${response.status}`)
+              }
+            }
+          } catch (error) {
+            // Reduce console noise for expected development server issues
+            if (error.name !== 'AbortError') {
+              // Only log errors for critical assets, not favicons
+              if (!asset.includes('favicon')) {
+                console.warn(`[SW] Failed to cache ${asset}:`, error.message)
+              }
+            }
+          }
+        })
+
+        await Promise.allSettled(cachePromises)
+        console.log('[SW] Static asset caching completed')
         return self.skipWaiting()
       })
       .catch((error) => {
-        console.error('[SW] Failed to cache static assets:', error)
+        console.error('[SW] Cache initialization failed:', error)
+        // Continue installation even if caching fails
+        return self.skipWaiting()
       })
   )
 })
@@ -103,36 +136,79 @@ self.addEventListener('fetch', (event) => {
  */
 async function handleFetch(request) {
   const url = new URL(request.url)
-  
+
   try {
     // Strategy 1: Static assets - Cache First
     if (STATIC_ASSETS.some(asset => url.pathname === asset)) {
-      return await cacheFirst(request, STATIC_CACHE_NAME)
+      const response = await cacheFirst(request, STATIC_CACHE_NAME)
+      if (response instanceof Response) return response
     }
 
     // Strategy 2: API endpoints - Network First with cache fallback
     if (API_CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
-      return await networkFirst(request, DYNAMIC_CACHE_NAME)
+      const response = await networkFirst(request, DYNAMIC_CACHE_NAME)
+      if (response instanceof Response) return response
     }
 
     // Strategy 3: Dynamic assets - Stale While Revalidate
     if (DYNAMIC_CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
-      return await staleWhileRevalidate(request, DYNAMIC_CACHE_NAME)
+      const response = await staleWhileRevalidate(request, DYNAMIC_CACHE_NAME)
+      if (response instanceof Response) return response
     }
 
     // Strategy 4: HTML pages - Network First
     if (request.headers.get('accept')?.includes('text/html')) {
-      return await networkFirst(request, DYNAMIC_CACHE_NAME)
+      const response = await networkFirst(request, DYNAMIC_CACHE_NAME)
+      if (response instanceof Response) return response
     }
 
     // Default: Network only
-    return await fetch(request)
+    const networkResponse = await fetch(request)
+    if (networkResponse instanceof Response) {
+      return networkResponse
+    }
+
+    // If we get here, something went wrong - return fallback
+    return await getOfflineFallback(request)
 
   } catch (error) {
-    console.error('[SW] Fetch failed:', error)
-    
-    // Return offline fallback if available
-    return await getOfflineFallback(request)
+    // Only log errors for critical resources or unexpected failures
+    // Reduce console noise for expected network failures during development
+    const url = new URL(request.url)
+    const isDevServer = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+    const isNextJSChunk = url.pathname.includes('/_next/static/')
+
+    // Only log errors for non-development or critical resources
+    if (!isDevServer || (!isNextJSChunk && !url.pathname.includes('/api/'))) {
+      console.warn('[SW] Network request failed:', {
+        url: request.url,
+        method: request.method,
+        error: error.message
+      })
+    }
+
+    // Always return a valid Response object
+    try {
+      const fallback = await getOfflineFallback(request)
+      if (fallback instanceof Response) {
+        return fallback
+      }
+    } catch (fallbackError) {
+      // Only log fallback errors for critical resources
+      if (!isDevServer || !isNextJSChunk) {
+        console.warn('[SW] Fallback failed:', fallbackError.message)
+      }
+    }
+
+    // Last resort: return a basic error response
+    return new Response(
+      JSON.stringify({ error: 'Service unavailable' }),
+      {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
   }
 }
 
@@ -188,18 +264,48 @@ async function networkFirst(request, cacheName) {
 async function staleWhileRevalidate(request, cacheName) {
   const cache = await caches.open(cacheName)
   const cachedResponse = await cache.match(request)
-  
+
   // Start network request in background
   const networkPromise = fetch(request)
     .then((networkResponse) => {
-      if (networkResponse.ok) {
+      if (networkResponse && networkResponse.ok) {
         cache.put(request, networkResponse.clone())
         limitCacheSize(cacheName, MAX_CACHE_SIZE)
       }
       return networkResponse
     })
-    .catch(() => {
-      // Network failed, but we might have cache
+    .catch((error) => {
+      // Reduce console noise for expected development server failures
+      const url = new URL(request.url)
+      const isDevServer = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+      const isNextJSChunk = url.pathname.includes('/_next/static/')
+      const isFavicon = url.pathname.includes('favicon')
+
+      // Only log network failures for critical resources or production
+      if (!isDevServer || (!isNextJSChunk && !url.pathname.includes('/api/') && !isFavicon)) {
+        console.warn('[SW] Network request failed in staleWhileRevalidate:', {
+          url: request.url,
+          error: error.message,
+          timestamp: new Date().toISOString()
+        })
+      }
+
+      // For Stripe.js failures, provide more helpful context without excessive logging
+      if (url.hostname === 'js.stripe.com') {
+        // Only log Stripe.js failures once per session to avoid spam
+        if (!self.stripeFailureLogged) {
+          console.info('[SW] Stripe.js temporarily unavailable - this is expected during service outages:', {
+            url: request.url,
+            error: error.message,
+            timestamp: new Date().toISOString(),
+            note: 'Payment features will retry automatically when service is restored'
+          })
+          self.stripeFailureLogged = true
+        }
+      }
+
+      // Return null to indicate network failure
+      return null
     })
 
   // Return cached version immediately if available
@@ -208,7 +314,17 @@ async function staleWhileRevalidate(request, cacheName) {
   }
 
   // Wait for network if no cache available
-  return await networkPromise
+  try {
+    const networkResponse = await networkPromise
+    if (networkResponse && networkResponse instanceof Response) {
+      return networkResponse
+    }
+    // If network failed and no cache, return offline fallback
+    return await getOfflineFallback(request)
+  } catch (error) {
+    console.error('[SW] Failed to get network response:', error)
+    return await getOfflineFallback(request)
+  }
 }
 
 /**
