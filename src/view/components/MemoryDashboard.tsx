@@ -18,6 +18,7 @@ import {
   HardDrive,
   Clock,
 } from 'lucide-react'
+import { createCSPSafeStyle } from '@/lib/cspUtils'
 import { useMemoryMonitor, useMemoryFormatter } from '@/hooks/useMemoryMonitor'
 import { Button } from './ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
@@ -119,7 +120,7 @@ export function MemoryDashboard({
             <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-300 ${getMemoryStatusBgColor(currentStats.percentage, thresholds)}`}
-                style={{ width: `${Math.min(currentStats.percentage, 100)}%` }}
+                style={createCSPSafeStyle({ width: `${Math.min(currentStats.percentage, 100)}%` })}
               />
             </div>
           </>
@@ -174,7 +175,7 @@ export function MemoryDashboard({
             <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-500 ${getMemoryStatusBgColor(currentStats.percentage, thresholds)}`}
-                style={{ width: `${Math.min(currentStats.percentage, 100)}%` }}
+                style={createCSPSafeStyle({ width: `${Math.min(currentStats.percentage, 100)}%` })}
               />
             </div>
 

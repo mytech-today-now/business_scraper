@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import {
   Play,
+  Pause,
   Square,
   Settings,
   Moon,
@@ -37,6 +38,7 @@ import { AnalyticsDashboard } from './analytics/AnalyticsDashboard'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
+import { createCSPSafeStyle } from '@/lib/cspUtils'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
 import { Breadcrumb, useBreadcrumbItems } from './ui/Breadcrumb'
 import { ExportService, ExportFormat, ExportTemplate } from '@/utils/exportService'
@@ -698,12 +700,12 @@ function ScrapingPanel(): JSX.Element {
                       ? 'bg-yellow-500 animate-pulse'
                       : 'bg-primary'
                   }`}
-                  style={{
+                  style={createCSPSafeStyle({
                     width:
                       scrapingState.currentUrl === 'Stopping scraping...'
                         ? '100%'
                         : `${scrapingState.progress.percentage}%`,
-                  }}
+                  })}
                 />
               </div>
               {scrapingState.currentUrl && (

@@ -1,5 +1,6 @@
 import React from 'react'
 import { clsx } from 'clsx'
+import { createCSPSafeStyle } from '@/lib/cspUtils'
 
 /**
  * Progress bar variant types
@@ -96,7 +97,7 @@ export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
               stripedClasses,
               animatedClasses
             )}
-            style={{ width: `${percentage}%` }}
+            style={createCSPSafeStyle({ width: `${percentage}%` })}
           />
         </div>
       </div>

@@ -42,6 +42,8 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
     toggleIndustry,
     selectAllIndustries,
     deselectAllIndustries,
+    selectSubCategoryIndustries,
+    deselectSubCategoryIndustries,
     removeIndustry,
     updateIndustry,
     addCustomIndustry,
@@ -452,18 +454,10 @@ export function CategorySelector({ disabled = false }: CategorySelectorProps): J
   const toggleSubCategorySelection = (group: IndustryGroup): void => {
     if (group.isSelected) {
       // Deselect all industries in this group
-      group.industries.forEach(industry => {
-        if (state.selectedIndustries.includes(industry.id)) {
-          toggleIndustry(industry.id)
-        }
-      })
+      deselectSubCategoryIndustries(group.subCategory.id)
     } else {
       // Select all industries in this group
-      group.industries.forEach(industry => {
-        if (!state.selectedIndustries.includes(industry.id)) {
-          toggleIndustry(industry.id)
-        }
-      })
+      selectSubCategoryIndustries(group.subCategory.id)
     }
   }
 

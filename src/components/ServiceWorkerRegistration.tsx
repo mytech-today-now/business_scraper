@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useOfflineSupport } from '@/hooks/useOfflineSupport'
 import { logger } from '@/utils/logger'
 import toast from 'react-hot-toast'
@@ -36,6 +36,8 @@ export function ServiceWorkerRegistration(): null {
     ) {
       registerServiceWorker()
     }
+    // Note: In development, service worker registration is disabled to prevent caching issues
+    // Any existing service workers will be automatically unregistered by the browser when not in use
   }, [])
 
   const registerServiceWorker = async () => {
@@ -223,15 +225,22 @@ export function ServiceWorkerRegistration(): null {
  * Hook to check if app is running as PWA
  */
 export function useIsPWA(): boolean {
-  useEffect(() => {
-    if (typeof window === 'undefined') return false
+  const [isPWA, setIsPWA] = useState(false)
 
-    return (
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true ||
-      document.referrer.includes('android-app://')
-    )
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const checkPWA = () => {
+      const isPWAMode = (
+        window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator as any).standalone === true ||
+        document.referrer.includes('android-app://')
+      )
+      setIsPWA(isPWAMode)
+    }
+
+    checkPWA()
   }, [])
 
-  return false
+  return isPWA
 }
