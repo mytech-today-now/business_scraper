@@ -96,7 +96,7 @@ const customJestConfig = {
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
   coverageDirectory: 'coverage',
   // Test result processing with retry support
-  testRunner: 'jest-circus/runner',
+  testRunner: 'jest-circus',
   // Global test configuration
   globals: {
     'ts-jest': {
