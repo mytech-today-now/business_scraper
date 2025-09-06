@@ -33,6 +33,7 @@ export function useCSRFProtection(): CSRFHookResult {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [retryCount, setRetryCount] = useState<number>(0)
+  const [lastFetchAttempt, setLastFetchAttempt] = useState<number>(0)
 
   /**
    * Fetch CSRF token from the server
@@ -42,9 +43,17 @@ export function useCSRFProtection(): CSRFHookResult {
   const fetchCSRFToken = useCallback(async (retryAttempt: number = 0): Promise<void> => {
     const maxRetries = 3
     const retryDelay = Math.min(1000 * Math.pow(2, retryAttempt), 5000) // Exponential backoff, max 5s
+    const now = Date.now()
+
+    // Prevent rapid successive calls (minimum 1 second between attempts)
+    if (now - lastFetchAttempt < 1000 && retryAttempt === 0) {
+      return
+    }
 
     try {
       setIsLoading(true)
+      setLastFetchAttempt(now)
+
       if (retryAttempt === 0) {
         setError(null)
         setRetryCount(0)
@@ -96,9 +105,14 @@ export function useCSRFProtection(): CSRFHookResult {
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch CSRF token'
+      const isNetworkError = errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')
+      const is401Error = errorMessage.includes('401')
 
-      // Retry logic with exponential backoff
-      if (retryAttempt < maxRetries) {
+      // Don't retry on 401 errors after the middleware fix - they should not happen
+      // Only retry on network errors or 5xx server errors
+      const shouldRetry = retryAttempt < maxRetries && (isNetworkError || (!is401Error && !errorMessage.includes('400')))
+
+      if (shouldRetry) {
         logger.warn('CSRF', `CSRF token fetch failed (attempt ${retryAttempt + 1}/${maxRetries + 1}), retrying in ${retryDelay}ms`, err)
 
         setTimeout(() => {
@@ -108,9 +122,13 @@ export function useCSRFProtection(): CSRFHookResult {
         return // Don't set error or stop loading yet
       }
 
-      // All retries exhausted
-      setError(`${errorMessage} (after ${maxRetries + 1} attempts)`)
-      logger.error('CSRF', `Failed to fetch CSRF token after ${maxRetries + 1} attempts`, err)
+      // All retries exhausted or non-retryable error
+      const finalError = is401Error
+        ? 'Authentication error - please refresh the page'
+        : `${errorMessage}${retryAttempt > 0 ? ` (after ${retryAttempt + 1} attempts)` : ''}`
+
+      setError(finalError)
+      logger.error('CSRF', `Failed to fetch CSRF token: ${finalError}`, err)
       setIsLoading(false)
     }
 
@@ -118,7 +136,7 @@ export function useCSRFProtection(): CSRFHookResult {
     if (!error) {
       setIsLoading(false)
     }
-  }, [])
+  }, [lastFetchAttempt])
 
   /**
    * Check if current token is valid and not expired
