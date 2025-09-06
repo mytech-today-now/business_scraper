@@ -188,14 +188,22 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Show CSRF error only if it's not a 401 (which is expected during initial load) and not loading */}
-            {csrfError && !csrfLoading && !csrfError.includes('401') && (
+            {/* Show CSRF error with better messaging */}
+            {csrfError && !csrfLoading && (
               <div className="rounded-md bg-red-50 p-4">
                 <div className="text-sm text-red-700">
-                  {csrfError}
-                  {csrfError.includes('after') && (
+                  {csrfError.includes('401')
+                    ? 'Security token initialization failed. Please refresh the page.'
+                    : csrfError
+                  }
+                  {(csrfError.includes('after') || csrfError.includes('Authentication error')) && (
                     <div className="mt-1">
-                      If this persists, please refresh the page.
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="text-red-800 underline hover:text-red-900"
+                      >
+                        Refresh page
+                      </button>
                     </div>
                   )}
                 </div>
