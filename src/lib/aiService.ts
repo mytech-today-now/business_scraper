@@ -5,7 +5,7 @@
  * Phase 2: AI & Automation Enhancement (v1.10.0)
  */
 
-import * as tf from '@tensorflow/tfjs'
+import { ready, sequential, layers, tensor2d, type LayersModel, type Tensor } from '@tensorflow/tfjs'
 import { HfInference } from '@huggingface/inference'
 import { BusinessRecord } from '@/types/business'
 import {
@@ -27,7 +27,7 @@ import { logger } from '@/utils/logger'
 export class AIService {
   private config: AIServiceConfig
   private hfInference: HfInference | null = null
-  private models: Map<string, tf.LayersModel> = new Map()
+  private models: Map<string, LayersModel> = new Map()
   private initialized = false
 
   constructor(config: AIServiceConfig) {
@@ -50,7 +50,7 @@ export class AIService {
       logger.info('AIService', 'Initializing AI service...')
 
       // Initialize TensorFlow.js
-      await tf.ready()
+      await ready()
       logger.info('AIService', 'TensorFlow.js initialized')
 
       // Load pre-trained models (if available)
@@ -73,12 +73,12 @@ export class AIService {
       // In production, these would be loaded from saved model files
 
       // Lead scoring model (simple neural network)
-      const leadScoringModel = tf.sequential({
+      const leadScoringModel = sequential({
         layers: [
-          tf.layers.dense({ inputShape: [10], units: 64, activation: 'relu' }),
-          tf.layers.dropout({ rate: 0.2 }),
-          tf.layers.dense({ units: 32, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'sigmoid' }),
+          layers.dense({ inputShape: [10], units: 64, activation: 'relu' }),
+          layers.dropout({ rate: 0.2 }),
+          layers.dense({ units: 32, activation: 'relu' }),
+          layers.dense({ units: 1, activation: 'sigmoid' }),
         ],
       })
 
@@ -92,11 +92,11 @@ export class AIService {
       logger.info('AIService', 'Lead scoring model loaded')
 
       // Website quality model
-      const websiteQualityModel = tf.sequential({
+      const websiteQualityModel = sequential({
         layers: [
-          tf.layers.dense({ inputShape: [8], units: 32, activation: 'relu' }),
-          tf.layers.dense({ units: 16, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'linear' }),
+          layers.dense({ inputShape: [8], units: 32, activation: 'relu' }),
+          layers.dense({ units: 16, activation: 'relu' }),
+          layers.dense({ units: 1, activation: 'linear' }),
         ],
       })
 
@@ -175,7 +175,7 @@ export class AIService {
       // Use ML model if available
       const model = this.models.get('leadScoring')
       if (model) {
-        const prediction = model.predict(tf.tensor2d([features])) as tf.Tensor
+        const prediction = model.predict(tensor2d([features])) as Tensor
         const scoreArray = await prediction.data()
         overallScore = Math.round(scoreArray[0] * 100)
         confidence = 0.8 // Model confidence

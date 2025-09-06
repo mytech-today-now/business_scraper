@@ -18,6 +18,8 @@ export interface CSRFHookResult {
   refreshToken: () => Promise<void>
   getHeaders: () => Record<string, string>
   isTokenValid: () => boolean
+  tokenId?: string | null
+  isTemporary?: boolean
 }
 
 /**
@@ -25,19 +27,33 @@ export interface CSRFHookResult {
  */
 export function useCSRFProtection(): CSRFHookResult {
   const [csrfToken, setCSRFToken] = useState<string | null>(null)
+  const [tokenId, setTokenId] = useState<string | null>(null)
+  const [isTemporary, setIsTemporary] = useState<boolean>(false)
   const [expiresAt, setExpiresAt] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState<number>(0)
 
   /**
    * Fetch CSRF token from the server
+   * First tries the public endpoint, then falls back to the auth endpoint
+   * Includes retry logic for better reliability
    */
-  const fetchCSRFToken = useCallback(async (): Promise<void> => {
+  const fetchCSRFToken = useCallback(async (retryAttempt: number = 0): Promise<void> => {
+    const maxRetries = 3
+    const retryDelay = Math.min(1000 * Math.pow(2, retryAttempt), 5000) // Exponential backoff, max 5s
+
     try {
       setIsLoading(true)
-      setError(null)
+      if (retryAttempt === 0) {
+        setError(null)
+        setRetryCount(0)
+      } else {
+        setRetryCount(retryAttempt)
+      }
 
-      const response = await fetch('/api/auth', {
+      // First, try to get a temporary CSRF token from the public endpoint
+      let response = await fetch('/api/csrf', {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -53,29 +69,53 @@ export function useCSRFProtection(): CSRFHookResult {
 
       if (data.csrfToken) {
         setCSRFToken(data.csrfToken)
+        setTokenId(data.tokenId || null)
+        setIsTemporary(data.temporary || false)
         setExpiresAt(data.expiresAt ? new Date(data.expiresAt).getTime() : Date.now() + 3600000)
 
         // Also check for token in response headers
         const headerToken = response.headers.get('X-CSRF-Token')
+        const headerTokenId = response.headers.get('X-CSRF-Token-ID')
         const headerExpires = response.headers.get('X-CSRF-Expires')
 
         if (headerToken) {
           setCSRFToken(headerToken)
         }
 
+        if (headerTokenId) {
+          setTokenId(headerTokenId)
+        }
+
         if (headerExpires) {
           setExpiresAt(parseInt(headerExpires, 10))
         }
 
-        logger.info('CSRF', 'CSRF token fetched successfully')
+        logger.info('CSRF', 'CSRF token fetched successfully from /api/csrf')
       } else {
         throw new Error('No CSRF token in response')
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch CSRF token'
-      setError(errorMessage)
-      logger.error('CSRF', 'Failed to fetch CSRF token', err)
-    } finally {
+
+      // Retry logic with exponential backoff
+      if (retryAttempt < maxRetries) {
+        logger.warn('CSRF', `CSRF token fetch failed (attempt ${retryAttempt + 1}/${maxRetries + 1}), retrying in ${retryDelay}ms`, err)
+
+        setTimeout(() => {
+          fetchCSRFToken(retryAttempt + 1)
+        }, retryDelay)
+
+        return // Don't set error or stop loading yet
+      }
+
+      // All retries exhausted
+      setError(`${errorMessage} (after ${maxRetries + 1} attempts)`)
+      logger.error('CSRF', `Failed to fetch CSRF token after ${maxRetries + 1} attempts`, err)
+      setIsLoading(false)
+    }
+
+    // Only set loading to false on success (error case handles it above)
+    if (!error) {
       setIsLoading(false)
     }
   }, [])
@@ -112,10 +152,15 @@ export function useCSRFProtection(): CSRFHookResult {
 
     if (csrfToken) {
       headers['X-CSRF-Token'] = csrfToken
+
+      // Include token ID for temporary tokens
+      if (tokenId && isTemporary) {
+        headers['X-CSRF-Token-ID'] = tokenId
+      }
     }
 
     return headers
-  }, [csrfToken])
+  }, [csrfToken, tokenId, isTemporary])
 
   /**
    * Auto-refresh token when it's about to expire
@@ -156,6 +201,8 @@ export function useCSRFProtection(): CSRFHookResult {
     refreshToken,
     getHeaders,
     isTokenValid,
+    tokenId,
+    isTemporary,
   }
 }
 
@@ -175,7 +222,7 @@ export function useFormCSRFProtection(): {
   ) => Promise<Response>
   isTokenValid: () => boolean
 } {
-  const { csrfToken, isLoading, error, refreshToken, isTokenValid } = useCSRFProtection()
+  const { csrfToken, isLoading, error, refreshToken, isTokenValid, getHeaders } = useCSRFProtection()
 
   /**
    * Get CSRF input field for forms
@@ -223,11 +270,16 @@ export function useFormCSRFProtection(): {
         throw new Error('CSRF token validation failed')
       }
 
-      // Prepare headers
+      // Prepare headers using the getHeaders method (includes token ID for temporary tokens)
+      const csrfHeaders = getHeaders()
       const headers = new Headers(options.headers)
-      if (csrfToken) {
-        headers.set('X-CSRF-Token', csrfToken)
-      }
+
+      // Add CSRF headers
+      Object.entries(csrfHeaders).forEach(([key, value]) => {
+        if (key !== 'Content-Type' || !headers.has('Content-Type')) {
+          headers.set(key, value)
+        }
+      })
 
       // Prepare body
       let body: string | FormData

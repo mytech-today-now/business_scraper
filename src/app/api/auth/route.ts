@@ -18,6 +18,7 @@ import {
 import { getOAuthContext } from '@/lib/oauth/oauth-middleware'
 import { logger } from '@/utils/logger'
 import { auditService } from '@/model/auditService'
+import { invalidateTemporaryCSRFToken } from '../csrf/route'
 
 // Legacy single user credentials (for backward compatibility)
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin'
@@ -100,6 +101,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Create session
     const session = createSession()
 
+    // Invalidate temporary CSRF token if it was used for login
+    const tempTokenId = request.headers.get('x-csrf-token-id')
+    if (tempTokenId) {
+      invalidateTemporaryCSRFToken(tempTokenId)
+      logger.info('Auth', `Invalidated temporary CSRF token: ${tempTokenId}`)
+    }
+
     // Set session cookie
     const response = NextResponse.json({
       success: true,
@@ -169,35 +177,4 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-/**
- * GET /api/auth - Check session status
- */
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  try {
-    const sessionId = request.cookies.get('session-id')?.value
 
-    if (!sessionId) {
-      return NextResponse.json({ authenticated: false }, { status: 401 })
-    }
-
-    const session = getSession(sessionId)
-
-    if (!session || !session.isValid) {
-      const response = NextResponse.json({ authenticated: false }, { status: 401 })
-      response.cookies.delete('session-id')
-      return response
-    }
-
-    return NextResponse.json({
-      authenticated: true,
-      sessionId: session.id,
-      csrfToken: session.csrfToken,
-      expiresAt: new Date(
-        session.lastAccessed.getTime() + defaultSecurityConfig.sessionTimeout
-      ).toISOString(),
-    })
-  } catch (error) {
-    logger.error('Auth', 'Session check error', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}

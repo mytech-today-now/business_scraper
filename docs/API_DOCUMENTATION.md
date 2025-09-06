@@ -20,15 +20,48 @@ Production: https://your-domain.com/api
 
 ## 🔐 Authentication
 
-Currently, the API uses session-based authentication. Future versions will
-include API key authentication for programmatic access.
+The API uses session-based authentication with CSRF protection. The authentication flow involves:
+
+1. **CSRF Token Generation**: Get a temporary CSRF token for login
+2. **Login**: Authenticate with username/password and CSRF token
+3. **Session Management**: Use session cookies for subsequent requests
+
+### CSRF Protection
+
+All state-changing requests require CSRF tokens for security. The API provides two types of CSRF tokens:
+
+- **Temporary Tokens**: For unauthenticated requests (e.g., login)
+- **Session Tokens**: For authenticated requests
 
 ```typescript
-// Authentication headers (when implemented)
+// CSRF headers for requests
 {
-  "Authorization": "Bearer <api-key>",
+  "X-CSRF-Token": "<csrf-token>",
+  "X-CSRF-Token-ID": "<token-id>", // Only for temporary tokens
   "Content-Type": "application/json"
 }
+```
+
+### Authentication Flow
+
+```typescript
+// 1. Get temporary CSRF token
+const csrfResponse = await fetch('/api/csrf')
+const { csrfToken, tokenId } = await csrfResponse.json()
+
+// 2. Login with CSRF protection
+const loginResponse = await fetch('/api/auth', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': csrfToken,
+    'X-CSRF-Token-ID': tokenId
+  },
+  body: JSON.stringify({ username, password })
+})
+
+// 3. Use session for subsequent requests
+const { sessionId, csrfToken: sessionCsrfToken } = await loginResponse.json()
 ```
 
 ## 📊 Response Format
@@ -71,6 +104,61 @@ interface APIResponse<T> {
   "version": "3.7.0"
 }
 ```
+
+## 🔐 CSRF Token API
+
+### Get CSRF Token
+
+**Endpoint**: `GET /api/csrf`
+**Description**: Generate a temporary CSRF token for unauthenticated requests (e.g., login)
+
+This endpoint provides CSRF tokens without requiring authentication, solving the chicken-and-egg problem where CSRF tokens are needed for login but login is needed for CSRF tokens.
+
+#### Response
+
+```typescript
+interface CSRFTokenResponse {
+  csrfToken: string      // The CSRF token to include in requests
+  tokenId: string        // Unique identifier for the token
+  expiresAt: string      // ISO timestamp when token expires
+  temporary: boolean     // Always true for this endpoint
+}
+```
+
+#### Example Request
+
+```bash
+curl -X GET http://localhost:3000/api/csrf \
+  -H "Accept: application/json"
+```
+
+#### Example Response
+
+```json
+{
+  "csrfToken": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+  "tokenId": "temp_12345678",
+  "expiresAt": "2025-09-05T01:15:00.000Z",
+  "temporary": true
+}
+```
+
+#### Headers Set
+
+The endpoint also sets the following headers and cookies:
+
+- **Cookie**: `csrf-token` (accessible to JavaScript)
+- **Header**: `X-CSRF-Token` (token value)
+- **Header**: `X-CSRF-Token-ID` (token identifier)
+- **Header**: `X-CSRF-Expires` (expiration timestamp)
+- **Header**: `X-CSRF-Temporary` (always "true")
+
+#### Usage Notes
+
+- Tokens expire after 10 minutes
+- Tokens are tied to the requesting IP address
+- Use `X-CSRF-Token` and `X-CSRF-Token-ID` headers in subsequent requests
+- Tokens are automatically invalidated after successful login
 
 ## 🔍 Business Search API
 

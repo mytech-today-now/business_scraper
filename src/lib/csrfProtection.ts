@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { getSession, generateSecureToken } from './security'
 import { logger } from '@/utils/logger'
+import { validateTemporaryCSRFToken } from '@/app/api/csrf/route'
 
 export interface CSRFTokenInfo {
   token: string
@@ -124,6 +125,29 @@ export class CSRFProtectionService {
         isValid: false,
         error: 'Token validation error',
       }
+    }
+  }
+
+  /**
+   * Validate temporary CSRF token for unauthenticated requests (e.g., login)
+   */
+  validateTemporaryCSRFToken(token: string, tokenId: string, request: NextRequest): CSRFValidationResult {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+
+    const validation = validateTemporaryCSRFToken(tokenId, token, ip)
+
+    if (!validation.isValid) {
+      logger.warn('CSRF', `Temporary CSRF token validation failed: ${validation.error}`)
+      return {
+        isValid: false,
+        error: validation.error || 'Invalid temporary CSRF token',
+        needsRefresh: true,
+      }
+    }
+
+    logger.info('CSRF', `Temporary CSRF token validated successfully for IP: ${ip}`)
+    return {
+      isValid: true,
     }
   }
 
@@ -281,20 +305,14 @@ export function validateCSRFMiddleware(request: NextRequest): NextResponse | nul
   }
 
   // Skip CSRF for public routes
-  const publicRoutes = ['/api/health', '/api/auth']
+  const publicRoutes = ['/api/health', '/api/auth', '/api/csrf']
   if (publicRoutes.some(route => pathname.startsWith(route))) {
     return null
   }
 
   const sessionId = request.cookies.get('session-id')?.value
-  if (!sessionId) {
-    return new NextResponse(JSON.stringify({ error: 'Session required for CSRF protection' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    })
-  }
-
   const csrfToken = request.headers.get('x-csrf-token')
+
   if (!csrfToken) {
     return new NextResponse(JSON.stringify({ error: 'CSRF token required' }), {
       status: 403,
@@ -302,6 +320,44 @@ export function validateCSRFMiddleware(request: NextRequest): NextResponse | nul
     })
   }
 
+  // Handle temporary CSRF tokens for login requests (when no session exists)
+  if (!sessionId && pathname === '/api/auth' && method === 'POST') {
+    const tokenId = request.headers.get('x-csrf-token-id')
+
+    if (!tokenId) {
+      return new NextResponse(JSON.stringify({ error: 'CSRF token ID required for login' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const validation = csrfProtectionService.validateTemporaryCSRFToken(csrfToken, tokenId, request)
+    if (!validation.isValid) {
+      return new NextResponse(
+        JSON.stringify({
+          error: validation.error || 'CSRF validation failed',
+          needsRefresh: validation.needsRefresh,
+        }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    // Temporary token is valid, allow the request to proceed
+    return null
+  }
+
+  // For all other requests, require a session
+  if (!sessionId) {
+    return new NextResponse(JSON.stringify({ error: 'Session required for CSRF protection' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  // Validate regular session-based CSRF token
   const validation = csrfProtectionService.validateCSRFToken(sessionId, csrfToken, request)
   if (!validation.isValid) {
     return new NextResponse(

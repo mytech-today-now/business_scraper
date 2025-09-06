@@ -5,7 +5,41 @@
 
 import { NextRequest } from 'next/server'
 import { getClientIP } from './security'
-import { logger } from '@/utils/logger'
+
+// Simple Edge-compatible logger for middleware
+const edgeLogger = {
+  info: (component: string, message: string, data?: any) => {
+    console.info(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: 'INFO',
+      component,
+      message,
+      ...(data && { data })
+    }))
+  },
+  warn: (component: string, message: string, data?: any) => {
+    console.warn(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: 'WARN',
+      component,
+      message,
+      ...(data && { data })
+    }))
+  },
+  error: (component: string, message: string, error?: any, data?: any) => {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: 'ERROR',
+      component,
+      message,
+      ...(error && { error: error.toString() }),
+      ...(data && { data })
+    }))
+  }
+}
+
+// Use the simple edge logger for middleware
+const logger = edgeLogger
 
 export interface SecurityEvent {
   id: string

@@ -1,9 +1,24 @@
 'use strict'
 
-import * as fs from 'fs'
-import * as path from 'path'
-import * as os from 'os'
+// Edge runtime compatible imports
 import { getLoggingConfig } from '@/lib/config'
+
+// Check if we're in Edge runtime
+const isEdgeRuntime = typeof EdgeRuntime !== 'undefined' ||
+  (typeof process !== 'undefined' && process.env.NEXT_RUNTIME === 'edge')
+
+// Conditionally import Node.js modules only in Node.js runtime
+let fs: any, path: any, os: any
+if (!isEdgeRuntime) {
+  try {
+    fs = require('fs')
+    path = require('path')
+    os = require('os')
+  } catch (error) {
+    // Fallback for Edge runtime
+    console.warn('Node.js modules not available in Edge runtime, file logging disabled')
+  }
+}
 
 /**
  * Log levels enum
@@ -94,6 +109,13 @@ export class Logger {
    */
   private initializeFileLogging(): void {
     if (!this.config.filePath) return
+
+    // Skip file logging in Edge runtime
+    if (isEdgeRuntime || !fs || !path) {
+      console.warn('Logger: File logging not available in Edge runtime')
+      this.config.enableFile = false
+      return
+    }
 
     try {
       // Ensure log directory exists
@@ -196,8 +218,9 @@ export class Logger {
       message,
       data,
       error,
-      pid: process.pid,
-      hostname: typeof window === 'undefined' ? os.hostname() : 'browser',
+      pid: typeof process !== 'undefined' ? process.pid : undefined,
+      hostname: isEdgeRuntime ? 'edge-runtime' :
+                typeof window === 'undefined' && os ? os.hostname() : 'browser',
     }
 
     // Console logging
@@ -384,7 +407,7 @@ export class Logger {
    * Rotate log file when it gets too large
    */
   private async rotateLogFile(): Promise<void> {
-    if (this.fileRotationInProgress || !this.config.filePath) {
+    if (this.fileRotationInProgress || !this.config.filePath || isEdgeRuntime || !fs) {
       return
     }
 

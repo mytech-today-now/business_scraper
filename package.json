@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "6.6.5",
+  "version": "6.7.0",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
@@ -104,7 +104,9 @@
     "stripe:webhooks": "node scripts/stripe-setup.js webhooks",
     "payments:setup": "npm run stripe:products && npm run stripe:webhooks",
     "payments:test": "npm run test:payments && npm run test:payments:integration",
-    "payments:validate": "node scripts/validate-payment-config.js"
+    "payments:validate": "node scripts/validate-payment-config.js",
+    "analyze": "cross-env ANALYZE=true next build",
+    "bundle:analyze": "npx @next/bundle-analyzer"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.10.0",
@@ -117,7 +119,7 @@
     "@types/cookie-parser": "^1.4.0",
     "@types/cors": "^2.8.0",
     "@types/crypto-js": "^4.2.2",
-    "@types/d3": "^7.4.3",
+
     "@types/ioredis": "^5.0.0",
     "@types/leaflet": "^1.9.20",
     "@types/lz-string": "^1.3.34",
@@ -139,7 +141,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
-    "d3": "^7.9.0",
+
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "express-prometheus-middleware": "^1.2.0",
@@ -155,7 +157,7 @@
     "lucide-react": "^0.292.0",
     "lz-string": "^1.5.0",
     "marked": "^16.2.0",
-    "ml-matrix": "^6.12.1",
+
     "natural": "^8.1.0",
     "next": "^14.0.0",
     "next-auth": "^4.24.11",
@@ -178,7 +180,7 @@
     "recharts": "^3.1.2",
     "redis": "^5.8.2",
     "response-time": "^2.3.4",
-    "sentiment": "^5.0.2",
+
     "simple-statistics": "^7.8.8",
     "speakeasy": "^2.0.0",
     "stripe": "^18.5.0",

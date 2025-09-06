@@ -8,7 +8,7 @@
 import lighthouse from 'lighthouse'
 import * as chromeLauncher from 'chrome-launcher'
 import { HfInference } from '@huggingface/inference'
-import natural from 'natural'
+import { SentenceTokenizer, WordTokenizer } from 'natural'
 import compromise from 'compromise'
 import { BusinessRecord } from '@/types/business'
 import { WebsiteQualityAnalysis } from '@/types/ai'
@@ -297,8 +297,8 @@ export class WebsiteQualityAnalyzer {
 
     try {
       // Use Natural's sentence tokenizer
-      const sentences = natural.SentenceTokenizer.tokenize(content)
-      const words = natural.WordTokenizer.tokenize(content)
+      const sentences = SentenceTokenizer.tokenize(content)
+      const words = WordTokenizer.tokenize(content)
 
       if (sentences.length === 0 || words.length === 0) return 0
 

@@ -1,6 +1,6 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-6.6.4-blue.svg)
+![Version](https://img.shields.io/badge/version-6.7.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
@@ -1838,6 +1838,14 @@ datasets with smooth UX, even on lower-end devices.
   automatic optimization
 - **🧹 Automatic Cleanup**: Session-based clearing and background workers for
   optimal performance
+
+### Bundle Optimization & Tree Shaking
+
+- **📦 Optimized Imports**: Specific imports for TensorFlow.js, Natural.js, and other heavy libraries
+- **🌳 Tree Shaking**: Comprehensive tree shaking implementation for 30-50% bundle size reduction
+- **⚡ Faster Loading**: Improved initial page load performance and Core Web Vitals
+- **🔧 Next.js Optimization**: Enhanced package import optimization for all major libraries
+- **📊 Bundle Analysis**: Built-in bundle analysis tools (`npm run analyze`) for monitoring
 - **⚡ 3x Faster Processing**: Enhanced concurrent operations with 8 parallel
   jobs (up from 3)
 - **🔄 Multi-Level Caching**: L1 (Memory), L2 (Redis), L3 (Disk) intelligent

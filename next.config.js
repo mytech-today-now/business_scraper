@@ -157,8 +157,17 @@ const nextConfig = {
 
   // Experimental features for better build performance
   experimental: {
-    // Re-enable lucide-react optimization with proper configuration
-    optimizePackageImports: ['lucide-react'],
+    // Optimize package imports for tree shaking
+    optimizePackageImports: [
+      'lucide-react',
+      '@tensorflow/tfjs',
+      'natural',
+      'compromise',
+      'simple-statistics',
+      'lighthouse',
+      'recharts',
+      'date-fns'
+    ],
   },
 
   // Configure static export behavior

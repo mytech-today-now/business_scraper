@@ -176,10 +176,11 @@ export default function LoginPage() {
               />
             </div>
 
-            {(error || csrfError) && (
+            {/* Show error messages only if not loading and there's a real error */}
+            {error && !csrfLoading && (
               <div className="rounded-md bg-red-50 p-4">
                 <div className="text-sm text-red-700">
-                  {error || csrfError}
+                  {error}
                   {retryAfter > 0 && (
                     <div className="mt-1 font-medium">Retry in {retryAfter} seconds</div>
                   )}
@@ -187,7 +188,22 @@ export default function LoginPage() {
               </div>
             )}
 
-            {csrfLoading && (
+            {/* Show CSRF error only if it's not a 401 (which is expected during initial load) and not loading */}
+            {csrfError && !csrfLoading && !csrfError.includes('401') && (
+              <div className="rounded-md bg-red-50 p-4">
+                <div className="text-sm text-red-700">
+                  {csrfError}
+                  {csrfError.includes('after') && (
+                    <div className="mt-1">
+                      If this persists, please refresh the page.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Show loading message only during initial load or when explicitly loading */}
+            {csrfLoading && !csrfToken && (
               <div className="rounded-md bg-blue-50 p-4">
                 <div className="text-sm text-blue-700">Loading security token...</div>
               </div>

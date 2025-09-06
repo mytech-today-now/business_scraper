@@ -3,7 +3,7 @@
  * Implements machine learning algorithms to score business leads based on multiple criteria
  */
 
-import * as tf from '@tensorflow/tfjs'
+import { sequential, layers, train, tensor2d, type LayersModel, type Tensor } from '@tensorflow/tfjs'
 import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
 
@@ -75,7 +75,7 @@ const DEFAULT_CONFIG: ScoringConfig = {
  * AI Lead Scoring Service
  */
 export class AILeadScoringService {
-  private model: tf.LayersModel | null = null
+  private model: LayersModel | null = null
   private config: ScoringConfig
   private isInitialized = false
 
@@ -91,18 +91,18 @@ export class AILeadScoringService {
       logger.info('AILeadScoring', 'Initializing AI lead scoring model...')
 
       // Create a simple neural network for lead scoring
-      this.model = tf.sequential({
+      this.model = sequential({
         layers: [
-          tf.layers.dense({ inputShape: [6], units: 16, activation: 'relu' }),
-          tf.layers.dropout({ rate: 0.2 }),
-          tf.layers.dense({ units: 8, activation: 'relu' }),
-          tf.layers.dense({ units: 1, activation: 'sigmoid' }),
+          layers.dense({ inputShape: [6], units: 16, activation: 'relu' }),
+          layers.dropout({ rate: 0.2 }),
+          layers.dense({ units: 8, activation: 'relu' }),
+          layers.dense({ units: 1, activation: 'sigmoid' }),
         ],
       })
 
       // Compile the model
       this.model.compile({
-        optimizer: tf.train.adam(0.001),
+        optimizer: train.adam(0.001),
         loss: 'meanSquaredError',
         metrics: ['accuracy'],
       })
@@ -125,8 +125,8 @@ export class AILeadScoringService {
     // Generate synthetic training data
     const trainingData = this.generateSyntheticTrainingData(1000)
 
-    const xs = tf.tensor2d(trainingData.features)
-    const ys = tf.tensor2d(trainingData.labels, [trainingData.labels.length, 1])
+    const xs = tensor2d(trainingData.features)
+    const ys = tensor2d(trainingData.labels, [trainingData.labels.length, 1])
 
     await this.model!.fit(xs, ys, {
       epochs: 50,
@@ -373,7 +373,7 @@ export class AILeadScoringService {
   private async calculateMLScore(factors: ScoreFactors): Promise<number> {
     if (!this.model) return 0.5
 
-    const input = tf.tensor2d([
+    const input = tensor2d([
       [
         factors.dataCompleteness / 100,
         factors.contactQuality / 100,
@@ -384,7 +384,7 @@ export class AILeadScoringService {
       ],
     ])
 
-    const prediction = this.model.predict(input) as tf.Tensor
+    const prediction = this.model.predict(input) as Tensor
     const score = await prediction.data()
 
     input.dispose()
