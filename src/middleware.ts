@@ -27,7 +27,7 @@ function generateUUID(): string {
 }
 
 // Public routes that don't require authentication
-const publicRoutes = ['/api/health', '/login', '/favicon.ico', '/_next', '/static']
+const publicRoutes = ['/api/health', '/api/csrf', '/login', '/favicon.ico', '/_next', '/static']
 
 // API routes that require rate limiting with their types
 const rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {
