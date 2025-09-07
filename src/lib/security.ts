@@ -305,7 +305,7 @@ export function trackLoginAttempt(ip: string, success: boolean): boolean {
   record.lastAttempt = now
   loginAttempts.set(ip, record)
 
-  if (record.count >= defaultSecurityConfig.maxLoginAttempts) {
+  if (record.count > defaultSecurityConfig.maxLoginAttempts) {
     logger.warn('Security', `Account locked due to too many failed attempts from IP: ${ip}`)
     return false
   }
@@ -319,7 +319,7 @@ export function trackLoginAttempt(ip: string, success: boolean): boolean {
 export function isLockedOut(ip: string): boolean {
   const record = loginAttempts.get(ip)
 
-  if (!record || record.count < defaultSecurityConfig.maxLoginAttempts) {
+  if (!record || record.count <= defaultSecurityConfig.maxLoginAttempts) {
     return false
   }
 

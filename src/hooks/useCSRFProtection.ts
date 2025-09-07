@@ -3,7 +3,7 @@
  * Provides CSRF token management for forms and API requests
  */
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { logger } from '@/utils/logger'
 
 export interface CSRFToken {
@@ -33,7 +33,7 @@ export function useCSRFProtection(): CSRFHookResult {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [retryCount, setRetryCount] = useState<number>(0)
-  const [lastFetchAttempt, setLastFetchAttempt] = useState<number>(0)
+  const lastFetchAttemptRef = useRef<number>(0)
 
   /**
    * Fetch CSRF token from the server
@@ -46,13 +46,13 @@ export function useCSRFProtection(): CSRFHookResult {
     const now = Date.now()
 
     // Prevent rapid successive calls (minimum 1 second between attempts)
-    if (now - lastFetchAttempt < 1000 && retryAttempt === 0) {
+    if (now - lastFetchAttemptRef.current < 1000 && retryAttempt === 0) {
       return
     }
 
     try {
       setIsLoading(true)
-      setLastFetchAttempt(now)
+      lastFetchAttemptRef.current = now
 
       if (retryAttempt === 0) {
         setError(null)
@@ -100,6 +100,7 @@ export function useCSRFProtection(): CSRFHookResult {
         }
 
         logger.info('CSRF', 'CSRF token fetched successfully from /api/csrf')
+        setIsLoading(false)
       } else {
         throw new Error('No CSRF token in response')
       }
@@ -131,12 +132,7 @@ export function useCSRFProtection(): CSRFHookResult {
       logger.error('CSRF', `Failed to fetch CSRF token: ${finalError}`, err)
       setIsLoading(false)
     }
-
-    // Only set loading to false on success (error case handles it above)
-    if (!error) {
-      setIsLoading(false)
-    }
-  }, [lastFetchAttempt])
+  }, [])
 
   /**
    * Check if current token is valid and not expired
@@ -181,21 +177,17 @@ export function useCSRFProtection(): CSRFHookResult {
   }, [csrfToken, tokenId, isTemporary])
 
   /**
-   * Auto-refresh token when it's about to expire
+   * Initial token fetch and setup
    */
   useEffect(() => {
-    if (!isTokenValid() && !isLoading) {
-      fetchCSRFToken()
-    }
-  }, [isTokenValid, isLoading, fetchCSRFToken])
+    // Initial fetch
+    fetchCSRFToken()
 
-  /**
-   * Set up automatic token refresh
-   */
-  useEffect(() => {
+    // Set up automatic token refresh
     const interval = setInterval(
       () => {
-        if (!isTokenValid()) {
+        const now = Date.now()
+        if (expiresAt && now >= expiresAt - 60000) { // Refresh 1 minute before expiry
           fetchCSRFToken()
         }
       },
@@ -203,14 +195,7 @@ export function useCSRFProtection(): CSRFHookResult {
     ) // Check every 5 minutes
 
     return () => clearInterval(interval)
-  }, [isTokenValid, fetchCSRFToken])
-
-  /**
-   * Initial token fetch
-   */
-  useEffect(() => {
-    fetchCSRFToken()
-  }, [fetchCSRFToken])
+  }, []) // Empty dependency array to run only once
 
   return {
     csrfToken,

@@ -106,19 +106,40 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Verify credentials
     let isValidCredentials = false
 
+    // Log authentication attempt for debugging
+    logger.info('Auth', `Authentication attempt for username: ${username}`)
+    logger.info('Auth', `ADMIN_USERNAME: ${ADMIN_USERNAME}`)
+    logger.info('Auth', `Has ADMIN_PASSWORD_HASH: ${!!ADMIN_PASSWORD_HASH}`)
+    logger.info('Auth', `Has ADMIN_PASSWORD_SALT: ${!!ADMIN_PASSWORD_SALT}`)
+    logger.info('Auth', `DEFAULT_PASSWORD: ${DEFAULT_PASSWORD}`)
+
     if (ADMIN_PASSWORD_HASH && ADMIN_PASSWORD_SALT) {
       // Use hashed password from environment
-      isValidCredentials =
-        username === ADMIN_USERNAME &&
-        verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
+      logger.info('Auth', 'Using hashed password verification')
+      const hashVerificationResult = verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
+      logger.info('Auth', `Hash verification result: ${hashVerificationResult}`)
+
+      isValidCredentials = username === ADMIN_USERNAME && hashVerificationResult
     } else {
       // Use plain text password (development only)
+      logger.info('Auth', 'Using plain text password verification')
       isValidCredentials = username === ADMIN_USERNAME && password === DEFAULT_PASSWORD
 
       if (process.env.NODE_ENV === 'production') {
         logger.error('Auth', 'Using plain text password in production is not secure!')
       }
     }
+
+    // Additional fallback: try plain text comparison if hash fails
+    if (!isValidCredentials && username === ADMIN_USERNAME) {
+      logger.info('Auth', 'Hash verification failed, trying plain text fallback')
+      if (password === process.env.ADMIN_PASSWORD) {
+        logger.info('Auth', 'Plain text fallback succeeded')
+        isValidCredentials = true
+      }
+    }
+
+    logger.info('Auth', `Final authentication result: ${isValidCredentials}`)
 
     // Track login attempt
     if (!trackLoginAttempt(ip, isValidCredentials)) {

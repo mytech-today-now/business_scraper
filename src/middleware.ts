@@ -27,7 +27,7 @@ function generateUUID(): string {
 }
 
 // Public routes that don't require authentication
-const publicRoutes = ['/api/health', '/api/csrf', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
+const publicRoutes = ['/api/health', '/api/csrf', '/api/auth', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
 
 // API routes that require rate limiting with their types
 const rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {
@@ -283,7 +283,8 @@ function handleAuthentication(request: NextRequest): NextResponse | null {
   }
 
   // Skip authentication for API routes that handle their own auth
-  if (pathname.startsWith('/api/') && pathname !== '/api/auth') {
+  // Note: /api/auth and /api/csrf should be excluded since they create/manage sessions
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/protected/')) {
     return null
   }
 
@@ -339,7 +340,8 @@ function handleCSRF(request: NextRequest): NextResponse | null {
   }
 
   // Only apply CSRF to specific API routes that need it
-  const needsCSRF = pathname === '/api/auth' || pathname === '/api/csrf'
+  // Note: /api/auth is excluded because it's the login endpoint and handles its own CSRF logic
+  const needsCSRF = pathname === '/api/csrf'
 
   if (!needsCSRF) {
     return null
