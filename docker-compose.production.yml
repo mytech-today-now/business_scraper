@@ -1,72 +1,105 @@
-# Production Docker Compose Configuration
+# =============================================================================
+# DOCKER PRODUCTION COMPOSE CONFIGURATION
+# Business Scraper App - Containerized Production Deployment
+# =============================================================================
+#
 # Comprehensive production deployment with monitoring, security, and scalability
+# Optimized for Docker environment variables and secrets management
+#
+# USAGE:
+# 1. Ensure .env.production file is configured with production values
+# 2. Deploy: docker-compose -f docker-compose.production.yml --env-file .env.production up -d
+# 3. Monitor: docker-compose -f docker-compose.production.yml logs -f
+#
+# =============================================================================
+
+
+
+# Docker networks for service isolation
+networks:
+  app-network:
+    driver: ${DOCKER_NETWORK_DRIVER:-bridge}
+    ipam:
+      config:
+        - subnet: ${DOCKER_NETWORK_SUBNET:-172.20.0.0/16}
+
+# Docker volumes for data persistence
+volumes:
+  postgres-data:
+    name: ${POSTGRES_DATA_VOLUME:-postgres-data}
+  redis-data:
+    name: ${REDIS_DATA_VOLUME:-redis-data}
+  elasticsearch-data:
+    name: ${ELASTICSEARCH_DATA_VOLUME:-elasticsearch-data}
+  app-logs:
+    name: ${APP_LOGS_VOLUME:-app-logs}
+  app-uploads:
+    name: ${APP_UPLOADS_VOLUME:-app-uploads}
+  prometheus-data:
+    name: ${PROMETHEUS_DATA_VOLUME:-prometheus-data}
+  grafana-data:
+    name: ${GRAFANA_DATA_VOLUME:-grafana-data}
+  trivy-cache:
+    name: ${TRIVY_CACHE_VOLUME:-trivy-cache}
+  nginx-logs:
+    name: ${NGINX_LOGS_VOLUME:-nginx-logs}
 
 services:
-  # Main Application
+  # =============================================================================
+  # MAIN APPLICATION SERVICE
+  # =============================================================================
   app:
     build:
       context: .
       dockerfile: Dockerfile.production
       args:
         NODE_ENV: production
-    container_name: business-scraper-app
-    restart: unless-stopped
+        DOCKER_BUILDKIT: ${DOCKER_BUILDKIT:-1}
+    container_name: ${CONTAINER_NAME_PREFIX:-business-scraper}-app
+    hostname: business-scraper-app
+    restart: ${RESTART_POLICY:-unless-stopped}
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
+    # Use env_file for cleaner configuration management
+    env_file:
+      - .env.production
     environment:
+      # Override critical Docker-specific settings
       - NODE_ENV=production
-      # Database Configuration
-      - DB_TYPE=postgresql
-      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/business_scraper?sslmode=disable
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=business_scraper
-      - DB_USER=postgres
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      # Redis Configuration
-      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
-      - RATE_LIMIT_REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
-      - JWT_SECRET=${JWT_SECRET}
-      - SESSION_SECRET=${SESSION_SECRET}
-      - ADMIN_USERNAME=${ADMIN_USERNAME}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
-      - ADMIN_PASSWORD_SALT=${ADMIN_PASSWORD_SALT}
-      - MONITORING_ENABLED=true
-      - LOG_LEVEL=info
-      # API Keys for real scraping
-      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
-      - GOOGLE_CUSTOM_SEARCH_API_KEY=${GOOGLE_CUSTOM_SEARCH_API_KEY}
-      - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
-      - AZURE_AI_FOUNDRY_API_KEY=${AZURE_AI_FOUNDRY_API_KEY}
-      - AZURE_AI_FOUNDRY_ENDPOINT=${AZURE_AI_FOUNDRY_ENDPOINT}
-      - AZURE_AI_FOUNDRY_REGION=${AZURE_AI_FOUNDRY_REGION}
-      # Production scraping configuration - real scraping only
-      - ENABLE_REAL_SCRAPING=true
+      - HOSTNAME=0.0.0.0
+      - PORT=${PORT:-3000}
+      - DOCKER_DEPLOYMENT=true
+    # Resource limits for production
+    deploy:
+      resources:
+        limits:
+          cpus: ${CONTAINER_CPU_LIMIT:-2.0}
+          memory: ${CONTAINER_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${CONTAINER_CPU_RESERVATION:-1.0}
+          memory: ${CONTAINER_MEMORY_RESERVATION:-2G}
     depends_on:
-      - postgres
-      - redis
-      - elasticsearch
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - app-logs:/app/logs
       - app-uploads:/app/uploads
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 4G
-        reservations:
-          cpus: '1.0'
-          memory: 2G
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}${HEALTH_CHECK_ENDPOINT:-/api/health}"]
+      interval: ${HEALTH_CHECK_INTERVAL:-30s}
+      timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
+      retries: ${HEALTH_CHECK_RETRIES:-3}
+      start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
+    # Logging configuration for production
+    logging:
+      driver: ${DOCKER_LOGGING_DRIVER:-json-file}
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: ${DOCKER_LOG_MAX_FILE:-3}
 
   # Database
   postgres:
@@ -284,45 +317,3 @@ services:
     command: ["image", "--exit-code", "1", "business-scraper-app:latest"]
     networks:
       - app-network
-
-# Networks
-networks:
-  app-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
-# Volumes
-volumes:
-  postgres-data:
-    driver: local
-  redis-data:
-    driver: local
-  elasticsearch-data:
-    driver: local
-  prometheus-data:
-    driver: local
-  grafana-data:
-    driver: local
-  app-logs:
-    driver: local
-  app-uploads:
-    driver: local
-  nginx-logs:
-    driver: local
-  backup-logs:
-    driver: local
-  trivy-cache:
-    driver: local
-
-# Secrets (use Docker secrets in production)
-secrets:
-  postgres_password:
-    external: true
-  redis_password:
-    external: true
-  encryption_key:
-    external: true
-  jwt_secret:
-    external: true

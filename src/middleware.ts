@@ -27,7 +27,7 @@ function generateUUID(): string {
 }
 
 // Public routes that don't require authentication
-const publicRoutes = ['/api/health', '/api/csrf', '/login', '/favicon.ico', '/_next', '/static']
+const publicRoutes = ['/api/health', '/api/csrf', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
 
 // API routes that require rate limiting with their types
 const rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {
@@ -83,13 +83,13 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
   const isDevelopment = process.env.NODE_ENV === 'development'
 
   // Always use permissive CSP in development to avoid blocking legitimate development tools
-  if (isDevelopment && process.env.ENABLE_CSP_IN_DEV !== 'true') {
-    // In development, use a more permissive CSP to avoid blocking legitimate development tools
+  if (isDevelopment) {
+    // In development, use a very permissive CSP to avoid blocking legitimate development tools
     const devCSP =
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' ws: wss: https:; worker-src 'self' blob:; manifest-src 'self';"
+      "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://vercel.live https://checkout.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' ws: wss: https:; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' https://js.stripe.com https://checkout.stripe.com;"
     response.headers.set('Content-Security-Policy', devCSP)
   } else {
-    // Generate nonce for CSP in production or when explicitly enabled in development
+    // Generate nonce for CSP in production
     const nonce = generateCSPNonce()
 
     // Get enhanced Content Security Policy from centralized config
@@ -282,6 +282,11 @@ function handleAuthentication(request: NextRequest): NextResponse | null {
     return null
   }
 
+  // Skip authentication for API routes that handle their own auth
+  if (pathname.startsWith('/api/') && pathname !== '/api/auth') {
+    return null
+  }
+
   // Skip authentication if not enabled
   if (!defaultSecurityConfig.enableAuth) {
     return null
@@ -326,8 +331,17 @@ function handleAuthentication(request: NextRequest): NextResponse | null {
  * Handle CSRF protection for state-changing requests
  */
 function handleCSRF(request: NextRequest): NextResponse | null {
+  const pathname = request.nextUrl.pathname
+
   // Skip CSRF if authentication is disabled
   if (!defaultSecurityConfig.enableAuth) {
+    return null
+  }
+
+  // Only apply CSRF to specific API routes that need it
+  const needsCSRF = pathname === '/api/auth' || pathname === '/api/csrf'
+
+  if (!needsCSRF) {
     return null
   }
 
@@ -418,11 +432,11 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * But include API routes that need middleware protection
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }

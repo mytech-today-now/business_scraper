@@ -29,6 +29,56 @@ const ADMIN_PASSWORD_SALT = process.env.ADMIN_PASSWORD_SALT || ''
 const DEFAULT_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
 
 /**
+ * GET /api/auth - Get or create session with CSRF token
+ */
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  try {
+    const sessionId = request.cookies.get('session-id')?.value
+    const ip = getClientIP(request)
+
+    let session = null
+    let authenticated = false
+
+    if (sessionId) {
+      session = getSession(sessionId)
+      if (session && session.isValid) {
+        authenticated = true
+      }
+    }
+
+    // If no valid session, create a new one for CSRF token purposes
+    if (!session || !session.isValid) {
+      session = createSession()
+      authenticated = false
+    }
+
+    // Return session info
+    const response = NextResponse.json({
+      authenticated,
+      sessionId: session.id,
+      csrfToken: session.csrfToken,
+      expiresAt: new Date(Date.now() + defaultSecurityConfig.sessionTimeout).toISOString(),
+    })
+
+    // Set session cookie if it's a new session or invalid session was replaced
+    if (!authenticated || !sessionId) {
+      response.cookies.set('session-id', session.id, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: defaultSecurityConfig.sessionTimeout / 1000,
+        path: '/',
+      })
+    }
+
+    return response
+  } catch (error) {
+    logger.error('Auth', 'Session check error', error)
+    return NextResponse.json({ authenticated: false, error: 'Session check failed' }, { status: 500 })
+  }
+}
+
+/**
  * POST /api/auth - Login endpoint
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {

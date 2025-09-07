@@ -37,12 +37,16 @@ export default function LoginPage() {
       })
 
       if (response.ok) {
-        // Already authenticated, redirect to main app
-        router.push('/')
+        const data = await response.json()
+        if (data.authenticated) {
+          // Already authenticated, redirect to main app
+          router.push('/')
+        }
+        // If not authenticated, stay on login page
       }
     } catch (_error) {
-      // Not authenticated, stay on login page
-      logger.info('Login', 'User not authenticated')
+      // Error checking auth status, stay on login page
+      logger.info('Login', 'Error checking authentication status')
     }
   }
 
@@ -91,7 +95,34 @@ export default function LoginPage() {
 
       if (response.ok) {
         logger.info('Login', 'Login successful')
-        router.push('/')
+
+        // Add a small delay to ensure session cookie is properly set
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // Verify session is working before redirecting
+        try {
+          const sessionCheck = await fetch('/api/auth', {
+            method: 'GET',
+            credentials: 'include',
+          })
+
+          if (sessionCheck.ok) {
+            const sessionData = await sessionCheck.json()
+            if (sessionData.authenticated) {
+              logger.info('Login', 'Session verified, redirecting to dashboard')
+              router.push('/')
+            } else {
+              logger.warn('Login', 'Session not authenticated after login')
+              setError('Login succeeded but session verification failed. Please try again.')
+            }
+          } else {
+            logger.warn('Login', 'Session verification request failed')
+            setError('Login succeeded but session verification failed. Please try again.')
+          }
+        } catch (sessionError) {
+          logger.error('Login', 'Session verification error', sessionError)
+          setError('Login succeeded but session verification failed. Please try again.')
+        }
       } else {
         if (response.status === 429) {
           // Rate limited
