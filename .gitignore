@@ -270,6 +270,14 @@ test-results/
 *.png.test
 *.jpg.test
 
+# Debug screenshots that may contain sensitive information
+debug-*.png
+debug-*.jpg
+debug-*.jpeg
+*-debug.png
+*-debug.jpg
+*-debug.jpeg
+
 # ========================================
 # DEPLOYMENT & INFRASTRUCTURE
 # ========================================
