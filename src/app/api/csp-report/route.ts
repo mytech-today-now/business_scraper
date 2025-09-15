@@ -16,12 +16,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Get client IP for logging
     const clientIP = getClientIP(request)
 
+    logger.info('CSP Report', `Received CSP violation report from IP: ${clientIP}`)
+
     // Parse the CSP violation report
-    const report: CSPViolationReport = await request.json()
+    let report: CSPViolationReport
+    try {
+      report = await request.json()
+    } catch (parseError) {
+      logger.error('CSP Report', 'Failed to parse CSP report JSON', { clientIP, error: parseError })
+      return NextResponse.json({ error: 'Invalid JSON format' }, { status: 400 })
+    }
 
     // Validate the report structure
     if (!report['csp-report']) {
-      logger.warn('CSP Report', 'Invalid CSP report structure received', { clientIP })
+      logger.warn('CSP Report', 'Invalid CSP report structure received', { clientIP, report })
       return NextResponse.json({ error: 'Invalid report structure' }, { status: 400 })
     }
 

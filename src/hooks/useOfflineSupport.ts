@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 export interface OfflineState {
   isOnline: boolean
@@ -46,6 +46,19 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
 
   const [isChecking, setIsChecking] = useState(false)
 
+  // Store callbacks in refs to avoid dependency issues
+  const onOnlineRef = useRef(onOnline)
+  const onOfflineRef = useRef(onOffline)
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onOnlineRef.current = onOnline
+  }, [onOnline])
+
+  useEffect(() => {
+    onOfflineRef.current = onOffline
+  }, [onOffline])
+
   // Update online/offline state
   const updateOnlineStatus = useCallback(
     (isOnline: boolean) => {
@@ -53,23 +66,25 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
         const now = new Date()
         const wasOffline = prevState.isOffline
 
-        return {
+        const newState = {
           isOnline,
           isOffline: !isOnline,
           wasOffline: wasOffline || !isOnline,
           lastOnlineTime: isOnline ? now : prevState.lastOnlineTime,
           lastOfflineTime: !isOnline ? now : prevState.lastOfflineTime,
         }
-      })
 
-      // Trigger callbacks
-      if (isOnline && onOnline) {
-        onOnline()
-      } else if (!isOnline && onOffline) {
-        onOffline()
-      }
+        // Trigger callbacks using refs to avoid dependency issues
+        if (isOnline && onOnlineRef.current) {
+          onOnlineRef.current()
+        } else if (!isOnline && onOfflineRef.current) {
+          onOfflineRef.current()
+        }
+
+        return newState
+      })
     },
-    [onOnline, onOffline]
+    [] // No dependencies to prevent infinite loops
   )
 
   // Ping server to verify actual connectivity

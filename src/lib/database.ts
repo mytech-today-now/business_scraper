@@ -264,8 +264,35 @@ export interface DatabaseInterface {
 
 // Database factory function
 export async function createDatabase(config?: DatabaseConfig): Promise<DatabaseInterface> {
-  // Use connection string approach to explicitly disable SSL at the driver level
-  const connectionString = `postgresql://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'SecurePassword123'}@${process.env.DB_HOST || 'postgres'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'business_scraper'}?sslmode=disable`
+  // Use DATABASE_URL if available, otherwise build from individual components
+  let connectionString: string
+
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.trim().length > 0) {
+    // Use the pre-configured DATABASE_URL (already properly URL-encoded)
+    connectionString = process.env.DATABASE_URL
+    logger.info('Database', 'Using DATABASE_URL environment variable', {
+      connectionString: connectionString.replace(/:[^:@]*@/, ':***@')
+    })
+  } else {
+    // Build connection string from individual environment variables
+    const dbHost = process.env.DB_HOST || 'postgres'
+    const dbPort = process.env.DB_PORT || '5432'
+    const dbName = process.env.DB_NAME || 'business_scraper'
+    const dbUser = process.env.DB_USER || 'postgres'
+    const dbPassword = process.env.DB_PASSWORD || 'SecurePassword123'
+
+    // Build the connection string with proper URL encoding for the password
+    const encodedPassword = encodeURIComponent(dbPassword)
+    connectionString = `postgresql://${dbUser}:${encodedPassword}@${dbHost}:${dbPort}/${dbName}`
+
+    logger.info('Database', 'Built connection string from individual environment variables', {
+      connectionString: connectionString.replace(/:[^:@]*@/, ':***@'),
+      host: dbHost,
+      port: dbPort,
+      database: dbName,
+      user: dbUser
+    })
+  }
 
   // Create configuration using connection string to bypass all SSL complexity
   const dbConfig = {
@@ -309,13 +336,50 @@ export async function checkDatabaseConnection(config?: DatabaseConfig): Promise<
       // Server-side PostgreSQL check using postgres.js
       const { testPostgresConnection } = await import('./postgres-connection')
 
-      // Create connection configuration with explicit values from environment variables
+      // Use DATABASE_URL if available, otherwise build from individual components
+      let connectionString: string
+      let dbHost: string
+      let dbPort: string
+      let dbName: string
+      let dbUser: string
+      let dbPassword: string
+
+      if (process.env.DATABASE_URL && process.env.DATABASE_URL.trim().length > 0) {
+        // Use the pre-configured DATABASE_URL (already properly URL-encoded)
+        connectionString = process.env.DATABASE_URL
+
+        // Parse DATABASE_URL to extract individual components for logging
+        try {
+          const url = new URL(connectionString)
+          dbHost = url.hostname
+          dbPort = url.port || '5432'
+          dbName = url.pathname.slice(1) // Remove leading slash
+          dbUser = url.username
+          dbPassword = url.password || ''
+        } catch (error) {
+          logger.error('Database Health Check', 'Failed to parse DATABASE_URL', error)
+          throw new Error('Invalid DATABASE_URL format')
+        }
+      } else {
+        // Build connection string from individual environment variables
+        dbHost = process.env.DB_HOST || 'postgres'
+        dbPort = process.env.DB_PORT || '5432'
+        dbName = process.env.DB_NAME || 'business_scraper'
+        dbUser = process.env.DB_USER || 'postgres'
+        dbPassword = process.env.DB_PASSWORD || 'SecurePassword123'
+
+        // Build the connection string with proper URL encoding for the password
+        const encodedPassword = encodeURIComponent(dbPassword)
+        connectionString = `postgresql://${dbUser}:${encodedPassword}@${dbHost}:${dbPort}/${dbName}`
+      }
+
       const connectionConfig = {
-        host: process.env.DB_HOST || 'postgres',
-        port: parseInt(process.env.DB_PORT || '5432'),
-        database: process.env.DB_NAME || 'business_scraper',
-        username: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'SecurePassword123',
+        connectionString, // Use the determined connection string
+        host: dbHost,
+        port: parseInt(dbPort),
+        database: dbName,
+        username: dbUser,
+        password: dbPassword,
         ssl: false, // Explicitly disable SSL
         max: 10,
         connect_timeout: 30,
@@ -324,18 +388,25 @@ export async function checkDatabaseConnection(config?: DatabaseConfig): Promise<
       // Enhanced debugging for connection configuration
       logger.info('Database Health Check', 'Testing PostgreSQL connection', {
         config: {
+          hasConnectionString: !!connectionConfig.connectionString,
+          connectionStringLength: connectionConfig.connectionString?.length || 0,
+          connectionStringPreview: connectionConfig.connectionString ? connectionConfig.connectionString.substring(0, 30) + '...' : 'MISSING',
           host: connectionConfig.host,
           port: connectionConfig.port,
           database: connectionConfig.database,
           username: connectionConfig.username,
           ssl: connectionConfig.ssl,
+          usingDatabaseUrl: !!(process.env.DATABASE_URL && process.env.DATABASE_URL.trim().length > 0),
         },
         environment: {
-          DB_HOST: process.env.DB_HOST,
-          DB_PORT: process.env.DB_PORT,
-          DB_NAME: process.env.DB_NAME,
-          DB_USER: process.env.DB_USER,
+          DB_HOST: dbHost,
+          DB_PORT: dbPort,
+          DB_NAME: dbName,
+          DB_USER: dbUser,
+          DB_PASSWORD_length: dbPassword.length,
           NODE_ENV: process.env.NODE_ENV,
+          DATABASE_URL_available: !!(process.env.DATABASE_URL && process.env.DATABASE_URL.trim().length > 0),
+          connectionString: connectionString.replace(/:[^:@]*@/, ':***@'), // Mask password
         },
       })
 

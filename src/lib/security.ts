@@ -56,7 +56,9 @@ function getSecurityConfiguration(): SecurityConfig {
       keyDerivationIterations: 100000,
 
       enableSecurityHeaders: true,
-      contentSecurityPolicy: getCSPHeader(), // Use centralized CSP configuration
+      contentSecurityPolicy: process.env.NODE_ENV === 'development'
+        ? "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline';"
+        : getCSPHeader(), // Use centralized CSP configuration for production
     }
   } catch (error) {
     // Fallback to environment variables if config system not available

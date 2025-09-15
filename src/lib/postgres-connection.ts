@@ -97,35 +97,81 @@ function resolveHostname(config: PostgresConnectionConfig): string {
  * Create a postgres.js connection with enhanced error handling and retry logic
  */
 export function createPostgresConnection(config: PostgresConnectionConfig): postgres.Sql {
+  // Initialize variables outside try block to ensure they're in scope for error handling
+  let connectionString: string
+  let enhancedConfig: PostgresConnectionConfig
+  let resolvedHost: string = 'postgres' // Default fallback
+
   try {
-    // Resolve hostname with enhanced logic
-    const resolvedHost = resolveHostname(config)
+    // Debug logging to understand what's being passed
+    logger.info('PostgreSQL Connection', 'createPostgresConnection called with config', {
+      hasConnectionString: !!config.connectionString,
+      connectionStringLength: config.connectionString?.length || 0,
+      connectionStringPreview: config.connectionString ? config.connectionString.substring(0, 20) + '...' : 'undefined',
+      host: config.host,
+      port: config.port,
+      database: config.database,
+    })
 
-    // Create enhanced configuration
-    const enhancedConfig = {
-      ...config,
-      host: resolvedHost,
+    // If connectionString is provided, use it directly and ignore individual fields
+    if (config.connectionString && config.connectionString.trim().length > 0) {
+      connectionString = config.connectionString
+
+      // When using connectionString, create a minimal config that only contains the connectionString
+      // This ensures postgres.js uses the connectionString and doesn't fall back to individual fields
+      enhancedConfig = {
+        connectionString: config.connectionString,
+        max: config.max || 10,
+        idle_timeout: config.idle_timeout || 30,
+        connect_timeout: config.connect_timeout || 30,
+        ssl: config.ssl || false,
+      }
+
+      // Extract hostname from connection string for logging
+      try {
+        const url = new URL(config.connectionString.replace('postgresql://', 'http://'))
+        resolvedHost = url.hostname
+      } catch (e) {
+        resolvedHost = 'postgres' // fallback
+      }
+
+      logger.info('PostgreSQL Connection', 'Using provided connection string (ignoring individual fields)', {
+        connectionString: connectionString.replace(/:[^:@]*@/, ':***@'),
+        source: 'connectionString',
+        resolvedHost,
+        hasIndividualFields: !!(config.host || config.port || config.database || config.username || config.password),
+      })
+    } else {
+      logger.info('PostgreSQL Connection', 'No valid connectionString found, using individual fields', {
+        connectionStringValue: config.connectionString,
+        connectionStringType: typeof config.connectionString,
+      })
+
+      // Resolve hostname with enhanced logic for individual config fields
+      resolvedHost = resolveHostname(config)
+
+      // Create enhanced configuration
+      enhancedConfig = {
+        ...config,
+        host: resolvedHost,
+      }
+
+      logger.info('PostgreSQL Connection', 'Creating connection with resolved configuration', {
+        host: enhancedConfig.host,
+        port: enhancedConfig.port || 5432,
+        database: enhancedConfig.database || 'business_scraper',
+        username: enhancedConfig.username || 'postgres',
+        ssl: enhancedConfig.ssl || false,
+      })
+
+      // Build connection string with resolved hostname
+      connectionString = `postgresql://${enhancedConfig.username || 'postgres'}:${encodeURIComponent(enhancedConfig.password || 'password')}@${resolvedHost}:${enhancedConfig.port || 5432}/${enhancedConfig.database || 'business_scraper'}`
+
+      logger.info('PostgreSQL Connection', 'Final connection string built', {
+        connectionString: connectionString.replace(/:[^:@]*@/, ':***@'),
+        resolvedHost,
+      })
     }
-
-    // Log the configuration being used for debugging
-    logger.info('PostgreSQL Connection', 'Creating connection with resolved configuration', {
-      host: enhancedConfig.host,
-      port: enhancedConfig.port || 5432,
-      database: enhancedConfig.database || 'business_scraper',
-      username: enhancedConfig.username || 'postgres',
-      ssl: enhancedConfig.ssl || false,
-      connectionString: enhancedConfig.connectionString?.replace(/:[^:@]*@/, ':***@'),
-    })
-
-    // Build connection string with resolved hostname
-    const connectionString =
-      enhancedConfig.connectionString ||
-      `postgresql://${enhancedConfig.username || 'postgres'}:${enhancedConfig.password || 'password'}@${resolvedHost}:${enhancedConfig.port || 5432}/${enhancedConfig.database || 'business_scraper'}`
-
-    logger.info('PostgreSQL Connection', 'Final connection string built', {
-      connectionString: connectionString.replace(/:[^:@]*@/, ':***@'),
-      resolvedHost,
-    })
 
     // Create postgres.js connection with enhanced configuration
     const sql = postgres(connectionString, {
@@ -178,13 +224,14 @@ export function createPostgresConnection(config: PostgresConnectionConfig): post
   } catch (error) {
     logger.error('PostgreSQL Connection', 'Failed to create postgres.js connection', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      config: {
+      config: enhancedConfig ? {
         host: enhancedConfig.host,
         port: enhancedConfig.port,
         database: enhancedConfig.database,
         ssl: enhancedConfig.ssl,
-      },
+      } : 'config not initialized',
       resolvedHost,
+      connectionString: connectionString ? connectionString.replace(/:[^:@]*@/, ':***@') : 'not set',
     })
     throw new Error(
       `Failed to create PostgreSQL connection: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -199,6 +246,7 @@ export function getPostgresConnection(config?: PostgresConnectionConfig): postgr
   if (!globalSql) {
     // Create configuration from environment variables with enhanced defaults
     const envConfig: PostgresConnectionConfig = {
+      connectionString: process.env.DATABASE_URL, // Use DATABASE_URL if available
       host: process.env.DB_HOST || 'postgres',
       port: parseInt(process.env.DB_PORT || '5432'),
       database: process.env.DB_NAME || 'business_scraper',

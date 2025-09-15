@@ -2,6 +2,13 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { logger } from '@/utils/logger'
+import {
+  shouldPreventAutoReload,
+  shouldUseEnhancedErrorLogging,
+  safeReload,
+  logEnhancedError
+} from '@/utils/debugConfig'
+import { securityTokenErrorLogger } from '@/utils/enhancedErrorLogger'
 import { Button } from '../view/components/ui/Button'
 import {
   Card,
@@ -56,22 +63,38 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     const errorId = this.state.errorId || generateErrorId()
 
-    // Log the error with full context
-    logger.error('ErrorBoundary', `React Error Boundary caught error ${errorId}`, {
-      errorId,
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      },
-      errorInfo: {
-        componentStack: errorInfo.componentStack,
-      },
-      level: this.props.level || 'component',
-      retryCount: this.retryCount,
-      url: typeof window !== 'undefined' ? window.location.href : 'unknown',
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
-    })
+    // Enhanced error logging with debug information
+    if (shouldUseEnhancedErrorLogging()) {
+      securityTokenErrorLogger.logComponentError(error, {
+        componentName: this.props.fallbackComponent || 'Unknown',
+        errorBoundary: 'ErrorBoundary',
+        props: this.props,
+        renderCount: this.retryCount,
+        lifecycle: 'componentDidCatch',
+      }, {
+        errorInfo,
+        errorId,
+        retryCount: this.retryCount,
+        level: this.props.level || 'component',
+      })
+    } else {
+      // Standard error logging
+      logger.error('ErrorBoundary', `React Error Boundary caught error ${errorId}`, {
+        errorId,
+        error: {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        },
+        errorInfo: {
+          componentStack: errorInfo.componentStack,
+        },
+        level: this.props.level || 'component',
+        retryCount: this.retryCount,
+        url: typeof window !== 'undefined' ? window.location.href : 'unknown',
+        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
+      })
+    }
 
     // Update state with error info
     this.setState({
@@ -113,9 +136,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   private handleReload = () => {
-    if (typeof window !== 'undefined') {
-      window.location.reload()
-    }
+    safeReload('ErrorBoundary component error recovery')
   }
 
   private handleGoHome = () => {

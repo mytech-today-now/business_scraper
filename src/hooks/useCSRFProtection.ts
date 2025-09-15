@@ -5,6 +5,16 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { logger } from '@/utils/logger'
+import {
+  shouldUseEnhancedErrorLogging,
+  shouldPersistErrors,
+  logEnhancedError
+} from '@/utils/debugConfig'
+import {
+  securityTokenErrorLogger,
+  fetchWithErrorLogging,
+  type SecurityTokenErrorDetails
+} from '@/utils/enhancedErrorLogger'
 
 export interface CSRFToken {
   token: string
@@ -62,12 +72,18 @@ export function useCSRFProtection(): CSRFHookResult {
       }
 
       // First, try to get a temporary CSRF token from the public endpoint
-      let response = await fetch('/api/csrf', {
+      // Use enhanced fetch wrapper for better error logging
+      let response = await fetchWithErrorLogging('/api/csrf', {
         method: 'GET',
         credentials: 'include',
         headers: {
           Accept: 'application/json',
         },
+      }, {
+        component: 'useCSRFProtection',
+        phase: 'loading',
+        retryAttempt,
+        maxRetries,
       })
 
       if (!response.ok) {
@@ -108,6 +124,28 @@ export function useCSRFProtection(): CSRFHookResult {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch CSRF token'
       const isNetworkError = errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')
       const is401Error = errorMessage.includes('401')
+
+      // Enhanced error logging with detailed context
+      const errorDetails: SecurityTokenErrorDetails = {
+        tokenType: 'csrf',
+        phase: 'loading',
+        endpoint: '/api/csrf',
+        retryCount: retryAttempt,
+        timeoutDuration: retryDelay,
+        networkDetails: {
+          url: '/api/csrf',
+          method: 'GET',
+          retryAttempt,
+          maxRetries,
+        }
+      }
+
+      securityTokenErrorLogger.logCSRFError(err instanceof Error ? err : new Error(errorMessage), errorDetails, {
+        isNetworkError,
+        is401Error,
+        retryAttempt,
+        maxRetries,
+      })
 
       // Don't retry on 401 errors after the middleware fix - they should not happen
       // Only retry on network errors or 5xx server errors
@@ -180,6 +218,8 @@ export function useCSRFProtection(): CSRFHookResult {
    * Initial token fetch and setup
    */
   useEffect(() => {
+    logger.info('CSRF', 'useCSRFProtection hook initializing')
+
     // Initial fetch
     fetchCSRFToken()
 
@@ -188,14 +228,30 @@ export function useCSRFProtection(): CSRFHookResult {
       () => {
         const now = Date.now()
         if (expiresAt && now >= expiresAt - 60000) { // Refresh 1 minute before expiry
+          logger.info('CSRF', 'Auto-refreshing CSRF token due to expiry')
           fetchCSRFToken()
         }
       },
       5 * 60 * 1000
     ) // Check every 5 minutes
 
-    return () => clearInterval(interval)
+    return () => {
+      logger.info('CSRF', 'useCSRFProtection hook cleanup')
+      clearInterval(interval)
+    }
   }, []) // Empty dependency array to run only once
+
+  // Debug logging for hook state
+  useEffect(() => {
+    logger.info('CSRF', 'Hook state changed', {
+      hasToken: !!csrfToken,
+      isLoading,
+      hasError: !!error,
+      tokenId,
+      isTemporary,
+      expiresAt: new Date(expiresAt).toISOString()
+    })
+  }, [csrfToken, isLoading, error, tokenId, isTemporary, expiresAt])
 
   return {
     csrfToken,
@@ -226,6 +282,16 @@ export function useFormCSRFProtection(): {
   isTokenValid: () => boolean
 } {
   const { csrfToken, isLoading, error, refreshToken, isTokenValid, getHeaders } = useCSRFProtection()
+
+  // Debug logging for form CSRF protection
+  useEffect(() => {
+    logger.info('FormCSRF', 'Form CSRF protection state', {
+      hasToken: !!csrfToken,
+      isLoading,
+      hasError: !!error,
+      isTokenValid: isTokenValid()
+    })
+  }, [csrfToken, isLoading, error, isTokenValid])
 
   /**
    * Get CSRF input field for forms

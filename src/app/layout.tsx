@@ -4,9 +4,10 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import { ErrorBoundary } from '../components/ErrorBoundary'
 import { ServiceWorkerRegistration } from '../components/ServiceWorkerRegistration'
-import { StripeProvider } from '@/view/components/payments/StripeProvider'
+import { ClientOnlyStripeProvider } from '../components/ClientOnlyStripeProvider'
 import { PaymentSystemInitializer } from '../components/PaymentSystemInitializer'
 import { getCSPNonce } from '@/lib/cspUtils'
+import { DebugSystemInitializer } from '../components/DebugSystemInitializer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -72,7 +73,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
       </head>
       <body className={inter.className}>
         <ErrorBoundary level="page" showDetails={process.env.NODE_ENV === 'development'}>
-          <StripeProvider>
+          <ClientOnlyStripeProvider>
+            <DebugSystemInitializer />
             <PaymentSystemInitializer />
             <div className="min-h-screen bg-background font-sans antialiased">{children}</div>
             <ServiceWorkerRegistration />
@@ -87,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
                 },
               }}
             />
-          </StripeProvider>
+          </ClientOnlyStripeProvider>
         </ErrorBoundary>
       </body>
     </html>

@@ -15,6 +15,7 @@ import { logger } from '@/utils/logger'
 import { AddressInputHandler } from '@/utils/addressInputHandler'
 import { DataResetService, DataResetResult } from '@/utils/dataReset'
 import toast from 'react-hot-toast'
+import { safeReload } from '@/utils/debugConfig'
 
 /**
  * Configuration state interface
@@ -787,7 +788,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
 
         // Optionally reload the page for a complete fresh start
         setTimeout(() => {
-          window.location.reload()
+          safeReload('Application reset completed')
         }, 2000)
       } else {
         const errorMessage = result.errors.length > 0 ? result.errors[0] : 'Unknown error'

@@ -234,6 +234,7 @@ const configSchema: Record<string, ValidationRule> = {
 
   // Security
   ENABLE_AUTH: { type: 'boolean', default: false },
+  NEXT_PUBLIC_ENABLE_AUTH: { type: 'boolean', default: false },
   SESSION_TIMEOUT: { type: 'number', min: 60000, default: 3600000 },
   MAX_LOGIN_ATTEMPTS: { type: 'number', min: 1, max: 20, default: 5 },
   LOCKOUT_DURATION: { type: 'number', min: 60000, default: 900000 },
@@ -578,7 +579,8 @@ export function loadConfig(): AppConfig {
   }
 
   // Check for authentication configuration consistency
-  if (config.ENABLE_AUTH) {
+  const enableAuth = config.NEXT_PUBLIC_ENABLE_AUTH || config.ENABLE_AUTH
+  if (enableAuth) {
     const hasPlainPassword = config.ADMIN_PASSWORD
     const hasHashedPassword = config.ADMIN_PASSWORD_HASH && config.ADMIN_PASSWORD_SALT
 
@@ -637,7 +639,7 @@ export function loadConfig(): AppConfig {
       ssl: config.DB_SSL,
     },
     security: {
-      enableAuth: config.ENABLE_AUTH,
+      enableAuth: config.NEXT_PUBLIC_ENABLE_AUTH || config.ENABLE_AUTH,
       sessionTimeout: config.SESSION_TIMEOUT,
       maxLoginAttempts: config.MAX_LOGIN_ATTEMPTS,
       lockoutDuration: config.LOCKOUT_DURATION,
@@ -711,7 +713,7 @@ export function loadConfig(): AppConfig {
       maxFiles: config.LOG_MAX_FILES,
     },
     features: {
-      enableAuth: config.ENABLE_AUTH,
+      enableAuth: config.NEXT_PUBLIC_ENABLE_AUTH || config.ENABLE_AUTH,
       enableCaching: config.FEATURE_ENABLE_CACHING,
       enableRateLimiting: config.FEATURE_ENABLE_RATE_LIMITING,
       enableMetrics: config.FEATURE_ENABLE_METRICS,

@@ -6,8 +6,6 @@ import { loadStripe, Stripe } from '@stripe/stripe-js'
 import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
 
-const config = getConfig()
-
 // Enhanced Stripe loading with retry mechanism and error handling
 let stripePromise: Promise<Stripe | null> | null = null
 
@@ -15,6 +13,9 @@ const loadStripeWithRetry = async (retries = 5, delay = 1000): Promise<Stripe | 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       logger.info('StripeProvider', `Loading Stripe.js (attempt ${attempt}/${retries})`)
+
+      // Get config inside the function to avoid module-level initialization issues
+      const config = getConfig()
 
       // Check if we have a valid publishable key
       if (
@@ -110,9 +111,12 @@ const loadStripeWithRetry = async (retries = 5, delay = 1000): Promise<Stripe | 
   return null
 }
 
-// Initialize Stripe promise with retry logic
-if (!stripePromise) {
-  stripePromise = loadStripeWithRetry()
+// Function to get or initialize Stripe promise
+const getStripePromise = (): Promise<Stripe | null> => {
+  if (!stripePromise) {
+    stripePromise = loadStripeWithRetry()
+  }
+  return stripePromise
 }
 
 interface StripeProviderProps {
@@ -124,8 +128,13 @@ export const StripeProvider: React.FC<StripeProviderProps> = ({ children, client
   const [stripeLoadError, setStripeLoadError] = useState<string | null>(null)
   const [isStripeLoading, setIsStripeLoading] = useState(true)
   const [retryCount, setRetryCount] = useState(0)
+  const [currentStripePromise, setCurrentStripePromise] = useState<Promise<Stripe | null> | null>(null)
 
   useEffect(() => {
+    // Initialize Stripe promise when component mounts
+    const stripePromise = getStripePromise()
+    setCurrentStripePromise(stripePromise)
+
     // Monitor Stripe loading status with enhanced error handling
     const checkStripeStatus = async () => {
       try {
@@ -209,7 +218,7 @@ export const StripeProvider: React.FC<StripeProviderProps> = ({ children, client
   }
 
   return (
-    <Elements stripe={stripePromise} options={clientSecret ? options : undefined}>
+    <Elements stripe={currentStripePromise} options={clientSecret ? options : undefined}>
       {children}
     </Elements>
   )

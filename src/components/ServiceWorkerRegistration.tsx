@@ -1,31 +1,44 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useOfflineSupport } from '@/hooks/useOfflineSupport'
 import { logger } from '@/utils/logger'
 import toast from 'react-hot-toast'
+import { safeReload, shouldPreventAutoReload } from '@/utils/debugConfig'
 
 /**
  * Service Worker Registration Component
  * Handles PWA functionality and offline support
  */
 export function ServiceWorkerRegistration(): null {
+  // State to track previous offline status to avoid temporal dead zone
+  const [previousWasOffline, setPreviousWasOffline] = useState(false)
+
+  // Memoize callback functions to prevent infinite re-renders
+  const handleOnline = useCallback(() => {
+    toast.success("Connection restored! You're back online.", {
+      duration: 3000,
+      icon: '🌐',
+    })
+  }, [])
+
+  const handleOffline = useCallback(() => {
+    toast.error("You're offline. Some features may be limited.", {
+      duration: 5000,
+      icon: '📱',
+    })
+  }, [])
+
+  // Initialize useOfflineSupport without using wasOffline in the options
   const { isOnline, isOffline, wasOffline } = useOfflineSupport({
-    onOnline: () => {
-      if (wasOffline) {
-        toast.success("Connection restored! You're back online.", {
-          duration: 3000,
-          icon: '🌐',
-        })
-      }
-    },
-    onOffline: () => {
-      toast.error("You're offline. Some features may be limited.", {
-        duration: 5000,
-        icon: '📱',
-      })
-    },
+    onOnline: previousWasOffline ? handleOnline : undefined,
+    onOffline: handleOffline,
   })
+
+  // Update previous offline status when wasOffline changes
+  useEffect(() => {
+    setPreviousWasOffline(wasOffline)
+  }, [wasOffline])
 
   useEffect(() => {
     // Only register service worker in production and if supported
@@ -90,8 +103,12 @@ export function ServiceWorkerRegistration(): null {
         logger.info('ServiceWorker', 'Service worker controller changed')
 
         // Optionally reload the page to ensure consistency
-        if (confirm('App has been updated. Reload to get the latest version?')) {
-          window.location.reload()
+        const shouldReload = shouldPreventAutoReload()
+          ? confirm('App has been updated. Debug mode is active - reload anyway?')
+          : confirm('App has been updated. Reload to get the latest version?')
+
+        if (shouldReload) {
+          safeReload('Service worker update')
         }
       })
 

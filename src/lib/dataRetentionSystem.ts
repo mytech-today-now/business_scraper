@@ -59,7 +59,25 @@ export class DataRetentionSystem {
   private scheduledJobs: Map<string, NodeJS.Timeout> = new Map()
 
   constructor() {
-    this.initializeDefaultPolicies()
+    // Only initialize policies if not in build mode
+    if (!this.isBuildMode()) {
+      this.initializeDefaultPolicies()
+    }
+  }
+
+  /**
+   * Check if we're in build mode (Docker build, Next.js build, etc.)
+   */
+  private isBuildMode(): boolean {
+    return (
+      process.env.NODE_ENV === 'production' &&
+      (
+        process.env.NEXT_PHASE === 'phase-production-build' ||
+        process.env.DOCKER_BUILDKIT === '1' ||
+        process.env.CI === 'true' ||
+        !process.env.DATABASE_URL // No database during build
+      )
+    )
   }
 
   /**
@@ -162,7 +180,8 @@ export class DataRetentionSystem {
   addPolicy(policy: RetentionPolicy): void {
     this.policies.set(policy.name, policy)
 
-    if (policy.enabled) {
+    // Only schedule policies if not in build mode
+    if (policy.enabled && !this.isBuildMode()) {
       this.schedulePolicy(policy)
     }
 
@@ -192,7 +211,7 @@ export class DataRetentionSystem {
 
     policy.enabled = enabled
 
-    if (enabled) {
+    if (enabled && !this.isBuildMode()) {
       this.schedulePolicy(policy)
     } else {
       this.unschedulePolicy(policyName)

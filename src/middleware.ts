@@ -14,6 +14,7 @@ import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { validateCSRFMiddleware, csrfProtectionService } from '@/lib/csrfProtection'
 import { securityMonitoringService } from '@/lib/securityMonitoring'
 import { getCSPHeader, generateCSPNonce } from '@/lib/cspConfig'
+import { logger } from '@/utils/logger'
 
 /**
  * Generate a UUID using Web Crypto API (Edge Runtime compatible)
@@ -27,7 +28,7 @@ function generateUUID(): string {
 }
 
 // Public routes that don't require authentication
-const publicRoutes = ['/api/health', '/api/csrf', '/api/auth', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
+const publicRoutes = ['/api/health', '/api/csrf', '/api/auth', '/api/ping', '/api/csp-report', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
 
 // API routes that require rate limiting with their types
 const rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {
@@ -82,18 +83,31 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 
   const isDevelopment = process.env.NODE_ENV === 'development'
 
+  // Log environment detection for debugging
+  logger.debug('Middleware', `Environment detection: NODE_ENV=${process.env.NODE_ENV}, isDevelopment=${isDevelopment}`)
+
   // Always use permissive CSP in development to avoid blocking legitimate development tools
   if (isDevelopment) {
     // In development, use a very permissive CSP to avoid blocking legitimate development tools
+    // Remove any nonce-based directives to ensure 'unsafe-inline' works properly
     const devCSP =
       "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://vercel.live https://checkout.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' ws: wss: https:; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' https://js.stripe.com https://checkout.stripe.com;"
+
+    logger.debug('Middleware', `Setting development CSP: ${devCSP}`)
     response.headers.set('Content-Security-Policy', devCSP)
+
+    // Ensure no nonce headers are set in development
+    response.headers.delete('X-CSP-Nonce')
+
+    // Log final headers for debugging
+    logger.debug('Middleware', `Final CSP header: ${response.headers.get('Content-Security-Policy')}`)
   } else {
     // Generate nonce for CSP in production
     const nonce = generateCSPNonce()
 
     // Get enhanced Content Security Policy from centralized config
     const csp = getCSPHeader(nonce)
+    logger.debug('Middleware', `Setting production CSP with nonce: ${csp}`)
     response.headers.set('Content-Security-Policy', csp)
 
     // Add nonce to response for use in templates
@@ -297,8 +311,8 @@ function handleAuthentication(request: NextRequest): NextResponse | null {
   const sessionId = request.cookies.get('session-id')?.value
 
   if (!sessionId) {
-    // Redirect to login for browser requests
-    if (request.headers.get('accept')?.includes('text/html')) {
+    // Redirect to login for browser requests, but avoid redirect loops
+    if (request.headers.get('accept')?.includes('text/html') && !pathname.startsWith('/login')) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
@@ -314,7 +328,7 @@ function handleAuthentication(request: NextRequest): NextResponse | null {
 
   if (!session || !session.isValid) {
     // Clear invalid session cookie
-    const response = request.headers.get('accept')?.includes('text/html')
+    const response = request.headers.get('accept')?.includes('text/html') && !pathname.startsWith('/login')
       ? NextResponse.redirect(new URL('/login', request.url))
       : new NextResponse(JSON.stringify({ error: 'Invalid session' }), {
           status: 401,
@@ -339,9 +353,16 @@ function handleCSRF(request: NextRequest): NextResponse | null {
     return null
   }
 
-  // Only apply CSRF to specific API routes that need it
-  // Note: /api/auth is excluded because it's the login endpoint and handles its own CSRF logic
-  const needsCSRF = pathname === '/api/csrf'
+  // Skip CSRF protection for public routes that don't need it
+  if (isPublicRoute(pathname)) {
+    return null
+  }
+
+  // Only apply CSRF to state-changing requests (POST, PUT, DELETE, PATCH)
+  const needsCSRF = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method) &&
+    pathname.startsWith('/api/') &&
+    !pathname.startsWith('/api/auth') && // Auth endpoint handles its own CSRF
+    !pathname.startsWith('/api/csrf')   // CSRF endpoint doesn't need CSRF protection
 
   if (!needsCSRF) {
     return null
@@ -437,8 +458,11 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - favicon.png (favicon PNG file)
+     * - manifest.json (PWA manifest)
+     * - sw.js (service worker)
      * But include API routes that need middleware protection
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|favicon\\.png|manifest\\.json|sw\\.js).*)',
   ],
 }

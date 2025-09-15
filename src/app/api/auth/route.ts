@@ -84,17 +84,37 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const ip = getClientIP(request)
-    const body = await request.json()
+
+    // Parse request body with error handling
+    let body
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      logger.error('Auth', 'Failed to parse request body', parseError)
+      return NextResponse.json({ error: 'Invalid request format' }, { status: 400 })
+    }
 
     // Validate and sanitize input
     const username = sanitizeInput(body.username || '')
     const password = body.password || ''
 
+    // Log authentication attempt details for debugging
+    logger.info('Auth', `Authentication attempt from IP: ${ip}`, {
+      username: username,
+      hasPassword: !!password,
+      bodyKeys: Object.keys(body),
+    })
+
     // Validate input format
-    const usernameValidation = validateInput(username)
-    if (!usernameValidation.isValid) {
-      logger.warn('Auth', `Invalid username format from IP: ${ip}`)
-      return NextResponse.json({ error: 'Invalid input format' }, { status: 400 })
+    try {
+      const usernameValidation = validateInput(username)
+      if (!usernameValidation.isValid) {
+        logger.warn('Auth', `Invalid username format from IP: ${ip}`)
+        return NextResponse.json({ error: 'Invalid input format' }, { status: 400 })
+      }
+    } catch (validationError) {
+      logger.error('Auth', 'Error during input validation', validationError)
+      return NextResponse.json({ error: 'Validation error' }, { status: 500 })
     }
 
     // Check required fields
@@ -106,40 +126,49 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Verify credentials
     let isValidCredentials = false
 
-    // Log authentication attempt for debugging
-    logger.info('Auth', `Authentication attempt for username: ${username}`)
-    logger.info('Auth', `ADMIN_USERNAME: ${ADMIN_USERNAME}`)
-    logger.info('Auth', `Has ADMIN_PASSWORD_HASH: ${!!ADMIN_PASSWORD_HASH}`)
-    logger.info('Auth', `Has ADMIN_PASSWORD_SALT: ${!!ADMIN_PASSWORD_SALT}`)
-    logger.info('Auth', `DEFAULT_PASSWORD: ${DEFAULT_PASSWORD}`)
+    try {
+      // Log authentication attempt for debugging
+      logger.info('Auth', `Authentication attempt for username: ${username}`)
+      logger.info('Auth', `ADMIN_USERNAME: ${ADMIN_USERNAME}`)
+      logger.info('Auth', `Has ADMIN_PASSWORD_HASH: ${!!ADMIN_PASSWORD_HASH}`)
+      logger.info('Auth', `Has ADMIN_PASSWORD_SALT: ${!!ADMIN_PASSWORD_SALT}`)
+      logger.info('Auth', `DEFAULT_PASSWORD: ${DEFAULT_PASSWORD}`)
 
-    if (ADMIN_PASSWORD_HASH && ADMIN_PASSWORD_SALT) {
-      // Use hashed password from environment
-      logger.info('Auth', 'Using hashed password verification')
-      const hashVerificationResult = verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
-      logger.info('Auth', `Hash verification result: ${hashVerificationResult}`)
+      if (ADMIN_PASSWORD_HASH && ADMIN_PASSWORD_SALT) {
+        // Use hashed password from environment
+        logger.info('Auth', 'Using hashed password verification')
+        try {
+          const hashVerificationResult = verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
+          logger.info('Auth', `Hash verification result: ${hashVerificationResult}`)
+          isValidCredentials = username === ADMIN_USERNAME && hashVerificationResult
+        } catch (hashError) {
+          logger.error('Auth', 'Error during password hash verification', hashError)
+          // Continue to fallback methods
+        }
+      } else {
+        // Use plain text password (development only)
+        logger.info('Auth', 'Using plain text password verification')
+        isValidCredentials = username === ADMIN_USERNAME && password === DEFAULT_PASSWORD
 
-      isValidCredentials = username === ADMIN_USERNAME && hashVerificationResult
-    } else {
-      // Use plain text password (development only)
-      logger.info('Auth', 'Using plain text password verification')
-      isValidCredentials = username === ADMIN_USERNAME && password === DEFAULT_PASSWORD
-
-      if (process.env.NODE_ENV === 'production') {
-        logger.error('Auth', 'Using plain text password in production is not secure!')
+        if (process.env.NODE_ENV === 'production') {
+          logger.error('Auth', 'Using plain text password in production is not secure!')
+        }
       }
-    }
 
-    // Additional fallback: try plain text comparison if hash fails
-    if (!isValidCredentials && username === ADMIN_USERNAME) {
-      logger.info('Auth', 'Hash verification failed, trying plain text fallback')
-      if (password === process.env.ADMIN_PASSWORD) {
-        logger.info('Auth', 'Plain text fallback succeeded')
-        isValidCredentials = true
+      // Additional fallback: try plain text comparison if hash fails
+      if (!isValidCredentials && username === ADMIN_USERNAME) {
+        logger.info('Auth', 'Hash verification failed, trying plain text fallback')
+        if (password === process.env.ADMIN_PASSWORD) {
+          logger.info('Auth', 'Plain text fallback succeeded')
+          isValidCredentials = true
+        }
       }
-    }
 
-    logger.info('Auth', `Final authentication result: ${isValidCredentials}`)
+      logger.info('Auth', `Final authentication result: ${isValidCredentials}`)
+    } catch (credentialError) {
+      logger.error('Auth', 'Error during credential verification', credentialError)
+      return NextResponse.json({ error: 'Authentication system error' }, { status: 500 })
+    }
 
     // Track login attempt
     if (!trackLoginAttempt(ip, isValidCredentials)) {
@@ -170,44 +199,66 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Create session
-    const session = createSession()
+    let session
+    try {
+      session = createSession()
+      logger.info('Auth', `Created session: ${session.id}`)
+    } catch (sessionError) {
+      logger.error('Auth', 'Error creating session', sessionError)
+      return NextResponse.json({ error: 'Session creation failed' }, { status: 500 })
+    }
 
     // Invalidate temporary CSRF token if it was used for login
-    const tempTokenId = request.headers.get('x-csrf-token-id')
-    if (tempTokenId) {
-      invalidateTemporaryCSRFToken(tempTokenId)
-      logger.info('Auth', `Invalidated temporary CSRF token: ${tempTokenId}`)
+    try {
+      const tempTokenId = request.headers.get('x-csrf-token-id')
+      if (tempTokenId) {
+        invalidateTemporaryCSRFToken(tempTokenId)
+        logger.info('Auth', `Invalidated temporary CSRF token: ${tempTokenId}`)
+      }
+    } catch (csrfError) {
+      logger.warn('Auth', 'Error invalidating temporary CSRF token', csrfError)
+      // Continue with login process
     }
 
     // Set session cookie
-    const response = NextResponse.json({
-      success: true,
-      sessionId: session.id,
-      csrfToken: session.csrfToken,
-      expiresAt: new Date(Date.now() + defaultSecurityConfig.sessionTimeout).toISOString(),
-    })
+    try {
+      const response = NextResponse.json({
+        success: true,
+        sessionId: session.id,
+        csrfToken: session.csrfToken,
+        expiresAt: new Date(Date.now() + defaultSecurityConfig.sessionTimeout).toISOString(),
+      })
 
-    response.cookies.set('session-id', session.id, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: defaultSecurityConfig.sessionTimeout / 1000,
-      path: '/',
-    })
+      response.cookies.set('session-id', session.id, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: defaultSecurityConfig.sessionTimeout / 1000,
+        path: '/',
+      })
 
-    // Log successful authentication
-    await auditService.logAuditEvent('login_success', 'authentication', {
-      userId: username,
-      sessionId: session.id,
-      ipAddress: ip,
-      userAgent: request.headers.get('user-agent'),
-      severity: 'medium',
-      category: 'security',
-      complianceFlags: ['SOC2', 'GDPR'],
-    })
+      // Log successful authentication
+      try {
+        await auditService.logAuditEvent('login_success', 'authentication', {
+          userId: username,
+          sessionId: session.id,
+          ipAddress: ip,
+          userAgent: request.headers.get('user-agent'),
+          severity: 'medium',
+          category: 'security',
+          complianceFlags: ['SOC2', 'GDPR'],
+        })
+      } catch (auditError) {
+        logger.warn('Auth', 'Error logging audit event', auditError)
+        // Continue with successful login
+      }
 
-    logger.info('Auth', `Successful login from IP: ${ip}`)
-    return response
+      logger.info('Auth', `Successful login from IP: ${ip}`)
+      return response
+    } catch (responseError) {
+      logger.error('Auth', 'Error creating response', responseError)
+      return NextResponse.json({ error: 'Response creation failed' }, { status: 500 })
+    }
   } catch (error) {
     logger.error('Auth', 'Login error', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
