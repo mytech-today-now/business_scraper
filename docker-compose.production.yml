@@ -46,60 +46,60 @@ volumes:
 
 services:
   # =============================================================================
-  # MAIN APPLICATION SERVICE
+  # MAIN APPLICATION SERVICE (COMMENTED OUT FOR LOCAL DEPLOYMENT)
   # =============================================================================
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile.production
-      args:
-        NODE_ENV: production
-        DOCKER_BUILDKIT: ${DOCKER_BUILDKIT:-1}
-    container_name: ${CONTAINER_NAME_PREFIX:-business-scraper}-app
-    hostname: business-scraper-app
-    restart: ${RESTART_POLICY:-unless-stopped}
-    ports:
-      - "${PORT:-3000}:${PORT:-3000}"
-    # Use env_file for cleaner configuration management
-    env_file:
-      - .env.production
-    environment:
-      # Override critical Docker-specific settings
-      - NODE_ENV=production
-      - HOSTNAME=0.0.0.0
-      - PORT=${PORT:-3000}
-      - DOCKER_DEPLOYMENT=true
-    # Resource limits for production
-    deploy:
-      resources:
-        limits:
-          cpus: ${CONTAINER_CPU_LIMIT:-2.0}
-          memory: ${CONTAINER_MEMORY_LIMIT:-4G}
-        reservations:
-          cpus: ${CONTAINER_CPU_RESERVATION:-1.0}
-          memory: ${CONTAINER_MEMORY_RESERVATION:-2G}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - app-logs:/app/logs
-      - app-uploads:/app/uploads
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}${HEALTH_CHECK_ENDPOINT:-/api/health}"]
-      interval: ${HEALTH_CHECK_INTERVAL:-30s}
-      timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
-      retries: ${HEALTH_CHECK_RETRIES:-3}
-      start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
-    # Logging configuration for production
-    logging:
-      driver: ${DOCKER_LOGGING_DRIVER:-json-file}
-      options:
-        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
-        max-file: ${DOCKER_LOG_MAX_FILE:-3}
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.production
+  #     args:
+  #       NODE_ENV: production
+  #       DOCKER_BUILDKIT: ${DOCKER_BUILDKIT:-1}
+  #   container_name: ${CONTAINER_NAME_PREFIX:-business-scraper}-app
+  #   hostname: business-scraper-app
+  #   restart: ${RESTART_POLICY:-unless-stopped}
+  #   ports:
+  #     - "${PORT:-3000}:${PORT:-3000}"
+  #   # Use env_file for cleaner configuration management
+  #   env_file:
+  #     - .env.production
+  #   environment:
+  #     # Override critical Docker-specific settings
+  #     - NODE_ENV=production
+  #     - HOSTNAME=0.0.0.0
+  #     - PORT=${PORT:-3000}
+  #     - DOCKER_DEPLOYMENT=true
+  #   # Resource limits for production
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: ${CONTAINER_CPU_LIMIT:-2.0}
+  #         memory: ${CONTAINER_MEMORY_LIMIT:-4G}
+  #       reservations:
+  #         cpus: ${CONTAINER_CPU_RESERVATION:-1.0}
+  #         memory: ${CONTAINER_MEMORY_RESERVATION:-2G}
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   volumes:
+  #     - app-logs:/app/logs
+  #     - app-uploads:/app/uploads
+  #   networks:
+  #     - app-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}${HEALTH_CHECK_ENDPOINT:-/api/health}"]
+  #     interval: ${HEALTH_CHECK_INTERVAL:-30s}
+  #     timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
+  #     retries: ${HEALTH_CHECK_RETRIES:-3}
+  #     start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
+  #   # Logging configuration for production
+  #   logging:
+  #     driver: ${DOCKER_LOGGING_DRIVER:-json-file}
+  #     options:
+  #       max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+  #       max-file: ${DOCKER_LOG_MAX_FILE:-3}
 
   # Database
   postgres:
@@ -157,8 +157,8 @@ services:
           cpus: '0.25'
           memory: 512M
 
-  # Elasticsearch for logging and search
-  elasticsearch:
+  # Elasticsearch for logging and search (COMMENTED OUT FOR LOCAL DEPLOYMENT)
+  # elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: business-scraper-elasticsearch
     restart: unless-stopped
