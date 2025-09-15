@@ -154,6 +154,47 @@ sample-api-credentials-backup.txt
 *-live-test*.md
 *_live_test*.md
 
+# ========================================
+# END-TO-END TEST FILES WITH SENSITIVE DATA
+# ========================================
+# These files contain real API keys, credentials, and sensitive test data
+# that should never be committed to version control
+
+# End-to-end test files with API keys and credentials
+*end2end*.spec.ts
+*end2end*.test.ts
+*end2end_download*.spec.ts
+*end2end_download*.test.ts
+end2end_download_*.spec.ts
+end2end_download_*.test.ts
+src/tests/e2e/end2end_*.spec.ts
+src/tests/e2e/end2end_*.test.ts
+tests/e2e/end2end_*.spec.ts
+tests/e2e/end2end_*.test.ts
+
+# E2E test helper files with credentials
+*end2end*helpers*.ts
+*end2end*helper*.ts
+src/tests/e2e/helpers/end2end*.ts
+tests/e2e/helpers/end2end*.ts
+
+# Test configuration files with real API keys
+config/e2e-test.env
+config/*e2e*.env
+config/*end2end*.env
+*e2e-test*.env
+*end2end-test*.env
+
+# Test result files that may contain sensitive data
+test-results/end2end_*
+test-results/*end2end*
+test-results/*download*
+
+# Allow example/template files
+!*end2end*.example.*
+!*end2end*-example.*
+!example-*end2end*.*
+
 # Personal notes that might contain sensitive info
 NOTES.md
 notes.md
@@ -187,6 +228,16 @@ personal*.md
 !*auth*.example.*
 !*auth*-example.*
 
+# Test files with authentication credentials
+*auth*test*.ts
+*auth*test*.js
+*login*test*.ts
+*login*test*.js
+*authentication*.spec.ts
+*authentication*.test.ts
+!*auth*test*.example.*
+!*login*test*.example.*
+
 # Temporary files that might contain sensitive data
 *.tmp
 *.temp
@@ -200,6 +251,24 @@ personal*.md
 !schema.sql
 !example*.sql
 !sample*.sql
+
+# Downloaded test files that might contain real data
+downloads/
+test-downloads/
+*-download-test*
+*_download_test*
+*.xlsx.test
+*.csv.test
+*.pdf.test
+
+# Playwright test artifacts with potential sensitive data
+playwright-report/
+test-results/
+*-chromium/
+*-firefox/
+*-webkit/
+*.png.test
+*.jpg.test
 
 # ========================================
 # DEPLOYMENT & INFRASTRUCTURE
