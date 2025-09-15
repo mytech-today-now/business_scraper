@@ -1,0 +1,245 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Build Verification Test (BVT) Dashboard",
+    "tags": ["bvt", "testing", "ci-cd"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "BVT Success Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "bvt_success_rate",
+            "legendFormat": "Success Rate"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 95
+                },
+                {
+                  "color": "green",
+                  "value": 98
+                }
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "BVT Execution Time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "bvt_execution_time_seconds",
+            "legendFormat": "Execution Time"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 480
+                },
+                {
+                  "color": "red",
+                  "value": 600
+                }
+              ]
+            },
+            "unit": "s"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Critical Tests Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "bvt_critical_tests_passed",
+            "legendFormat": "Critical Passed"
+          },
+          {
+            "expr": "bvt_critical_tests_failed",
+            "legendFormat": "Critical Failed"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 1
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 4,
+        "title": "BVT Execution History",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "bvt_execution_time_seconds",
+            "legendFormat": "Execution Time"
+          },
+          {
+            "expr": "600",
+            "legendFormat": "Max Time Limit"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "s"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Test Category Results",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "bvt_category_success_rate",
+            "legendFormat": "{{category}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "green",
+                  "value": 95
+                }
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "Recent BVT Runs",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "bvt_run_info",
+            "legendFormat": "",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "list",
+              "filterable": true
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        }
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "5m",
+    "annotations": {
+      "list": [
+        {
+          "name": "BVT Failures",
+          "datasource": "prometheus",
+          "expr": "bvt_critical_tests_failed > 0",
+          "iconColor": "red",
+          "textFormat": "BVT Critical Failure"
+        }
+      ]
+    }
+  }
+}

@@ -6,6 +6,111 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.7.0] - 2025-09-15
+
+### Added - Build Verification Test (BVT) Suite
+
+#### 🧪 **Comprehensive BVT Framework**
+- **Complete BVT Suite**: Lightweight testing framework covering all 12 software testing areas
+  - Functional Testing: Core workflows (login, navigation, API heartbeat)
+  - Unit Testing: Critical unit test canaries
+  - Integration Testing: Key interface validation
+  - System Testing: Application startup and service availability
+  - Regression Testing: Historical bug prevention
+  - Smoke Testing: Basic deployment validation
+  - Sanity Testing: Core feature verification
+  - Performance Testing: Lightweight response time checks (<500ms)
+  - Security Testing: Authentication/authorization validation
+  - Usability Testing: Basic UI element validation
+  - Compatibility Testing: Common environment validation
+  - Acceptance Testing: Deployment readiness confirmation
+
+#### ⚡ **Performance & Automation**
+- **Fast Execution**: Complete suite runs in under 10 minutes
+- **Parallel Processing**: Tests run concurrently for optimal speed
+- **Automated Integration**: Runs automatically in CI/CD pipeline
+- **Configurable Timeouts**: Adaptive timeout management with retry logic
+- **Resource Monitoring**: Memory and CPU usage tracking during execution
+
+#### 📊 **Comprehensive Reporting**
+- **Multiple Formats**: Console, JSON, Markdown, and JUnit XML reports
+- **GitHub Actions Integration**: Automated summary in workflow results
+- **Detailed Metrics**: Execution times, success rates, and performance data
+- **Failure Analysis**: Detailed error reporting with context and suggestions
+- **Historical Tracking**: Trend analysis and performance regression detection
+
+#### 🔧 **CLI & Configuration**
+- **Command Line Interface**: Full CLI with multiple execution modes
+  - `npm run test:bvt` - Full BVT suite
+  - `npm run test:bvt:health` - Health check only (faster)
+  - `npm run test:bvt:validate` - Configuration validation
+  - `npm run test:bvt:info` - Configuration information
+- **Flexible Configuration**: Customizable test categories, timeouts, and priorities
+- **Environment Support**: Works across development, staging, and production
+
+#### 🚀 **CI/CD Integration**
+- **Build Pipeline**: Integrated into GitHub Actions workflow
+- **Deployment Validation**: Runs after staging and production deployments
+- **Quality Gates**: Prevents deployment if critical tests fail
+- **Monitoring Dashboard**: Grafana dashboard for BVT metrics and trends
+
+#### 📚 **Documentation & Monitoring**
+- **Comprehensive Guide**: Complete BVT documentation (`docs/BVT_GUIDE.md`)
+- **Monitoring Dashboard**: Grafana dashboard configuration for BVT metrics
+- **Best Practices**: Guidelines for extending and maintaining BVT tests
+- **Troubleshooting Guide**: Common issues and resolution steps
+
+### Enhanced
+- **CI/CD Pipeline**: Added BVT execution to build and deployment stages
+- **Testing Infrastructure**: Integrated BVT with existing test framework
+- **Quality Assurance**: Enhanced deployment confidence with automated verification
+- **Performance Monitoring**: Added BVT execution time and success rate tracking
+
+## [6.7.1] - 2025-09-07
+
+### Fixed - Critical Login UI Infinite Render Loop
+
+#### 🔧 **CRITICAL FIX: Login UI Freezing Due to Infinite React Render Loops**
+
+- **Login UI Infinite Loop Resolution**: Fixed critical issue where login button appeared non-functional
+  - **Root Cause**: `useOfflineSupport` hook in `ServiceWorkerRegistration` component caused infinite re-renders
+  - **Solution**: Implemented proper callback memoization and dependency management
+  - **Files Modified**:
+    - `src/components/ServiceWorkerRegistration.tsx` - Added `useCallback` for callback functions
+    - `src/hooks/useOfflineSupport.ts` - Used `useRef` to stabilize callback dependencies
+    - `src/middleware.ts` - Excluded additional static resources from authentication
+  - **Issue Resolved**: GitHub Issue #161 - Critical: Login UI freezes due to infinite React render loop
+
+- **ServiceWorkerRegistration Component Enhancement**
+  - Wrapped `handleOnline` and `handleOffline` callbacks in `useCallback` to prevent recreation
+  - Conditional callback execution based on `wasOffline` state
+  - Eliminated infinite render loops that consumed CPU resources
+
+- **useOfflineSupport Hook Optimization**
+  - Replaced direct callback dependencies with `useRef` pattern
+  - Stabilized `updateOnlineStatus` function dependencies
+  - Added separate `useEffect` hooks to update callback refs when they change
+  - Prevented "Maximum update depth exceeded" warnings
+
+- **Static Resource Loading Improvements**
+  - Updated middleware matcher to exclude `favicon.png`, `manifest.json`, and `sw.js`
+  - Reduced authentication errors for static resources (401, 500 errors)
+  - Improved console error noise reduction
+
+#### 🧪 **Testing & Verification**
+
+- **Manual Testing**: Verified login flow works without UI freezing
+- **Console Monitoring**: Confirmed elimination of infinite loop warnings
+- **Performance**: Eliminated CPU-intensive infinite render cycles
+- **Security**: Maintained CSRF protection and authentication security
+
+#### 📊 **Impact**
+
+- **User Experience**: Login now works seamlessly without UI freezing
+- **Performance**: Eliminated infinite render loops that consumed CPU resources
+- **Reliability**: Reduced console errors and improved application stability
+- **Security**: Maintained all existing security measures while fixing UI issues
+
 ## [6.7.0] - 2025-09-05
 
 ### Added - Bundle Size Optimization & Tree Shaking Enhancement

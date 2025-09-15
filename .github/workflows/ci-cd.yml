@@ -109,6 +109,14 @@ jobs:
         run: npm run test:coverage:threshold
         continue-on-error: true
 
+      - name: Run Build Verification Tests (BVT)
+        run: npm run test:bvt
+        continue-on-error: false
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/business_scraper_test
+          REDIS_URL: redis://localhost:6379
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -599,6 +607,12 @@ jobs:
           echo "Running smoke tests against staging"
           # Add smoke test commands here
 
+      - name: Run BVT Health Check on Staging
+        run: |
+          export TEST_BASE_URL=https://staging.business-scraper.com
+          npm run test:bvt:health
+        continue-on-error: false
+
   # Deploy to Production
   deploy-production:
     name: Deploy to Production
@@ -621,6 +635,12 @@ jobs:
         run: |
           echo "Running post-deployment verification"
           # Add verification commands here
+
+      - name: Run BVT Suite on Production
+        run: |
+          export TEST_BASE_URL=https://business-scraper.com
+          npm run test:bvt
+        continue-on-error: false
 
       - name: Notify deployment
         uses: 8398a7/action-slack@v3

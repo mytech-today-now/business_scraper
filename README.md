@@ -16,7 +16,7 @@ Controls**, **End-to-End Encryption**, **Role-Based Access Control**,
 Authentication**, **Real-Time Consent Management**, and **Privacy-First
 Architecture**.
 
-## 🚀 **LATEST RELEASE (v6.6.4)** - Production Docker Deployment
+## 🚀 **LATEST RELEASE (v6.7.0)** - Production Docker Deployment & Authentication Enhancements
 
 **🐳 Complete Production Docker Deployment**: Successfully recompiled, rebuilt, and redeployed the entire application using Docker with production-grade infrastructure including PostgreSQL and Redis.
 
@@ -2327,6 +2327,31 @@ integration:
 - Proper ZIP code validation and formatting
 
 ## 🧪 **Testing**
+
+### **Build Verification Test (BVT) Suite - NEW in v6.7.0**
+
+**🚀 Fast & Comprehensive**: The BVT suite provides rapid feedback on application stability covering all 12 software testing areas in under 10 minutes.
+
+```bash
+# Run full BVT suite (all 12 testing areas)
+npm run test:bvt
+
+# Run health check only (critical tests, faster)
+npm run test:bvt:health
+
+# Validate BVT configuration
+npm run test:bvt:validate
+
+# Show BVT information
+npm run test:bvt:info
+```
+
+**Key Features:**
+- ⚡ **Fast Execution**: Complete in <10 minutes
+- 🎯 **Comprehensive Coverage**: All 12 testing areas
+- 🤖 **Automated**: Runs in CI/CD pipeline
+- 📊 **Multiple Reports**: Console, JSON, Markdown, JUnit
+- 🔄 **Parallel Execution**: Tests run concurrently
 
 ### **Comprehensive Testing Infrastructure (v5.3.0) - PRODUCTION READY**
 
