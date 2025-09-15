@@ -155,12 +155,40 @@ const nextConfig = {
   // Enable standalone output for Docker deployment (only in production)
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 
-  // Experimental features for better build performance
+  // Ensure environment variables are available in standalone mode
+  env: {
+    DATABASE_URL: process.env.DATABASE_URL,
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    DB_NAME: process.env.DB_NAME,
+    DB_USER: process.env.DB_USER,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_TYPE: process.env.DB_TYPE,
+    POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
+    // Authentication variables for client-side access
+    ENABLE_AUTH: process.env.ENABLE_AUTH,
+    ADMIN_USERNAME: process.env.ADMIN_USERNAME,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+    ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
+    ADMIN_PASSWORD_SALT: process.env.ADMIN_PASSWORD_SALT,
+    // Stripe payment variables for client-side access
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    PAYMENT_SUCCESS_URL: process.env.PAYMENT_SUCCESS_URL,
+    PAYMENT_CANCEL_URL: process.env.PAYMENT_CANCEL_URL,
+    // Debug and development variables
+    NEXT_PUBLIC_DEBUG: process.env.NEXT_PUBLIC_DEBUG,
+    // NODE_ENV is managed by Next.js and cannot be overridden
+  },
+
+  // Experimental features configuration
   experimental: {
-    // Optimize package imports for tree shaking
+    // External packages for server components
+    serverComponentsExternalPackages: ['nodemailer', 'puppeteer-core', '@tensorflow/tfjs'],
+    // Optimize package imports for tree shaking (excluding external packages)
     optimizePackageImports: [
       'lucide-react',
-      '@tensorflow/tfjs',
       'natural',
       'compromise',
       'simple-statistics',

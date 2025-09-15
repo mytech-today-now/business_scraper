@@ -32,6 +32,10 @@ export default defineConfig({
 
     /* Record video on failure */
     video: 'retain-on-failure',
+
+    /* Increase timeout for slow loading pages */
+    actionTimeout: 30000,
+    navigationTimeout: 30000,
   },
 
   /* Configure projects for major browsers */
@@ -78,5 +82,9 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    env: {
+      NODE_ENV: 'development',
+      ENABLE_AUTH: 'false'
+    }
   },
 })

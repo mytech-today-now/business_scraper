@@ -1,7 +1,7 @@
-# Simple Dockerfile for Business Scraper Application
-# Optimized for development and testing environments
+# Simple Development Dockerfile for Business Scraper Application
+# Runs in development mode to avoid build issues
 
-FROM node:18-alpine AS base
+FROM node:18-alpine
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -12,11 +12,13 @@ RUN apk add --no-cache \
     freetype-dev \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
+    ttf-freefont \
+    curl \
+    dumb-init
 
 # Set Puppeteer to use installed Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Set working directory
 WORKDIR /app
@@ -30,26 +32,16 @@ RUN npm install --force && npm cache clean --force
 # Copy source code
 COPY . .
 
-# Create next.config.js for container environment
-RUN echo 'const nextConfig = { \
-  output: "standalone", \
-  typescript: { ignoreBuildErrors: true }, \
-  eslint: { ignoreDuringBuilds: true }, \
-  experimental: { \
-    serverComponentsExternalPackages: ["puppeteer-core"] \
-  } \
-}; \
-module.exports = nextConfig;' > next.config.container.js
-
-# Build application with container config
-RUN cp next.config.container.js next.config.js && npm run build
+# Create necessary directories
+RUN mkdir -p /app/logs /app/uploads /app/temp
 
 # Expose port
 EXPOSE 3000
 
 # Set environment variables
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 ENV PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
@@ -59,5 +51,12 @@ RUN adduser --system --uid 1001 nextjs
 RUN chown -R nextjs:nodejs /app
 USER nextjs
 
-# Start application
-CMD ["npm", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start application in development mode
+CMD ["npm", "run", "dev"]
