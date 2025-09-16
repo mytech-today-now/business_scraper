@@ -1,6 +1,6 @@
 {
   "name": "business-scraper-app",
-  "version": "6.7.0",
+  "version": "6.8.0",
   "private": true,
   "description": "A full-stack business web scraping application with React frontend and Node.js backend",
   "scripts": {
@@ -111,12 +111,19 @@
     "payments:test": "npm run test:payments && npm run test:payments:integration",
     "payments:validate": "node scripts/validate-payment-config.js",
     "analyze": "cross-env ANALYZE=true next build",
-    "bundle:analyze": "npx @next/bundle-analyzer"
+    "bundle:analyze": "npx @next/bundle-analyzer",
+    "setup:github": "node scripts/setup-github-token.js",
+    "setup:github:help": "node scripts/setup-github-token.js --help",
+    "validate:github": "node scripts/validate-github-setup.js",
+    "workflow:enhancement": "node scripts/console-log-enhancement-workflow.js",
+    "workflow:enhancement:help": "node scripts/console-log-enhancement-workflow.js --help",
+    "workflow:enhancement:demo": "node scripts/demo-enhancement-workflow.js",
+    "workflow:enhancement:test": "jest src/__tests__/scripts/enhancement-workflow.test.js",
+    "workflow:enhancement:analyze": "node scripts/run-enhancement-analysis.js"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.10.0",
     "@huggingface/inference": "^4.7.1",
-
     "@stripe/react-stripe-js": "^3.9.2",
     "@stripe/stripe-js": "^7.9.0",
     "@tensorflow/tfjs": "^4.22.0",
