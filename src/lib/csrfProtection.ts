@@ -5,10 +5,32 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
 import { getSession, generateSecureToken } from './security'
 import { logger } from '@/utils/logger'
 import { validateTemporaryCSRFToken } from '@/app/api/csrf/route'
+
+// Edge Runtime compatibility check
+const isEdgeRuntime = typeof EdgeRuntime !== 'undefined' ||
+  (typeof process !== 'undefined' && process.env.NEXT_RUNTIME === 'edge')
+
+// Web Crypto API compatibility
+const webCrypto = globalThis.crypto
+
+/**
+ * Timing-safe string comparison for Edge Runtime
+ */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false
+  }
+
+  let result = 0
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  }
+
+  return result === 0
+}
 
 export interface CSRFTokenInfo {
   token: string
@@ -87,10 +109,7 @@ export class CSRFProtectionService {
 
     // Validate token using timing-safe comparison
     try {
-      const isValid = crypto.timingSafeEqual(
-        Buffer.from(tokenInfo.token, 'hex'),
-        Buffer.from(providedToken, 'hex')
-      )
+      const isValid = timingSafeEqual(tokenInfo.token, providedToken)
 
       if (!isValid) {
         logger.warn('CSRF', `Invalid CSRF token provided for session: ${sessionId}`)
@@ -233,6 +252,13 @@ export class CSRFProtectionService {
   }
 
   /**
+   * Get current token count for monitoring
+   */
+  getTokenCount(): number {
+    return this.csrfTokens.size + this.temporaryTokens.size
+  }
+
+  /**
    * Validate form submission with CSRF protection
    */
   validateFormSubmission(request: NextRequest, sessionId: string): CSRFValidationResult {
@@ -282,15 +308,8 @@ export class CSRFProtectionService {
  */
 export const csrfProtectionService = new CSRFProtectionService()
 
-// Cleanup interval for expired tokens (every 10 minutes)
-if (typeof window === 'undefined') {
-  setInterval(
-    () => {
-      csrfProtectionService.cleanupExpiredTokens()
-    },
-    10 * 60 * 1000
-  )
-}
+// Note: Token cleanup is now handled by API routes instead of setInterval
+// for Edge Runtime compatibility. See /api/cleanup/csrf-tokens route.
 
 /**
  * Middleware helper for CSRF protection

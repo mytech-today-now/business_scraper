@@ -1,13 +1,30 @@
 /**
  * Security configuration and utilities for the business scraper application
  * Implements authentication, authorization, input validation, and security headers
+ * Edge Runtime Compatible Version
  */
 
-import crypto from 'crypto'
 import { NextRequest } from 'next/server'
 import { logger } from '@/utils/logger'
 import { getCSPHeader } from './cspConfig'
 import { getSecurityConfig } from './config'
+
+// Edge Runtime compatibility check
+const isEdgeRuntime = typeof EdgeRuntime !== 'undefined' ||
+  (typeof process !== 'undefined' && process.env.NEXT_RUNTIME === 'edge')
+
+// Web Crypto API compatibility
+const webCrypto = globalThis.crypto
+
+// Fallback for Node.js crypto when not in Edge Runtime
+let nodeCrypto: any = null
+if (!isEdgeRuntime) {
+  try {
+    nodeCrypto = require('crypto')
+  } catch (error) {
+    logger.warn('Security', 'Node.js crypto module not available, using Web Crypto API only')
+  }
+}
 
 // Security configuration
 export interface SecurityConfig {
@@ -101,77 +118,219 @@ const loginAttempts = new Map<string, { count: number; lastAttempt: Date }>()
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
 
 /**
- * Generate a secure random token
+ * Generate a secure random token using Web Crypto API
  */
 export function generateSecureToken(length: number = 32): string {
-  return crypto.randomBytes(length).toString('hex')
+  const array = new Uint8Array(length)
+  webCrypto.getRandomValues(array)
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
 }
 
 /**
  * Generate a secure random salt for password hashing
  */
 export function generateSalt(length: number = 16): string {
-  return crypto.randomBytes(length).toString('hex')
+  return generateSecureToken(length)
 }
 
 /**
  * Generate a unique ID
  */
 export function generateId(length: number = 16): string {
-  return crypto.randomBytes(length).toString('hex')
+  return generateSecureToken(length)
 }
 
 /**
- * Hash a password using PBKDF2
+ * Hash a password using PBKDF2 with Web Crypto API
  */
-export function hashPassword(password: string, salt?: string): { hash: string; salt: string } {
-  const actualSalt = salt || crypto.randomBytes(16).toString('hex')
-  const hash = crypto
-    .pbkdf2Sync(password, actualSalt, defaultSecurityConfig.keyDerivationIterations, 64, 'sha512')
-    .toString('hex')
+export async function hashPassword(password: string, salt?: string): Promise<{ hash: string; salt: string }> {
+  const actualSalt = salt || generateSecureToken(16)
+
+  // Convert password and salt to ArrayBuffer
+  const encoder = new TextEncoder()
+  const passwordBuffer = encoder.encode(password)
+  const saltBuffer = encoder.encode(actualSalt)
+
+  // Import password as key material
+  const keyMaterial = await webCrypto.subtle.importKey(
+    'raw',
+    passwordBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  )
+
+  // Derive key using PBKDF2
+  const derivedKey = await webCrypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: saltBuffer,
+      iterations: defaultSecurityConfig.keyDerivationIterations,
+      hash: 'SHA-512'
+    },
+    keyMaterial,
+    512 // 64 bytes * 8 bits
+  )
+
+  // Convert to hex string
+  const hashArray = new Uint8Array(derivedKey)
+  const hash = Array.from(hashArray, byte => byte.toString(16).padStart(2, '0')).join('')
+
   return { hash, salt: actualSalt }
 }
 
 /**
  * Verify a password against a hash
  */
-export function verifyPassword(password: string, hash: string, salt: string): boolean {
-  const { hash: computedHash } = hashPassword(password, salt)
-  return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computedHash, 'hex'))
+export async function verifyPassword(password: string, hash: string, salt: string): Promise<boolean> {
+  const { hash: computedHash } = await hashPassword(password, salt)
+  return timingSafeEqual(hash, computedHash)
 }
 
 /**
- * Encrypt sensitive data
+ * Timing-safe string comparison using Web Crypto API
  */
-export function encryptData(
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false
+  }
+
+  // Convert strings to Uint8Array for comparison
+  const aArray = new Uint8Array(a.length)
+  const bArray = new Uint8Array(b.length)
+
+  for (let i = 0; i < a.length; i++) {
+    aArray[i] = a.charCodeAt(i)
+    bArray[i] = b.charCodeAt(i)
+  }
+
+  // Use crypto.subtle.verify for timing-safe comparison
+  let result = 0
+  for (let i = 0; i < aArray.length; i++) {
+    result |= aArray[i] ^ bArray[i]
+  }
+
+  return result === 0
+}
+
+/**
+ * Encrypt sensitive data using Web Crypto API with AES-GCM
+ */
+export async function encryptData(
   data: string,
   key: string
-): { encrypted: string; iv: string; tag: string } {
-  const iv = crypto.randomBytes(16)
-  const keyHash = crypto.createHash('sha256').update(key).digest()
-  const cipher = crypto.createCipheriv('aes-256-cbc', keyHash, iv)
+): Promise<{ encrypted: string; iv: string; tag: string }> {
+  const encoder = new TextEncoder()
+  const dataBuffer = encoder.encode(data)
 
-  let encrypted = cipher.update(data, 'utf8', 'hex')
-  encrypted += cipher.final('hex')
+  // Generate IV
+  const iv = new Uint8Array(12) // 96-bit IV for GCM
+  webCrypto.getRandomValues(iv)
+
+  // Derive key from password
+  const keyBuffer = encoder.encode(key)
+  const keyMaterial = await webCrypto.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  )
+
+  const derivedKeyBuffer = await webCrypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: iv, // Use IV as salt for simplicity
+      iterations: 10000,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    256 // 32 bytes * 8 bits
+  )
+
+  // Import derived key for AES-GCM
+  const cryptoKey = await webCrypto.subtle.importKey(
+    'raw',
+    derivedKeyBuffer,
+    { name: 'AES-GCM' },
+    false,
+    ['encrypt']
+  )
+
+  // Encrypt data
+  const encryptedBuffer = await webCrypto.subtle.encrypt(
+    {
+      name: 'AES-GCM',
+      iv: iv
+    },
+    cryptoKey,
+    dataBuffer
+  )
+
+  // Convert to hex strings
+  const encryptedArray = new Uint8Array(encryptedBuffer)
+  const encrypted = Array.from(encryptedArray, byte => byte.toString(16).padStart(2, '0')).join('')
+  const ivHex = Array.from(iv, byte => byte.toString(16).padStart(2, '0')).join('')
 
   return {
     encrypted,
-    iv: iv.toString('hex'),
-    tag: '', // Not used with CBC mode
+    iv: ivHex,
+    tag: '', // GCM authentication tag is included in encrypted data
   }
 }
 
 /**
- * Decrypt sensitive data
+ * Decrypt sensitive data using Web Crypto API with AES-GCM
  */
-export function decryptData(encryptedData: string, key: string, iv: string): string {
-  const keyHash = crypto.createHash('sha256').update(key).digest()
-  const decipher = crypto.createDecipheriv('aes-256-cbc', keyHash, Buffer.from(iv, 'hex'))
+export async function decryptData(encryptedData: string, key: string, iv: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const decoder = new TextDecoder()
 
-  let decrypted = decipher.update(encryptedData, 'hex', 'utf8')
-  decrypted += decipher.final('utf8')
+  // Convert hex strings back to Uint8Array
+  const encryptedArray = new Uint8Array(encryptedData.match(/.{2}/g)!.map(byte => parseInt(byte, 16)))
+  const ivArray = new Uint8Array(iv.match(/.{2}/g)!.map(byte => parseInt(byte, 16)))
 
-  return decrypted
+  // Derive key from password
+  const keyBuffer = encoder.encode(key)
+  const keyMaterial = await webCrypto.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  )
+
+  const derivedKeyBuffer = await webCrypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: ivArray,
+      iterations: 10000,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    256
+  )
+
+  // Import derived key for AES-GCM
+  const cryptoKey = await webCrypto.subtle.importKey(
+    'raw',
+    derivedKeyBuffer,
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt']
+  )
+
+  // Decrypt data
+  const decryptedBuffer = await webCrypto.subtle.decrypt(
+    {
+      name: 'AES-GCM',
+      iv: ivArray
+    },
+    cryptoKey,
+    encryptedArray
+  )
+
+  return decoder.decode(decryptedBuffer)
 }
 
 /**
@@ -347,7 +506,7 @@ export function validateCSRFToken(sessionId: string, token: string): boolean {
     return false
   }
 
-  return crypto.timingSafeEqual(Buffer.from(session.csrfToken, 'hex'), Buffer.from(token, 'hex'))
+  return timingSafeEqual(session.csrfToken, token)
 }
 
 /**
@@ -438,7 +597,5 @@ export function validateInput(input: string): { isValid: boolean; errors: string
   }
 }
 
-// Cleanup interval for expired sessions (run every 5 minutes)
-if (typeof window === 'undefined') {
-  setInterval(cleanupExpiredSessions, 5 * 60 * 1000)
-}
+// Note: Session cleanup is now handled by API routes instead of setInterval
+// for Edge Runtime compatibility. See /api/cleanup/sessions route.

@@ -1,5 +1,11 @@
 /**
  * Next.js middleware for security, authentication, and rate limiting
+ * Edge Runtime Compatible Version
+ *
+ * This middleware has been refactored to work with Next.js Edge Runtime:
+ * - Uses Web Crypto API instead of Node.js crypto
+ * - Removes setInterval usage for cleanup operations
+ * - Optimized for edge environments
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -15,6 +21,7 @@ import { validateCSRFMiddleware, csrfProtectionService } from '@/lib/csrfProtect
 import { securityMonitoringService } from '@/lib/securityMonitoring'
 import { getCSPHeader, generateCSPNonce } from '@/lib/cspConfig'
 import { logger } from '@/utils/logger'
+import { performCleanupIfNeeded } from '@/lib/edgeRuntimeCleanup'
 
 /**
  * Generate a UUID using Web Crypto API (Edge Runtime compatible)
@@ -28,12 +35,13 @@ function generateUUID(): string {
 }
 
 // Public routes that don't require authentication
-const publicRoutes = ['/api/health', '/api/csrf', '/api/auth', '/api/ping', '/api/csp-report', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
+const publicRoutes = ['/api/health', '/api/csrf', '/api/auth', '/api/ping', '/api/csp-report', '/api/stream-search', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']
 
 // API routes that require rate limiting with their types
 const rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {
   '/api/scrape': 'scraping',
   '/api/search': 'scraping',
+  '/api/stream-search': 'scraping', // Streaming search endpoint
   '/api/geocode': 'general',
   '/api/auth': 'auth',
   '/api/data-management': 'general',
@@ -163,12 +171,21 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
     )
   }
 
-  // Cache control for sensitive pages
+  // Cache control for sensitive pages (exclude SSE endpoints)
   const url = response.url || ''
-  if (url.includes('/login') || url.includes('/api/')) {
+  const isSSEEndpoint = url.includes('/api/stream-search') || url.includes('/api/stream')
+
+  if ((url.includes('/login') || url.includes('/api/')) && !isSSEEndpoint) {
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
     response.headers.set('Pragma', 'no-cache')
     response.headers.set('Expires', '0')
+  }
+
+  // Special headers for Server-Sent Events endpoints
+  if (isSSEEndpoint) {
+    response.headers.set('Cache-Control', 'no-cache, no-transform')
+    response.headers.set('Connection', 'keep-alive')
+    response.headers.set('X-Accel-Buffering', 'no') // Disable nginx buffering for SSE
   }
 
   // Remove server information
@@ -375,7 +392,10 @@ function handleCSRF(request: NextRequest): NextResponse | null {
 /**
  * Main middleware function
  */
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  // Perform cleanup if needed (Edge Runtime compatible)
+  await performCleanupIfNeeded()
+
   // Track request signature for pattern analysis
   securityMonitoringService.trackRequestSignature(request)
 
@@ -450,6 +470,7 @@ export function middleware(request: NextRequest) {
 
 /**
  * Configure which routes the middleware should run on
+ * Explicitly configured for Edge Runtime compatibility
  */
 export const config = {
   matcher: [
@@ -465,4 +486,6 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon\\.ico|favicon\\.png|manifest\\.json|sw\\.js).*)',
   ],
+  // Explicitly specify Edge Runtime for better performance and compatibility
+  runtime: 'experimental-edge',
 }

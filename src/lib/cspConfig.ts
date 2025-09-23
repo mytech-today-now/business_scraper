@@ -171,7 +171,7 @@ const cspConfigs: Record<string, CSPConfig> = {
     ],
     fontSrc: ["'self'", 'data:'],
     connectSrc: [
-      "'self'",
+      "'self'", // CRITICAL: Allow same-origin connections for EventSource/fetch/XHR
       'https://nominatim.openstreetmap.org', // Geocoding service
       'https://api.opencagedata.com', // Geocoding service
       'https://*.googleapis.com', // Google APIs
