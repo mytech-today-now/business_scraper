@@ -1056,6 +1056,81 @@ export function ApiConfigurationPage({
               </CardContent>
             </Card>
 
+            {/* Yandex Search */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <span>Yandex Search</span>
+                  {getTestIcon('yandexSearch')}
+                </CardTitle>
+                <div className="text-sm text-gray-600 mt-1">Yandex Search API</div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="relative">
+                  <Input
+                    label="API Key"
+                    type={showPasswords.yandexSearchApiKey ? 'text' : 'password'}
+                    value={credentials.yandexSearchApiKey || ''}
+                    onChange={e => handleInputChange('yandexSearchApiKey', e.target.value)}
+                    placeholder="Enter your Yandex Search API key"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => togglePasswordVisibility('yandexSearchApiKey')}
+                    className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPasswords.yandexSearchApiKey ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+
+                <div className="mt-3 p-3 bg-blue-50 rounded-md">
+                  <div className="flex items-start space-x-2">
+                    <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800 min-w-0 flex-1">
+                      <p className="font-medium mb-1">Yandex Search API Setup:</p>
+                      <ul className="mt-1 space-y-1 text-xs">
+                        <li className="break-words">
+                          • <strong>Service:</strong> Yandex Search API
+                        </li>
+                        <li className="break-words">
+                          • <strong>Portal:</strong>{' '}
+                          <a
+                            href="https://yandex.cloud/en/services/search-api"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                          >
+                            Yandex Cloud Console
+                          </a>
+                        </li>
+                        <li className="break-words">
+                          • <strong>Documentation:</strong>{' '}
+                          <a
+                            href="https://yandex.cloud/en/docs/search-api/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                          >
+                            Yandex Search API Docs
+                          </a>
+                        </li>
+                        <li className="break-words">
+                          • <strong>Endpoint:</strong> https://yandex.com/search/xml
+                        </li>
+                        <li className="break-words">
+                          • <strong>Format:</strong> XML response with business search results
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* DuckDuckGo Search */}
             <Card className="border-green-200 bg-green-50">
               <CardHeader>

@@ -13,10 +13,12 @@ import {
   Zap,
   Activity,
   Wifi,
+  Copy,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/view/components/ui/Card'
 import { Button } from '@/view/components/ui/Button'
 import { logger } from '@/utils/logger'
+import toast from 'react-hot-toast'
 
 export interface ProcessingStep {
   id: string
@@ -46,6 +48,15 @@ export interface ProcessingWindowProps {
     percentage: number
   }
   currentUrl?: string
+}
+
+export interface ConsoleLogFilterOptions {
+  showDebug: boolean
+  showInfo: boolean
+  showWarn: boolean
+  showError: boolean
+  hideMonitoring: boolean
+  hideStreaming: boolean
 }
 
 /**
@@ -87,9 +98,94 @@ export function ProcessingWindow({
       level: 'log' | 'info' | 'warn' | 'error' | 'debug'
       message: string
       args: any[]
+      component?: string
     }>
   >([])
   const [showConsole, setShowConsole] = useState(false)
+  const [logFilter, setLogFilter] = useState<ConsoleLogFilterOptions>({
+    showDebug: false, // Hide debug by default
+    showInfo: true,
+    showWarn: true,
+    showError: true,
+    hideMonitoring: true, // Hide monitoring messages by default
+    hideStreaming: false,
+  })
+
+  /**
+   * Filter console logs based on current filter settings
+   */
+  const filteredLogs = consoleLogs.filter(log => {
+    // Level filtering
+    if (log.level === 'debug' && !logFilter.showDebug) return false
+    if (log.level === 'info' && !logFilter.showInfo) return false
+    if (log.level === 'warn' && !logFilter.showWarn) return false
+    if (log.level === 'error' && !logFilter.showError) return false
+
+    // Component-based filtering
+    if (logFilter.hideMonitoring && log.component === 'Monitoring') return false
+    if (logFilter.hideStreaming && log.component === 'useSearchStreaming') return false
+
+    // Pattern-based filtering for monitoring messages
+    if (logFilter.hideMonitoring && (
+      log.message.includes('Metric stored') ||
+      log.message.includes('Metric recorded') ||
+      log.message.includes('memory_heap_') ||
+      log.message.includes('DEBUG: Metric')
+    )) return false
+
+    return true
+  })
+
+  /**
+   * Copy all console logs to clipboard
+   */
+  const copyConsoleToClipboard = async (): Promise<void> => {
+    try {
+      if (filteredLogs.length === 0) {
+        toast.error('No console output to copy')
+        return
+      }
+
+      // Format console logs as plain text
+      const formattedLogs = filteredLogs
+        .map(log => {
+          const timestamp = log.timestamp.toLocaleTimeString()
+          const level = log.level.toUpperCase()
+          const component = log.component ? `<${log.component}>` : ''
+          return `${timestamp} [${level}] ${component} ${log.message}`
+        })
+        .join('\n')
+
+      // Copy to clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(formattedLogs)
+        toast.success('Console output copied to clipboard')
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea')
+        textArea.value = formattedLogs
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+
+        try {
+          document.execCommand('copy')
+          toast.success('Console output copied to clipboard')
+        } catch (err) {
+          toast.error('Failed to copy console output')
+          logger.error('ProcessingWindow', 'Failed to copy console output using fallback method', err)
+        } finally {
+          document.body.removeChild(textArea)
+        }
+      }
+    } catch (error) {
+      toast.error('Failed to copy console output')
+      logger.error('ProcessingWindow', 'Failed to copy console output to clipboard', error)
+    }
+  }
 
   // Auto-scroll to latest step when new steps are added
   useEffect(() => {
@@ -121,6 +217,13 @@ export function ProcessingWindow({
           .map(arg => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)))
           .join(' ')
 
+        // Extract component name from message if present
+        let component: string | undefined
+        const componentMatch = message.match(/<([^>]+)>/)
+        if (componentMatch) {
+          component = componentMatch[1]
+        }
+
         setTimeout(() => {
           setConsoleLogs(prev => [
             ...prev.slice(-999),
@@ -130,6 +233,7 @@ export function ProcessingWindow({
               level,
               message,
               args,
+              component,
             },
           ])
         }, 0)
@@ -161,7 +265,7 @@ export function ProcessingWindow({
         container.scrollTop = container.scrollHeight
       }
     }
-  }, [consoleLogs.length, showConsole, autoScroll])
+  }, [filteredLogs.length, showConsole, autoScroll])
 
   const getStepIcon = (step: ProcessingStep) => {
     switch (step.status) {
@@ -378,6 +482,17 @@ export function ProcessingWindow({
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={copyConsoleToClipboard}
+                disabled={consoleLogs.length === 0}
+                icon={Copy}
+                className="text-xs"
+                title="Copy console output to clipboard"
+              >
+                Copy
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setConsoleLogs([])}
                 className="text-xs"
               >
@@ -396,14 +511,81 @@ export function ProcessingWindow({
 
           {showConsole && (
             <div className="border rounded-lg bg-gray-900 text-gray-100 font-mono text-xs">
+              {/* Filter Controls */}
+              <div className="border-b border-gray-700 p-2 bg-gray-800">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className="text-gray-400">Filters:</span>
+                  <label className="flex items-center space-x-1">
+                    <input
+                      type="checkbox"
+                      checked={logFilter.showError}
+                      onChange={(e) => setLogFilter(prev => ({ ...prev, showError: e.target.checked }))}
+                      className="w-3 h-3"
+                    />
+                    <span className="text-red-400">Error</span>
+                  </label>
+                  <label className="flex items-center space-x-1">
+                    <input
+                      type="checkbox"
+                      checked={logFilter.showWarn}
+                      onChange={(e) => setLogFilter(prev => ({ ...prev, showWarn: e.target.checked }))}
+                      className="w-3 h-3"
+                    />
+                    <span className="text-yellow-400">Warn</span>
+                  </label>
+                  <label className="flex items-center space-x-1">
+                    <input
+                      type="checkbox"
+                      checked={logFilter.showInfo}
+                      onChange={(e) => setLogFilter(prev => ({ ...prev, showInfo: e.target.checked }))}
+                      className="w-3 h-3"
+                    />
+                    <span className="text-blue-400">Info</span>
+                  </label>
+                  <label className="flex items-center space-x-1">
+                    <input
+                      type="checkbox"
+                      checked={logFilter.showDebug}
+                      onChange={(e) => setLogFilter(prev => ({ ...prev, showDebug: e.target.checked }))}
+                      className="w-3 h-3"
+                    />
+                    <span className="text-purple-400">Debug</span>
+                  </label>
+                  <span className="text-gray-500">|</span>
+                  <label className="flex items-center space-x-1">
+                    <input
+                      type="checkbox"
+                      checked={!logFilter.hideMonitoring}
+                      onChange={(e) => setLogFilter(prev => ({ ...prev, hideMonitoring: !e.target.checked }))}
+                      className="w-3 h-3"
+                    />
+                    <span className="text-gray-400">Monitoring</span>
+                  </label>
+                  <label className="flex items-center space-x-1">
+                    <input
+                      type="checkbox"
+                      checked={!logFilter.hideStreaming}
+                      onChange={(e) => setLogFilter(prev => ({ ...prev, hideStreaming: !e.target.checked }))}
+                      className="w-3 h-3"
+                    />
+                    <span className="text-gray-400">Streaming</span>
+                  </label>
+                  <span className="text-gray-500 ml-2">
+                    ({filteredLogs.length}/{consoleLogs.length} shown)
+                  </span>
+                </div>
+              </div>
+
               <div
                 id="console-output-container"
                 className="h-48 min-h-48 max-h-96 overflow-auto p-3 space-y-1 resize-vertical"
               >
-                {consoleLogs.length === 0 ? (
-                  <div className="text-gray-500 italic">No console output yet...</div>
+                {filteredLogs.length === 0 ? (
+                  <div className="text-gray-500 italic">
+                    {consoleLogs.length === 0 ? 'No console output yet...' : 'No logs match current filters...'}
+                  </div>
                 ) : (
-                  consoleLogs.map((log, index) => (
+                  filteredLogs.map((log, index) => (
                     <div key={index} className="flex items-start space-x-2">
                       <span className="text-gray-500 text-xs flex-shrink-0">
                         {log.timestamp.toLocaleTimeString()}
@@ -411,6 +593,11 @@ export function ProcessingWindow({
                       <span className={`flex-shrink-0 ${getConsoleLogColor(log.level)}`}>
                         [{log.level.toUpperCase()}]
                       </span>
+                      {log.component && (
+                        <span className="text-gray-400 text-xs flex-shrink-0">
+                          &lt;{log.component}&gt;
+                        </span>
+                      )}
                       <span className="flex-1 break-all whitespace-pre-wrap">{log.message}</span>
                     </div>
                   ))

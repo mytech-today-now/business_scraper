@@ -40,6 +40,7 @@ import { Input } from './ui/Input'
 import { ZipCodeInput } from './ui/ZipCodeInput'
 import { createCSPSafeStyle } from '@/lib/cspUtils'
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card'
+import { showDeduplicatedSuccessToast } from '@/utils/toastDeduplication'
 import { Breadcrumb, useBreadcrumbItems } from './ui/Breadcrumb'
 import { ExportService, ExportFormat, ExportTemplate } from '@/utils/exportService'
 import { logger } from '@/utils/logger'
@@ -109,11 +110,16 @@ function ConfigurationPanel(): JSX.Element {
               value={state.config.zipCode}
               onChange={zipCode => updateConfig({ zipCode })}
               onValidZipCode={zipCode => {
-                logger.info('App', `Valid ZIP code entered: ${zipCode}`)
-                toast.success(`ZIP code "${zipCode}" is valid`)
+                // Use debounced logging to prevent spam
+                logger.debug('App', `Valid ZIP code entered: ${zipCode}`)
+                // Use deduplication to prevent multiple identical toasts
+                showDeduplicatedSuccessToast(
+                  (message) => toast.success(message),
+                  `ZIP code "${zipCode}" is valid`
+                )
               }}
               onInvalidInput={error => {
-                logger.warn('App', `Invalid ZIP code input: ${error}`)
+                logger.debug('App', `Invalid ZIP code input: ${error}`)
               }}
               helperText="Enter ZIP code or full address - we'll extract the ZIP code"
               disabled={scrapingState.isScrapingActive}
@@ -187,13 +193,13 @@ function ConfigurationPanel(): JSX.Element {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                DuckDuckGo SERP Pages
+                Search Result Pages
               </label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={state.config.duckduckgoSerpPages || 2}
-                onChange={e => updateConfig({ duckduckgoSerpPages: parseInt(e.target.value) })}
-                aria-label="DuckDuckGo SERP Pages"
+                value={state.config.searchResultPages || state.config.duckduckgoSerpPages || 2}
+                onChange={e => updateConfig({ searchResultPages: parseInt(e.target.value) })}
+                aria-label="Search Result Pages"
                 disabled={scrapingState.isScrapingActive}
               >
                 <option value={1}>1 page (~30 results)</option>
@@ -203,7 +209,7 @@ function ConfigurationPanel(): JSX.Element {
                 <option value={5}>5 pages (~150 results)</option>
               </select>
               <p className="text-xs text-gray-600 mt-1">
-                Number of DuckDuckGo search result pages to scrape per query
+                Number of search result pages to scrape per query (applies to all search engines)
               </p>
             </div>
             <div>

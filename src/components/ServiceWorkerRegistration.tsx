@@ -1,263 +1,48 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
-import { useOfflineSupport } from '@/hooks/useOfflineSupport'
+import { useEffect, useRef } from 'react'
 import { logger } from '@/utils/logger'
-import toast from 'react-hot-toast'
-import { safeReload, shouldPreventAutoReload } from '@/utils/debugConfig'
 
 /**
- * Service Worker Registration Component
- * Handles PWA functionality and offline support
+ * Service Worker Registration Component - DISABLED FOR ISSUE #189
+ * This component is completely disabled to fix endless reload loop bug
+ * Fixed React warning about state updates during render
  */
 export function ServiceWorkerRegistration(): null {
-  // State to track previous offline status to avoid temporal dead zone
-  const [previousWasOffline, setPreviousWasOffline] = useState(false)
-
-  // Memoize callback functions to prevent infinite re-renders
-  const handleOnline = useCallback(() => {
-    toast.success("Connection restored! You're back online.", {
-      duration: 3000,
-      icon: '🌐',
-    })
-  }, [])
-
-  const handleOffline = useCallback(() => {
-    toast.error("You're offline. Some features may be limited.", {
-      duration: 5000,
-      icon: '📱',
-    })
-  }, [])
-
-  // Initialize useOfflineSupport without using wasOffline in the options
-  const { isOnline, isOffline, wasOffline } = useOfflineSupport({
-    onOnline: previousWasOffline ? handleOnline : undefined,
-    onOffline: handleOffline,
-  })
-
-  // Update previous offline status when wasOffline changes
-  useEffect(() => {
-    setPreviousWasOffline(wasOffline)
-  }, [wasOffline])
+  const hasInitialized = useRef(false)
 
   useEffect(() => {
-    // Only register service worker in production and if supported
-    if (
-      typeof window !== 'undefined' &&
-      'serviceWorker' in navigator &&
-      process.env.NODE_ENV === 'production'
-    ) {
-      registerServiceWorker()
-    }
-    // Note: In development, service worker registration is disabled to prevent caching issues
-    // Any existing service workers will be automatically unregistered by the browser when not in use
-  }, [])
+    // Prevent multiple initializations and state updates during render
+    if (hasInitialized.current) return
+    hasInitialized.current = true
 
-  const registerServiceWorker = async () => {
-    try {
-      logger.info('ServiceWorker', 'Registering service worker...')
+    // COMPLETELY DISABLED TO FIX ISSUE #189 - ENDLESS RELOAD LOOP
+    console.log('🚨🚨🚨 NEW SERVICEWORKER COMPONENT RUNNING - ISSUE #189 FIX 🚨🚨🚨')
+    logger.info('ServiceWorker', 'ServiceWorkerRegistration component completely disabled (Issue #189)')
 
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/',
-        updateViaCache: 'none',
-      })
-
-      logger.info('ServiceWorker', 'Service worker registered successfully', {
-        scope: registration.scope,
-        updateViaCache: registration.updateViaCache,
-      })
-
-      // Handle service worker updates
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing
-
-        if (newWorker) {
-          logger.info('ServiceWorker', 'New service worker found, installing...')
-
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // New update available
-                logger.info('ServiceWorker', 'New service worker installed, update available')
-
-                toast.success('App update available! Refresh to get the latest version.', {
-                  duration: 8000,
-                  icon: '🔄',
-                })
-              } else {
-                // First time installation
-                logger.info('ServiceWorker', 'Service worker installed for the first time')
-
-                toast.success('App is ready for offline use!', {
-                  duration: 4000,
-                  icon: '📱',
-                })
-              }
-            }
+    // Unregister any existing service workers to clean up
+    // Use setTimeout to avoid state updates during render
+    setTimeout(() => {
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => {
+            registration.unregister().then(() => {
+              logger.info('ServiceWorker', 'Unregistered existing service worker', { scope: registration.scope })
+            })
           })
-        }
-      })
-
-      // Handle service worker controller change
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        logger.info('ServiceWorker', 'Service worker controller changed')
-
-        // Optionally reload the page to ensure consistency
-        const shouldReload = shouldPreventAutoReload()
-          ? confirm('App has been updated. Debug mode is active - reload anyway?')
-          : confirm('App has been updated. Reload to get the latest version?')
-
-        if (shouldReload) {
-          safeReload('Service worker update')
-        }
-      })
-
-      // Check for waiting service worker
-      if (registration.waiting) {
-        logger.info('ServiceWorker', 'Service worker is waiting to activate')
-
-        toast.success('App update is ready! Refresh to activate.', {
-          duration: 8000,
-          icon: '🔄',
+        }).catch(error => {
+          logger.error('ServiceWorker', 'Failed to unregister service workers', error)
         })
       }
-
-      // Periodic update check (every 24 hours)
-      setInterval(
-        () => {
-          registration.update()
-        },
-        24 * 60 * 60 * 1000
-      )
-    } catch (error) {
-      logger.error('ServiceWorker', 'Service worker registration failed', error)
-
-      // Don't show error toast to users as this is not critical
-      console.warn('Service worker registration failed:', error)
-    }
-  }
-
-  // Handle PWA install prompt
-  useEffect(() => {
-    let deferredPrompt: any = null
-
-    const handleBeforeInstallPrompt = (event: Event) => {
-      // Prevent the mini-infobar from appearing on mobile
-      event.preventDefault()
-
-      // Stash the event so it can be triggered later
-      deferredPrompt = event
-
-      logger.info('PWA', 'Install prompt available')
-
-      // Show custom install prompt after a delay
-      setTimeout(() => {
-        showInstallPrompt(deferredPrompt)
-      }, 10000) // Show after 10 seconds
-    }
-
-    const handleAppInstalled = () => {
-      logger.info('PWA', 'App was installed')
-
-      toast.success('Business Scraper installed successfully!', {
-        duration: 4000,
-        icon: '📱',
-      })
-
-      deferredPrompt = null
-    }
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-    window.addEventListener('appinstalled', handleAppInstalled)
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-      window.removeEventListener('appinstalled', handleAppInstalled)
-    }
+    }, 0)
   }, [])
 
-  const showInstallPrompt = (deferredPrompt: any) => {
-    if (!deferredPrompt) return
-
-    // Only show if not already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      return // Already installed
-    }
-
-    toast.custom(
-      t => (
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border max-w-sm">
-          <div className="flex items-start space-x-3">
-            <div className="text-2xl">📱</div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-sm">Install Business Scraper</h3>
-              <p className="text-xs text-muted-foreground mt-1">
-                Add to your home screen for quick access and offline use.
-              </p>
-              <div className="flex space-x-2 mt-3">
-                <button
-                  onClick={async () => {
-                    toast.dismiss(t.id)
-
-                    try {
-                      const result = await deferredPrompt.prompt()
-                      logger.info('PWA', 'Install prompt result', { outcome: result.outcome })
-
-                      if (result.outcome === 'accepted') {
-                        toast.success('Installing app...', { duration: 2000 })
-                      }
-                    } catch (error) {
-                      logger.error('PWA', 'Install prompt failed', error)
-                    }
-
-                    deferredPrompt = null
-                  }}
-                  className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded hover:bg-primary/90"
-                >
-                  Install
-                </button>
-                <button
-                  onClick={() => toast.dismiss(t.id)}
-                  className="px-3 py-1 bg-muted text-muted-foreground text-xs rounded hover:bg-muted/80"
-                >
-                  Later
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-      {
-        duration: 15000,
-        position: 'bottom-center',
-      }
-    )
-  }
-
-  // This component doesn't render anything
   return null
 }
 
 /**
- * Hook to check if app is running as PWA
+ * Hook to check if app is running as PWA - DISABLED FOR ISSUE #189
  */
 export function useIsPWA(): boolean {
-  const [isPWA, setIsPWA] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const checkPWA = () => {
-      const isPWAMode = (
-        window.matchMedia('(display-mode: standalone)').matches ||
-        (window.navigator as any).standalone === true ||
-        document.referrer.includes('android-app://')
-      )
-      setIsPWA(isPWAMode)
-    }
-
-    checkPWA()
-  }, [])
-
-  return isPWA
+  return false
 }
