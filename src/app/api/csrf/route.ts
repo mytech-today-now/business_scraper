@@ -179,18 +179,42 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   } catch (error) {
     logger.error('CSRF', 'CSRF token fetch error', error)
 
-    // Log error for audit
-    await auditService.logSecurityEvent(
-      'csrf_token_error',
-      {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        userAgent,
-        message: 'Failed to fetch CSRF token',
-      },
-      ip
-    )
+    // Determine error type and appropriate response
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const isDatabaseError = errorMessage.includes('ECONNREFUSED') ||
+                           errorMessage.includes('connection') ||
+                           errorMessage.includes('database')
 
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    // Try to log error for audit (but don't fail if audit service is also down)
+    try {
+      await auditService.logSecurityEvent(
+        'csrf_token_error',
+        {
+          error: errorMessage,
+          userAgent,
+          message: 'Failed to fetch CSRF token',
+          isDatabaseError,
+        },
+        ip
+      )
+    } catch (auditError) {
+      logger.warn('CSRF', 'Failed to log audit event due to database issues', auditError)
+    }
+
+    // Return appropriate error response
+    if (isDatabaseError) {
+      return NextResponse.json({
+        error: 'Database connection failed. Please try again later.',
+        type: 'database_error',
+        retryable: true
+      }, { status: 500 })
+    } else {
+      return NextResponse.json({
+        error: 'Internal server error',
+        type: 'server_error',
+        retryable: false
+      }, { status: 500 })
+    }
   }
 }
 
