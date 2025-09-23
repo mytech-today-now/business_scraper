@@ -196,6 +196,8 @@ const nextConfig = {
       'recharts',
       'date-fns'
     ],
+    // Enable Edge Runtime for middleware
+    runtime: 'experimental-edge',
   },
 
   // Configure static export behavior

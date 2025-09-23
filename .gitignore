@@ -33,6 +33,18 @@ yarn-error.log*
 !.env.example
 .env*.local
 
+# Local environment files for development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# GitHub token files (local storage)
+.env.github
+.env.tokens
+.github-env
+.tokens-env
+
 # Environment configuration files with secrets
 config/*.env
 !config/*.env.example
@@ -48,6 +60,12 @@ secrets/
 *.pem
 *.p12
 *.pfx
+
+# Local credential storage
+.credentials/
+credentials/
+.auth/
+auth-local/
 
 # vercel
 .vercel
@@ -204,6 +222,37 @@ PERSONAL*.md
 personal*.md
 
 # ========================================
+# GITHUB TOKENS & API CREDENTIALS
+# ========================================
+
+# GitHub Personal Access Tokens (PAT)
+.github-token
+.github_token
+github-token.txt
+github_token.txt
+*github-token*
+*github_token*
+*github-pat*
+*github_pat*
+*ghp_*
+*gho_*
+*ghu_*
+*ghs_*
+*ghr_*
+
+# GitHub App tokens and keys
+*github-app*
+*github_app*
+*github-private-key*
+*github_private_key*
+
+# Other Git hosting tokens
+*gitlab-token*
+*gitlab_token*
+*bitbucket-token*
+*bitbucket_token*
+
+# ========================================
 # ADDITIONAL SECURITY PATTERNS
 # ========================================
 
@@ -211,6 +260,9 @@ personal*.md
 *key*.txt
 *key*.json
 *key*.md
+*key*.env
+*key*.yaml
+*key*.yml
 !*key*.example.*
 !*key*-example.*
 !example-*key*.*
@@ -219,14 +271,32 @@ personal*.md
 *token*.txt
 *token*.json
 *token*.md
+*token*.env
+*token*.yaml
+*token*.yml
 !*token*.example.*
 !*token*-example.*
 
 # Any file with "auth" containing sensitive data
 *auth*.txt
 *auth*.json
+*auth*.env
+*auth*.yaml
+*auth*.yml
 !*auth*.example.*
 !*auth*-example.*
+
+# API credentials and secrets
+*api-key*
+*api_key*
+*api-secret*
+*api_secret*
+*client-secret*
+*client_secret*
+*access-token*
+*access_token*
+*refresh-token*
+*refresh_token*
 
 # Test files with authentication credentials
 *auth*test*.ts
