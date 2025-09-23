@@ -3,28 +3,8 @@
  * Tests for the secure file upload endpoint
  */
 
-// Mock Next.js server components before importing
-jest.mock('next/server', () => ({
-  NextRequest: jest.fn().mockImplementation((input, init) => {
-    return {
-      url: typeof input === 'string' ? input : input.url,
-      method: init?.method || 'GET',
-      headers: new Map(Object.entries(init?.headers || {})),
-      body: init?.body,
-      json: jest.fn().mockResolvedValue({}),
-      text: jest.fn().mockResolvedValue(''),
-      formData: jest.fn().mockResolvedValue(new FormData()),
-      clone: jest.fn().mockReturnThis(),
-    }
-  }),
-  NextResponse: {
-    json: jest.fn().mockImplementation((data, init) => ({
-      status: init?.status || 200,
-      headers: new Map(Object.entries(init?.headers || {})),
-      json: jest.fn().mockResolvedValue(data),
-    })),
-  },
-}))
+// NextRequest and NextResponse are globally mocked in jest.setup.js
+// No need for module-specific mocking
 
 import { NextRequest } from 'next/server'
 import { jest } from '@jest/globals'

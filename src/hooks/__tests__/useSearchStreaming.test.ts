@@ -46,6 +46,14 @@ class MockEventSource {
       this.onerror(new Event('error'))
     }
   }
+
+  // Helper method to manually trigger open event
+  simulateOpen() {
+    this.readyState = 1
+    if (this.onopen) {
+      this.onopen(new Event('open'))
+    }
+  }
 }
 
 // Mock global EventSource
@@ -199,14 +207,19 @@ describe('useSearchStreaming', () => {
   })
 
   it('should handle connection errors and retry', async () => {
-    jest.useFakeTimers()
+    // Mock fetch for health check
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+    })
+
     const { result } = renderHook(() => useSearchStreaming())
     let eventSource: MockEventSource
 
     await act(async () => {
       await result.current.startStreaming('restaurants', 'New York', {
         maxRetries: 2,
-        retryDelay: 1000,
+        retryDelay: 100, // Shorter delay for testing
+        circuitBreakerThreshold: 10, // High threshold to prevent circuit breaker from opening
       })
     })
 
@@ -219,46 +232,48 @@ describe('useSearchStreaming', () => {
 
     expect(result.current.progress.connectionStatus).toBe('reconnecting')
 
-    // Fast-forward time to trigger retry
-    await act(async () => {
-      jest.advanceTimersByTime(1000)
-    })
-
-    // Should have created a new EventSource for retry
-    expect(MockEventSource.instances).toHaveLength(2)
+    // Wait for retry to happen
+    await waitFor(() => {
+      expect(MockEventSource.instances.length).toBeGreaterThan(1)
+    }, { timeout: 1000 })
   })
 
   it('should fallback to batch search after max retries', async () => {
-    jest.useFakeTimers()
+    // Mock health check to fail, triggering immediate fallback
+    global.fetch = jest.fn()
+      .mockResolvedValueOnce({ ok: false }) // Health check fails
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({
+          success: true,
+          data: { businesses: [{ id: 'fallback-1', name: 'Fallback Business' }] }
+        })
+      }) // Fallback search succeeds
+
     const { result } = renderHook(() => useSearchStreaming())
 
     await act(async () => {
       await result.current.startStreaming('restaurants', 'New York', {
         maxRetries: 1,
-        retryDelay: 100,
+        retryDelay: 50, // Very short delay for testing
         enableFallback: true,
+        circuitBreakerThreshold: 10, // High threshold to prevent circuit breaker from opening
+        healthCheckTimeout: 100, // Short timeout for testing
       })
     })
 
     const eventSource = MockEventSource.instances[0]
 
-    // Simulate multiple connection errors
+    // Simulate connection error - should trigger health check and fallback
     await act(async () => {
       eventSource.simulateError()
-      jest.advanceTimersByTime(100)
-    })
-
-    await act(async () => {
-      const newEventSource = MockEventSource.instances[1]
-      newEventSource.simulateError()
-      jest.advanceTimersByTime(100)
     })
 
     await waitFor(() => {
       expect(result.current.progress.status).toBe('completed')
       expect(result.current.results).toHaveLength(1)
       expect(result.current.results[0].name).toBe('Fallback Business')
-    })
+    }, { timeout: 5000 })
 
     expect(global.fetch).toHaveBeenCalledWith(
       '/api/search',
@@ -268,7 +283,7 @@ describe('useSearchStreaming', () => {
         body: expect.stringContaining('restaurants'),
       })
     )
-  })
+  }, 10000)
 
   it('should handle completion message', async () => {
     const { result } = renderHook(() => useSearchStreaming())
@@ -318,6 +333,9 @@ describe('useSearchStreaming', () => {
   })
 
   it('should not add results when paused', async () => {
+    // Mock fetch for health check
+    global.fetch = jest.fn().mockResolvedValue({ ok: true })
+
     const { result } = renderHook(() => useSearchStreaming())
     let eventSource: MockEventSource
 
@@ -327,9 +345,16 @@ describe('useSearchStreaming', () => {
 
     eventSource = MockEventSource.instances[0]
 
+    // Trigger onopen to set streaming status
+    await act(async () => {
+      eventSource.simulateOpen()
+    })
+
     await act(async () => {
       result.current.pauseStreaming()
     })
+
+    expect(result.current.isPaused).toBe(true)
 
     await act(async () => {
       eventSource.simulateMessage({

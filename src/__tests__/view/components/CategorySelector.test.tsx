@@ -22,7 +22,7 @@ let mockState = {
     searchRadius: 25,
     searchDepth: 2,
     pagesPerSite: 5,
-    duckduckgoSerpPages: 2,
+    searchResultPages: 2,
     maxSearchResults: 1000,
     bbbAccreditedOnly: false,
     zipRadius: 10,
