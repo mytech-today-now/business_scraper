@@ -1,6 +1,6 @@
 ---
-type: 'always_apply'
-description: 'Example description'
+type: "always_apply"
+description: "Example description"
 ---
 
 # Augment AI Rules & User Guidelines – General Application Development
@@ -431,6 +431,7 @@ Reviewers must check for:
 
 **RULE: All Code Must Pass a Deployment Checklist**
 
+- Pass BVT test suite after every build.
 - All tests passing.
 - Security scans completed.
 - Performance benchmarks validated.

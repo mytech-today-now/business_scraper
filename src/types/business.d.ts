@@ -181,10 +181,13 @@ export interface ScrapingConfig {
   searchDepth: number
   pagesPerSite: number
   // Search configuration
-  duckduckgoSerpPages?: number
+  searchResultPages?: number
   maxSearchResults?: number
   bbbAccreditedOnly?: boolean
   zipRadius?: number
+  // Backward compatibility - deprecated, use searchResultPages instead
+  /** @deprecated Use searchResultPages instead */
+  duckduckgoSerpPages?: number
 }
 
 /**
