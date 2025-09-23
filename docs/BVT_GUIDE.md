@@ -17,11 +17,11 @@ The Build Verification Test (BVT) Suite is a comprehensive, lightweight testing 
 
 The BVT suite includes tests for all 12 fundamental software testing areas:
 
-1. **Functional Testing** - Core workflows (login, navigation, API heartbeat)
+1. **Functional Testing** - Core workflows (enhanced login with CSRF loop fix, navigation, API heartbeat)
 2. **Unit Testing** - Critical unit test canaries
 3. **Integration Testing** - Key interface validation
 4. **System Testing** - Application startup and service availability
-5. **Regression Testing** - Historical bug prevention
+5. **Regression Testing** - Historical bug prevention (includes Issue #189 CSRF endless loop fix)
 6. **Smoke Testing** - Basic deployment validation
 7. **Sanity Testing** - Core feature verification
 8. **Performance Testing** - Lightweight response time checks (<500ms)
@@ -174,8 +174,9 @@ Integrated summary in GitHub Actions workflow results
 
 2. **Authentication Failures**
    - Verify auth endpoints are accessible
-   - Check CSRF token generation
-   - Validate session management
+   - Check CSRF token generation and endless loop prevention
+   - Validate session management and retry limits
+   - Ensure Issue #189 fix is working (no endless "Loading Security Token..." loops)
 
 3. **Database Connection Issues**
    - Verify DATABASE_URL is correct
@@ -264,7 +265,37 @@ For issues or questions about the BVT suite:
 3. Validate configuration with `npm run test:bvt:validate`
 4. Create GitHub issue with detailed information
 
+## Login Test Integration
+
+The BVT suite includes comprehensive login testing that specifically addresses the critical bug fixed in GitHub Issue #189:
+
+### Enhanced Login Workflow Test
+- **Login page accessibility**: Verifies the login page loads correctly
+- **CSRF token validation**: Tests CSRF endpoint functionality and token generation
+- **Admin login workflow**: Tests actual login with admin credentials
+- **Error handling verification**: Ensures proper error classification and retry guidance
+- **Endless loop prevention**: Specifically tests the fix for Issue #189
+
+### Regression Testing for Issue #189
+- **CSRF endless loop prevention**: Verifies that the "Loading Security Token..." endless loop is fixed
+- **Retry limit enforcement**: Ensures maximum retry limits are respected (3 attempts)
+- **Timeout handling**: Verifies request timeouts prevent hanging requests
+- **Error classification**: Tests that errors are properly categorized as retryable/non-retryable
+
+### Test Execution
+The login tests run as part of both:
+- **Functional Testing** category (login-workflow test)
+- **Regression Testing** category (auth-regression test)
+
+Both tests include verification that the CSRF endless loop bug is resolved and will not reoccur.
+
 ## Version History
+
+- **v1.1.0**: Enhanced login test integration
+  - Added comprehensive login workflow testing
+  - Integrated Issue #189 CSRF endless loop fix verification
+  - Enhanced regression testing for authentication
+  - Improved error handling and retry limit testing
 
 - **v1.0.0**: Initial BVT suite implementation
   - All 12 testing areas covered
