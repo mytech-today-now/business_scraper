@@ -16,6 +16,9 @@ export interface ApiCredentials {
   googleMapsApiKey?: string
   openCageApiKey?: string
   // Search configuration
+  searchResultPages?: number
+  // Backward compatibility - deprecated
+  /** @deprecated Use searchResultPages instead */
   duckduckgoSerpPages?: number
   maxSearchResults?: number
   bbbAccreditedOnly?: boolean
@@ -943,6 +946,138 @@ export async function testApiCredentialsDetailed(
         'Check network security settings',
       ],
       estimatedFixTime: '5-30 minutes',
+    }
+  }
+
+  // Test Yandex Search API
+  if (credentials.yandexSearchApiKey) {
+    try {
+      const testUrl = 'https://yandex.com/search/xml'
+      const response = await fetch(testUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Api-Key ${credentials.yandexSearchApiKey}`,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        },
+        // Add a simple test query
+        // Note: This is a basic connectivity test
+      })
+
+      if (response.ok || response.status === 400) {
+        // Status 400 might indicate API key issues but service is reachable
+        results.yandexSearch = {
+          success: response.ok,
+          statusCode: response.status,
+          message: response.ok
+            ? 'Yandex Search API is working correctly'
+            : 'Yandex Search API is reachable but may have credential issues',
+          suggestion: response.ok
+            ? 'Your Yandex API credentials are valid and the service is accessible.'
+            : 'Please verify your Yandex Search API key in Yandex Cloud Console.',
+          requestUrl: testUrl,
+          detailedError: response.ok
+            ? 'Successfully connected to Yandex Search API.'
+            : 'Connected to Yandex Search API but received error response. This may indicate API key issues.',
+          troubleshootingSteps: response.ok
+            ? [
+                '✅ API key is valid',
+                '✅ Network connectivity is working',
+                '✅ Yandex Search service is operational',
+              ]
+            : [
+                '1. Verify API key in Yandex Cloud Console',
+                '2. Check API key permissions and quotas',
+                '3. Ensure Yandex Search API is enabled for your account',
+              ],
+        }
+      } else {
+        let errorType: ApiTestResult['errorType'] = 'unknown'
+        let suggestion = 'Please check your Yandex API credentials and try again.'
+        let commonCauses: string[] = []
+        let troubleshootingSteps: string[] = []
+
+        switch (response.status) {
+          case 401:
+            errorType = 'auth'
+            suggestion = 'Authentication failed. Please check your Yandex API key.'
+            commonCauses = [
+              'API key is missing or invalid',
+              'API key has expired',
+              'API key does not have Yandex Search API permissions',
+            ]
+            troubleshootingSteps = [
+              '1. Verify API key in Yandex Cloud Console',
+              '2. Check API key permissions',
+              '3. Regenerate API key if necessary',
+            ]
+            break
+          case 403:
+            errorType = 'quota'
+            suggestion = 'Access forbidden. Check your API quotas and permissions.'
+            commonCauses = [
+              'API quota exceeded',
+              'API key restrictions',
+              'Service not enabled for your account',
+            ]
+            troubleshootingSteps = [
+              '1. Check API usage quotas in Yandex Cloud Console',
+              '2. Verify service is enabled',
+              '3. Check billing and payment status',
+            ]
+            break
+          default:
+            errorType = 'unknown'
+            suggestion = 'Unexpected error occurred. Please try again later.'
+        }
+
+        results.yandexSearch = {
+          success: false,
+          statusCode: response.status,
+          error: `HTTP ${response.status}`,
+          errorType,
+          message: 'Failed to connect to Yandex Search API',
+          suggestion,
+          requestUrl: testUrl,
+          detailedError: `Yandex Search API returned HTTP ${response.status}`,
+          commonCauses,
+          troubleshootingSteps,
+          nextSteps: [
+            'Visit Yandex Cloud Console to verify API key',
+            'Check API quotas and billing status',
+            'Contact Yandex support if issues persist',
+          ],
+          estimatedFixTime: '5-15 minutes',
+        }
+      }
+    } catch (error) {
+      const networkError = error instanceof Error ? error.message : 'Network error'
+      results.yandexSearch = {
+        success: false,
+        error: networkError,
+        errorType: 'network',
+        message: 'Failed to connect to Yandex Search API',
+        suggestion: 'Check your internet connection and try again.',
+        requestUrl: 'https://yandex.com/search/xml',
+        detailedError: `Network connection to Yandex Search API failed: ${networkError}`,
+        commonCauses: [
+          'No internet connection',
+          'Firewall blocking Yandex services',
+          'DNS resolution issues',
+          'Geographic restrictions',
+        ],
+        troubleshootingSteps: [
+          '1. Check your internet connection',
+          '2. Try visiting https://yandex.com in your browser',
+          '3. Check firewall and proxy settings',
+          '4. Try from a different network',
+        ],
+        nextSteps: [
+          'Verify internet connectivity',
+          'Test Yandex website access',
+          'Check network security settings',
+        ],
+        estimatedFixTime: '5-30 minutes',
+      }
     }
   }
 

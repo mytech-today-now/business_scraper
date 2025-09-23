@@ -121,6 +121,8 @@ const ScrapingConfigSchema = z.object({
     .min(1, 'Pages per site must be at least 1')
     .max(20, 'Pages per site cannot exceed 20'),
   // Search configuration (optional fields)
+  searchResultPages: z.number().min(1).max(5).optional(),
+  // Backward compatibility - deprecated
   duckduckgoSerpPages: z.number().min(1).max(5).optional(),
   maxSearchResults: z.number().min(50).max(10000).optional(),
   bbbAccreditedOnly: z.boolean().optional(),

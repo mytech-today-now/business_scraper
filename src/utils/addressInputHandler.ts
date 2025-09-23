@@ -35,6 +35,13 @@ export class AddressInputHandler {
     /^(.+?),?\s*([A-Za-z\s]+),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\s*$/
   private static readonly CITY_STATE_ZIP_REGEX =
     /^([A-Za-z\s]+),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\s*$/
+
+  // Enhanced debouncing for logging to prevent spam
+  private static lastLoggedZip: string | null = null
+  private static lastLogTime: number = 0
+  private static logCount: number = 0
+  private static readonly LOG_DEBOUNCE_MS = 10000 // 10 seconds (increased from 5)
+  private static readonly MAX_LOGS_PER_SESSION = 5 // Limit logs per session
   private static readonly STATE_ABBREVIATIONS = new Set([
     'AL',
     'AK',
@@ -90,6 +97,34 @@ export class AddressInputHandler {
   ])
 
   /**
+   * Enhanced helper method to log ZIP code detection with intelligent debouncing
+   */
+  private static logZipCodeDetection(zipCode: string, context: string): void {
+    const now = Date.now()
+
+    // Check if we've exceeded the session log limit
+    if (this.logCount >= this.MAX_LOGS_PER_SESSION) {
+      return // Silently skip logging to prevent spam
+    }
+
+    // Only log if it's a different ZIP code or enough time has passed
+    const shouldLog = this.lastLoggedZip !== zipCode || now - this.lastLogTime > this.LOG_DEBOUNCE_MS
+
+    if (shouldLog) {
+      // Use debug level to reduce console noise
+      logger.debug('AddressInputHandler', `ZIP code input detected: ${zipCode} (${context})`)
+      this.lastLoggedZip = zipCode
+      this.lastLogTime = now
+      this.logCount++
+
+      // Log a summary message when approaching the limit
+      if (this.logCount === this.MAX_LOGS_PER_SESSION - 1) {
+        logger.debug('AddressInputHandler', 'Approaching log limit, further ZIP code detections will be silent')
+      }
+    }
+  }
+
+  /**
    * Parse address input and extract ZIP code with comprehensive error handling
    */
   static parseAddressInput(input: string): AddressParseResult {
@@ -124,7 +159,7 @@ export class AddressInputHandler {
         result.wasExtracted = false
         result.extractedFrom = 'zip-only'
         result.confidence = 'high'
-        logger.info('AddressInputHandler', `ZIP code input detected: ${result.zipCode}`)
+        this.logZipCodeDetection(result.zipCode, 'zip-only')
         return result
       }
 
@@ -138,10 +173,7 @@ export class AddressInputHandler {
           result.extractedFrom = 'full-address'
           result.confidence = 'high'
           result.warning = `Extracted ZIP code "${zip}" from full address`
-          logger.info(
-            'AddressInputHandler',
-            `Full address parsed: ${street}, ${city}, ${state} ${zip}`
-          )
+          this.logZipCodeDetection(zip, `full-address: ${street}, ${city}, ${state}`)
           return result
         }
       }
@@ -156,7 +188,7 @@ export class AddressInputHandler {
           result.extractedFrom = 'city-state-zip'
           result.confidence = 'high'
           result.warning = `Extracted ZIP code "${zip}" from city, state, ZIP format`
-          logger.info('AddressInputHandler', `City-State-ZIP parsed: ${city}, ${state} ${zip}`)
+          this.logZipCodeDetection(zip, `city-state-zip: ${city}, ${state}`)
           return result
         }
       }
@@ -174,7 +206,7 @@ export class AddressInputHandler {
           zipMatches.length > 1
             ? `Multiple ZIP codes found, using "${result.zipCode}"`
             : `Extracted ZIP code "${result.zipCode}" from address text`
-        logger.info('AddressInputHandler', `ZIP code extracted from text: ${result.zipCode}`)
+        this.logZipCodeDetection(result.zipCode, `partial-address (${zipMatches.length} matches)`)
         return result
       }
 
@@ -285,6 +317,16 @@ export class AddressInputHandler {
       default:
         return 'Unknown confidence level'
     }
+  }
+
+  /**
+   * Reset logging state (useful for testing or session resets)
+   */
+  static resetLoggingState(): void {
+    this.lastLoggedZip = null
+    this.lastLogTime = 0
+    this.logCount = 0
+    logger.debug('AddressInputHandler', 'Logging state reset')
   }
 }
 

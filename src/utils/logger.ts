@@ -94,6 +94,8 @@ export class Logger {
   private fileWriteStream: fs.WriteStream | null = null
   private currentFileSize = 0
   private fileRotationInProgress = false
+  private recentLogHashes: Set<string> = new Set()
+  private readonly deduplicationWindow = 5000 // 5 seconds
 
   constructor(config: Partial<LoggerConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config }
@@ -211,6 +213,20 @@ export class Logger {
       return
     }
 
+    // Create log hash for deduplication
+    const logHash = this.createLogHash(level, component, message, data)
+
+    // Check for duplicate logs within the deduplication window
+    if (this.recentLogHashes.has(logHash)) {
+      return // Skip duplicate log
+    }
+
+    // Add to recent logs and clean up old hashes
+    this.recentLogHashes.add(logHash)
+    setTimeout(() => {
+      this.recentLogHashes.delete(logHash)
+    }, this.deduplicationWindow)
+
     const logEntry: LogEntry = {
       timestamp: new Date(),
       level,
@@ -258,12 +274,17 @@ export class Logger {
   private logToConsoleText(entry: LogEntry): void {
     const timestamp = this.config.formatTimestamp(entry.timestamp)
     const levelName = LogLevel[entry.level]
-    const prefix = `[${timestamp}] <${entry.component}> ${levelName}:`
+    const prefix = `${timestamp} [${levelName}] [${timestamp}] <${entry.component}> ${levelName}:`
 
-    const args: unknown[] = [prefix, entry.message]
+    // Strip ANSI color codes from message
+    const cleanMessage = this.stripAnsiCodes(entry.message)
+
+    const args: unknown[] = [prefix, cleanMessage]
 
     if (entry.data !== undefined) {
-      args.push(entry.data)
+      // Clean data if it's a string
+      const cleanData = typeof entry.data === 'string' ? this.stripAnsiCodes(entry.data) : entry.data
+      args.push(cleanData)
     }
 
     if (entry.error) {
@@ -657,6 +678,22 @@ export class Logger {
       default:
         return LogLevel.INFO
     }
+  }
+
+  /**
+   * Create a hash for log deduplication
+   */
+  private createLogHash(level: LogLevel, component: string, message: string, data?: unknown): string {
+    const dataString = data ? JSON.stringify(data) : ''
+    return `${level}:${component}:${message}:${dataString}`
+  }
+
+  /**
+   * Strip ANSI color codes from strings
+   */
+  private stripAnsiCodes(text: string): string {
+    // Remove ANSI escape sequences
+    return text.replace(/\x1b\[[0-9;]*m/g, '').replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '')
   }
 }
 
