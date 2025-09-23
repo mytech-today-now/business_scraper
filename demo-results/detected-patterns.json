@@ -1,0 +1,24 @@
+{
+  "streamingConnectionIssues": {
+    "count": 2,
+    "description": "Repeated streaming connection failures",
+    "affectedComponents": [
+      "useSearchStreaming",
+      "stream-search API"
+    ]
+  },
+  "excessiveZipCodeLogging": {
+    "count": 12,
+    "description": "Excessive ZIP code input logging",
+    "affectedComponents": [
+      "AddressInputHandler"
+    ]
+  },
+  "memoryMonitoring": {
+    "count": 3,
+    "description": "Active memory monitoring",
+    "affectedComponents": [
+      "Monitoring"
+    ]
+  }
+}

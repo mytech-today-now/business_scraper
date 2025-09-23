@@ -1,0 +1,15 @@
+{
+  "infoLogs": [
+    "6:38:16 PM [INFO] [06:38:16 PM] <SearchEngine> INFO: Switching to fallback provider: google"
+  ],
+  "warnLogs": [
+    "6:38:15 PM [WARN] [06:38:15 PM] <RateLimiter> WARN: Rate limit hit for provider: bing"
+  ],
+  "errorLogs": [
+    "6:38:15 PM [ERROR] [06:38:15 PM] <SearchEngine> ERROR: API request failed {",
+    "6:38:20 PM [ERROR] [06:38:20 PM] <SearchEngine> ERROR: All providers exhausted, search failed"
+  ],
+  "debugLogs": [],
+  "patterns": {},
+  "recommendations": []
+}

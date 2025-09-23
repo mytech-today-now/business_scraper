@@ -1,0 +1,26 @@
+{
+  "infoLogs": [
+    "6:37:42 PM [INFO] [06:37:42 PM] <MemoryMonitor> INFO: Triggering garbage collection"
+  ],
+  "warnLogs": [
+    "6:37:12 PM [WARN] [06:37:12 PM] <MemoryMonitor> WARN: Memory usage above threshold: 91.5%"
+  ],
+  "errorLogs": [
+    "6:37:42 PM [ERROR] [06:37:42 PM] <MemoryMonitor> ERROR: Memory leak detected in component: SearchEngine"
+  ],
+  "debugLogs": [
+    "6:37:12 PM [DEBUG] [06:37:12 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_used = 317316886 bytes",
+    "6:37:12 PM [DEBUG] [06:37:12 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_total = 346807774 bytes",
+    "6:37:42 PM [DEBUG] [06:37:42 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_used = 325144344 bytes"
+  ],
+  "patterns": {
+    "memoryMonitoring": {
+      "count": 3,
+      "description": "Active memory monitoring",
+      "affectedComponents": [
+        "Monitoring"
+      ]
+    }
+  },
+  "recommendations": []
+}

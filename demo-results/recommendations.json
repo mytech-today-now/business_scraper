@@ -1,0 +1,14 @@
+[
+  {
+    "priority": "high",
+    "component": "useSearchStreaming",
+    "issue": "Streaming connection failures",
+    "solution": "Implement exponential backoff, connection pooling, and better error handling"
+  },
+  {
+    "priority": "medium",
+    "component": "AddressInputHandler",
+    "issue": "Excessive logging",
+    "solution": "Implement debounced logging or reduce log frequency for repeated inputs"
+  }
+]

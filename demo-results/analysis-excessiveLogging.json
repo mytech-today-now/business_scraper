@@ -1,0 +1,36 @@
+{
+  "infoLogs": [
+    "6:36:58 PM [INFO] [06:36:58 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:00 PM [INFO] [06:37:00 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:03 PM [INFO] [06:37:03 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:05 PM [INFO] [06:37:05 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:07 PM [INFO] [06:37:07 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:09 PM [INFO] [06:37:09 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:11 PM [INFO] [06:37:11 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:13 PM [INFO] [06:37:13 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:14 PM [INFO] [06:37:14 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:16 PM [INFO] [06:37:16 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:18 PM [INFO] [06:37:18 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047",
+    "6:37:20 PM [INFO] [06:37:20 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047"
+  ],
+  "warnLogs": [],
+  "errorLogs": [],
+  "debugLogs": [],
+  "patterns": {
+    "excessiveZipCodeLogging": {
+      "count": 12,
+      "description": "Excessive ZIP code input logging",
+      "affectedComponents": [
+        "AddressInputHandler"
+      ]
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "medium",
+      "component": "AddressInputHandler",
+      "issue": "Excessive logging",
+      "solution": "Implement debounced logging or reduce log frequency for repeated inputs"
+    }
+  ]
+}

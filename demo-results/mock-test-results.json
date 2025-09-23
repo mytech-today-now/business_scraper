@@ -1,0 +1,26 @@
+[
+  {
+    "file": "src/hooks/useSearchStreaming.ts",
+    "command": "npm test -- src/hooks/useSearchStreaming.test.ts",
+    "result": "PASS",
+    "output": "Test Suites: 1 passed, 1 total\nTests: 5 passed, 5 total"
+  },
+  {
+    "file": "src/components/AddressInputHandler.tsx",
+    "command": "npm test -- src/components/AddressInputHandler.test.tsx",
+    "result": "PASS",
+    "output": "Test Suites: 1 passed, 1 total\nTests: 3 passed, 3 total"
+  },
+  {
+    "file": "src/lib/monitoring.ts",
+    "command": "npm test -- src/lib/monitoring.test.ts",
+    "result": "FAIL",
+    "output": "Test Suites: 1 failed, 1 total\nTests: 2 failed, 1 passed, 3 total"
+  },
+  {
+    "file": "src/app/api/stream-search/route.ts",
+    "command": "npm run test:integration -- --testPathPattern=stream-search",
+    "result": "PASS",
+    "output": "Test Suites: 1 passed, 1 total\nTests: 4 passed, 4 total"
+  }
+]
