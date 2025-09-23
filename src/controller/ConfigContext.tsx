@@ -81,7 +81,7 @@ const defaultState: ConfigState = {
     searchDepth: 2,
     pagesPerSite: 5,
     // Search configuration defaults
-    duckduckgoSerpPages: 2,
+    searchResultPages: 2,
     maxSearchResults: 1000,
     bbbAccreditedOnly: false,
     zipRadius: 10,

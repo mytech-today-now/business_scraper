@@ -49,6 +49,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [retryAfter, setRetryAfter] = useState(0)
   const [debugInfo, setDebugInfo] = useState<any>(null)
+  const [manualRetryCount, setManualRetryCount] = useState(0)
   const router = useRouter()
 
   // Lightweight CSRF Protection for better performance
@@ -59,6 +60,13 @@ export default function LoginPage() {
     error: csrfError,
     getCSRFInput,
   } = useLightweightFormCSRF()
+
+  // Manual retry function for CSRF token
+  const handleManualRetry = () => {
+    setManualRetryCount(prev => prev + 1)
+    // Force a page reload to restart the CSRF token fetch
+    window.location.reload()
+  }
 
   // Check for persisted errors on component mount (simplified)
   useEffect(() => {
@@ -342,7 +350,7 @@ export default function LoginPage() {
             )}
 
             {/* Show loading message only during initial load or when explicitly loading */}
-            {csrfLoading && !csrfToken && (
+            {csrfLoading && !csrfToken && !csrfError && (
               <div className="rounded-md bg-blue-50 p-4">
                 <div className="text-sm text-blue-700">Loading security token...</div>
                 {debugUtils.shouldUseEnhancedErrorLogging() && (
@@ -350,6 +358,61 @@ export default function LoginPage() {
                     Debug mode active - Enhanced error logging enabled
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Enhanced CSRF Error Display with Manual Retry */}
+            {csrfError && !csrfLoading && (
+              <div className="rounded-md bg-red-50 p-4 border border-red-200">
+                <div className="text-sm text-red-700">
+                  <div className="font-semibold mb-2">⚠️ Security Token Error</div>
+                  <div className="mb-3">{csrfError}</div>
+
+                  {/* Show specific guidance based on error type */}
+                  {csrfError.includes('Database connection failed') && (
+                    <div className="mb-3 p-3 bg-red-100 rounded border-l-4 border-red-400">
+                      <div className="font-medium text-red-800">Database Connection Issue</div>
+                      <div className="text-red-700 text-xs mt-1">
+                        The application cannot connect to the database. This may be due to:
+                        <ul className="list-disc list-inside mt-1 ml-2">
+                          <li>Database service not running</li>
+                          <li>Network connectivity issues</li>
+                          <li>Database configuration problems</li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {csrfError.includes('Network connection failed') && (
+                    <div className="mb-3 p-3 bg-red-100 rounded border-l-4 border-red-400">
+                      <div className="font-medium text-red-800">Network Connection Issue</div>
+                      <div className="text-red-700 text-xs mt-1">
+                        Please check your internet connection and try again.
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={handleManualRetry}
+                      className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                    >
+                      Retry Loading Token
+                    </button>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                    >
+                      Refresh Page
+                    </button>
+                  </div>
+
+                  {manualRetryCount > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      Manual retry attempts: {manualRetryCount}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

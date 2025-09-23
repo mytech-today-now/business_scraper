@@ -77,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             <DebugSystemInitializer />
             <PaymentSystemInitializer />
             <div className="min-h-screen bg-background font-sans antialiased">{children}</div>
-            <ServiceWorkerRegistration />
+            {/* <ServiceWorkerRegistration /> */}
             <Toaster
               position="top-right"
               toastOptions={{
