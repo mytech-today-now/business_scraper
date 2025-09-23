@@ -158,31 +158,8 @@ export const setupBrowserMocks = () => {
     }
   }
 
-  // Mock NextRequest and NextResponse for API tests
-  if (!global.NextRequest) {
-    global.NextRequest = jest.fn().mockImplementation((url, init) => ({
-      url,
-      method: init?.method || 'GET',
-      headers: new Map(Object.entries(init?.headers || {})),
-      body: init?.body,
-      json: () => Promise.resolve(JSON.parse(init?.body || '{}')),
-      text: () => Promise.resolve(init?.body || ''),
-    }))
-  }
-
-  if (!global.NextResponse) {
-    global.NextResponse = {
-      json: jest.fn((data, init) => ({
-        status: init?.status || 200,
-        headers: new Map(Object.entries(init?.headers || {})),
-        json: () => Promise.resolve(data),
-      })),
-      redirect: jest.fn((url, status) => ({
-        status: status || 302,
-        headers: new Map([['Location', url]]),
-      })),
-    }
-  }
+  // NextRequest and NextResponse are now globally mocked in jest.setup.js
+  // No need for conditional mocking here as the global mocks are comprehensive
 
   // Mock fetch with better error handling
   if (!global.fetch) {

@@ -187,24 +187,20 @@ export const createMockNextRequest = (
   url: string,
   options: {
     method?: string
-    body?: FormData | string
+    body?: FormData | string | null
     headers?: Record<string, string>
   } = {}
-) => {
-  const { method = 'GET', body, headers = {} } = options
-
-  // Create a mock request object that mimics NextRequest
-  return {
-    url,
-    method,
-    headers: new Headers(headers),
-    body,
-    json: jest.fn(async () => ({})),
-    formData: jest.fn(async () => (body instanceof FormData ? body : new FormData())),
-    text: jest.fn(async () => (typeof body === 'string' ? body : '')),
-    nextUrl: new URL(url),
-  } as any
+): NextRequest => {
+  return new (global.NextRequest as any)(url, options)
 }
+
+// Import NextRequest type for TypeScript support
+declare global {
+  var NextRequest: any
+}
+
+// Re-export for convenience
+export type { NextRequest } from 'next/server'
 
 // Test isolation helper
 export const createTestIsolation = () => {

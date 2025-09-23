@@ -73,26 +73,90 @@ global.fetch = jest.fn(() =>
   })
 )
 
-// Mock NextRequest and NextResponse for API tests
-global.NextRequest = jest.fn().mockImplementation((url, init) => ({
-  url,
-  method: init?.method || 'GET',
-  headers: new Map(Object.entries(init?.headers || {})),
-  body: init?.body,
-  json: () => Promise.resolve(JSON.parse(init?.body || '{}')),
-  text: () => Promise.resolve(init?.body || ''),
-}))
+// Mock NextRequest with proper read-only property handling for Next.js 14 compatibility
+class MockNextRequest {
+  constructor(input, init = {}) {
+    const url = typeof input === 'string' ? input : input.url
+    const parsedUrl = new URL(url)
+
+    // Define read-only properties using Object.defineProperty
+    Object.defineProperty(this, 'url', {
+      value: url,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    })
+
+    Object.defineProperty(this, 'nextUrl', {
+      value: parsedUrl,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    })
+
+    // Define other properties normally
+    this.method = init.method || 'GET'
+    this.headers = new Headers(init.headers || {})
+    this.body = init.body
+    this._bodyUsed = false
+
+    // Define cookies as read-only property
+    Object.defineProperty(this, 'cookies', {
+      value: {
+        get: jest.fn((name) => ({ value: `mock-${name}` })),
+        set: jest.fn(),
+        delete: jest.fn(),
+        has: jest.fn(() => false),
+        getAll: jest.fn(() => [])
+      },
+      writable: false,
+      enumerable: true,
+      configurable: false
+    })
+  }
+
+  // Implement required methods
+  async json() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return JSON.parse(this.body || '{}')
+  }
+
+  async text() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return this.body || ''
+  }
+
+  async formData() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return this.body instanceof FormData ? this.body : new FormData()
+  }
+
+  clone() {
+    return new MockNextRequest(this.url, {
+      method: this.method,
+      headers: Object.fromEntries(this.headers.entries()),
+      body: this.body
+    })
+  }
+}
+
+global.NextRequest = MockNextRequest
 
 global.NextResponse = {
   json: jest.fn((data, init) => ({
     status: init?.status || 200,
-    headers: new Map(Object.entries(init?.headers || {})),
+    headers: new Headers(init?.headers || {}),
     json: () => Promise.resolve(data),
+    ok: (init?.status || 200) >= 200 && (init?.status || 200) < 300
   })),
-  redirect: jest.fn((url, status) => ({
-    status: status || 302,
-    headers: new Map([['Location', url]]),
-  })),
+  redirect: jest.fn((url, status = 302) => ({
+    status,
+    headers: new Headers({ 'Location': url }),
+    ok: status >= 200 && status < 300
+  }))
 }
 
 // Mock window.matchMedia
@@ -202,35 +266,8 @@ global.console = {
   error: jest.fn(),
 }
 
-// Mock Request and Response for Next.js API tests
-global.Request = class MockRequest {
-  constructor(input, init = {}) {
-    this.url = typeof input === 'string' ? input : input.url
-    this.method = init.method || 'GET'
-    this.headers = new Map(Object.entries(init.headers || {}))
-    this.body = init.body
-    this._bodyUsed = false
-  }
-
-  async json() {
-    if (this._bodyUsed) throw new Error('Body already used')
-    this._bodyUsed = true
-    return JSON.parse(this.body || '{}')
-  }
-
-  async text() {
-    if (this._bodyUsed) throw new Error('Body already used')
-    this._bodyUsed = true
-    return this.body || ''
-  }
-
-  async formData() {
-    if (this._bodyUsed) throw new Error('Body already used')
-    this._bodyUsed = true
-    const formData = new FormData()
-    return formData
-  }
-}
+// Mock Request for Next.js API tests (using same implementation as NextRequest for consistency)
+global.Request = MockNextRequest
 
 global.Response = class MockResponse {
   constructor(body, init = {}) {
