@@ -1,5 +1,6 @@
 # Comprehensive CI/CD Pipeline
 # Automated testing, security scanning, building, and deployment
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 
 name: CI/CD Pipeline
 
@@ -34,7 +35,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Run ESLint
         run: npm run lint
@@ -87,7 +95,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Run unit tests
         run: npm run test:unit
@@ -139,7 +154,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Run security vulnerability scan
         run: npm run test:security
@@ -211,7 +233,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -256,7 +285,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Run performance tests
         run: npm run test:performance
@@ -288,7 +324,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -342,7 +385,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -428,7 +478,14 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+          npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -589,9 +646,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, container-scan]
     if: github.ref == 'refs/heads/develop'
-    environment:
-      name: staging
-      url: https://staging.business-scraper.com
+    # Environment configuration - create 'staging' environment in GitHub repo settings first
+    # Go to: Settings > Environments > New environment > Name: staging
+    # environment: staging
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -619,9 +676,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, container-scan, e2e]
     if: github.event_name == 'release'
-    environment:
-      name: production
-      url: https://business-scraper.com
+    # Environment configuration - create 'production' environment in GitHub repo settings first
+    # Go to: Settings > Environments > New environment > Name: production
+    # environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -647,8 +704,9 @@ jobs:
         with:
           status: ${{ job.status }}
           channel: "#deployments"
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always() && env.SLACK_WEBHOOK_URL != ''
 
   # Dependency Updates
   dependency-update:

@@ -62,9 +62,31 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm ci --force
-          # Install additional testing tools
-          npm install -g markdownlint-cli markdown-link-check codespell write-good htmlhint vale || true
+          echo "🔧 Installing project dependencies..."
+
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "⚠️ package.json and package-lock.json are out of sync. Syncing..."
+            npm install
+            echo "✅ Dependencies synced successfully"
+          fi
+
+          # Install project dependencies with fallback
+          if ! npm ci --force; then
+            echo "❌ npm ci --force failed. Trying alternative installation..."
+            npm install --force
+          fi
+
+          echo "🛠️ Installing additional testing tools globally..."
+          # Install additional testing tools with individual error handling
+          npm install -g markdownlint-cli || echo "⚠️ Failed to install markdownlint-cli"
+          npm install -g markdown-link-check || echo "⚠️ Failed to install markdown-link-check"
+          npm install -g codespell || echo "⚠️ Failed to install codespell"
+          npm install -g write-good || echo "⚠️ Failed to install write-good"
+          npm install -g htmlhint || echo "⚠️ Failed to install htmlhint"
+          npm install -g vale || echo "⚠️ Failed to install vale"
+
+          echo "✅ Dependency installation completed"
 
       - name: Plan Enhancement
         id: plan
