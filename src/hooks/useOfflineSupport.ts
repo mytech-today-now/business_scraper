@@ -17,6 +17,7 @@ export interface OfflineOptions {
   pingInterval?: number
   retryAttempts?: number
   retryDelay?: number
+  ignoreStreamingErrors?: boolean // New option to ignore streaming-specific errors
 }
 
 /**
@@ -34,6 +35,7 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
     pingInterval = 30000, // 30 seconds
     retryAttempts = 3,
     retryDelay = 1000,
+    ignoreStreamingErrors = true, // Default to true to avoid false offline notifications
   } = options
 
   const [state, setState] = useState<OfflineState>({
@@ -97,10 +99,16 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
+      // Use a more reliable endpoint for connectivity check
       const response = await fetch(pingUrl, {
         method: 'HEAD',
         cache: 'no-cache',
         signal: controller.signal,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       })
 
       clearTimeout(timeoutId)
@@ -109,9 +117,16 @@ export function useOfflineSupport(options: OfflineOptions = {}) {
       return response.ok
     } catch (error) {
       setIsChecking(false)
+
+      // If ignoring streaming errors, be more conservative about marking as offline
+      if (ignoreStreamingErrors) {
+        // Only consider it offline if navigator.onLine is also false
+        return navigator.onLine
+      }
+
       return false
     }
-  }, [pingUrl, isChecking, state.isOnline])
+  }, [pingUrl, isChecking, state.isOnline, ignoreStreamingErrors])
 
   // Retry connection with exponential backoff
   const retryConnection = useCallback(async (): Promise<boolean> => {

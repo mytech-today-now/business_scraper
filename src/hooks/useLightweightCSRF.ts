@@ -29,11 +29,11 @@ export function useLightweightCSRF(): LightweightCSRFResult {
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   /**
-   * Fetch CSRF token with optimized retry logic
+   * Fetch CSRF token with improved retry logic and error handling
    */
   const fetchCSRFToken = useCallback(async (retryAttempt: number = 0): Promise<void> => {
-    const maxRetries = 2 // Reduced from 3 for faster failure
-    const retryDelay = Math.min(1000 * Math.pow(1.5, retryAttempt), 3000) // Faster backoff
+    const maxRetries = 2 // Maximum 3 total attempts (0, 1, 2)
+    const retryDelay = Math.min(1000 * Math.pow(1.5, retryAttempt), 3000) // Faster backoff, max 3s
     const now = Date.now()
 
     // Prevent rapid successive calls
@@ -49,40 +49,68 @@ export function useLightweightCSRF(): LightweightCSRFResult {
         setError(null)
       }
 
-      console.log(`[CSRF] Fetching token (attempt ${retryAttempt + 1})`)
+      console.log(`[CSRF] Fetching token (attempt ${retryAttempt + 1}/${maxRetries + 1})`)
 
-      // Simple fetch without heavy error logging
-      const response = await fetch('/api/csrf', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-        },
-      })
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
-      console.log(`[CSRF] Response status: ${response.status}`)
+      try {
+        const response = await fetch('/api/csrf', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+          },
+          signal: controller.signal,
+        })
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
-      }
+        clearTimeout(timeoutId)
+        console.log(`[CSRF] Response status: ${response.status}`)
 
-      const data = await response.json()
-      console.log('[CSRF] Response data:', data)
+        if (!response.ok) {
+          // Handle specific error cases
+          if (response.status === 500) {
+            throw new Error('Database connection error - server unavailable')
+          } else if (response.status === 503) {
+            throw new Error('Service temporarily unavailable')
+          } else {
+            throw new Error(`HTTP ${response.status}`)
+          }
+        }
 
-      if (data.csrfToken) {
-        setCSRFToken(data.csrfToken)
-        setExpiresAt(data.expiresAt ? new Date(data.expiresAt).getTime() : Date.now() + 3600000)
-        setError(null)
-        console.log('[CSRF] Token loaded successfully')
-      } else {
-        throw new Error('No CSRF token in response')
+        const data = await response.json()
+        console.log('[CSRF] Response data:', data)
+
+        if (data.csrfToken) {
+          setCSRFToken(data.csrfToken)
+          setExpiresAt(data.expiresAt ? new Date(data.expiresAt).getTime() : Date.now() + 3600000)
+          setError(null)
+          console.log('[CSRF] Token loaded successfully')
+          setIsLoading(false)
+          return // Success - exit early
+        } else {
+          throw new Error('No CSRF token in response')
+        }
+      } catch (fetchError) {
+        clearTimeout(timeoutId)
+        throw fetchError
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch CSRF token'
       console.error('[CSRF] Error:', errorMessage)
 
-      if (retryAttempt < maxRetries) {
-        console.log(`[CSRF] Retrying in ${retryDelay}ms (attempt ${retryAttempt + 1}/${maxRetries})`)
+      // Determine if we should retry based on error type
+      const isDatabaseError = errorMessage.includes('Database connection error') ||
+                             errorMessage.includes('ECONNREFUSED') ||
+                             errorMessage.includes('500')
+      const isNetworkError = errorMessage.includes('Failed to fetch') ||
+                            errorMessage.includes('NetworkError') ||
+                            errorMessage.includes('aborted')
+      const isRetryableError = isDatabaseError || isNetworkError
+
+      if (retryAttempt < maxRetries && isRetryableError) {
+        console.log(`[CSRF] Retrying in ${retryDelay}ms (attempt ${retryAttempt + 1}/${maxRetries + 1}) - ${errorMessage}`)
 
         // Clear any existing timeout
         if (retryTimeoutRef.current) {
@@ -92,14 +120,29 @@ export function useLightweightCSRF(): LightweightCSRFResult {
         retryTimeoutRef.current = setTimeout(() => {
           fetchCSRFToken(retryAttempt + 1)
         }, retryDelay)
+        return // Don't set error or stop loading yet
       } else {
-        setError(errorMessage.includes('401')
-          ? 'Security token initialization failed. Please refresh the page.'
-          : 'Failed to load security token. Please try again.'
-        )
+        // All retries exhausted or non-retryable error
+        let finalError: string
+
+        if (isDatabaseError) {
+          finalError = 'Database connection failed. Please check if the database service is running and try again.'
+        } else if (errorMessage.includes('401')) {
+          finalError = 'Security token initialization failed. Please refresh the page.'
+        } else if (isNetworkError) {
+          finalError = 'Network connection failed. Please check your internet connection and try again.'
+        } else {
+          finalError = `Failed to load security token: ${errorMessage}${retryAttempt > 0 ? ` (after ${retryAttempt + 1} attempts)` : ''}`
+        }
+
+        setError(finalError)
+        console.error(`[CSRF] Final error after ${retryAttempt + 1} attempts:`, finalError)
       }
     } finally {
-      setIsLoading(false)
+      // Only set loading to false if we're not retrying
+      if (retryAttempt >= maxRetries || error) {
+        setIsLoading(false)
+      }
     }
   }, []) // Empty dependency array to make function stable
 
@@ -149,10 +192,14 @@ export function useLightweightCSRF(): LightweightCSRFResult {
 
   // Initialize CSRF token on mount
   useEffect(() => {
-    fetchCSRFToken()
+    // Add a small delay to prevent rapid successive calls during page reloads
+    const initTimeout = setTimeout(() => {
+      fetchCSRFToken()
+    }, 100)
 
     // Cleanup timeout on unmount
     return () => {
+      clearTimeout(initTimeout)
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current)
       }

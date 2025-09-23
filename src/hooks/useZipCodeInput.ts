@@ -51,6 +51,8 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
   })
 
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
+  const [lastValidZipCode, setLastValidZipCode] = useState<string | null>(null)
+  const [lastCallbackTime, setLastCallbackTime] = useState<number>(0)
 
   /**
    * Process the input and extract ZIP code
@@ -98,9 +100,21 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
             newState.warning = parseResult.warning
           }
 
-          // Call success callback
+          // Call success callback with deduplication
           if (onValidZipCode) {
-            onValidZipCode(parseResult.zipCode)
+            const now = Date.now()
+            const shouldCallCallback =
+              parseResult.zipCode !== lastValidZipCode ||
+              (now - lastCallbackTime) > 2000 // 2 second minimum between identical callbacks
+
+            if (shouldCallCallback) {
+              setLastValidZipCode(parseResult.zipCode)
+              setLastCallbackTime(now)
+              onValidZipCode(parseResult.zipCode)
+              logger.info('ZipCodeInput', `Valid ZIP code callback triggered: ${parseResult.zipCode}`)
+            } else {
+              logger.debug('ZipCodeInput', `Suppressing duplicate callback for ZIP code: ${parseResult.zipCode}`)
+            }
           }
 
           logger.info('ZipCodeInput', `Valid ZIP code: ${parseResult.zipCode}`)
@@ -133,7 +147,7 @@ export function useZipCodeInput(options: UseZipCodeInputOptions = {}) {
         logger.error('ZipCodeInput', 'Error processing input', error)
       }
     },
-    [onValidZipCode, onInvalidInput]
+    [onValidZipCode, onInvalidInput, lastValidZipCode, lastCallbackTime]
   )
 
   /**
