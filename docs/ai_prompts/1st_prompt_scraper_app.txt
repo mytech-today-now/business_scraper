@@ -1,0 +1,223 @@
+## 🧠 Prompt for Augment (VS Code) — Build a Full Business Web Scraping App
+
+I want to generate a full-stack application using **JavaScript/TypeScript (Node.js + React)** that scrapes business contact data by industry and location. Please scaffold the **complete project** using an **Adapted MVC model**, React for frontend, and scraping tools like Puppeteer or Playwright.
+
+---
+
+### ✅ High-Level App Goals
+
+**Core Objective:**  
+Create a modular, configurable app that:
+- Lets the user **select business industries and categories**
+- Lets the user **select or deselect all categories**
+- Lets the user **add/remove custom categories**
+- Allows user to **define a ZIP code as a center** for a **search radius**
+- Performs **web searches** to find matching websites, then scrapes business data
+
+---
+
+### 🕸️ Web Scraping Requirements
+
+- **Search engine integration**: Use search queries to identify candidate websites based on selected industries + ZIP code
+- **Process SERPs** to extract individual result URLs
+- **Scrape each website and/or sitemap** using:
+  - Keywords like `contact`, `about`, `corporate`, `investor`, `team`, `staff`, `directory`
+  - **Ignore `robots.txt`** when appropriate
+- Extract:
+  - Business name
+  - Email addresses
+  - Phone number (optional)
+  - Website URL
+  - **Full address**: street number/name, suite/building, city, state, ZIP+4
+  - Contact person(s) if available
+  - Lat/Lng if embedded; otherwise, geocode the address
+- Let the user **configure search depth** and number of pages per site
+
+---
+
+### ⚙️ Technical Stack
+
+- **Frontend**: React (stateless functional components)
+- **Backend/Scraper**: Node.js with Puppeteer or Playwright  
+  (Use Axios or node-fetch for secondary requests)
+- **Data Storage**: `IndexedDB` (client-side config persistence)
+- **Export formats**: `xlsx`, `xls`, `csv`, `csv-utf8`, `ods`, `pdf`
+- **UI features**:
+  - Scrollable, editable, resizable `<div>` for previewing scraped results
+  - Responsive design with dark mode support
+  - Skeleton loaders for async UI feedback
+  - A **fixed “README” button** that opens a scrollable popup of project documentation
+
+---
+
+### 🧱 Folder + File Structure
+
+```bash
+/business-scraper-app
+│
+├── public/
+│   └── index.html
+│
+├── src/
+│   ├── model/
+│   │   └── scraperService.ts
+│   │   └── geocoder.ts
+│   │   └── industryConfig.ts
+│   ├── view/
+│   │   └── App.tsx
+│   │   └── ResultsTable.tsx
+│   │   └── CategorySelector.tsx
+│   ├── controller/
+│   │   └── useScraperController.ts
+│   │   └── ConfigContext.tsx
+│   ├── utils/
+│   │   └── logger.ts
+│   │   └── formatters.ts
+│   ├── types/
+│   │   └── business.d.ts
+│   ├── index.tsx
+│   └── App.css
+│
+├── .env.example
+├── README.md
+├── CHANGELOG.md
+├── package.json
+├── tsconfig.json
+└── .gitignore
+🔧 Required Functionality
+Frontend Features
+CategorySelector: UI for selecting industries/categories (with add/remove + select all)
+
+ConfigContext: Global config context saved to IndexedDB
+
+ResultsTable: Editable spreadsheet-like display
+
+Download dropdown with format options: CSV, XLSX, PDF, etc.
+
+Backend/Scraping
+scrapeWebsite(url: string, depth: number): Promise<BusinessRecord[]>
+
+searchForWebsites(query: string, zip: string): Promise<string[]>
+
+geocodeAddress(address: string): Promise<{ lat: number, lng: number }>
+
+Structured error logging in format:
+[12:48 PM] <Scraper> tag #12: Failed to find email at line 53, column 9
+
+💡 Application Architecture — Adapted MVC
+Model:
+Encapsulates all:
+
+Business logic
+
+Scraping engine
+
+API/geolocation clients
+
+IndexedDB/localStorage access
+
+View:
+Stateless UI using:
+
+Functional React components
+
+CSS variables for theme switching
+
+Skeleton UI for loading states
+
+Controller:
+Custom hooks & context providers that:
+
+Handle async scraping workflows
+
+Coordinate between model + view
+
+Manage side effects and user interaction
+
+🔒 Security & Performance
+Use use strict globally
+
+Enable CSP headers & use CSP nonces
+
+Sanitize all inputs (e.g., query strings)
+
+Prevent global state pollution via ES Modules
+
+Add timeout, retry, and exponential backoff for all requests
+
+Use Service Workers and PWA caching with Workbox
+
+Tree-shake unused code, lazy-load all routes
+
+Defer non-critical scripts and styles
+
+Use passive event listeners
+
+Simulate slow networks for offline testing
+
+Provide fallback UI states (network failure, invalid config, etc.)
+
+📄 Documentation Standards
+JSDoc comments for:
+
+Every hook
+
+Every utility
+
+All API interfaces and config schemas
+
+Use documentation.js to generate docs
+
+Maintain:
+
+README.md (setup, patterns, architecture)
+
+CHANGELOG.md (semver + logs)
+
+.env.example for sharing config safely
+
+🧪 Testing & Automation
+Automated tests for:
+
+Positive/negative scraping cases
+
+UI interactions and edge cases
+
+Performance thresholds
+
+Visual regression testing:
+
+Use jest-image-snapshot, Percy, or Chromatic
+
+CI/CD pipeline:
+
+Pre-merge linting, tests, build validation
+
+Code coverage gates
+
+🧰 Design Patterns to Use
+Repository Pattern: for web + geocoder data access
+
+Strategy Pattern: for pluggable scraping strategies
+
+Command Pattern: encapsulate user actions
+
+Observer Pattern: reactive UI events
+
+Memento Pattern: undo for spreadsheet edits
+
+Module Federation (Webpack): for future microfrontend scaling
+
+📎 Request to AutoGen Agent
+Please begin with:
+
+File/folder scaffolding as listed above
+
+Implement industryConfig.ts, scraperService.ts, and ResultsTable.tsx
+
+Document function signatures and configs using JSDoc
+
+Add one working scraping prototype using Puppeteer
+
+Prepare the README.md with usage instructions and architectural overview
+

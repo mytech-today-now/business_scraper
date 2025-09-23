@@ -1,0 +1,9 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 99.9% success.  Add the tests to the appropriate section of the test suite. Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.  If the changes are not code related, add the tests to the appropriate section of the test suite.  Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Address the middleware issue: The complex security middleware needs to be refactored to work with Next.js Edge Runtime
+Re-enable authentication: Once the middleware is fixed, you can set ENABLE_AUTH=true in the environment
+Monitor performance: Check application logs and health endpoints regularly

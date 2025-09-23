@@ -1,0 +1,88 @@
+# Self-Documenting Enhancement Workflow
+# Triggered manually or by console log analysis
+
+name: Enhancement Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      console_log_content:
+        description: 'Console log content for analysis (multiline)'
+        required: true
+        type: string
+      assignees:
+        description: 'GitHub usernames to assign (comma-separated)'
+        required: false
+        default: 'mytech-today-now'
+        type: string
+      labels:
+        description: 'GitHub labels to apply (comma-separated)'
+        required: false
+        default: 'bug,enhancement,critical,needs review'
+        type: string
+      pull_request_url:
+        description: 'URL of the pull request implementing the enhancement (optional)'
+        required: false
+        type: string
+
+env:
+  NODE_VERSION: "18"
+
+jobs:
+  enhancement-workflow:
+    name: Console Log Enhancement Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for git diff
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create console log file
+        run: |
+          echo "${{ github.event.inputs.console_log_content }}" > console_log_context.txt
+          echo "Console log file created with $(wc -l < console_log_context.txt) lines"
+
+      - name: Run enhancement workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          WORKFLOW_ASSIGNEES: ${{ github.event.inputs.assignees }}
+          WORKFLOW_LABELS: ${{ github.event.inputs.labels }}
+          PULL_REQUEST_URL: ${{ github.event.inputs.pull_request_url }}
+          CONSOLE_LOG_FILE: console_log_context.txt
+        run: |
+          echo "Starting enhancement workflow..."
+          node scripts/console-log-enhancement-workflow.js
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: enhancement-workflow-results
+          path: |
+            console_log_context.txt
+            test-results/
+            logs/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Enhancement Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Assignees: ${{ github.event.inputs.assignees }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Labels: ${{ github.event.inputs.labels }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Pull Request: ${{ github.event.inputs.pull_request_url || 'Not provided' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Console Log Lines: $(wc -l < console_log_context.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "- Workflow Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY

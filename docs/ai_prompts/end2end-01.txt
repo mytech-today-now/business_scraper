@@ -1,0 +1,20 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, csp, security, Projects, Milestone, Relationships, Development, Notifications, Participants, etc for the Issue.
+
+Provide a solution that is a seemless experience for the user.  If the changes are code related make sure the test cases run to 90% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+
+enhancement:
+
+After redeploying the application, the message:"Loading Secuirty Token..." is displayed and the console fills with content, but immediately the page is reloaded before any error messages are able to be caputured for debugging purpsoes.
+
+"
+Internal server error
+"
+console:"""
+
+
+
+
+"""

@@ -1,0 +1,133 @@
+name: Self-Documenting Enhancement Workflow with Coverage & Alerts
+description: >
+  Implements an enhancement, creates a GitHub Issue, detects affected files,
+  runs file-specific tests, calculates pass/fail coverage, updates the Issue with results,
+  alerts if success < 98.99%, and closes the Issue only if coverage target is met.
+  Pull request linking is optional with fallback.
+
+inputs:
+  enhancement:
+    description: The enhancement or feature request to be implemented.
+    required: true
+  repository:
+    description: GitHub repository name where the Issue should be created.
+    required: true
+  assignees:
+    description: List of GitHub usernames to assign the Issue to.
+    required: true
+  labels:
+    description: >
+      List of GitHub labels to apply. Defaults to:
+      [bug, enhancement, critical, needs review].
+    required: false
+    default: ["bug", "enhancement", "critical", "needs review"]
+  pull_request_url:
+    description: URL of the pull request implementing the enhancement (optional, for auto-linking).
+    required: false
+  alert_mentions:
+    description: GitHub usernames to mention in alerts if coverage < 98.99% (optional)
+    required: false
+    default: []
+
+steps:
+  - name: Plan Enhancement
+    description: >
+      Analyze the enhancement request, plan implementation steps, and identify
+      all affected areas.
+
+  - name: Implement Enhancement
+    description: >
+      Apply the enhancement across all affected areas.
+      Handle errors gracefully with fallback solutions.
+
+  - name: Detect Affected Files
+    run: |
+      git fetch origin main
+      git diff --name-only origin/main > affected_files.txt
+      echo "Affected files:"
+      cat affected_files.txt
+
+  - name: Create GitHub Issue
+    run: |
+      ISSUE_TITLE="[Enhancement] {{inputs.enhancement}}"
+      ISSUE_BODY="## Enhancement Summary\n{{inputs.enhancement}}\n\n\
+## Steps to Reproduce\n1. Describe current behavior\n2. Outline improvement\n3. Note affected areas\n\n\
+## Expected Outcome\n- Seamless functionality\n- Errors handled\n- UX uninterrupted\n\n\
+## Testing Notes\n- Tests run per affected file\n- Target success ≥ 98.99%\n\n\
+## Additional Context\n- Pull Request: {{inputs.pull_request_url | default('Not provided')}}\n\
+## Affected Files:\n$(cat affected_files.txt)"
+
+      curl -X POST \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/{{inputs.repository}}/issues \
+        -d "{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"assignees\": {{inputs.assignees}}, \"labels\": {{inputs.labels}}}" \
+        -o issue_response.json
+
+  - name: Run Tests & Calculate Coverage
+    run: |
+      ISSUE_NUMBER=$(jq -r '.number' issue_response.json)
+      PASS_COUNT=0
+      FAIL_COUNT=0
+      TEST_RESULTS=""
+
+      while read -r FILE; do
+        if [[ $FILE == *.js ]]; then
+          CMD="npm test -- $FILE"
+        elif [[ $FILE == *.py ]]; then
+          CMD="pytest $FILE"
+        else
+          CMD="echo 'No tests defined for $FILE'"
+        fi
+
+        OUTPUT=$($CMD 2>&1)
+        STATUS=$?
+        if [ $STATUS -eq 0 ]; then
+          RESULT="PASS"
+          PASS_COUNT=$((PASS_COUNT + 1))
+        else
+          RESULT="FAIL"
+          FAIL_COUNT=$((FAIL_COUNT + 1))
+        fi
+
+        TEST_RESULTS+="### $FILE\nCommand: $CMD\nResult: $RESULT\nOutput:\n\`\`\`\n$OUTPUT\n\`\`\`\n\n"
+      done < affected_files.txt
+
+      TOTAL=$((PASS_COUNT + FAIL_COUNT))
+      SUCCESS_PERCENT=$((TOTAL > 0 ? PASS_COUNT * 100 / TOTAL : 100))
+      SUMMARY="**Test Summary:** $PASS_COUNT passed, $FAIL_COUNT failed, success rate: $SUCCESS_PERCENT%"
+
+      UPDATED_BODY=$(jq -r '.body' issue_response.json)
+      UPDATED_BODY+="\n\n## Actual Test Results\n$TEST_RESULTS\n$SUMMARY"
+
+      if [ $SUCCESS_PERCENT -lt 98 ]; then
+        ALERT_MSG="⚠️ Coverage below target (98.99%). @${{inputs.alert_mentions[*]}} please review."
+        UPDATED_BODY+="\n\n$ALERT_MSG"
+        CLOSE_ISSUE=false
+      else
+        CLOSE_ISSUE=true
+      fi
+
+      curl -X PATCH \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/{{inputs.repository}}/issues/$ISSUE_NUMBER \
+        -d "{\"body\": \"$UPDATED_BODY\"}"
+
+      echo "CLOSE_ISSUE=$CLOSE_ISSUE" > close_flag.txt
+
+  - name: Conditional Close GitHub Issue
+    run: |
+      ISSUE_NUMBER=$(jq -r '.number' issue_response.json)
+      CLOSE_ISSUE=$(cat close_flag.txt)
+      CLOSE_BODY=$(jq -r '.body' issue_response.json)
+
+      if [ "$CLOSE_ISSUE" = true ]; then
+        CLOSE_BODY+="\n\n## Closing Notes\n- Enhancement implemented successfully\n- All affected areas verified\n- Tests executed per file\n- Linked pull request: {{inputs.pull_request_url | default('Not provided')}}"
+        curl -X PATCH \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/{{inputs.repository}}/issues/$ISSUE_NUMBER \
+          -d "{\"state\": \"closed\", \"body\": \"$CLOSE_BODY\"}"
+      else
+        echo "Issue NOT closed due to coverage below threshold. Team alerted."

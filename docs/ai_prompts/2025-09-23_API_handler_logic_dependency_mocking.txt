@@ -1,0 +1,186 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 99.9% success.  Add the tests to the appropriate section of the test suite. Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.  If the changes are not code related, add the tests to the appropriate section of the test suite.  Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Date: 2025-09-23
+Priority: High
+Category: Testing Infrastructure & API Logic
+Related Issue: Follow-up to NextRequest Mocking Fix (Issue #197)
+
+Problem Summary
+===============
+Following the successful resolution of NextRequest mocking inconsistencies, the test suite still has failures related to API handler logic and dependency mocking. The BVT tests show 5/10 passing, with remaining failures in API response logic, health check endpoints, and service dependency mocking.
+
+Current Test Status
+==================
+✅ NextRequest mocking: 100% resolved
+❌ API handler logic: Multiple failures
+❌ Dependency mocking: Inconsistent behavior
+❌ Service integration: Health checks failing
+❌ Response formatting: Unexpected status codes
+
+Specific Issues to Address
+==========================
+
+1. **API Response Logic Failures**:
+   - BVT-001: Expected status 302 (redirect) but getting different response
+   - BVT-002: Expected status 200 but getting 500 (internal server error)
+   - BVT-004: Response data structure not matching expected format
+   - BVT-005: Expected status 503 but getting 200
+   - BVT-006: Expected status 500 but getting 503
+
+2. **Dependency Mocking Issues**:
+   - streamingSearchService mock not behaving as expected
+   - advancedRateLimitService mock configuration problems
+   - Health check service dependencies not properly mocked
+
+3. **Service Integration Problems**:
+   - Health check endpoint returning unexpected data structures
+   - Streaming service fallback logic not working as expected
+   - Rate limiting service integration issues
+
+Task Requirements
+=================
+Fix the API handler logic and dependency mocking issues to achieve 99.9% test success rate across the BVT test suite. The solution should maintain compatibility with existing functionality and follow all project rules and guidelines.
+
+Implementation Steps
+====================
+
+Step 1: Analyze API Handler Logic
+---------------------------------
+1. **Examine API Route Handlers**:
+   - Review `src/app/api/stream-search/route.ts` for expected behavior
+   - Review `src/app/api/health/route.ts` for response format
+   - Identify discrepancies between expected and actual responses
+
+2. **Trace Request Flow**:
+   - Follow the request processing pipeline
+   - Identify where responses are being modified
+   - Check error handling and fallback mechanisms
+
+Step 2: Fix Dependency Mocking
+------------------------------
+1. **Standardize Service Mocks**:
+   - Create comprehensive mocks for streamingSearchService
+   - Ensure advancedRateLimitService mock returns expected structure
+   - Mock all external dependencies consistently
+
+2. **Update Mock Configurations**:
+   ```typescript
+   // Example: Proper streamingSearchService mock
+   jest.mock('@/lib/streamingSearchService', () => ({
+     streamingSearchService: {
+       healthCheck: jest.fn(),
+       processStreamingSearch: jest.fn(),
+       // Add all required methods
+     }
+   }))
+   ```
+
+Step 3: Fix API Handler Response Logic
+-------------------------------------
+1. **Health Check Endpoint** (`src/app/api/health/route.ts`):
+   - Ensure response format matches test expectations
+   - Fix status code logic for different health states
+   - Verify service dependency checks
+
+2. **Stream Search Endpoint** (`src/app/api/stream-search/route.ts`):
+   - Fix fallback redirect logic (should return 302 when service unavailable)
+   - Ensure streaming response returns correct content-type
+   - Verify error handling returns appropriate status codes
+
+Step 4: Update Test Expectations
+--------------------------------
+1. **Review Test Assertions**:
+   - Verify test expectations match actual API behavior
+   - Update assertions if API behavior is correct but tests are wrong
+   - Ensure test scenarios reflect real-world usage
+
+2. **Mock Data Consistency**:
+   - Ensure mock responses match production data structures
+   - Verify mock service behaviors align with actual service contracts
+
+Step 5: Add Comprehensive Error Handling
+----------------------------------------
+1. **Graceful Degradation**:
+   - Implement proper fallback mechanisms
+   - Ensure services fail gracefully when dependencies are unavailable
+   - Add proper error logging and monitoring
+
+2. **Status Code Consistency**:
+   - Standardize HTTP status code usage across endpoints
+   - Ensure error responses include proper error messages
+   - Implement consistent response format
+
+Files to Examine and Modify
+===========================
+
+**Primary API Files**:
+- `src/app/api/stream-search/route.ts` - Streaming search endpoint
+- `src/app/api/health/route.ts` - Health check endpoint
+- `src/lib/streamingSearchService.ts` - Core streaming service
+- `src/lib/advancedRateLimit.ts` - Rate limiting service
+
+**Test Files**:
+- `src/tests/bvt/streaming-service-bvt.test.ts` - BVT test suite
+- `src/__tests__/api/` - API-specific tests
+- Mock configurations in test setup files
+
+**Supporting Files**:
+- `src/utils/apiErrorHandling.ts` - Error handling utilities
+- `src/lib/error-handling.ts` - Error handling middleware
+- Service configuration and initialization files
+
+Testing Requirements
+====================
+
+1. **BVT Test Success**: Achieve 99.9% success rate on BVT test suite
+2. **API Integration Tests**: Ensure all API endpoints work correctly
+3. **Error Scenario Testing**: Verify proper error handling and fallbacks
+4. **Service Dependency Tests**: Test service interactions and mocking
+5. **Regression Testing**: Ensure no breaking changes to existing functionality
+
+Success Criteria
+=================
+
+- [ ] All BVT tests pass (10/10 tests passing)
+- [ ] API endpoints return expected status codes and response formats
+- [ ] Service dependencies are properly mocked and behave consistently
+- [ ] Error handling works correctly for all failure scenarios
+- [ ] Health check endpoint returns proper service status information
+- [ ] Streaming endpoint properly handles service availability/unavailability
+- [ ] Rate limiting integration works as expected
+- [ ] No regression in existing functionality
+
+Implementation Guidelines
+=========================
+
+1. **Follow Project Rules**: Adhere to all rules in `.augment/rules/2025-08-19_AugmentAIRulesUserGuidelines.md`
+2. **Maintain Test Coverage**: Ensure 95%+ test coverage is maintained
+3. **Document Changes**: Update documentation for any API behavior changes
+4. **Version Control**: Use proper commit messages following conventional commit format
+5. **Error Logging**: Log any errors as GitHub Issues with proper documentation
+6. **Code Quality**: Run linting and type checking before committing changes
+
+Additional Considerations
+========================
+
+1. **Service Architecture**: Ensure proper separation of concerns between services
+2. **Configuration Management**: Verify environment-specific configurations
+3. **Performance Impact**: Monitor any performance implications of changes
+4. **Security**: Ensure error responses don't leak sensitive information
+5. **Monitoring**: Add appropriate logging and monitoring for debugging
+
+Expected Outcome
+================
+
+After completion, the test suite should achieve 99.9% success rate with:
+- All API endpoints functioning correctly
+- Proper error handling and fallback mechanisms
+- Consistent service dependency mocking
+- Reliable health check and streaming functionality
+- No breaking changes to existing features
+
+This enhancement should result in a robust, well-tested API layer that supports reliable development and deployment workflows.

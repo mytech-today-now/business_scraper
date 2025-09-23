@@ -1,0 +1,193 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 99.9% success.  Add the tests to the appropriate section of the test suite. Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.  If the changes are not code related, add the tests to the appropriate section of the test suite.  Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:"
+
+Problem Summary
+===============
+The test suite is failing with `TypeError: Cannot set property url of #<NextRequest> which has only a getter` errors. This occurs because the current mocking approach conflicts with Next.js 14's NextRequest implementation, where certain properties like `url` are read-only getters.
+
+Task Requirements
+=================
+Fix the NextRequest mocking inconsistencies across the test suite to ensure all tests can run successfully. The solution should be compatible with Next.js 14 and maintain backward compatibility with existing tests.
+
+Specific Issues to Address
+==========================
+
+1. **Conflicting Mock Implementations**: Multiple files have different NextRequest mocking approaches:
+   - `jest.setup.js` has conflicting global mocks (lines 77-84 and 206-233)
+   - `src/__tests__/utils/mockHelpers.ts` has a different approach
+   - Individual test files override mocks inconsistently
+
+2. **Property Assignment Errors**: The current mock tries to directly assign to read-only properties:
+   ```javascript
+   // ❌ FAILING - Direct assignment to read-only property
+   this.url = typeof input === 'string' ? input : input.url
+   ```
+
+3. **Inconsistent Mock Behavior**: Different tests expect different mock behaviors, causing conflicts.
+
+Implementation Steps
+====================
+
+Step 1: Create a Unified NextRequest Mock
+-----------------------------------------
+Create a comprehensive mock that properly handles read-only properties using `Object.defineProperty()`:
+
+```javascript
+// In jest.setup.js - Replace existing NextRequest mocks
+class MockNextRequest {
+  constructor(input, init = {}) {
+    const url = typeof input === 'string' ? input : input.url
+    const parsedUrl = new URL(url)
+    
+    // Define read-only properties using Object.defineProperty
+    Object.defineProperty(this, 'url', {
+      value: url,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    })
+    
+    Object.defineProperty(this, 'nextUrl', {
+      value: parsedUrl,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    })
+    
+    // Define other properties normally
+    this.method = init.method || 'GET'
+    this.headers = new Headers(init.headers || {})
+    this.body = init.body
+    this._bodyUsed = false
+  }
+  
+  // Implement required methods
+  async json() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return JSON.parse(this.body || '{}')
+  }
+  
+  async text() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return this.body || ''
+  }
+  
+  async formData() {
+    if (this._bodyUsed) throw new Error('Body already used')
+    this._bodyUsed = true
+    return this.body instanceof FormData ? this.body : new FormData()
+  }
+  
+  clone() {
+    return new MockNextRequest(this.url, {
+      method: this.method,
+      headers: Object.fromEntries(this.headers.entries()),
+      body: this.body
+    })
+  }
+}
+
+global.NextRequest = MockNextRequest
+```
+
+Step 2: Update Mock Helper Functions
+------------------------------------
+Standardize the `createMockNextRequest` function in `src/__tests__/utils/mockHelpers.ts`:
+
+```typescript
+export const createMockNextRequest = (
+  url: string,
+  options: {
+    method?: string
+    body?: FormData | string | null
+    headers?: Record<string, string>
+  } = {}
+): NextRequest => {
+  return new (global.NextRequest as any)(url, options)
+}
+```
+
+Step 3: Remove Conflicting Mocks
+---------------------------------
+- Remove the duplicate `global.Request` mock from `jest.setup.js` (lines 206-233)
+- Remove individual NextRequest mocks from test files that conflict with the global mock
+- Update tests that use `new NextRequest()` directly to use the helper function
+
+Step 4: Update Test Files
+-------------------------
+For tests that need specific NextRequest behavior:
+
+```typescript
+// Instead of creating NextRequest directly
+const request = new NextRequest('http://localhost:3000/api/test')
+
+// Use the helper function
+const request = createMockNextRequest('http://localhost:3000/api/test', {
+  method: 'GET',
+  headers: { 'Content-Type': 'application/json' }
+})
+```
+
+Step 5: Add NextResponse Mock Consistency
+-----------------------------------------
+Ensure NextResponse mock is also consistent:
+
+```javascript
+global.NextResponse = {
+  json: jest.fn((data, init) => ({
+    status: init?.status || 200,
+    headers: new Headers(init?.headers || {}),
+    json: () => Promise.resolve(data),
+    ok: (init?.status || 200) >= 200 && (init?.status || 200) < 300
+  })),
+  redirect: jest.fn((url, status = 302) => ({
+    status,
+    headers: new Headers({ 'Location': url }),
+    ok: status >= 200 && status < 300
+  }))
+}
+```
+
+Files to Modify
+===============
+
+1. **Primary Files**:
+   - `jest.setup.js` - Consolidate and fix NextRequest mock
+   - `src/__tests__/utils/mockHelpers.ts` - Update helper functions
+   - `src/tests/bvt/streaming-service-bvt.test.ts` - Use helper functions
+
+2. **Secondary Files** (update if they have conflicting mocks):
+   - `src/__tests__/api/upload.test.ts`
+   - `src/test/testUtils.tsx`
+   - Any other test files that directly mock NextRequest
+
+Testing Requirements
+====================
+
+1. **Verify BVT Tests Pass**: Ensure `streaming-service-bvt.test.ts` runs without NextRequest errors
+2. **Regression Testing**: Run existing API tests to ensure no breaking changes
+3. **Cross-Platform Compatibility**: Test on different Node.js versions if applicable
+
+Success Criteria
+=================
+
+- [ ] All NextRequest-related test failures resolved
+- [ ] BVT tests pass with 99.9% success rate
+- [ ] No breaking changes to existing test functionality
+- [ ] Consistent mocking approach across all test files
+- [ ] Proper error handling for edge cases
+
+Additional Considerations
+========================
+
+- Ensure the mock handles URL parsing edge cases (relative URLs, malformed URLs)
+- Add proper TypeScript types for the mock if needed
+- Consider adding JSDoc comments for the mock implementation
+- Test with both string and Request object inputs to NextRequest constructor
+
+"

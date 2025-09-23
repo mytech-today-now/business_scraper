@@ -1,0 +1,252 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 90% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+When loading the configration page, the toast that says:"""ZIP code "60047" is valid""" appears 4-5 times instantly.  Let's reduce that to one time per zip code acceptance.
+Add a regression tests that make sure this doesn't reoccur.
+
+when the application is scraping the Console Output on the scraping screen has the following output:"""
+
+2:10:25 PM [INFO] [02:10:25 PM] <ScraperController> INFO: Scraper service initialized in real mode
+2:10:25 PM [INFO] [02:10:25 PM] <ScraperController> INFO: Scraper service initialized in real mode
+2:10:25 PM [INFO] [02:10:25 PM] <Storage> INFO: Saved analytics event: navigation_tab_change
+2:10:25 PM [INFO] [02:10:25 PM] <Analytics> INFO: Event tracked: navigation_tab_change {
+  "sessionId": "sess_1758451541401_gfmmfhjh6",
+  "eventData": {
+    "activeTab": "scraping",
+    "timestamp": "2025-09-21T19:10:25.086Z",
+    "isMobile": false
+  }
+}
+2:10:28 PM [INFO] [02:10:28 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:28 PM [INFO] [2;38;2;124;124;124m%s[0m [02:10:28 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:30 PM [WARN] [02:10:30 PM] <useSearchStreaming> WARN: Streaming connection error {
+  "readyState": 2,
+  "url": "http://localhost:3000/api/stream-search?query=Insurance+Agencies%2C+Financial+Advisory+Services&location=60047&maxResults=1000&batchSize=50",
+  "retryCount": 0,
+  "timestamp": "2025-09-21T19:10:30.415Z"
+}
+2:10:30 PM [INFO] [02:10:30 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+2:10:30 PM [INFO] [02:10:30 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:30 PM [INFO] [2;38;2;124;124;124m%s[0m [02:10:30 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:32 PM [INFO] [02:10:32 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:32 PM [INFO] [2;38;2;124;124;124m%s[0m [02:10:32 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:34 PM [WARN] [02:10:34 PM] <useSearchStreaming> WARN: Streaming connection error {
+  "readyState": 2,
+  "url": "http://localhost:3000/api/stream-search?query=Insurance+Agencies%2C+Financial+Advisory+Services&location=60047&maxResults=1000&batchSize=50",
+  "retryCount": 0,
+  "timestamp": "2025-09-21T19:10:34.730Z"
+}
+2:10:39 PM [INFO] [02:10:39 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+2:10:39 PM [INFO] [02:10:39 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2:10:39 PM [INFO] [2;38;2;124;124;124m%s[0m [02:10:39 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+
+"""
+Browser Console:"""
+[02:10:18 PM] <Config> INFO: Configuration loaded successfully for development environment
+logger.ts:278 [02:10:18 PM] <CRMTemplateManager> INFO: Initialized CRM adapters Object
+logger.ts:278 [02:10:18 PM] <MemoryMonitor> INFO: Browser memory monitoring available
+logger.ts:278 [02:10:18 PM] <Analytics> INFO: Session initialized: sess_1758451541401_gfmmfhjh6
+logger.ts:278 [02:10:19 PM] <EnhancedErrorLogger> INFO: Global error handling setup complete
+errorPersistence.ts:360 [ErrorPersistence] Session ending temporarily disabled to prevent navigation loops
+logger.ts:278 [02:10:19 PM] <ErrorPersistence> INFO: Error persistence setup complete
+logger.ts:278 [02:10:19 PM] <PaymentSystemInitializer> INFO: Initializing payment system
+logger.ts:278 [02:10:19 PM] <ScraperController> INFO: Scraper service initialized in real mode
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Initializing database connection...
+logger.ts:278 [02:10:19 PM] <ClientOnlyStripeProvider> INFO: Client-side initialization complete
+errorPersistence.ts:360 [ErrorPersistence] Session ending temporarily disabled to prevent navigation loops
+logger.ts:278 [02:10:19 PM] <ErrorPersistence> INFO: Error persistence setup complete
+logger.ts:278 [02:10:19 PM] <ScraperController> INFO: Scraper service initialized in real mode
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Initializing database connection...
+logger.ts:278 [02:10:19 PM] <PaymentController> INFO: Loaded 3 subscription plans
+logger.ts:278 [02:10:19 PM] <PaymentController> INFO: Payment system initialized successfully
+logger.ts:278 [02:10:19 PM] <PaymentSystemInitializer> INFO: Payment system initialized successfully
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Database initialized successfully
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Saved analytics event: app_initialized
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: app_initialized Object
+
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Real scraping mode enabled
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Configuration initialized successfully
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Real scraping mode enabled
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Saved analytics event: app_initialized
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: app_initialized Object
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+logger.ts:278 [02:10:19 PM] <EnhancedErrorLogger> INFO: Global error handling setup complete
+errorPersistence.ts:360 [ErrorPersistence] Session ending temporarily disabled to prevent navigation loops
+logger.ts:278 [02:10:19 PM] <ErrorPersistence> INFO: Error persistence setup complete
+logger.ts:278 [02:10:19 PM] <PaymentController> INFO: Payment system already initialized
+logger.ts:278 [02:10:19 PM] <StripeProvider> INFO: Loading Stripe.js (attempt 1/5)
+logger.ts:278 [02:10:19 PM] <EnhancedErrorLogger> INFO: Global error handling setup complete
+errorPersistence.ts:360 [ErrorPersistence] Session ending temporarily disabled to prevent navigation loops
+logger.ts:278 [02:10:19 PM] <ErrorPersistence> INFO: Error persistence setup complete
+logger.ts:278 [02:10:19 PM] <ScraperController> INFO: Scraper service initialized in real mode
+logger.ts:278 [02:10:19 PM] <PaymentSystemInitializer> INFO: Payment system initialized successfully
+hook.js:608 You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+overrideMethod @ hook.js:608
+logger.ts:278 [02:10:19 PM] <PaymentSystemInitializer> INFO: Payment system initialized successfully
+logger.ts:278 [02:10:19 PM] <StripeProvider> INFO: Stripe.js loaded successfully
+logger.ts:278 [02:10:19 PM] <StripeProvider> INFO: Stripe provider initialized successfully
+logger.ts:278 [02:10:19 PM] <EnhancedErrorLogger> INFO: Global error handling setup complete
+errorPersistence.ts:360 [ErrorPersistence] Session ending temporarily disabled to prevent navigation loops
+logger.ts:278 [02:10:19 PM] <ErrorPersistence> INFO: Error persistence setup complete
+logger.ts:278 [02:10:19 PM] <ScraperController> INFO: Scraper service initialized in real mode
+logger.ts:278 [02:10:19 PM] <EnhancedErrorLogger> INFO: Global error handling setup complete
+errorPersistence.ts:360 [ErrorPersistence] Session ending temporarily disabled to prevent navigation loops
+logger.ts:278 [02:10:19 PM] <ErrorPersistence> INFO: Error persistence setup complete
+logger.ts:278 [02:10:19 PM] <PaymentSystemInitializer> INFO: Payment system initialized successfully
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Saved analytics event: app_initialized
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: app_initialized Object
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Real scraping mode enabled
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Real scraping mode enabled
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Saved analytics event: app_initialized
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: app_initialized Object
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Real scraping mode enabled
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <ConfigProvider> INFO: Real scraping mode enabled
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Saved analytics event: app_initialized
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: app_initialized Object
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+logger.ts:278 [02:10:19 PM] <Storage> INFO: Saved analytics event: app_initialized
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: app_initialized Object
+logger.ts:278 [02:10:19 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <App> INFO: Valid ZIP code entered: 60047
+logger.ts:278 [02:10:19 PM] <ZipCodeInput> INFO: Valid ZIP code: 60047
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+5logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+5hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:19 PM] <App> INFO: Valid ZIP code entered: 60047
+logger.ts:278 [02:10:19 PM] <ZipCodeInput> INFO: Valid ZIP code: 60047
+logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+5logger.ts:278 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+5hook.js:377 [02:10:19 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+logger.ts:278 [02:10:20 PM] <Storage> INFO: Saved configuration
+logger.ts:278 [02:10:20 PM] <ConfigProvider> INFO: Configuration updated Object
+logger.ts:278 [02:10:20 PM] <Storage> INFO: Saved configuration
+image:1  Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+use-websocket.js:42 WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: 
+eval @ use-websocket.js:42
+logger.ts:278 [02:10:25 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+hook.js:377 [02:10:25 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+2ProcessingWindow.tsx:169 [02:10:25 PM] <ScraperController> INFO: Scraper service initialized in real mode
+ProcessingWindow.tsx:169 [02:10:25 PM] <Storage> INFO: Saved analytics event: navigation_tab_change
+ProcessingWindow.tsx:169 [02:10:25 PM] <Analytics> INFO: Event tracked: navigation_tab_change Object
+ProcessingWindow.tsx:169 [02:10:28 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+stream-search:1  Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+hook.js:608 [02:10:30 PM] <useSearchStreaming> WARN: Streaming connection error Object
+overrideMethod @ hook.js:608
+ProcessingWindow.tsx:169 [02:10:30 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+ProcessingWindow.tsx:169 [02:10:30 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+stream-search:1  Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+hook.js:608 [02:10:34 PM] <useSearchStreaming> WARN: Streaming connection error Object
+overrideMethod @ hook.js:608
+ProcessingWindow.tsx:169 [02:10:43 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+ProcessingWindow.tsx:169 [02:10:43 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+ProcessingWindow.tsx:169 [02:10:44 PM] <useSearchStreaming> INFO: Streaming stopped
+ProcessingWindow.tsx:169 [02:10:44 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+:3000/api/ping:1  Failed to load resource: net::ERR_CONNECTION_REFUSED
+hook.js:608 Warning: Cannot update a component (`Fe`) while rendering a different component (`ServiceWorkerRegistration`). To locate the bad setState() call inside `ServiceWorkerRegistration`, follow the stack trace as described in https://reactjs.org/link/setstate-in-render Error Component Stack
+    at ServiceWorkerRegistration (ServiceWorkerRegistration.tsx:15:63)
+    at Elements (react-stripe.umd.js:471:30)
+    at StripeProvider (StripeProvider.tsx:127:65)
+    at BailoutToCSR (dynamic-bailout-to-csr.js:13:11)
+    at Suspense (<anonymous>)
+    at LoadableComponent (<anonymous>)
+    at ErrorBoundaryWrapper (ClientOnlyStripeProvider.tsx:71:5)
+    at Suspense (<anonymous>)
+    at ClientOnlyStripeProvider (ClientOnlyStripeProvider.tsx:25:44)
+    at ErrorBoundary (ErrorBoundary.tsx:45:5)
+    at body (<anonymous>)
+    at html (<anonymous>)
+    at RootLayout [Server] (<anonymous>)
+    at RedirectErrorBoundary (redirect-boundary.js:74:9)
+    at RedirectBoundary (redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (not-found-boundary.js:76:9)
+    at NotFoundBoundary (not-found-boundary.js:84:11)
+    at DevRootNotFoundBoundary (dev-root-not-found-boundary.js:33:11)
+    at ReactDevOverlay (ReactDevOverlay.js:87:9)
+    at HotReload (hot-reloader-client.js:321:11)
+    at Router (app-router.js:207:11)
+    at ErrorBoundaryHandler (error-boundary.js:113:9)
+    at ErrorBoundary (error-boundary.js:160:11)
+    at AppRouter (app-router.js:585:13)
+    at ServerRoot (app-index.js:112:27)
+    at Root (app-index.js:117:11)
+overrideMethod @ hook.js:608
+:3000/api/ping:1  Failed to load resource: net::ERR_CONNECTION_REFUSED
+ProcessingWindow.tsx:169 [02:16:56 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+stream-search:1  Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+hook.js:608 [02:16:58 PM] <useSearchStreaming> WARN: Streaming connection error Object
+overrideMethod @ hook.js:608
+ProcessingWindow.tsx:169 [02:16:58 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+ProcessingWindow.tsx:169 [02:17:01 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+sw.js:183 [SW] Network request failed: {url: 'http://localhost:3000/', method: 'GET', error: 'Failed to fetch'}
+handleFetch @ sw.js:183
+stream-search:1  Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+ProcessingWindow.tsx:169 [02:17:04 PM] <useSearchStreaming> WARN: Streaming connection error {readyState: 2, url: 'http://localhost:3000/api/stream-search?query=Insu…vices&location=60047&maxResults=1000&batchSize=50', retryCount: 0, timestamp: '2025-09-21T19:17:04.700Z'}
+overrideMethod @ hook.js:608
+eval @ ProcessingWindow.tsx:169
+logToConsoleText @ logger.ts:281
+logToConsole @ logger.ts:250
+log @ logger.ts:228
+warn @ logger.ts:174
+eventSource.onerror @ useSearchStreaming.ts:213
+ProcessingWindow.tsx:169 [02:17:20 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+ProcessingWindow.tsx:169 [02:17:20 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+ProcessingWindow.tsx:169 [02:17:23 PM] <useSearchStreaming> INFO: Streaming stopped
+ProcessingWindow.tsx:169 [02:17:23 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+useOfflineSupport.ts:100  HEAD http://localhost:3000/api/ping net::ERR_CONNECTION_REFUSED
+eval @ useOfflineSupport.ts:100
+eval @ useOfflineSupport.ts:161
+setInterval
+eval @ useOfflineSupport.ts:160
+commitHookEffectListMount @ react-dom.development.js:21102
+commitHookPassiveMountEffects @ react-dom.development.js:23154
+commitPassiveMountOnFiber @ react-dom.development.js:23259
+recursivelyTraversePassiveMountEffects @ react-dom.development.js:23237
+commitPassiveMountOnFiber @ react-dom.development.js:23370
+recursivelyTraversePassiveMountEffects @ react-dom.development.js:23237
+commitPassiveMountOnFiber @ react-dom.development.js:23256
+recursivelyTraversePassiveMountEffects @ react-dom.development.js:23237
+commitPassiveMountOnFiber @ react-dom.development.js:23334
+recursivelyTraversePassiveMountEffects @ react-dom.development.js:23237
+commitPassiveMountOnFiber @ react-dom.development.js:23267
+commitPassiveMountEffects @ react-dom.development.js:23225
+flushPassiveEffectsImpl @ react-dom.development.js:26497
+flushPassiveEffects @ react-dom.development.js:26438
+eval @ react-dom.development.js:26172
+workLoop @ scheduler.development.js:256
+flushWork @ scheduler.development.js:225
+performWorkUntilDeadline @ scheduler.development.js:534
+"""
+It seems like the client isn't connection to the server.
+solve tis error:"""
+2:10:30 PM [WARN] [02:10:30 PM] <useSearchStreaming> WARN: Streaming connection error {
+  "readyState": 2,
+  "url": "http://localhost:3000/api/stream-search?query=Insurance+Agencies%2C+Financial+Advisory+Services&location=60047&maxResults=1000&batchSize=50",
+  "retryCount": 0,
+  "timestamp": "2025-09-21T19:10:30.415Z"
+}
+"""
+Generate new tests for this error and add them to regression testing and BVT test Suite

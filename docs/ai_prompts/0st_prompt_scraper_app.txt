@@ -1,0 +1,85 @@
+generate an augment prompt for augment with VS Code that will generate an application that will allow the user to select specific Industries categorized by type you're select all of the categories of an industry or select all of the categories in all of the industries and or select/deselect all. allow the user to add or subtract industry categories as needed. save the application configurations to indexDB or later use on additional runs of the application.
+
+the user is able to set a zip code as the center of a of a search radius. Use scraping libraries such as Axios or node-fetch, Puppeteer, or Playwright to scrape the web pages. the application uses web search features to search the internet for websites that fit the criteria of the zip code and Industry categories. the application then processes the resultant SERPs for individual web pages that fit the search criteria. then process through each individual web page and or website sitemap looking for information, including business name, email address(es), [Street number, street name] and/or Street number and name, suite or building number if any, city or town, state, ZIP+4, website address, contact names.
+The web search should ignore Robots.txt and search through the website looking for the relevant info.  It can look in "contact", "corporate", "contact us", "investor relations", "investors", addtional relevant common business info pages will be included in this criteria.
+The user should be able to set the depth of the search and the number of pages searched per Website.
+
+
+A scrollable, editable, re-sizable <div> will contain the resulting spreadsheet for review before export.
+
+the user will be able to select what type of file format to download the resulting spreadsheet: xlsx, xls, ods, csv, csv-utf8, pdf
+
+Adapted MVC Model: Use a clear separation of concerns to maintain clean architecture:
+Model: Encapsulate all business logic, API service clients, persistent data stores, and data normalization.
+View: Develop fully stateless, pure functional React components focused on UI rendering only.
+Controller: Build custom React hooks and Context Providers to manage state, side effects, and orchestration between Model and View.
+
+�💡 Code Safety & Best Practices
+Enable 'use strict' mode globally for improved error detection and stricter parsing rules. This helps catch silent errors early in the development lifecycle.
+Prevent global scope pollution: Organize code in ES modules, avoid global variables
+Implement robust error handling
+Structured Error Logging: Log errors in a consistent format: [HH:MM:SS AM/PM] <Element> tag #X: <message> at line L, column C This enables easier debugging and error tracking across the application.
+Fallback Behavior: Provide robust error handling with fallback behavior for all critical operations. Ensure the application remains functional even when non-critical features fail.
+Network Request Resilience: Add timeouts and retry logic to all fetch requests. Implement exponential backoff for failed requests and graceful degradation for offline scenarios.
+Avoid Global State Pollution: Use IIFEs (Immediately Invoked Function Expressions) or ES modules to prevent global scope pollution. Organize code in modules and avoid global variables that can cause naming conflicts.
+Document every custom hook, utility function, context provider, and API interaction with JSDoc to enable clear IDE tooltips and automated docs generation.
+Comprehensive Documentation: Document all functions, data structures (objects, arrays), and public APIs in both README and inline comments. Maintain comprehensive README.md with setup, architectural decisions, and coding standards.
+Version Management: Update app and README version numbers on each release or change. Use semantic versioning (semver) format (MAJOR.MINOR.PATCH). Maintain a detailed CHANGELOG.md with summaries, version bumps, and test logs.
+Manage environment variables securely: Use .env.local for secret keys and API endpoints specific to developer machines, and provide a sanitized .env.example template for collaborators.
+Automated Documentation: Use tools like documentation.js to automatically generate documentation from your JSDoc/TSDoc comments. These tools work together - write good JSDoc comments in your code, then use documentation.js to generate readable documentation from them.
+Update .gitignore with any new changes that are relevant.
+
+UI/UX & Accessibility
+Always use semantic HTML5 elements (<main>, <nav>, <section>, etc.) and ARIA roles to improve screen reader compatibility and SEO.
+Provide a fully responsive design that adapts to screen size, using CSS variables for themes, media queries for breakpoints, and prefers-color-scheme for dark mode.
+Use skeleton loaders or shimmer placeholders during data fetching to improve perceived performance. Include a <noscript> fallback message for users with JavaScript disabled.
+Support comprehensive keyboard navigation, logical tab order, and focus states. Regularly audit accessibility using tools like Lighthouse, axe-core, and manual testing with screen readers.
+HTML/CSS Integrity: Keep all HTML/CSS intact; changes must be drop-in compatible. Implement ARIA attributes, keyboard navigation, high color contrast, and screen reader testing.
+Dark Mode Support: Add dark mode toggle or media query support with preference storage. Use CSS custom properties for theme switching and respect user's system preferences.
+Loading States: Use Skeleton Screens (not spinners) for async loading. Handle dynamic rendering for delayed/partial data to improve perceived performance.
+SEO & Discoverability: Include basic SEO (title, description, OpenGraph) and a robots.txt. Ensure proper meta tags and structured data for search engine optimization.
+Fixed Readme Button: Add a fixed top "Readme" button that:
+Opens scrollable popup (Markdown via Marked.js) of readme.md markdown
+Has visible "X" close button
+Styled clearly and overlays content
+
+Performance & Optimization
+Lazy-load components, routes, and heavy dependencies with React.lazy and Suspense to reduce initial bundle size and speed up load times.
+Leverage service workers via Workbox to enable Progressive Web App (PWA) features like offline support, caching, and background sync.
+Defer loading of non-critical CSS and JavaScript. Use passive event listeners and throttle/debounce event handlers to reduce main thread congestion.
+Continuously monitor runtime performance using web-vitals, Lighthouse audits, and Chrome DevTools profiling. Use results to identify bottlenecks and guide optimizations.
+PWA Features: Include a complete manifest.json for PWA features. Use Service Workers for caching, offline support, and update handling.
+Offline-First Strategy: Use offline-first caching with write-through sync on reconnect. Simulate slow networks/devices in testing to ensure robust performance.
+Immutable Updates: Prefer immutable updates using libraries like Immer.js or Redux. This improves performance and makes state changes more predictable.
+Event Optimization: Throttle events (scroll/resize) via requestAnimationFrame or debounce. Use passive event listeners to improve scroll performance.
+Asset Optimization: Use content hashing for long-term asset caching. Prefetch assets based on user behavior or route visibility.
+Code Splitting: Eliminate unused code with tree shaking; import libraries modularly. Use dynamic imports for route-based and component-based code splitting.
+
+Automate testing and deployment. Configure pipelines to run linting, tests, builds, and deploy only on passing workflows.
+Track and enforce code coverage thresholds to maintain high test quality. Set up pre-merge lint/build/test gates on all pull requests to enforce code quality and consistency.
+Comprehensive Test Coverage: Write unit tests covering:
+Positive/negative test cases
+Edge/boundary conditions
+State transitions
+Simulated failures
+Performance benchmarks
+Visual Regression Testing: Add automated UI regression tests with visual snapshots. Use tools like Percy, Chromatic, or jest-image-snapshot for visual testing.
+Build Automation: Include build scripts (npm, Makefile) for lint, test, and deploy steps. Automate the entire development workflow from code commit to deployment.
+♻️ Reusable Design Patterns & Architectural Practices
+Dependency Injection (DI): Inject services via containers or factories for testing flexibility. Use React Context Providers to inject APIs, services, or config throughout the app.
+Command Pattern: Encapsulate user actions (e.g., SubmitFormCommand) for undo/logging capabilities. This enables action replay, undo functionality, and comprehensive audit trails.
+Observer Pattern: Use pub/sub or RxJS for reactive UI state management. Apply using React's useEffect hook to reactively respond to state or prop changes.
+State Machine Pattern: Use XState or FSMs for onboarding and multi-step flows. Manage complex states to model UI workflows and business logic explicitly and reliably.
+Strategy Pattern: Swap logic at runtime (e.g., pricing algorithms, rendering strategies). Enables flexible behavior modification without code changes.
+Adapter Pattern: Normalize third-party/legacy APIs with consistent interfaces. Create adapters to bridge incompatible interfaces and data formats.
+Repository Pattern: Encapsulate DB/API logic behind a clean interface. Abstract data access and provide consistent CRUD operations.
+Facade Pattern: Hide subsystem complexity with clean public APIs. Provide simplified interfaces to complex subsystems.
+Scoped Singleton Pattern: Share config or auth state via closures/modules. Ensure single instances of critical services while maintaining scope isolation.
+Template Method Pattern: Provide overridable hooks (e.g., beforeSave, afterLoad). Define algorithm structure while allowing customization of specific steps.
+Memento Pattern: Save and restore session or undo state. Enable state snapshots for undo/redo functionality and session recovery.
+Module Federation: Use Webpack for scalable microfrontend modules. Enable independent deployment and development of application modules.
+🔐 Security Best Practices
+Content Security Policy (CSP): Apply CSP nonces to dynamically injected scripts. Implement CSP with nonces for inline scripts and strict sources for scripts, styles, and media. This protects against XSS and injection attacks.
+Zero Trust Security Model: Follow Zero Trust principles: Always validate and verify tokens and permissions server-side, never trust client-side assertions alone.
+Least Privilege Principle: Enforce Least Privilege at both UI and API layers. Ensure users and components only receive access strictly necessary for their roles.
+

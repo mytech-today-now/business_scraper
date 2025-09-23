@@ -1,0 +1,2 @@
+Stop the running instances of the application locally and on Docker.
+Recompile the application, Rebuild, and Redeploy a production instance of the application on Docker.
