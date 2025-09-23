@@ -51,6 +51,10 @@ export class MonitoringService {
   private alertThresholds: Map<string, any> = new Map()
   private healthCheckInterval: NodeJS.Timeout | null = null
 
+  // Debouncing for memory metric logging
+  private lastMemoryLogTime: number = 0
+  private readonly MEMORY_LOG_INTERVAL_MS = 30000 // 30 seconds
+
   constructor() {
     this.initializeThresholds()
     this.startHealthChecks()
@@ -94,7 +98,16 @@ export class MonitoringService {
       // Store in persistent storage
       await this.storeMetric(metric)
 
-      logger.debug('Monitoring', `Metric recorded: ${name} = ${value} ${unit}`)
+      // Only log memory metrics periodically to reduce console spam
+      if (name.startsWith('memory_')) {
+        const now = Date.now()
+        if (now - this.lastMemoryLogTime > this.MEMORY_LOG_INTERVAL_MS) {
+          logger.debug('Monitoring', `Memory metrics updated: ${name} = ${value} ${unit}`)
+          this.lastMemoryLogTime = now
+        }
+      } else {
+        logger.debug('Monitoring', `Metric recorded: ${name} = ${value} ${unit}`)
+      }
     } catch (error) {
       logger.error('Monitoring', 'Failed to record metric', error)
     }
@@ -549,8 +562,10 @@ export class MonitoringService {
 
   private async storeMetric(metric: PerformanceMetric): Promise<void> {
     // Implementation would store metric in time-series database
-    // For now, just log the metric storage
-    logger.debug('Monitoring', 'Metric stored', { metricId: metric.id, name: metric.name })
+    // For now, just log the metric storage (but not for memory metrics to reduce spam)
+    if (!metric.name.startsWith('memory_')) {
+      logger.debug('Monitoring', 'Metric stored', { metricId: metric.id, name: metric.name })
+    }
   }
 }
 

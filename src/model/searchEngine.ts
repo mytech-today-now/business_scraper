@@ -1,6 +1,7 @@
 'use strict'
 
 import axios from 'axios'
+import { XMLParser } from 'fast-xml-parser'
 import { logger } from '@/utils/logger'
 import { searchResultValidator, ValidatedSearchResult } from './searchResultValidator'
 import { queryOptimizer, OptimizedQuery, QueryPerformance } from './queryOptimizer'
@@ -624,7 +625,7 @@ export class SearchEngineService {
   }
 
   /**
-   * Search using Yandex (free API with limitations)
+   * Search using Yandex Search API
    * @param query - Search query
    * @param location - Location
    * @param maxResults - Maximum results
@@ -637,18 +638,21 @@ export class SearchEngineService {
   ): Promise<SearchResult[]> {
     const apiKey = process.env.YANDEX_SEARCH_API_KEY
     if (!apiKey) {
+      logger.warn('SearchEngine', 'Yandex Search API key not configured, skipping Yandex search')
       return []
     }
 
     const searchQuery = `${query} ${location}`
 
     try {
+      logger.info('SearchEngine', `Searching Yandex with query: ${searchQuery}`)
+
       const response = await axios.get('https://yandex.com/search/xml', {
         params: {
           query: searchQuery,
-          lr: 213, // Moscow region ID (can be changed)
+          lr: 213, // Moscow region ID (can be changed based on location)
           l10n: 'en',
-          sortby: 'rlv',
+          sortby: 'rlv', // Sort by relevance
           filter: 'none',
           maxpassages: 3,
           groupby: `attr=d.mode=deep.groups-on-page=${Math.min(maxResults, 10)}.docs-in-group=1`,
@@ -660,9 +664,9 @@ export class SearchEngineService {
         timeout: this.config.timeout,
       })
 
-      // Yandex returns XML, would need XML parsing
-      // For now, return empty array
-      return []
+      const results = this.parseYandexResults(response.data, maxResults)
+      logger.info('SearchEngine', `Yandex search returned ${results.length} results`)
+      return results
     } catch (error) {
       logger.error('SearchEngine', 'Yandex search failed', error)
       return []
@@ -1088,6 +1092,261 @@ export class SearchEngineService {
     }
 
     return results
+  }
+
+  /**
+   * Parse Yandex search results from XML response
+   * @param xmlData - Raw XML response from Yandex API
+   * @param maxResults - Maximum results to return
+   * @returns Array of parsed search results
+   */
+  private parseYandexResults(xmlData: string, maxResults: number): SearchResult[] {
+    const results: SearchResult[] = []
+
+    try {
+      const parser = new XMLParser({
+        ignoreAttributes: false,
+        attributeNamePrefix: '@_',
+        textNodeName: '#text',
+        parseAttributeValue: true,
+        trimValues: false, // Don't trim to preserve spaces
+        preserveOrder: false,
+        allowBooleanAttributes: true,
+      })
+
+      const parsedData = parser.parse(xmlData)
+
+      // Also extract raw XML for better text handling
+      const rawXmlData = xmlData
+
+      // Navigate through Yandex XML structure
+      const response = parsedData?.yandexsearch?.response
+      if (!response) {
+        logger.warn('SearchEngine', 'No response found in Yandex XML')
+        return results
+      }
+
+      // Check for errors in response
+      if (response.error) {
+        logger.warn('SearchEngine', `Yandex search error: ${response.error['#text'] || response.error}`)
+        return results
+      }
+
+      // Extract results from grouping structure
+      const grouping = response.results?.grouping
+      if (!grouping || !grouping.group) {
+        logger.warn('SearchEngine', 'No groups found in Yandex response')
+        return results
+      }
+
+      // Handle both single group and array of groups
+      const groups = Array.isArray(grouping.group) ? grouping.group : [grouping.group]
+
+      for (const group of groups) {
+        if (results.length >= maxResults) break
+
+        // Each group contains documents
+        const docs = group.doc ? (Array.isArray(group.doc) ? group.doc : [group.doc]) : []
+
+        for (const doc of docs) {
+          if (results.length >= maxResults) break
+
+          try {
+            const url = doc.url
+            let title = ''
+            let snippet = ''
+
+            // Extract title - try raw XML first for better text preservation
+            if (typeof doc.title === 'string') {
+              title = doc.title
+            } else if (doc.title && typeof doc.title === 'object') {
+              // Try to find this specific doc in the raw XML
+              const docId = doc['@_id']
+              if (docId) {
+                const docRegex = new RegExp(`<doc[^>]*id="${docId}"[^>]*>(.*?)</doc>`, 'is')
+                const docMatch = rawXmlData.match(docRegex)
+                if (docMatch && docMatch[1]) {
+                  title = this.extractTextFromRawXmlTag(docMatch[1], 'title')
+                }
+              }
+
+              // Fallback to reconstructed content if raw extraction failed
+              if (!title) {
+                title = this.reconstructMixedContent(doc.title)
+              }
+            }
+
+            // Extract snippet using the same approach
+            if (doc.passages && doc.passages.passage) {
+              const docId = doc['@_id']
+              if (docId && typeof doc.passages.passage === 'object') {
+                const docRegex = new RegExp(`<doc[^>]*id="${docId}"[^>]*>(.*?)</doc>`, 'is')
+                const docMatch = rawXmlData.match(docRegex)
+                if (docMatch && docMatch[1]) {
+                  snippet = this.extractTextFromRawXmlTag(docMatch[1], 'passage')
+                }
+              }
+
+              // Fallback to normal extraction
+              if (!snippet) {
+                snippet = this.extractYandexSnippet(doc.passages)
+              }
+            }
+
+            const domain = this.extractDomain(url)
+
+            // Validate business domain
+            if (!this.isValidBusinessDomain(domain)) {
+              continue
+            }
+
+            // Additional URL validation
+            if (!url || !url.startsWith('http')) {
+              continue
+            }
+
+            results.push({
+              url: url,
+              title: this.cleanYandexText(title),
+              snippet: this.cleanYandexText(snippet),
+              domain: domain,
+            })
+          } catch (error) {
+            logger.warn('SearchEngine', 'Failed to parse Yandex result item', error)
+            continue
+          }
+        }
+      }
+
+      logger.info('SearchEngine', `Parsed ${results.length} valid results from Yandex XML`)
+      return results
+    } catch (error) {
+      logger.error('SearchEngine', 'Failed to parse Yandex XML response', error)
+      return results
+    }
+  }
+
+  /**
+   * Extract text content from raw XML string, preserving spaces
+   * @param xmlString - Raw XML string
+   * @returns Extracted text content
+   */
+  private extractTextFromRawXml(xmlString: string): string {
+    if (!xmlString) return ''
+
+    // Remove XML tags but preserve the text content and spaces
+    return xmlString
+      .replace(/<hlword>/g, '') // Remove opening hlword tags
+      .replace(/<\/hlword>/g, '') // Remove closing hlword tags
+      .replace(/<[^>]*>/g, '') // Remove any other XML tags
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim()
+  }
+
+  /**
+   * Reconstruct text from mixed content XML nodes
+   * @param node - XML node that may contain text and hlword elements
+   * @returns Reconstructed text content
+   */
+  private reconstructMixedContent(node: any): string {
+    if (!node) return ''
+
+    if (typeof node === 'string') {
+      return node
+    }
+
+    if (typeof node === 'object') {
+      let result = ''
+
+      // Handle the case where we have both #text and hlword
+      if (node['#text'] && node['hlword']) {
+        const textContent = node['#text']
+        const hlwordContent = node['hlword']
+
+        // For "Another <hlword>Restaurant</hlword>", we get:
+        // #text: "Another", hlword: "Restaurant"
+        // We want: "Another Restaurant"
+        result = textContent
+        if (result && !result.endsWith(' ')) {
+          result += ' '
+        }
+        result += hlwordContent
+      } else if (node['#text']) {
+        result = node['#text']
+      } else if (node['hlword']) {
+        result = node['hlword']
+      }
+
+      return result.trim()
+    }
+
+    return ''
+  }
+
+  /**
+   * Extract snippet text from Yandex passages
+   * @param passages - Passages object from Yandex response
+   * @returns Cleaned snippet text
+   */
+  private extractYandexSnippet(passages: any): string {
+    if (!passages) return ''
+
+    try {
+      if (passages.passage) {
+        const passageArray = Array.isArray(passages.passage) ? passages.passage : [passages.passage]
+        return passageArray
+          .map((p: any) => {
+            if (typeof p === 'string') {
+              return p
+            } else if (typeof p === 'object') {
+              return this.reconstructMixedContent(p)
+            }
+            return ''
+          })
+          .join(' ')
+          .trim()
+      }
+      return ''
+    } catch (error) {
+      logger.warn('SearchEngine', 'Failed to extract Yandex snippet', error)
+      return ''
+    }
+  }
+
+  /**
+   * Extract text content directly from raw XML, preserving spaces
+   * @param rawXml - Raw XML content
+   * @param tagName - Tag name to extract content from
+   * @returns Extracted and cleaned text
+   */
+  private extractTextFromRawXmlTag(rawXml: string, tagName: string): string {
+    const regex = new RegExp(`<${tagName}[^>]*>(.*?)<\/${tagName}>`, 'is')
+    const match = rawXml.match(regex)
+
+    if (match && match[1]) {
+      return this.extractTextFromRawXml(match[1])
+    }
+
+    return ''
+  }
+
+  /**
+   * Clean Yandex text by removing highlight tags and normalizing
+   * @param text - Raw text from Yandex response
+   * @returns Cleaned text
+   */
+  private cleanYandexText(text: string): string {
+    if (!text) return ''
+
+    return text
+      .replace(/<hlword>/g, '') // Remove highlight start tags
+      .replace(/<\/hlword>/g, '') // Remove highlight end tags
+      .replace(/&amp;/g, '&') // Decode HTML entities
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim()
   }
 }
 

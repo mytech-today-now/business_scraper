@@ -406,6 +406,12 @@ export class ClientSearchEngine {
             method: () => this.searchWithDuckDuckGo(query, location, maxResults),
           })
           break
+        case 'yandex':
+          searchMethods.push({
+            engineId: 'yandex',
+            method: () => this.searchWithYandex(query, location, maxResults),
+          })
+          break
       }
     })
 
@@ -736,6 +742,57 @@ export class ClientSearchEngine {
   }
 
   /**
+   * Search using Yandex Search API
+   */
+  private async searchWithYandex(
+    query: string,
+    location: string,
+    maxResults: number
+  ): Promise<SearchResult[]> {
+    if (!this.credentials?.yandexSearchApiKey) {
+      logger.info(
+        'ClientSearchEngine',
+        'Yandex Search API key not configured, skipping Yandex search'
+      )
+      return []
+    }
+
+    const searchQuery = `${query} ${location}`
+
+    try {
+      logger.info('ClientSearchEngine', `Starting Yandex search for: ${searchQuery}`)
+
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: 'yandex',
+          query: query,
+          location: location,
+          maxResults: maxResults,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Yandex search API error: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Yandex search failed')
+      }
+
+      const results = data.results || []
+      logger.info('ClientSearchEngine', `Yandex search returned ${results.length} results`)
+      return results
+    } catch (error) {
+      logger.error('ClientSearchEngine', 'Yandex search failed', error)
+      throw error
+    }
+  }
+
+  /**
    * Search DuckDuckGo SERP pages and extract business websites
    * This is the core method that scrapes actual search results
    */
@@ -756,7 +813,7 @@ export class ClientSearchEngine {
 
       const allResults: SearchResult[] = []
       // Get configurable number of SERP pages from credentials, default to 6 pages for better coverage
-      const maxPagesPerQuery = this.credentials?.duckduckgoSerpPages || 6
+      const maxPagesPerQuery = this.credentials?.searchResultPages || this.credentials?.duckduckgoSerpPages || 6
 
       // Use only the primary search query to avoid diluting results
       const primaryQuery = `${query} ${location}`
@@ -1854,7 +1911,7 @@ export class ClientSearchEngine {
    * Check if any API credentials are configured
    */
   hasApiCredentials(): boolean {
-    return !!(this.credentials?.googleSearchApiKey || this.credentials?.azureSearchApiKey)
+    return !!(this.credentials?.googleSearchApiKey || this.credentials?.azureSearchApiKey || this.credentials?.yandexSearchApiKey)
   }
 
   /**
@@ -2051,6 +2108,10 @@ export class ClientSearchEngine {
 
     if (this.credentials?.azureSearchApiKey && this.credentials?.azureSearchEndpoint) {
       providers.push('Azure AI Search')
+    }
+
+    if (this.credentials?.yandexSearchApiKey) {
+      providers.push('Yandex Search')
     }
 
     providers.push('DuckDuckGo (Free)')

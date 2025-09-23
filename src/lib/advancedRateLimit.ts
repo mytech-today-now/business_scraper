@@ -41,16 +41,12 @@ export interface RateLimitEntry {
  */
 export class AdvancedRateLimitService {
   private rateLimitStore = new Map<string, RateLimitEntry>()
-  private cleanupInterval: NodeJS.Timeout | null = null
+  private lastCleanup = Date.now()
+  private cleanupInterval = 5 * 60 * 1000 // 5 minutes
 
   constructor() {
-    // Start cleanup interval (every 5 minutes)
-    this.cleanupInterval = setInterval(
-      () => {
-        this.cleanup()
-      },
-      5 * 60 * 1000
-    )
+    // Note: Cleanup is now handled on-demand instead of setInterval
+    // for Edge Runtime compatibility
   }
 
   /**
@@ -59,6 +55,9 @@ export class AdvancedRateLimitService {
   checkRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
     const now = Date.now()
     const windowStart = now - config.windowMs
+
+    // Perform cleanup if needed (on-demand cleanup for Edge Runtime)
+    this.performCleanupIfNeeded(now)
 
     // Get or create rate limit entry
     let entry = this.rateLimitStore.get(key)
@@ -170,6 +169,11 @@ export class AdvancedRateLimitService {
         maxRequests: 50,
         onLimitReached: () => logger.warn('RateLimit', `Export rate limit exceeded for ${key}`),
       },
+      'stream-search': {
+        windowMs: 60 * 1000, // 1 minute
+        maxRequests: 30, // More permissive for streaming connections (allows retries)
+        onLimitReached: () => logger.warn('RateLimit', `Stream search rate limit exceeded for ${key}`),
+      },
     }
 
     const config = Object.prototype.hasOwnProperty.call(configs, endpointType)
@@ -261,6 +265,16 @@ export class AdvancedRateLimitService {
   }
 
   /**
+   * Perform cleanup if needed (on-demand for Edge Runtime compatibility)
+   */
+  private performCleanupIfNeeded(now: number): void {
+    if (now - this.lastCleanup > this.cleanupInterval) {
+      this.cleanup()
+      this.lastCleanup = now
+    }
+  }
+
+  /**
    * Clean up expired entries
    */
   private cleanup(): void {
@@ -284,10 +298,6 @@ export class AdvancedRateLimitService {
    * Destroy the service and cleanup
    */
   destroy(): void {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval)
-      this.cleanupInterval = null
-    }
     this.rateLimitStore.clear()
   }
 }
