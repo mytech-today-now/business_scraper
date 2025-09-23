@@ -36,14 +36,59 @@ export interface StreamingSearchResult {
  * Streaming Search Service for real-time result delivery
  */
 export class StreamingSearchService extends EventEmitter {
-  private searchEngine: SearchEngineService
-  private scraperService: ScraperService
+  private searchEngine: SearchEngineService | null = null
+  private scraperService: ScraperService | null = null
   private activeStreams: Map<string, boolean> = new Map()
+  private initializationError: string | null = null
+  private isInitialized: boolean = false
 
   constructor() {
     super()
-    this.searchEngine = new SearchEngineService()
-    this.scraperService = new ScraperService()
+    this.initializeServices()
+  }
+
+  /**
+   * Initialize services with proper error handling and graceful degradation
+   */
+  private async initializeServices(): Promise<void> {
+    try {
+      logger.info('StreamingSearchService', 'Initializing services...')
+
+      // Try to initialize SearchEngineService
+      try {
+        this.searchEngine = new SearchEngineService()
+        logger.info('StreamingSearchService', 'SearchEngineService initialized successfully')
+      } catch (searchEngineError) {
+        logger.warn('StreamingSearchService', 'Failed to initialize SearchEngineService, will use fallback', searchEngineError)
+        this.searchEngine = null
+      }
+
+      // Try to initialize ScraperService
+      try {
+        this.scraperService = new ScraperService()
+        logger.info('StreamingSearchService', 'ScraperService initialized successfully')
+      } catch (scraperError) {
+        logger.warn('StreamingSearchService', 'Failed to initialize ScraperService, will use fallback', scraperError)
+        this.scraperService = null
+      }
+
+      // Service is considered initialized even if some dependencies failed
+      // This allows for graceful degradation
+      this.isInitialized = true
+
+      if (this.searchEngine && this.scraperService) {
+        logger.info('StreamingSearchService', 'All services initialized successfully')
+      } else {
+        const missingServices = []
+        if (!this.searchEngine) missingServices.push('SearchEngineService')
+        if (!this.scraperService) missingServices.push('ScraperService')
+        logger.warn('StreamingSearchService', `Service initialized with limited functionality. Missing: ${missingServices.join(', ')}`)
+      }
+    } catch (error) {
+      this.initializationError = error instanceof Error ? error.message : 'Unknown initialization error'
+      logger.error('StreamingSearchService', 'Critical initialization failure', error)
+      this.isInitialized = false
+    }
   }
 
   /**
@@ -184,15 +229,25 @@ export class StreamingSearchService extends EventEmitter {
     batchSize: number
   ): Promise<SearchResult[]> {
     try {
+      // Check if search engine is available
+      if (!this.searchEngine) {
+        logger.warn('StreamingSearchService', 'Search engine not available, returning empty results')
+        return []
+      }
+
       const searchQuery = location ? `${query} ${location}` : query
+      logger.debug('StreamingSearchService', `Searching batch: query="${searchQuery}", offset=${offset}, batchSize=${batchSize}`)
+
       const results = await this.searchEngine.search(searchQuery, {
         maxResults: batchSize,
         // Add offset support if available in search engine
       })
 
+      logger.debug('StreamingSearchService', `Search batch returned ${results.length} results`)
       return results.slice(0, batchSize)
     } catch (error) {
-      logger.error('StreamingSearch', `Failed to search batch at offset ${offset}`, error)
+      logger.error('StreamingSearchService', `Failed to search batch at offset ${offset}`, error)
+      // Return empty array to allow streaming to continue with next batch
       return []
     }
   }
@@ -209,6 +264,28 @@ export class StreamingSearchService extends EventEmitter {
     onError?: (error: string) => void,
     options: StreamingSearchOptions = {}
   ): Promise<void> {
+    // Validate inputs
+    if (!query || typeof query !== 'string' || query.trim().length === 0) {
+      const errorMessage = 'Invalid query: Query must be a non-empty string'
+      logger.error('StreamingSearchService', errorMessage)
+      if (onError) {
+        onError(errorMessage)
+      }
+      return
+    }
+
+    // Validate services are initialized
+    if (!this.searchEngine || !this.scraperService) {
+      const errorMessage = 'Services not properly initialized'
+      logger.error('StreamingSearchService', errorMessage)
+      if (onError) {
+        onError(errorMessage)
+      }
+      return
+    }
+
+    logger.info('StreamingSearchService', `Starting processStreamingSearch for query: "${query}", location: "${location}"`)
+
     try {
       let totalResults = 0
 
@@ -216,34 +293,57 @@ export class StreamingSearchService extends EventEmitter {
         switch (result.type) {
           case 'result':
             if (result.data) {
-              onResult(result.data)
-              totalResults++
+              try {
+                onResult(result.data)
+                totalResults++
+              } catch (callbackError) {
+                logger.error('StreamingSearchService', 'Error in onResult callback', callbackError)
+              }
             }
             break
 
           case 'progress':
             if (result.progress && onProgress) {
-              onProgress(result.progress)
+              try {
+                onProgress(result.progress)
+              } catch (callbackError) {
+                logger.error('StreamingSearchService', 'Error in onProgress callback', callbackError)
+              }
             }
             break
 
           case 'complete':
             if (onComplete) {
-              onComplete(totalResults)
+              try {
+                onComplete(totalResults)
+              } catch (callbackError) {
+                logger.error('StreamingSearchService', 'Error in onComplete callback', callbackError)
+              }
             }
             break
 
           case 'error':
             if (result.error && onError) {
-              onError(result.error)
+              try {
+                onError(result.error)
+              } catch (callbackError) {
+                logger.error('StreamingSearchService', 'Error in onError callback', callbackError)
+              }
             }
             break
         }
       }
+
+      logger.info('StreamingSearchService', `Completed processStreamingSearch with ${totalResults} results`)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      logger.error('StreamingSearchService', `processStreamingSearch failed: ${errorMessage}`, error)
       if (onError) {
-        onError(errorMessage)
+        try {
+          onError(errorMessage)
+        } catch (callbackError) {
+          logger.error('StreamingSearchService', 'Error in onError callback during exception handling', callbackError)
+        }
       }
     }
   }
@@ -292,9 +392,75 @@ export class StreamingSearchService extends EventEmitter {
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
+
+  /**
+   * Health check for streaming service
+   */
+  async healthCheck(): Promise<{ healthy: boolean; details: Record<string, any> }> {
+    const details: Record<string, any> = {
+      timestamp: new Date().toISOString(),
+      activeStreams: this.getActiveStreamCount(),
+      servicesInitialized: {
+        searchEngine: !!this.searchEngine,
+        scraperService: !!this.scraperService,
+      },
+    }
+
+    try {
+      // Test search engine
+      if (this.searchEngine) {
+        try {
+          const testResults = await this.searchEngine.search('test', { maxResults: 1 })
+          details.searchEngineTest = {
+            success: true,
+            resultCount: testResults.length,
+          }
+        } catch (searchError) {
+          details.searchEngineTest = {
+            success: false,
+            error: 'Search engine test failed',
+          }
+        }
+      } else {
+        details.searchEngineTest = {
+          success: false,
+          error: 'Search engine not initialized',
+        }
+      }
+
+      // Test scraper service
+      if (this.scraperService) {
+        details.scraperServiceTest = {
+          success: true,
+          initialized: true,
+        }
+      } else {
+        details.scraperServiceTest = {
+          success: false,
+          error: 'Scraper service not initialized',
+        }
+      }
+
+      // Service is considered healthy if it's initialized, even with limited functionality
+      const healthy = this.isInitialized && !this.initializationError
+
+      logger.info('StreamingSearchService', `Health check completed: ${healthy ? 'HEALTHY' : 'UNHEALTHY'}`, details)
+
+      return { healthy, details }
+    } catch (error) {
+      details.error = error instanceof Error ? error.message : 'Unknown error'
+      logger.error('StreamingSearchService', 'Health check failed', error)
+      return { healthy: false, details }
+    }
+  }
 }
 
 /**
  * Default streaming search service instance
  */
 export const streamingSearchService = new StreamingSearchService()
+
+/**
+ * Export the class for testing and custom instantiation
+ */
+export { StreamingSearchService }
