@@ -5,6 +5,12 @@
 
 import { DatabaseInterface } from './database'
 import { logger } from '@/utils/logger'
+import {
+  isDatabaseConnectionAllowed,
+  createProtectedDatabaseConnection,
+  isBuildTime,
+  logBuildTimeEnvironment
+} from './build-time-guard'
 
 let serverDatabase: any = null
 let clientDatabase: any = null
@@ -25,11 +31,17 @@ function isBrowserEnvironment(): boolean {
 
 /**
  * Gets the appropriate database implementation based on environment
+ * Protected against build-time execution
  */
-export async function getDatabaseInstance(): Promise<DatabaseInterface> {
+export async function getDatabaseInstance(): Promise<DatabaseInterface | null> {
+  // Log build-time environment on first call
+  if (isBuildTime()) {
+    logBuildTimeEnvironment()
+  }
+
   if (isServerEnvironment()) {
-    // Server-side: Use PostgreSQL
-    if (!serverDatabase) {
+    // Server-side: Use PostgreSQL (if allowed)
+    if (!serverDatabase && isDatabaseConnectionAllowed()) {
       const config = {
         host: process.env.DB_HOST || 'postgres',
         port: parseInt(process.env.DB_PORT || '5432'),
@@ -37,19 +49,25 @@ export async function getDatabaseInstance(): Promise<DatabaseInterface> {
         username: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || '',
         ssl: false, // Explicitly disable SSL for local PostgreSQL container
-        poolMin: parseInt(process.env.DB_POOL_MIN || '2'),
-        poolMax: parseInt(process.env.DB_POOL_MAX || '10'),
-        idleTimeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
+        poolMin: parseInt(process.env.DB_POOL_MIN || '1'),
+        poolMax: parseInt(process.env.DB_POOL_MAX || '5'),
+        idleTimeout: parseInt(process.env.DB_IDLE_TIMEOUT || '15000'),
         connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '30000'),
       }
 
-      try {
-        const { PostgreSQLDatabase } = await import('./postgresql-database')
-        serverDatabase = new PostgreSQLDatabase(config)
-        logger.info('DatabaseFactory', 'Initialized PostgreSQL database for server environment')
-      } catch (error) {
-        logger.error('DatabaseFactory', 'Failed to initialize PostgreSQL database', error)
-        throw new Error('Failed to initialize server database')
+      serverDatabase = await createProtectedDatabaseConnection(
+        async () => {
+          const { PostgreSQLDatabase } = await import('./postgresql-database')
+          const db = new PostgreSQLDatabase(config)
+          logger.info('DatabaseFactory', 'Initialized PostgreSQL database for server environment')
+          return db
+        },
+        'PostgreSQL database'
+      )
+
+      if (!serverDatabase) {
+        logger.debug('DatabaseFactory', 'PostgreSQL database creation skipped during build time')
+        return null
       }
     }
     return serverDatabase

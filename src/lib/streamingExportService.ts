@@ -54,8 +54,8 @@ export class StreamingExportService {
             return
           }
 
-          // Process businesses in batches
-          const batchSize = 100
+          // Process businesses in smaller batches for memory optimization
+          const batchSize = 50
           const batch = businesses.slice(index, index + batchSize)
 
           if (batch.length === 0) {
@@ -132,7 +132,7 @@ export class StreamingExportService {
     processor: (batch: BusinessRecord[]) => Promise<void>,
     options: { batchSize?: number; onProgress?: (progress: ExportProgress) => void } = {}
   ): Promise<void> {
-    const { batchSize = 500, onProgress } = options
+    const { batchSize = 250, onProgress } = options
     const total = businesses.length
     let processed = 0
     const startTime = Date.now()
@@ -329,7 +329,7 @@ export class StreamingExportService {
     processor: (item: T) => Promise<T>,
     options: { concurrency?: number; batchSize?: number } = {}
   ): Transform {
-    const { concurrency = 3, batchSize = 100 } = options
+    const { concurrency = 2, batchSize = 50 } = options
     let buffer: T[] = []
     let processing = false
 

@@ -6,6 +6,13 @@
 
 import postgres from 'postgres'
 import { logger } from '@/utils/logger'
+import {
+  isDatabaseConnectionAllowed,
+  createProtectedDatabaseConnection,
+  guardDatabaseOperation,
+  isBuildTime,
+  logBuildTimeEnvironment
+} from './build-time-guard'
 
 // Connection configuration interface
 export interface PostgresConnectionConfig {
@@ -241,8 +248,23 @@ export function createPostgresConnection(config: PostgresConnectionConfig): post
 
 /**
  * Get or create the global postgres.js connection with enhanced configuration
+ * Protected against build-time execution
  */
-export function getPostgresConnection(config?: PostgresConnectionConfig): postgres.Sql {
+export function getPostgresConnection(config?: PostgresConnectionConfig): postgres.Sql | null {
+  // Log build-time environment on first call
+  if (!globalSql && isBuildTime()) {
+    logBuildTimeEnvironment()
+  }
+
+  // Skip database connection during build time
+  if (!isDatabaseConnectionAllowed()) {
+    logger.debug('PostgreSQL Connection', 'Skipping database connection during build time', {
+      isBuildTime: isBuildTime(),
+      isDatabaseConnectionAllowed: isDatabaseConnectionAllowed()
+    })
+    return null
+  }
+
   if (!globalSql) {
     // Create configuration from environment variables with enhanced defaults
     const envConfig: PostgresConnectionConfig = {
@@ -253,8 +275,8 @@ export function getPostgresConnection(config?: PostgresConnectionConfig): postgr
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'password',
       ssl: false, // Explicitly disable SSL
-      max: parseInt(process.env.DB_POOL_MAX || '10'),
-      idle_timeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '30'),
+      max: parseInt(process.env.DB_POOL_MAX || '5'),
+      idle_timeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '15'),
       connect_timeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '30'),
     }
 
@@ -314,115 +336,148 @@ function calculateBackoffDelay(attempt: number, config: RetryConfig): number {
 
 /**
  * Test PostgreSQL connection with retry logic and enhanced error handling
+ * Protected against build-time execution
  */
 export async function testPostgresConnection(
   config?: PostgresConnectionConfig,
   retryConfig: RetryConfig = DEFAULT_RETRY_CONFIG
 ): Promise<boolean> {
-  let sql: postgres.Sql | null = null
-  let lastError: Error | null = null
+  // Skip database connection test during build time
+  return guardDatabaseOperation(
+    async () => {
+      let sql: postgres.Sql | null = null
+      let lastError: Error | null = null
 
-  for (let attempt = 1; attempt <= retryConfig.maxRetries; attempt++) {
-    try {
-      logger.info('PostgreSQL Connection', 'Testing connection', {
-        attempt,
-        maxRetries: retryConfig.maxRetries,
-        config: config ? {
-          host: config.host,
-          port: config.port,
-          database: config.database,
-        } : 'global',
-      })
-
-      // Use provided config or get global connection
-      if (config) {
-        sql = createPostgresConnection(config)
-      } else {
-        sql = getPostgresConnection()
-      }
-
-      // Test the connection with a simple query
-      const result = await sql`SELECT 1 as test, current_timestamp as timestamp`
-
-      if (result && result.length > 0 && result[0].test === 1) {
-        logger.info('PostgreSQL Connection', 'Connection test successful', {
-          attempt,
-          timestamp: result[0].timestamp,
-          host: config?.host || 'global',
-        })
-        return true
-      } else {
-        throw new Error(`Unexpected result: ${JSON.stringify(result)}`)
-      }
-    } catch (error) {
-      lastError = error instanceof Error ? error : new Error('Unknown error')
-
-      logger.warn('PostgreSQL Connection', 'Connection test failed', {
-        attempt,
-        maxRetries: retryConfig.maxRetries,
-        error: lastError.message,
-        willRetry: attempt < retryConfig.maxRetries,
-      })
-
-      // If this is not the last attempt, wait before retrying
-      if (attempt < retryConfig.maxRetries) {
-        const delay = calculateBackoffDelay(attempt, retryConfig)
-        logger.info('PostgreSQL Connection', 'Retrying connection', {
-          nextAttempt: attempt + 1,
-          delayMs: delay,
-        })
-        await sleep(delay)
-      }
-    } finally {
-      // Only close the connection if we created it specifically for this test
-      if (config && sql) {
+      for (let attempt = 1; attempt <= retryConfig.maxRetries; attempt++) {
         try {
-          await sql.end()
-          sql = null
-        } catch (error) {
-          logger.warn('PostgreSQL Connection', 'Failed to close test connection', {
-            error: error instanceof Error ? error.message : 'Unknown error',
+          logger.info('PostgreSQL Connection', 'Testing connection', {
+            attempt,
+            maxRetries: retryConfig.maxRetries,
+            config: config ? {
+              host: config.host,
+              port: config.port,
+              database: config.database,
+            } : 'global',
           })
+
+          // Use provided config or get global connection
+          if (config) {
+            sql = createPostgresConnection(config)
+          } else {
+            sql = getPostgresConnection()
+          }
+
+          // Skip if no connection available (build time)
+          if (!sql) {
+            logger.debug('PostgreSQL Connection', 'No connection available, skipping test')
+            return false
+          }
+
+          // Test the connection with a simple query
+          const result = await sql`SELECT 1 as test, current_timestamp as timestamp`
+
+          if (result && result.length > 0 && result[0].test === 1) {
+            logger.info('PostgreSQL Connection', 'Connection test successful', {
+              attempt,
+              timestamp: result[0].timestamp,
+              host: config?.host || 'global',
+            })
+            return true
+          } else {
+            throw new Error(`Unexpected result: ${JSON.stringify(result)}`)
+          }
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error('Unknown error')
+
+          logger.warn('PostgreSQL Connection', 'Connection test failed', {
+            attempt,
+            maxRetries: retryConfig.maxRetries,
+            error: lastError.message,
+            willRetry: attempt < retryConfig.maxRetries,
+          })
+
+          // If this is not the last attempt, wait before retrying
+          if (attempt < retryConfig.maxRetries) {
+            const delay = calculateBackoffDelay(attempt, retryConfig)
+            logger.info('PostgreSQL Connection', 'Retrying connection', {
+              nextAttempt: attempt + 1,
+              delayMs: delay,
+            })
+            await sleep(delay)
+          }
+        } finally {
+          // Only close the connection if we created it specifically for this test
+          if (config && sql) {
+            try {
+              await sql.end()
+              sql = null
+            } catch (error) {
+              logger.warn('PostgreSQL Connection', 'Failed to close test connection', {
+                error: error instanceof Error ? error.message : 'Unknown error',
+              })
+            }
+          }
         }
       }
-    }
-  }
 
-  // All attempts failed
-  logger.error('PostgreSQL Connection', 'All connection attempts failed', {
-    totalAttempts: retryConfig.maxRetries,
-    lastError: lastError?.message,
-  })
+      // All attempts failed
+      logger.error('PostgreSQL Connection', 'All connection attempts failed', {
+        totalAttempts: retryConfig.maxRetries,
+        lastError: lastError?.message || 'Unknown error',
+      })
 
-  return false
+      return false
+    },
+    false, // fallback value for build time
+    'PostgreSQL connection test'
+  )
 }
 
 /**
  * Execute a health check query
+ * Protected against build-time execution
  */
 export async function healthCheck(): Promise<{
   connected: boolean
   latency?: number
   error?: string
 }> {
-  const startTime = Date.now()
+  return guardDatabaseOperation(
+    async () => {
+      const startTime = Date.now()
 
-  try {
-    const sql = getPostgresConnection()
-    await sql`SELECT 1`
+      try {
+        const sql = getPostgresConnection()
 
-    const latency = Date.now() - startTime
+        // Skip if no connection available (build time)
+        if (!sql) {
+          return {
+            connected: false,
+            error: 'Database connection not available during build time',
+          }
+        }
 
-    return {
-      connected: true,
-      latency,
-    }
-  } catch (error) {
-    return {
+        await sql`SELECT 1`
+
+        const latency = Date.now() - startTime
+
+        return {
+          connected: true,
+          latency,
+        }
+      } catch (error) {
+        return {
+          connected: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        }
+      }
+    },
+    {
       connected: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }
-  }
+      error: 'Database connection skipped during build time',
+    },
+    'PostgreSQL health check'
+  )
 }
 
 // Export the postgres.js types for use in other modules

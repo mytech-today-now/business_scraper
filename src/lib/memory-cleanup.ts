@@ -36,9 +36,9 @@ export class MemoryCleanupService extends EventEmitter {
   private cleanupInterval: NodeJS.Timeout | null = null
   private isAutoCleanupEnabled: boolean = false
   private readonly defaultRetentionPolicy: RetentionPolicy = {
-    maxSessions: 3,
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    maxSize: 50 * 1024 * 1024, // 50MB
+    maxSessions: 2,
+    maxAge: 12 * 60 * 60 * 1000, // 12 hours
+    maxSize: 25 * 1024 * 1024, // 25MB
     autoCleanup: true,
   }
 
@@ -67,8 +67,8 @@ export class MemoryCleanupService extends EventEmitter {
   /**
    * Start automatic cleanup monitoring
    */
-  startAutoCleanup(intervalMs: number = 30000): void {
-    // 30 seconds
+  startAutoCleanup(intervalMs: number = 20000): void {
+    // 20 seconds for more frequent cleanup
     if (this.isAutoCleanupEnabled) {
       logger.warn('MemoryCleanup', 'Auto cleanup already enabled')
       return

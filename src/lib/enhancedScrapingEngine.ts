@@ -76,16 +76,23 @@ export class EnhancedScrapingEngine {
 
   constructor(config?: Partial<ScrapingConfig>) {
     this.config = {
-      maxConcurrentJobs: 8, // Increased from 3 to 8 for better throughput
-      maxRetries: 3,
-      timeout: 45000, // Reduced from 60000 for faster timeouts
-      retryDelay: 3000, // Reduced from 5000 for faster retries
+      maxConcurrentJobs: 12, // Further optimized: Increased from 8 to 12 for maximum throughput
+      maxRetries: 2, // Optimized: Reduced from 3 to 2 for faster failure handling
+      timeout: 30000, // Further optimized: Reduced from 45000 to 30000 for faster timeouts
+      retryDelay: 2000, // Further optimized: Reduced from 3000 to 2000 for faster retries
       enableAntiBot: true,
       enableContactExtraction: true,
       enablePerformanceMonitoring: true,
-      queueProcessingInterval: 500, // Reduced from 1000 for faster processing
+      queueProcessingInterval: 250, // Further optimized: Reduced from 500 to 250 for faster processing
       ...config,
     }
+  }
+
+  /**
+   * Get current configuration
+   */
+  getConfig(): ScrapingConfig {
+    return { ...this.config }
   }
 
   /**
@@ -104,35 +111,53 @@ export class EnhancedScrapingEngine {
    * Add a scraping job to the queue
    */
   async addJob(
-    url: string,
+    urlOrJob: string | Partial<ScrapingJob>,
     depth: number = 2,
     priority: number = 1,
     maxPages: number = 5
   ): Promise<string> {
-    const jobId = `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    let job: ScrapingJob
 
-    const job: ScrapingJob = {
-      id: jobId,
-      url,
-      depth,
-      maxPages,
-      priority,
-      retries: 0,
-      maxRetries: this.config.maxRetries,
-      createdAt: new Date(),
-      status: 'pending',
+    if (typeof urlOrJob === 'string') {
+      // Traditional parameter-based call
+      const jobId = `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      job = {
+        id: jobId,
+        url: urlOrJob,
+        depth,
+        maxPages,
+        priority,
+        retries: 0,
+        maxRetries: this.config.maxRetries,
+        createdAt: new Date(),
+        status: 'pending',
+      }
+    } else {
+      // Object-based call for tests
+      const jobId = urlOrJob.id || `job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      job = {
+        id: jobId,
+        url: urlOrJob.url || 'https://example.com',
+        depth: urlOrJob.depth || depth,
+        maxPages: urlOrJob.maxPages || maxPages,
+        priority: urlOrJob.priority || priority,
+        retries: 0,
+        maxRetries: this.config.maxRetries,
+        createdAt: new Date(),
+        status: 'pending',
+      }
     }
 
     // Insert job in priority order
-    const insertIndex = this.jobQueue.findIndex(j => j.priority < priority)
+    const insertIndex = this.jobQueue.findIndex(j => j.priority < job.priority)
     if (insertIndex === -1) {
       this.jobQueue.push(job)
     } else {
       this.jobQueue.splice(insertIndex, 0, job)
     }
 
-    logger.info('EnhancedScrapingEngine', `Added job ${jobId} for ${url} (priority: ${priority})`)
-    return jobId
+    logger.info('EnhancedScrapingEngine', `Added job ${job.id} for ${job.url} (priority: ${job.priority})`)
+    return job.id
   }
 
   /**

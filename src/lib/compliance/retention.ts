@@ -6,6 +6,12 @@
 import { Pool } from 'pg'
 import cron from 'node-cron'
 import { logger } from '@/utils/logger'
+import {
+  isDatabaseConnectionAllowed,
+  guardDatabaseOperation,
+  isBuildTime,
+  getBuildTimeConfig
+} from '../build-time-guard'
 import { auditService, AuditEventType, AuditSeverity } from './audit'
 import { encryptionService } from './encryption'
 
@@ -47,11 +53,24 @@ export interface RetentionSchedule {
   isActive: boolean
 }
 
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-})
+// Database connection (protected against build-time execution)
+let pool: Pool | null = null
+
+function getPool(): Pool | null {
+  if (!isDatabaseConnectionAllowed()) {
+    logger.debug('Retention', 'Database connection not allowed during build time')
+    return null
+  }
+
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    })
+  }
+
+  return pool
+}
 
 /**
  * Data retention service
@@ -60,14 +79,24 @@ export class DataRetentionService {
   private scheduledJobs: Map<string, cron.ScheduledTask> = new Map()
 
   constructor() {
-    this.initializeDefaultPolicies()
-    this.loadRetentionSchedules()
+    const config = getBuildTimeConfig()
+
+    // Skip initialization during build time
+    if (!config.skipRetentionPolicies) {
+      this.initializeDefaultPolicies()
+      this.loadRetentionSchedules()
+    } else {
+      logger.debug('Retention', 'Skipping retention policy initialization during build time')
+    }
   }
 
   /**
    * Initialize default retention policies
+   * Protected against build-time execution
    */
   private async initializeDefaultPolicies(): Promise<void> {
+    return guardDatabaseOperation(
+      async () => {
     const defaultPolicies: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>[] = [
       {
         name: 'Business Contact Data',
@@ -126,14 +155,18 @@ export class DataRetentionService {
       },
     ]
 
-    try {
-      for (const policy of defaultPolicies) {
-        await this.createOrUpdatePolicy(policy)
-      }
-      logger.info('Retention', 'Default retention policies initialized')
-    } catch (error) {
-      logger.error('Retention', 'Failed to initialize default policies', error)
-    }
+        try {
+          for (const policy of defaultPolicies) {
+            await this.createOrUpdatePolicy(policy)
+          }
+          logger.info('Retention', 'Default retention policies initialized')
+        } catch (error) {
+          logger.error('Retention', 'Failed to initialize default policies', error)
+        }
+      },
+      undefined, // no fallback value needed
+      'retention policy initialization'
+    )
   }
 
   /**
@@ -142,8 +175,13 @@ export class DataRetentionService {
   async createOrUpdatePolicy(
     policy: Omit<RetentionPolicy, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<string> {
+    const dbPool = getPool()
+    if (!dbPool) {
+      throw new Error('Database connection not available')
+    }
+
     try {
-      const result = await pool.query(
+      const result = await dbPool.query(
         `
         INSERT INTO retention_policies (
           name, description, data_type, retention_period_days, legal_basis,
@@ -211,24 +249,37 @@ export class DataRetentionService {
 
   /**
    * Load and start retention schedules
+   * Protected against build-time execution
    */
   private async loadRetentionSchedules(): Promise<void> {
-    try {
-      const result = await pool.query(`
-        SELECT rs.*, rp.data_type, rp.auto_delete
-        FROM retention_schedules rs
-        JOIN retention_policies rp ON rs.policy_id = rp.id
-        WHERE rs.is_active = true AND rp.is_active = true
-      `)
+    return guardDatabaseOperation(
+      async () => {
+        const dbPool = getPool()
+        if (!dbPool) {
+          logger.debug('Retention', 'No database pool available, skipping schedule loading')
+          return
+        }
 
-      for (const schedule of result.rows) {
-        this.scheduleRetentionJob(schedule)
-      }
+        try {
+          const result = await dbPool.query(`
+            SELECT rs.*, rp.data_type, rp.auto_delete
+            FROM retention_schedules rs
+            JOIN retention_policies rp ON rs.policy_id = rp.id
+            WHERE rs.is_active = true AND rp.is_active = true
+          `)
 
-      logger.info('Retention', `Loaded ${result.rows.length} retention schedules`)
-    } catch (error) {
-      logger.error('Retention', 'Failed to load retention schedules', error)
-    }
+          for (const schedule of result.rows) {
+            this.scheduleRetentionJob(schedule)
+          }
+
+          logger.info('Retention', `Loaded ${result.rows.length} retention schedules`)
+        } catch (error) {
+          logger.error('Retention', 'Failed to load retention schedules', error)
+        }
+      },
+      undefined, // no fallback value needed
+      'retention schedule loading'
+    )
   }
 
   /**

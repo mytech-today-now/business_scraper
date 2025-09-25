@@ -156,10 +156,17 @@ export interface MonitoringConfig {
     memoryUsage: {
       warning: number
       critical: number
+      emergency: number
     }
     paymentProcessingTime: {
       warning: number
       critical: number
+    }
+    memoryLeakDetection: {
+      componentMemoryIncrease: number
+      asyncOperationTimeout: number
+      webSocketMemoryIncrease: number
+      globalMemoryIncrease: number
     }
   }
   notifications: {
@@ -170,6 +177,11 @@ export interface MonitoringConfig {
   prometheus: {
     enabled: boolean
     endpoint: string
+  }
+  memoryOptimization: {
+    aggressiveCleanup: boolean
+    proactiveGarbageCollection: boolean
+    memoryLeakDetection: boolean
   }
 }
 
@@ -226,9 +238,9 @@ const configSchema: Record<string, ValidationRule> = {
   DB_NAME: { type: 'string', default: 'business_scraper_db' },
   DB_USER: { type: 'string', default: 'postgres' },
   DB_PASSWORD: { type: 'string', default: '' },
-  DB_POOL_MIN: { type: 'number', min: 1, default: 2 },
-  DB_POOL_MAX: { type: 'number', min: 1, default: 10 },
-  DB_POOL_IDLE_TIMEOUT: { type: 'number', min: 1000, default: 30000 },
+  DB_POOL_MIN: { type: 'number', min: 1, default: 1 },
+  DB_POOL_MAX: { type: 'number', min: 1, default: 5 },
+  DB_POOL_IDLE_TIMEOUT: { type: 'number', min: 1000, default: 15000 },
   DB_CONNECTION_TIMEOUT: { type: 'number', min: 1000, default: 5000 },
   DB_SSL: { type: 'boolean', default: false },
 

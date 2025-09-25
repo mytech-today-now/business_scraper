@@ -41,12 +41,12 @@ export class MemoryMonitor extends EventEmitter {
   private memoryHistory: MemoryStats[] = []
   private browserMemoryHistory: BrowserMemoryStats[] = []
   private readonly maxHistorySize = 100
-  private readonly monitoringIntervalMs = 5000 // 5 seconds
+  private readonly monitoringIntervalMs = 3000 // 3 seconds for more responsive monitoring
 
   private thresholds: MemoryThresholds = {
-    warning: 70,
-    critical: 85,
-    emergency: 95,
+    warning: 50,
+    critical: 65,
+    emergency: 80,
   }
 
   constructor() {

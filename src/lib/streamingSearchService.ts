@@ -460,7 +460,4 @@ export class StreamingSearchService extends EventEmitter {
  */
 export const streamingSearchService = new StreamingSearchService()
 
-/**
- * Export the class for testing and custom instantiation
- */
-export { StreamingSearchService }
+
