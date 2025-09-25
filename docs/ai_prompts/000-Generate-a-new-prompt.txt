@@ -1,0 +1,8 @@
+Generate a new text file '/docs/ai_prompts/2025-09-24_github_issue-ui_stability.txt'.  base the new file on 'docs\ai_prompts\2025-09-24_github_issue-performance_alerts.txt'  The new file should be in the format as 'docs\ai_prompts\2025-09-24_github_issue-performance_alerts.txt', but it should solve the issues listed below, in the application.  The document should be an Augment AI prompt that can be fed into Augment AI in VS code for this project.
+
+Issues:
+
+MEDIUM PRIORITY - UI Stability:
+Ensure form elements are properly rendered and accessible
+Fix search page functionality
+Restore download capabilities

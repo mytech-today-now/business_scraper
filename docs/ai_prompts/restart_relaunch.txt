@@ -1,0 +1,244 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 99.9% success.  Add the tests to the appropriate section of the test suite. Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.  If the changes are not code related, add the tests to the appropriate section of the test suite.  Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+# Restart, Rebuild, and Relaunch Application with BVT Testing
+
+## Objective
+Stop the running application, perform a clean recompile and rebuild, relaunch the local production version of the application, and run the Build Verification Test (BVT) suite. If any errors are found during the process, solve them according to the Rules and User Guidelines defined in `.augment/rules/2025-08-19_AugmentAIRulesUserGuidelines.md`.
+
+## Prerequisites
+- Ensure you have access to the project workspace at the repository root
+- Verify Node.js and npm are properly installed
+- Confirm Docker is running if using containerized deployment
+- Check that all required environment variables are configured
+
+## Step 1: Stop Running Applications
+
+### Local Development Server
+```bash
+# Check for running processes on port 3000
+netstat -ano | findstr :3000
+
+# Kill any Node.js processes if needed
+tasklist | findstr node
+
+# If processes are found, terminate them gracefully
+# Use Ctrl+C in the terminal running the dev server, or kill specific PIDs
+```
+
+### Docker Containers
+```bash
+# Stop and remove existing containers
+docker-compose down
+
+# Stop specific production containers if running
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.production.yml down
+
+# Remove any orphaned containers
+docker container prune -f
+```
+
+## Step 2: Clean Build Environment
+
+### Remove Build Artifacts
+```bash
+# Remove Next.js build cache and artifacts
+rm -rf .next
+rm -rf dist
+rm -rf build
+
+# Clean coverage and test artifacts
+rm -rf coverage
+rm -rf test-results
+rm -rf playwright-report
+
+# Clean temporary files
+rm -rf temp
+rm -rf logs/*.log
+```
+
+### Clean Dependencies (if needed)
+```bash
+# Only if dependency issues are suspected
+rm -rf node_modules
+rm -f package-lock.json
+
+# Fresh dependency installation
+npm install
+```
+
+## Step 3: Production Build Process
+
+### Environment Setup
+```bash
+# Set production environment
+export NODE_ENV=production
+export NEXT_TELEMETRY_DISABLED=1
+
+# Validate configuration
+npm run config:validate
+```
+
+### Build Application
+```bash
+# Clean rebuild for production
+npm run build
+
+# Verify build completed successfully
+# Check for .next directory and build artifacts
+ls -la .next/
+```
+
+## Step 4: Launch Production Application
+
+### Local Production Server
+```bash
+# Start production server
+npm start
+
+# Verify application is running
+netstat -ano | findstr :3000
+
+# Test basic accessibility
+curl http://localhost:3000
+```
+
+### Docker Production Deployment (Alternative)
+```bash
+# Build and start production containers
+docker-compose -f docker-compose.prod.yml up -d
+
+# Monitor deployment
+docker-compose -f docker-compose.prod.yml logs -f
+
+# Health check
+curl http://localhost:3000/api/health
+```
+
+## Step 5: Run Build Verification Test (BVT) Suite
+
+### Execute BVT Tests
+```bash
+# Run complete BVT suite (all 12 testing areas)
+npm run test:bvt
+
+# Alternative: Run with verbose output for detailed information
+npm run test:bvt:verbose
+
+# Quick health check (if full suite takes too long)
+npm run test:bvt:health
+```
+
+### BVT Test Categories Covered
+The BVT suite covers all 12 required testing areas:
+1. **Unit Tests** - Individual function validation
+2. **Integration Tests** - Module interaction verification
+3. **End-to-End Tests** - Complete user workflow testing
+4. **System Tests** - Full application validation
+5. **Regression Tests** - Existing functionality preservation
+6. **Acceptance Tests** - Business requirement validation
+7. **Performance Tests** - Response time and throughput
+8. **Load & Stress Tests** - High-usage scenarios
+9. **Security Tests** - Vulnerability and input validation
+10. **Compatibility Tests** - Cross-platform functionality
+11. **Accessibility Tests** - WCAG compliance verification
+12. **Exploratory Tests** - Edge case discovery
+
+## Step 6: Error Handling and Resolution
+
+### If BVT Tests Fail
+1. **Analyze Test Results**
+   ```bash
+   # Check detailed test output
+   npm run test:bvt:verbose
+   
+   # Review test logs
+   cat test-logs/test-report-*.md
+   ```
+
+2. **Create GitHub Issues for Errors**
+   - Log all errors as GitHub Issues with descriptive titles
+   - Include reproduction steps, expected vs actual behavior
+   - Tag with appropriate labels (bug, security, performance, etc.)
+   - Assign priority levels (critical, high, medium, low)
+
+3. **Apply Project Rules and Guidelines**
+   - Follow the standards defined in `.augment/rules/2025-08-19_AugmentAIRulesUserGuidelines.md`
+   - Maintain 95% test coverage requirement
+   - Implement structured error handling
+   - Update documentation for any fixes
+
+4. **Fix and Retry Process**
+   ```bash
+   # After implementing fixes
+   npm run build
+   npm start
+   npm run test:bvt
+   ```
+
+### Common Error Resolution Patterns
+
+#### Build Errors
+- Check TypeScript compilation: `npm run type-check`
+- Validate ESLint rules: `npm run lint`
+- Review dependency conflicts: `npm audit`
+
+#### Runtime Errors
+- Verify environment variables: `npm run config:validate`
+- Check database connectivity: `npm run db:status`
+- Validate API endpoints: `curl http://localhost:3000/api/health`
+
+#### Test Failures
+- Run specific test categories: `npm run test:unit`, `npm run test:integration`
+- Check test configuration: Review `jest.config.js` and `playwright.config.ts`
+- Validate test data and mocks
+
+## Step 7: Verification and Documentation
+
+### Final Verification
+```bash
+# Confirm application is fully operational
+curl http://localhost:3000
+curl http://localhost:3000/api/health
+
+# Verify all critical endpoints respond
+npm run test:bvt:health
+
+# Check application logs for errors
+tail -f logs/app.log
+```
+
+### Update Documentation
+- Update `CHANGELOG.md` with any changes made
+- Increment version in `VERSION` file if applicable
+- Document any configuration changes
+- Update deployment logs
+
+## Success Criteria
+- ✅ All running applications successfully stopped
+- ✅ Clean build completed without errors
+- ✅ Production application launched and accessible
+- ✅ BVT test suite passes with 95%+ success rate
+- ✅ All critical functionality verified
+- ✅ No security vulnerabilities detected
+- ✅ Performance metrics within acceptable limits
+- ✅ All errors properly logged and resolved
+
+## Rollback Procedure
+If the relaunch fails and cannot be resolved:
+1. Stop the failed deployment
+2. Restore from the last known good state
+3. Investigate issues in a development environment
+4. Create detailed GitHub issues for all problems encountered
+5. Follow the project's incident response procedures
+
+## Notes
+- This process should complete within 15-20 minutes under normal conditions
+- BVT suite execution time: approximately 8-10 minutes
+- Always maintain backup of working configuration before major changes
+- Follow semantic versioning for any version updates
+- Ensure all team members are notified of production deployments

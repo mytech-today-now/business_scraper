@@ -1,0 +1,125 @@
+name: Self-Documenting Enhancement Implementation Workflow with Console Log Integration
+description: >
+  Implements an enhancement based on console log analysis, automatically creates a GitHub Issue,
+  detects affected files, runs file-specific tests, updates the Issue with actual results,
+  includes console log details, and closes the Issue. Pull request linking is optional.
+
+inputs:
+  console_log:
+    description: >
+      Multiline console log containing INFO, WARN, ERROR, and DEBUG entries relevant to the enhancement.  search is combination of industries rather than one-by-one processing of each individual keyword/keyphrase in each industry processed sequentially or in parallel sequentially.
+    required: true
+  repository:
+    description: GitHub repository name where the Issue should be created.
+    required: true
+  assignees:
+    description: List of GitHub usernames to assign the Issue to.
+    required: true
+  labels:
+    description: >
+      List of GitHub labels to apply. Defaults to: [bug, enhancement, critical, needs review].
+    required: false
+    default: ["bug", "enhancement", "critical", "needs review"]
+  pull_request_url:
+    description: URL of the pull request implementing the enhancement (optional, for auto-linking).
+    required: false
+
+steps:
+  - name: Plan Enhancement
+    description: >
+      Analyze the console log to identify the enhancement scope, potential errors,
+      affected components, and metrics to monitor.
+
+  - name: Implement Enhancement
+    description: >
+      Apply the enhancement across all identified areas. Include fixes for errors and warnings,
+      ensure proper state management, and optimize analytics and monitoring hooks.
+
+  - name: Detect Affected Files
+    run: |
+      echo "Detecting files affected by the enhancement..."
+      git fetch origin main
+      AFFECTED_FILES=$(git diff --name-only origin/main)
+      echo "Affected files detected:"
+      echo "$AFFECTED_FILES"
+      echo "$AFFECTED_FILES" > affected_files.txt
+
+  - name: Create GitHub Issue
+    run: |
+      INFO_LOG=$(echo "{{inputs.console_log}}" | grep "\[INFO\]")
+      WARN_LOG=$(echo "{{inputs.console_log}}" | grep "\[WARN\]")
+      ERROR_LOG=$(echo "{{inputs.console_log}}" | grep "\[ERROR\]")
+      
+      ISSUE_TITLE="[Enhancement] Console Log-Based Improvement"
+      ISSUE_BODY="## Enhancement Summary
+Enhancement derived from console log analysis.
+
+## Key Logs
+### INFO
+$INFO_LOG
+
+### WARN
+$WARN_LOG
+
+### ERROR
+$ERROR_LOG
+
+## Steps to Reproduce
+1. Trigger the relevant services to reproduce log outputs.
+2. Observe console for WARN/ERROR patterns.
+3. Identify affected components (see below).
+
+## Expected Outcome
+- Seamless functionality
+- Errors and warnings resolved
+- Analytics and metrics recorded correctly
+
+## Affected Files
+$(cat affected_files.txt)
+
+## Pull Request
+{{inputs.pull_request_url | default('Not provided — manual linking may be required')}}"
+
+      curl -X POST \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/{{inputs.repository}}/issues \
+        -d "{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"assignees\": {{inputs.assignees}}, \"labels\": {{inputs.labels}}}" \
+        -o issue_response.json
+
+  - name: Run Tests Per File
+    run: |
+      ISSUE_NUMBER=$(jq -r '.number' issue_response.json)
+      TEST_RESULTS=""
+      while read -r FILE; do
+        echo "Running tests for $FILE..."
+        if [[ $FILE == *.js ]]; then CMD="npm test -- $FILE"
+        elif [[ $FILE == *.py ]]; then CMD="pytest $FILE"
+        else CMD="echo 'No tests defined for $FILE'"
+        fi
+        OUTPUT=$($CMD 2>&1)
+        STATUS=$?
+        RESULT=$([ $STATUS -eq 0 ] && echo "PASS" || echo "FAIL")
+        TEST_RESULTS+="### $FILE\nCommand: $CMD\nResult: $RESULT\nOutput:\n\\\\n$OUTPUT\n\\\\n\n"
+      done < affected_files.txt
+
+      UPDATED_BODY=$(jq -r '.body' issue_response.json)
+      UPDATED_BODY+="\n\n## Actual Test Results\n$TEST_RESULTS"
+
+      curl -X PATCH \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/{{inputs.repository}}/issues/$ISSUE_NUMBER \
+        -d "{\"body\": \"$UPDATED_BODY\"}"
+
+  - name: Close GitHub Issue
+    run: |
+      ISSUE_NUMBER=$(jq -r '.number' issue_response.json)
+      CLOSE_BODY=$(jq -r '.body' issue_response.json)
+      CLOSE_BODY+="\n\n## Closing Notes\n- Enhancement implemented successfully\n- All affected areas verified\n- Tests executed per file\n- Pull request linked: {{inputs.pull_request_url | default('Not provided — PR was not linked')}}"
+
+      curl -X PATCH \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/{{inputs.repository}}/issues/$ISSUE_NUMBER \
+        -d "{\"state\": \"closed\", \"body\": \"$CLOSE_BODY\"}"

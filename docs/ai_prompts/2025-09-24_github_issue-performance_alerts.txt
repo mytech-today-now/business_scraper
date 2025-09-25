@@ -1,0 +1,147 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 99.9% success.  Add the tests to the appropriate section of the test suite. Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.  If the changes are not code related, add the tests to the appropriate section of the test suite.  Add the tests to the BVT test suite too.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+# CRITICAL PERFORMANCE ISSUE: Memory Usage Crisis - Immediate Action Required
+
+## Problem Statement
+The business scraper application is experiencing severe memory performance issues that are triggering security alerts and degrading application performance. The current heap usage of 625-646MB exceeds the warning threshold of 524MB by 20-25%, causing multiple high-severity alerts and system instability.
+
+## Current State Analysis
+- **Current heap usage**: 625-646MB (consistently)
+- **Warning threshold**: 524MB 
+- **Overage**: 20-25% above safe operating limits
+- **Security impact**: Multiple high-severity alerts generated
+- **Performance impact**: Application severely degraded, 30+ second page load times
+- **Test impact**: E2E tests failing due to timeouts and performance issues
+
+## Root Cause Investigation Required
+Please investigate and resolve the following potential memory leak sources:
+
+### 1. Database Connection Management
+- Review PostgreSQL connection pooling configuration
+- Check for unclosed database connections
+- Analyze connection pool size and timeout settings
+- Investigate potential connection leaks in ORM queries
+
+### 2. Memory-Intensive Operations
+- Analyze web scraping operations for memory accumulation
+- Review large data processing workflows (XLSX generation, CSV exports)
+- Check for memory leaks in business data aggregation
+- Investigate caching mechanisms and memory retention
+
+### 3. Frontend Memory Issues
+- Review React component memory usage and cleanup
+- Check for memory leaks in state management
+- Analyze event listener cleanup in useEffect hooks
+- Investigate potential memory retention in toast notifications
+
+### 4. Server-Side Memory Management
+- Review Next.js API route memory usage
+- Check for memory leaks in authentication middleware
+- Analyze session management memory footprint
+- Investigate monitoring system memory overhead
+
+## Specific Areas to Examine
+
+### Database Layer
+```
+- src/lib/db/ - Database connection and query management
+- src/lib/models/ - ORM model definitions and relationships
+- src/services/ - Service layer database interactions
+```
+
+### Data Processing
+```
+- src/lib/scrapers/ - Web scraping memory usage
+- src/lib/export/ - XLSX/CSV generation memory footprint
+- src/lib/aggregation/ - Business data processing
+```
+
+### Frontend Components
+```
+- src/components/ - React component memory management
+- src/hooks/ - Custom hooks and state management
+- src/contexts/ - Context providers and state retention
+```
+
+### Monitoring & Logging
+```
+- src/lib/monitoring/ - Performance monitoring overhead
+- src/lib/logging/ - Logging system memory usage
+- src/lib/security/ - Security monitoring memory impact
+```
+
+## Required Actions
+
+### Immediate (Critical Priority)
+1. **Identify Memory Leak Sources**
+   - Run memory profiling on the application
+   - Analyze heap dumps to identify largest memory consumers
+   - Review recent code changes that may have introduced leaks
+
+2. **Optimize Database Connections**
+   - Review and optimize connection pool settings
+   - Implement proper connection cleanup
+   - Add connection monitoring and alerting
+
+3. **Implement Memory Monitoring**
+   - Add detailed memory usage logging
+   - Create memory usage dashboards
+   - Set up proactive memory alerts
+
+### Short-term (High Priority)
+1. **Code Review and Optimization**
+   - Review all data processing workflows
+   - Optimize memory-intensive operations
+   - Implement proper cleanup in async operations
+
+2. **Performance Testing**
+   - Create memory stress tests
+   - Implement automated memory usage monitoring in CI/CD
+   - Add memory regression testing
+
+### Long-term (Medium Priority)
+1. **Architecture Improvements**
+   - Consider implementing data streaming for large operations
+   - Evaluate caching strategies and memory limits
+   - Design memory-efficient data processing patterns
+
+## Success Criteria
+- Reduce heap usage to below 400MB (25% under threshold)
+- Eliminate security alerts related to memory pressure
+- Achieve page load times under 3 seconds
+- Pass all E2E tests without timeout issues
+- Maintain stable memory usage under load
+
+## Testing Requirements
+After implementing fixes:
+1. Run full BVT suite to verify memory improvements
+2. Execute load testing to ensure memory stability
+3. Monitor memory usage for 24 hours in staging environment
+4. Verify all security alerts are resolved
+
+## GitHub Issue Creation
+Please create a GitHub issue with:
+- **Title**: "CRITICAL: Memory usage exceeding thresholds causing performance degradation"
+- **Priority**: Critical
+- **Labels**: bug, performance, security, memory-leak
+- **Milestone**: Next patch release
+- **Assignee**: Lead developer
+
+## Implementation Notes
+- This is a production-blocking issue requiring immediate attention
+- All other development should be paused until memory issues are resolved
+- Consider implementing memory usage monitoring as part of the CI/CD pipeline
+- Document all memory optimization strategies for future reference
+
+## Related Files to Review
+- package.json - Check for memory-intensive dependencies
+- next.config.js - Review Next.js memory configuration
+- .env files - Check environment-specific memory settings
+- docker-compose.yml - Review container memory limits
+- monitoring configuration files
+
+Please prioritize this issue and provide regular updates on investigation progress and resolution timeline.
