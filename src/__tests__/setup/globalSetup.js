@@ -12,6 +12,9 @@ module.exports = async () => {
   // Initialize test logger
   console.log('📊 Initializing test logger...')
 
+  // Clear any previous test statistics
+  testLogger.clearSuiteStats()
+
   // Set up test environment variables
   process.env.NODE_ENV = 'test'
   process.env.TEST_MODE = 'true'

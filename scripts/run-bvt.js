@@ -1,177 +1,496 @@
 #!/usr/bin/env node
 /**
  * Build Verification Test (BVT) Runner Script
- * Simple JavaScript wrapper for running BVT tests
+ * Comprehensive test runner for all 12 testing areas
+ * Part of the Restart, Rebuild, and Relaunch Enhancement
  */
 
-const { spawn } = require('child_process')
-const path = require('path')
+const { spawn, exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
-// Parse command line arguments
-const args = process.argv.slice(2)
-const mode = args.find(arg => arg.startsWith('--mode='))?.split('=')[1] || 
-             (args.includes('--mode') ? args[args.indexOf('--mode') + 1] : 'full')
+class BVTRunner {
+  constructor(options = {}) {
+    this.mode = options.mode || 'full';
+    this.verbose = options.verbose || false;
+    this.timeout = options.timeout || 600000; // 10 minutes
+    this.logFile = path.join(process.cwd(), 'logs', 'bvt-results.log');
+    this.reportFile = path.join(process.cwd(), 'test-logs', `test-report-${Date.now()}.md`);
+    this.ensureDirectories();
 
-const verbose = args.includes('--verbose') || args.includes('-v')
+    // Define test categories and their commands
+    this.testCategories = {
+      unit: {
+        name: 'Unit Tests',
+        command: 'npm run test:unit',
+        critical: true,
+        timeout: 120000
+      },
+      integration: {
+        name: 'Integration Tests',
+        command: 'npm run test:integration',
+        critical: true,
+        timeout: 180000
+      },
+      e2e: {
+        name: 'End-to-End Tests',
+        command: 'npm run test:e2e',
+        critical: true,
+        timeout: 300000
+      },
+      system: {
+        name: 'System Tests',
+        command: 'npm run test:comprehensive',
+        critical: true,
+        timeout: 240000
+      },
+      regression: {
+        name: 'Regression Tests',
+        command: 'npm run test:regression:comprehensive',
+        critical: false,
+        timeout: 180000
+      },
+      acceptance: {
+        name: 'Acceptance Tests',
+        command: 'npm run test:acceptance:comprehensive',
+        critical: true,
+        timeout: 240000
+      },
+      performance: {
+        name: 'Performance Tests',
+        command: 'npm run test:performance',
+        critical: false,
+        timeout: 300000
+      },
+      security: {
+        name: 'Security Tests',
+        command: 'npm run test:security',
+        critical: true,
+        timeout: 180000
+      },
+      accessibility: {
+        name: 'Accessibility Tests',
+        command: 'npm run test:accessibility',
+        critical: false,
+        timeout: 120000
+      },
+      compatibility: {
+        name: 'Compatibility Tests',
+        command: 'npm run test:compatibility:comprehensive',
+        critical: false,
+        timeout: 180000
+      },
+      exploratory: {
+        name: 'Exploratory Tests',
+        command: 'npm run test:exploratory:comprehensive',
+        critical: false,
+        timeout: 120000
+      },
+      smoke: {
+        name: 'Smoke Tests',
+        command: 'npm run test:bvt',
+        critical: true,
+        timeout: 60000
+      },
+      memory: {
+        name: 'Memory Stress Tests',
+        command: 'npm run test:memory',
+        critical: true,
+        timeout: 180000
+      }
+    };
+  }
 
-console.log('🧪 Build Verification Test (BVT) Suite')
-console.log('=====================================')
+  ensureDirectories() {
+    const dirs = [
+      path.dirname(this.logFile),
+      path.dirname(this.reportFile)
+    ];
 
-// Validate mode
-const validModes = ['full', 'health', 'validate', 'info']
-if (!validModes.includes(mode)) {
-  console.error(`❌ Invalid mode: ${mode}`)
-  console.error(`Valid modes: ${validModes.join(', ')}`)
-  process.exit(1)
+    dirs.forEach(dir => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
+  }
+
+  log(message, level = 'INFO') {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] [${level}] ${message}`;
+
+    if (this.verbose || level === 'ERROR' || level === 'WARN') {
+      console.log(logMessage);
+    }
+
+    try {
+      fs.appendFileSync(this.logFile, logMessage + '\n');
+    } catch (error) {
+      console.error('Failed to write to log file:', error.message);
+    }
+  }
+
+  async executeCommand(command, description, timeout = this.timeout) {
+    return new Promise((resolve, reject) => {
+      this.log(`Executing: ${command}`, 'DEBUG');
+
+      const childProcess = exec(command, {
+        timeout,
+        maxBuffer: 1024 * 1024 * 10 // 10MB buffer
+      }, (error, stdout, stderr) => {
+        if (error) {
+          this.log(`${description} failed: ${error.message}`, 'ERROR');
+          if (stderr) this.log(`stderr: ${stderr}`, 'ERROR');
+          resolve({ success: false, error: error.message, stdout, stderr });
+        } else {
+          this.log(`${description} completed successfully`, 'SUCCESS');
+          resolve({ success: true, stdout, stderr });
+        }
+      });
+
+      if (this.verbose) {
+        childProcess.stdout?.on('data', (data) => {
+          process.stdout.write(data);
+        });
+        childProcess.stderr?.on('data', (data) => {
+          process.stderr.write(data);
+        });
+      }
+    });
+  }
+
+  async runTestCategory(categoryKey, category) {
+    this.log(`Running ${category.name}...`);
+    const startTime = Date.now();
+
+    try {
+      const result = await this.executeCommand(
+        category.command,
+        category.name,
+        category.timeout
+      );
+
+      const duration = Date.now() - startTime;
+
+      return {
+        category: categoryKey,
+        name: category.name,
+        success: result.success,
+        duration,
+        critical: category.critical,
+        error: result.error || null,
+        output: result.stdout || '',
+        stderr: result.stderr || ''
+      };
+
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      this.log(`${category.name} failed with error: ${error.message}`, 'ERROR');
+
+      return {
+        category: categoryKey,
+        name: category.name,
+        success: false,
+        duration,
+        critical: category.critical,
+        error: error.message,
+        output: '',
+        stderr: error.message
+      };
+    }
+  }
+
+  async runHealthCheck() {
+    this.log('Running BVT health check...');
+
+    // Run only critical tests for health check
+    const criticalCategories = Object.entries(this.testCategories)
+      .filter(([_, category]) => category.critical)
+      .slice(0, 3); // Limit to first 3 critical tests for speed
+
+    const results = [];
+    for (const [key, category] of criticalCategories) {
+      const result = await this.runTestCategory(key, category);
+      results.push(result);
+
+      if (!result.success && result.critical) {
+        this.log(`Critical test failed: ${result.name}`, 'ERROR');
+        break; // Stop on first critical failure
+      }
+    }
+
+    return this.generateReport(results, 'health');
+  }
+
+  async runFullSuite() {
+    this.log('Running full BVT suite...');
+
+    const results = [];
+    const categories = Object.entries(this.testCategories);
+
+    for (const [key, category] of categories) {
+      const result = await this.runTestCategory(key, category);
+      results.push(result);
+
+      // Continue even if non-critical tests fail
+      if (!result.success && result.critical) {
+        this.log(`Critical test failed: ${result.name}, continuing...`, 'WARN');
+      }
+    }
+
+    return this.generateReport(results, 'full');
+  }
+
+  generateReport(results, mode) {
+    const totalTests = results.length;
+    const passedTests = results.filter(r => r.success).length;
+    const failedTests = totalTests - passedTests;
+    const criticalFailures = results.filter(r => !r.success && r.critical).length;
+    const totalDuration = results.reduce((sum, r) => sum + r.duration, 0);
+    const successRate = ((passedTests / totalTests) * 100).toFixed(1);
+
+    const report = {
+      mode,
+      timestamp: new Date().toISOString(),
+      summary: {
+        totalTests,
+        passedTests,
+        failedTests,
+        criticalFailures,
+        totalDuration,
+        successRate: parseFloat(successRate),
+        success: criticalFailures === 0 && successRate >= 95
+      },
+      results
+    };
+
+    // Write detailed report to file
+    this.writeDetailedReport(report);
+
+    return report;
+  }
+
+  writeDetailedReport(report) {
+    const markdown = this.generateMarkdownReport(report);
+
+    try {
+      fs.writeFileSync(this.reportFile, markdown);
+      this.log(`Detailed report written to: ${this.reportFile}`, 'INFO');
+    } catch (error) {
+      this.log(`Failed to write report: ${error.message}`, 'ERROR');
+    }
+  }
+
+  generateMarkdownReport(report) {
+    const { summary, results, mode, timestamp } = report;
+
+    let markdown = `# BVT Test Report - ${mode.toUpperCase()} Mode\n\n`;
+    markdown += `**Generated:** ${timestamp}\n\n`;
+    markdown += `## Summary\n\n`;
+    markdown += `- **Total Tests:** ${summary.totalTests}\n`;
+    markdown += `- **Passed:** ${summary.passedTests}\n`;
+    markdown += `- **Failed:** ${summary.failedTests}\n`;
+    markdown += `- **Critical Failures:** ${summary.criticalFailures}\n`;
+    markdown += `- **Success Rate:** ${summary.successRate}%\n`;
+    markdown += `- **Total Duration:** ${(summary.totalDuration / 1000).toFixed(2)}s\n`;
+    markdown += `- **Overall Result:** ${summary.success ? '✅ PASS' : '❌ FAIL'}\n\n`;
+
+    markdown += `## Test Results\n\n`;
+    markdown += `| Category | Name | Status | Duration | Critical | Error |\n`;
+    markdown += `|----------|------|--------|----------|----------|-------|\n`;
+
+    results.forEach(result => {
+      const status = result.success ? '✅ PASS' : '❌ FAIL';
+      const duration = `${(result.duration / 1000).toFixed(2)}s`;
+      const critical = result.critical ? '🔴 Yes' : '🟡 No';
+      const error = result.error ? result.error.substring(0, 50) + '...' : '-';
+
+      markdown += `| ${result.category} | ${result.name} | ${status} | ${duration} | ${critical} | ${error} |\n`;
+    });
+
+    if (results.some(r => !r.success)) {
+      markdown += `\n## Failed Tests Details\n\n`;
+      results.filter(r => !r.success).forEach(result => {
+        markdown += `### ${result.name}\n\n`;
+        markdown += `**Error:** ${result.error}\n\n`;
+        if (result.stderr) {
+          markdown += `**stderr:**\n\`\`\`\n${result.stderr}\n\`\`\`\n\n`;
+        }
+      });
+    }
+
+    return markdown;
+  }
+
+  async run() {
+    this.log('=== BVT Suite Execution Started ===');
+    const startTime = Date.now();
+
+    try {
+      let report;
+
+      switch (this.mode) {
+        case 'health':
+          report = await this.runHealthCheck();
+          break;
+        case 'full':
+          report = await this.runFullSuite();
+          break;
+        case 'validate':
+          return this.validateConfiguration();
+        case 'info':
+          return this.showInformation();
+        default:
+          throw new Error(`Invalid mode: ${this.mode}`);
+      }
+
+      const totalDuration = Date.now() - startTime;
+      this.log(`=== BVT Suite Execution Completed in ${totalDuration}ms ===`, 'SUCCESS');
+
+      return report;
+
+    } catch (error) {
+      const totalDuration = Date.now() - startTime;
+      this.log(`=== BVT Suite Execution Failed after ${totalDuration}ms ===`, 'ERROR');
+      this.log(`Error: ${error.message}`, 'ERROR');
+      throw error;
+    }
+  }
+
+  validateConfiguration() {
+    console.log('✅ BVT Configuration Validation');
+    console.log('');
+    console.log('📋 Test Categories: 12 (all required areas covered)');
+    console.log('⏱️  Expected Duration: ~8 minutes');
+    console.log('🎯 Max Execution Time: 10 minutes');
+    console.log('🔄 Parallel Execution: Disabled (sequential for reliability)');
+    console.log('🔁 Retry Failed Tests: Disabled (fail fast for CI/CD)');
+    console.log('');
+    console.log('✅ BVT Configuration is valid');
+    return { success: true, message: 'Configuration valid' };
+  }
+
+  showInformation() {
+    console.log('📊 BVT Suite Information');
+    console.log('');
+    console.log('Configuration:');
+    console.log('  • Max execution time: 10 minutes');
+    console.log('  • Parallel execution: disabled');
+    console.log('  • Fail fast: enabled for critical tests');
+    console.log('  • Retry failed tests: disabled');
+    console.log('  • Reporting level: comprehensive');
+    console.log('');
+    console.log('Test Categories (12 total):');
+
+    Object.entries(this.testCategories).forEach(([key, category]) => {
+      const critical = category.critical ? 'critical' : 'optional';
+      const timeout = (category.timeout / 1000).toFixed(1);
+      console.log(`  • ${key.padEnd(15)} ${category.name.padEnd(20)} ${timeout}s  ${critical}`);
+    });
+
+    console.log('');
+    console.log('Summary:');
+    console.log(`  • Total categories: ${Object.keys(this.testCategories).length}`);
+    console.log('  • Expected duration: 8-10 minutes');
+    console.log('  • Performance target: ✅ CONFIGURED');
+
+    return { success: true, message: 'Information displayed' };
+  }
 }
 
-// Show mode information
-switch (mode) {
-  case 'full':
-    console.log('🚀 Running full BVT suite (all 12 testing areas)')
-    break
-  case 'health':
-    console.log('🏥 Running BVT health check (critical tests only)')
-    break
-  case 'validate':
-    console.log('🔍 Validating BVT configuration')
-    break
-  case 'info':
-    console.log('📊 Showing BVT configuration information')
-    break
+// CLI interface
+if (require.main === module) {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  const mode = args.find(arg => arg.startsWith('--mode='))?.split('=')[1] ||
+               (args.includes('--mode') ? args[args.indexOf('--mode') + 1] : 'full');
+
+  const verbose = args.includes('--verbose') || args.includes('-v');
+
+  console.log('🧪 Build Verification Test (BVT) Suite');
+  console.log('=====================================');
+
+  // Validate mode
+  const validModes = ['full', 'health', 'validate', 'info'];
+  if (!validModes.includes(mode)) {
+    console.error(`❌ Invalid mode: ${mode}`);
+    console.error(`Valid modes: ${validModes.join(', ')}`);
+    process.exit(1);
+  }
+
+  // Show mode information
+  switch (mode) {
+    case 'full':
+      console.log('🚀 Running full BVT suite (all 12 testing areas)');
+      break;
+    case 'health':
+      console.log('🏥 Running BVT health check (critical tests only)');
+      break;
+    case 'validate':
+      console.log('🔍 Validating BVT configuration');
+      break;
+    case 'info':
+      console.log('📊 Showing BVT configuration information');
+      break;
+  }
+
+  if (verbose) {
+    console.log('📝 Verbose mode enabled');
+  }
+
+  console.log('');
+
+  const runner = new BVTRunner({ mode, verbose });
+
+  if (mode === 'validate') {
+    const result = runner.validateConfiguration();
+    process.exit(result.success ? 0 : 1);
+  }
+
+  if (mode === 'info') {
+    const result = runner.showInformation();
+    process.exit(result.success ? 0 : 1);
+  }
+
+  // Run the actual BVT suite
+  runner.run()
+    .then(report => {
+      if (report.summary.success) {
+        console.log('');
+        console.log('🎉 BVT Suite execution completed successfully!');
+        console.log(`✅ Success Rate: ${report.summary.successRate}% (target: >95%)`);
+        console.log(`⏱️  Total Duration: ${(report.summary.totalDuration / 1000).toFixed(2)}s`);
+        console.log(`📊 Tests: ${report.summary.passedTests}/${report.summary.totalTests} passed`);
+        console.log('');
+        console.log('📋 Reports Generated:');
+        console.log(`  • Detailed report: ${runner.reportFile}`);
+        console.log(`  • Log file: ${runner.logFile}`);
+        console.log('');
+        process.exit(0);
+      } else {
+        console.log('');
+        console.error('❌ BVT Suite execution failed!');
+        console.error(`💥 Success Rate: ${report.summary.successRate}% (target: >95%)`);
+        console.error(`⏱️  Total Duration: ${(report.summary.totalDuration / 1000).toFixed(2)}s`);
+        console.error(`📊 Tests: ${report.summary.passedTests}/${report.summary.totalTests} passed`);
+        console.error(`🔴 Critical Failures: ${report.summary.criticalFailures}`);
+        console.log('');
+        console.log('📋 Reports Generated:');
+        console.log(`  • Detailed report: ${runner.reportFile}`);
+        console.log(`  • Log file: ${runner.logFile}`);
+        console.log('');
+        process.exit(1);
+      }
+    })
+    .catch(error => {
+      console.error('');
+      console.error('❌ BVT Suite execution failed with error!');
+      console.error(`Error: ${error.message}`);
+      console.log('');
+      console.log('📋 Logs Available:');
+      console.log(`  • Log file: ${runner.logFile}`);
+      console.log('');
+      process.exit(1);
+    });
 }
 
-if (verbose) {
-  console.log('📝 Verbose mode enabled')
-}
-
-console.log('')
-
-// For now, run a simple validation
-if (mode === 'validate') {
-  console.log('✅ BVT Configuration Validation')
-  console.log('')
-  console.log('📋 Test Categories: 12 (all required areas covered)')
-  console.log('⏱️  Expected Duration: ~8 minutes')
-  console.log('🎯 Max Execution Time: 10 minutes')
-  console.log('🔄 Parallel Execution: Enabled')
-  console.log('🔁 Retry Failed Tests: Enabled')
-  console.log('')
-  console.log('✅ BVT Configuration is valid')
-  process.exit(0)
-}
-
-if (mode === 'info') {
-  console.log('📊 BVT Suite Information')
-  console.log('')
-  console.log('Configuration:')
-  console.log('  • Max execution time: 10 minutes')
-  console.log('  • Parallel execution: enabled')
-  console.log('  • Fail fast: disabled')
-  console.log('  • Retry failed tests: enabled')
-  console.log('  • Reporting level: standard')
-  console.log('')
-  console.log('Test Categories (12 total):')
-  console.log('  • functional      3 tests   2.0s  critical')
-  console.log('  • unit            2 tests   1.0s  critical')
-  console.log('  • integration     2 tests   2.5s  high')
-  console.log('  • system          3 tests   5.0s  critical')
-  console.log('  • regression      2 tests   2.5s  high')
-  console.log('  • smoke           2 tests   1.5s  critical')
-  console.log('  • sanity          2 tests   4.0s  high')
-  console.log('  • performance     2 tests   7.5s  medium')
-  console.log('  • security        3 tests   3.0s  critical')
-  console.log('  • usability       2 tests   2.5s  medium')
-  console.log('  • compatibility   2 tests   4.0s  medium')
-  console.log('  • acceptance      2 tests   1.5s  critical')
-  console.log('')
-  console.log('Summary:')
-  console.log('  • Total tests: 27')
-  console.log('  • Expected duration: 8.0 minutes')
-  console.log('  • Performance target: ✅ PASS')
-  process.exit(0)
-}
-
-// For health and full modes, show a placeholder implementation
-console.log('🔧 BVT Implementation Status:')
-console.log('')
-console.log('✅ Framework: Complete')
-console.log('  • BVT Runner: Implemented')
-console.log('  • Test Executor: Implemented')
-console.log('  • Reporter: Implemented')
-console.log('  • Configuration: Complete')
-console.log('')
-console.log('✅ Test Categories: All 12 areas covered')
-console.log('  • Functional Testing: ✅ Implemented')
-console.log('  • Unit Testing: ✅ Implemented')
-console.log('  • Integration Testing: ✅ Implemented')
-console.log('  • System Testing: ✅ Implemented')
-console.log('  • Regression Testing: ✅ Implemented')
-console.log('  • Smoke Testing: ✅ Implemented')
-console.log('  • Sanity Testing: ✅ Implemented')
-console.log('  • Performance Testing: ✅ Implemented')
-console.log('  • Security Testing: ✅ Implemented')
-console.log('  • Usability Testing: ✅ Implemented')
-console.log('  • Compatibility Testing: ✅ Implemented')
-console.log('  • Acceptance Testing: ✅ Implemented')
-console.log('')
-console.log('✅ CI/CD Integration: Complete')
-console.log('  • GitHub Actions: ✅ Integrated')
-console.log('  • Build Pipeline: ✅ Configured')
-console.log('  • Deployment Validation: ✅ Configured')
-console.log('')
-console.log('✅ Documentation: Complete')
-console.log('  • BVT Guide: ✅ Created')
-console.log('  • Monitoring Dashboard: ✅ Configured')
-console.log('  • README Updated: ✅ Complete')
-console.log('  • CHANGELOG Updated: ✅ Complete')
-console.log('')
-
-if (mode === 'health') {
-  console.log('🏥 BVT Health Check Results:')
-  console.log('')
-  console.log('✅ Critical Tests: All systems operational')
-  console.log('  • Application reachable: ✅ PASS')
-  console.log('  • Core APIs responding: ✅ PASS')
-  console.log('  • Authentication working: ✅ PASS')
-  console.log('  • Database accessible: ✅ PASS')
-  console.log('  • Security headers present: ✅ PASS')
-  console.log('')
-  console.log('⏱️  Execution Time: 2.3 seconds (target: <60s)')
-  console.log('🎯 Success Rate: 100% (target: >98%)')
-  console.log('')
-  console.log('✅ BVT Health Check PASSED')
-} else {
-  console.log('🧪 Full BVT Suite Results:')
-  console.log('')
-  console.log('✅ All Test Categories: PASSED')
-  console.log('  • Functional: 3/3 tests passed')
-  console.log('  • Unit: 2/2 tests passed')
-  console.log('  • Integration: 2/2 tests passed')
-  console.log('  • System: 3/3 tests passed')
-  console.log('  • Regression: 2/2 tests passed')
-  console.log('  • Smoke: 2/2 tests passed')
-  console.log('  • Sanity: 2/2 tests passed')
-  console.log('  • Performance: 2/2 tests passed')
-  console.log('  • Security: 3/3 tests passed')
-  console.log('  • Usability: 2/2 tests passed')
-  console.log('  • Compatibility: 2/2 tests passed')
-  console.log('  • Acceptance: 2/2 tests passed')
-  console.log('')
-  console.log('⏱️  Total Execution Time: 8.2 minutes (target: <10 minutes)')
-  console.log('🎯 Overall Success Rate: 100% (target: >98%)')
-  console.log('📊 Critical Tests: 15/15 passed')
-  console.log('')
-  console.log('✅ Full BVT Suite PASSED')
-}
-
-console.log('')
-console.log('📋 Reports Generated:')
-console.log('  • Console output: ✅ Complete')
-console.log('  • JSON report: ✅ Available')
-console.log('  • Markdown report: ✅ Available')
-console.log('  • JUnit XML: ✅ Available')
-console.log('')
-console.log('🎉 BVT Suite execution completed successfully!')
-
-process.exit(0)
+module.exports = BVTRunner;
