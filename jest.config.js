@@ -26,6 +26,7 @@ const customJestConfig = {
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
     '<rootDir>/src/**/*.{test,spec}.{js,jsx,ts,tsx}',
     '<rootDir>/src/tests/**/*.{test,spec}.{js,jsx,ts,tsx}',
+    '<rootDir>/tests/**/*.{test,spec}.{js,jsx,ts,tsx}',
   ],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
@@ -97,6 +98,11 @@ const customJestConfig = {
   coverageDirectory: 'coverage',
   // Test result processing with retry support
   testRunner: 'jest-circus',
+  // Enhanced custom reporters for professional test tracking
+  reporters: [
+    'default',
+    '<rootDir>/src/utils/JestTestReporter.js'
+  ],
   // Global test configuration
   globals: {
     'ts-jest': {

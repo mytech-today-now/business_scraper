@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "reportId": "report-1758766837900-tu68cx73f",
+    "generatedAt": "2025-09-25T02:20:47.762Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "passed",
+    "totalSuites": 0,
+    "totalTests": 65,
+    "successRate": 100,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 617.9692307692308,
+      "memoryPeak": 89049584,
+      "flakyTests": 0
+    },
+    "qualityGate": "passed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 65,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 2,
+      "high": 0,
+      "medium": 63,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1451.0494,
+      "endTime": 11312.3299,
+      "duration": 40168,
+      "memoryUsage": {
+        "heapUsed": 88910466.58461538,
+        "heapTotal": 106692559.90153845,
+        "external": 8891046.65846154,
+        "rss": 133365699.87692307
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 5779180328,
+      "averageTestDuration": 617.9692307692308,
+      "totalExecutionTime": 40168
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}
