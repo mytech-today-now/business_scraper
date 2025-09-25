@@ -65,6 +65,54 @@ const nextConfig = {
       console.warn('lucide-react not found, skipping alias configuration')
     }
 
+    // Enhanced webpack optimizations for performance
+    if (!isServer) {
+      // Optimize bundle splitting
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              priority: 10,
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 5,
+              reuseExistingChunk: true,
+            },
+            // Separate chunk for large libraries
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+              name: 'react',
+              chunks: 'all',
+              priority: 20,
+            },
+            charts: {
+              test: /[\\/]node_modules[\\/](recharts|react-window|react-virtualized)[\\/]/,
+              name: 'charts',
+              chunks: 'all',
+              priority: 15,
+            }
+          }
+        }
+      }
+
+      // Enable tree shaking for better bundle optimization
+      config.optimization.usedExports = true
+      config.optimization.sideEffects = false
+
+      // Minimize bundle size
+      if (process.env.NODE_ENV === 'production') {
+        config.optimization.minimize = true
+      }
+    }
+
     return config
   },
 
@@ -165,6 +213,13 @@ const nextConfig = {
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_TYPE: process.env.DB_TYPE,
     POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
+    // Build-time configuration
+    IS_BUILD_TIME: process.env.IS_BUILD_TIME,
+    DISABLE_DATABASE: process.env.DISABLE_DATABASE,
+    SKIP_RETENTION_POLICIES: process.env.SKIP_RETENTION_POLICIES,
+    SKIP_BACKGROUND_JOBS: process.env.SKIP_BACKGROUND_JOBS,
+    SKIP_DATA_MIGRATIONS: process.env.SKIP_DATA_MIGRATIONS,
+    BUILD_LOG_LEVEL: process.env.BUILD_LOG_LEVEL,
     // Authentication variables for client-side access
     ENABLE_AUTH: process.env.ENABLE_AUTH,
     ADMIN_USERNAME: process.env.ADMIN_USERNAME,
@@ -186,7 +241,7 @@ const nextConfig = {
   experimental: {
     // External packages for server components
     serverComponentsExternalPackages: ['nodemailer', 'puppeteer-core', '@tensorflow/tfjs'],
-    // Optimize package imports for tree shaking (excluding external packages)
+    // Enhanced package imports optimization for better tree shaking
     optimizePackageImports: [
       'lucide-react',
       'natural',
@@ -194,10 +249,28 @@ const nextConfig = {
       'simple-statistics',
       'lighthouse',
       'recharts',
-      'date-fns'
+      'date-fns',
+      'react-window',
+      'react-virtualized-auto-sizer',
+      'react-window-infinite-loader',
+      'react-table',
+      'zod',
+      'axios',
+      'lodash-es'
     ],
-    // Enable Edge Runtime for middleware
-    runtime: 'experimental-edge',
+    // Enable optimized CSS loading
+    optimizeCss: true,
+    // Enable SWC minification for better performance
+    swcMinify: true,
+    // Enable modern JavaScript output
+    modularizeImports: {
+      'lucide-react': {
+        transform: 'lucide-react/dist/esm/icons/{{member}}'
+      },
+      'lodash': {
+        transform: 'lodash/{{member}}'
+      }
+    }
   },
 
   // Configure static export behavior

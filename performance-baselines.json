@@ -10,12 +10,12 @@
   },
   {
     "testName": "multiple-website-scraping",
-    "averageResponseTime": 531,
+    "averageResponseTime": 373,
     "maxResponseTime": 531,
     "throughput": 0,
-    "memoryUsage": 1814416,
+    "memoryUsage": -4235224,
     "errorRate": 100,
-    "timestamp": "2025-08-28T19:32:34.172Z"
+    "timestamp": "2025-09-24T23:48:30.597Z"
   },
   {
     "testName": "enhanced-scraping-engine",
