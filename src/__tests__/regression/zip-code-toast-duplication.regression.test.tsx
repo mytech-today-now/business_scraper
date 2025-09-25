@@ -179,7 +179,7 @@ describe('Regression Test: ZIP Code Toast Duplication', () => {
     const zipInput = screen.getByLabelText(/zip code/i)
 
     // Clear the input and type a new ZIP code
-    await user.selectAll(zipInput)
+    await user.clear(zipInput)
     await user.type(zipInput, '90210')
 
     // Trigger blur event multiple times to simulate the issue
@@ -216,7 +216,7 @@ describe('Regression Test: ZIP Code Toast Duplication', () => {
     const zipInput = screen.getByLabelText(/zip code/i)
 
     // Enter first ZIP code
-    await user.selectAll(zipInput)
+    await user.clear(zipInput)
     await user.type(zipInput, '10001')
     await act(async () => {
       zipInput.blur()

@@ -3,11 +3,30 @@
  */
 
 import { AddressInputHandler } from '../../utils/addressInputHandler'
+import { logger } from '../../utils/logger'
+
+// Mock the logger for testing deduplication
+jest.mock('../../utils/logger', () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}))
+
+const mockLogger = logger as jest.Mocked<typeof logger>
 
 describe('AddressInputHandler', () => {
   beforeEach(() => {
     // Reset static properties before each test using the new reset method
     AddressInputHandler.resetLoggingState()
+    jest.clearAllMocks()
+  })
+
+  afterEach(() => {
+    // Reset environment variable
+    delete (process.env as any).NODE_ENV
   })
 
   describe('parseAddressInput', () => {
@@ -108,6 +127,110 @@ describe('AddressInputHandler', () => {
     it('should normalize ZIP codes', () => {
       expect(AddressInputHandler.normalizeZipCode(' 60047 ')).toBe('60047')
       expect(AddressInputHandler.normalizeZipCode('60047-1234')).toBe('60047-1234')
+    })
+  })
+
+  // New tests for GitHub Issue #201 fixes
+  describe('Issue #201 - Duplicate Logging Prevention', () => {
+    it('should not log duplicate ZIP code detections', () => {
+      // Set development environment for logging
+      process.env.NODE_ENV = 'development'
+
+      const input = '60047'
+
+      // Parse the same input multiple times
+      AddressInputHandler.parseAddressInput(input)
+      AddressInputHandler.parseAddressInput(input)
+      AddressInputHandler.parseAddressInput(input)
+
+      // Should only log once due to deduplication
+      expect(mockLogger.debug).toHaveBeenCalledTimes(1)
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'AddressInputHandler',
+        'ZIP code input detected: 60047 (zip-only)'
+      )
+    })
+
+    it('should log different ZIP codes separately', () => {
+      // Set development environment for logging
+      process.env.NODE_ENV = 'development'
+
+      const input1 = '60047'
+      const input2 = '90210'
+
+      AddressInputHandler.parseAddressInput(input1)
+      AddressInputHandler.parseAddressInput(input2)
+
+      // Should log both different ZIP codes
+      expect(mockLogger.debug).toHaveBeenCalledTimes(2)
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'AddressInputHandler',
+        'ZIP code input detected: 60047 (zip-only)'
+      )
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'AddressInputHandler',
+        'ZIP code input detected: 90210 (zip-only)'
+      )
+    })
+
+    it('should respect session log limits', () => {
+      // Set development environment for logging
+      process.env.NODE_ENV = 'development'
+
+      const inputs = ['60047', '90210', '10001', '94102', '33101', '78701']
+
+      // Parse multiple different ZIP codes (more than the limit of 5)
+      inputs.forEach(input => {
+        AddressInputHandler.parseAddressInput(input)
+      })
+
+      // Should have 5 ZIP code detection logs + 1 limit warning = 6 total
+      expect(mockLogger.debug).toHaveBeenCalledTimes(6)
+
+      // Verify the limit warning message is included
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'AddressInputHandler',
+        'Approaching log limit, further ZIP code detections will be silent'
+      )
+    })
+
+    it('should not log in production environment', () => {
+      process.env.NODE_ENV = 'production'
+
+      const input = '60047'
+      AddressInputHandler.parseAddressInput(input)
+
+      // Should not log in production
+      expect(mockLogger.debug).not.toHaveBeenCalled()
+    })
+
+    it('should log in development environment', () => {
+      process.env.NODE_ENV = 'development'
+
+      const input = '60047'
+      AddressInputHandler.parseAddressInput(input)
+
+      // Should log in development
+      expect(mockLogger.debug).toHaveBeenCalledTimes(1)
+    })
+
+    it('should use context-aware deduplication keys', () => {
+      // Set development environment for logging
+      process.env.NODE_ENV = 'development'
+
+      // Same ZIP code but different contexts should be treated as different
+      const fullAddress = '123 Main St, Beverly Hills, CA 90210'
+      const zipOnly = '90210'
+
+      AddressInputHandler.parseAddressInput(fullAddress)
+      AddressInputHandler.parseAddressInput(zipOnly)
+
+      // Should log both because contexts are different
+      expect(mockLogger.debug).toHaveBeenCalledTimes(2)
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'AddressInputHandler',
+        expect.stringContaining('ZIP code input detected: 90210')
+      )
     })
   })
 })

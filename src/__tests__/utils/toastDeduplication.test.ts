@@ -52,8 +52,8 @@ describe('ToastDeduplication', () => {
         // Immediate duplicate should be prevented
         expect(toastDeduplication.shouldShowToast(message, 'success')).toBe(false)
         
-        // Advance time beyond deduplication window (2000ms)
-        currentTime += 2500
+        // Advance time beyond deduplication window (5000ms)
+        currentTime += 6000
         
         // Should now allow the toast again
         expect(toastDeduplication.shouldShowToast(message, 'success')).toBe(true)
@@ -91,8 +91,8 @@ describe('ToastDeduplication', () => {
         
         expect(toastDeduplication.getRecordCount()).toBe(2)
         
-        // Advance time beyond cleanup threshold
-        currentTime += 3000
+        // Advance time beyond cleanup threshold (5000ms)
+        currentTime += 6000
         
         // Trigger cleanup by adding a new toast
         toastDeduplication.shouldShowToast('Message 3', 'success')
