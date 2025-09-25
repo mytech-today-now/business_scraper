@@ -18,10 +18,12 @@ class ToastDeduplicationManager {
   private recentToasts: Map<string, ToastRecord> = new Map()
   private readonly DEDUPLICATION_WINDOW_MS = 5000 // 5 seconds (increased from 2)
   private readonly MAX_RECORDS = 50 // Prevent memory leaks
-  private readonly ZIP_CODE_DEDUPLICATION_WINDOW_MS = 10000 // 10 seconds for ZIP code toasts
+  private readonly ZIP_CODE_DEDUPLICATION_WINDOW_MS = 15000 // 15 seconds for ZIP code toasts (increased)
+  private readonly COMPONENT_DEDUPLICATION_WINDOW_MS = 8000 // 8 seconds for component-level deduplication
 
   /**
    * Check if a toast should be shown or if it's a duplicate
+   * Enhanced with better deduplication logic for different toast types
    */
   shouldShowToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info'): boolean {
     const now = Date.now()
@@ -35,13 +37,11 @@ class ToastDeduplicationManager {
     if (existingRecord) {
       const timeSinceLastToast = now - existingRecord.timestamp
 
-      // Use longer deduplication window for ZIP code validation toasts
-      const deduplicationWindow = this.isZipCodeToast(message)
-        ? this.ZIP_CODE_DEDUPLICATION_WINDOW_MS
-        : this.DEDUPLICATION_WINDOW_MS
+      // Use appropriate deduplication window based on toast type and content
+      const deduplicationWindow = this.getDeduplicationWindow(message, type)
 
       if (timeSinceLastToast < deduplicationWindow) {
-        logger.debug('ToastDeduplication', `Suppressing duplicate toast: "${message}" (${type}) - ${timeSinceLastToast}ms since last`)
+        logger.debug('ToastDeduplication', `Suppressing duplicate toast: "${message}" (${type}) - ${timeSinceLastToast}ms since last (window: ${deduplicationWindow}ms)`)
         return false
       }
     }
@@ -77,6 +77,29 @@ class ToastDeduplicationManager {
   }
 
   /**
+   * Get appropriate deduplication window based on message content and type
+   */
+  private getDeduplicationWindow(message: string, type: 'success' | 'error' | 'warning' | 'info'): number {
+    // ZIP code validation toasts need longer deduplication
+    if (this.isZipCodeToast(message)) {
+      return this.ZIP_CODE_DEDUPLICATION_WINDOW_MS
+    }
+
+    // Component initialization or configuration toasts
+    if (message.includes('initialized') || message.includes('configuration') || message.includes('loaded')) {
+      return this.COMPONENT_DEDUPLICATION_WINDOW_MS
+    }
+
+    // Error toasts should have shorter deduplication to ensure visibility
+    if (type === 'error') {
+      return Math.min(this.DEDUPLICATION_WINDOW_MS, 3000)
+    }
+
+    // Default deduplication window
+    return this.DEDUPLICATION_WINDOW_MS
+  }
+
+  /**
    * Clean up old toast records to prevent memory leaks
    */
   private cleanupOldRecords(currentTime: number): void {
@@ -84,10 +107,7 @@ class ToastDeduplicationManager {
 
     // Remove expired records using the appropriate window for each toast type
     for (const [key, record] of this.recentToasts.entries()) {
-      const deduplicationWindow = this.isZipCodeToast(record.message)
-        ? this.ZIP_CODE_DEDUPLICATION_WINDOW_MS
-        : this.DEDUPLICATION_WINDOW_MS
-
+      const deduplicationWindow = this.getDeduplicationWindow(record.message, record.type)
       const cutoffTime = currentTime - deduplicationWindow
 
       if (record.timestamp < cutoffTime) {

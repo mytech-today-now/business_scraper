@@ -3,15 +3,30 @@
  * Provides consent status checking for the consent banner
  */
 
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 import { logger } from '@/utils/logger'
+import { isDatabaseConnectionAllowed } from '@/lib/build-time-guard'
 
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-})
+// Database connection (protected against build-time execution)
+let pool: Pool | null = null
+
+function getPool(): Pool | null {
+  if (!isDatabaseConnectionAllowed()) {
+    return null
+  }
+
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    })
+  }
+
+  return pool
+}
 
 // Consent types
 const CONSENT_TYPES = [
@@ -52,35 +67,40 @@ export async function GET(request: NextRequest) {
     let dbTimestamp = null
     let hasDbConsent = false
 
-    if (userEmail || clientIP) {
-      const result = await pool.query(
-        `
-        SELECT DISTINCT ON (consent_type) 
-          consent_type, consent_given, consent_date
-        FROM consent_records 
-        WHERE (email = $1 OR ip_address = $2)
-          AND consent_date > NOW() - INTERVAL '1 year'
-        ORDER BY consent_type, consent_date DESC
-      `,
-        [userEmail, clientIP]
-      )
+    const dbPool = getPool()
+    if (dbPool && (userEmail || clientIP)) {
+      try {
+        const result = await dbPool.query(
+          `
+          SELECT DISTINCT ON (consent_type)
+            consent_type, consent_given, consent_date
+          FROM consent_records
+          WHERE (email = $1 OR ip_address = $2)
+            AND consent_date > NOW() - INTERVAL '1 year'
+          ORDER BY consent_type, consent_date DESC
+        `,
+          [userEmail, clientIP]
+        )
 
-      if (result.rows.length > 0) {
-        hasDbConsent = true
-        dbPreferences = {}
+        if (result.rows.length > 0) {
+          hasDbConsent = true
+          dbPreferences = {}
 
-        // Set defaults
-        CONSENT_TYPES.forEach(type => {
-          dbPreferences[type] = type === 'necessary' // Necessary is always true by default
-        })
+          // Set defaults
+          CONSENT_TYPES.forEach(type => {
+            dbPreferences[type] = type === 'necessary' // Necessary is always true by default
+          })
 
-        // Apply database preferences
-        result.rows.forEach(row => {
-          dbPreferences[row.consent_type] = row.consent_given
-          if (!dbTimestamp || row.consent_date > dbTimestamp) {
-            dbTimestamp = row.consent_date
-          }
-        })
+          // Apply database preferences
+          result.rows.forEach(row => {
+            dbPreferences[row.consent_type] = row.consent_given
+            if (!dbTimestamp || row.consent_date > dbTimestamp) {
+              dbTimestamp = row.consent_date
+            }
+          })
+        }
+      } catch (error) {
+        logger.warn('Consent Status API', 'Database query failed, falling back to cookie only', error)
       }
     }
 

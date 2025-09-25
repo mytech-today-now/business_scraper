@@ -8,7 +8,7 @@ import { ValidationState } from '../../../hooks/useValidation'
 export type ValidationStateType = 'error' | 'warning' | 'success' | 'default'
 
 /**
- * Input component props
+ * Input component props with enhanced accessibility and validation
  */
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string
@@ -17,6 +17,11 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   validationState?: ValidationState
   showValidationIcon?: boolean
   'aria-describedby'?: string
+  icon?: React.ComponentType<{ className?: string }>
+  iconPosition?: 'left' | 'right'
+  loading?: boolean
+  clearable?: boolean
+  onClear?: () => void
 }
 
 /**
@@ -102,14 +107,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       id,
       validationState,
       showValidationIcon = true,
+      icon: Icon,
+      iconPosition = 'left',
+      loading = false,
+      clearable = false,
+      onClear,
       'aria-describedby': ariaDescribedBy,
       ...props
     },
     ref
   ) => {
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
+    const inputId = id || React.useId()
     const errorId = `${inputId}-error`
     const helperTextId = `${inputId}-helper`
+    const [isFocused, setIsFocused] = React.useState(false)
 
     const stateType = getValidationStateType(validationState, error)
     const validationIcon = showValidationIcon ? getValidationIcon(stateType) : null
@@ -119,6 +130,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const displayWarning = validationState?.warning
     const displaySuccess = validationState?.success
     const displayHelper = helperText && !displayError && !displayWarning && !displaySuccess
+    const hasValue = props.value !== undefined && props.value !== ''
 
     // Build aria-describedby
     const describedByIds = []
@@ -126,55 +138,139 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     if (displayError) describedByIds.push(errorId)
     else if (displayHelper) describedByIds.push(helperTextId)
 
+    // Calculate padding based on icons
+    const leftPadding = Icon && iconPosition === 'left' ? 'pl-10' : 'px-3'
+    const rightPadding = React.useMemo(() => {
+      let padding = 'pr-3'
+      if (showValidationIcon && stateType !== 'default') padding = 'pr-10'
+      if (clearable && hasValue) padding = 'pr-10'
+      if (loading) padding = 'pr-10'
+      if ((showValidationIcon && stateType !== 'default') && (clearable && hasValue)) padding = 'pr-16'
+      return padding
+    }, [showValidationIcon, stateType, clearable, hasValue, loading])
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(true)
+      props.onFocus?.(e)
+    }
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(false)
+      props.onBlur?.(e)
+    }
+
+    const handleClear = () => {
+      onClear?.()
+      // Focus the input after clearing
+      if (ref && 'current' in ref && ref.current) {
+        ref.current.focus()
+      }
+    }
+
     return (
       <div className="space-y-2">
         {label && (
           <label
             htmlFor={inputId}
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className={clsx(
+              'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+              stateType === 'error' && 'text-red-600',
+              stateType === 'success' && 'text-green-600'
+            )}
           >
             {label}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {loading && (
+              <span className="ml-2 text-xs text-blue-600">
+                <span className="animate-pulse">●</span> Validating...
+              </span>
+            )}
           </label>
         )}
+
         <div className="relative">
+          {/* Left icon */}
+          {Icon && iconPosition === 'left' && (
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <Icon className={clsx('h-4 w-4', isFocused ? 'text-ring' : 'text-muted-foreground')} />
+            </div>
+          )}
+
           <input
             type={type}
             id={inputId}
             className={clsx(
-              'flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm',
+              'flex h-10 w-full rounded-md border bg-background py-2 text-sm',
               'ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium',
               'placeholder:text-muted-foreground',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
+              'transition-colors duration-200',
+              // Dynamic padding
+              leftPadding,
+              rightPadding,
               // Validation state styling
               stateType === 'error' && 'border-red-500 focus-visible:ring-red-500',
               stateType === 'warning' && 'border-yellow-500 focus-visible:ring-yellow-500',
               stateType === 'success' && 'border-green-500 focus-visible:ring-green-500',
               stateType === 'default' && 'border-input focus-visible:ring-ring',
-              // Add padding for icon if present
-              validationIcon && 'pr-10',
               className
             )}
             aria-invalid={stateType === 'error'}
             aria-describedby={describedByIds.length > 0 ? describedByIds.join(' ') : undefined}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             ref={ref}
             {...props}
           />
-          {validationIcon && (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              {validationIcon}
-            </div>
-          )}
+
+          {/* Right side icons container */}
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 space-x-1">
+            {/* Loading spinner */}
+            {loading && (
+              <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full" />
+            )}
+
+            {/* Clear button */}
+            {clearable && hasValue && !loading && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Clear input"
+                tabIndex={-1}
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+
+            {/* Validation icon */}
+            {validationIcon && !loading && (
+              <div className="pointer-events-none">
+                {validationIcon}
+              </div>
+            )}
+
+            {/* Right icon */}
+            {Icon && iconPosition === 'right' && !loading && (
+              <Icon className={clsx('h-4 w-4', isFocused ? 'text-ring' : 'text-muted-foreground')} />
+            )}
+          </div>
         </div>
 
         {/* Error message */}
         {displayError && (
           <p
             id={errorId}
-            className="text-sm text-red-600 dark:text-red-400"
+            className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
             role="alert"
             aria-live="polite"
           >
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             {displayError}
           </p>
         )}
@@ -182,17 +278,23 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {/* Warning message */}
         {displayWarning && !displayError && (
           <p
-            className="text-sm text-yellow-600 dark:text-yellow-400"
+            className="text-sm text-yellow-600 dark:text-yellow-400 flex items-center gap-1"
             role="alert"
             aria-live="polite"
           >
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
             {displayWarning}
           </p>
         )}
 
         {/* Success message */}
         {displaySuccess && !displayError && !displayWarning && (
-          <p className="text-sm text-green-600 dark:text-green-400" aria-live="polite">
+          <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1" aria-live="polite">
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
             {displaySuccess}
           </p>
         )}

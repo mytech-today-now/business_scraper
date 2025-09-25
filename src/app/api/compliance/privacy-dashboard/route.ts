@@ -3,17 +3,32 @@
  * Provides comprehensive privacy data and controls for users
  */
 
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 import { logger } from '@/utils/logger'
 import { consentService } from '@/lib/compliance/consent'
 import { auditService, AuditEventType, AuditSeverity } from '@/lib/compliance/audit'
+import { isDatabaseConnectionAllowed } from '@/lib/build-time-guard'
 
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-})
+// Database connection (protected against build-time execution)
+let pool: Pool | null = null
+
+function getPool(): Pool | null {
+  if (!isDatabaseConnectionAllowed()) {
+    return null
+  }
+
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    })
+  }
+
+  return pool
+}
 
 /**
  * GET /api/compliance/privacy-dashboard

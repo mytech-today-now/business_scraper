@@ -245,13 +245,28 @@ export function useSearchStreaming(): UseSearchStreamingReturn {
 
       const response = await fetch('/api/health', {
         method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
         signal: controller.signal,
       })
 
       clearTimeout(timeoutId)
-      return response.ok
+
+      if (response.ok) {
+        logger.debug('useSearchStreaming', 'Health check passed')
+        return true
+      } else {
+        logger.warn('useSearchStreaming', `Health check failed with status: ${response.status}`)
+        return false
+      }
     } catch (error) {
-      logger.debug('useSearchStreaming', 'Health check failed', error)
+      if (error instanceof Error && error.name === 'AbortError') {
+        logger.debug('useSearchStreaming', 'Health check timed out')
+      } else {
+        logger.debug('useSearchStreaming', 'Health check failed', error)
+      }
       return false
     }
   }, [])
@@ -463,16 +478,26 @@ export function useSearchStreaming(): UseSearchStreamingReturn {
 
           // Enhanced logging with connection diagnostics - reduce log level for readyState 2 (CLOSING)
           const isClosingState = eventSource.readyState === 2 // EventSource.CLOSING
-          const logLevel = isClosingState ? 'debug' :
+          const isConnectingState = eventSource.readyState === 0 // EventSource.CONNECTING
+
+          // Reduce noise for normal connection state transitions
+          const logLevel = (isClosingState || isConnectingState) ? 'debug' :
             (circuitBreakerRef.current.failureCount <= mergedOptions.circuitBreakerThreshold ? 'warn' : 'debug')
 
           const logMessage = circuitBreakerRef.current.isOpen
             ? 'Streaming connection error (circuit breaker open)'
             : isClosingState
               ? 'Streaming connection closing (normal during reconnect)'
-              : 'Streaming connection error'
+              : isConnectingState
+                ? 'Streaming connection establishing'
+                : 'Streaming connection error'
 
-          logger[logLevel]('useSearchStreaming', logMessage, errorDetails)
+          // Only log in development for CLOSING/CONNECTING states to reduce production noise
+          if ((isClosingState || isConnectingState) && process.env.NODE_ENV !== 'development') {
+            // Skip logging normal state transitions in production
+          } else {
+            logger[logLevel]('useSearchStreaming', logMessage, errorDetails)
+          }
 
           // Check for network connectivity issues
           if (!navigator.onLine) {

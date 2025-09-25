@@ -98,6 +98,7 @@ export class AddressInputHandler {
 
   /**
    * Enhanced helper method to log ZIP code detection with intelligent debouncing
+   * Fixed to prevent duplicate logging and ANSI color codes
    */
   private static logZipCodeDetection(zipCode: string, context: string): void {
     const now = Date.now()
@@ -107,13 +108,18 @@ export class AddressInputHandler {
       return // Silently skip logging to prevent spam
     }
 
-    // Only log if it's a different ZIP code or enough time has passed
-    const shouldLog = this.lastLoggedZip !== zipCode || now - this.lastLogTime > this.LOG_DEBOUNCE_MS
+    // Enhanced deduplication: check both ZIP code and context to prevent identical logs
+    const logKey = `${zipCode}-${context}`
+    const shouldLog = this.lastLoggedZip !== logKey || now - this.lastLogTime > this.LOG_DEBOUNCE_MS
 
     if (shouldLog) {
-      // Use debug level to reduce console noise
-      logger.debug('AddressInputHandler', `ZIP code input detected: ${zipCode} (${context})`)
-      this.lastLoggedZip = zipCode
+      // Use debug level to reduce console noise and prevent INFO level spam
+      // Only log in development to reduce production noise
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('AddressInputHandler', `ZIP code input detected: ${zipCode} (${context})`)
+      }
+
+      this.lastLoggedZip = logKey
       this.lastLogTime = now
       this.logCount++
 

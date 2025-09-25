@@ -1035,31 +1035,88 @@ export class ExportService {
   }
 
   /**
-   * Download blob as file
+   * Download blob as file with enhanced cross-browser compatibility
    * @param blob - Blob to download
    * @param filename - Filename for download
    */
   downloadBlob(blob: Blob, filename: string): void {
     try {
-      // Create download link
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = filename
+      // Sanitize filename to prevent issues
+      const sanitizedFilename = this.sanitizeFilename(filename)
 
-      // Trigger download
-      document.body.appendChild(link)
-      link.click()
+      // Check if we're in a browser environment
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        throw new Error('Download functionality is only available in browser environment')
+      }
 
-      // Cleanup
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
+      // Modern browsers with download attribute support
+      if ('download' in document.createElement('a')) {
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
 
-      logger.info('ExportService', `File downloaded: ${filename}`)
+        link.href = url
+        link.download = sanitizedFilename
+        link.style.display = 'none'
+
+        // Add to DOM, click, and remove
+        document.body.appendChild(link)
+
+        // Use setTimeout to ensure the link is in the DOM
+        setTimeout(() => {
+          link.click()
+
+          // Cleanup after a short delay to ensure download starts
+          setTimeout(() => {
+            document.body.removeChild(link)
+            URL.revokeObjectURL(url)
+          }, 100)
+        }, 0)
+
+        logger.info('ExportService', `File download initiated: ${sanitizedFilename}`)
+      }
+      // Fallback for older browsers or special cases
+      else {
+        // Try using window.open as fallback
+        const url = URL.createObjectURL(blob)
+        const newWindow = window.open(url, '_blank')
+
+        if (!newWindow) {
+          // If popup blocked, try direct navigation
+          window.location.href = url
+        }
+
+        // Cleanup after delay
+        setTimeout(() => {
+          URL.revokeObjectURL(url)
+        }, 1000)
+
+        logger.info('ExportService', `File download initiated via fallback method: ${sanitizedFilename}`)
+      }
     } catch (error) {
       logger.error('ExportService', 'Download failed', error)
-      throw error
+
+      // Try to provide user feedback about the error
+      if (error instanceof Error) {
+        throw new Error(`Download failed: ${error.message}`)
+      } else {
+        throw new Error('Download failed due to an unknown error')
+      }
     }
+  }
+
+  /**
+   * Sanitize filename for safe downloading
+   * @param filename - Original filename
+   * @returns Sanitized filename
+   */
+  private sanitizeFilename(filename: string): string {
+    // Remove or replace unsafe characters
+    return filename
+      .replace(/[<>:"/\\|?*]/g, '_') // Replace unsafe characters with underscore
+      .replace(/\s+/g, '_') // Replace spaces with underscore
+      .replace(/_{2,}/g, '_') // Replace multiple underscores with single
+      .replace(/^_+|_+$/g, '') // Remove leading/trailing underscores
+      .substring(0, 255) // Limit length to 255 characters
   }
 
   /**
