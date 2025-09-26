@@ -129,14 +129,16 @@ export const createMockStorage = () => ({
 })
 
 // API mocks
-export const createMockApiResponse = <T>(data: T, status: number = 200) => ({
-  ok: status >= 200 && status < 300,
-  status,
-  statusText: status === 200 ? 'OK' : 'Error',
-  json: jest.fn().mockResolvedValue(data),
-  text: jest.fn().mockResolvedValue(JSON.stringify(data)),
-  headers: new Headers(),
-})
+export function createMockApiResponse<T>(data: T, status: number = 200) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    statusText: status === 200 ? 'OK' : 'Error',
+    json: jest.fn().mockResolvedValue(data),
+    text: jest.fn().mockResolvedValue(JSON.stringify(data)),
+    headers: new Headers(),
+  }
+}
 
 // File system mocks
 export const createMockFileSystem = () => ({

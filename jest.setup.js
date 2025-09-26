@@ -14,6 +14,30 @@ const { TextEncoder, TextDecoder } = require('util')
 global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 
+// Add crypto polyfills for test environment
+if (typeof globalThis.crypto === 'undefined') {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: {
+      randomUUID: () => 'test-uuid-' + Math.random().toString(36).substr(2, 9),
+      getRandomValues: (arr) => {
+        for (let i = 0; i < arr.length; i++) {
+          arr[i] = Math.floor(Math.random() * 256)
+        }
+        return arr
+      },
+      subtle: {
+        importKey: jest.fn().mockResolvedValue({}),
+        deriveBits: jest.fn().mockResolvedValue(new ArrayBuffer(32)),
+        generateKey: jest.fn().mockResolvedValue({}),
+        encrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16)),
+        decrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16))
+      }
+    },
+    writable: true,
+    configurable: true
+  })
+}
+
 // Mock IndexedDB
 global.indexedDB = require('fake-indexeddb')
 global.IDBKeyRange = require('fake-indexeddb/lib/FDBKeyRange')
@@ -225,6 +249,13 @@ if (!global.crypto) {
         }
         return arr
       }),
+      subtle: {
+        importKey: jest.fn().mockResolvedValue({}),
+        deriveBits: jest.fn().mockResolvedValue(new ArrayBuffer(32)),
+        generateKey: jest.fn().mockResolvedValue({}),
+        encrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16)),
+        decrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16))
+      }
     },
     writable: true,
   })

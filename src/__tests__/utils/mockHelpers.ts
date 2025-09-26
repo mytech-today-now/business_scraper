@@ -196,7 +196,7 @@ export const createMockNextRequest = (
 
 // Import NextRequest type for TypeScript support
 declare global {
-  var NextRequest: any
+  let NextRequest: any
 }
 
 // Re-export for convenience

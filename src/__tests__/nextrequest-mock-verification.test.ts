@@ -78,7 +78,7 @@ describe('NextRequest Mocking Verification', () => {
 
     // Attempting to modify read-only properties should throw an error
     expect(() => {
-      // @ts-ignore - Testing runtime behavior
+      // @ts-expect-error - Testing runtime behavior
       request.url = 'http://different.com'
     }).toThrow('Cannot assign to read only property')
 
