@@ -7,6 +7,7 @@ import { NextRequest } from 'next/server'
 import { logger } from '@/utils/logger'
 import { getClientIP } from './security'
 import { securityLogger, SecurityEventType, SecuritySeverity } from './securityLogger'
+import { randomUUID } from '@/utils/crypto'
 
 /**
  * Authentication attempt details
@@ -111,7 +112,7 @@ export class AuthenticationMonitor {
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
     const attempt: AuthAttempt = {
-      id: crypto.randomUUID(),
+      id: randomUUID(),
       timestamp: new Date(),
       ip,
       userAgent,
