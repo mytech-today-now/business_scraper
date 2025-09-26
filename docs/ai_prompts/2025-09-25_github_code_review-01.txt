@@ -1,0 +1,416 @@
+# GitHub Code Review AI Prompt - Business Scraper Application
+# Professional Code Review Instructions for Augment AI in VS Code
+# Date: 2025-09-25
+# Version: 1.0
+
+## OVERVIEW
+You are tasked with performing a comprehensive, professional-grade code review of the Business Scraper Application. This review should meet the standards expected at top-tier technology companies like Google, Amazon, or Microsoft. The application is a full-stack business web scraping platform built with Next.js, React, TypeScript, and Puppeteer, featuring enterprise compliance, payment integration, AI/ML capabilities, and comprehensive security frameworks.
+
+## APPLICATION CONTEXT
+- **Technology Stack**: Next.js 14, React 18, TypeScript 5, Puppeteer, PostgreSQL, Redis, Stripe
+- **Architecture**: Full-stack MVC pattern with layered architecture
+- **Compliance**: SOC 2 Type II, GDPR, CCPA, PCI DSS
+- **Features**: Business scraping, AI lead scoring, payment processing, real-time streaming, performance monitoring
+- **Current Version**: 6.8.3
+- **Repository**: https://github.com/mytech-today-now/business_scraper.git
+
+## CODE REVIEW SCOPE
+Perform a comprehensive review covering ALL of the following areas:
+
+### 1. ARCHITECTURE & DESIGN PATTERNS
+- Evaluate adherence to MVC pattern and separation of concerns
+- Review component architecture and modularity
+- Assess service layer design and dependency injection
+- Validate API design and RESTful principles
+- Check for proper abstraction layers and interfaces
+
+### 2. CODE QUALITY & MAINTAINABILITY
+- TypeScript usage and type safety
+- Code organization and file structure
+- Naming conventions and readability
+- Function/method complexity and single responsibility
+- Code duplication and reusability
+- Documentation quality (JSDoc, README, inline comments)
+
+### 3. SECURITY ANALYSIS
+- Authentication and authorization implementation
+- Input validation and sanitization
+- SQL injection prevention
+- XSS and CSRF protection
+- Secrets management and environment variables
+- Rate limiting and abuse prevention
+- Data encryption (at rest and in transit)
+- Compliance with security best practices
+
+### 4. PERFORMANCE OPTIMIZATION
+- Database query optimization
+- Caching strategies (Redis, browser cache)
+- Bundle size and code splitting
+- Virtual scrolling implementation
+- Memory management and leak prevention
+- API response times and pagination
+- Image optimization and lazy loading
+
+### 5. ERROR HANDLING & RESILIENCE
+- Comprehensive error handling patterns
+- Graceful degradation strategies
+- Retry mechanisms and circuit breakers
+- Logging and monitoring integration
+- User-friendly error messages
+- Fallback mechanisms
+
+### 6. TESTING COVERAGE & QUALITY
+- Unit test coverage and quality
+- Integration test completeness
+- E2E test scenarios
+- Security testing implementation
+- Performance testing strategies
+- Accessibility testing coverage
+- Mock and stub usage
+
+### 7. COMPLIANCE & REGULATORY
+- GDPR compliance implementation
+- CCPA privacy controls
+- SOC 2 audit trail requirements
+- PCI DSS payment security
+- Data retention policies
+- Consent management
+
+### 8. ACCESSIBILITY & UX
+- WCAG 2.1 AA compliance
+- Keyboard navigation support
+- Screen reader compatibility
+- Mobile responsiveness
+- Progressive enhancement
+- Loading states and feedback
+
+## REVIEW METHODOLOGY
+
+### STEP 1: INITIAL ANALYSIS
+1. Clone the repository and examine the overall structure
+2. Review package.json dependencies and scripts
+3. Analyze the README and documentation
+4. Understand the application architecture from the codebase
+
+### STEP 2: SYSTEMATIC CODE REVIEW
+1. Start with core infrastructure files (middleware, config, database)
+2. Review service layer implementations
+3. Examine API endpoints and controllers
+4. Analyze React components and UI layer
+5. Review test files and coverage
+6. Check security implementations
+7. Validate compliance features
+
+### STEP 3: AUTOMATED ANALYSIS
+Run the following commands to gather metrics:
+```bash
+# Install dependencies
+npm install
+
+# Run linting
+npm run lint
+
+# Check TypeScript compilation
+npm run type-check
+
+# Run test suite
+npm run test:coverage
+
+# Security audit
+npm run security-audit
+
+# Performance analysis
+npm run analyze
+
+# Accessibility testing
+npm run test:accessibility
+```
+
+### STEP 4: GITHUB CODE REVIEW SUBMISSION
+
+Use GitHub CLI to create and submit the review:
+
+```bash
+# Create a dummy PR for review (if needed)
+git checkout -b code-review-2025-09-25
+git commit --allow-empty -m "Code review checkpoint"
+git push origin code-review-2025-09-25
+gh pr create --base main --head code-review-2025-09-25 --title "Professional Code Review - 2025-09-25" --body "Comprehensive code review following enterprise standards"
+
+# Submit detailed review with specific line comments
+gh pr review <PR_NUMBER> --body "$(cat review_summary.md)" --request-changes
+
+# Add specific line comments for each issue found
+gh pr review <PR_NUMBER> --body "Critical security issue: Potential SQL injection vulnerability" --request-changes
+```
+
+## REVIEW OUTPUT FORMAT
+
+### SUMMARY REPORT
+Create a comprehensive summary including:
+- Overall code quality score (1-10)
+- Critical issues requiring immediate attention
+- Security vulnerabilities and risks
+- Performance bottlenecks
+- Compliance gaps
+- Recommended improvements
+- Positive aspects and strengths
+
+### DETAILED FINDINGS
+For each issue found, provide:
+- **Severity**: Critical/High/Medium/Low
+- **Category**: Security/Performance/Maintainability/Compliance
+- **File/Line**: Specific location
+- **Description**: Clear explanation of the issue
+- **Impact**: Potential consequences
+- **Recommendation**: Specific fix or improvement
+- **Code Example**: Suggested implementation (if applicable)
+
+### GITHUB REVIEW COMMENTS
+Submit line-by-line comments directly on the GitHub PR with:
+- Specific file and line references
+- Clear, actionable feedback
+- Code suggestions where appropriate
+- Links to relevant documentation or best practices
+
+## QUALITY STANDARDS
+
+### CRITICAL ISSUES (Must Fix)
+- Security vulnerabilities
+- Data privacy violations
+- Performance issues causing user impact
+- Compliance violations
+- Critical bugs or logic errors
+
+### HIGH PRIORITY (Should Fix)
+- Code quality issues affecting maintainability
+- Missing error handling
+- Inadequate test coverage
+- Accessibility violations
+- Performance optimizations
+
+### MEDIUM PRIORITY (Consider Fixing)
+- Code style inconsistencies
+- Documentation improvements
+- Refactoring opportunities
+- Enhanced user experience
+
+### LOW PRIORITY (Nice to Have)
+- Minor optimizations
+- Code organization improvements
+- Additional features or enhancements
+
+## AUTHENTICATION SETUP
+
+Before running the review, authenticate with GitHub:
+```bash
+# Login as reviewer account
+gh auth login
+# Username: auntieanna060809
+# Password: Easy20222025!
+
+# Verify authentication
+gh auth status
+```
+
+## DELIVERABLES
+
+1. **GitHub PR Review**: Complete review submitted via GitHub CLI
+2. **Summary Report**: High-level findings and recommendations
+3. **Detailed Issue List**: Categorized list of all findings
+4. **Security Assessment**: Specific security analysis
+5. **Performance Report**: Performance optimization recommendations
+6. **Compliance Checklist**: Regulatory compliance validation
+
+## SUCCESS CRITERIA
+
+A successful code review should:
+- Identify all critical security and compliance issues
+- Provide actionable recommendations for improvement
+- Follow professional review standards
+- Be submitted properly via GitHub CLI
+- Include specific line-by-line comments
+- Maintain a constructive and professional tone
+- Focus on code quality, security, and maintainability
+
+Execute this review with the thoroughness and attention to detail expected at a Fortune 500 technology company.
+
+## ADDITIONAL REVIEW AREAS
+
+### 9. DATABASE & DATA MANAGEMENT
+- Database schema design and normalization
+- Migration scripts and versioning
+- Connection pooling and transaction management
+- Data validation and constraints
+- Backup and recovery procedures
+- Performance indexing strategies
+
+### 10. API DESIGN & INTEGRATION
+- RESTful API design principles
+- Request/response validation
+- API versioning strategy
+- Rate limiting implementation
+- Documentation completeness (OpenAPI/Swagger)
+- Third-party integration security (Stripe, external APIs)
+
+### 11. DEPLOYMENT & DEVOPS
+- Docker configuration and optimization
+- Environment configuration management
+- CI/CD pipeline implementation
+- Production readiness checklist
+- Monitoring and alerting setup
+- Scalability considerations
+
+### 12. BUSINESS LOGIC VALIDATION
+- Scraping logic efficiency and accuracy
+- Lead scoring algorithm validation
+- Payment processing workflows
+- User onboarding and lifecycle management
+- Data export and import functionality
+- Feature flag implementation
+
+## SPECIFIC FOCUS AREAS FOR THIS APPLICATION
+
+### Enterprise Compliance Review
+- Audit trail completeness and integrity
+- Data retention policy implementation
+- GDPR right-to-be-forgotten functionality
+- CCPA opt-out mechanisms
+- SOC 2 control implementation
+- PCI DSS payment data handling
+
+### AI/ML Implementation Review
+- TensorFlow.js model implementation
+- Lead scoring algorithm accuracy
+- Performance optimization for ML operations
+- Model versioning and updates
+- Bias detection and mitigation
+- Data preprocessing and feature engineering
+
+### Scraping Infrastructure Review
+- Puppeteer configuration and optimization
+- Anti-detection mechanisms
+- Rate limiting and respectful scraping
+- Error handling for failed scrapes
+- Data quality validation
+- Concurrent scraping management
+
+### Real-time Features Review
+- WebSocket implementation
+- Server-sent events configuration
+- Real-time data synchronization
+- Connection management and recovery
+- Performance under load
+- Memory management for streaming
+
+## REVIEW EXECUTION CHECKLIST
+
+### Pre-Review Setup
+- [ ] Clone repository and install dependencies
+- [ ] Set up local development environment
+- [ ] Configure database connections
+- [ ] Verify all environment variables
+- [ ] Run initial build and tests
+
+### Code Analysis Tools
+- [ ] ESLint analysis for code quality
+- [ ] TypeScript strict mode validation
+- [ ] Security vulnerability scanning (npm audit, Snyk)
+- [ ] Performance profiling and bundle analysis
+- [ ] Accessibility testing with axe-core
+- [ ] Test coverage analysis
+
+### Manual Review Process
+- [ ] Architecture and design pattern analysis
+- [ ] Security implementation review
+- [ ] Performance optimization assessment
+- [ ] Compliance feature validation
+- [ ] Error handling evaluation
+- [ ] Documentation quality check
+
+### GitHub Review Submission
+- [ ] Create review branch and PR
+- [ ] Submit comprehensive review summary
+- [ ] Add line-by-line comments for specific issues
+- [ ] Categorize findings by severity
+- [ ] Provide actionable recommendations
+- [ ] Include code examples for fixes
+
+## SAMPLE REVIEW COMMENTS
+
+### Security Issue Example
+```
+File: src/lib/auth-middleware.ts, Line 45
+Severity: Critical
+Category: Security
+
+Issue: Potential timing attack vulnerability in password comparison
+Current: if (password === hashedPassword)
+Recommendation: Use crypto.timingSafeEqual() for constant-time comparison
+Impact: Could allow attackers to determine password length through timing analysis
+```
+
+### Performance Issue Example
+```
+File: src/components/ResultsTable.tsx, Line 120
+Severity: High
+Category: Performance
+
+Issue: Inefficient re-rendering of large datasets
+Current: Using standard map() for 10,000+ items
+Recommendation: Implement react-window virtualization
+Impact: Poor performance with large result sets, potential browser freezing
+```
+
+### Compliance Issue Example
+```
+File: src/model/gdprService.ts, Line 78
+Severity: High
+Category: Compliance
+
+Issue: Incomplete data deletion for GDPR right-to-be-forgotten
+Current: Only deletes user table records
+Recommendation: Implement cascading deletion across all related tables
+Impact: GDPR compliance violation, potential regulatory penalties
+```
+
+## FINAL REVIEW SUBMISSION
+
+After completing the comprehensive review, submit via GitHub CLI:
+
+```bash
+# Authenticate as reviewer
+gh auth login
+
+# Create review PR
+gh pr create --base main --head code-review-2025-09-25 \
+  --title "Professional Code Review - Enterprise Standards" \
+  --body "Comprehensive code review following Fortune 500 technology company standards. This review covers security, performance, compliance, architecture, and code quality across the entire Business Scraper application."
+
+# Submit the review with overall assessment
+gh pr review <PR_NUMBER> --request-changes \
+  --body "## Code Review Summary
+
+**Overall Assessment**: The Business Scraper application demonstrates strong architectural foundations and comprehensive feature implementation. However, several critical security vulnerabilities and compliance gaps require immediate attention before production deployment.
+
+**Critical Issues Found**: [X] security vulnerabilities, [Y] compliance gaps, [Z] performance bottlenecks
+
+**Strengths**:
+- Comprehensive TypeScript implementation
+- Extensive testing infrastructure
+- Strong architectural patterns
+- Enterprise compliance framework
+
+**Immediate Actions Required**:
+1. Address critical security vulnerabilities
+2. Fix compliance implementation gaps
+3. Optimize performance bottlenecks
+4. Enhance error handling mechanisms
+
+**Recommendation**: Request changes required before approval. The application shows excellent potential but needs security and compliance fixes before production readiness."
+
+# Add specific line comments for each critical issue found
+# (This would be done for each specific issue discovered during the review)
+```
+
+This comprehensive code review prompt ensures thorough analysis meeting enterprise standards while providing clear, actionable feedback through GitHub's review system.

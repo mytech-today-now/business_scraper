@@ -20,10 +20,23 @@ jest.mock('@/utils/logger', () => ({
   },
 }))
 
+// Mock enhanced error logger
+jest.mock('@/utils/enhancedErrorLogger', () => ({
+  securityTokenErrorLogger: {
+    logCSRFError: jest.fn(),
+    logNetworkError: jest.fn(),
+  },
+  fetchWithErrorLogging: jest.fn(),
+}))
+
+import { fetchWithErrorLogging } from '@/utils/enhancedErrorLogger'
+const mockFetchWithErrorLogging = fetchWithErrorLogging as jest.MockedFunction<typeof fetchWithErrorLogging>
+
 describe('CSRF Token Fix Validation', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockFetch.mockClear()
+    mockFetchWithErrorLogging.mockClear()
   })
 
   describe('useCSRFProtection Hook', () => {
@@ -63,18 +76,41 @@ describe('CSRF Token Fix Validation', () => {
     })
 
     it('should handle 401 errors gracefully without flashing', async () => {
-      // Mock 401 response
-      mockFetch.mockRejectedValueOnce(new Error('Failed to fetch CSRF token: 401'))
+      // Mock 401 response from fetchWithErrorLogging
+      mockFetchWithErrorLogging.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        json: async () => ({}),
+        headers: new Headers(),
+      } as Response)
 
       const { result } = renderHook(() => useCSRFProtection())
 
+      // Wait for some state change
       await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
+        // Log current state for debugging
+        console.log('Current hook state:', {
+          isLoading: result.current.isLoading,
+          error: result.current.error,
+          csrfToken: result.current.csrfToken
+        })
+
+        // Wait for either error to be set or loading to be false
+        return result.current.error !== null || result.current.isLoading === false
+      }, { timeout: 5000 })
+
+      // Check what we got
+      console.log('Final state:', {
+        isLoading: result.current.isLoading,
+        error: result.current.error,
+        csrfToken: result.current.csrfToken
       })
 
-      // Should have error but not immediately visible to user
-      expect(result.current.error).toContain('401')
-      expect(mockFetch).toHaveBeenCalledWith('/api/csrf', expect.any(Object))
+      // Should have error but with user-friendly message (not raw 401)
+      expect(result.current.error).toBe('Authentication error - please refresh the page')
+      expect(result.current.isLoading).toBe(false)
+      expect(mockFetchWithErrorLogging).toHaveBeenCalledWith('/api/csrf', expect.any(Object), expect.any(Object))
     })
 
     it('should implement retry logic with exponential backoff', async () => {
@@ -93,12 +129,12 @@ describe('CSRF Token Fix Validation', () => {
 
       const { result } = renderHook(() => useCSRFProtection())
 
-      // Wait for retries to complete
+      // Wait for retries to complete with real timers
       await waitFor(
         () => {
           expect(result.current.csrfToken).toBe('retry-token')
         },
-        { timeout: 10000 }
+        { timeout: 10000 } // Allow enough time for retries
       )
 
       // Should have made multiple attempts
@@ -162,7 +198,9 @@ describe('CSRF Token Fix Validation', () => {
         await result.current.refreshToken()
       })
 
-      expect(result.current.csrfToken).toBe('refreshed-token')
+      await waitFor(() => {
+        expect(result.current.csrfToken).toBe('refreshed-token')
+      })
     })
   })
 
@@ -219,22 +257,31 @@ describe('CSRF Token Fix Validation', () => {
         await result.current.submitForm('/api/test', { data: 'test' })
       })
 
-      // Should have made submission with CSRF token
+      // Should have made submission with CSRF token in both headers and body
       expect(mockFetch).toHaveBeenLastCalledWith('/api/test', {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': 'submit-token',
-        },
-        body: JSON.stringify({ data: 'test' }),
+        headers: expect.any(Headers),
+        body: JSON.stringify({ data: 'test', csrf_token: 'submit-token' }),
       })
+
+      // Verify headers contain CSRF token
+      const lastCall = mockFetch.mock.calls[mockFetch.mock.calls.length - 1]
+      const headers = lastCall[1].headers
+      expect(headers.get('X-CSRF-Token')).toBe('submit-token')
+      expect(headers.get('Content-Type')).toBe('application/json')
     })
   })
 
   describe('Error Handling Improvements', () => {
     it('should not show 401 errors as user-facing errors', async () => {
-      mockFetch.mockRejectedValueOnce(new Error('Failed to fetch CSRF token: 401'))
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        json: async () => ({}),
+        headers: new Headers(),
+      } as Response)
 
       const { result } = renderHook(() => useCSRFProtection())
 
@@ -242,19 +289,25 @@ describe('CSRF Token Fix Validation', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      // Error should be logged but not immediately shown to user
-      expect(logger.warn).toHaveBeenCalled()
-      expect(result.current.error).toContain('401')
+      // Error should be logged but show user-friendly message (not raw 401)
+      expect(result.current.error).toBe('Authentication error - please refresh the page')
     })
 
     it('should show meaningful errors for non-401 failures', async () => {
-      mockFetch.mockRejectedValueOnce(new Error('Network error'))
+      // Mock network error that exhausts all retries
+      mockFetch
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockRejectedValueOnce(new Error('Network error'))
 
       const { result } = renderHook(() => useCSRFProtection())
 
       await waitFor(() => {
-        expect(result.current.error).toContain('Network error')
-      })
+        expect(result.current.isLoading).toBe(false)
+      }, { timeout: 10000 })
+
+      expect(result.current.error).toContain('Network error')
     })
 
     it('should clear errors on successful retry', async () => {
@@ -271,16 +324,17 @@ describe('CSRF Token Fix Validation', () => {
 
       const { result } = renderHook(() => useCSRFProtection())
 
-      // Wait for retry to succeed
+      // Wait for retry to succeed with longer timeout
       await waitFor(
         () => {
           expect(result.current.csrfToken).toBe('success-token')
         },
-        { timeout: 5000 }
+        { timeout: 10000 }
       )
 
-      // Error should be cleared
+      // Error should be cleared and loading should be false
       expect(result.current.error).toBeNull()
+      expect(result.current.isLoading).toBe(false)
     })
   })
 

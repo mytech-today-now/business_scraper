@@ -1,0 +1,1 @@
+generate a new file called '\docs\ai_prompts\code_review_prompts.md' which is comprised of a series of Augment AI prompts that address the issues and problems revealed in the code review '\docs\code_review_summary.md'.  The prompts are going to be fed back into Augment AI which is processing the application.

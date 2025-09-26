@@ -1,42 +1,1802 @@
 {
   "Payment-models": {
     "total": 27,
-    "passed": 27,
+    "passed": 0,
     "failed": 0,
-    "skipped": 0,
-    "successRate": 1,
-    "duration": 1074
+    "skipped": 27,
+    "successRate": 0,
+    "duration": 108
   },
   "Auth-utils": {
     "total": 34,
-    "passed": 34,
+    "passed": 0,
     "failed": 0,
-    "skipped": 0,
-    "successRate": 1,
-    "duration": 398
+    "skipped": 34,
+    "successRate": 0,
+    "duration": 108
   },
   "Utils": {
     "total": 20,
-    "passed": 20,
+    "passed": 0,
     "failed": 0,
-    "skipped": 0,
-    "successRate": 1,
-    "duration": 223
+    "skipped": 20,
+    "successRate": 0,
+    "duration": 100
   },
   "Toast Deduplication": {
     "total": 15,
-    "passed": 15,
+    "passed": 0,
     "failed": 0,
-    "skipped": 0,
-    "successRate": 1,
-    "duration": 276
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 98
   },
   "Console Filter Utils": {
     "total": 11,
-    "passed": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 99
+  },
+  "Zip-code-toast-duplication.regression": {
+    "total": 3,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 3,
+    "successRate": 0,
+    "duration": 2709
+  },
+  "Use Search Streaming.connection-error": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 195
+  },
+  "Csrf-token-fix-validation": {
+    "total": 12,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 1066
+  },
+  "Login-csrf-integration": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 220
+  },
+  "Streaming-service-fixes": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 563
+  },
+  "Streaming Connection": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 108
+  },
+  "Middleware-compatibility": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 106
+  },
+  "Edge Case Discovery": {
+    "total": 7,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 7,
+    "successRate": 0,
+    "duration": 259
+  },
+  "File Upload Security": {
+    "total": 25,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 25,
+    "successRate": 0,
+    "duration": 160
+  },
+  "Use Offline Support": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 196
+  },
+  "Processing Window": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 200
+  },
+  "Debug-solution-integration": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 196
+  },
+  "Use Search Streaming": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 178
+  },
+  "Database Security": {
+    "total": 27,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 27,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Feature Regression": {
+    "total": 7,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 7,
+    "successRate": 0,
+    "duration": 225
+  },
+  "Payment Security": {
+    "total": 29,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 29,
+    "successRate": 0,
+    "duration": 164
+  },
+  "Security Monitoring": {
+    "total": 25,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 25,
+    "successRate": 0,
+    "duration": 114
+  },
+  "Login-authentication-fix": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 123
+  },
+  "Route": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 121
+  },
+  "Search Engine Controls": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 195
+  },
+  "Client Search Engine": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 138
+  },
+  "Validation": {
+    "total": 40,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 40,
+    "successRate": 0,
+    "duration": 115
+  },
+  "Vulnerability Scanning": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 93
+  },
+  "Mapping-engine": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 106
+  },
+  "Security": {
+    "total": 38,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 38,
+    "successRate": 0,
+    "duration": 108
+  },
+  "Use C S R F Protection": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 192
+  },
+  "Payment-api": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 251
+  },
+  "Csrf-token-fix": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 111
+  },
+  "Csrf-token-infinite-loop-fix": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Penetration Testing": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Search Engine Manager": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Search Engine": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Auth-csrf": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 111
+  },
+  "Csrf-auth-fix": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 114
+  },
+  "Basic-security": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Api-framework": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 115
+  },
+  "Csrf": {
+    "total": 7,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 7,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Websocket-streaming": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 111
+  },
+  "Auth-fix-verification": {
+    "total": 5,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 5,
+    "successRate": 0,
+    "duration": 115
+  },
+  "Config-validator": {
+    "total": 29,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 29,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Full System Workflows": {
+    "total": 21,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 21,
+    "successRate": 0,
+    "duration": 134
+  },
+  "Api": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 433
+  },
+  "Database Operations.comprehensive": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Enhanced-test-reporting-bvt": {
+    "total": 0,
+    "passed": 0,
     "failed": 0,
     "skipped": 0,
-    "successRate": 1,
-    "duration": 2016
+    "successRate": 0,
+    "duration": 0
+  },
+  "Enhanced Data Validation": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 110
+  },
+  "Enhanced-test-reporting": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Memory-management": {
+    "total": 43,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 43,
+    "successRate": 0,
+    "duration": 110
+  },
+  "Environment Configuration": {
+    "total": 21,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 21,
+    "successRate": 0,
+    "duration": 99
+  },
+  "Data Retention": {
+    "total": 27,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 27,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Api-endpoints": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 121
+  },
+  "Compliance Reporting": {
+    "total": 23,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 23,
+    "successRate": 0,
+    "duration": 99
+  },
+  "Api Endpoints.comprehensive": {
+    "total": 22,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 22,
+    "successRate": 0,
+    "duration": 106
+  },
+  "Memory-management-comprehensive": {
+    "total": 25,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 25,
+    "successRate": 0,
+    "duration": 113
+  },
+  "Upload": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 107
+  },
+  "Payment Integration": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 119
+  },
+  "Restart-process.bvt": {
+    "total": 23,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 23,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Crm Sync": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 142
+  },
+  "Payment-flow": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 235
+  },
+  "Gdpr Service": {
+    "total": 25,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 25,
+    "successRate": 0,
+    "duration": 102
+  },
+  "Feature Access Controller": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 122
+  },
+  "Ai-workflow": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Crm Export Service": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 109
+  },
+  "User Dashboard": {
+    "total": 22,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 22,
+    "successRate": 0,
+    "duration": 270
+  },
+  "Memory-management-regression": {
+    "total": 22,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 22,
+    "successRate": 0,
+    "duration": 206
+  },
+  "User": {
+    "total": 38,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 38,
+    "successRate": 0,
+    "duration": 102
+  },
+  "Memory-stress": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 119
+  },
+  "Virtualized Results Table": {
+    "total": 17,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 17,
+    "successRate": 0,
+    "duration": 196
+  },
+  "Health Check.integration": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 221
+  },
+  "Search-download": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 293
+  },
+  "Salesforce": {
+    "total": 21,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 21,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Breadcrumb": {
+    "total": 20,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 20,
+    "successRate": 0,
+    "duration": 197
+  },
+  "User Management.integration": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 147
+  },
+  "Memory-management-system": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 206
+  },
+  "Streaming-connection-errors.regression": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Collaboration": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Compliance-framework": {
+    "total": 20,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 20,
+    "successRate": 0,
+    "duration": 185
+  },
+  "Ai Service": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 110
+  },
+  "Streaming-readystate-errors.regression": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Use Search Streaming Hook": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 220
+  },
+  "Payment Controller": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Predictive Analytics Engine": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 110
+  },
+  "User Onboarding Service": {
+    "total": 20,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 20,
+    "successRate": 0,
+    "duration": 191
+  },
+  "Audit Service": {
+    "total": 20,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 20,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Performance Regression": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 226
+  },
+  "User-management": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Export Service.enhanced": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 137
+  },
+  "Load Testing": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 222
+  },
+  "Crm Service Registry": {
+    "total": 22,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 22,
+    "successRate": 0,
+    "duration": 119
+  },
+  "Logger": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Simple-api": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Mobile-responsiveness": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 534
+  },
+  "Performance Middleware": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 107
+  },
+  "Mobile Navigation": {
+    "total": 20,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 20,
+    "successRate": 0,
+    "duration": 231
+  },
+  "Cache": {
+    "total": 25,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 25,
+    "successRate": 0,
+    "duration": 140
+  },
+  "Memory-management-integration": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 97
+  },
+  "Rbac": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Streaming Connection Fallback": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 185
+  },
+  "Payment": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Csp": {
+    "total": 30,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 30,
+    "successRate": 0,
+    "duration": 133
+  },
+  "Use Business Insights": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 199
+  },
+  "Email Service": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 115
+  },
+  "Processing Window.enhanced": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 209
+  },
+  "Subscription Plans": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 213
+  },
+  "Query Optimizer": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Performance Context": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 214
+  },
+  "Toast-deduplication.bvt": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Ai Lead Scoring": {
+    "total": 21,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 21,
+    "successRate": 0,
+    "duration": 110
+  },
+  "Analytics Service": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 121
+  },
+  "Admin-dashboard": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Rate Limiting Integration": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 120
+  },
+  "Analytics Dashboard": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 209
+  },
+  "Config": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 127
+  },
+  "Form-components": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 317
+  },
+  "Feature-flags": {
+    "total": 22,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 22,
+    "successRate": 0,
+    "duration": 111
+  },
+  "Payment Form": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 257
+  },
+  "Service Worker Registration": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 206
+  },
+  "Domain Blacklist Persistence": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 118
+  },
+  "Formatters": {
+    "total": 31,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 31,
+    "successRate": 0,
+    "duration": 97
+  },
+  "Use Performance Metrics": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 184
+  },
+  "Zip-code-toast-deduplication.regression": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Use Offline Support.enhanced": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 193
+  },
+  "Streaming-functionality.bvt": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Charts": {
+    "total": 29,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 29,
+    "successRate": 0,
+    "duration": 185
+  },
+  "Use Search Streaming.enhanced": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Prioritized Export Formatter": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 99
+  },
+  "Postgres-connection": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 117
+  },
+  "Prioritized Data Processor": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 118
+  },
+  "Email Validation.functional": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 113
+  },
+  "Enhanced Scraping Engine": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 200
+  },
+  "Phone Formatter": {
+    "total": 24,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Ci-cd-validation": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Storage-data-reset": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 115
+  },
+  "Edge-runtime-middleware": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Industry Modal": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 237
+  },
+  "Metrics": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 123
+  },
+  "Azure A I Foundry Integration": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 125
+  },
+  "Database-runtime.bvt": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Use Responsive": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 188
+  },
+  "Use Virtual Scroll": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 191
+  },
+  "Csp-compliance": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 123
+  },
+  "Build-process.bvt": {
+    "total": 5,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 5,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Address Parser": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 101
+  },
+  "Service Worker Registration.fix": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 211
+  },
+  "Export Service": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 127
+  },
+  "Csp-fix-validation": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 108
+  },
+  "Csrf-endless-loop-fix": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 194
+  },
+  "Client Scraper Service": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 95
+  },
+  "Basic-performance": {
+    "total": 7,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 7,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Bbb-integration": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 105
+  },
+  "Industry-expansion": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 115
+  },
+  "Image-optimization": {
+    "total": 3,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 3,
+    "successRate": 0,
+    "duration": 487
+  },
+  "Basic-infrastructure": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 99
+  },
+  "Enhancement-workflow": {
+    "total": 14,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 14,
+    "successRate": 0,
+    "duration": 104
+  },
+  "Performance Optimization": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 661
+  },
+  "Category Selector": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 234
+  },
+  "App-scraping-lock": {
+    "total": 13,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 13,
+    "successRate": 0,
+    "duration": 474
+  },
+  "Search Orchestrator.concurrent": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 197
+  },
+  "Stripe Provider": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 184
+  },
+  "Error-persistence": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 93
+  },
+  "Oauth-system": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 192
+  },
+  "Csrf-login-flow": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 124
+  },
+  "Streaming-service-bvt": {
+    "total": 10,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 10,
+    "successRate": 0,
+    "duration": 117
+  },
+  "Build-time-guard": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 96
+  },
+  "Favicon-handling": {
+    "total": 19,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "successRate": 0,
+    "duration": 114
+  },
+  "Yandex Search Engine": {
+    "total": 11,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0,
+    "duration": 137
+  },
+  "Monitoring Service": {
+    "total": 16,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 16,
+    "successRate": 0,
+    "duration": 120
+  },
+  "Nextrequest-mock-verification": {
+    "total": 7,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 7,
+    "successRate": 0,
+    "duration": 140
+  },
+  "Streaming Connection Integration": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Login-image-optimization": {
+    "total": 3,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 3,
+    "successRate": 0,
+    "duration": 187
+  },
+  "Debug-mode": {
+    "total": 18,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 18,
+    "successRate": 0,
+    "duration": 114
+  },
+  "Client Only Stripe Provider": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 183
+  },
+  "Address Input Handler": {
+    "total": 17,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 17,
+    "successRate": 0,
+    "duration": 107
+  },
+  "Progress Indicator": {
+    "total": 15,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 15,
+    "successRate": 0,
+    "duration": 218
+  },
+  "App.documentation": {
+    "total": 8,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 8,
+    "successRate": 0,
+    "duration": 214
+  },
+  "Search Result Validator": {
+    "total": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 12,
+    "successRate": 0,
+    "duration": 103
+  },
+  "Browser Compatibility": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "User Acceptance": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Test Utils.tsx": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Test Helpers.ts": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Mock Helpers.ts": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Test Setup.ts": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Global Teardown.js": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Global Setup.js": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Storage": {
+    "total": 27,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 27,
+    "successRate": 0,
+    "duration": 213
+  },
+  "Clsx.js": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Email Validation Service": {
+    "total": 22,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 22,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Contact Extractor.integration": {
+    "total": 6,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 6,
+    "successRate": 0,
+    "duration": 100
+  },
+  "Email Payment Integration": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Test Data.ts": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Memory-management-e2e": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Virtual Scrolling.performance": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "User Workflows": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Simple-login": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Simple-e2e": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Search Engine Management": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Login-reload-diagnosis": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Login-page-diagnosis": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Login-performance-fix": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Login-fix-validation": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Login-authentication": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Final-admin-login": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Error Handling Scenarios": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "End2end_no_auth": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "End2end_download_xlsx_4": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "End2end_download_template.example": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "End2end_download_scraping_3": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "End2end_download_navigation_2": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "End2end_download_authentication_1": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Debug-login": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Comprehensive User Workflows": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Basic-e2e": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Api-login": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Admin-login-success": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Admin-login-flow": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Wcag Compliance": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Basic-accessibility": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Accessibility Testing": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Auth-fix-validation": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Crypto": {
+    "total": 9,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 9,
+    "successRate": 0,
+    "duration": 122
+  },
+  "Test Helpers.tsx": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
   }
 }

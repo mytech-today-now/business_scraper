@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-09-26T19:20:57.282Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 12</div>
+    <div class="metric"><strong>Success Rate:</strong> 0.00%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should handle 401 errors gracefully without flashing</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"Authentication error - please refresh the page"[39m
+Received: [31mnull[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+    at toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csrf-token-fix-validation.test.ts:90:38)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li></ul>
+
+    <p><em>Generated at 2025-09-26T19:20:57.282Z by EnhancedTestLogger</em></p>
+</body>
+</html>

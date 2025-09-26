@@ -1,0 +1,790 @@
+{
+  "metadata": {
+    "reportId": "report-1758913800788-go50fo90z",
+    "generatedAt": "2025-09-26T19:11:55.507Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 2724,
+    "successRate": 0.18355359765051393,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 201.2903817914831,
+      "memoryPeak": 498671304,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 2695,
+      "integration": 29,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 8,
+      "high": 16,
+      "medium": 2623,
+      "low": 77
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should handle 401 errors gracefully without flashing::1758913914328",
+          "testName": "should handle 401 errors gracefully without flashing",
+          "testDescription": "should handle 401 errors gracefully without flashing",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482137368,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1171984384
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:72:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:72:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle 401 errors gracefully without flashing",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should refresh token when near expiration::1758913914337",
+          "testName": "should refresh token when near expiration",
+          "testDescription": "should refresh token when near expiration",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482180072,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172054016
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mrefreshed\u001b[27m-token\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mexpiring\u001b[27m-token\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:166:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mrefreshed\u001b[27m-token\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mexpiring\u001b[27m-token\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:166:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should refresh token when near expiration",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should handle form submission with CSRF protection::1758913914343",
+          "testName": "should handle form submission with CSRF protection",
+          "testDescription": "should handle form submission with CSRF protection",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482220520,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenLastCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/test\"\u001b[39m, \u001b[32m{\"body\": \"{\\\"data\\\":\\\"test\\\"}\", \"credentials\": \"include\", \"headers\": {\"Content-Type\": \"application/json\", \"X-CSRF-Token\": \"submit-token\"}, \"method\": \"POST\"}\u001b[39m\nReceived\n       1: \u001b[31m\"/api/csrf\"\u001b[39m, \u001b[31m{\"credentials\": \"include\", \"headers\": {\"Accept\": \"application/json\"}, \"method\": \"GET\"}\u001b[39m\n->     2\n          \u001b[2m\"/api/test\"\u001b[22m,\n        \u001b[2m  Object {\u001b[22m\n        \u001b[32m-   \"body\": \"{\\\"data\\\":\\\"test\\\"}\",\u001b[39m\n        \u001b[31m+   \"body\": \"{\\\"data\\\":\\\"test\\\",\\\"csrf_token\\\":\\\"submit-token\\\"}\",\u001b[39m\n        \u001b[2m    \"credentials\": \"include\",\u001b[22m\n        \u001b[32m-   \"headers\": Object {\u001b[39m\n        \u001b[32m-     \"Content-Type\": \"application/json\",\u001b[39m\n        \u001b[32m-     \"X-CSRF-Token\": \"submit-token\",\u001b[39m\n        \u001b[32m-   },\u001b[39m\n        \u001b[31m+   \"headers\": Headers {},\u001b[39m\n        \u001b[2m    \"method\": \"POST\",\u001b[22m\n        \u001b[2m  }\u001b[22m,\n\nNumber of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenLastCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:225:25)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenLastCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/test\"\u001b[39m, \u001b[32m{\"body\": \"{\\\"data\\\":\\\"test\\\"}\", \"credentials\": \"include\", \"headers\": {\"Content-Type\": \"application/json\", \"X-CSRF-Token\": \"submit-token\"}, \"method\": \"POST\"}\u001b[39m\nReceived\n       1: \u001b[31m\"/api/csrf\"\u001b[39m, \u001b[31m{\"credentials\": \"include\", \"headers\": {\"Accept\": \"application/json\"}, \"method\": \"GET\"}\u001b[39m\n->     2\n          \u001b[2m\"/api/test\"\u001b[22m,\n        \u001b[2m  Object {\u001b[22m\n        \u001b[32m-   \"body\": \"{\\\"data\\\":\\\"test\\\"}\",\u001b[39m\n        \u001b[31m+   \"body\": \"{\\\"data\\\":\\\"test\\\",\\\"csrf_token\\\":\\\"submit-token\\\"}\",\u001b[39m\n        \u001b[2m    \"credentials\": \"include\",\u001b[22m\n        \u001b[32m-   \"headers\": Object {\u001b[39m\n        \u001b[32m-     \"Content-Type\": \"application/json\",\u001b[39m\n        \u001b[32m-     \"X-CSRF-Token\": \"submit-token\",\u001b[39m\n        \u001b[32m-   },\u001b[39m\n        \u001b[31m+   \"headers\": Headers {},\u001b[39m\n        \u001b[2m    \"method\": \"POST\",\u001b[22m\n        \u001b[2m  }\u001b[22m,\n\nNumber of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenLastCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:225:25)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle form submission with CSRF protection",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenLastCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should not show 401 errors as user-facing errors::1758913914349",
+          "testName": "should not show 401 errors as user-facing errors",
+          "testDescription": "should not show 401 errors as user-facing errors",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482238080,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:244:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:244:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not show 401 errors as user-facing errors",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should show meaningful errors for non-401 failures::1758913914353",
+          "testName": "should show meaningful errors for non-401 failures",
+          "testDescription": "should show meaningful errors for non-401 failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482255232,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must not be null nor undefined\n\nReceived has value: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:258:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must not be null nor undefined\n\nReceived has value: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:258:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should show meaningful errors for non-401 failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should clear errors on successful retry::1758913914362",
+          "testName": "should clear errors on successful retry",
+          "testDescription": "should clear errors on successful retry",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482272272,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"success-token\"\u001b[39m\nReceived: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:279:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"success-token\"\u001b[39m\nReceived: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:279:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clear errors on successful retry",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should not make excessive requests::1758913914366",
+          "testName": "should not make excessive requests",
+          "testDescription": "should not make excessive requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482288840,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected number of calls: \u001b[32m1\u001b[39m\nReceived number of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenCalledTimes (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:307:25)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected number of calls: \u001b[32m1\u001b[39m\nReceived number of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenCalledTimes (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:307:25)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not make excessive requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should use /api/csrf endpoint instead of /api/auth::1758913914328",
+          "testName": "should use /api/csrf endpoint instead of /api/auth",
+          "testDescription": "should use /api/csrf endpoint instead of /api/auth",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482132896,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1171984384
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should handle 401 errors gracefully without flashing::1758913914328",
+          "testName": "should handle 401 errors gracefully without flashing",
+          "testDescription": "should handle 401 errors gracefully without flashing",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482137368,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1171984384
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:72:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:72:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle 401 errors gracefully without flashing",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should implement retry logic with exponential backoff::1758913914336",
+          "testName": "should implement retry logic with exponential backoff",
+          "testDescription": "should implement retry logic with exponential backoff",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482171912,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172054016
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should validate token expiration correctly::1758913914337",
+          "testName": "should validate token expiration correctly",
+          "testDescription": "should validate token expiration correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482176008,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172054016
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should refresh token when near expiration::1758913914337",
+          "testName": "should refresh token when near expiration",
+          "testDescription": "should refresh token when near expiration",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482180072,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172054016
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mrefreshed\u001b[27m-token\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mexpiring\u001b[27m-token\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:166:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mrefreshed\u001b[27m-token\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mexpiring\u001b[27m-token\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:166:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should refresh token when near expiration",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should provide correct headers for form submission::1758913914343",
+          "testName": "should provide correct headers for form submission",
+          "testDescription": "should provide correct headers for form submission",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482203568,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172058112
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should handle form submission with CSRF protection::1758913914343",
+          "testName": "should handle form submission with CSRF protection",
+          "testDescription": "should handle form submission with CSRF protection",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482220520,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenLastCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/test\"\u001b[39m, \u001b[32m{\"body\": \"{\\\"data\\\":\\\"test\\\"}\", \"credentials\": \"include\", \"headers\": {\"Content-Type\": \"application/json\", \"X-CSRF-Token\": \"submit-token\"}, \"method\": \"POST\"}\u001b[39m\nReceived\n       1: \u001b[31m\"/api/csrf\"\u001b[39m, \u001b[31m{\"credentials\": \"include\", \"headers\": {\"Accept\": \"application/json\"}, \"method\": \"GET\"}\u001b[39m\n->     2\n          \u001b[2m\"/api/test\"\u001b[22m,\n        \u001b[2m  Object {\u001b[22m\n        \u001b[32m-   \"body\": \"{\\\"data\\\":\\\"test\\\"}\",\u001b[39m\n        \u001b[31m+   \"body\": \"{\\\"data\\\":\\\"test\\\",\\\"csrf_token\\\":\\\"submit-token\\\"}\",\u001b[39m\n        \u001b[2m    \"credentials\": \"include\",\u001b[22m\n        \u001b[32m-   \"headers\": Object {\u001b[39m\n        \u001b[32m-     \"Content-Type\": \"application/json\",\u001b[39m\n        \u001b[32m-     \"X-CSRF-Token\": \"submit-token\",\u001b[39m\n        \u001b[32m-   },\u001b[39m\n        \u001b[31m+   \"headers\": Headers {},\u001b[39m\n        \u001b[2m    \"method\": \"POST\",\u001b[22m\n        \u001b[2m  }\u001b[22m,\n\nNumber of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenLastCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:225:25)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenLastCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/test\"\u001b[39m, \u001b[32m{\"body\": \"{\\\"data\\\":\\\"test\\\"}\", \"credentials\": \"include\", \"headers\": {\"Content-Type\": \"application/json\", \"X-CSRF-Token\": \"submit-token\"}, \"method\": \"POST\"}\u001b[39m\nReceived\n       1: \u001b[31m\"/api/csrf\"\u001b[39m, \u001b[31m{\"credentials\": \"include\", \"headers\": {\"Accept\": \"application/json\"}, \"method\": \"GET\"}\u001b[39m\n->     2\n          \u001b[2m\"/api/test\"\u001b[22m,\n        \u001b[2m  Object {\u001b[22m\n        \u001b[32m-   \"body\": \"{\\\"data\\\":\\\"test\\\"}\",\u001b[39m\n        \u001b[31m+   \"body\": \"{\\\"data\\\":\\\"test\\\",\\\"csrf_token\\\":\\\"submit-token\\\"}\",\u001b[39m\n        \u001b[2m    \"credentials\": \"include\",\u001b[22m\n        \u001b[32m-   \"headers\": Object {\u001b[39m\n        \u001b[32m-     \"Content-Type\": \"application/json\",\u001b[39m\n        \u001b[32m-     \"X-CSRF-Token\": \"submit-token\",\u001b[39m\n        \u001b[32m-   },\u001b[39m\n        \u001b[31m+   \"headers\": Headers {},\u001b[39m\n        \u001b[2m    \"method\": \"POST\",\u001b[22m\n        \u001b[2m  }\u001b[22m,\n\nNumber of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenLastCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:225:25)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle form submission with CSRF protection",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenLastCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should not show 401 errors as user-facing errors::1758913914349",
+          "testName": "should not show 401 errors as user-facing errors",
+          "testDescription": "should not show 401 errors as user-facing errors",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482238080,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:244:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:244:42)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not show 401 errors as user-facing errors",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should show meaningful errors for non-401 failures::1758913914353",
+          "testName": "should show meaningful errors for non-401 failures",
+          "testDescription": "should show meaningful errors for non-401 failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482255232,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must not be null nor undefined\n\nReceived has value: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:258:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must not be null nor undefined\n\nReceived has value: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:258:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should show meaningful errors for non-401 failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-token-fix-validation::should clear errors on successful retry::1758913914362",
+          "testName": "should clear errors on successful retry",
+          "testDescription": "should clear errors on successful retry",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "relativePath": "src\\__tests__\\csrf-token-fix-validation.test.ts",
+          "suite": "Csrf-token-fix-validation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758913804423,
+          "endTime": 1758913815524,
+          "duration": 11101,
+          "memoryUsage": {
+            "heapUsed": 482272272,
+            "heapTotal": 678191104,
+            "external": 16179335,
+            "rss": 1172062208
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"success-token\"\u001b[39m\nReceived: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:279:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"success-token\"\u001b[39m\nReceived: \u001b[31mnull\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts:279:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clear errors on successful retry",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\csrf-token-fix-validation.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1361.95,
+      "endTime": 116090.6373,
+      "duration": 548315,
+      "memoryUsage": {
+        "heapUsed": 489546775.22173274,
+        "heapTotal": 587456130.2660793,
+        "external": 48954677.52217328,
+        "rss": 734320162.8325992
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1333525415704,
+      "averageTestDuration": 201.2903817914831,
+      "totalExecutionTime": 548315
+    },
+    "bottlenecks": [
+      "should use /api/csrf endpoint instead of /api/auth (11101ms)",
+      "should handle 401 errors gracefully without flashing (11101ms)",
+      "should implement retry logic with exponential backoff (11101ms)",
+      "should validate token expiration correctly (11101ms)",
+      "should refresh token when near expiration (11101ms)",
+      "should provide correct headers for form submission (11101ms)",
+      "should handle form submission with CSRF protection (11101ms)",
+      "should not show 401 errors as user-facing errors (11101ms)",
+      "should show meaningful errors for non-401 failures (11101ms)",
+      "should clear errors on successful retry (11101ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should use /api/csrf endpoint instead of /api/auth",
+          "should handle 401 errors gracefully without flashing",
+          "should implement retry logic with exponential backoff",
+          "should validate token expiration correctly",
+          "should refresh token when near expiration",
+          "should provide correct headers for form submission",
+          "should handle form submission with CSRF protection",
+          "should not show 401 errors as user-facing errors",
+          "should show meaningful errors for non-401 failures",
+          "should clear errors on successful retry"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

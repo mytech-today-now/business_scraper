@@ -1,0 +1,147 @@
+# Professional Code Review Prompt for Business Scraper Application
+# Date: 2025-09-25
+# Target: Augment AI in VS Code
+# Purpose: Comprehensive GitHub-style code review at enterprise standards
+
+## MISSION
+Perform a comprehensive, professional-grade code review of the Business Scraper Application codebase that meets the standards expected at Google, Amazon, or Microsoft. This review should be conducted as if preparing a detailed GitHub code review with actionable feedback, security assessments, and improvement recommendations.
+
+## REVIEW SCOPE & METHODOLOGY
+
+### 1. ARCHITECTURE & CODE ORGANIZATION REVIEW
+- **Layered Architecture Analysis**: Evaluate the separation of concerns between data/logic layer (models), presentation layer (views), control layer (controllers), services, and utilities
+- **File Structure Assessment**: Review naming conventions, directory organization, and module boundaries
+- **Dependency Management**: Analyze package.json dependencies, version pinning, and security vulnerabilities
+- **TypeScript Implementation**: Assess type safety, strict mode usage, and type definitions quality
+
+### 2. SECURITY VULNERABILITY ASSESSMENT
+- **Authentication & Authorization**: Review NextAuth implementation, session management, and access controls
+- **Input Validation**: Examine all user inputs, API endpoints, and data sanitization
+- **CSRF Protection**: Validate CSRF token implementation and protection mechanisms
+- **CSP (Content Security Policy)**: Review CSP configuration and XSS prevention
+- **SQL Injection Prevention**: Analyze database queries and parameterization
+- **Secrets Management**: Check for exposed credentials, proper environment variable usage
+- **Rate Limiting**: Evaluate API rate limiting and DDoS protection
+- **Data Encryption**: Review encryption at rest and in transit
+- **Compliance Framework**: Assess GDPR, CCPA, and SOC 2 compliance implementation
+
+### 3. PERFORMANCE & SCALABILITY ANALYSIS
+- **Database Performance**: Review query optimization, indexing strategies, and connection pooling
+- **Caching Strategy**: Evaluate Redis implementation, cache invalidation, and performance gains
+- **Memory Management**: Analyze memory leaks, garbage collection, and resource cleanup
+- **API Performance**: Review response times, pagination, and bulk operations
+- **Frontend Performance**: Assess bundle size, code splitting, and rendering optimization
+- **Concurrent Processing**: Evaluate multi-threading, async operations, and race conditions
+
+### 4. TESTING INFRASTRUCTURE EVALUATION
+- **Test Coverage Analysis**: Review unit, integration, e2e, security, performance, and accessibility test coverage
+- **Test Quality Assessment**: Evaluate test design, mocking strategies, and assertion quality
+- **CI/CD Pipeline**: Review automated testing, build processes, and deployment validation
+- **BVT (Build Verification Tests)**: Assess health checks and smoke tests
+- **Security Testing**: Review penetration testing, vulnerability scanning, and compliance testing
+
+### 5. CODE QUALITY & MAINTAINABILITY
+- **Code Readability**: Assess naming conventions, code comments, and documentation quality
+- **Error Handling**: Review exception handling, logging, and error recovery mechanisms
+- **Code Duplication**: Identify repeated code patterns and refactoring opportunities
+- **Design Patterns**: Evaluate use of appropriate design patterns and architectural decisions
+- **Technical Debt**: Identify areas requiring refactoring or modernization
+
+## SPECIFIC AREAS OF FOCUS
+
+### Frontend (React/Next.js)
+- Component architecture and reusability
+- State management and data flow
+- Performance optimization (React.memo, useMemo, useCallback)
+- Accessibility compliance (WCAG standards)
+- SEO optimization and meta tag management
+
+### Backend (Node.js/Express)
+- API design and RESTful principles
+- Middleware implementation and security
+- Database integration and ORM usage
+- Background job processing and scheduling
+- Microservices architecture considerations
+
+### Infrastructure & DevOps
+- Docker configuration and multi-stage builds
+- Environment configuration management
+- Monitoring and logging implementation
+- Backup and disaster recovery procedures
+- Scalability and load balancing strategies
+
+### Data Management
+- Database schema design and normalization
+- Data migration strategies
+- Backup and retention policies
+- Data privacy and anonymization
+- Analytics and reporting capabilities
+
+## REVIEW OUTPUT REQUIREMENTS
+
+### 1. EXECUTIVE SUMMARY
+Provide a high-level assessment of the codebase quality, security posture, and overall architecture health.
+
+### 2. CRITICAL ISSUES (P0)
+List any security vulnerabilities, data integrity risks, or system stability issues that require immediate attention.
+
+### 3. HIGH PRIORITY ISSUES (P1)
+Identify performance bottlenecks, scalability concerns, or significant technical debt that should be addressed soon.
+
+### 4. MEDIUM PRIORITY ISSUES (P2)
+Note code quality improvements, refactoring opportunities, and maintainability enhancements.
+
+### 5. LOW PRIORITY ISSUES (P3)
+Suggest minor optimizations, documentation improvements, and nice-to-have enhancements.
+
+### 6. POSITIVE OBSERVATIONS
+Highlight well-implemented features, good architectural decisions, and exemplary code quality areas.
+
+### 7. RECOMMENDATIONS
+Provide specific, actionable recommendations for each identified issue with:
+- Clear problem description
+- Impact assessment
+- Proposed solution
+- Implementation effort estimate
+- Priority justification
+
+## REVIEW STANDARDS & CRITERIA
+
+### Code Quality Metrics
+- Maintainability Index: Target >70
+- Cyclomatic Complexity: Target <10 per function
+- Test Coverage: Target >95% across all test categories
+- Security Score: Target 100% (no high/critical vulnerabilities)
+- Performance Score: Target >90 (Lighthouse/Core Web Vitals)
+
+### Security Standards
+- OWASP Top 10 compliance
+- Zero tolerance for exposed secrets
+- Proper authentication and authorization
+- Input validation and output encoding
+- Secure communication protocols
+
+### Performance Benchmarks
+- API response time: <200ms for 95th percentile
+- Page load time: <3 seconds
+- Memory usage: Stable with no leaks
+- Database query performance: <100ms average
+
+## DELIVERABLE FORMAT
+Structure the review as a GitHub issue with:
+- Clear title indicating review scope
+- Detailed description with findings
+- Labeled sections for each priority level
+- Actionable tasks with checkboxes
+- Code snippets and file references where applicable
+- Links to relevant documentation or standards
+
+## EXECUTION INSTRUCTIONS
+1. Begin with a comprehensive codebase scan using available tools
+2. Analyze each component systematically according to the review criteria
+3. Document findings with specific file references and line numbers
+4. Prioritize issues based on security, performance, and business impact
+5. Provide concrete, implementable solutions for each identified issue
+6. Format the final review as a professional GitHub issue ready for development team action
+
+This review should demonstrate the same rigor and attention to detail expected in enterprise software development environments, ensuring the codebase meets production-ready standards for security, performance, scalability, and maintainability.

@@ -17,6 +17,18 @@ const nextConfig = {
   },
 
   webpack: (config, { isServer }) => {
+    // Bundle analyzer for build analysis
+    if (process.env.ANALYZE === 'true') {
+      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          openAnalyzer: false,
+          reportFilename: isServer ? '../analyze/server.html' : '../analyze/client.html'
+        })
+      )
+    }
+
     if (!isServer) {
       // Don't resolve Node.js modules on the client-side
       config.resolve.fallback = {
@@ -110,6 +122,19 @@ const nextConfig = {
       // Minimize bundle size
       if (process.env.NODE_ENV === 'production') {
         config.optimization.minimize = true
+
+        // Additional production optimizations
+        config.optimization.concatenateModules = true
+        config.optimization.providedExports = true
+        config.optimization.mangleExports = true
+      }
+
+      // Improve build performance
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename]
+        }
       }
     }
 
@@ -261,29 +286,30 @@ const nextConfig = {
     // Enable optimized CSS loading
     optimizeCss: true,
     // Enable SWC minification for better performance
-    swcMinify: true,
-    // Enable modern JavaScript output
-    modularizeImports: {
-      'lucide-react': {
-        transform: 'lucide-react/dist/esm/icons/{{member}}'
-      },
-      'lodash': {
-        transform: 'lodash/{{member}}'
-      }
+    swcMinify: true
+  },
+
+  // Modular imports configuration (moved outside experimental)
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{member}}'
+    },
+    'lodash': {
+      transform: 'lodash/{{member}}'
     }
   },
 
   // Configure static export behavior
   trailingSlash: false,
 
-  // Temporarily disable TypeScript checking during build
+  // Temporarily disable TypeScript checking during build (will address separately)
   typescript: {
     ignoreBuildErrors: true,
   },
 
-  // Disable ESLint during build
+  // Enable ESLint during build (violations have been resolved)
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
 }
 
