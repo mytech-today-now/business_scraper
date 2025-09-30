@@ -144,9 +144,9 @@ describe('AIService', () => {
           zipCode: '12345',
         },
         industry: 'Technology',
-        description: 'A test business for unit testing',
+        // Note: description is not part of BusinessRecord type
         scrapedAt: new Date(),
-        website: 'https://testbusiness.com',
+        // Note: website is not part of BusinessRecord type, use websiteUrl instead
       }
     })
 
@@ -267,9 +267,9 @@ describe('AIService', () => {
           zipCode: '12345',
         },
         industry: 'Retail',
-        description: 'A test business without website',
+        // Note: description is not part of BusinessRecord type
         scrapedAt: new Date(),
-        website: '',
+        // Note: website is not part of BusinessRecord type
       }
 
       const analytics = await aiService.analyzeBusinessRecord(businessWithoutWebsite)
@@ -296,9 +296,9 @@ describe('AIService', () => {
           zipCode: '',
         },
         industry: '',
-        description: '',
+        // Note: description is not part of BusinessRecord type
         scrapedAt: new Date(),
-        website: '',
+        // Note: website is not part of BusinessRecord type
       }
 
       const analytics = await aiService.analyzeBusinessRecord(incompleteBusiness)
@@ -333,9 +333,9 @@ describe('AIService', () => {
           zipCode: '',
         },
         industry: '',
-        description: '',
+        // Note: description is not part of BusinessRecord type
         scrapedAt: new Date(),
-        website: '',
+        // Note: website is not part of BusinessRecord type
       }
 
       await expect(errorService.analyzeBusinessRecord(mockBusiness)).rejects.toThrow('Test error')

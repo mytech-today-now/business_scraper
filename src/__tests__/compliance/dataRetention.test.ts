@@ -9,6 +9,7 @@ import {
   RetentionPolicy,
   RetentionJob,
 } from '@/model/dataRetentionService'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({
@@ -46,6 +47,16 @@ describe('DataRetentionService', () => {
   beforeEach(() => {
     testRetentionService = new DataRetentionService()
     jest.clearAllMocks()
+
+    // Reset the mock to ensure it returns the expected structure
+    const { auditService } = require('@/model/auditService')
+    auditService.getAuditLogs.mockResolvedValue({
+      logs: [
+        { id: 'log_1', timestamp: new Date('2020-01-01') },
+        { id: 'log_2', timestamp: new Date('2020-01-02') },
+      ],
+      total: 2,
+    })
   })
 
   describe('initialization', () => {
@@ -69,6 +80,13 @@ describe('DataRetentionService', () => {
 
   describe('executeRetentionPolicies', () => {
     it('should execute all retention policies', async () => {
+      // First verify the audit service mock is working
+      const { auditService } = require('@/model/auditService')
+      const testResult = await auditService.getAuditLogs({ endDate: new Date() })
+      expect(testResult).toBeDefined()
+      expect(testResult.logs).toBeDefined()
+      expect(Array.isArray(testResult.logs)).toBe(true)
+
       const jobs = await testRetentionService.executeRetentionPolicies()
 
       expect(jobs.length).toBeGreaterThan(0)
@@ -285,7 +303,8 @@ describe('DataRetentionService', () => {
 
     it('should filter jobs by policy ID', async () => {
       const allJobs = await testRetentionService.getRetentionJobs()
-      const firstPolicyId = allJobs[0].policyId
+      const firstJob = expectArrayElement(allJobs, 0)
+      const firstPolicyId = firstJob.policyId
 
       const filteredJobs = await testRetentionService.getRetentionJobs({
         policyId: firstPolicyId,
@@ -320,8 +339,10 @@ describe('DataRetentionService', () => {
       const jobs = await testRetentionService.getRetentionJobs()
 
       for (let i = 1; i < jobs.length; i++) {
-        expect(jobs[i - 1].scheduledAt.getTime()).toBeGreaterThanOrEqual(
-          jobs[i].scheduledAt.getTime()
+        const previousJob = expectArrayElement(jobs, i - 1)
+        const currentJob = expectArrayElement(jobs, i)
+        expect(previousJob.scheduledAt.getTime()).toBeGreaterThanOrEqual(
+          currentJob.scheduledAt.getTime()
         )
       }
     })
@@ -469,8 +490,9 @@ describe('DataRetentionService', () => {
 
       const jobs = await testService.getRetentionJobs({ policyId: policy.id })
       expect(jobs.length).toBe(1)
-      expect(jobs[0].status).toBe('failed')
-      expect(jobs[0].errors.length).toBeGreaterThan(0)
+      const firstJob = expectArrayElement(jobs, 0)
+      expect(firstJob.status).toBe('failed')
+      expect(firstJob.errors.length).toBeGreaterThan(0)
     })
   })
 })

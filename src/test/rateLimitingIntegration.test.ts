@@ -7,6 +7,8 @@ import { describe, test, expect, beforeAll, afterAll, jest } from '@jest/globals
 import { clientSearchEngine } from '@/model/clientSearchEngine'
 import { testRateLimiting, RateLimitTester } from '@/utils/rateLimitingTest'
 import { logger } from '@/utils/logger'
+import { mockFetchResponses } from '../src/__tests__/utils/commonMocks'
+import { createMockResponse } from '../src/__tests__/utils/mockTypeHelpers'
 
 // Mock fetch for testing
 global.fetch = jest.fn()
@@ -97,15 +99,12 @@ describe('Rate Limiting Integration Tests', () => {
     test('should implement proper delays between requests', async () => {
       // Mock successful API response
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          success: true,
-          results: [
-            { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
-          ],
-        }),
-      } as Response)
+      mockFetch.mockResolvedValue(mockFetchResponses.success({
+        success: true,
+        results: [
+          { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
+        ],
+      }))
 
       const startTime = Date.now()
 
@@ -132,20 +131,13 @@ describe('Rate Limiting Integration Tests', () => {
 
       // First call returns 429, second call succeeds
       mockFetch
-        .mockResolvedValueOnce({
-          ok: false,
-          status: 429,
-          json: async () => ({ error: 'Rate limit exceeded', message: '429' }),
-        } as Response)
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            success: true,
-            results: [
-              { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
-            ],
-          }),
-        } as Response)
+        .mockResolvedValueOnce(createMockResponse({ error: 'Rate limit exceeded', message: '429' }, { status: 429 }))
+        .mockResolvedValueOnce(mockFetchResponses.success({
+          success: true,
+          results: [
+            { url: 'https://example.com', title: 'Test Business', snippet: 'Test snippet' },
+          ],
+        }))
 
       const startTime = Date.now()
       const results = await clientSearchEngine.searchBusinesses('test query', '60010', 5)
@@ -162,11 +154,7 @@ describe('Rate Limiting Integration Tests', () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
 
       // Mock multiple 429 responses to trigger circuit breaker
-      mockFetch.mockResolvedValue({
-        ok: false,
-        status: 429,
-        json: async () => ({ error: 'Rate limit exceeded', message: '429' }),
-      } as Response)
+      mockFetch.mockResolvedValue(createMockResponse({ error: 'Rate limit exceeded', message: '429' }, { status: 429 }))
 
       // Make multiple requests to trigger circuit breaker
       await clientSearchEngine.searchBusinesses('test query 1', '60010', 5)

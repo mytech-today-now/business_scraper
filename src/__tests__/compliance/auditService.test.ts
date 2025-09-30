@@ -4,6 +4,7 @@
  */
 
 import { auditService, AuditService, AuditLog } from '@/model/auditService'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({
@@ -49,12 +50,13 @@ describe('AuditService', () => {
       expect(logs.logs).toHaveLength(1)
 
       const log = logs.logs[0]
-      expect(log.action).toBe(action)
-      expect(log.resource).toBe(resource)
-      expect(log.userId).toBe(options.userId)
-      expect(log.severity).toBe(options.severity)
-      expect(log.category).toBe(options.category)
-      expect(log.complianceFlags).toEqual(options.complianceFlags)
+      expect(log).toBeDefined()
+      expect(log?.action).toBe(action)
+      expect(log?.resource).toBe(resource)
+      expect(log?.userId).toBe(options.userId)
+      expect(log?.severity).toBe(options.severity)
+      expect(log?.category).toBe(options.category)
+      expect(log?.complianceFlags).toEqual(options.complianceFlags)
     })
 
     it('should use default values when options are not provided', async () => {
@@ -62,10 +64,10 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({})
       const log = logs.logs[0]
-
-      expect(log.severity).toBe('medium')
-      expect(log.category).toBe('system')
-      expect(log.complianceFlags).toEqual([])
+      expect(log).toBeDefined()
+      expect(log?.severity).toBe('medium')
+      expect(log?.category).toBe('system')
+      expect(log?.complianceFlags).toEqual([])
     })
 
     it('should generate unique audit IDs', async () => {
@@ -74,7 +76,9 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({})
       expect(logs.logs).toHaveLength(2)
-      expect(logs.logs[0].id).not.toBe(logs.logs[1].id)
+      const firstLog = expectArrayElement(logs.logs, 0)
+      const secondLog = expectArrayElement(logs.logs, 1)
+      expect(firstLog.id).not.toBe(secondLog.id)
     })
   })
 
@@ -98,7 +102,7 @@ describe('AuditService', () => {
       const logs = await testAuditService.getAuditLogs({ category: 'payment' })
       expect(logs.logs).toHaveLength(1)
 
-      const log = logs.logs[0]
+      const log = expectArrayElement(logs.logs, 0)
       expect(log.category).toBe('payment')
       expect(log.severity).toBe('high')
       expect(log.complianceFlags).toContain('PCI_DSS')
@@ -122,7 +126,7 @@ describe('AuditService', () => {
       const logs = await testAuditService.getAuditLogs({ category: 'data' })
       expect(logs.logs).toHaveLength(1)
 
-      const log = logs.logs[0]
+      const log = expectArrayElement(logs.logs, 0)
       expect(log.action).toBe('data_access')
       expect(log.resource).toBe('user_data')
       expect(log.category).toBe('data')
@@ -148,7 +152,7 @@ describe('AuditService', () => {
       const logs = await testAuditService.getAuditLogs({ category: 'security' })
       expect(logs.logs).toHaveLength(1)
 
-      const log = logs.logs[0]
+      const log = expectArrayElement(logs.logs, 0)
       expect(log.severity).toBe('critical')
       expect(log.category).toBe('security')
       expect(log.complianceFlags).toContain('SOC2')
@@ -190,13 +194,15 @@ describe('AuditService', () => {
     it('should filter logs by category', async () => {
       const result = await testAuditService.getAuditLogs({ category: 'security' })
       expect(result.logs).toHaveLength(1)
-      expect(result.logs[0].category).toBe('security')
+      const firstLog = expectArrayElement(result.logs, 0)
+      expect(firstLog.category).toBe('security')
     })
 
     it('should filter logs by severity', async () => {
       const result = await testAuditService.getAuditLogs({ severity: 'critical' })
       expect(result.logs).toHaveLength(1)
-      expect(result.logs[0].severity).toBe('critical')
+      const firstLog = expectArrayElement(result.logs, 0)
+      expect(firstLog.severity).toBe('critical')
     })
 
     it('should apply pagination', async () => {
@@ -315,7 +321,8 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({ complianceFlags: ['PCI_DSS'] })
       expect(logs.logs).toHaveLength(1)
-      expect(logs.logs[0].complianceFlags).toContain('PCI_DSS')
+      const firstLog = expectArrayElement(logs.logs, 0)
+      expect(firstLog.complianceFlags).toContain('PCI_DSS')
     })
 
     it('should process GDPR compliance flags', async () => {
@@ -326,7 +333,8 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({ complianceFlags: ['GDPR'] })
       expect(logs.logs).toHaveLength(1)
-      expect(logs.logs[0].complianceFlags).toContain('GDPR')
+      const firstLog = expectArrayElement(logs.logs, 0)
+      expect(firstLog.complianceFlags).toContain('GDPR')
     })
 
     it('should process SOC2 compliance flags', async () => {
@@ -337,7 +345,8 @@ describe('AuditService', () => {
 
       const logs = await testAuditService.getAuditLogs({ complianceFlags: ['SOC2'] })
       expect(logs.logs).toHaveLength(1)
-      expect(logs.logs[0].complianceFlags).toContain('SOC2')
+      const firstLog = expectArrayElement(logs.logs, 0)
+      expect(firstLog.complianceFlags).toContain('SOC2')
     })
   })
 })

@@ -38,7 +38,8 @@ describe('CSRF Token Infinite Loop Fix', () => {
     })
 
     it('should not retry indefinitely on 401 errors', async () => {
-      const mockFetch = jest.fn()
+      const { createFetchMock } = await import('@/__tests__/utils/mockTypeHelpers')
+      const mockFetch = createFetchMock()
       global.fetch = mockFetch
 
       // Mock a 401 response

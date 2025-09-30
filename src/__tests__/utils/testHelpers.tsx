@@ -92,11 +92,12 @@ export const renderWithProviders = (
   })
 
   // Mock IntersectionObserver
-  global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+  const { createBrowserApiMock } = await import('./mockTypeHelpers')
+  global.IntersectionObserver = createBrowserApiMock(IntersectionObserver, {
     observe: jest.fn(),
     unobserve: jest.fn(),
     disconnect: jest.fn(),
-  }))
+  })
 
   const Wrapper = ({ children }: { children: ReactNode }) => {
     return (

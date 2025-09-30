@@ -48,9 +48,9 @@ describe('PredictiveAnalyticsEngine', () => {
         zipCode: '12345',
       },
       industry: 'Technology',
-      description: 'A test business for unit testing',
+      // Note: description is not part of BusinessRecord type
       scrapedAt: new Date(),
-      website: 'https://testbusiness.com',
+      // Note: website is not part of BusinessRecord type, use websiteUrl instead
     }
   })
 
@@ -158,7 +158,7 @@ describe('PredictiveAnalyticsEngine', () => {
       expect(factors.hasPhone).toBe(1) // Business has phone
       expect(factors.hasEmail).toBe(1) // Business has email
       expect(factors.hasAddress).toBe(1) // Business has address
-      expect(factors.descriptionQuality).toBeGreaterThan(0) // Has description
+      // Note: descriptionQuality factor removed as description is not part of BusinessRecord
       expect(factors.industryRelevance).toBeGreaterThan(0) // Has industry
       expect(factors.businessMaturity).toBeGreaterThan(0) // Should have some maturity
     })
@@ -180,9 +180,9 @@ describe('PredictiveAnalyticsEngine', () => {
           zipCode: '',
         },
         industry: '',
-        description: '',
+        // Note: description is not part of BusinessRecord type
         scrapedAt: new Date(),
-        website: '',
+        // Note: website is not part of BusinessRecord type
       }
 
       const forecast = await engine.forecastResponseRate(minimalBusiness)

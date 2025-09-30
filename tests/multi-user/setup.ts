@@ -7,7 +7,7 @@ import '@testing-library/jest-dom'
 import { jest } from '@jest/globals'
 
 // Mock environment variables
-process.env.NODE_ENV = 'test'
+;(process.env as any).NODE_ENV = 'test'
 process.env.DB_HOST = 'localhost'
 process.env.DB_PORT = '5432'
 process.env.DB_NAME = 'business_scraper_test'
@@ -46,7 +46,7 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock WebSocket
-global.WebSocket = jest.fn().mockImplementation(() => ({
+;(global as any).WebSocket = jest.fn().mockImplementation(() => ({
   send: jest.fn(),
   close: jest.fn(),
   addEventListener: jest.fn(),
@@ -59,9 +59,9 @@ global.WebSocket = jest.fn().mockImplementation(() => ({
 }))
 
 // Mock Notification API
-global.Notification = jest.fn().mockImplementation((title, options) => ({
+;(global as any).Notification = jest.fn().mockImplementation((title: string, options?: any) => ({
   title,
-  ...options,
+  ...(options || {}),
   close: jest.fn(),
 }))
 
@@ -71,12 +71,12 @@ Object.defineProperty(global.Notification, 'permission', {
 })
 
 Object.defineProperty(global.Notification, 'requestPermission', {
-  value: jest.fn().mockResolvedValue('granted'),
+  value: jest.fn().mockResolvedValue('granted' as any),
   writable: true,
 })
 
 // Mock fetch
-global.fetch = jest.fn()
+;(global as any).fetch = jest.fn()
 
 // Mock localStorage
 const localStorageMock = {
@@ -111,8 +111,8 @@ Object.defineProperty(global, 'crypto', {
   value: {
     randomUUID: jest.fn(() => 'test-uuid-' + Math.random().toString(36).substr(2, 9)),
     getRandomValues: jest.fn(arr => {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = Math.floor(Math.random() * 256)
+      for (let i = 0; i < (arr as any).length; i++) {
+        ;(arr as any)[i] = Math.floor(Math.random() * 256)
       }
       return arr
     }),
@@ -235,13 +235,13 @@ global.testUtils = {
       success,
       data,
       ...(success ? {} : { error: 'Test error' }),
-    }),
+    } as any),
     text: jest.fn().mockResolvedValue(
       JSON.stringify({
         success,
         data,
         ...(success ? {} : { error: 'Test error' }),
-      })
+      }) as any
     ),
   }),
 

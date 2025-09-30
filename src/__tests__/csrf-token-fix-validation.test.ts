@@ -6,6 +6,8 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useCSRFProtection, useFormCSRFProtection } from '@/hooks/useCSRFProtection'
 import { logger } from '@/utils/logger'
+import { mockFetchResponses } from './utils/commonMocks'
+import { createMockResponse } from './utils/mockTypeHelpers'
 
 // Mock fetch
 global.fetch = jest.fn()
@@ -42,18 +44,16 @@ describe('CSRF Token Fix Validation', () => {
   describe('useCSRFProtection Hook', () => {
     it('should use /api/csrf endpoint instead of /api/auth', async () => {
       // Mock successful response
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          csrfToken: 'test-token',
-          expiresAt: new Date(Date.now() + 3600000).toISOString(),
-          temporary: false,
-        }),
-        headers: new Headers({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        csrfToken: 'test-token',
+        expiresAt: new Date(Date.now() + 3600000).toISOString(),
+        temporary: false,
+      }, {
+        headers: {
           'X-CSRF-Token': 'test-token',
           'X-CSRF-Expires': String(Date.now() + 3600000),
-        }),
-      } as Response)
+        }
+      }))
 
       const { result } = renderHook(() => useCSRFProtection())
 

@@ -4,6 +4,7 @@
  */
 
 import { EmailValidationService } from '../../lib/emailValidationService'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock DNS module with simple implementation
 jest.mock('dns/promises', () => ({
@@ -100,10 +101,14 @@ describe('EmailValidationService Functional Tests', () => {
       const results = await emailValidationService.validateEmails(emails)
 
       expect(results).toHaveLength(4)
-      expect(results[0].isValid).toBe(true)
-      expect(results[1].isDisposable).toBe(true)
-      expect(results[2].isValid).toBe(false)
-      expect(results[3].isRoleBased).toBe(true)
+      const firstResult = expectArrayElement(results, 0)
+      const secondResult = expectArrayElement(results, 1)
+      const thirdResult = expectArrayElement(results, 2)
+      const fourthResult = expectArrayElement(results, 3)
+      expect(firstResult.isValid).toBe(true)
+      expect(secondResult.isDisposable).toBe(true)
+      expect(thirdResult.isValid).toBe(false)
+      expect(fourthResult.isRoleBased).toBe(true)
     })
   })
 
@@ -213,14 +218,15 @@ describe('EmailValidationService Functional Tests', () => {
       expect(roleBasedEmails.length).toBe(2) // info, sales
 
       // Find best email (should be john.doe - not role-based, not disposable)
-      const bestEmail = results
+      const sortedEmails = results
         .filter(r => r.isValid && !r.isDisposable)
         .sort((a, b) => {
           if (!a.isRoleBased && b.isRoleBased) return -1
           if (a.isRoleBased && !b.isRoleBased) return 1
           return b.confidence - a.confidence
-        })[0]
+        })
 
+      const bestEmail = expectArrayElement(sortedEmails, 0)
       expect(bestEmail.email).toBe('john.doe@company.com')
     })
   })

@@ -20,9 +20,9 @@ jest.mock('next/image', () => {
   }
 })
 
-// Mock CSRF Protection hook
-jest.mock('@/hooks/useCSRFProtection', () => ({
-  useFormCSRFProtection: jest.fn(),
+// Mock Lightweight CSRF Protection hook (the one actually used by login page)
+jest.mock('@/hooks/useLightweightCSRF', () => ({
+  useLightweightFormCSRF: jest.fn(),
 }))
 
 // Mock logger
@@ -35,7 +35,7 @@ jest.mock('@/utils/logger', () => ({
 }))
 
 const mockPush = jest.fn()
-const mockUseFormCSRFProtection = require('@/hooks/useCSRFProtection').useFormCSRFProtection
+const mockUseLightweightFormCSRF = require('@/hooks/useLightweightCSRF').useLightweightFormCSRF
 
 describe('Login Page CSRF Integration', () => {
   beforeEach(() => {
@@ -50,14 +50,12 @@ describe('Login Page CSRF Integration', () => {
 
   describe('CSRF Token Loading States', () => {
     it('should show loading message only during initial load', async () => {
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: null,
         isLoading: true,
         error: null,
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => false,
       })
 
       render(<LoginPage />)
@@ -70,14 +68,12 @@ describe('Login Page CSRF Integration', () => {
     })
 
     it('should not show 401 errors to users', async () => {
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: null,
         isLoading: false,
         error: 'Failed to fetch CSRF token: 401',
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => false,
       })
 
       render(<LoginPage />)
@@ -90,14 +86,12 @@ describe('Login Page CSRF Integration', () => {
     })
 
     it('should show non-401 errors to users', async () => {
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: null,
         isLoading: false,
         error: 'Network error occurred',
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => false,
       })
 
       render(<LoginPage />)
@@ -107,29 +101,27 @@ describe('Login Page CSRF Integration', () => {
     })
 
     it('should not show loading and error simultaneously', async () => {
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: null,
         isLoading: true,
         error: 'Some error',
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => false,
       })
 
       render(<LoginPage />)
 
-      // Should show loading message
+      // Should show loading message when loading is true
       expect(screen.getByText('Loading security token...')).toBeInTheDocument()
 
-      // Should not show error message while loading
+      // Should not show error message while loading (loading takes precedence)
       expect(screen.queryByText('Some error')).not.toBeInTheDocument()
     })
   })
 
   describe('Successful CSRF Token Load', () => {
     it('should enable form submission when token is loaded', async () => {
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: 'valid-token',
         isLoading: false,
         error: null,
@@ -138,9 +130,7 @@ describe('Login Page CSRF Integration', () => {
           type: 'hidden',
           value: 'valid-token',
         }),
-        validateForm: jest.fn().mockResolvedValue(true),
         submitForm: jest.fn(),
-        isTokenValid: () => true,
       })
 
       render(<LoginPage />)
@@ -163,14 +153,12 @@ describe('Login Page CSRF Integration', () => {
     })
 
     it('should disable form submission without valid token', async () => {
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: null,
         isLoading: false,
         error: null,
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => false,
       })
 
       render(<LoginPage />)
@@ -196,7 +184,7 @@ describe('Login Page CSRF Integration', () => {
         json: () => Promise.resolve({ success: true }),
       })
 
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: 'submit-token',
         isLoading: false,
         error: null,
@@ -205,9 +193,7 @@ describe('Login Page CSRF Integration', () => {
           type: 'hidden',
           value: 'submit-token',
         }),
-        validateForm: jest.fn().mockResolvedValue(true),
         submitForm: mockSubmitForm,
-        isTokenValid: () => true,
       })
 
       render(<LoginPage />)
@@ -238,7 +224,7 @@ describe('Login Page CSRF Integration', () => {
         json: () => Promise.resolve({ error: 'Invalid credentials' }),
       })
 
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: 'error-token',
         isLoading: false,
         error: null,
@@ -247,9 +233,7 @@ describe('Login Page CSRF Integration', () => {
           type: 'hidden',
           value: 'error-token',
         }),
-        validateForm: jest.fn().mockResolvedValue(true),
         submitForm: mockSubmitForm,
-        isTokenValid: () => true,
       })
 
       render(<LoginPage />)
@@ -282,7 +266,7 @@ describe('Login Page CSRF Integration', () => {
         }),
       })
 
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: 'rate-limit-token',
         isLoading: false,
         error: null,
@@ -291,9 +275,7 @@ describe('Login Page CSRF Integration', () => {
           type: 'hidden',
           value: 'rate-limit-token',
         }),
-        validateForm: jest.fn().mockResolvedValue(true),
         submitForm: mockSubmitForm,
-        isTokenValid: () => true,
       })
 
       render(<LoginPage />)
@@ -317,47 +299,52 @@ describe('Login Page CSRF Integration', () => {
       // Form should be disabled during rate limit
       expect(screen.getByPlaceholderText('Username')).toBeDisabled()
       expect(screen.getByPlaceholderText('Password')).toBeDisabled()
-      expect(screen.getByRole('button', { name: /sign in/i })).toBeDisabled()
+      // Button text changes to "Wait 60s" during rate limiting
+      expect(screen.getByRole('button', { name: /wait 60s/i })).toBeDisabled()
     })
   })
 
   describe('Authentication Check', () => {
     it('should redirect if already authenticated', async () => {
+      // Mock window.location.href since the component uses that instead of router.push
+      const originalLocation = window.location
+      delete (window as any).location
+      window.location = { ...originalLocation, href: '' } as any
+
       // Mock successful auth check
       ;(global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ authenticated: true }),
       })
 
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: 'auth-token',
         isLoading: false,
         error: null,
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => true,
       })
 
       render(<LoginPage />)
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/')
+        expect(window.location.href).toBe('/')
       })
+
+      // Restore original location
+      window.location = originalLocation
     })
 
     it('should stay on login page if not authenticated', async () => {
       // Mock failed auth check
       ;(global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Not authenticated'))
 
-      mockUseFormCSRFProtection.mockReturnValue({
+      mockUseLightweightFormCSRF.mockReturnValue({
         csrfToken: 'no-auth-token',
         isLoading: false,
         error: null,
         getCSRFInput: () => null,
-        validateForm: jest.fn(),
         submitForm: jest.fn(),
-        isTokenValid: () => true,
       })
 
       render(<LoginPage />)

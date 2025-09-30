@@ -5,13 +5,13 @@
 
 import { DatabaseSecurityService } from '@/lib/databaseSecurity'
 import { SecureDatabase } from '@/lib/secureDatabase'
+import { createSqlMock, asMockedFunction } from './utils/mockTypeHelpers'
 
 // Mock postgres.js module
 jest.mock('postgres', () => {
-  const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
-  mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-  mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
-  mockSql.end = jest.fn().mockResolvedValue(undefined)
+  const mockSql = createSqlMock()
+  // Add implementation for the main function call
+  Object.assign(mockSql, jest.fn().mockImplementation(() => Promise.resolve([])))
 
   return jest.fn().mockImplementation(() => mockSql)
 })
@@ -19,17 +19,19 @@ jest.mock('postgres', () => {
 // Mock postgres-connection module
 jest.mock('@/lib/postgres-connection', () => ({
   createPostgresConnection: jest.fn().mockImplementation(() => {
-    const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
-    mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-    mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
-    mockSql.end = jest.fn().mockResolvedValue(undefined)
+    const mockSql = createSqlMock()
+    Object.assign(mockSql, jest.fn().mockImplementation(() => Promise.resolve([])))
     return mockSql
   }),
   getPostgresConnection: jest.fn().mockImplementation(() => {
-    const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
-    mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-    mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
-    mockSql.end = jest.fn().mockResolvedValue(undefined)
+    const mockSql = createSqlMock()
+    Object.assign(mockSql, jest.fn().mockImplementation(() => Promise.resolve([])))
+    mockSql.begin = asMockedFunction<(callback: (sql: any) => Promise<any>) => Promise<any>>(
+      jest.fn().mockImplementation(fn => fn(mockSql))
+    )
+    mockSql.end = asMockedFunction<() => Promise<void>>(
+      jest.fn().mockResolvedValue(undefined)
+    )
     return mockSql
   }),
 }))

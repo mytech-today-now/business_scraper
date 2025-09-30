@@ -5,6 +5,7 @@
 
 import { CRMServiceRegistry } from '@/lib/crm/crmServiceRegistry'
 import { CRMProvider } from '@/types/crm'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 import { mockBusinessData } from '@/__tests__/fixtures/testData'
 
 // Mock the individual CRM services
@@ -162,13 +163,15 @@ describe('CRMServiceRegistry', () => {
     it('should get active services only', () => {
       const activeServices = registry.getActiveServices()
       expect(activeServices).toHaveLength(1)
-      expect(activeServices[0].getProvider().isActive).toBe(true)
+      const firstActiveService = expectArrayElement(activeServices, 0)
+      expect(firstActiveService.getProvider().isActive).toBe(true)
     })
 
     it('should filter services by type', () => {
       const customServices = registry.getServicesByType('custom')
       expect(customServices).toHaveLength(1)
-      expect(customServices[0].getProvider().type).toBe('custom')
+      const firstCustomService = expectArrayElement(customServices, 0)
+      expect(firstCustomService.getProvider().type).toBe('custom')
 
       const salesforceServices = registry.getServicesByType('salesforce')
       expect(salesforceServices).toHaveLength(0)

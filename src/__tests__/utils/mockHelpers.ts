@@ -165,11 +165,11 @@ export const createMockDatabase = () => {
 
 // Mock file upload objects
 export const createMockFile = (
-  content: string | Uint8Array,
+  content: string | Blob,
   filename: string,
   mimeType: string = 'text/plain'
 ): File => {
-  const blob = new Blob([content], { type: mimeType })
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType })
   return new File([blob], filename, { type: mimeType })
 }
 

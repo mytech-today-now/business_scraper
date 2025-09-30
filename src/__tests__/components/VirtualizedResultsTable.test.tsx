@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { VirtualizedResultsTable } from '@/view/components/VirtualizedResultsTable'
 import { BusinessRecord } from '@/types/business'
+import { mockNodeEnv } from '../utils/mockTypeHelpers'
 
 // Mock react-window
 jest.mock('react-window', () => ({
@@ -161,8 +162,7 @@ describe('VirtualizedResultsTable', () => {
   })
 
   it('shows performance panel in development mode', async () => {
-    const originalEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'development'
+    const restoreEnv = mockNodeEnv('development')
 
     await act(async () => {
       render(<VirtualizedResultsTable {...defaultProps} />)
@@ -172,7 +172,7 @@ describe('VirtualizedResultsTable', () => {
       expect(screen.getByText('Performance')).toBeInTheDocument()
     })
 
-    process.env.NODE_ENV = originalEnv
+    restoreEnv()
   })
 
   it('handles search input', async () => {
@@ -302,8 +302,7 @@ describe('VirtualizedResultsTable', () => {
   })
 
   it('handles performance monitoring toggle', async () => {
-    const originalEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'development'
+    const restoreEnv = mockNodeEnv('development')
 
     render(<VirtualizedResultsTable {...defaultProps} />)
 
@@ -315,12 +314,11 @@ describe('VirtualizedResultsTable', () => {
       expect(performanceButton).toBeInTheDocument()
     })
 
-    process.env.NODE_ENV = originalEnv
+    restoreEnv()
   })
 
   it('displays performance metrics when available', async () => {
-    const originalEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'development'
+    const restoreEnv = mockNodeEnv('development')
 
     render(<VirtualizedResultsTable {...defaultProps} />)
 
@@ -329,7 +327,7 @@ describe('VirtualizedResultsTable', () => {
       expect(screen.getByText('Performance')).toBeInTheDocument()
     })
 
-    process.env.NODE_ENV = originalEnv
+    restoreEnv()
   })
 
   it('handles large datasets efficiently', async () => {

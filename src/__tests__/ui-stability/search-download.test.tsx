@@ -205,6 +205,7 @@ describe('UI Stability - Search and Download', () => {
         { name: 'Business 2', address: '456 Oak Ave', phone: '555-0002' },
       ]
 
+      const { asMockedFunction } = await import('@/__tests__/utils/mockTypeHelpers')
       const mockBlob = new Blob(['csv content'], { type: 'text/csv' })
       jest.spyOn(exportService, 'exportToCSV').mockResolvedValue(mockBlob)
       jest.spyOn(exportService, 'downloadBlob').mockImplementation(() => {})

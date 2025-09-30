@@ -12,6 +12,7 @@ import {
   CSPViolationReport,
 } from '@/lib/cspConfig'
 import { isCSPSafe, sanitizeForCSP, CSPReporter } from '@/lib/cspUtils'
+import { expectArrayElement } from './utils/mockTypeHelpers'
 
 describe('CSP Configuration', () => {
   describe('getCSPConfig', () => {
@@ -258,8 +259,9 @@ describe('CSP Violation Reporting', () => {
 
       const violations = reporter.getViolations()
       expect(violations).toHaveLength(1)
-      expect(violations[0].directive).toBe('script-src')
-      expect(violations[0].blockedUri).toBe('https://evil.com/script.js')
+      const firstViolation = expectArrayElement(violations, 0)
+      expect(firstViolation.directive).toBe('script-src')
+      expect(firstViolation.blockedUri).toBe('https://evil.com/script.js')
     })
 
     it('should filter violations by time', () => {

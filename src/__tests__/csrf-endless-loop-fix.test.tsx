@@ -32,7 +32,8 @@ jest.mock('@/hooks/useLightweightCSRF', () => ({
 }))
 
 // Mock fetch for API calls
-global.fetch = jest.fn()
+import { createFetchMock } from '@/__tests__/utils/mockTypeHelpers'
+global.fetch = createFetchMock()
 
 describe('CSRF Endless Loop Fix', () => {
   beforeEach(() => {

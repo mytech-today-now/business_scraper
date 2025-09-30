@@ -15,6 +15,8 @@ import {
   formatUrl,
   formatCsvCell,
   formatBusinessForExport,
+  formatAppVersion,
+  formatVersionWithStatus,
 } from '@/utils/formatters'
 import { BusinessRecord } from '@/types/business'
 
@@ -260,6 +262,67 @@ describe('formatters', () => {
       expect(formatted['Industry']).toBe('Technology')
       expect(formatted['Coordinates']).toBe('40.712800, -74.006000')
       expect(formatted['Scraped Date']).toMatch(/Jan 15, 2024/)
+    })
+  })
+
+  describe('formatAppVersion', () => {
+    it('should format valid version strings', () => {
+      expect(formatAppVersion('1.0.0')).toBe('1.0.0')
+      expect(formatAppVersion('6.5.1234')).toBe('6.5.1234')
+      expect(formatAppVersion('999.10.9999')).toBe('999.10.9999')
+    })
+
+    it('should format with prefix when requested', () => {
+      expect(formatAppVersion('1.0.0', true)).toBe('v1.0.0')
+      expect(formatAppVersion('6.5.1234', true)).toBe('v6.5.1234')
+    })
+
+    it('should return original string for invalid versions', () => {
+      expect(formatAppVersion('invalid')).toBe('invalid')
+      expect(formatAppVersion('1.2.3.4')).toBe('1.2.3.4')
+      expect(formatAppVersion('')).toBe('')
+    })
+
+    it('should handle v prefix in input', () => {
+      expect(formatAppVersion('v1.0.0')).toBe('1.0.0')
+      expect(formatAppVersion('v1.0.0', true)).toBe('v1.0.0')
+    })
+  })
+
+  describe('formatVersionWithStatus', () => {
+    it('should format valid versions with status', () => {
+      const result = formatVersionWithStatus('1.0.0')
+      expect(result.formatted).toBe('1.0.0')
+      expect(result.isValid).toBe(true)
+      expect(result.errors).toHaveLength(0)
+    })
+
+    it('should handle invalid version format', () => {
+      const result = formatVersionWithStatus('invalid')
+      expect(result.formatted).toBe('invalid')
+      expect(result.isValid).toBe(false)
+      expect(result.errors).toContain('Invalid version format. Expected: 1-999.0-10.0-9999')
+    })
+
+    it('should handle empty version string', () => {
+      const result = formatVersionWithStatus('')
+      expect(result.formatted).toBe('')
+      expect(result.isValid).toBe(false)
+      expect(result.errors).toContain('Version string is empty')
+    })
+
+    it('should handle versions outside constraints', () => {
+      const result = formatVersionWithStatus('1000.0.0')
+      expect(result.formatted).toBe('1000.0.0')
+      expect(result.isValid).toBe(false)
+      expect(result.errors.length).toBeGreaterThan(0)
+    })
+
+    it('should provide warnings for edge cases', () => {
+      const result = formatVersionWithStatus('999.10.9999')
+      expect(result.formatted).toBe('999.10.9999')
+      expect(result.isValid).toBe(true)
+      expect(result.errors).toHaveLength(0)
     })
   })
 })

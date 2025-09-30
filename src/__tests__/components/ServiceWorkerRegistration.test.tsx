@@ -6,8 +6,10 @@ import React from 'react'
 import { render, screen, waitFor, act } from '@testing-library/react'
 import { ServiceWorkerRegistration, useIsPWA } from '@/components/ServiceWorkerRegistration'
 import { useOfflineSupport } from '@/hooks/useOfflineSupport'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 import toast from 'react-hot-toast'
 import { logger } from '@/utils/logger'
+import { mockNodeEnv } from '../utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/hooks/useOfflineSupport')
@@ -135,7 +137,12 @@ describe('ServiceWorkerRegistration', () => {
 
   describe('Service Worker Registration', () => {
     it('should register service worker in production environment', async () => {
-      process.env.NODE_ENV = 'production'
+      // Use proper environment mocking
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true,
+      })
 
       render(<ServiceWorkerRegistration />)
 
@@ -150,7 +157,12 @@ describe('ServiceWorkerRegistration', () => {
     })
 
     it('should not register service worker in development environment', () => {
-      process.env.NODE_ENV = 'development'
+      // Use proper environment mocking
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true,
+      })
 
       render(<ServiceWorkerRegistration />)
 
@@ -158,7 +170,12 @@ describe('ServiceWorkerRegistration', () => {
     })
 
     it('should handle service worker registration failure gracefully', async () => {
-      process.env.NODE_ENV = 'production'
+      // Use proper environment mocking
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true,
+      })
       const error = new Error('Registration failed')
       mockServiceWorker.register.mockRejectedValue(error)
 
@@ -217,7 +234,8 @@ describe('ServiceWorkerRegistration', () => {
       render(<ServiceWorkerRegistration />)
 
       // Get the onOffline callback that was passed to useOfflineSupport
-      const callArgs = mockUseOfflineSupport.mock.calls[0][0]
+      const firstCall = expectArrayElement(mockUseOfflineSupport.mock.calls, 0)
+      const callArgs = expectArrayElement(firstCall, 0)
       const onOfflineCallback = callArgs.onOffline
 
       // Simulate calling the offline callback

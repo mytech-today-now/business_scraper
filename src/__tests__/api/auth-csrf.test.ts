@@ -250,7 +250,12 @@ describe('Auth API CSRF Token Tests', () => {
 
     it('should include secure flag in production environment', async () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'production'
+      // Use Object.defineProperty to modify read-only NODE_ENV
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true
+      })
 
       const mockSession = {
         id: 'prod-session',
@@ -271,7 +276,12 @@ describe('Auth API CSRF Token Tests', () => {
 
       expect(setCookieHeader).toContain('Secure')
 
-      process.env.NODE_ENV = originalEnv
+      // Restore original NODE_ENV
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
   })
 })

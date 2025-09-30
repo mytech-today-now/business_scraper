@@ -2,13 +2,31 @@
  * @jest-environment jsdom
  */
 
-import { StripeService, stripeService } from '@/model/stripeService'
-import { PaymentError, SubscriptionError } from '@/types/payment'
+import { StripeService, stripeService } from '../../src/model/stripeService'
+import { PaymentError, SubscriptionError } from '../../src/types/payment'
 import Stripe from 'stripe'
+import { createStripeMock, MockedFunction, MockedObject } from '../../src/__tests__/utils/mockTypeHelpers'
 
 // Mock Stripe
 jest.mock('stripe')
 const MockedStripe = Stripe as jest.MockedClass<typeof Stripe>
+
+// Create properly typed mock Stripe instance using our helper
+const createMockStripe = () => {
+  const stripeMock = createStripeMock()
+
+  // Add additional methods specific to this test
+  return {
+    ...stripeMock,
+    paymentIntents: {
+      create: jest.fn() as unknown as MockedFunction<(params: any) => Promise<any>>,
+      confirm: jest.fn() as unknown as MockedFunction<(id: string, params?: any) => Promise<any>>,
+    },
+    webhooks: {
+      constructEvent: jest.fn() as unknown as MockedFunction<(payload: string, signature: string, secret: string) => any>,
+    },
+  }
+}
 
 // Mock config
 jest.mock('@/lib/config', () => ({
@@ -31,45 +49,16 @@ jest.mock('@/utils/logger', () => ({
 }))
 
 describe('StripeService', () => {
-  let mockStripe: jest.Mocked<Stripe>
+  let mockStripe: ReturnType<typeof createMockStripe>
   let service: StripeService
 
   beforeEach(() => {
     jest.clearAllMocks()
 
-    // Create mock Stripe instance
-    mockStripe = {
-      customers: {
-        create: jest.fn(),
-        retrieve: jest.fn(),
-        update: jest.fn(),
-        list: jest.fn(),
-      },
-      subscriptions: {
-        create: jest.fn(),
-        retrieve: jest.fn(),
-        update: jest.fn(),
-        cancel: jest.fn(),
-      },
-      paymentIntents: {
-        create: jest.fn(),
-        confirm: jest.fn(),
-      },
-      paymentMethods: {
-        attach: jest.fn(),
-        detach: jest.fn(),
-        list: jest.fn(),
-      },
-      invoices: {
-        retrieve: jest.fn(),
-        list: jest.fn(),
-      },
-      webhooks: {
-        constructEvent: jest.fn(),
-      },
-    } as any
+    // Create mock Stripe instance with properly typed Jest mocks
+    mockStripe = createMockStripe()
 
-    MockedStripe.mockImplementation(() => mockStripe)
+    MockedStripe.mockImplementation(() => mockStripe as any)
     service = new StripeService()
   })
 

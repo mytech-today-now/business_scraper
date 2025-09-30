@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals
 import { NextRequest, NextResponse } from 'next/server'
 import { getCSPHeader, getCSPConfig, buildCSPHeader } from '@/lib/cspConfig'
 import { middleware } from '@/middleware'
+import { mockNodeEnv } from './utils/mockTypeHelpers'
 
 // Mock environment variables
 const originalEnv = process.env
@@ -87,7 +88,7 @@ describe('CSP Compliance Fix', () => {
 
   describe('Middleware CSP Headers', () => {
     it('should set development CSP headers correctly', async () => {
-      process.env.NODE_ENV = 'development'
+      const restoreEnv = mockNodeEnv('development')
       
       const request = new NextRequest('http://localhost:3000/login', {
         method: 'GET',
@@ -102,10 +103,12 @@ describe('CSP Compliance Fix', () => {
       expect(cspHeader).toContain("'unsafe-inline'")
       expect(cspHeader).not.toContain('nonce-')
       expect(response.headers.get('X-CSP-Nonce')).toBeNull()
+
+      restoreEnv()
     })
 
     it('should set production CSP headers correctly', async () => {
-      process.env.NODE_ENV = 'production'
+      const restoreEnv = mockNodeEnv('production')
       
       const request = new NextRequest('http://localhost:3000/login', {
         method: 'GET',
@@ -120,6 +123,8 @@ describe('CSP Compliance Fix', () => {
       
       expect(cspHeader).toContain('nonce-')
       expect(nonceHeader).toBeDefined()
+
+      restoreEnv()
     })
   })
 

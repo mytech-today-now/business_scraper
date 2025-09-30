@@ -8,6 +8,7 @@ import {
   ComplianceReportingService,
   ComplianceReportRequest,
 } from '@/model/complianceReportingService'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({
@@ -230,8 +231,10 @@ describe('ComplianceReportingService', () => {
       const reports = await testReportingService.getComplianceReports()
 
       for (let i = 1; i < reports.length; i++) {
-        expect(reports[i - 1].generatedAt.getTime()).toBeGreaterThanOrEqual(
-          reports[i].generatedAt.getTime()
+        const previousReport = expectArrayElement(reports, i - 1)
+        const currentReport = expectArrayElement(reports, i)
+        expect(previousReport.generatedAt.getTime()).toBeGreaterThanOrEqual(
+          currentReport.generatedAt.getTime()
         )
       }
     })
@@ -294,7 +297,8 @@ describe('ComplianceReportingService', () => {
 
       expect(riskAssessment.overallRisk).toBe('high')
       expect(riskAssessment.riskFactors.length).toBeGreaterThan(0)
-      expect(riskAssessment.riskFactors[0].category).toBe('Security')
+      const firstRiskFactor = expectArrayElement(riskAssessment.riskFactors, 0)
+      expect(firstRiskFactor.category).toBe('Security')
     })
 
     it('should assess critical risk for data breaches', async () => {

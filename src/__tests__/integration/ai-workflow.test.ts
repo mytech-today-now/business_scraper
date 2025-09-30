@@ -6,6 +6,7 @@
 import { enhancedDataManager } from '@/lib/enhancedDataManager'
 import { aiLeadScoringService } from '@/lib/aiLeadScoring'
 import { BusinessRecord } from '@/types/business'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock external dependencies
 jest.mock('@tensorflow/tfjs', () => ({
@@ -210,8 +211,9 @@ describe('AI/ML Workflow Integration', () => {
   describe('Batch Processing Performance', () => {
     it('should handle large batches efficiently', async () => {
       // Create a larger dataset
+      const firstTestBusiness = expectArrayElement(testBusinesses, 0)
       const largeBatch = Array.from({ length: 50 }, (_, index) => ({
-        ...testBusinesses[0],
+        ...firstTestBusiness,
         id: `batch-business-${index}`,
         businessName: `Business ${index}`,
       }))
@@ -229,10 +231,11 @@ describe('AI/ML Workflow Integration', () => {
 
     it('should handle errors gracefully in batch processing', async () => {
       // Add some invalid businesses
+      const firstTestBusiness = expectArrayElement(testBusinesses, 0)
       const invalidBusinesses = [
         ...testBusinesses,
-        { ...testBusinesses[0], id: 'invalid-1', businessName: null as any },
-        { ...testBusinesses[0], id: 'invalid-2', email: null as any },
+        { ...firstTestBusiness, id: 'invalid-1', businessName: null as any },
+        { ...firstTestBusiness, id: 'invalid-2', email: null as any },
       ]
 
       const result = await enhancedDataManager.processBatch(invalidBusinesses)
@@ -356,8 +359,9 @@ describe('AI/ML Workflow Integration', () => {
 
     it('should identify businesses needing attention', async () => {
       // Add a business with missing data
+      const firstTestBusiness = expectArrayElement(testBusinesses, 0)
       const businessNeedingAttention: BusinessRecord = {
-        ...testBusinesses[0],
+        ...firstTestBusiness,
         id: 'needs-attention',
         email: [], // Missing email
         phone: undefined, // Missing phone

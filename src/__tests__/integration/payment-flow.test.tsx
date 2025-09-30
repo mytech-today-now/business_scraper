@@ -116,14 +116,16 @@ describe('Payment Flow Integration', () => {
         status: 'active',
       })
 
-      const onSuccess = jest.fn()
-      const onError = jest.fn()
+      const { asMockedFunction } = await import('@/__tests__/utils/mockTypeHelpers')
+      const onSuccess = asMockedFunction<(paymentIntent: any) => void>(jest.fn())
+      const onError = asMockedFunction<(error: string) => void>(jest.fn())
 
       render(
         <StripeProvider>
           <PaymentForm
-            {...defaultProps}
-            subscriptionPlanId="plan_basic"
+            amount={defaultProps.amount}
+            currency={defaultProps.currency}
+            description={defaultProps.description}
             onSuccess={onSuccess}
             onError={onError}
           />
@@ -408,15 +410,16 @@ describe('Payment Flow Integration', () => {
         planId: 'plan_pro',
       })
 
-      const onSuccess = jest.fn()
-      const onError = jest.fn()
+      const { asMockedFunction } = await import('@/__tests__/utils/mockTypeHelpers')
+      const onSuccess = asMockedFunction<(paymentIntent: any) => void>(jest.fn())
+      const onError = asMockedFunction<(error: string) => void>(jest.fn())
 
       render(
         <StripeProvider>
           <PaymentForm
-            {...defaultProps}
-            subscriptionPlanId="plan_pro"
-            isUpgrade={true}
+            amount={defaultProps.amount}
+            currency={defaultProps.currency}
+            description={defaultProps.description}
             onSuccess={onSuccess}
             onError={onError}
           />

@@ -4,6 +4,7 @@
  */
 
 import { EmailValidationService } from '../../lib/emailValidationService'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock DNS module
 const mockResolveMx = jest.fn()
@@ -53,7 +54,9 @@ describe('EmailValidationService', () => {
       for (const email of validEmails) {
         const result = await emailValidationService.validateEmail(email)
         expect(result.email).toBe(email)
-        expect(result.domain).toBe(email.split('@')[1])
+        const emailParts = email.split('@')
+        const domain = expectArrayElement(emailParts, 1)
+        expect(result.domain).toBe(domain)
         // Should pass syntax validation (other factors may affect overall validity)
       }
     })
@@ -225,10 +228,14 @@ describe('EmailValidationService', () => {
 
       const results = await emailValidationService.validateEmails(emails)
       expect(results).toHaveLength(4)
-      expect(results[0].isValid).toBe(true)
-      expect(results[1].isValid).toBe(true)
-      expect(results[2].isValid).toBe(false)
-      expect(results[3].isDisposable).toBe(true)
+      const firstResult = expectArrayElement(results, 0)
+      const secondResult = expectArrayElement(results, 1)
+      const thirdResult = expectArrayElement(results, 2)
+      const fourthResult = expectArrayElement(results, 3)
+      expect(firstResult.isValid).toBe(true)
+      expect(secondResult.isValid).toBe(true)
+      expect(thirdResult.isValid).toBe(false)
+      expect(fourthResult.isDisposable).toBe(true)
     })
   })
 

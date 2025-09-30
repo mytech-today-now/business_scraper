@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { usePerformanceMetrics } from '@/hooks/usePerformanceMetrics'
+import { mockNodeEnv } from '../utils/mockTypeHelpers'
 
 // Mock logger
 jest.mock('@/utils/logger', () => ({
@@ -302,8 +303,8 @@ describe('usePerformanceMetrics', () => {
   })
 
   it('logs performance summary in development mode', () => {
-    const originalEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'development'
+    // Use the mock helper to safely set NODE_ENV
+    mockNodeEnv('development')
 
     const { logger } = require('@/utils/logger')
 
@@ -318,7 +319,7 @@ describe('usePerformanceMetrics', () => {
       expect.any(Object)
     )
 
-    process.env.NODE_ENV = originalEnv
+    // NODE_ENV will be restored automatically by mockNodeEnv
   })
 
   it('limits render time history to 100 entries', () => {

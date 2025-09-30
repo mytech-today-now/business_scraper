@@ -14,6 +14,7 @@ import { App } from '@/view/components/App'
 import { useScraperController } from '@/controller/useScraperController'
 import { useConfig } from '@/controller/ConfigContext'
 import { toastDeduplication } from '@/utils/toastDeduplication'
+import { mockScraperController, mockConfigContext } from '@/test/testUtils'
 
 // Mock dependencies
 jest.mock('@/controller/useScraperController')
@@ -68,63 +69,6 @@ jest.mock('@/utils/logger', () => ({
 }))
 
 describe('Regression Test: ZIP Code Toast Duplication', () => {
-  const mockScrapingState = {
-    isScrapingActive: false,
-    results: [],
-    errors: [],
-    progress: { current: 0, total: 0, percentage: 0 },
-    currentUrl: '',
-    processingSteps: [],
-  }
-
-  const mockScraperController = {
-    scrapingState: mockScrapingState,
-    startScraping: jest.fn(),
-    stopScraping: jest.fn(),
-    clearResults: jest.fn(),
-    removeBusiness: jest.fn(),
-    updateBusiness: jest.fn(),
-    loadPreviousResults: jest.fn(),
-    addProcessingStep: jest.fn(),
-    updateProcessingStep: jest.fn(),
-    clearProcessingSteps: jest.fn(),
-    canStartScraping: true,
-    hasResults: false,
-    hasErrors: false,
-  }
-
-  const mockConfigContext = {
-    state: {
-      config: {
-        zipCode: '60047',
-        searchRadius: 25,
-        searchDepth: 2,
-        pagesPerSite: 5,
-      },
-      selectedIndustries: [],
-      industries: [
-        {
-          id: 'law-firms',
-          name: 'Law Firms & Legal Services',
-          keywords: ['law firm near me', 'corporate law office'],
-          isCustom: false,
-        },
-      ],
-      industriesInEditMode: [],
-      isDarkMode: false,
-      isInitialized: true,
-    },
-    updateConfig: jest.fn(),
-    toggleIndustry: jest.fn(),
-    addCustomIndustry: jest.fn(),
-    updateIndustry: jest.fn(),
-    deleteIndustry: jest.fn(),
-    startEditingIndustry: jest.fn(),
-    stopEditingIndustry: jest.fn(),
-    toggleDarkMode: jest.fn(),
-    isConfigValid: jest.fn(() => true),
-    resetConfig: jest.fn(),
-  }
 
   beforeEach(() => {
     jest.clearAllMocks()

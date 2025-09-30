@@ -4,23 +4,19 @@
 
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useOfflineSupport, useOfflineSync } from '@/hooks/useOfflineSupport'
+import { mockNavigatorOnline, expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock fetch
 global.fetch = jest.fn()
 
-// Mock navigator.onLine
-Object.defineProperty(navigator, 'onLine', {
-  writable: true,
-  value: true,
-})
-
 describe('useOfflineSupport', () => {
   const mockOnOnline = jest.fn()
   const mockOnOffline = jest.fn()
+  const navigatorMock = mockNavigatorOnline(true)
 
   beforeEach(() => {
     jest.clearAllMocks()
-    navigator.onLine = true
+    navigatorMock.setOnline(true)
     ;(fetch as jest.Mock).mockClear()
   })
 
@@ -42,7 +38,7 @@ describe('useOfflineSupport', () => {
     const { result } = renderHook(() => useOfflineSupport({ onOffline: mockOnOffline }))
 
     act(() => {
-      navigator.onLine = false
+      navigatorMock.setOnline(false)
       window.dispatchEvent(new Event('offline'))
     })
 
@@ -59,7 +55,7 @@ describe('useOfflineSupport', () => {
 
     // Go offline first
     act(() => {
-      navigator.onLine = false
+      navigatorMock.setOnline(false)
       window.dispatchEvent(new Event('offline'))
     })
 
@@ -67,7 +63,7 @@ describe('useOfflineSupport', () => {
 
     // Come back online
     act(() => {
-      navigator.onLine = true
+      navigatorMock.setOnline(true)
       window.dispatchEvent(new Event('online'))
     })
 
@@ -82,7 +78,7 @@ describe('useOfflineSupport', () => {
 
     // Go offline
     act(() => {
-      navigator.onLine = false
+      navigatorMock.setOnline(false)
       window.dispatchEvent(new Event('offline'))
     })
 
@@ -96,7 +92,7 @@ describe('useOfflineSupport', () => {
 
     // Come back online
     act(() => {
-      navigator.onLine = true
+      navigatorMock.setOnline(true)
       window.dispatchEvent(new Event('online'))
     })
 
@@ -199,8 +195,10 @@ describe('useOfflineSync', () => {
 
     expect(result.current.queue).toHaveLength(2)
     expect(result.current.hasQueuedActions).toBe(true)
-    expect(result.current.queue[0].action).toBe('CREATE_USER')
-    expect(result.current.queue[1].action).toBe('UPDATE_PROFILE')
+    const firstQueueItem = expectArrayElement(result.current.queue, 0)
+    const secondQueueItem = expectArrayElement(result.current.queue, 1)
+    expect(firstQueueItem.action).toBe('CREATE_USER')
+    expect(secondQueueItem.action).toBe('UPDATE_PROFILE')
   })
 
   it('should remove actions from queue', () => {
@@ -272,8 +270,9 @@ describe('useOfflineSync', () => {
 
     // Failed action should remain in queue with incremented retry count
     expect(result.current.queue).toHaveLength(1)
-    expect(result.current.queue[0].action).toBe('FAIL_ACTION')
-    expect(result.current.queue[0].retries).toBe(1)
+    const failedQueueItem = expectArrayElement(result.current.queue, 0)
+    expect(failedQueueItem.action).toBe('FAIL_ACTION')
+    expect(failedQueueItem.retries).toBe(1)
   })
 
   it('should remove actions after max retries', async () => {

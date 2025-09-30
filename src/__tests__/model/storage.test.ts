@@ -11,13 +11,14 @@ import {
   createMockIndustryCategory,
 } from '../utils/testHelpers'
 import { jest } from '@jest/globals'
+import { asMockedFunction } from '../utils/mockTypeHelpers'
 
 // Mock IndexedDB
 const mockDB = {
-  transaction: jest.fn(),
-  close: jest.fn(),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
+  transaction: asMockedFunction(jest.fn()),
+  close: asMockedFunction(jest.fn()),
+  addEventListener: asMockedFunction(jest.fn()),
+  removeEventListener: asMockedFunction(jest.fn()),
 }
 
 const mockTransaction = {
@@ -48,7 +49,7 @@ const mockIndex = {
 
 // Mock IDB
 jest.mock('idb', () => ({
-  openDB: jest.fn().mockResolvedValue(mockDB),
+  openDB: asMockedFunction(jest.fn().mockResolvedValue(mockDB)),
 }))
 
 describe('Storage Service', () => {

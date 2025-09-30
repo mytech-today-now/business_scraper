@@ -9,6 +9,7 @@ import {
   DataExportRequest,
   DataDeletionRequest,
 } from '@/model/gdprService'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/utils/logger', () => ({
@@ -175,8 +176,10 @@ describe('GDPRService', () => {
 
       expect(requests.exportRequests).toHaveLength(1)
       expect(requests.deletionRequests).toHaveLength(1)
-      expect(requests.exportRequests[0].userId).toBe('user_123')
-      expect(requests.deletionRequests[0].userId).toBe('user_123')
+      const firstExportRequest = expectArrayElement(requests.exportRequests, 0)
+      const firstDeletionRequest = expectArrayElement(requests.deletionRequests, 0)
+      expect(firstExportRequest.userId).toBe('user_123')
+      expect(firstDeletionRequest.userId).toBe('user_123')
     })
 
     it('should return empty arrays for user with no requests', async () => {
@@ -235,7 +238,8 @@ describe('GDPRService', () => {
 
       // Should not be processed immediately
       const userRequests = await testGDPRService.getUserRequests('user_123')
-      expect(userRequests.deletionRequests[0].status).toBe('scheduled')
+      const firstDeletionRequest = expectArrayElement(userRequests.deletionRequests, 0)
+      expect(firstDeletionRequest.status).toBe('scheduled')
     })
   })
 

@@ -6,6 +6,9 @@
 import React from 'react'
 import { render, RenderOptions, act } from '@testing-library/react'
 import { ConfigProvider } from '@/controller/ConfigContext'
+import { createContextMock, asMockedFunction } from '@/__tests__/utils/mockTypeHelpers'
+import type { ConfigContextType } from '@/controller/ConfigContext'
+import type { ScrapingState } from '@/controller/useScraperController'
 
 // Mock storage with proper initialization
 export const mockStorage = {
@@ -36,28 +39,37 @@ export const mockStorage = {
   clearAllBusinesses: jest.fn().mockResolvedValue(undefined),
 }
 
-// Mock scraper controller
+// Mock scraper controller with proper typing
+const mockScrapingState: ScrapingState = {
+  isScrapingActive: false,
+  currentUrl: '',
+  progress: { current: 0, total: 0, percentage: 0 },
+  results: [],
+  stats: null,
+  errors: [],
+  processingSteps: [],
+  sessionId: 'test-session',
+  isStreamingEnabled: true,
+  canStopEarly: false,
+  hasCompletedScraping: false,
+}
+
 export const mockScraperController = {
-  scrapingState: {
-    isScrapingActive: false,
-    results: [],
-    errors: [],
-    progress: { current: 0, total: 0, percentage: 0 },
-    currentUrl: '',
-    processingSteps: [],
-  },
-  startScraping: jest.fn(),
-  stopScraping: jest.fn(),
-  clearResults: jest.fn(),
-  removeBusiness: jest.fn(),
-  updateBusiness: jest.fn(),
-  loadPreviousResults: jest.fn(),
-  addProcessingStep: jest.fn(),
-  updateProcessingStep: jest.fn(),
-  clearProcessingSteps: jest.fn(),
+  scrapingState: mockScrapingState,
+  startScraping: asMockedFunction<() => Promise<void>>(jest.fn()),
+  stopScraping: asMockedFunction<() => void>(jest.fn()),
+  stopEarly: asMockedFunction<() => void>(jest.fn()),
+  clearResults: asMockedFunction<() => void>(jest.fn()),
+  removeBusiness: asMockedFunction<(id: string) => void>(jest.fn()),
+  updateBusiness: asMockedFunction<(id: string, updates: any) => void>(jest.fn()),
+  loadPreviousResults: asMockedFunction<() => Promise<void>>(jest.fn()),
+  addProcessingStep: asMockedFunction<(step: any) => void>(jest.fn()),
+  updateProcessingStep: asMockedFunction<(id: string, updates: any) => void>(jest.fn()),
+  clearProcessingSteps: asMockedFunction<() => void>(jest.fn()),
   canStartScraping: true,
   hasResults: false,
   hasErrors: false,
+  shouldShowResults: false,
 }
 
 // Mock localStorage
@@ -266,24 +278,37 @@ export const mockConfigState = {
   industriesInEditMode: [],
 }
 
-export const mockConfigContext = {
+export const mockConfigContext: ConfigContextType = createContextMock<ConfigContextType>({
   state: mockConfigState,
-  updateConfig: jest.fn(),
-  toggleDarkMode: jest.fn(),
-  isConfigValid: jest.fn().mockReturnValue(true),
-  resetApplicationData: jest.fn(),
-  addIndustry: jest.fn(),
-  updateIndustry: jest.fn(),
-  deleteIndustry: jest.fn(),
-  toggleIndustrySelection: jest.fn(),
-  selectAllIndustries: jest.fn(),
-  clearIndustrySelection: jest.fn(),
-  startIndustryEdit: jest.fn(),
-  stopIndustryEdit: jest.fn(),
-  addSubCategory: jest.fn(),
-  updateSubCategory: jest.fn(),
-  deleteSubCategory: jest.fn(),
-}
+  dispatch: asMockedFunction(jest.fn()),
+  updateConfig: asMockedFunction(jest.fn()),
+  resetConfig: asMockedFunction(jest.fn()),
+  saveConfig: asMockedFunction(jest.fn()),
+  loadConfig: asMockedFunction(jest.fn()),
+  addCustomIndustry: asMockedFunction(jest.fn()),
+  updateIndustry: asMockedFunction(jest.fn()),
+  removeIndustry: asMockedFunction(jest.fn()),
+  setAllIndustries: asMockedFunction(jest.fn()),
+  refreshDefaultIndustries: asMockedFunction(jest.fn()),
+  cleanupDuplicateIndustries: asMockedFunction(jest.fn()),
+  resetApplicationData: asMockedFunction(jest.fn()),
+  toggleIndustry: asMockedFunction(jest.fn()),
+  selectAllIndustries: asMockedFunction(jest.fn()),
+  deselectAllIndustries: asMockedFunction(jest.fn()),
+  selectSubCategoryIndustries: asMockedFunction(jest.fn()),
+  deselectSubCategoryIndustries: asMockedFunction(jest.fn()),
+  addSubCategory: asMockedFunction(jest.fn()),
+  updateSubCategory: asMockedFunction(jest.fn()),
+  removeSubCategory: asMockedFunction(jest.fn()),
+  setAllSubCategories: asMockedFunction(jest.fn()),
+  moveIndustryToSubCategory: asMockedFunction(jest.fn()),
+  startIndustryEdit: asMockedFunction(jest.fn()),
+  endIndustryEdit: asMockedFunction(jest.fn()),
+  clearAllEdits: asMockedFunction(jest.fn()),
+  toggleDarkMode: asMockedFunction(jest.fn()),
+  getSelectedIndustryNames: asMockedFunction(jest.fn().mockReturnValue([])),
+  isConfigValid: asMockedFunction(jest.fn().mockReturnValue(true)),
+})
 
 // Custom render function that includes providers
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {

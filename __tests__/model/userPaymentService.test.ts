@@ -7,6 +7,7 @@ import { stripeService } from '@/model/stripeService'
 import { storage } from '@/model/storage'
 import { UserPaymentProfile, PaymentError, SubscriptionError } from '@/types/payment'
 import Stripe from 'stripe'
+import { createStorageMock, MockedObject, typeMock } from '../../src/__tests__/utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/model/stripeService')
@@ -20,8 +21,8 @@ jest.mock('@/utils/logger', () => ({
   },
 }))
 
-const mockStripeService = stripeService as jest.Mocked<typeof stripeService>
-const mockStorage = storage as jest.Mocked<typeof storage>
+const mockStripeService = typeMock<typeof stripeService>(stripeService)
+const mockStorage = createStorageMock()
 
 describe('UserPaymentService', () => {
   let service: UserPaymentService
@@ -45,7 +46,7 @@ describe('UserPaymentService', () => {
 
       const mockCustomer = { id: 'cus_existing123' } as Stripe.Customer
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.getCustomer.mockResolvedValue(mockCustomer)
 
       const result = await service.ensureStripeCustomer('user123', 'test@example.com')
@@ -57,9 +58,9 @@ describe('UserPaymentService', () => {
     it('should create new customer if user does not have one', async () => {
       const mockCustomer = { id: 'cus_new123' } as Stripe.Customer
 
-      mockStorage.getItem.mockResolvedValue(null)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(null)
       mockStripeService.createCustomer.mockResolvedValue(mockCustomer)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.ensureStripeCustomer('user123', 'test@example.com', 'Test User')
 
@@ -87,10 +88,10 @@ describe('UserPaymentService', () => {
 
       const mockNewCustomer = { id: 'cus_new123' } as Stripe.Customer
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.getCustomer.mockResolvedValue(null)
       mockStripeService.createCustomer.mockResolvedValue(mockNewCustomer)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.ensureStripeCustomer('user123', 'test@example.com')
 
@@ -99,7 +100,7 @@ describe('UserPaymentService', () => {
     })
 
     it('should handle errors during customer creation', async () => {
-      mockStorage.getItem.mockResolvedValue(null)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(null)
       mockStripeService.createCustomer.mockRejectedValue(new Error('Stripe error'))
 
       await expect(service.ensureStripeCustomer('user123', 'test@example.com')).rejects.toThrow(
@@ -119,16 +120,16 @@ describe('UserPaymentService', () => {
         updatedAt: new Date(),
       }
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
 
       const result = await service.getUserPaymentProfile('user123')
 
       expect(result).toEqual(mockProfile)
-      expect(mockStorage.getItem).toHaveBeenCalledWith('userPaymentProfiles', 'user123')
+      expect(mockStorage.getUserPaymentProfile).toHaveBeenCalledWith('user123')
     })
 
     it('should return null if profile not found', async () => {
-      mockStorage.getItem.mockResolvedValue(null)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(null)
 
       const result = await service.getUserPaymentProfile('user123')
 
@@ -136,7 +137,7 @@ describe('UserPaymentService', () => {
     })
 
     it('should handle storage errors', async () => {
-      mockStorage.getItem.mockRejectedValue(new Error('Storage error'))
+      mockStorage.getUserPaymentProfile.mockRejectedValue(new Error('Storage error'))
 
       const result = await service.getUserPaymentProfile('user123')
 
@@ -161,8 +162,8 @@ describe('UserPaymentService', () => {
         subscriptionTier: 'basic' as const,
       }
 
-      mockStorage.getItem.mockResolvedValue(existingProfile)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(existingProfile)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.updateUserPaymentProfile('user123', updates)
 
@@ -180,8 +181,8 @@ describe('UserPaymentService', () => {
         subscriptionTier: 'basic' as const,
       }
 
-      mockStorage.getItem.mockResolvedValue(null)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(null)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.updateUserPaymentProfile('user123', updates)
 
@@ -212,9 +213,9 @@ describe('UserPaymentService', () => {
         cancel_at_period_end: false,
       } as Stripe.Subscription
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.createSubscription.mockResolvedValue(mockSubscription)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.createSubscription('user123', 'price_test123')
 
@@ -240,7 +241,7 @@ describe('UserPaymentService', () => {
         updatedAt: new Date(),
       }
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
 
       const result = await service.createSubscription('user123', 'price_test123')
 
@@ -267,9 +268,9 @@ describe('UserPaymentService', () => {
         cancel_at_period_end: true,
       } as Stripe.Subscription
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.cancelSubscription.mockResolvedValue(mockSubscription)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.cancelSubscription('user123', true)
 
@@ -287,7 +288,7 @@ describe('UserPaymentService', () => {
         updatedAt: new Date(),
       }
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
 
       const result = await service.cancelSubscription('user123')
 
@@ -322,19 +323,19 @@ describe('UserPaymentService', () => {
         },
       ] as Stripe.PaymentMethod[]
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.listPaymentMethods.mockResolvedValue(mockPaymentMethods)
 
       const result = await service.getUserPaymentMethods('user123')
 
       expect(result).toHaveLength(1)
-      expect(result[0].id).toBe('pm_test123')
-      expect(result[0].card?.brand).toBe('visa')
-      expect(result[0].card?.last4).toBe('4242')
+      expect(result[0]?.id).toBe('pm_test123')
+      expect(result[0]?.card?.brand).toBe('visa')
+      expect(result[0]?.card?.last4).toBe('4242')
     })
 
     it('should return empty array if no Stripe customer', async () => {
-      mockStorage.getItem.mockResolvedValue(null)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(null)
 
       const result = await service.getUserPaymentMethods('user123')
 
@@ -369,10 +370,10 @@ describe('UserPaymentService', () => {
         cancel_at_period_end: false,
       } as Stripe.Subscription
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.getCustomer.mockResolvedValue(mockCustomer)
       mockStripeService.getSubscription.mockResolvedValue(mockSubscription)
-      mockStorage.setItem.mockResolvedValue(undefined)
+      mockStorage.saveUserPaymentProfile.mockResolvedValue(undefined)
 
       const result = await service.syncWithStripe('user123')
 
@@ -392,7 +393,7 @@ describe('UserPaymentService', () => {
         updatedAt: new Date(),
       }
 
-      mockStorage.getItem.mockResolvedValue(mockProfile)
+      mockStorage.getUserPaymentProfile.mockResolvedValue(mockProfile)
       mockStripeService.getCustomer.mockResolvedValue(null)
 
       const result = await service.syncWithStripe('user123')

@@ -8,6 +8,7 @@ import { POST as syncPost, GET as syncGet } from '@/app/api/crm/sync/route'
 import { POST as crmPost } from '@/app/api/crm/route'
 import { mockBusinessData } from '@/__tests__/fixtures/testData'
 import { crmServiceRegistry } from '@/lib/crm/crmServiceRegistry'
+import { expectArrayElement } from '../utils/mockTypeHelpers'
 
 // Mock the CRM service registry
 jest.mock('@/lib/crm/crmServiceRegistry')
@@ -34,9 +35,9 @@ describe('CRM Sync Integration Tests', () => {
         syncBusinessRecord: jest.fn().mockResolvedValue({
           id: 'sync-1',
           crmProviderId: 'test-provider',
-          sourceRecordId: mockBusinessData[0].id,
+          sourceRecordId: expectArrayElement(mockBusinessData, 0).id,
           targetRecordId: 'crm-record-1',
-          businessRecord: mockBusinessData[0],
+          businessRecord: expectArrayElement(mockBusinessData, 0),
           syncStatus: 'synced',
           syncDirection: 'push',
           lastSyncAt: new Date(),
@@ -51,7 +52,7 @@ describe('CRM Sync Integration Tests', () => {
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
-          records: [mockBusinessData[0]],
+          records: [expectArrayElement(mockBusinessData, 0)],
           syncMode: 'push',
         }),
         headers: {
@@ -66,7 +67,7 @@ describe('CRM Sync Integration Tests', () => {
       expect(data.success).toBe(true)
       expect(data.data.summary.totalSynced).toBe(1)
       expect(data.data.summary.totalFailed).toBe(0)
-      expect(mockService.syncBusinessRecord).toHaveBeenCalledWith(mockBusinessData[0])
+      expect(mockService.syncBusinessRecord).toHaveBeenCalledWith(expectArrayElement(mockBusinessData, 0))
     })
 
     it('should sync multiple business records in batch', async () => {
@@ -139,7 +140,7 @@ describe('CRM Sync Integration Tests', () => {
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
-          records: [mockBusinessData[0]],
+          records: [expectArrayElement(mockBusinessData, 0)],
           syncMode: 'push',
         }),
         headers: {
@@ -152,8 +153,9 @@ describe('CRM Sync Integration Tests', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data.syncResults[0].type).toBe('error')
-      expect(data.data.syncResults[0].error).toBe('Sync failed')
+      const firstSyncResult = expectArrayElement(data.data.syncResults, 0)
+      expect(firstSyncResult.type).toBe('error')
+      expect(firstSyncResult.error).toBe('Sync failed')
     })
 
     it('should sync to multiple CRM providers', async () => {
@@ -189,7 +191,7 @@ describe('CRM Sync Integration Tests', () => {
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
-          records: [mockBusinessData[0]],
+          records: [expectArrayElement(mockBusinessData, 0)],
           syncMode: 'push',
         }),
         headers: {
@@ -238,7 +240,7 @@ describe('CRM Sync Integration Tests', () => {
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
-          records: [mockBusinessData[0]],
+          records: [expectArrayElement(mockBusinessData, 0)],
           providerIds: ['provider-1'],
           syncMode: 'push',
         }),
@@ -253,7 +255,8 @@ describe('CRM Sync Integration Tests', () => {
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
       expect(data.data.syncResults).toHaveLength(1)
-      expect(data.data.syncResults[0].providerId).toBe('provider-1')
+      const firstSyncResult = expectArrayElement(data.data.syncResults, 0)
+      expect(firstSyncResult.providerId).toBe('provider-1')
       expect(mockService1.syncBusinessRecord).toHaveBeenCalled()
       expect(mockService2.syncBusinessRecord).not.toHaveBeenCalled()
     })
@@ -319,7 +322,7 @@ describe('CRM Sync Integration Tests', () => {
       const request = new NextRequest('http://localhost/api/crm/sync', {
         method: 'POST',
         body: JSON.stringify({
-          records: [mockBusinessData[0]],
+          records: [expectArrayElement(mockBusinessData, 0)],
           syncMode: 'push',
         }),
         headers: {
@@ -354,8 +357,9 @@ describe('CRM Sync Integration Tests', () => {
 
   describe('Performance Tests', () => {
     it('should handle large batch sync efficiently', async () => {
+      const firstMockData = expectArrayElement(mockBusinessData, 0)
       const largeBatch = Array.from({ length: 100 }, (_, i) => ({
-        ...mockBusinessData[0],
+        ...firstMockData,
         id: `business-${i}`,
         businessName: `Business ${i}`,
       }))
@@ -425,7 +429,7 @@ describe('CRM Sync Integration Tests', () => {
         new NextRequest('http://localhost/api/crm/sync', {
           method: 'POST',
           body: JSON.stringify({
-            records: [mockBusinessData[0]],
+            records: [expectArrayElement(mockBusinessData, 0)],
             syncMode: 'push',
           }),
           headers: {

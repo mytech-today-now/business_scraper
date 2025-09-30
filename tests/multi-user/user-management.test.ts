@@ -6,19 +6,17 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals'
 import { UserManagementService } from '@/lib/user-management'
 import { CreateUserRequest, UpdateUserRequest } from '@/types/multi-user'
+import { createSqlMock, createBcryptMock, MockedObject } from '../../src/__tests__/utils/mockTypeHelpers'
 
-// Mock database
+// Mock database with proper types
 const mockDatabase = {
-  query: jest.fn(),
-  transaction: jest.fn(),
+  query: jest.fn() as jest.MockedFunction<(query: string, params?: any[]) => Promise<any>>,
+  transaction: jest.fn() as jest.MockedFunction<(callback: (client: any) => Promise<any>) => Promise<any>>,
 }
 
-// Mock bcrypt
-jest.mock('bcrypt', () => ({
-  hash: jest.fn().mockResolvedValue('hashed_password'),
-  compare: jest.fn().mockResolvedValue(true),
-  genSalt: jest.fn().mockResolvedValue('salt'),
-}))
+// Mock bcrypt with proper types
+const mockBcrypt = createBcryptMock()
+jest.mock('bcrypt', () => mockBcrypt)
 
 describe('UserManagementService', () => {
   beforeEach(() => {

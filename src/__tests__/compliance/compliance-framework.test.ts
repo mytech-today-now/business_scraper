@@ -4,22 +4,26 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals'
+import { createSqlMock, createEnvMock } from '../utils/mockTypeHelpers'
 
 // Set up environment variables before importing modules
-process.env.ENCRYPTION_MASTER_KEY =
-  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test'
+const envMock = createEnvMock({
+  ENCRYPTION_MASTER_KEY: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+  DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
+})
 
 import { EncryptionService } from '@/lib/compliance/encryption'
 import { AuditService, AuditEventType, AuditSeverity } from '@/lib/compliance/audit'
 import { ConsentService, ConsentType, ConsentStatus, LegalBasis } from '@/lib/compliance/consent'
 import { DataRetentionService } from '@/lib/compliance/retention'
 
-// Mock postgres.js
-const mockSql = jest.fn().mockImplementation(() => Promise.resolve([]))
-mockSql.unsafe = jest.fn().mockImplementation(() => Promise.resolve([]))
-mockSql.begin = jest.fn().mockImplementation(fn => fn(mockSql))
-mockSql.end = jest.fn().mockResolvedValue(undefined)
+// Mock postgres.js with proper types
+const mockSql = createSqlMock()
+// Add implementation for the main function call
+Object.assign(mockSql, jest.fn().mockImplementation(() => Promise.resolve([])))
+
+// Create mockPool alias for compatibility
+const mockPool = mockSql
 
 jest.mock('postgres', () => jest.fn().mockImplementation(() => mockSql))
 

@@ -14,6 +14,7 @@ import {
   createMockFile,
   createMockNextRequest,
 } from '../utils/mockHelpers'
+import { createMockFunction, MockedFunction } from '../utils/mockTypeHelpers'
 import {
   testPaths,
   testFileContents,
@@ -53,13 +54,13 @@ describe('/api/upload', () => {
       GET = apiModule.GET
     } catch (error) {
       // Fallback mock implementations if import fails
-      POST = jest.fn().mockResolvedValue({
+      POST = createMockFunction<any>().mockResolvedValue({
         status: 200,
-        json: jest.fn().mockResolvedValue({ success: true }),
+        json: createMockFunction<any>().mockResolvedValue({ success: true }),
       })
-      GET = jest.fn().mockResolvedValue({
+      GET = createMockFunction<any>().mockResolvedValue({
         status: 200,
-        json: jest.fn().mockResolvedValue({ success: true }),
+        json: createMockFunction<any>().mockResolvedValue({ success: true }),
       })
     }
   })

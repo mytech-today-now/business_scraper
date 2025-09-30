@@ -6,10 +6,12 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals'
 import { useCSRFProtection, useFormCSRFProtection } from '@/hooks/useCSRFProtection'
+import { createMockFunction, MockedFunction, createMockResponse } from '../utils/mockTypeHelpers'
+import { mockFetchResponses } from '../utils/commonMocks'
 
 // Mock fetch globally
-const mockFetch = jest.fn()
-global.fetch = mockFetch
+const mockFetch = createMockFunction<typeof fetch>()
+global.fetch = mockFetch as any
 
 // Mock logger
 jest.mock('@/utils/logger', () => ({
@@ -33,20 +35,7 @@ describe('useCSRFProtection Hook', () => {
 
   describe('Token Fetching with Fallback', () => {
     it('should fetch token from /api/csrf first', async () => {
-      const mockCsrfResponse = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'temp-csrf-token',
-          tokenId: 'temp-token-id',
-          temporary: true,
-          expiresAt: new Date(Date.now() + 600000).toISOString(),
-        }),
-        headers: new Map([
-          ['X-CSRF-Token', 'temp-csrf-token'],
-          ['X-CSRF-Token-ID', 'temp-token-id'],
-          ['X-CSRF-Expires', String(Date.now() + 600000)],
-        ]),
-      }
+      const mockCsrfResponse = mockFetchResponses.csrfToken('temp-csrf-token')
 
       mockFetch.mockResolvedValueOnce(mockCsrfResponse)
 
@@ -67,22 +56,8 @@ describe('useCSRFProtection Hook', () => {
     })
 
     it('should fallback to /api/auth when /api/csrf fails', async () => {
-      const mockCsrfFailure = {
-        ok: false,
-        status: 500,
-      }
-
-      const mockAuthSuccess = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'auth-csrf-token',
-          expiresAt: new Date(Date.now() + 3600000).toISOString(),
-        }),
-        headers: new Map([
-          ['X-CSRF-Token', 'auth-csrf-token'],
-          ['X-CSRF-Expires', String(Date.now() + 3600000)],
-        ]),
-      }
+      const mockCsrfFailure = mockFetchResponses.csrfFailure()
+      const mockAuthSuccess = mockFetchResponses.csrfToken('auth-csrf-token', 3600000)
 
       mockFetch
         .mockResolvedValueOnce(mockCsrfFailure)
@@ -103,19 +78,8 @@ describe('useCSRFProtection Hook', () => {
     })
 
     it('should retry with exponential backoff on failures', async () => {
-      const mockFailure = {
-        ok: false,
-        status: 500,
-      }
-
-      const mockSuccess = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'retry-success-token',
-          expiresAt: new Date(Date.now() + 600000).toISOString(),
-        }),
-        headers: new Map(),
-      }
+      const mockFailure = mockFetchResponses.serverError()
+      const mockSuccess = mockFetchResponses.csrfToken('retry-success-token')
 
       // Fail twice, then succeed
       mockFetch
@@ -139,10 +103,10 @@ describe('useCSRFProtection Hook', () => {
     })
 
     it('should set error after max retries exceeded', async () => {
-      const mockFailure = {
-        ok: false,
-        status: 500,
-      }
+      const mockFailure = createMockResponse(
+        { error: 'Internal Server Error' },
+        { status: 500 }
+      )
 
       mockFetch.mockResolvedValue(mockFailure)
 
@@ -164,14 +128,10 @@ describe('useCSRFProtection Hook', () => {
   describe('Token Validation', () => {
     it('should validate token expiration correctly', async () => {
       const futureTime = Date.now() + 600000 // 10 minutes from now
-      const mockResponse = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'valid-token',
-          expiresAt: new Date(futureTime).toISOString(),
-        }),
-        headers: new Map(),
-      }
+      const mockResponse = createMockResponse({
+        csrfToken: 'valid-token',
+        expiresAt: new Date(futureTime).toISOString(),
+      })
 
       mockFetch.mockResolvedValueOnce(mockResponse)
 
@@ -186,14 +146,10 @@ describe('useCSRFProtection Hook', () => {
 
     it('should detect expired tokens', async () => {
       const pastTime = Date.now() - 60000 // 1 minute ago
-      const mockResponse = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'expired-token',
-          expiresAt: new Date(pastTime).toISOString(),
-        }),
-        headers: new Map(),
-      }
+      const mockResponse = createMockResponse({
+        csrfToken: 'expired-token',
+        expiresAt: new Date(pastTime).toISOString(),
+      })
 
       mockFetch.mockResolvedValueOnce(mockResponse)
 
@@ -209,14 +165,10 @@ describe('useCSRFProtection Hook', () => {
 
   describe('Headers Generation', () => {
     it('should include CSRF token in headers', async () => {
-      const mockResponse = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'test-token',
-          expiresAt: new Date(Date.now() + 600000).toISOString(),
-        }),
-        headers: new Map(),
-      }
+      const mockResponse = createMockResponse({
+        csrfToken: 'test-token',
+        expiresAt: new Date(Date.now() + 600000).toISOString(),
+      })
 
       mockFetch.mockResolvedValueOnce(mockResponse)
 
@@ -232,16 +184,12 @@ describe('useCSRFProtection Hook', () => {
     })
 
     it('should include token ID for temporary tokens', async () => {
-      const mockResponse = {
-        ok: true,
-        json: async () => ({
-          csrfToken: 'temp-token',
-          tokenId: 'temp-id',
-          temporary: true,
-          expiresAt: new Date(Date.now() + 600000).toISOString(),
-        }),
-        headers: new Map(),
-      }
+      const mockResponse = createMockResponse({
+        csrfToken: 'temp-token',
+        tokenId: 'temp-id',
+        temporary: true,
+        expiresAt: new Date(Date.now() + 600000).toISOString(),
+      })
 
       mockFetch.mockResolvedValueOnce(mockResponse)
 
@@ -269,19 +217,12 @@ describe('useFormCSRFProtection Hook', () => {
   })
 
   it('should submit form with CSRF protection', async () => {
-    const mockCsrfResponse = {
-      ok: true,
-      json: async () => ({
-        csrfToken: 'form-token',
-        expiresAt: new Date(Date.now() + 600000).toISOString(),
-      }),
-      headers: new Map(),
-    }
+    const mockCsrfResponse = createMockResponse({
+      csrfToken: 'form-token',
+      expiresAt: new Date(Date.now() + 600000).toISOString(),
+    })
 
-    const mockSubmitResponse = {
-      ok: true,
-      json: async () => ({ success: true }),
-    }
+    const mockSubmitResponse = mockFetchResponses.success({ success: true })
 
     mockFetch
       .mockResolvedValueOnce(mockCsrfResponse)
