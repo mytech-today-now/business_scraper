@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "es2017", "es2018", "es2019", "es2020"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -15,6 +15,15 @@
     "incremental": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    // Enhanced Jest and testing support
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "removeComments": false,
+    // Better type checking for tests
+    "exactOptionalPropertyTypes": false, // Allow flexibility in test mocks
+    "noImplicitOverride": true,
     "plugins": [
       {
         "name": "next"
@@ -23,18 +32,51 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/components/*": ["./src/view/components/*"],
+      "@/components/*": ["./src/components/*", "./src/view/components/*"],
       "@/model/*": ["./src/model/*"],
       "@/controller/*": ["./src/controller/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/types/*": ["./src/types/*"]
+      "@/types/*": ["./src/types/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/view/*": ["./src/view/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      // Test utilities path mapping
+      "@/test-utils": ["./src/__tests__/utils/testUtils"],
+      "@/mock-helpers": ["./src/__tests__/utils/mockTypeHelpers"],
+      "@/common-mocks": ["./src/__tests__/utils/commonMocks"],
+      // Jest types
+      "@/jest-types": ["./src/types/jest"]
     },
+    // Enhanced type resolution for Jest
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["jest", "@testing-library/jest-dom", "node"],
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    // Include Jest setup and test files
+    "src/__tests__/**/*.ts",
+    "src/__tests__/**/*.tsx",
+    "src/types/jest.d.ts",
+    "jest.setup.js",
+    "jest.config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "coverage",
+    "dist",
+    "build",
+    // Exclude specific test directories that might have issues
+    "src/__tests__/utils/testHelpers.ts.broken",
+    "src/__tests__/utils/testHelpers.ts.backup"
+  ]
 }

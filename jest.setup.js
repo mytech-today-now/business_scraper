@@ -14,28 +14,65 @@ const { TextEncoder, TextDecoder } = require('util')
 global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 
-// Add crypto polyfills for test environment
+// Add comprehensive crypto polyfills for test environment
+const crypto = require('crypto')
+
 if (typeof globalThis.crypto === 'undefined') {
   Object.defineProperty(globalThis, 'crypto', {
     value: {
-      randomUUID: () => 'test-uuid-' + Math.random().toString(36).substr(2, 9),
+      randomUUID: () => {
+        // Generate a proper UUID v4 format
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0
+          const v = c === 'x' ? r : (r & 0x3 | 0x8)
+          return v.toString(16)
+        })
+      },
       getRandomValues: (arr) => {
         for (let i = 0; i < arr.length; i++) {
           arr[i] = Math.floor(Math.random() * 256)
         }
         return arr
       },
+      // Add createHash function for Node.js crypto compatibility
+      createHash: (algorithm) => {
+        try {
+          return crypto.createHash(algorithm)
+        } catch (error) {
+          // Fallback implementation for test environment
+          return {
+            update: (data) => ({
+              digest: (encoding) => {
+                const str = typeof data === 'string' ? data : data.toString()
+                let hash = 0
+                for (let i = 0; i < str.length; i++) {
+                  const char = str.charCodeAt(i)
+                  hash = ((hash << 5) - hash) + char
+                  hash = hash & hash
+                }
+                return encoding === 'hex' ? Math.abs(hash).toString(16).padStart(8, '0') : Math.abs(hash).toString()
+              }
+            })
+          }
+        }
+      },
       subtle: {
         importKey: jest.fn().mockResolvedValue({}),
         deriveBits: jest.fn().mockResolvedValue(new ArrayBuffer(32)),
         generateKey: jest.fn().mockResolvedValue({}),
         encrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16)),
-        decrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16))
+        decrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16)),
+        digest: jest.fn().mockResolvedValue(new ArrayBuffer(32))
       }
     },
     writable: true,
     configurable: true
   })
+}
+
+// Also ensure Node.js crypto is available globally for compatibility
+if (typeof global.crypto === 'undefined') {
+  global.crypto = globalThis.crypto
 }
 
 // Mock IndexedDB
@@ -238,23 +275,53 @@ Object.defineProperty(window, 'sessionStorage', {
 global.URL.createObjectURL = jest.fn(() => 'mocked-url')
 global.URL.revokeObjectURL = jest.fn()
 
-// Mock crypto API
+// Enhanced crypto API mock with Node.js crypto functions
 if (!global.crypto) {
   Object.defineProperty(global, 'crypto', {
     value: {
-      randomUUID: jest.fn(() => 'mocked-uuid'),
+      randomUUID: jest.fn(() => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0
+          const v = c === 'x' ? r : (r & 0x3 | 0x8)
+          return v.toString(16)
+        })
+      }),
       getRandomValues: jest.fn(arr => {
         for (let i = 0; i < arr.length; i++) {
           arr[i] = Math.floor(Math.random() * 256)
         }
         return arr
       }),
+      // Add Node.js crypto functions
+      createHash: jest.fn((algorithm) => {
+        try {
+          const crypto = require('crypto')
+          return crypto.createHash(algorithm)
+        } catch (error) {
+          // Fallback for test environment
+          return {
+            update: (data) => ({
+              digest: (encoding) => {
+                const str = typeof data === 'string' ? data : data.toString()
+                let hash = 0
+                for (let i = 0; i < str.length; i++) {
+                  const char = str.charCodeAt(i)
+                  hash = ((hash << 5) - hash) + char
+                  hash = hash & hash
+                }
+                return encoding === 'hex' ? Math.abs(hash).toString(16).padStart(8, '0') : Math.abs(hash).toString()
+              }
+            })
+          }
+        }
+      }),
       subtle: {
         importKey: jest.fn().mockResolvedValue({}),
         deriveBits: jest.fn().mockResolvedValue(new ArrayBuffer(32)),
         generateKey: jest.fn().mockResolvedValue({}),
         encrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16)),
-        decrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16))
+        decrypt: jest.fn().mockResolvedValue(new ArrayBuffer(16)),
+        digest: jest.fn().mockResolvedValue(new ArrayBuffer(32))
       }
     },
     writable: true,

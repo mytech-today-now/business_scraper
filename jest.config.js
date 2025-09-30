@@ -7,9 +7,35 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/jest.setup.js',
+    '<rootDir>/src/__tests__/setup/jestTypeScriptSetup.ts'
+  ],
   testEnvironment: 'jsdom',
+  // Enhanced TypeScript support (compatible with Next.js)
+  transform: {
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: {
+        jsx: 'react-jsx',
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        strict: true,
+        noImplicitReturns: true,
+        noFallthroughCasesInSwitch: true,
+        noUncheckedIndexedAccess: true,
+        strictNullChecks: true,
+      },
+      isolatedModules: true,
+    }],
+  },
+  // Configure ESM module handling for lucide-react and other ESM packages
+  transformIgnorePatterns: [
+    'node_modules/(?!(lucide-react|@testing-library|@babel|@jest|uuid|nanoid)/)'
+  ],
+  // Enable ESM support
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleNameMapper: {
+    // TypeScript path mapping (matches tsconfig.json)
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/components/(.*)$': '<rootDir>/src/view/components/$1',
     '^@/model/(.*)$': '<rootDir>/src/model/$1',
@@ -20,9 +46,17 @@ const customJestConfig = {
     '^@/view/(.*)$': '<rootDir>/src/view/$1',
     '^@/app/(.*)$': '<rootDir>/src/app/$1',
     '^@/hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^@/test-utils$': '<rootDir>/src/__tests__/utils/testUtils',
+    '^@/mock-helpers$': '<rootDir>/src/__tests__/utils/mockTypeHelpers',
+    '^@/common-mocks$': '<rootDir>/src/__tests__/utils/commonMocks',
+    // Mock specific modules
     '^clsx$': '<rootDir>/src/__tests__/mocks/clsx.js',
+    // ESM module mappings for proper handling
+    '^lucide-react$': '<rootDir>/src/__tests__/mocks/lucide-react.js',
+    '^uuid$': '<rootDir>/src/__tests__/mocks/uuid.js',
   },
   testMatch: [
+    '<rootDir>/__tests__/**/*.{js,jsx,ts,tsx}',
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
     '<rootDir>/src/**/*.{test,spec}.{js,jsx,ts,tsx}',
     '<rootDir>/src/tests/**/*.{test,spec}.{js,jsx,ts,tsx}',
@@ -103,12 +137,25 @@ const customJestConfig = {
     'default',
     '<rootDir>/src/utils/JestTestReporter.js'
   ],
-  // Global test configuration
+  // Enhanced TypeScript and global configuration
   globals: {
     'ts-jest': {
-      useESM: true,
+      tsconfig: {
+        jsx: 'react-jsx',
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        strict: true,
+      },
+      isolatedModules: true,
     },
+    // Global test utilities
+    __TEST_ENV__: 'jest',
+    __MOCK_ENABLED__: true,
   },
+  // TypeScript file extensions
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  // Improved module resolution for TypeScript
+  resolver: undefined,
   // Global setup and teardown
   globalSetup: '<rootDir>/src/__tests__/setup/globalSetup.js',
   globalTeardown: '<rootDir>/src/__tests__/setup/globalTeardown.js',

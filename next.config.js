@@ -228,37 +228,36 @@ const nextConfig = {
   // Enable standalone output for Docker deployment (only in production)
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 
-  // Ensure environment variables are available in standalone mode
+  // SECURITY FIX: Only expose safe, client-side environment variables
+  // Server-side secrets are accessed directly via process.env in server components/API routes
   env: {
-    DATABASE_URL: process.env.DATABASE_URL,
-    DB_HOST: process.env.DB_HOST,
-    DB_PORT: process.env.DB_PORT,
-    DB_NAME: process.env.DB_NAME,
-    DB_USER: process.env.DB_USER,
-    DB_PASSWORD: process.env.DB_PASSWORD,
-    DB_TYPE: process.env.DB_TYPE,
-    POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
-    // Build-time configuration
+    // Build-time configuration (safe for client-side)
     IS_BUILD_TIME: process.env.IS_BUILD_TIME,
     DISABLE_DATABASE: process.env.DISABLE_DATABASE,
     SKIP_RETENTION_POLICIES: process.env.SKIP_RETENTION_POLICIES,
     SKIP_BACKGROUND_JOBS: process.env.SKIP_BACKGROUND_JOBS,
     SKIP_DATA_MIGRATIONS: process.env.SKIP_DATA_MIGRATIONS,
     BUILD_LOG_LEVEL: process.env.BUILD_LOG_LEVEL,
-    // Authentication variables for client-side access
+
+    // Public configuration (safe for client-side)
     ENABLE_AUTH: process.env.ENABLE_AUTH,
-    ADMIN_USERNAME: process.env.ADMIN_USERNAME,
-    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
-    ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
-    ADMIN_PASSWORD_SALT: process.env.ADMIN_PASSWORD_SALT,
-    // Stripe payment variables for client-side access
+
+    // Stripe publishable keys (designed to be public)
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
-    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+
+    // Payment URLs (safe for client-side)
     PAYMENT_SUCCESS_URL: process.env.PAYMENT_SUCCESS_URL,
     PAYMENT_CANCEL_URL: process.env.PAYMENT_CANCEL_URL,
-    // Debug and development variables
+
+    // Debug variables (already properly prefixed)
     NEXT_PUBLIC_DEBUG: process.env.NEXT_PUBLIC_DEBUG,
+
+    // NOTE: Sensitive variables removed for security:
+    // - DATABASE_URL, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_TYPE, POSTGRES_PASSWORD
+    // - ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT
+    // - STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+    // These are now accessed server-side only via process.env
     // NODE_ENV is managed by Next.js and cannot be overridden
   },
 
@@ -302,14 +301,18 @@ const nextConfig = {
   // Configure static export behavior
   trailingSlash: false,
 
-  // Temporarily disable TypeScript checking during build (will address separately)
+  // Enable TypeScript checking during build for security
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
+    // Force TypeScript checking to run during build
+    tsconfigPath: './tsconfig.json',
   },
 
   // Enable ESLint during build (violations have been resolved)
   eslint: {
     ignoreDuringBuilds: false,
+    // Ensure ESLint runs on all directories
+    dirs: ['src', 'pages', 'components', '__tests__'],
   },
 }
 
