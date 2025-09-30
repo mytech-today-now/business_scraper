@@ -10,7 +10,7 @@ import { logger } from '@/utils/logger'
 import { validateTemporaryCSRFToken } from '@/app/api/csrf/route'
 
 // Edge Runtime compatibility check
-const isEdgeRuntime = typeof EdgeRuntime !== 'undefined' ||
+const isEdgeRuntime = (typeof globalThis !== 'undefined' && 'EdgeRuntime' in globalThis) ||
   (typeof process !== 'undefined' && process.env.NEXT_RUNTIME === 'edge')
 
 // Web Crypto API compatibility
@@ -49,6 +49,7 @@ export interface CSRFValidationResult {
  */
 export class CSRFProtectionService {
   private tokenStore = new Map<string, CSRFTokenInfo>()
+  private temporaryTokens = new Map<string, CSRFTokenInfo>()
   private readonly tokenExpiry = 60 * 60 * 1000 // 1 hour
   private readonly refreshThreshold = 15 * 60 * 1000 // 15 minutes
 
@@ -209,7 +210,7 @@ export class CSRFProtectionService {
     const now = Date.now()
     let cleanedCount = 0
 
-    for (const [sessionId, tokenInfo] of this.tokenStore.entries()) {
+    for (const [sessionId, tokenInfo] of Array.from(this.tokenStore.entries())) {
       if (now > tokenInfo.expiresAt) {
         this.tokenStore.delete(sessionId)
         cleanedCount++
@@ -255,7 +256,7 @@ export class CSRFProtectionService {
    * Get current token count for monitoring
    */
   getTokenCount(): number {
-    return this.csrfTokens.size + this.temporaryTokens.size
+    return this.tokenStore.size + this.temporaryTokens.size
   }
 
   /**

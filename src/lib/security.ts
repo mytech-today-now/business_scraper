@@ -10,7 +10,7 @@ import { getCSPHeader } from './cspConfig'
 import { getSecurityConfig } from './config'
 
 // Edge Runtime compatibility check
-const isEdgeRuntime = typeof EdgeRuntime !== 'undefined' ||
+const isEdgeRuntime = (typeof globalThis !== 'undefined' && 'EdgeRuntime' in globalThis) ||
   (typeof process !== 'undefined' && process.env.NEXT_RUNTIME === 'edge')
 
 // Web Crypto API compatibility

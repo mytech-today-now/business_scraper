@@ -404,7 +404,7 @@ export async function middleware(request: NextRequest) {
   if (threats.length > 0) {
     // Log threats but continue processing (threats are already logged in analyzeRequest)
     const highSeverityThreats = threats.filter(
-      threat => threat.severity === 'high' || threat.severity === 'critical'
+      (threat: any) => threat.severity === 'high' || threat.severity === 'critical'
     )
     if (highSeverityThreats.length > 0) {
       // Block high severity threats

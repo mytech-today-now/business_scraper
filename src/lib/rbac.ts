@@ -141,6 +141,30 @@ const DEFAULT_ROLE_PERMISSIONS: Record<RoleName, Permission[]> = {
 }
 
 /**
+ * Check if a user has a specific permission
+ * Standalone function for backward compatibility
+ */
+export function checkPermission(
+  user: User,
+  permission: Permission,
+  context?: {
+    workspaceId?: string
+    teamId?: string
+    resourceId?: string
+  }
+): boolean {
+  return RBACService.hasPermission(user, permission, context)
+}
+
+/**
+ * Check if a user has a specific role
+ * Standalone function for backward compatibility
+ */
+export function hasRole(user: User, roleName: RoleName): boolean {
+  return RBACService.hasRole(user, roleName)
+}
+
+/**
  * RBAC Service for managing roles and permissions
  */
 export class RBACService {
@@ -206,6 +230,34 @@ export class RBACService {
     }
   ): boolean {
     return permissions.every(permission => this.hasPermission(user, permission, context))
+  }
+
+  /**
+   * Check if a user has a specific role
+   */
+  static hasRole(user: User, roleName: RoleName): boolean {
+    try {
+      // Check if user has roles property (multi-user system)
+      if ('roles' in user && Array.isArray((user as any).roles)) {
+        return (user as any).roles.some((userRole: any) =>
+          userRole.role?.name === roleName || userRole.name === roleName
+        )
+      }
+
+      // Fallback for simple role systems
+      if ('role' in user) {
+        return (user as any).role === roleName
+      }
+
+      return false
+    } catch (error) {
+      logger.error('RBAC', 'Error checking role', {
+        userId: user.id,
+        roleName,
+        error,
+      })
+      return false
+    }
   }
 
   /**
@@ -444,5 +496,30 @@ export class RBACService {
       ...context,
       resourceId,
     })
+  }
+
+  /**
+   * Get all available permissions
+   */
+  static getAllPermissions(): Permission[] {
+    return Object.values(DEFAULT_ROLE_PERMISSIONS).flat()
+  }
+
+  /**
+   * Get permissions grouped by category
+   */
+  static getPermissionsByCategory(): Record<string, Permission[]> {
+    const permissions = this.getAllPermissions()
+    const categories: Record<string, Permission[]> = {}
+
+    permissions.forEach(permission => {
+      const category = permission.split('.')[0]
+      if (!categories[category]) {
+        categories[category] = []
+      }
+      categories[category].push(permission)
+    })
+
+    return categories
   }
 }

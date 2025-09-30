@@ -5,6 +5,7 @@
 
 import { logger } from '@/utils/logger'
 import { SecurityEventType, SecuritySeverity } from './securityLogger'
+import { randomUUID } from '@/utils/crypto'
 
 /**
  * Alert channel types
@@ -416,7 +417,7 @@ export class SecurityAlertManager {
     details: Record<string, any>
   ): SecurityAlert {
     const alert: SecurityAlert = {
-      id: crypto.randomUUID(),
+      id: randomUUID(),
       ruleId: rule.id,
       ruleName: rule.name,
       timestamp: new Date(),
@@ -478,7 +479,7 @@ export class SecurityAlertManager {
   private sendNotifications(alert: SecurityAlert, channels: AlertChannel[]): void {
     for (const channel of channels) {
       const notification: AlertNotification = {
-        id: crypto.randomUUID(),
+        id: randomUUID(),
         alertId: alert.id,
         channel,
         status: 'pending',

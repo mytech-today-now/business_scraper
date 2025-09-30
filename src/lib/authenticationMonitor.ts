@@ -7,7 +7,7 @@ import { NextRequest } from 'next/server'
 import { logger } from '@/utils/logger'
 import { getClientIP } from './security'
 import { securityLogger, SecurityEventType, SecuritySeverity } from './securityLogger'
-import { randomUUID } from '@/utils/crypto'
+import { randomUUID, createHash } from '@/utils/crypto'
 
 /**
  * Authentication attempt details
@@ -416,7 +416,7 @@ export class AuthenticationMonitor {
       request.headers.get('accept') || '',
     ]
 
-    return crypto.createHash('sha256').update(components.join('|')).digest('hex').substring(0, 16)
+    return createHash('sha256').update(components.join('|')).digest('hex').substring(0, 16)
   }
 
   /**
