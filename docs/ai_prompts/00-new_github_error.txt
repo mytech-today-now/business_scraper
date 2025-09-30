@@ -1,0 +1,12 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log this enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+CRITICAL SECURITY ISSUES P0 - IMMEDIATE ACTION REQUIRED
+Environment Variable Exposure in Client Bundle
+Issue: Sensitive environment variables exposed in next.config.js env section
+Files: next.config.js lines 159-183
+Impact: Database credentials, admin passwords, and API keys exposed to client-side
+Augment AI Prompt:
+Fix critical security vulnerability in next.config.js where sensitive environment variables are exposed to the client bundle. Remove all server-side secrets from the env section including: - DATABASE_URL, DB_PASSWORD, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT - STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET Only expose NEXT_PUBLIC_ prefixed variables that are safe for client-side access. Implement proper server-side environment variable handling for sensitive data.

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Scraper Application - Code Review Prompts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #e74c3c;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #f39c12;
+            margin-top: 25px;
+        }
+        .priority {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .p0 { background-color: #e74c3c; color: white; }
+        .p1 { background-color: #f39c12; color: white; }
+        .p2 { background-color: #f1c40f; color: black; }
+        .p3 { background-color: #95a5a6; color: white; }
+        .prompt-box {
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .issue-list {
+            background-color: #fff5f5;
+            border: 1px solid #fed7d7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .recommendation {
+            background-color: #f0fff4;
+            border: 1px solid #9ae6b4;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Business Scraper Application - Enterprise Code Review Prompts</h1>
+        <p><strong>Generated:</strong> 2025-09-27 | <strong>Version:</strong> 6.10.0 | <strong>Review Standard:</strong> Enterprise Production-Ready</p>
+
+        <h2>🚨 CRITICAL SECURITY ISSUES <span class="priority p0">P0 - IMMEDIATE ACTION REQUIRED</span></h2>
+
+        <h3>1. TypeScript Configuration Security Risk</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> TypeScript strict mode is disabled, creating type safety vulnerabilities<br>
+            <strong>File:</strong> tsconfig.json line 7<br>
+            <strong>Impact:</strong> Runtime errors, potential security vulnerabilities, poor developer experience
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Enable TypeScript strict mode in the Business Scraper Application. Update tsconfig.json to set "strict": true and fix all resulting type errors across the codebase. Focus on:
+            1. Adding explicit return types to all functions
+            2. Fixing any type assertions and null checks
+            3. Ensuring proper type safety in security-critical modules like authentication and CSRF protection
+            4. Update the build process to fail on TypeScript errors
+            Maintain backward compatibility while improving type safety.
+        </div>
+
+        <h3>2. Environment Variable Exposure in Client Bundle</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> Sensitive environment variables exposed in next.config.js env section<br>
+            <strong>Files:</strong> next.config.js lines 159-183<br>
+            <strong>Impact:</strong> Database credentials, admin passwords, and API keys exposed to client-side
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Fix critical security vulnerability in next.config.js where sensitive environment variables are exposed to the client bundle. Remove all server-side secrets from the env section including:
+            - DATABASE_URL, DB_PASSWORD, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT
+            - STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+            Only expose NEXT_PUBLIC_ prefixed variables that are safe for client-side access. Implement proper server-side environment variable handling for sensitive data.
+        </div>
+
+        <h3>3. Build Configuration Bypasses Quality Gates</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> TypeScript and ESLint checks disabled during build<br>
+            <strong>Files:</strong> next.config.js lines 306-313<br>
+            <strong>Impact:</strong> Production deployments with undetected errors and security issues
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Re-enable TypeScript and ESLint checking during the build process in next.config.js. Remove the ignoreBuildErrors and ignoreDuringBuilds flags. Fix all TypeScript and ESLint errors that prevent successful builds. Implement a proper CI/CD pipeline that ensures code quality gates are enforced before production deployment.
+        </div>
+
+        <h2>⚠️ HIGH PRIORITY ISSUES <span class="priority p1">P1 - ADDRESS WITHIN 1 WEEK</span></h2>
+
+        <h3>4. Dependency Security Vulnerabilities</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> Multiple high-severity npm audit vulnerabilities detected<br>
+            <strong>Impact:</strong> Potential security exploits, compliance violations
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Perform comprehensive dependency security audit and remediation for the Business Scraper Application. Run npm audit and fix all high and critical vulnerabilities. Update vulnerable packages while maintaining compatibility. Pay special attention to:
+            1. Authentication and session management dependencies
+            2. Web scraping and browser automation libraries
+            3. Database and Redis client libraries
+            4. File upload and processing dependencies
+            Document any breaking changes and update tests accordingly.
+        </div>
+
+        <h3>5. Memory Management and Performance Issues</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> Potential memory leaks in scraping operations and inadequate cleanup<br>
+            <strong>Files:</strong> src/lib/enhancedScrapingEngine.ts, src/controller/useScraperController.ts<br>
+            <strong>Impact:</strong> Application crashes, poor performance, resource exhaustion
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Optimize memory management and performance in the Business Scraper Application. Focus on:
+            1. Implement proper cleanup in scraping operations (browser instances, event listeners)
+            2. Add memory monitoring and automatic garbage collection triggers
+            3. Optimize database query patterns and connection pooling
+            4. Implement proper caching strategies with TTL and size limits
+            5. Add performance monitoring and alerting for memory usage
+            Review all async operations for proper resource cleanup and error handling.
+        </div>
+
+        <h3>6. Database Query Optimization</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> Inefficient database queries and missing indexes<br>
+            <strong>Files:</strong> src/app/api/businesses/paginated/route.ts, src/lib/enhancedFilteringService.ts<br>
+            <strong>Impact:</strong> Slow response times, database timeouts, poor scalability
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Optimize database performance in the Business Scraper Application. Analyze and improve:
+            1. Add proper database indexes for frequently queried columns
+            2. Optimize pagination queries to use cursor-based pagination instead of OFFSET
+            3. Implement query result caching for expensive operations
+            4. Add database connection pooling and timeout configurations
+            5. Review and optimize all N+1 query patterns
+            6. Add database performance monitoring and slow query logging
+            Ensure all changes maintain data consistency and ACID properties.
+        </div>
+
+        <h2>🔧 MEDIUM PRIORITY ISSUES <span class="priority p2">P2 - ADDRESS WITHIN 2 WEEKS</span></h2>
+
+        <h3>7. Error Handling Standardization</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> Inconsistent error handling patterns across the application<br>
+            <strong>Files:</strong> Multiple files in src/utils/, src/lib/, src/app/api/<br>
+            <strong>Impact:</strong> Poor debugging experience, inconsistent user experience
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Standardize error handling across the Business Scraper Application. Create a unified error handling system that:
+            1. Implements consistent error response formats for all API endpoints
+            2. Adds proper error logging with correlation IDs
+            3. Creates user-friendly error messages while maintaining security
+            4. Implements proper error boundaries in React components
+            5. Adds error recovery mechanisms where appropriate
+            6. Ensures all errors are properly typed and documented
+            Follow enterprise error handling best practices and maintain audit trails.
+        </div>
+
+        <h3>8. Test Coverage Improvements</h3>
+        <div class="issue-list">
+            <strong>Issue:</strong> Insufficient test coverage for critical security and business logic<br>
+            <strong>Current Coverage:</strong> ~85% (Target: 95%+)<br>
+            <strong>Impact:</strong> Undetected regressions, reduced confidence in deployments
+        </div>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Improve test coverage for the Business Scraper Application to achieve 95%+ coverage. Focus on:
+            1. Add comprehensive unit tests for authentication and CSRF protection
+            2. Create integration tests for all API endpoints
+            3. Add security tests for input validation and sanitization
+            4. Implement performance tests for scraping operations
+            5. Add accessibility tests for UI components
+            6. Create end-to-end tests for critical user workflows
+            7. Add regression tests for previously fixed bugs
+            Ensure all tests are maintainable and provide meaningful coverage.
+        </div>
+
+        <h2>📈 LOW PRIORITY IMPROVEMENTS <span class="priority p3">P3 - ADDRESS WITHIN 1 MONTH</span></h2>
+
+        <h3>9. Code Organization and Architecture</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Refactor the Business Scraper Application architecture for better maintainability. Implement:
+            1. Consistent file naming conventions across all modules
+            2. Proper separation of concerns between layers (Model, View, Controller)
+            3. Dependency injection for better testability
+            4. Service layer abstraction for business logic
+            5. Proper TypeScript interfaces and type definitions
+            6. Documentation for all public APIs and complex business logic
+            Follow enterprise software architecture patterns and maintain backward compatibility.
+        </div>
+
+        <h3>10. Performance Monitoring and Observability</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Implement comprehensive monitoring and observability for the Business Scraper Application:
+            1. Add application performance monitoring (APM) integration
+            2. Implement structured logging with correlation IDs
+            3. Add custom metrics for business operations (scraping success rates, etc.)
+            4. Create health check endpoints with detailed status information
+            5. Implement distributed tracing for complex operations
+            6. Add alerting for critical system metrics and errors
+            7. Create monitoring dashboards for operations team
+            Ensure all monitoring data is properly secured and compliant with privacy regulations.
+        </div>
+
+        <h2>🎯 IMPLEMENTATION PRIORITY MATRIX</h2>
+        <div class="recommendation">
+            <h3>Week 1 (Critical - P0):</h3>
+            <ul>
+                <li>Fix TypeScript strict mode and type safety issues</li>
+                <li>Remove sensitive environment variables from client bundle</li>
+                <li>Re-enable build quality gates (TypeScript/ESLint)</li>
+            </ul>
+            
+            <h3>Week 2-3 (High Priority - P1):</h3>
+            <ul>
+                <li>Security audit and dependency updates</li>
+                <li>Memory management and performance optimization</li>
+                <li>Database query optimization and indexing</li>
+            </ul>
+            
+            <h3>Week 4-5 (Medium Priority - P2):</h3>
+            <ul>
+                <li>Error handling standardization</li>
+                <li>Test coverage improvements</li>
+            </ul>
+            
+            <h3>Month 2 (Low Priority - P3):</h3>
+            <ul>
+                <li>Architecture refactoring</li>
+                <li>Monitoring and observability implementation</li>
+            </ul>
+        </div>
+
+        <h2>📋 VALIDATION CHECKLIST</h2>
+        <div class="code">
+# After implementing fixes, run these validation commands:
+
+# 1. Security validation
+npm audit --audit-level=high
+npm run test:security
+
+# 2. Type safety validation  
+npm run type-check
+npm run build
+
+# 3. Test coverage validation
+npm run test:coverage:threshold
+
+# 4. Performance validation
+npm run test:performance
+npm run test:load
+
+# 5. End-to-end validation
+npm run test:e2e
+npm run test:bvt
+        </div>
+
+        <h2>🔐 ADDITIONAL SECURITY HARDENING PROMPTS</h2>
+
+        <h3>11. CSRF Protection Enhancement</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Enhance CSRF protection in the Business Scraper Application. Review and strengthen:
+            1. Validate CSRF token implementation in src/lib/csrfProtection.ts
+            2. Ensure proper token rotation and expiration
+            3. Add CSRF protection to all state-changing API endpoints
+            4. Implement proper SameSite cookie attributes
+            5. Add CSRF token validation to payment processing endpoints
+            6. Test CSRF protection against common attack vectors
+            7. Document CSRF implementation for security audits
+            Ensure the fix for GitHub Issue #189 (CSRF endless loop) remains stable.
+        </div>
+
+        <h3>12. Input Validation and Sanitization</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Implement comprehensive input validation and sanitization across the Business Scraper Application:
+            1. Review all API endpoints for proper input validation using Zod schemas
+            2. Implement SQL injection prevention in database queries
+            3. Add XSS protection for all user-generated content
+            4. Validate file uploads with magic number checking and malware scanning
+            5. Implement rate limiting per user/IP for all endpoints
+            6. Add input length limits and pattern validation
+            7. Sanitize all data before storage and display
+            Focus on scraping endpoints, user management, and file upload functionality.
+        </div>
+
+        <h3>13. Authentication and Session Management</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Strengthen authentication and session management in the Business Scraper Application:
+            1. Implement secure password hashing with bcrypt and proper salt rounds
+            2. Add multi-factor authentication (MFA) support
+            3. Implement session timeout and automatic renewal
+            4. Add account lockout after failed login attempts
+            5. Implement secure session storage with proper encryption
+            6. Add audit logging for all authentication events
+            7. Implement proper logout and session invalidation
+            8. Add password complexity requirements and rotation policies
+            Ensure compliance with enterprise security standards.
+        </div>
+
+        <h2>🚀 PERFORMANCE OPTIMIZATION PROMPTS</h2>
+
+        <h3>14. Caching Strategy Implementation</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Implement comprehensive caching strategy for the Business Scraper Application:
+            1. Add Redis-based caching for search results and business data
+            2. Implement browser caching with proper cache headers
+            3. Add database query result caching with intelligent invalidation
+            4. Implement CDN integration for static assets
+            5. Add cache warming for frequently accessed data
+            6. Implement cache compression and size optimization
+            7. Add cache monitoring and performance metrics
+            8. Create cache invalidation strategies for data updates
+            Focus on scraping results, geocoding data, and user session data.
+        </div>
+
+        <h3>15. Database Performance Optimization</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Optimize database performance for the Business Scraper Application:
+            1. Analyze and add missing database indexes for query optimization
+            2. Implement connection pooling with proper configuration
+            3. Add database query monitoring and slow query logging
+            4. Optimize pagination queries using cursor-based pagination
+            5. Implement database partitioning for large tables
+            6. Add database backup and recovery procedures
+            7. Implement read replicas for read-heavy operations
+            8. Add database health monitoring and alerting
+            Focus on businesses table, user sessions, and audit logs.
+        </div>
+
+        <h3>16. Frontend Performance Optimization</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Optimize frontend performance for the Business Scraper Application:
+            1. Implement code splitting and lazy loading for React components
+            2. Optimize bundle size with tree shaking and dead code elimination
+            3. Add virtual scrolling for large data tables
+            4. Implement image optimization and lazy loading
+            5. Add service worker for offline functionality
+            6. Optimize CSS delivery and eliminate unused styles
+            7. Implement proper loading states and skeleton screens
+            8. Add performance monitoring with Core Web Vitals
+            Focus on the results table, dashboard components, and data visualization.
+        </div>
+
+        <h2>🧪 TESTING AND QUALITY ASSURANCE PROMPTS</h2>
+
+        <h3>17. Comprehensive Test Suite Implementation</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Implement comprehensive testing for the Business Scraper Application to achieve 98%+ coverage:
+            1. Add unit tests for all business logic and utility functions
+            2. Create integration tests for API endpoints and database operations
+            3. Implement end-to-end tests for critical user workflows
+            4. Add security tests for authentication and authorization
+            5. Create performance tests for scraping operations
+            6. Add accessibility tests for UI components
+            7. Implement visual regression tests for UI consistency
+            8. Add load tests for concurrent user scenarios
+            Ensure all tests are maintainable and provide meaningful coverage.
+        </div>
+
+        <h3>18. Code Quality and Maintainability</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Improve code quality and maintainability for the Business Scraper Application:
+            1. Implement consistent coding standards with ESLint and Prettier
+            2. Add comprehensive JSDoc documentation for all public APIs
+            3. Refactor large functions and components for better readability
+            4. Implement proper error boundaries and error handling
+            5. Add type definitions for all external libraries
+            6. Implement dependency injection for better testability
+            7. Add code complexity analysis and refactoring recommendations
+            8. Create architectural decision records (ADRs) for major decisions
+            Focus on maintainability and developer experience.
+        </div>
+
+        <h2>🔄 DEPLOYMENT AND DEVOPS PROMPTS</h2>
+
+        <h3>19. Production Deployment Hardening</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Harden production deployment for the Business Scraper Application:
+            1. Implement proper Docker security with non-root users and minimal base images
+            2. Add environment-specific configuration management
+            3. Implement proper secrets management with encryption at rest
+            4. Add health checks and readiness probes for containers
+            5. Implement proper logging and log aggregation
+            6. Add monitoring and alerting for production systems
+            7. Implement automated backup and disaster recovery procedures
+            8. Add security scanning for container images and dependencies
+            Ensure compliance with enterprise deployment standards.
+        </div>
+
+        <h3>20. CI/CD Pipeline Enhancement</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Enhance CI/CD pipeline for the Business Scraper Application:
+            1. Implement automated testing in CI pipeline with proper test reporting
+            2. Add security scanning and vulnerability assessment
+            3. Implement automated code quality checks and gates
+            4. Add automated deployment with rollback capabilities
+            5. Implement proper environment promotion workflows
+            6. Add performance testing in CI pipeline
+            7. Implement automated documentation generation and updates
+            8. Add compliance checking and audit trail generation
+            Focus on reliability, security, and compliance requirements.
+        </div>
+
+        <h2>📊 MONITORING AND OBSERVABILITY PROMPTS</h2>
+
+        <h3>21. Application Performance Monitoring</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Implement comprehensive application performance monitoring for the Business Scraper Application:
+            1. Add APM integration with detailed transaction tracing
+            2. Implement custom metrics for business operations
+            3. Add real-time monitoring dashboards for operations team
+            4. Implement alerting for critical system metrics and SLA violations
+            5. Add user experience monitoring with Core Web Vitals
+            6. Implement distributed tracing for complex operations
+            7. Add capacity planning and resource utilization monitoring
+            8. Create automated incident response and escalation procedures
+            Focus on scraping performance, user experience, and system reliability.
+        </div>
+
+        <h3>22. Security Monitoring and Compliance</h3>
+        <div class="prompt-box">
+            <strong>Augment AI Prompt:</strong><br>
+            Implement security monitoring and compliance for the Business Scraper Application:
+            1. Add security event logging and SIEM integration
+            2. Implement intrusion detection and prevention systems
+            3. Add compliance monitoring for GDPR, CCPA, and SOC 2
+            4. Implement automated security scanning and vulnerability assessment
+            5. Add audit trail generation and retention policies
+            6. Implement data loss prevention and encryption monitoring
+            7. Add security incident response and forensics capabilities
+            8. Create compliance reporting and certification procedures
+            Ensure all monitoring data is properly secured and compliant.
+        </div>
+
+        <h2>🎯 FINAL IMPLEMENTATION ROADMAP</h2>
+        <div class="recommendation">
+            <h3>Phase 1 - Critical Security (Week 1-2):</h3>
+            <ul>
+                <li>TypeScript strict mode and type safety</li>
+                <li>Environment variable security</li>
+                <li>Build quality gates</li>
+                <li>CSRF protection enhancement</li>
+            </ul>
+
+            <h3>Phase 2 - Performance and Stability (Week 3-4):</h3>
+            <ul>
+                <li>Memory management optimization</li>
+                <li>Database performance tuning</li>
+                <li>Caching strategy implementation</li>
+                <li>Frontend performance optimization</li>
+            </ul>
+
+            <h3>Phase 3 - Quality and Testing (Week 5-6):</h3>
+            <ul>
+                <li>Comprehensive test suite</li>
+                <li>Code quality improvements</li>
+                <li>Error handling standardization</li>
+                <li>Input validation and sanitization</li>
+            </ul>
+
+            <h3>Phase 4 - Production Readiness (Week 7-8):</h3>
+            <ul>
+                <li>Deployment hardening</li>
+                <li>CI/CD pipeline enhancement</li>
+                <li>Monitoring and observability</li>
+                <li>Security monitoring and compliance</li>
+            </ul>
+        </div>
+
+        <h2>✅ SUCCESS CRITERIA AND VALIDATION</h2>
+        <div class="code">
+# Comprehensive validation checklist after all implementations:
+
+# Security Validation
+npm audit --audit-level=moderate
+npm run test:security:comprehensive
+npm run test:penetration
+
+# Performance Validation
+npm run test:performance:load
+npm run test:performance:stress
+lighthouse http://localhost:3000 --output=json
+
+# Quality Validation
+npm run test:coverage:98
+npm run lint:strict
+npm run type-check:strict
+
+# Production Readiness
+docker build -t business-scraper:production .
+docker run --rm business-scraper:production npm run test:bvt
+npm run test:e2e:production
+
+# Compliance Validation
+npm run test:compliance:gdpr
+npm run test:compliance:security
+npm run audit:dependencies
+        </div>
+
+        <p><strong>Final Note:</strong> This comprehensive code review identifies critical security vulnerabilities, performance bottlenecks, and quality issues that must be addressed before production deployment. All prompts should be executed systematically with proper testing and validation. The application shows good architectural foundation but requires significant hardening for enterprise production use. Prioritize security fixes first, followed by performance optimization and quality improvements.</p>
+    </div>
+</body>
+</html>

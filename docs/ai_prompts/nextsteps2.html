@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Function Type Resolution - Next Steps AI Prompts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .prompt-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        .prompt-title {
+            color: #333;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .context {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 3px solid #28a745;
+        }
+        .prompt-box {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .success-criteria {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .priority {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .reference {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Mock Function Type Resolution - Next Steps</h1>
+        <p>Augment AI Prompts for Completing TypeScript Error Reduction</p>
+        <p><strong>Following GitHub Issue #236</strong></p>
+    </div>
+
+    <div class="reference">
+        <strong>📋 Context:</strong> These prompts continue the work from GitHub Issue #236 where we reduced TypeScript errors from 2348 to 2295. 
+        The goal is to reach 98% test success rate by addressing the remaining mock-related TypeScript issues.
+    </div>
+
+    <!-- Section 1: Missing Module Declarations -->
+    <div class="prompt-section">
+        <div class="priority">HIGH PRIORITY</div>
+        <h2 class="prompt-title">1. Fix Missing Module Declarations</h2>
+        
+        <div class="context">
+            <strong>Issue:</strong> Components like @/components/ClientOnlyStripeProvider, @/components/ServiceWorkerRegistration, 
+            and @/components/DebugSystemInitializer are missing proper TypeScript declarations, causing "Cannot find module" errors.
+        </div>
+
+        <div class="prompt-box">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+Fix missing TypeScript module declarations for components that are causing "Cannot find module" errors in test files.
+
+SPECIFIC TASKS:
+1. Identify all components with missing module declarations by searching for TS2307 errors
+2. For each missing component, either:
+   - Create proper TypeScript declaration files (.d.ts)
+   - Add the components to the existing module declarations
+   - Create the missing component files if they should exist
+
+PRIORITY COMPONENTS TO FIX:
+- @/components/ClientOnlyStripeProvider
+- @/components/ServiceWorkerRegistration  
+- @/components/DebugSystemInitializer
+
+APPROACH:
+1. Search codebase for existing patterns of module declarations
+2. Use consistent typing patterns established in our mock helpers
+3. Ensure all declarations follow the project's TypeScript configuration
+
+SUCCESS CRITERIA:
+- All TS2307 "Cannot find module" errors resolved
+- Test files compile without module declaration errors
+- Components have proper TypeScript support
+- No regression in existing functionality
+
+Follow the patterns established in src/__tests__/utils/mockTypeHelpers.ts for consistent typing.
+        </div>
+
+        <div class="success-criteria">
+            <strong>✅ Expected Outcome:</strong> All "Cannot find module" errors resolved, improved IntelliSense support for components.
+        </div>
+    </div>
+
+    <!-- Section 2: Jest Configuration -->
+    <div class="prompt-section">
+        <div class="priority">MEDIUM PRIORITY</div>
+        <h2 class="prompt-title">2. Update Jest Configuration for Better TypeScript Support</h2>
+        
+        <div class="context">
+            <strong>Issue:</strong> Current Jest configuration may not be optimally configured for TypeScript mock typing, 
+            leading to type resolution issues in test files.
+        </div>
+
+        <div class="prompt-box">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+Enhance Jest configuration to provide better TypeScript support and mock type resolution for the business scraper application.
+
+SPECIFIC TASKS:
+1. Review current Jest configuration in jest.config.js and jest.setup.js
+2. Update TypeScript configuration for better mock type support
+3. Add proper type definitions for Jest globals and custom matchers
+4. Configure Jest to work optimally with our established mock patterns
+
+AREAS TO IMPROVE:
+- Mock function type resolution (jest.MockedFunction, jest.Mocked)
+- Global test utilities and custom matchers
+- TypeScript path mapping in Jest
+- Setup files for consistent mock patterns
+
+REFERENCE EXISTING PATTERNS:
+- Use patterns from src/__tests__/utils/mockTypeHelpers.ts
+- Leverage commonMocks.ts utilities we created
+- Ensure compatibility with our MockResponse interface
+
+CONFIGURATION UPDATES NEEDED:
+1. Add proper TypeScript types for Jest globals
+2. Configure module name mapping for better imports
+3. Set up global mock utilities
+4. Optimize transform and preset configurations
+
+SUCCESS CRITERIA:
+- Improved mock type resolution across all test files
+- Better IntelliSense support in test files
+- Reduced TypeScript errors related to Jest configuration
+- Consistent mock patterns across the test suite
+
+Ensure changes are compatible with existing test patterns and don't break current functionality.
+        </div>
+
+        <div class="success-criteria">
+            <strong>✅ Expected Outcome:</strong> Enhanced Jest TypeScript integration, better mock type support, reduced configuration-related errors.
+        </div>
+    </div>
+
+    <!-- Section 3: Response Objects -->
+    <div class="prompt-section">
+        <div class="priority">HIGH PRIORITY</div>
+        <h2 class="prompt-title">3. Fix Incomplete Response Objects in Test Files</h2>
+        
+        <div class="context">
+            <strong>Issue:</strong> Many test files create incomplete Response objects missing required properties like headers, 
+            redirected, status, statusText, type, url, body, bodyUsed, and methods like json(), text(), blob(), etc.
+        </div>
+
+        <div class="prompt-box">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+Systematically fix all incomplete Response objects in test files using the established mock patterns.
+
+SPECIFIC TASKS:
+1. Search for all incomplete Response object mocks across test files
+2. Replace them with proper createMockResponse() calls
+3. Use mockFetchResponses patterns for common scenarios
+4. Ensure all Response objects have required properties and methods
+
+ESTABLISHED PATTERNS TO USE:
+- Import { createMockResponse, mockFetchResponses } from '../utils/commonMocks'
+- Use mockFetchResponses.success(data) for 200 responses
+- Use mockFetchResponses.serverError(error) for 500 responses  
+- Use createMockResponse(data, init) for custom responses
+
+SEARCH FOR THESE PATTERNS:
+- Incomplete Response objects: { ok: true, json: async () => ... }
+- Missing properties: headers, redirected, status, statusText, type, url
+- Missing methods: json(), text(), blob(), arrayBuffer(), formData(), clone()
+
+EXAMPLE REPLACEMENT:
+// Before:
+const mockResponse = { ok: true, json: async () => ({ data: 'test' }) } as Response
+
+// After:  
+const mockResponse = mockFetchResponses.success({ data: 'test' })
+
+SUCCESS CRITERIA:
+- All Response objects have complete required properties
+- No TypeScript errors related to missing Response properties
+- Consistent use of established mock patterns
+- All fetch mocks use proper Response typing
+
+Reference the patterns in src/__tests__/utils/commonMocks.ts and src/__tests__/hooks/useCSRFProtection.test.tsx for examples.
+        </div>
+
+        <div class="success-criteria">
+            <strong>✅ Expected Outcome:</strong> All Response objects properly typed, no missing property errors, consistent mock patterns.
+        </div>
+    </div>
+
+    <!-- Section 4: Array Access Safety -->
+    <div class="prompt-section">
+        <div class="priority">MEDIUM PRIORITY</div>
+        <h2 class="prompt-title">4. Address Remaining Array Access Safety Issues</h2>
+        
+        <div class="context">
+            <strong>Issue:</strong> TypeScript strict mode with noUncheckedIndexedAccess requires null checks before accessing array elements. 
+            Many test files still have unsafe array access patterns causing "Object is possibly undefined" errors.
+        </div>
+
+        <div class="prompt-box">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+Continue fixing unsafe array access patterns across all test files using the established expectArrayElement helper.
+
+SPECIFIC TASKS:
+1. Search for all "Object is possibly undefined" errors related to array access
+2. Replace unsafe array[index] patterns with expectArrayElement(array, index)
+3. Add proper null checks for array operations
+4. Use safe array access patterns consistently
+
+ESTABLISHED PATTERN TO USE:
+- Import { expectArrayElement } from '../utils/mockTypeHelpers'
+- Replace: expect(array[0].property) with: expect(expectArrayElement(array, 0).property)
+- For multiple accesses: const firstItem = expectArrayElement(array, 0)
+
+SEARCH FOR THESE PATTERNS:
+- Direct array access: array[0], array[1], etc.
+- Array property access: array[0].property
+- Array method calls: array[0].method()
+- Loop array access: array[i] in for loops
+
+EXAMPLE REPLACEMENT:
+// Before:
+expect(logs.logs[0].id).not.toBe(logs.logs[1].id)
+
+// After:
+const firstLog = expectArrayElement(logs.logs, 0)
+const secondLog = expectArrayElement(logs.logs, 1)  
+expect(firstLog.id).not.toBe(secondLog.id)
+
+PRIORITY FILES TO FIX:
+- src/__tests__/compliance/complianceReporting.test.ts
+- src/__tests__/compliance/dataRetention.test.ts
+- src/__tests__/compliance/gdprService.test.ts
+- src/__tests__/hooks/useOfflineSupport.test.ts
+
+SUCCESS CRITERIA:
+- All array access uses safe patterns with null checks
+- No "Object is possibly undefined" errors for array access
+- Consistent use of expectArrayElement helper
+- Improved type safety across test files
+
+Reference the patterns in src/__tests__/compliance/auditService.test.ts for examples of proper array access safety.
+        </div>
+
+        <div class="success-criteria">
+            <strong>✅ Expected Outcome:</strong> All array access is type-safe, no undefined object errors, consistent safety patterns.
+        </div>
+    </div>
+
+    <!-- Final Summary -->
+    <div class="prompt-section" style="border-left-color: #28a745;">
+        <h2 class="prompt-title">🎯 Overall Success Metrics</h2>
+        
+        <div class="context">
+            <strong>Target:</strong> Achieve 98% test success rate and significantly reduce TypeScript errors from current 2295.
+        </div>
+
+        <div class="success-criteria">
+            <strong>🎯 Final Success Criteria:</strong>
+            <ul>
+                <li>TypeScript errors reduced to under 500 (from 2295)</li>
+                <li>All mock-related TypeScript errors resolved</li>
+                <li>98% test success rate achieved</li>
+                <li>Consistent mock patterns established and documented</li>
+                <li>No regression in existing functionality</li>
+                <li>Enhanced developer experience with better IntelliSense</li>
+            </ul>
+        </div>
+
+        <div class="reference">
+            <strong>📚 Reference Materials:</strong>
+            <ul>
+                <li>GitHub Issue #236 - Mock Function Type Resolution Enhancement</li>
+                <li>src/__tests__/utils/mockTypeHelpers.ts - Established mock patterns</li>
+                <li>src/__tests__/utils/commonMocks.ts - Centralized mock utilities</li>
+                <li>TypeScript configuration in tsconfig.json</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(button) {
+            const promptBox = button.parentElement;
+            const text = promptBox.textContent.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 # Professional Code Review Prompt for Business Scraper Application
-# Date: 2025-09-25
+# Date: 2025-09-26
 # Target: Augment AI in VS Code
 # Purpose: Comprehensive GitHub-style code review at enterprise standards
 
@@ -108,9 +108,9 @@ Provide specific, actionable recommendations for each identified issue with:
 ## REVIEW STANDARDS & CRITERIA
 
 ### Code Quality Metrics
-- Maintainability Index: Target >70
+- Maintainability Index: Target >90
 - Cyclomatic Complexity: Target <10 per function
-- Test Coverage: Target >95% across all test categories
+- Test Coverage: Target >98% across all test categories
 - Security Score: Target 100% (no high/critical vulnerabilities)
 - Performance Score: Target >90 (Lighthouse/Core Web Vitals)
 
@@ -145,3 +145,5 @@ Structure the review as a GitHub issue with:
 6. Format the final review as a professional GitHub issue ready for development team action
 
 This review should demonstrate the same rigor and attention to detail expected in enterprise software development environments, ensuring the codebase meets production-ready standards for security, performance, scalability, and maintainability.
+
+generate a new file called '\docs\ai_prompts\code_review_prompts-03.html' which is comprised of a series of Augment AI prompts that address the issues and problems revealed in the code review.  The prompts are going to be fed back into Augment AI which is processing the application.
