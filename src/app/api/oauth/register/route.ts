@@ -55,7 +55,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       // Allow empty redirect URIs only for client_credentials grant
       const grantTypes =
         registrationRequest.grantTypes || clientRegistrationConfig.defaultGrantTypes
-      if (!grantTypes.includes('client_credentials')) {
+      if (!grantTypes.includes('client_credentials' as any)) {
         return createErrorResponse({
           error: 'invalid_request',
           errorDescription: 'At least one redirect_uri is required',
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       for (const uri of registrationRequest.redirectUris) {
         if (!isValidRedirectUri(uri)) {
           return createErrorResponse({
-            error: 'invalid_redirect_uri',
+            error: 'invalid_redirect_uri' as any,
             errorDescription: `Invalid redirect URI: ${uri}`,
           })
         }

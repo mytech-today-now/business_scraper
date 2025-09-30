@@ -45,16 +45,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Get data categories
-    const dataCategories = await getDataCategories(email, sessionId)
+    const dataCategories = await getDataCategories(email || '', sessionId || undefined)
 
     // Get privacy rights
-    const privacyRights = await getPrivacyRights(email)
+    const privacyRights = await getPrivacyRights(email || '')
 
     // Get DSAR requests
-    const dsarRequests = await getDSARRequests(email)
+    const dsarRequests = await getDSARRequests(email || '')
 
     // Get privacy settings
-    const privacySettings = await getPrivacySettings(email, sessionId)
+    const privacySettings = await getPrivacySettings(email || '', sessionId || undefined)
 
     // Log access to privacy dashboard
     await auditService.logEvent({
@@ -98,7 +98,11 @@ export async function GET(request: NextRequest) {
  */
 async function getDataCategories(email?: string, sessionId?: string) {
   try {
-    const categories = []
+    const categories: any[] = []
+
+    if (!pool) {
+      return categories
+    }
 
     // Business contact data
     if (email) {
@@ -124,9 +128,9 @@ async function getDataCategories(email?: string, sessionId?: string) {
 
     // Consent records
     const consentResult = await pool.query(
-      'SELECT COUNT(*) as count, MAX(timestamp) as last_updated FROM consent_records WHERE user_id = (SELECT id FROM users WHERE email = $1) OR session_id = $2',
-      [email, sessionId]
-    )
+        'SELECT COUNT(*) as count, MAX(timestamp) as last_updated FROM consent_records WHERE user_id = (SELECT id FROM users WHERE email = $1) OR session_id = $2',
+        [email, sessionId]
+      )
 
     if (parseInt(consentResult.rows[0].count) > 0) {
       categories.push({
@@ -144,9 +148,9 @@ async function getDataCategories(email?: string, sessionId?: string) {
 
     // Audit logs
     const auditResult = await pool.query(
-      'SELECT COUNT(*) as count, MAX(timestamp) as last_updated FROM audit_log WHERE user_id = (SELECT id FROM users WHERE email = $1)',
-      [email]
-    )
+        'SELECT COUNT(*) as count, MAX(timestamp) as last_updated FROM audit_log WHERE user_id = (SELECT id FROM users WHERE email = $1)',
+        [email]
+      )
 
     if (parseInt(auditResult.rows[0].count) > 0) {
       categories.push({
@@ -195,6 +199,8 @@ async function getDataCategories(email?: string, sessionId?: string) {
  * Get privacy rights for user
  */
 async function getPrivacyRights(email?: string) {
+  if (!pool) return []
+
   const rights = [
     {
       id: 'access',
@@ -251,7 +257,7 @@ async function getPrivacyRights(email?: string) {
       recentRequests.rows.forEach(row => {
         const right = rights.find(r => r.id === row.request_type)
         if (right) {
-          right.lastUsed = row.last_used
+          (right as any).lastUsed = row.last_used
         }
       })
     } catch (error) {
@@ -266,7 +272,7 @@ async function getPrivacyRights(email?: string) {
  * Get DSAR requests for user
  */
 async function getDSARRequests(email?: string) {
-  if (!email) return []
+  if (!email || !pool) return []
 
   try {
     const result = await pool.query(
@@ -292,6 +298,8 @@ async function getDSARRequests(email?: string) {
  * Get privacy settings for user
  */
 async function getPrivacySettings(email?: string, sessionId?: string) {
+  if (!pool) return {}
+
   try {
     // Get consent preferences
     const consentPreferences = await consentService.getConsentPreferences(undefined, sessionId)
@@ -355,7 +363,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Handle CCPA opt-out if provided
-    if (settings.ccpaOptOut !== undefined && userEmail) {
+    if (settings.ccpaOptOut !== undefined && userEmail && pool) {
       if (settings.ccpaOptOut) {
         // Submit CCPA opt-out request
         await pool.query(
@@ -381,7 +389,7 @@ export async function PUT(request: NextRequest) {
 
     // Log privacy settings update
     await auditService.logEvent({
-      eventType: AuditEventType.PRIVACY_MANAGE,
+      eventType: AuditEventType.DATA_MODIFIED,
       severity: AuditSeverity.MEDIUM,
       details: {
         userEmail,

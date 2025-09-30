@@ -8,6 +8,8 @@ import { SearchEngineService, SearchResult } from '@/model/searchEngine'
 import { BusinessRecord } from '@/types/business'
 import { ScraperService } from '@/model/scraperService'
 import { EventEmitter } from 'events'
+import { connectionManager } from './resilience/connectionManager'
+import { healthMonitor } from './resilience/healthMonitor'
 
 export interface StreamingSearchOptions {
   maxResults?: number
@@ -41,10 +43,53 @@ export class StreamingSearchService extends EventEmitter {
   private activeStreams: Map<string, boolean> = new Map()
   private initializationError: string | null = null
   private isInitialized: boolean = false
+  private isShuttingDown: boolean = false
+  private restartCount: number = 0
+  private lastRestartTime: number = 0
+  private maxRestarts: number = 5
+  private restartCooldown: number = 60000 // 1 minute
 
   constructor() {
     super()
     this.initializeServices()
+    this.registerHealthCheck()
+  }
+
+  /**
+   * Register health check with health monitor
+   */
+  private registerHealthCheck(): void {
+    healthMonitor.registerService('streamingService', async () => {
+      try {
+        if (this.isShuttingDown) return false
+
+        // Check if service is initialized
+        if (!this.isInitialized || this.initializationError) {
+          return false
+        }
+
+        // Check if services are available
+        if (!this.searchEngine || !this.scraperService) {
+          return false
+        }
+
+        // Check active streams count (too many might indicate issues)
+        const activeStreamCount = this.activeStreams.size
+        if (activeStreamCount > 50) { // Threshold for too many active streams
+          logger.warn('StreamingSearchService', `High number of active streams: ${activeStreamCount}`)
+          return false
+        }
+
+        return true
+      } catch (error) {
+        logger.error('StreamingSearchService', 'Health check failed', error)
+        return false
+      }
+    }, {
+      maxActiveStreams: this.activeStreams.size,
+      isInitialized: this.isInitialized,
+      restartCount: this.restartCount,
+    })
   }
 
   /**
@@ -452,6 +497,72 @@ export class StreamingSearchService extends EventEmitter {
       logger.error('StreamingSearchService', 'Health check failed', error)
       return { healthy: false, details }
     }
+  }
+
+  /**
+   * Restart the streaming service with resilience checks
+   */
+  async restart(): Promise<boolean> {
+    const now = Date.now()
+
+    // Check restart cooldown
+    if (now - this.lastRestartTime < this.restartCooldown) {
+      logger.warn('StreamingSearchService', 'Restart attempted too soon, still in cooldown period')
+      return false
+    }
+
+    // Check restart count limit
+    if (this.restartCount >= this.maxRestarts) {
+      logger.error('StreamingSearchService', `Maximum restart attempts (${this.maxRestarts}) exceeded`)
+      return false
+    }
+
+    try {
+      logger.info('StreamingSearchService', `Restarting streaming service (attempt ${this.restartCount + 1})`)
+
+      // Stop all active streams
+      this.stopAllStreams()
+
+      // Reset state
+      this.isInitialized = false
+      this.initializationError = null
+      this.searchEngine = null
+      this.scraperService = null
+
+      // Re-initialize services
+      await this.initializeServices()
+
+      this.restartCount++
+      this.lastRestartTime = now
+
+      logger.info('StreamingSearchService', 'Streaming service restarted successfully')
+      return true
+    } catch (error) {
+      logger.error('StreamingSearchService', 'Failed to restart streaming service', error)
+      this.restartCount++
+      this.lastRestartTime = now
+      return false
+    }
+  }
+
+  /**
+   * Get active stream count for monitoring
+   */
+  getActiveStreamCount(): number {
+    return this.activeStreams.size
+  }
+
+  /**
+   * Graceful shutdown
+   */
+  async shutdown(): Promise<void> {
+    this.isShuttingDown = true
+    this.stopAllStreams()
+
+    // Clear any pending operations
+    this.activeStreams.clear()
+
+    logger.info('StreamingSearchService', 'Streaming service shutdown complete')
   }
 }
 

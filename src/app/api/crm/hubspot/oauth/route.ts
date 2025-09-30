@@ -49,7 +49,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'OAuth flow failed',
+        error: error instanceof Error ? error.message : 'OAuth flow failed',
       },
       { status: 500 }
     )
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Token refresh failed',
+        error: error instanceof Error ? error.message : 'Token refresh failed',
       },
       { status: 500 }
     )
@@ -159,7 +159,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Token revocation failed',
+        error: error instanceof Error ? error.message : 'Token revocation failed',
       },
       { status: 500 }
     )
@@ -244,7 +244,7 @@ async function handleOAuthCallback(
     // Redirect to error page
     const errorUrl = new URL('/crm/hubspot/oauth/error', request.url)
     errorUrl.searchParams.set('error', 'callback_failed')
-    errorUrl.searchParams.set('description', error.message)
+    errorUrl.searchParams.set('description', error instanceof Error ? error.message : 'Unknown error')
 
     return NextResponse.redirect(errorUrl)
   }

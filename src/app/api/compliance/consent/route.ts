@@ -175,7 +175,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get latest consent records from database
-    let dbPreferences = null
+    let dbPreferences: any = null
     let hasConsent = false
 
     if (userEmail || clientIP) {

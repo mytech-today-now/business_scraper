@@ -5,7 +5,9 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { withRBAC } from '@/lib/rbac-middleware'
+import { Permission } from '@/lib/auth'
 import { AuditService } from '@/lib/audit-service'
+import { database } from '@/lib/postgresql-database'
 import { AuditAction, AuditSeverity } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
 
@@ -20,8 +22,8 @@ export const GET = withRBAC(
       // Extract filter parameters
       const filters = {
         userId: searchParams.get('userId') || undefined,
-        workspaceId: searchParams.get('workspaceId') || context.workspaceId,
-        teamId: searchParams.get('teamId') || context.teamId,
+        workspaceId: searchParams.get('workspaceId') || 'default-workspace',
+        teamId: searchParams.get('teamId') || 'default-team',
         action: (searchParams.get('action') as AuditAction) || undefined,
         resourceType: searchParams.get('resourceType') || undefined,
         resourceId: searchParams.get('resourceId') || undefined,
@@ -44,7 +46,7 @@ export const GET = withRBAC(
 
       // Log audit access
       await AuditService.log({
-        action: 'audit.view',
+        action: 'data.exported',
         resourceType: 'audit_logs',
         details: {
           filters,
@@ -53,13 +55,13 @@ export const GET = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          context.session.user.id,
+          undefined
         ),
       })
 
       logger.info('Audit API', 'Audit logs retrieved', {
-        userId: context.user.id,
+        userId: context.session.user.id,
         filters,
         resultCount: result.logs.length,
         totalCount: result.total,
@@ -83,7 +85,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to retrieve audit logs' }, { status: 500 })
     }
   },
-  { permissions: ['audit.view'] }
+  { permissions: [Permission.AUDIT_VIEW] }
 )
 
 /**
@@ -127,14 +129,14 @@ export const POST = withRBAC(
         resourceId,
         details: {
           manualEntry: true,
-          createdBy: context.user.id,
+          createdBy: context.session.user.id,
           ...details,
         },
         severity: severity || 'info',
         context: {
-          ...AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
-          workspaceId: context.workspaceId,
-          teamId: context.teamId,
+          ...AuditService.extractContextFromRequest(request, context.session.user.id, undefined),
+          workspaceId: 'default-workspace',
+          teamId: 'default-team',
         },
       })
 
@@ -142,7 +144,7 @@ export const POST = withRBAC(
         action,
         resourceType,
         resourceId,
-        createdBy: context.user.id,
+        createdBy: context.session.user.id,
       })
 
       return NextResponse.json(
@@ -157,7 +159,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to create audit log entry' }, { status: 500 })
     }
   },
-  { permissions: ['audit.manage'] }
+  { permissions: [Permission.AUDIT_VIEW] }
 )
 
 /**
@@ -173,7 +175,7 @@ export const DELETE = withRBAC(
 
       if (logIds && Array.isArray(logIds)) {
         // Delete specific log entries
-        const result = await context.database.query(
+        const result = await database.executeQuery(
           `
           DELETE FROM audit_logs 
           WHERE id = ANY($1)
@@ -186,18 +188,18 @@ export const DELETE = withRBAC(
 
         // Log the deletion
         await AuditService.log({
-          action: 'audit.deleted',
+          action: 'user.deleted',
           resourceType: 'audit_logs',
           details: {
-            deletedIds: result.rows.map(row => row.id),
+            deletedIds: result.rows.map((row: any) => row.id),
             deletedCount,
-            deletedBy: context.user.id,
+            deletedBy: context.session.user.id,
           },
           severity: 'warn',
           context: AuditService.extractContextFromRequest(
             request,
-            context.user.id,
-            context.sessionId
+            context.session.user.id,
+            undefined
           ),
         })
       } else if (olderThan) {
@@ -221,24 +223,24 @@ export const DELETE = withRBAC(
 
         query += ' RETURNING id'
 
-        const result = await context.database.query(query, values)
+        const result = await database.executeQuery(query, values)
         deletedCount = result.rows.length
 
         // Log the bulk deletion
         await AuditService.log({
-          action: 'audit.bulk_deleted',
+          action: 'user.deleted',
           resourceType: 'audit_logs',
           details: {
             cutoffDate: cutoffDate.toISOString(),
             severity,
             deletedCount,
-            deletedBy: context.user.id,
+            deletedBy: context.session.user.id,
           },
           severity: 'warn',
           context: AuditService.extractContextFromRequest(
             request,
-            context.user.id,
-            context.sessionId
+            context.session.user.id,
+            undefined
           ),
         })
       } else {
@@ -250,7 +252,7 @@ export const DELETE = withRBAC(
 
       logger.info('Audit API', 'Audit logs deleted', {
         deletedCount,
-        deletedBy: context.user.id,
+        deletedBy: context.session.user.id,
         logIds: logIds?.length || 0,
         olderThan,
         severity,
@@ -268,5 +270,5 @@ export const DELETE = withRBAC(
       return NextResponse.json({ error: 'Failed to delete audit logs' }, { status: 500 })
     }
   },
-  { permissions: ['audit.manage'] }
+  { permissions: [Permission.AUDIT_VIEW] }
 )

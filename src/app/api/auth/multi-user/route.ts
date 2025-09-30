@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { UserManagementService } from '@/lib/user-management'
 import { AuditService } from '@/lib/audit-service'
+import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import {
   getClientIP,
   sanitizeInput,
@@ -84,9 +85,9 @@ async function handleLogin(
     return NextResponse.json({ error: 'Invalid username format' }, { status: 400 })
   }
 
-  // Track login attempt
-  const attemptResult = trackLoginAttempt(ip, sanitizedUsername)
-  if (!attemptResult.allowed) {
+  // Check rate limit for auth attempts
+  const rateLimitResult = advancedRateLimitService.checkApiRateLimit(request, 'auth')
+  if (!rateLimitResult.allowed) {
     logger.warn(
       'Multi-User Auth API',
       `Rate limited login attempt from IP: ${ip} for user: ${sanitizedUsername}`
@@ -94,7 +95,7 @@ async function handleLogin(
     return NextResponse.json(
       {
         error: 'Too many login attempts',
-        retryAfter: attemptResult.retryAfter,
+        retryAfter: rateLimitResult.retryAfter,
       },
       { status: 429 }
     )
@@ -153,20 +154,20 @@ async function handleLogin(
       lastName: user.lastName,
       email: user.email,
       roles:
-        user.roles?.map(role => ({
+        (user as any).roles?.map((role: any) => ({
           id: role.role.id,
           name: role.role.name,
           displayName: role.role.displayName,
           permissions: role.role.permissions,
         })) || [],
       teams:
-        user.teams?.map(team => ({
+        (user as any).teams?.map((team: any) => ({
           id: team.team.id,
           name: team.team.name,
           role: team.role,
         })) || [],
       workspaces:
-        user.workspaces?.map(workspace => ({
+        (user as any).workspaces?.map((workspace: any) => ({
           id: workspace.workspace.id,
           name: workspace.workspace.name,
           role: workspace.role,

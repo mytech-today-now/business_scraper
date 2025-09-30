@@ -46,7 +46,7 @@ export const POST = withRBAC(
 
       // Build ROI calculation input
       const input: ROICalculationInput = {
-        workspaceId: workspaceId || context.workspaceId,
+        workspaceId: workspaceId || (context as any).workspaceId,
         period,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
@@ -63,7 +63,7 @@ export const POST = withRBAC(
 
       // Log export
       await AuditService.log({
-        action: 'roi.exported',
+        action: 'roi.exported' as any,
         resourceType: 'roi_report',
         resourceId: workspaceId,
         details: {
@@ -76,13 +76,13 @@ export const POST = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          (context as any).user?.id,
+          (context as any).sessionId
         ),
       })
 
       logger.info('ROI Export API', 'ROI report exported', {
-        userId: context.user.id,
+        userId: (context as any).user?.id,
         workspaceId,
         format,
         filename: exportResult.filename,
@@ -103,7 +103,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to export ROI report' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: ['analytics.view' as any] }
 )
 
 /**
@@ -155,5 +155,5 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to get export options' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: ['analytics.view' as any] }
 )

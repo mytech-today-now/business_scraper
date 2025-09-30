@@ -103,7 +103,7 @@ const searchHandler = withApiSecurity(
         // Handle Chamber of Commerce processing requests
         if (provider === 'chamber-of-commerce') {
           const { url, maxPagesPerSite = 20 } = validatedData.body || {}
-          return await handleChamberOfCommerceProcessing(url, maxResults, maxPagesPerSite)
+          return await handleChamberOfCommerceProcessing(url || '', maxResults, maxPagesPerSite)
         }
 
         // Handle Yandex search requests
@@ -140,7 +140,7 @@ const searchHandler = withApiSecurity(
           : undefined
 
         // Parse maxResults (no upper limit - gather as many as possible)
-        const validMaxResults = Math.max(parseInt(maxResults) || 1000, 1)
+        const validMaxResults = Math.max(parseInt(String(maxResults)) || 1000, 1)
 
         logger.info('Search API', `Search request: "${sanitizedQuery}" in "${sanitizedLocation}"`, {
           industry: sanitizedIndustry,
@@ -362,7 +362,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 
     // Launch browser with maximum stealth settings for DuckDuckGo
     browserInstance = await puppeteer.default.launch({
-      headless: 'new',
+      headless: 'new' as any,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -439,7 +439,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
         const originalQuery = window.navigator.permissions.query
         window.navigator.permissions.query = parameters =>
           parameters.name === 'notifications'
-            ? Promise.resolve({ state: Notification.permission })
+            ? Promise.resolve({ state: Notification.permission } as any)
             : originalQuery(parameters)
       })
 
@@ -469,7 +469,7 @@ async function handleDuckDuckGoSERP(query: string, page: number, maxResults: num
 
       // Backup user agent setting (spoofing service already handles this)
       const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)]
-      logger.debug('Search API', `Using backup user agent: ${randomUserAgent.substring(0, 50)}...`)
+      logger.debug('Search API', `Using backup user agent: ${randomUserAgent?.substring(0, 50)}...`)
 
       // Note: Resource blocking and console filtering is now handled by setupCleanScraping above
 
@@ -748,7 +748,7 @@ async function extractDuckDuckGoSERPResults(
             title: title,
             snippet: snippet,
             domain: domain,
-          })
+          } as any)
 
           console.log(`Extracted: ${title} -> ${url}`)
         }
@@ -817,7 +817,7 @@ function parseDuckDuckGoSERP(html: string, maxResults: number): SearchResultItem
             title: title,
             snippet: `Business website found via DuckDuckGo search`,
             domain: domain,
-          })
+          } as any)
 
           logger.info('Search API', `Extracted business URL: ${url}`)
         }
@@ -1125,7 +1125,7 @@ function expandIndustryCategories(query: string): string[] {
 
   // Check for exact matches first using safe property access
   if (Object.prototype.hasOwnProperty.call(industryMappings, queryLower)) {
-    return industryMappings[queryLower as keyof typeof industryMappings]
+    return industryMappings[queryLower as keyof typeof industryMappings] || []
   }
 
   // Check for partial matches - but be more specific to avoid false matches

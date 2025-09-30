@@ -21,7 +21,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     try {
       const faviconBuffer = await readFile(faviconPath)
       
-      return new NextResponse(faviconBuffer, {
+      return new NextResponse(faviconBuffer as any, {
         status: 200,
         headers: {
           'Content-Type': 'image/x-icon',
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       try {
         const faviconPngBuffer = await readFile(faviconPngPath)
         
-        return new NextResponse(faviconPngBuffer, {
+        return new NextResponse(faviconPngBuffer as any, {
           status: 200,
           headers: {
             'Content-Type': 'image/png',
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         // Generate a minimal 16x16 transparent ICO file
         const minimalIco = generateMinimalFavicon()
         
-        return new NextResponse(minimalIco, {
+        return new NextResponse(minimalIco as any, {
           status: 200,
           headers: {
             'Content-Type': 'image/x-icon',

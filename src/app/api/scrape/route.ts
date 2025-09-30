@@ -160,7 +160,7 @@ const scrapeHandler = async (request: NextRequest) => {
             // Log failed search operation
             await ScrapingComplianceMiddleware.logScrapingOperation(complianceContext, {
               success: false,
-              error: searchError.message,
+              error: searchError instanceof Error ? searchError.message : 'Search failed',
               duration: Date.now() - startTime,
             })
             throw searchError

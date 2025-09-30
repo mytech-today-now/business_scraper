@@ -164,7 +164,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription): Prom
     // Update user subscription status
     await userPaymentService.updateUserPaymentProfile(userId, {
       subscriptionId: subscription.id,
-      subscriptionStatus: mapStripeStatusToPaymentStatus(subscription.status),
+      subscriptionStatus: mapStripeStatusToPaymentStatus(subscription.status) as any,
       currentPeriodStart: new Date(subscription.current_period_start * 1000),
       currentPeriodEnd: new Date(subscription.current_period_end * 1000),
       cancelAtPeriodEnd: subscription.cancel_at_period_end,

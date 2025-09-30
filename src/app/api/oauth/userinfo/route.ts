@@ -34,7 +34,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (!tokenValidation.valid || !tokenValidation.payload) {
       return createErrorResponse(
         {
-          error: 'invalid_token',
+          error: 'invalid_token' as any,
           errorDescription: 'Invalid or expired access token',
         },
         401
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (payload.token_type !== 'access_token') {
       return createErrorResponse(
         {
-          error: 'invalid_token',
+          error: 'invalid_token' as any,
           errorDescription: 'Token is not an access token',
         },
         401
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (!scopes.includes('openid') && !scopes.includes('profile')) {
       return createErrorResponse(
         {
-          error: 'insufficient_scope',
+          error: 'insufficient_scope' as any,
           errorDescription: 'Token does not have required scope for userinfo',
         },
         403

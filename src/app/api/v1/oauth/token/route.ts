@@ -143,6 +143,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           refresh_token: token.refreshToken,
           scope: token.scope.join(' '),
         })
+      } else {
+        // This should never happen due to validation above, but TypeScript requires it
+        return NextResponse.json(
+          {
+            error: 'unsupported_grant_type',
+            error_description: 'Unsupported grant type',
+          },
+          { status: 400 }
+        )
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'

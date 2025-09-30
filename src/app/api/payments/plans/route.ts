@@ -8,7 +8,7 @@ import { withApiSecurity } from '@/lib/api-security'
 import { logger } from '@/utils/logger'
 import { SubscriptionPlan } from '@/model/types/payment'
 
-// Predefined subscription plans
+// Predefined subscription plans (not exported to avoid Next.js route conflicts)
 const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
   {
     id: 'starter',
@@ -236,5 +236,4 @@ export const GET = withApiSecurity(
   }
 )
 
-// Export plan data for use in other modules
-export { SUBSCRIPTION_PLANS }
+// Plan data available internally (not exported to avoid Next.js route conflicts)

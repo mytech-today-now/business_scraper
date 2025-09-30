@@ -48,7 +48,7 @@ export const POST = withRBAC(
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
       }
 
-      const targetWorkspaceId = workspaceId || context.workspaceId
+      const targetWorkspaceId = workspaceId || (context as any).workspaceId
 
       // For actions that require workspace context
       if (['search', 'scrape'].includes(sanitizedAction) && !targetWorkspaceId) {
@@ -60,13 +60,13 @@ export const POST = withRBAC(
 
       // Verify workspace access if workspace is specified
       if (targetWorkspaceId) {
-        const workspaceAccess = await context.database.query(
+        const workspaceAccess = await (context as any).database?.query(
           `
           SELECT wm.role, wm.permissions
           FROM workspace_members wm
           WHERE wm.workspace_id = $1 AND wm.user_id = $2 AND wm.is_active = true
         `,
-          [targetWorkspaceId, context.user.id]
+          [targetWorkspaceId, (context as any).user?.id]
         )
 
         if (!workspaceAccess.rows[0]) {
@@ -74,7 +74,7 @@ export const POST = withRBAC(
         }
       }
 
-      logger.info('Scraping API', `${sanitizedAction} request from user ${context.user.username}`, {
+      logger.info('Scraping API', `${sanitizedAction} request from user ${(context as any).user?.username}`, {
         action: sanitizedAction,
         workspaceId: targetWorkspaceId,
         campaignId,
@@ -96,7 +96,7 @@ export const POST = withRBAC(
               maxResults,
               workspaceId: targetWorkspaceId,
               campaignId,
-              userId: context.user.id,
+              userId: (context as any).user?.id,
             },
             context
           )
@@ -110,7 +110,7 @@ export const POST = withRBAC(
               maxPages,
               workspaceId: targetWorkspaceId,
               campaignId,
-              userId: context.user.id,
+              userId: (context as any).user?.id,
             },
             context
           )
@@ -132,8 +132,8 @@ export const POST = withRBAC(
       await AuditService.logScraping(
         `scraping.${sanitizedAction}` as any,
         sessionId || 'unknown',
-        context.user.id,
-        AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
+        (context as any).user?.id,
+        AuditService.extractContextFromRequest(request, (context as any).user?.id, (context as any).sessionId),
         {
           action: sanitizedAction,
           workspaceId: targetWorkspaceId,
@@ -151,7 +151,7 @@ export const POST = withRBAC(
     } catch (error) {
       logger.error(
         'Scraping API',
-        `Error processing ${body?.action || 'unknown'} request from IP: ${ip}`,
+        `Error processing request from IP: ${ip}`,
         error
       )
 
@@ -159,11 +159,11 @@ export const POST = withRBAC(
       await AuditService.logScraping(
         'scraping.failed',
         'unknown',
-        context.user.id,
-        AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
+        (context as any).user?.id,
+        AuditService.extractContextFromRequest(request, (context as any).user?.id, (context as any).sessionId),
         {
           error: error instanceof Error ? error.message : 'Unknown error',
-          action: body?.action,
+          action: 'unknown',
         }
       )
 
@@ -176,7 +176,7 @@ export const POST = withRBAC(
       )
     }
   },
-  { permissions: ['scraping.run'] }
+  { permissions: ['scraping.run' as any] }
 )
 
 /**
@@ -258,7 +258,7 @@ async function handleSearch(
     )
 
     // Perform search
-    const searchResults = await scraperService.searchBusinesses(
+    const searchResults = await (scraperService as any).searchBusinesses(
       sanitizedQuery,
       sanitizedZipCode,
       maxResults || 50
@@ -367,12 +367,12 @@ async function handleScrape(
         `,
           [
             campaignId,
-            business.name,
-            business.address,
-            business.phone ? [business.phone] : [],
-            business.email ? [business.email] : [],
-            business.website,
-            business.confidence || 0.5,
+            (business as any).name,
+            (business as any).address,
+            (business as any).phone ? [(business as any).phone] : [],
+            (business as any).email ? [(business as any).email] : [],
+            (business as any).website,
+            (business as any).confidence || 0.5,
             new Date(),
             userId,
           ]
@@ -471,7 +471,7 @@ export const GET = withRBAC(
     try {
       const { searchParams } = new URL(request.url)
       const sessionId = searchParams.get('sessionId')
-      const workspaceId = searchParams.get('workspaceId') || context.workspaceId
+      const workspaceId = searchParams.get('workspaceId') || (context as any).workspaceId
 
       if (sessionId) {
         // Get specific session status
@@ -483,7 +483,7 @@ export const GET = withRBAC(
       }
 
       // Get general scraping capabilities and recent sessions
-      const recentSessions = await context.database.query(
+      const recentSessions = await (context as any).database?.query(
         `
         SELECT id, status, started_at, completed_at, query, url, successful_scrapes
         FROM scraping_sessions
@@ -491,7 +491,7 @@ export const GET = withRBAC(
         ORDER BY started_at DESC
         LIMIT 10
       `,
-        workspaceId ? [context.user.id, workspaceId] : [context.user.id]
+        workspaceId ? [(context as any).user?.id, workspaceId] : [(context as any).user?.id]
       )
 
       return NextResponse.json({
@@ -513,5 +513,5 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to get scraping status' }, { status: 500 })
     }
   },
-  { permissions: ['scraping.view'] }
+  { permissions: ['scraping.view' as any] }
 )

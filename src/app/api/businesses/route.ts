@@ -73,12 +73,12 @@ function calculateQualityScore(business: BusinessRecord): number {
   }
 
   // Website - 15 points
-  if (business.website && business.website.startsWith('http')) {
+  if (business.websiteUrl && business.websiteUrl.startsWith('http')) {
     score += 15
   }
 
   // Address - 10 points
-  if (business.address && business.address.trim().length > 10) {
+  if (business.address && business.address.street && business.address.street.trim().length > 5) {
     score += 10
   }
 
@@ -87,8 +87,8 @@ function calculateQualityScore(business: BusinessRecord): number {
     score += 5
   }
 
-  // Description - 5 points
-  if (business.description && business.description.trim().length > 20) {
+  // Contact Person - 5 points
+  if (business.contactPerson && business.contactPerson.trim().length > 2) {
     score += 5
   }
 
@@ -107,10 +107,10 @@ function applyFilters(businesses: BusinessRecord[], filters: any): BusinessRecor
     filtered = filtered.filter(
       business =>
         business.businessName?.toLowerCase().includes(searchLower) ||
-        business.email?.toLowerCase().includes(searchLower) ||
+        business.email?.some(email => email.toLowerCase().includes(searchLower)) ||
         business.phone?.includes(filters.search) ||
-        business.website?.toLowerCase().includes(searchLower) ||
-        business.address?.toLowerCase().includes(searchLower) ||
+        business.websiteUrl?.toLowerCase().includes(searchLower) ||
+        business.address?.street?.toLowerCase().includes(searchLower) ||
         business.industry?.toLowerCase().includes(searchLower)
     )
   }
@@ -216,6 +216,11 @@ function parseCursor(cursor: string): { timestamp: number; value: string; id: st
   try {
     const decoded = Buffer.from(cursor, 'base64').toString('utf-8')
     const [timestamp, value, id] = decoded.split(':')
+
+    if (!timestamp || !value || !id) {
+      return null
+    }
+
     return {
       timestamp: parseInt(timestamp),
       value,

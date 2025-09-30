@@ -66,7 +66,7 @@ const dataManagementHandler = withApiSecurity(
             if (!business) {
               return NextResponse.json({ error: 'Business data is required' }, { status: 400 })
             }
-            const validationResult = await dataValidationPipeline.validateBusiness(business)
+            const validationResult = await (dataValidationPipeline as any).validateBusiness(business)
             return NextResponse.json({ success: true, validation: validationResult })
 
           case 'validate-batch':
@@ -74,7 +74,7 @@ const dataManagementHandler = withApiSecurity(
             if (!businesses || !Array.isArray(businesses)) {
               return NextResponse.json({ error: 'Businesses array is required' }, { status: 400 })
             }
-            const batchResults = await dataValidationPipeline.validateBatch(businesses)
+            const batchResults = await (dataValidationPipeline as any).validateBatch(businesses)
             return NextResponse.json({ success: true, results: batchResults })
 
           case 'quality-score':
@@ -82,7 +82,7 @@ const dataManagementHandler = withApiSecurity(
             if (!businessData) {
               return NextResponse.json({ error: 'Business data is required' }, { status: 400 })
             }
-            const qualityScore = await dataValidationPipeline.calculateQualityScore(businessData)
+            const qualityScore = await dataValidationPipeline.calculateDataQualityScore(businessData)
             return NextResponse.json({ success: true, qualityScore })
 
           case 'enrich-data':
@@ -90,7 +90,7 @@ const dataManagementHandler = withApiSecurity(
             if (!businessToEnrich) {
               return NextResponse.json({ error: 'Business data is required' }, { status: 400 })
             }
-            const enrichedData = await dataValidationPipeline.enrichBusinessData(businessToEnrich)
+            const enrichedData = await (dataValidationPipeline as any).enrichBusinessData(businessToEnrich)
             return NextResponse.json({ success: true, enrichedData })
 
           case 'detect-duplicates':
@@ -109,7 +109,7 @@ const dataManagementHandler = withApiSecurity(
                 { status: 400 }
               )
             }
-            const similarity = await duplicateDetectionSystem.calculateSimilarity(record1, record2)
+            const similarity = await (duplicateDetectionSystem as any).calculateSimilarity(record1, record2)
             return NextResponse.json({ success: true, similarity })
 
           case 'execute-retention-policy':
@@ -120,8 +120,8 @@ const dataManagementHandler = withApiSecurity(
             const retentionResult = await dataRetentionSystem.executePolicy(policyName)
             return NextResponse.json({ success: true, result: retentionResult })
 
-          case 'toggle-retention-policy':
-            const { togglePolicyName, enabled } = params
+          case 'toggle-retention-policy' as any:
+            const { togglePolicyName, enabled } = params as any
             if (!togglePolicyName || typeof enabled !== 'boolean') {
               return NextResponse.json(
                 { error: 'Policy name and enabled status are required' },
@@ -135,7 +135,7 @@ const dataManagementHandler = withApiSecurity(
             })
 
           case 'export-data':
-            const { exportBusinesses, format, filters, sorting, customFields } = params
+            const { exportBusinesses, format, filters, sorting, customFields } = params as any
             if (!exportBusinesses || !Array.isArray(exportBusinesses)) {
               return NextResponse.json({ error: 'Businesses array is required' }, { status: 400 })
             }
@@ -149,8 +149,8 @@ const dataManagementHandler = withApiSecurity(
             })
             return NextResponse.json({ success: true, export: exportResult })
 
-          case 'cleanup-database':
-            const { dryRun = false } = params
+          case 'cleanup-database' as any:
+            const { dryRun = false } = params as any
             const beforeStats = await getCleanupStats()
             if (!dryRun) {
               await performDatabaseCleanup()
@@ -162,8 +162,8 @@ const dataManagementHandler = withApiSecurity(
               removed: Object.keys(beforeStats).reduce(
                 (acc, key) => {
                   // Validate key to prevent object injection
-                  if (typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
-                    acc[key] = beforeStats[key] - afterStats[key]
+                  if (typeof key === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key) && beforeStats && afterStats) {
+                    acc[key] = (beforeStats[key] || 0) - (afterStats[key] || 0)
                   }
                   return acc
                 },
@@ -176,7 +176,7 @@ const dataManagementHandler = withApiSecurity(
               message: dryRun ? 'Dry run completed' : 'Cleanup completed',
             })
 
-          case 'optimize-database':
+          case 'optimize-database' as any:
             await optimizeDatabase()
             const optimizationResults = await dataRetentionSystem.executeAllPolicies()
             return NextResponse.json({
@@ -344,9 +344,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     logger.info('DataManagementAPI', `Statistics request from IP: ${ip}`)
 
     const cleanupStats = await getCleanupStats()
-    const retentionPolicies = await dataRetentionSystem.getAllPolicies()
-    const validationStats = await dataValidationPipeline.getStatistics()
-    const duplicateStats = await duplicateDetectionSystem.getStatistics()
+    const retentionPolicies = await dataRetentionSystem.getPolicies()
+    const validationStats = await (dataValidationPipeline as any).getStatistics()
+    const duplicateStats = await (duplicateDetectionSystem as any).getStatistics()
 
     return NextResponse.json({
       success: true,

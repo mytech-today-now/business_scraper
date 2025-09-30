@@ -97,7 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       {
         success: false,
         error: 'Webhook processing failed',
-        message: error.message,
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 200 }
     )
@@ -254,7 +254,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Webhook setup failed',
+        error: error instanceof Error ? error.message : 'Webhook setup failed',
       },
       { status: 500 }
     )

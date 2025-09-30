@@ -663,4 +663,128 @@ export class UserManagementService {
       userId,
     ])
   }
+
+  /**
+   * Revoke a role from a user
+   */
+  static async revokeRole(userId: string, roleName: RoleName): Promise<void> {
+    try {
+      const result = await database.query(
+        'DELETE FROM user_roles WHERE user_id = $1 AND role_id = (SELECT id FROM roles WHERE name = $2)',
+        [userId, roleName]
+      )
+
+      if (result.rowCount === 0) {
+        throw new Error('Role assignment not found')
+      }
+
+      logger.info('User Management', 'Role revoked successfully', {
+        userId,
+        roleName,
+      })
+    } catch (error) {
+      logger.error('User Management', 'Error revoking role', error)
+      throw error
+    }
+  }
+
+  /**
+   * Delete a user (soft or hard delete)
+   */
+  static async deleteUser(userId: string, hardDelete: boolean = false): Promise<boolean> {
+    try {
+      if (hardDelete) {
+        // Hard delete - remove from database
+        const result = await database.query('DELETE FROM users WHERE id = $1', [userId])
+        return result.rowCount > 0
+      } else {
+        // Soft delete - mark as inactive
+        const result = await database.query(
+          'UPDATE users SET is_active = false WHERE id = $1',
+          [userId]
+        )
+        return result.rowCount > 0
+      }
+    } catch (error) {
+      logger.error('User Management', 'Error deleting user', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get users with pagination and filtering
+   */
+  static async getUsers(options: {
+    page?: number
+    limit?: number
+    search?: string
+    role?: RoleName
+    isActive?: boolean
+  }): Promise<{
+    users: User[]
+    total: number
+    page: number
+    limit: number
+  }> {
+    try {
+      const { page = 1, limit = 20, search, role, isActive } = options
+      const offset = (page - 1) * limit
+
+      let whereClause = 'WHERE 1=1'
+      const params: any[] = []
+      let paramIndex = 1
+
+      if (search) {
+        whereClause += ` AND (u.username ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex} OR u.first_name ILIKE $${paramIndex} OR u.last_name ILIKE $${paramIndex})`
+        params.push(`%${search}%`)
+        paramIndex++
+      }
+
+      if (role) {
+        whereClause += ` AND EXISTS (SELECT 1 FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE ur.user_id = u.id AND r.name = $${paramIndex})`
+        params.push(role)
+        paramIndex++
+      }
+
+      if (isActive !== undefined) {
+        whereClause += ` AND u.is_active = $${paramIndex}`
+        params.push(isActive)
+        paramIndex++
+      }
+
+      const result = await database.query(
+        `
+        SELECT u.*, COUNT(*) OVER() as total_count
+        FROM users u
+        ${whereClause}
+        ORDER BY u.created_at DESC
+        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+        `,
+        [...params, limit, offset]
+      )
+
+      const users = result.rows.map(row => ({
+        id: row.id,
+        username: row.username,
+        email: row.email,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+      }))
+
+      const total = result.rows.length > 0 ? parseInt(result.rows[0].total_count) : 0
+
+      return {
+        users,
+        total,
+        page,
+        limit,
+      }
+    } catch (error) {
+      logger.error('User Management', 'Error getting users', error)
+      throw error
+    }
+  }
 }

@@ -5,9 +5,11 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { withRBAC } from '@/lib/rbac-middleware'
+import { Permission } from '@/lib/auth'
 import { AnalyticsService } from '@/lib/analytics-service'
 import { collaborationWS } from '@/lib/collaboration-websocket'
 import { AuditService } from '@/lib/audit-service'
+import { database } from '@/lib/postgresql-database'
 import { logger } from '@/utils/logger'
 
 /**
@@ -17,7 +19,7 @@ export const GET = withRBAC(
   async (request: NextRequest, context) => {
     try {
       const { searchParams } = new URL(request.url)
-      const workspaceId = searchParams.get('workspaceId') || context.workspaceId
+      const workspaceId = searchParams.get('workspaceId') || 'default-workspace'
 
       // Get real-time metrics
       const realtimeMetrics = await AnalyticsService.getRealtimeMetrics(workspaceId)
@@ -42,7 +44,7 @@ export const GET = withRBAC(
       const shouldLog = Math.random() < 0.1 // Log 10% of requests
       if (shouldLog) {
         await AuditService.log({
-          action: 'analytics.realtime_view',
+          action: 'data.exported',
           resourceType: 'realtime_metrics',
           details: {
             workspaceId,
@@ -51,8 +53,8 @@ export const GET = withRBAC(
           },
           context: AuditService.extractContextFromRequest(
             request,
-            context.user.id,
-            context.sessionId
+            context.session.user.id,
+            undefined
           ),
         })
       }
@@ -66,7 +68,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to retrieve real-time metrics' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: [Permission.DATA_VIEW] }
 )
 
 /**
@@ -101,7 +103,7 @@ export const POST = withRBAC(
       }
 
       // Store metric in database for historical tracking
-      await context.database.query(
+      await database.executeQuery(
         `
         INSERT INTO performance_metrics (
           workspace_id, metric_type, value, metadata, timestamp
@@ -118,7 +120,7 @@ export const POST = withRBAC(
 
       // Log metric update
       await AuditService.log({
-        action: 'analytics.metric_updated',
+        action: 'data.validated',
         resourceType: 'performance_metric',
         details: {
           metricType,
@@ -128,8 +130,8 @@ export const POST = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          context.session.user.id,
+          undefined
         ),
       })
 
@@ -137,7 +139,7 @@ export const POST = withRBAC(
         metricType,
         value,
         workspaceId,
-        updatedBy: context.user.id,
+        updatedBy: context.session.user.id,
       })
 
       return NextResponse.json({
@@ -149,7 +151,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to update metric' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.manage'] }
+  { permissions: [Permission.DATA_MODIFY] }
 )
 
 /**

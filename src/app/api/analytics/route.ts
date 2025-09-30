@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { withRBAC } from '@/lib/rbac-middleware'
+import { Permission } from '@/lib/auth'
 import { AnalyticsService, AnalyticsFilters } from '@/lib/analytics-service'
 import { AuditService } from '@/lib/audit-service'
 import { logger } from '@/utils/logger'
@@ -19,8 +20,8 @@ export const GET = withRBAC(
 
       // Extract filter parameters
       const filters: AnalyticsFilters = {
-        workspaceId: searchParams.get('workspaceId') || context.workspaceId,
-        teamId: searchParams.get('teamId') || context.teamId,
+        workspaceId: searchParams.get('workspaceId') || 'default-workspace',
+        teamId: searchParams.get('teamId') || 'default-team',
         userId: searchParams.get('userId') || undefined,
         startDate: searchParams.get('startDate')
           ? new Date(searchParams.get('startDate')!)
@@ -48,7 +49,7 @@ export const GET = withRBAC(
 
       // Log analytics access
       await AuditService.log({
-        action: 'analytics.view',
+        action: 'data.exported',
         resourceType: 'analytics_dashboard',
         details: {
           filters,
@@ -56,13 +57,13 @@ export const GET = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          context.session.user.id,
+          undefined
         ),
       })
 
       logger.info('Analytics API', 'Dashboard metrics retrieved', {
-        userId: context.user.id,
+        userId: context.session.user.id,
         filters,
         totalUsers: metrics.overview.totalUsers,
         totalCampaigns: metrics.overview.totalCampaigns,
@@ -79,7 +80,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to retrieve analytics data' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: [Permission.DATA_VIEW] }
 )
 
 /**
@@ -117,8 +118,8 @@ export const POST = withRBAC(
 
       // Build analytics filters
       const analyticsFilters: AnalyticsFilters = {
-        workspaceId: filters?.workspaceId || context.workspaceId,
-        teamId: filters?.teamId || context.teamId,
+        workspaceId: filters?.workspaceId || 'default-workspace',
+        teamId: filters?.teamId || 'default-team',
         userId: filters?.userId,
         startDate: filters?.startDate ? new Date(filters.startDate) : undefined,
         endDate: filters?.endDate ? new Date(filters.endDate) : undefined,
@@ -152,7 +153,10 @@ export const POST = withRBAC(
         case 'custom':
           // For custom reports, get full dashboard metrics and filter
           const fullMetrics = await AnalyticsService.getDashboardMetrics(analyticsFilters)
-          reportData = this.filterMetrics(fullMetrics, metrics)
+          // Filter metrics based on requested metrics array
+          reportData = Object.fromEntries(
+            Object.entries(fullMetrics).filter(([key]) => metrics.includes(key))
+          )
           break
 
         default:
@@ -191,7 +195,7 @@ export const POST = withRBAC(
 
       // Log report generation
       await AuditService.log({
-        action: 'analytics.report_generated',
+        action: 'data.exported',
         resourceType: 'analytics_report',
         details: {
           reportType,
@@ -201,13 +205,13 @@ export const POST = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          context.session.user.id,
+          undefined
         ),
       })
 
       logger.info('Analytics API', 'Custom report generated', {
-        userId: context.user.id,
+        userId: context.session.user.id,
         reportType,
         recordCount: Array.isArray(reportData) ? reportData.length : 1,
       })
@@ -225,7 +229,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to generate analytics report' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: [Permission.DATA_EXPORT] }
 )
 
 /**

@@ -36,7 +36,7 @@ const CLEANUP_INTERVAL = 5 * 60 * 1000 // 5 minutes
 if (typeof window === 'undefined') {
   setInterval(() => {
     const now = Date.now()
-    for (const [key, tokenInfo] of temporaryCSRFTokens.entries()) {
+    for (const [key, tokenInfo] of Array.from(temporaryCSRFTokens.entries())) {
       if (tokenInfo.expiresAt < now) {
         temporaryCSRFTokens.delete(key)
       }
@@ -187,6 +187,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Try to log error for audit (but don't fail if audit service is also down)
     try {
+      const ip = getClientIP(request)
+      const userAgent = request.headers.get('user-agent') || 'unknown'
+
       await auditService.logSecurityEvent(
         'csrf_token_error',
         {
@@ -276,7 +279,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await auditService.logAuditEvent('csrf_token_refreshed', 'security', {
       sessionId: session.id,
       ipAddress: ip,
-      userAgent: request.headers.get('user-agent'),
+      userAgent: request.headers.get('user-agent') || undefined,
       severity: 'low',
       category: 'security',
       complianceFlags: ['SOC2'],
@@ -357,7 +360,7 @@ export function getTemporaryCSRFTokenStats(): {
   let expiredTokens = 0
   let activeTokens = 0
   
-  for (const tokenInfo of temporaryCSRFTokens.values()) {
+  for (const tokenInfo of Array.from(temporaryCSRFTokens.values())) {
     if (tokenInfo.expiresAt < now) {
       expiredTokens++
     } else {

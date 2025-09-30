@@ -25,7 +25,7 @@ async function executeRetention(request: NextRequest) {
 
     if (dryRun) {
       // For dry run, just check what would be affected
-      const status = await dataRetentionService.checkRetentionStatus()
+      const status = await (dataRetentionService as any).checkRetentionStatus()
 
       return NextResponse.json({
         success: true,
@@ -84,10 +84,10 @@ async function getRetentionStatus(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const dataType = searchParams.get('dataType')
 
-    await dataRetentionService.checkRetentionStatus(dataType || undefined)
+    await (dataRetentionService as any).checkRetentionStatus(dataType || undefined)
 
     // Get current statuses
-    const statuses = await dataRetentionService.statuses
+    const statuses = await (dataRetentionService as any).statuses
 
     return NextResponse.json({
       success: true,
@@ -109,7 +109,7 @@ async function getUpcomingPurges(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const days = parseInt(searchParams.get('days') || '30')
 
-    const upcomingPurges = await dataRetentionService.getUpcomingPurges(days)
+    const upcomingPurges = await (dataRetentionService as any).getUpcomingPurges(days)
 
     return NextResponse.json({
       success: true,

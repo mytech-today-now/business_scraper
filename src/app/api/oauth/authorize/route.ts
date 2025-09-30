@@ -53,7 +53,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const requestValidation = authorizationService.validateAuthorizationRequest(authRequest, client)
     if (!requestValidation.valid) {
       return createErrorRedirect(authRequest.redirectUri, {
-        error: requestValidation.error || 'invalid_request',
+        error: (requestValidation.error || 'invalid_request') as any,
         state: authRequest.state,
       })
     }

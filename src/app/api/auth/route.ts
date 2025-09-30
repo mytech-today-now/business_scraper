@@ -138,7 +138,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         // Use hashed password from environment
         logger.info('Auth', 'Using hashed password verification')
         try {
-          const hashVerificationResult = verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
+          const hashVerificationResult = await verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
           logger.info('Auth', `Hash verification result: ${hashVerificationResult}`)
           isValidCredentials = username === ADMIN_USERNAME && hashVerificationResult
         } catch (hashError) {
@@ -243,7 +243,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           userId: username,
           sessionId: session.id,
           ipAddress: ip,
-          userAgent: request.headers.get('user-agent'),
+          userAgent: request.headers.get('user-agent') || undefined,
           severity: 'medium',
           category: 'security',
           complianceFlags: ['SOC2', 'GDPR'],
@@ -279,7 +279,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
         userId: 'admin',
         sessionId: sessionId,
         ipAddress: ip,
-        userAgent: request.headers.get('user-agent'),
+        userAgent: request.headers.get('user-agent') || undefined,
         severity: 'low',
         category: 'security',
         complianceFlags: ['SOC2'],

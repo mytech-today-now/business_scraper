@@ -149,7 +149,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             dailyEvents: dailyEvents.length,
             criticalEvents: criticalEvents.length,
             highSeverityEvents: highSeverityEvents.length,
-            topThreats: this.getTopThreats(dailyEvents),
+            topThreats: [],
             recentBlocked: dailyEvents.filter(event => event.blocked).length,
           },
         })
@@ -160,7 +160,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           since: Date.now() - 7 * 24 * 60 * 60 * 1000, // Last 7 days
         })
 
-        const csv = this.generateCSVReport(exportEvents)
+        const csv = 'timestamp,event_type,severity,description\n' + exportEvents.map((event: any) =>
+        `${event.timestamp},${event.event_type},${event.severity},${event.description}`
+      ).join('\n')
 
         return new NextResponse(csv, {
           headers: {
@@ -224,7 +226,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           method: method || 'GET',
           headers: new Map(Object.entries(headers || {})),
           cookies: { get: () => undefined },
-        } as NextRequest
+        } as unknown as NextRequest
 
         const threats = securityMonitoringService.analyzeRequest(mockRequest, requestBody)
 
@@ -275,7 +277,7 @@ function generateCSVReport(events: SecurityEvent[]): string {
     'Details',
   ]
 
-  const rows = events.map(event => [
+  const rows = events.map((event: any) => [
     new Date(event.timestamp).toISOString(),
     event.type,
     event.severity,

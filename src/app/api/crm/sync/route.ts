@@ -9,7 +9,7 @@ import { BusinessRecord } from '@/types/business'
 import { logger } from '@/utils/logger'
 import { withApiSecurity } from '@/lib/api-security'
 import { getClientIP } from '@/lib/security'
-import { database } from '@/lib/database'
+import { database } from '@/lib/postgresql-database'
 
 /**
  * POST /api/crm/sync - Sync business records to CRM systems
@@ -69,7 +69,7 @@ async function POST(request: NextRequest): Promise<NextResponse> {
         logger.info('CRM_SYNC_API', `Syncing to ${provider.name}`)
 
         let syncResult
-        if (businessRecords.length === 1) {
+        if (businessRecords.length === 1 && businessRecords[0]) {
           // Single record sync
           syncResult = await service.syncBusinessRecord(businessRecords[0])
           syncResults.push({
@@ -96,26 +96,26 @@ async function POST(request: NextRequest): Promise<NextResponse> {
           providerId: service.getProvider().id,
           providerName: service.getProvider().name,
           type: 'error',
-          error: error.message,
+          error: error instanceof Error ? error.message : 'Unknown error',
         })
       }
     }
 
     // Calculate overall statistics
     const totalSynced = syncResults.reduce((total, result) => {
-      if (result.type === 'single' && result.result?.syncStatus === 'synced') {
+      if (result.type === 'single' && (result.result as any)?.syncStatus === 'synced') {
         return total + 1
-      } else if (result.type === 'batch' && result.result?.successfulRecords) {
-        return total + result.result.successfulRecords
+      } else if (result.type === 'batch' && (result.result as any)?.successfulRecords) {
+        return total + (result.result as any).successfulRecords
       }
       return total
     }, 0)
 
     const totalFailed = syncResults.reduce((total, result) => {
-      if (result.type === 'single' && result.result?.syncStatus === 'failed') {
+      if (result.type === 'single' && (result.result as any)?.syncStatus === 'failed') {
         return total + 1
-      } else if (result.type === 'batch' && result.result?.failedRecords) {
-        return total + result.result.failedRecords
+      } else if (result.type === 'batch' && (result.result as any)?.failedRecords) {
+        return total + (result.result as any).failedRecords
       } else if (result.type === 'error') {
         return total + businessRecords.length
       }
@@ -143,7 +143,7 @@ async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Sync operation failed',
+        error: error instanceof Error ? error.message : 'Sync operation failed',
       },
       { status: 500 }
     )
@@ -249,16 +249,16 @@ async function PUT(request: NextRequest): Promise<NextResponse> {
     const retryResults = []
     for (const syncRecord of failedRecords) {
       try {
-        const result = await service.syncBusinessRecord(syncRecord.businessRecord)
+        const result = await service.syncBusinessRecord((syncRecord as any).businessRecord)
         retryResults.push({
-          originalSyncId: syncRecord.id,
+          originalSyncId: (syncRecord as any).id,
           newResult: result,
         })
       } catch (error) {
-        logger.error('CRM_SYNC_API', `Retry failed for sync record: ${syncRecord.id}`, error)
+        logger.error('CRM_SYNC_API', `Retry failed for sync record: ${(syncRecord as any).id}`, error)
         retryResults.push({
-          originalSyncId: syncRecord.id,
-          error: error.message,
+          originalSyncId: (syncRecord as any).id,
+          error: error instanceof Error ? error.message : 'Unknown error',
         })
       }
     }
@@ -288,7 +288,7 @@ async function PUT(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Retry operation failed',
+        error: error instanceof Error ? error.message : 'Retry operation failed',
       },
       { status: 500 }
     )

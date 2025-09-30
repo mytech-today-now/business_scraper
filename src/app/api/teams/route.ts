@@ -8,6 +8,7 @@ import { withRBAC } from '@/lib/rbac-middleware'
 import { WorkspaceManagementService } from '@/lib/workspace-management'
 import { CreateTeamRequest, UpdateTeamRequest } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
+import { database } from '@/lib/postgresql-database'
 
 /**
  * GET /api/teams - List teams with pagination and filtering
@@ -35,21 +36,21 @@ export const GET = withRBAC(
 
       if (ownedOnly) {
         conditions.push(`t.owner_id = $${paramIndex}`)
-        values.push(context.user.id)
+        values.push(context.session?.user?.id)
         paramIndex++
       } else if (memberOnly) {
         conditions.push(`tm.user_id = $${paramIndex} AND tm.is_active = true`)
-        values.push(context.user.id)
+        values.push(context.session?.user?.id)
         paramIndex++
       } else {
         // Show teams where user is a member or has teams.view permission
-        const hasTeamsView = context.user.roles?.some(role =>
+        const hasTeamsView = (context.session?.user as any)?.roles?.some((role: any) =>
           role.role.permissions.includes('teams.view')
         )
 
         if (!hasTeamsView) {
           conditions.push(`tm.user_id = $${paramIndex} AND tm.is_active = true`)
-          values.push(context.user.id)
+          values.push(context.session?.user?.id)
           paramIndex++
         }
       }
@@ -86,13 +87,13 @@ export const GET = withRBAC(
         LIMIT $${paramIndex - 1} OFFSET $${paramIndex}
       `
 
-      const result = await context.database.query(teamsQuery, values)
+      const result = await database.executeQuery(teamsQuery, values)
       const teams = result.rows
       const totalCount = teams.length > 0 ? parseInt(teams[0].total_count) : 0
       const totalPages = Math.ceil(totalCount / limit)
 
       // Clean up response data
-      const cleanTeams = teams.map(team => {
+      const cleanTeams = teams.map((team: any) => {
         const { total_count, ...cleanTeam } = team
         return {
           ...cleanTeam,
@@ -110,7 +111,7 @@ export const GET = withRBAC(
       })
 
       logger.info('Teams API', 'Teams listed successfully', {
-        userId: context.user.id,
+        userId: context.session?.user?.id,
         page,
         limit,
         totalCount,
@@ -134,7 +135,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to list teams' }, { status: 500 })
     }
   },
-  { permissions: ['teams.view'] }
+  { permissions: ['teams.view' as any] }
 )
 
 /**
@@ -152,9 +153,9 @@ export const POST = withRBAC(
       }
 
       // Check if team name already exists for this user
-      const existingTeam = await context.database.query(
+      const existingTeam = await database.executeQuery(
         'SELECT id FROM teams WHERE name = $1 AND owner_id = $2 AND is_active = true',
-        [teamData.name.trim(), context.user.id]
+        [teamData.name.trim(), context.session?.user?.id]
       )
 
       if (existingTeam.rows[0]) {
@@ -162,10 +163,10 @@ export const POST = withRBAC(
       }
 
       // Create team
-      const team = await WorkspaceManagementService.createTeam(teamData, context.user.id)
+      const team = await WorkspaceManagementService.createTeam(teamData, context.session?.user?.id || '')
 
       logger.info('Teams API', 'Team created successfully', {
-        createdBy: context.user.id,
+        createdBy: context.session?.user?.id,
         teamId: team.id,
         name: team.name,
       })
@@ -188,7 +189,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to create team' }, { status: 500 })
     }
   },
-  { permissions: ['teams.create'] }
+  { permissions: ['teams.create' as any] }
 )
 
 /**
@@ -223,12 +224,12 @@ export const PUT = withRBAC(
 
           const membership = await WorkspaceManagementService.getTeamMembership(
             teamId,
-            context.user.id
+            context.session?.user?.id || ''
           )
           const canEdit =
-            team.ownerId === context.user.id ||
+            team.ownerId === context.session?.user?.id ||
             membership?.role === 'admin' ||
-            context.user.roles?.some(role => role.role.permissions.includes('teams.manage'))
+            (context.session?.user as any)?.roles?.some((role: any) => role.role.permissions.includes('teams.manage'))
 
           if (!canEdit) {
             errors.push({ teamId, error: 'Insufficient permissions' })
@@ -271,7 +272,7 @@ export const PUT = withRBAC(
             RETURNING *
           `
 
-          const result = await context.database.query(updateQuery, values)
+          const result = await database.executeQuery(updateQuery, values)
           if (result.rows[0]) {
             updatedTeams.push(result.rows[0])
           }
@@ -284,7 +285,7 @@ export const PUT = withRBAC(
       }
 
       logger.info('Teams API', 'Bulk team update completed', {
-        updatedBy: context.user.id,
+        updatedBy: context.session?.user?.id,
         successCount: updatedTeams.length,
         errorCount: errors.length,
         teamIds,
@@ -294,7 +295,7 @@ export const PUT = withRBAC(
         success: true,
         data: {
           updated: updatedTeams.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: updatedTeams,
           errors: errors,
         },
@@ -305,7 +306,7 @@ export const PUT = withRBAC(
       return NextResponse.json({ error: 'Failed to update teams' }, { status: 500 })
     }
   },
-  { permissions: ['teams.edit'] }
+  { permissions: ['teams.edit' as any] }
 )
 
 /**
@@ -335,8 +336,8 @@ export const DELETE = withRBAC(
           }
 
           const canDelete =
-            team.ownerId === context.user.id ||
-            context.user.roles?.some(role => role.role.permissions.includes('teams.delete'))
+            team.ownerId === context.session?.user?.id ||
+            (context.session?.user as any)?.roles?.some((role: any) => role.role.permissions.includes('teams.delete'))
 
           if (!canDelete) {
             errors.push({ teamId, error: 'Insufficient permissions' })
@@ -355,7 +356,7 @@ export const DELETE = withRBAC(
             `
           }
 
-          const result = await context.database.query(query, [teamId])
+          const result = await database.executeQuery(query, [teamId])
           if (result.rows[0]) {
             deletedTeams.push(result.rows[0])
           }
@@ -368,7 +369,7 @@ export const DELETE = withRBAC(
       }
 
       logger.info('Teams API', permanent ? 'Teams deleted permanently' : 'Teams deactivated', {
-        deletedBy: context.user.id,
+        deletedBy: context.session?.user?.id,
         successCount: deletedTeams.length,
         errorCount: errors.length,
         teamIds,
@@ -379,7 +380,7 @@ export const DELETE = withRBAC(
         success: true,
         data: {
           deleted: deletedTeams.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: deletedTeams,
           errors: errors,
         },
@@ -390,5 +391,5 @@ export const DELETE = withRBAC(
       return NextResponse.json({ error: 'Failed to delete teams' }, { status: 500 })
     }
   },
-  { permissions: ['teams.delete'] }
+  { permissions: ['teams.delete' as any] }
 )

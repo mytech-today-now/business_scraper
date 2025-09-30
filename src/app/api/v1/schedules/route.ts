@@ -153,7 +153,7 @@ export const POST = apiFramework.createHandler(
 /**
  * GET /api/v1/schedules/{id} - Get specific schedule
  */
-export const getSchedule = apiFramework.createHandler(
+const getSchedule = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const url = new URL(request.url)
@@ -208,7 +208,7 @@ export const getSchedule = apiFramework.createHandler(
 /**
  * PUT /api/v1/schedules/{id} - Update schedule
  */
-export const updateSchedule = apiFramework.createHandler(
+const updateSchedule = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const url = new URL(request.url)
@@ -258,7 +258,7 @@ export const updateSchedule = apiFramework.createHandler(
 /**
  * DELETE /api/v1/schedules/{id} - Delete schedule
  */
-export const deleteSchedule = apiFramework.createHandler(
+const deleteSchedule = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const url = new URL(request.url)
@@ -302,9 +302,5 @@ export const deleteSchedule = apiFramework.createHandler(
   }
 )
 
-// Export named functions for specific endpoints
-export {
-  getSchedule as GET_schedule,
-  updateSchedule as PUT_schedule,
-  deleteSchedule as DELETE_schedule,
-}
+// Named functions for specific endpoints (not exported to avoid Next.js route conflicts)
+// These are available internally but not as module exports

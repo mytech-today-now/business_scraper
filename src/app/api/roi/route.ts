@@ -18,7 +18,7 @@ export const GET = withRBAC(
       const { searchParams } = new URL(request.url)
 
       // Extract parameters
-      const workspaceId = searchParams.get('workspaceId') || context.workspaceId
+      const workspaceId = searchParams.get('workspaceId') || (context as any).workspaceId
       const period = (searchParams.get('period') as any) || 'month'
       const startDate = searchParams.get('startDate')
         ? new Date(searchParams.get('startDate')!)
@@ -80,7 +80,7 @@ export const GET = withRBAC(
 
       // Log ROI calculation
       await AuditService.log({
-        action: 'roi.calculated',
+        action: 'roi.calculated' as any,
         resourceType: 'roi_metrics',
         resourceId: workspaceId,
         details: {
@@ -93,13 +93,13 @@ export const GET = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          (context as any).user?.id,
+          (context as any).sessionId
         ),
       })
 
       logger.info('ROI API', 'ROI metrics calculated', {
-        userId: context.user.id,
+        userId: (context as any).user?.id,
         workspaceId,
         period,
         roi: metrics.roi,
@@ -116,7 +116,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to calculate ROI metrics' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: ['analytics.view' as any] }
 )
 
 /**
@@ -149,7 +149,7 @@ export const POST = withRBAC(
 
       // Build ROI calculation input
       const input: ROICalculationInput = {
-        workspaceId: workspaceId || context.workspaceId,
+        workspaceId: workspaceId || (context as any).workspaceId,
         period,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
@@ -176,7 +176,7 @@ export const POST = withRBAC(
 
       // Log report generation
       await AuditService.log({
-        action: 'roi.report_generated',
+        action: 'roi.report_generated' as any,
         resourceType: 'roi_report',
         resourceId: workspaceId,
         details: {
@@ -190,13 +190,13 @@ export const POST = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          (context as any).user?.id,
+          (context as any).sessionId
         ),
       })
 
       logger.info('ROI API', 'ROI report generated', {
-        userId: context.user.id,
+        userId: (context as any).user?.id,
         workspaceId,
         period,
         roi: report.metrics.roi,
@@ -213,7 +213,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to generate ROI report' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.view'] }
+  { permissions: ['analytics.view' as any] }
 )
 
 /**
@@ -250,7 +250,7 @@ export const PUT = withRBAC(
       }
 
       // Store conversion data in database
-      await context.database.query(
+      await (context as any).database?.query(
         `
         INSERT INTO roi_tracking (
           workspace_id, campaign_id, leads_contacted, response_rate, 
@@ -276,7 +276,7 @@ export const PUT = withRBAC(
           conversionData.avgDealValue,
           actualRevenue || null,
           notes || null,
-          context.user.id,
+          (context as any).user?.id,
           new Date(),
           new Date(),
         ]
@@ -284,24 +284,24 @@ export const PUT = withRBAC(
 
       // Log conversion data update
       await AuditService.log({
-        action: 'roi.conversion_updated',
+        action: 'roi.conversion_updated' as any,
         resourceType: 'roi_tracking',
         resourceId: workspaceId,
         details: {
           campaignId,
           conversionData,
           actualRevenue,
-          updatedBy: context.user.id,
+          updatedBy: (context as any).user?.id,
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          (context as any).user?.id,
+          (context as any).sessionId
         ),
       })
 
       logger.info('ROI API', 'Conversion data updated', {
-        userId: context.user.id,
+        userId: (context as any).user?.id,
         workspaceId,
         campaignId,
         leadsContacted: conversionData.leadsContacted,
@@ -317,5 +317,5 @@ export const PUT = withRBAC(
       return NextResponse.json({ error: 'Failed to update conversion data' }, { status: 500 })
     }
   },
-  { permissions: ['analytics.manage'] }
+  { permissions: ['analytics.manage' as any] }
 )

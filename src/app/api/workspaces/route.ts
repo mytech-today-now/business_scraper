@@ -8,6 +8,7 @@ import { withRBAC } from '@/lib/rbac-middleware'
 import { WorkspaceManagementService } from '@/lib/workspace-management'
 import { CreateWorkspaceRequest, UpdateWorkspaceRequest } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
+import { database } from '@/lib/postgresql-database'
 
 /**
  * GET /api/workspaces - List workspaces with pagination and filtering
@@ -42,21 +43,21 @@ export const GET = withRBAC(
 
       if (ownedOnly) {
         conditions.push(`w.owner_id = $${paramIndex}`)
-        values.push(context.user.id)
+        values.push(context.session?.user?.id)
         paramIndex++
       } else if (memberOnly) {
         conditions.push(`wm.user_id = $${paramIndex} AND wm.is_active = true`)
-        values.push(context.user.id)
+        values.push(context.session?.user?.id)
         paramIndex++
       } else {
         // Show workspaces where user is a member or has workspaces.view permission
-        const hasWorkspacesView = context.user.roles?.some(role =>
+        const hasWorkspacesView = (context.session?.user as any)?.roles?.some((role: any) =>
           role.role.permissions.includes('workspaces.view')
         )
 
         if (!hasWorkspacesView) {
           conditions.push(`wm.user_id = $${paramIndex} AND wm.is_active = true`)
-          values.push(context.user.id)
+          values.push(context.session?.user?.id)
           paramIndex++
         }
       }
@@ -102,13 +103,13 @@ export const GET = withRBAC(
         LIMIT $${paramIndex - 1} OFFSET $${paramIndex}
       `
 
-      const result = await context.database.query(workspacesQuery, values)
+      const result = await database.executeQuery(workspacesQuery, values)
       const workspaces = result.rows
       const totalCount = workspaces.length > 0 ? parseInt(workspaces[0].total_count) : 0
       const totalPages = Math.ceil(totalCount / limit)
 
       // Clean up response data
-      const cleanWorkspaces = workspaces.map(workspace => {
+      const cleanWorkspaces = workspaces.map((workspace: any) => {
         const { total_count, ...cleanWorkspace } = workspace
         return {
           ...cleanWorkspace,
@@ -132,7 +133,7 @@ export const GET = withRBAC(
       })
 
       logger.info('Workspaces API', 'Workspaces listed successfully', {
-        userId: context.user.id,
+        userId: context.session?.user?.id,
         page,
         limit,
         totalCount,
@@ -156,7 +157,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to list workspaces' }, { status: 500 })
     }
   },
-  { permissions: ['workspaces.view'] }
+  { permissions: ['workspaces.view' as any] }
 )
 
 /**
@@ -178,7 +179,7 @@ export const POST = withRBAC(
       }
 
       // Check if workspace name already exists in the team
-      const existingWorkspace = await context.database.query(
+      const existingWorkspace = await database.executeQuery(
         'SELECT id FROM workspaces WHERE name = $1 AND team_id = $2 AND is_active = true',
         [workspaceData.name.trim(), workspaceData.teamId]
       )
@@ -193,11 +194,11 @@ export const POST = withRBAC(
       // Create workspace
       const workspace = await WorkspaceManagementService.createWorkspace(
         workspaceData,
-        context.user.id
+        context.session?.user?.id || ''
       )
 
       logger.info('Workspaces API', 'Workspace created successfully', {
-        createdBy: context.user.id,
+        createdBy: context.session?.user?.id,
         workspaceId: workspace.id,
         name: workspace.name,
         teamId: workspace.teamId,
@@ -221,7 +222,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to create workspace' }, { status: 500 })
     }
   },
-  { permissions: ['workspaces.create'] }
+  { permissions: ['workspaces.create' as any] }
 )
 
 /**
@@ -256,12 +257,12 @@ export const PUT = withRBAC(
 
           const membership = await WorkspaceManagementService.getWorkspaceMembership(
             workspaceId,
-            context.user.id
+            context.session?.user?.id || ''
           )
           const canEdit =
-            workspace.ownerId === context.user.id ||
+            workspace.ownerId === context.session?.user?.id ||
             membership?.role === 'admin' ||
-            context.user.roles?.some(role => role.role.permissions.includes('workspaces.manage'))
+            (context.session?.user as any)?.roles?.some((role: any) => role.role.permissions.includes('workspaces.manage'))
 
           if (!canEdit) {
             errors.push({ workspaceId, error: 'Insufficient permissions' })
@@ -319,7 +320,7 @@ export const PUT = withRBAC(
             RETURNING *
           `
 
-          const result = await context.database.query(updateQuery, values)
+          const result = await database.executeQuery(updateQuery, values)
           if (result.rows[0]) {
             updatedWorkspaces.push(result.rows[0])
           }
@@ -332,7 +333,7 @@ export const PUT = withRBAC(
       }
 
       logger.info('Workspaces API', 'Bulk workspace update completed', {
-        updatedBy: context.user.id,
+        updatedBy: context.session?.user?.id,
         successCount: updatedWorkspaces.length,
         errorCount: errors.length,
         workspaceIds,
@@ -342,7 +343,7 @@ export const PUT = withRBAC(
         success: true,
         data: {
           updated: updatedWorkspaces.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: updatedWorkspaces,
           errors: errors,
         },
@@ -353,7 +354,7 @@ export const PUT = withRBAC(
       return NextResponse.json({ error: 'Failed to update workspaces' }, { status: 500 })
     }
   },
-  { permissions: ['workspaces.edit'] }
+  { permissions: ['workspaces.edit' as any] }
 )
 
 /**
@@ -383,8 +384,8 @@ export const DELETE = withRBAC(
           }
 
           const canDelete =
-            workspace.ownerId === context.user.id ||
-            context.user.roles?.some(role => role.role.permissions.includes('workspaces.delete'))
+            workspace.ownerId === context.session?.user?.id ||
+            (context.session?.user as any)?.roles?.some((role: any) => role.role.permissions.includes('workspaces.delete'))
 
           if (!canDelete) {
             errors.push({ workspaceId, error: 'Insufficient permissions' })
@@ -403,7 +404,7 @@ export const DELETE = withRBAC(
             `
           }
 
-          const result = await context.database.query(query, [workspaceId])
+          const result = await database.executeQuery(query, [workspaceId])
           if (result.rows[0]) {
             deletedWorkspaces.push(result.rows[0])
           }
@@ -419,7 +420,7 @@ export const DELETE = withRBAC(
         'Workspaces API',
         permanent ? 'Workspaces deleted permanently' : 'Workspaces deactivated',
         {
-          deletedBy: context.user.id,
+          deletedBy: context.session?.user?.id,
           successCount: deletedWorkspaces.length,
           errorCount: errors.length,
           workspaceIds,
@@ -431,7 +432,7 @@ export const DELETE = withRBAC(
         success: true,
         data: {
           deleted: deletedWorkspaces.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: deletedWorkspaces,
           errors: errors,
         },
@@ -442,5 +443,5 @@ export const DELETE = withRBAC(
       return NextResponse.json({ error: 'Failed to delete workspaces' }, { status: 500 })
     }
   },
-  { permissions: ['workspaces.delete'] }
+  { permissions: ['workspaces.delete' as any] }
 )

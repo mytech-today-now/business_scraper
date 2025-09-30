@@ -22,7 +22,7 @@ export class StripeService {
 
   constructor() {
     this.stripe = new Stripe(this.config.payments.stripeSecretKey, {
-      apiVersion: '2023-10-16',
+      apiVersion: '2024-06-20',
       typescript: true,
     })
   }
@@ -49,7 +49,7 @@ export class StripeService {
       throw new PaymentError(
         'Failed to create customer',
         'CUSTOMER_CREATION_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }
@@ -77,7 +77,7 @@ export class StripeService {
       throw new PaymentError(
         'Failed to update customer',
         'CUSTOMER_UPDATE_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }
@@ -197,7 +197,7 @@ export class StripeService {
       throw new PaymentError(
         'Failed to create payment intent',
         'PAYMENT_INTENT_CREATION_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }
@@ -218,7 +218,7 @@ export class StripeService {
       throw new PaymentError(
         'Failed to confirm payment intent',
         'PAYMENT_INTENT_CONFIRMATION_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }
@@ -240,7 +240,7 @@ export class StripeService {
       throw new PaymentError(
         'Failed to attach payment method',
         'PAYMENT_METHOD_ATTACH_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }
@@ -255,7 +255,7 @@ export class StripeService {
       throw new PaymentError(
         'Failed to detach payment method',
         'PAYMENT_METHOD_DETACH_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }
@@ -317,7 +317,7 @@ export class StripeService {
       throw new PaymentError(
         'Webhook signature verification failed',
         'WEBHOOK_VERIFICATION_FAILED',
-        error as Stripe.StripeError
+        error as Stripe.StripeRawError
       )
     }
   }

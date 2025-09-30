@@ -9,6 +9,9 @@ import { getConfig } from '@/lib/config'
 import { logger } from '@/utils/logger'
 import { monitoringService } from '@/model/monitoringService'
 import { streamingSearchService } from '@/lib/streamingSearchService'
+import { healthMonitor } from '@/lib/resilience/healthMonitor'
+import { connectionManager } from '@/lib/resilience/connectionManager'
+import { autoRecoveryService } from '@/lib/resilience/autoRecovery'
 import {
   withStandardErrorHandling,
   createSuccessResponse,
@@ -60,6 +63,7 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
           configuration: 'unknown',
           memory: 'unknown',
           disk: 'unknown',
+          streamingService: 'unknown',
         },
         responseTime: 0,
       }
@@ -102,6 +106,7 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
           heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
           heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
           external: Math.round(memUsage.external / 1024 / 1024),
+          arrayBuffers: Math.round((memUsage.arrayBuffers || 0) / 1024 / 1024),
         }
 
         // Consider unhealthy if heap usage is over 90% of total
@@ -173,10 +178,25 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
         statusCode = streamingServiceHealthy ? 200 : 503
       }
 
+      // Get resilience system status
+      const resilienceStatus = {
+        healthMonitor: healthMonitor.getHealthStatus(),
+        connectionManager: connectionManager.getStatus(),
+        autoRecovery: autoRecoveryService.getRecoveryStatus(),
+      }
+
+      // Calculate resilience score
+      const resilienceScore = calculateResilienceScore(resilienceStatus)
+
       // Add services object for BVT test compatibility
       const responseData = {
         ...healthCheck,
         monitoring: monitoringData,
+        resilience: {
+          score: resilienceScore,
+          status: resilienceScore >= 80 ? 'excellent' : resilienceScore >= 60 ? 'good' : resilienceScore >= 40 ? 'degraded' : 'poor',
+          details: resilienceStatus,
+        },
         services: {
           streaming: streamingServiceHealthy
         }
@@ -205,6 +225,33 @@ async function healthCheckHandler(request: NextRequest): Promise<NextResponse> {
 
   const { healthCheck, statusCode } = result.data
   return NextResponse.json(healthCheck, { status: statusCode })
+}
+
+/**
+ * Calculate resilience score based on system status
+ */
+function calculateResilienceScore(resilienceStatus: any): number {
+  let score = 100
+
+  // Health monitor score (40% weight)
+  const healthyServices = resilienceStatus.healthMonitor.services.filter((s: any) => s.status === 'healthy').length
+  const totalServices = resilienceStatus.healthMonitor.services.length
+  const healthScore = totalServices > 0 ? (healthyServices / totalServices) * 40 : 40
+
+  // Connection manager score (30% weight)
+  const connectionScore = resilienceStatus.connectionManager.totalConnections > 0
+    ? (resilienceStatus.connectionManager.healthyConnections / resilienceStatus.connectionManager.totalConnections) * 30
+    : 30
+
+  // Alert penalty (20% weight)
+  const activeAlerts = resilienceStatus.healthMonitor.activeAlerts.length
+  const alertPenalty = Math.min(activeAlerts * 5, 20)
+
+  // Recovery system score (10% weight)
+  const recoveryScore = resilienceStatus.autoRecovery.isEnabled ? 10 : 0
+
+  score = healthScore + connectionScore + recoveryScore - alertPenalty
+  return Math.max(0, Math.min(100, Math.round(score)))
 }
 
 export const GET = withStandardErrorHandling(healthCheckHandler)

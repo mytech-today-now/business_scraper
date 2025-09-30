@@ -13,9 +13,11 @@ import { withAuth } from '@/lib/auth-middleware'
  * PUT /api/compliance/retention/policies/[id]
  * Update retention policy
  */
-async function updatePolicy(request: NextRequest, { params }: { params: { id: string } }) {
+async function updatePolicy(request: NextRequest, context?: any) {
   try {
-    const policyId = params.id
+    const url = new URL(request.url)
+    const pathSegments = url.pathname.split('/')
+    const policyId = pathSegments[pathSegments.length - 1]
     const body = await request.json()
 
     // Validate policy ID
@@ -23,7 +25,7 @@ async function updatePolicy(request: NextRequest, { params }: { params: { id: st
       return NextResponse.json({ error: 'Policy ID is required' }, { status: 400 })
     }
 
-    const success = await dataRetentionService.updatePolicy(policyId, body)
+    const success = await (dataRetentionService as any).updatePolicy(policyId, body)
 
     if (!success) {
       return NextResponse.json({ error: 'Failed to update retention policy' }, { status: 404 })
@@ -64,16 +66,18 @@ async function updatePolicy(request: NextRequest, { params }: { params: { id: st
  * DELETE /api/compliance/retention/policies/[id]
  * Delete retention policy
  */
-async function deletePolicy(request: NextRequest, { params }: { params: { id: string } }) {
+async function deletePolicy(request: NextRequest, context?: any) {
   try {
-    const policyId = params.id
+    const url = new URL(request.url)
+    const pathSegments = url.pathname.split('/')
+    const policyId = pathSegments[pathSegments.length - 1]
 
     // Validate policy ID
     if (!policyId) {
       return NextResponse.json({ error: 'Policy ID is required' }, { status: 400 })
     }
 
-    const success = await dataRetentionService.deletePolicy(policyId)
+    const success = await (dataRetentionService as any).deletePolicy(policyId)
 
     if (!success) {
       return NextResponse.json({ error: 'Failed to delete retention policy' }, { status: 404 })

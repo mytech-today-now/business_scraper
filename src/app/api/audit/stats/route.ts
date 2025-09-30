@@ -10,7 +10,9 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const revalidate = false
 import { withRBAC } from '@/lib/rbac-middleware'
+import { Permission } from '@/lib/auth'
 import { AuditService } from '@/lib/audit-service'
+import { database } from '@/lib/postgresql-database'
 import { logger } from '@/utils/logger'
 
 /**
@@ -24,8 +26,8 @@ export const GET = withRBAC(
       // Extract filter parameters
       const filters = {
         userId: searchParams.get('userId') || undefined,
-        workspaceId: searchParams.get('workspaceId') || context.workspaceId,
-        teamId: searchParams.get('teamId') || context.teamId,
+        workspaceId: searchParams.get('workspaceId') || 'default-workspace',
+        teamId: searchParams.get('teamId') || 'default-team',
         startDate: searchParams.get('startDate')
           ? new Date(searchParams.get('startDate')!)
           : undefined,
@@ -47,11 +49,11 @@ export const GET = withRBAC(
       const stats = await AuditService.getAuditStats(filters)
 
       // Get additional time-based statistics
-      const timeStats = await getTimeBasedStats(filters, context.database)
+      const timeStats = await getTimeBasedStats(filters, database)
 
       // Log stats access
       await AuditService.log({
-        action: 'audit.stats_viewed',
+        action: 'data.exported',
         resourceType: 'audit_stats',
         details: {
           filters,
@@ -59,13 +61,13 @@ export const GET = withRBAC(
         },
         context: AuditService.extractContextFromRequest(
           request,
-          context.user.id,
-          context.sessionId
+          context.session.user.id,
+          undefined
         ),
       })
 
       logger.info('Audit Stats API', 'Audit statistics retrieved', {
-        userId: context.user.id,
+        userId: context.session.user.id,
         filters,
         totalEvents: stats.totalEvents,
       })
@@ -86,7 +88,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to retrieve audit statistics' }, { status: 500 })
     }
   },
-  { permissions: ['audit.view'] }
+  { permissions: [Permission.AUDIT_VIEW] }
 )
 
 /**
@@ -147,7 +149,7 @@ async function getTimeBasedStats(
     values
   )
 
-  const dailyActivity = dailyResult.rows.map(row => ({
+  const dailyActivity = dailyResult.rows.map((row: any) => ({
     date: row.date,
     count: parseInt(row.count),
   }))
@@ -167,7 +169,7 @@ async function getTimeBasedStats(
   )
 
   const hourlyActivity = Array.from({ length: 24 }, (_, hour) => {
-    const found = hourlyResult.rows.find(row => parseInt(row.hour) === hour)
+    const found = hourlyResult.rows.find((row: any) => parseInt(row.hour) === hour)
     return {
       hour,
       count: found ? parseInt(found.count) : 0,
@@ -189,7 +191,7 @@ async function getTimeBasedStats(
     values
   )
 
-  const weeklyTrend = weeklyResult.rows.map(row => ({
+  const weeklyTrend = weeklyResult.rows.map((row: any) => ({
     week: row.week,
     count: parseInt(row.count),
   }))

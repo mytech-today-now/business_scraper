@@ -70,9 +70,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const alertStats = securityAlertManager.getAlertStats(timeWindow)
 
     // Get recent events if details requested
-    let recentEvents = []
-    let recentAlerts = []
-    let authPatterns = []
+    let recentEvents: any[] = []
+    let recentAlerts: any[] = []
+    let authPatterns: any[] = []
 
     if (includeDetails) {
       recentEvents = securityLogger.getRecentEvents(50)
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     // Calculate overall security score
-    const securityScore = calculateSecurityScore(securityMetrics, authStats, alertStats)
+    const securityScore = calculateSecurityScore(securityMetrics as any, authStats as any, alertStats as any)
 
     const dashboardData = {
       timestamp: new Date().toISOString(),
@@ -212,28 +212,28 @@ function calculateSecurityScore(
   const factors: Array<{ factor: string; impact: number; description: string }> = []
 
   // Factor 1: Average risk score
-  if (securityMetrics.averageRiskScore > 7) {
+  if ((securityMetrics as any).averageRiskScore > 7) {
     const impact = -20
     score += impact
     factors.push({
       factor: 'High Risk Events',
       impact,
-      description: `Average risk score is ${securityMetrics.averageRiskScore}/10`,
+      description: `Average risk score is ${(securityMetrics as any).averageRiskScore}/10`,
     })
-  } else if (securityMetrics.averageRiskScore > 5) {
+  } else if ((securityMetrics as any).averageRiskScore > 5) {
     const impact = -10
     score += impact
     factors.push({
       factor: 'Medium Risk Events',
       impact,
-      description: `Average risk score is ${securityMetrics.averageRiskScore}/10`,
+      description: `Average risk score is ${(securityMetrics as any).averageRiskScore}/10`,
     })
   }
 
   // Factor 2: Blocked events ratio
   const blockedRatio =
-    securityMetrics.totalEvents > 0
-      ? securityMetrics.blockedEvents / securityMetrics.totalEvents
+    (securityMetrics as any).totalEvents > 0
+      ? (securityMetrics as any).blockedEvents / (securityMetrics as any).totalEvents
       : 0
 
   if (blockedRatio > 0.1) {
@@ -248,7 +248,7 @@ function calculateSecurityScore(
 
   // Factor 3: Failed login ratio
   const failedLoginRatio =
-    authStats.totalAttempts > 0 ? authStats.failedLogins / authStats.totalAttempts : 0
+    (authStats as any).totalAttempts > 0 ? (authStats as any).failedLogins / (authStats as any).totalAttempts : 0
 
   if (failedLoginRatio > 0.5) {
     const impact = -15
@@ -261,7 +261,7 @@ function calculateSecurityScore(
   }
 
   // Factor 4: Critical alerts
-  const criticalAlerts = alertStats.alertsBySeverity.CRITICAL || 0
+  const criticalAlerts = (alertStats as any).alertsBySeverity?.CRITICAL || 0
   if (criticalAlerts > 0) {
     const impact = -25
     score += impact

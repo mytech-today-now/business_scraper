@@ -205,7 +205,7 @@ async function getPaymentIntentHandler(request: NextRequest): Promise<NextRespon
 
     // Get payment intent from Stripe
     const stripe = new (await import('stripe')).default(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2023-10-16',
+      apiVersion: '2024-06-20',
     })
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 

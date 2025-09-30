@@ -122,7 +122,7 @@ async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to create CRM provider',
+        error: error instanceof Error ? error.message : 'Failed to create CRM provider',
       },
       { status: 500 }
     )
@@ -174,7 +174,7 @@ async function PUT(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to update CRM provider',
+        error: error instanceof Error ? error.message : 'Failed to update CRM provider',
       },
       { status: 500 }
     )
@@ -229,7 +229,7 @@ async function DELETE(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to delete CRM provider',
+        error: error instanceof Error ? error.message : 'Failed to delete CRM provider',
       },
       { status: 500 }
     )

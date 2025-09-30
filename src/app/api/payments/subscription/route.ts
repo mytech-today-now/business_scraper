@@ -97,7 +97,7 @@ async function handleCreateSubscription(request: NextRequest): Promise<NextRespo
         limit: 1,
       })
 
-      if (existingCustomers.data.length > 0) {
+      if (existingCustomers.data.length > 0 && existingCustomers.data[0]) {
         customer = existingCustomers.data[0]
         logger.info('PaymentsAPI', 'Found existing customer', { customerId: customer.id })
       } else {

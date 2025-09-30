@@ -29,9 +29,9 @@ export async function GET(request: NextRequest) {
     const sanitizedLocation = validationService.sanitizeInput(location)
 
     // Rate limiting - More permissive for streaming connections to allow retries
-    const rateLimitResult = await advancedRateLimitService.checkEndpointRateLimit(
-      ip,
-      'stream-search'
+    const rateLimitResult = advancedRateLimitService.checkRateLimit(
+      `stream-search:${ip}`,
+      { windowMs: 60000, maxRequests: 30 } // 30 requests per minute for streaming
     )
 
     if (!rateLimitResult.allowed) {
@@ -155,7 +155,7 @@ export async function GET(request: NextRequest) {
                   })}\n\n`
 
                   controller.enqueue(encoder.encode(resultEvent))
-                  logger.debug('StreamSearchAPI', `Sent business result: ${business.name || 'Unknown'}`)
+                  logger.debug('StreamSearchAPI', `Sent business result: ${business.businessName || 'Unknown'}`)
                 } catch (error) {
                   logger.error('StreamSearchAPI', 'Failed to send result event', error)
                   // Don't close the stream for individual result errors

@@ -107,9 +107,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         clientId,
         redirectUri,
         scope,
-        state,
-        codeChallenge,
-        codeChallengeMethod
+        state || undefined,
+        codeChallenge || undefined,
+        codeChallengeMethod || undefined
       )
 
       // Extract the authorization code from the URL

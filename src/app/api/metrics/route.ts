@@ -163,7 +163,7 @@ function formatMonitoringMetricsForPrometheus(): string {
     if (!metricGroups[metric.name]) {
       metricGroups[metric.name] = []
     }
-    metricGroups[metric.name].push(metric)
+    metricGroups[metric.name]?.push(metric)
   })
 
   // Format each metric group

@@ -63,8 +63,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Get latest consent records from database
-    let dbPreferences = null
-    let dbTimestamp = null
+    let dbPreferences: any = null
+    let dbTimestamp: any = null
     let hasDbConsent = false
 
     const dbPool = getPool()

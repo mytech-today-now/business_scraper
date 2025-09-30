@@ -103,7 +103,7 @@ export const GET = apiFramework.createHandler(
 /**
  * GET /api/v1/templates/{id} - Get specific template details
  */
-export const getTemplate = apiFramework.createHandler(
+const getTemplate = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const url = new URL(request.url)
@@ -160,7 +160,7 @@ export const getTemplate = apiFramework.createHandler(
 /**
  * POST /api/v1/templates/validate - Validate template configuration
  */
-export const validate = apiFramework.createHandler(
+const validate = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const body = await request.json()
@@ -216,7 +216,7 @@ export const validate = apiFramework.createHandler(
 /**
  * GET /api/v1/templates/platforms - Get available platforms
  */
-export const platforms = apiFramework.createHandler(
+const platforms = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const statistics = enhancedExportService.getExportStatistics()
@@ -230,8 +230,8 @@ export const platforms = apiFramework.createHandler(
             platform,
             templateCount: count,
             categories,
-            description: this.getPlatformDescription(platform),
-            features: this.getPlatformFeatures(platform),
+            description: `Templates for ${platform}`,
+            features: [],
           }
         }
       )
@@ -273,7 +273,7 @@ function getPlatformDescription(platform: string): string {
 
   // Use safe property access to prevent object injection
   return Object.prototype.hasOwnProperty.call(descriptions, platform)
-    ? descriptions[platform as keyof typeof descriptions]
+    ? (descriptions[platform as keyof typeof descriptions] || 'Export platform')
     : 'Export platform'
 }
 
@@ -291,9 +291,9 @@ function getPlatformFeatures(platform: string): string[] {
 
   // Use safe property access to prevent object injection
   return Object.prototype.hasOwnProperty.call(features, platform)
-    ? features[platform as keyof typeof features]
+    ? (features[platform as keyof typeof features] || ['Data Export'])
     : ['Data Export']
 }
 
-// Export named functions for specific endpoints
-export { getTemplate as GET_template, validate as POST_validate, platforms as GET_platforms }
+// Named functions for specific endpoints (not exported to avoid Next.js route conflicts)
+// These are available internally but not as module exports

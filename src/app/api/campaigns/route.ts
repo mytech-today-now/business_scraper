@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { withRBAC } from '@/lib/rbac-middleware'
 import { AuditService } from '@/lib/audit-service'
 import { logger } from '@/utils/logger'
+import { database } from '@/lib/postgresql-database'
 
 /**
  * GET /api/campaigns - List campaigns with filtering and pagination
@@ -20,7 +21,7 @@ export const GET = withRBAC(
       const search = searchParams.get('search') || ''
       const status = searchParams.get('status') || ''
       const industry = searchParams.get('industry') || ''
-      const workspaceId = searchParams.get('workspaceId') || context.workspaceId
+      const workspaceId = searchParams.get('workspaceId') || (context.session?.user as any)?.workspaceId
 
       // Build query conditions
       const conditions: string[] = ['1=1']
@@ -75,13 +76,13 @@ export const GET = withRBAC(
         LIMIT $${paramIndex++} OFFSET $${paramIndex}
       `
 
-      const result = await context.database.query(campaignsQuery, values)
+      const result = await database.executeQuery(campaignsQuery, values)
       const campaigns = result.rows
       const totalCount = campaigns.length > 0 ? parseInt(campaigns[0].total_count) : 0
       const totalPages = Math.ceil(totalCount / limit)
 
       // Clean up response data
-      const cleanCampaigns = campaigns.map(campaign => {
+      const cleanCampaigns = campaigns.map((campaign: any) => {
         const { total_count, ...cleanCampaign } = campaign
         return {
           ...cleanCampaign,
@@ -101,7 +102,7 @@ export const GET = withRBAC(
       })
 
       logger.info('Campaigns API', 'Campaigns listed successfully', {
-        userId: context.user.id,
+        userId: context.session?.user?.id,
         workspaceId,
         page,
         limit,
@@ -125,7 +126,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to list campaigns' }, { status: 500 })
     }
   },
-  { permissions: ['campaigns.view'] }
+  { permissions: ['campaigns.view' as any] }
 )
 
 /**
@@ -145,19 +146,19 @@ export const POST = withRBAC(
         )
       }
 
-      const targetWorkspaceId = workspaceId || context.workspaceId
+      const targetWorkspaceId = workspaceId || (context.session?.user as any)?.workspaceId
       if (!targetWorkspaceId) {
         return NextResponse.json({ error: 'Workspace ID is required' }, { status: 400 })
       }
 
       // Check if user has access to the workspace
-      const workspaceAccess = await context.database.query(
+      const workspaceAccess = await database.executeQuery(
         `
         SELECT wm.role, wm.permissions
         FROM workspace_members wm
         WHERE wm.workspace_id = $1 AND wm.user_id = $2 AND wm.is_active = true
       `,
-        [targetWorkspaceId, context.user.id]
+        [targetWorkspaceId, context.session?.user?.id]
       )
 
       if (!workspaceAccess.rows[0]) {
@@ -176,14 +177,14 @@ export const POST = withRBAC(
         RETURNING *
       `
 
-      const campaignResult = await context.database.query(insertQuery, [
+      const campaignResult = await database.executeQuery(insertQuery, [
         campaignId,
         name,
         description || null,
         industry,
         location,
         targetWorkspaceId,
-        context.user.id,
+        context.session?.user?.id,
         JSON.stringify(parameters || {}),
         JSON.stringify(settings || {}),
         'draft',
@@ -197,8 +198,8 @@ export const POST = withRBAC(
       await AuditService.logCampaignManagement(
         'campaign.created',
         campaignId,
-        context.user.id,
-        AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
+        context.session?.user?.id || '',
+        AuditService.extractContextFromRequest(request, context.session?.user?.id || '', (context as any).sessionId),
         {
           name,
           industry,
@@ -210,7 +211,7 @@ export const POST = withRBAC(
       logger.info('Campaigns API', 'Campaign created successfully', {
         campaignId,
         name,
-        createdBy: context.user.id,
+        createdBy: context.session?.user?.id,
         workspaceId: targetWorkspaceId,
       })
 
@@ -232,7 +233,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to create campaign' }, { status: 500 })
     }
   },
-  { permissions: ['campaigns.create'] }
+  { permissions: ['campaigns.create' as any] }
 )
 
 /**
@@ -259,14 +260,14 @@ export const PUT = withRBAC(
       for (const campaignId of campaignIds) {
         try {
           // Check if user can edit this campaign
-          const campaignAccess = await context.database.query(
+          const campaignAccess = await database.executeQuery(
             `
             SELECT c.*, wm.role, wm.permissions
             FROM campaigns c
             JOIN workspace_members wm ON c.workspace_id = wm.workspace_id
             WHERE c.id = $1 AND wm.user_id = $2 AND wm.is_active = true
           `,
-            [campaignId, context.user.id]
+            [campaignId, context.session?.user?.id]
           )
 
           if (!campaignAccess.rows[0]) {
@@ -312,7 +313,7 @@ export const PUT = withRBAC(
           updates.push(`updated_at = $${paramIndex++}`)
           updates.push(`updated_by = $${paramIndex++}`)
           values.push(new Date())
-          values.push(context.user.id)
+          values.push(context.session?.user?.id)
           values.push(campaignId)
 
           const updateQuery = `
@@ -322,7 +323,7 @@ export const PUT = withRBAC(
             RETURNING *
           `
 
-          const result = await context.database.query(updateQuery, values)
+          const result = await database.executeQuery(updateQuery, values)
           if (result.rows[0]) {
             updatedCampaigns.push(result.rows[0])
 
@@ -330,8 +331,8 @@ export const PUT = withRBAC(
             await AuditService.logCampaignManagement(
               'campaign.updated',
               campaignId,
-              context.user.id,
-              AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
+              context.session?.user?.id || '',
+              AuditService.extractContextFromRequest(request, context.session?.user?.id || '', (context as any).sessionId),
               { fields: Object.keys(updateData) }
             )
           }
@@ -344,7 +345,7 @@ export const PUT = withRBAC(
       }
 
       logger.info('Campaigns API', 'Bulk campaign update completed', {
-        updatedBy: context.user.id,
+        updatedBy: context.session?.user?.id,
         successCount: updatedCampaigns.length,
         errorCount: errors.length,
         campaignIds,
@@ -354,7 +355,7 @@ export const PUT = withRBAC(
         success: true,
         data: {
           updated: updatedCampaigns.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: updatedCampaigns,
           errors: errors,
         },
@@ -365,7 +366,7 @@ export const PUT = withRBAC(
       return NextResponse.json({ error: 'Failed to update campaigns' }, { status: 500 })
     }
   },
-  { permissions: ['campaigns.edit'] }
+  { permissions: ['campaigns.edit' as any] }
 )
 
 /**
@@ -388,14 +389,14 @@ export const DELETE = withRBAC(
       for (const campaignId of campaignIds) {
         try {
           // Check if user can delete this campaign
-          const campaignAccess = await context.database.query(
+          const campaignAccess = await database.executeQuery(
             `
             SELECT c.*, wm.role, wm.permissions
             FROM campaigns c
             JOIN workspace_members wm ON c.workspace_id = wm.workspace_id
             WHERE c.id = $1 AND wm.user_id = $2 AND wm.is_active = true
           `,
-            [campaignId, context.user.id]
+            [campaignId, context.session?.user?.id]
           )
 
           if (!campaignAccess.rows[0]) {
@@ -415,8 +416,8 @@ export const DELETE = withRBAC(
             `
           }
 
-          const values = permanent ? [campaignId] : [campaignId, context.user.id]
-          const result = await context.database.query(query, values)
+          const values = permanent ? [campaignId] : [campaignId, context.session?.user?.id]
+          const result = await database.executeQuery(query, values)
 
           if (result.rows[0]) {
             deletedCampaigns.push(result.rows[0])
@@ -425,8 +426,8 @@ export const DELETE = withRBAC(
             await AuditService.logCampaignManagement(
               'campaign.deleted',
               campaignId,
-              context.user.id,
-              AuditService.extractContextFromRequest(request, context.user.id, context.sessionId),
+              context.session?.user?.id || '',
+              AuditService.extractContextFromRequest(request, context.session?.user?.id || '', (context as any).sessionId),
               { permanent }
             )
           }
@@ -442,7 +443,7 @@ export const DELETE = withRBAC(
         'Campaigns API',
         permanent ? 'Campaigns deleted permanently' : 'Campaigns marked as deleted',
         {
-          deletedBy: context.user.id,
+          deletedBy: context.session?.user?.id,
           successCount: deletedCampaigns.length,
           errorCount: errors.length,
           campaignIds,
@@ -454,7 +455,7 @@ export const DELETE = withRBAC(
         success: true,
         data: {
           deleted: deletedCampaigns.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: deletedCampaigns,
           errors: errors,
         },
@@ -465,5 +466,5 @@ export const DELETE = withRBAC(
       return NextResponse.json({ error: 'Failed to delete campaigns' }, { status: 500 })
     }
   },
-  { permissions: ['campaigns.delete'] }
+  { permissions: ['campaigns.delete' as any] }
 )

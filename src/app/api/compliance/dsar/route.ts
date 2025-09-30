@@ -10,8 +10,8 @@ import { auditService, AuditEventType, AuditSeverity } from '@/lib/compliance/au
 import { encryptionService } from '@/lib/compliance/encryption'
 import { withAuth } from '@/lib/auth-middleware'
 
-// DSAR request types
-export enum DSARType {
+// DSAR request types (moved to avoid Next.js route export conflicts)
+enum DSARType {
   ACCESS = 'access',
   RECTIFICATION = 'rectification',
   ERASURE = 'erasure',
@@ -20,8 +20,8 @@ export enum DSARType {
   OBJECTION = 'objection',
 }
 
-// DSAR status
-export enum DSARStatus {
+// DSAR status (not exported to avoid Next.js route conflicts)
+enum DSARStatus {
   PENDING = 'pending',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',

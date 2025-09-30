@@ -9,6 +9,7 @@ import { UserManagementService } from '@/lib/user-management'
 import { CreateUserRequest, UpdateUserRequest } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
 import { getClientIP } from '@/lib/security'
+import { database } from '@/lib/postgresql-database'
 
 /**
  * GET /api/users - List users with pagination and filtering
@@ -88,13 +89,13 @@ export const GET = withRBAC(
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `
 
-      const result = await context.database.query(usersQuery, values)
+      const result = await database.executeQuery(usersQuery, values)
       const users = result.rows
       const totalCount = users.length > 0 ? parseInt(users[0].total_count) : 0
       const totalPages = Math.ceil(totalCount / limit)
 
       // Remove total_count from user objects
-      const cleanUsers = users.map(user => {
+      const cleanUsers = users.map((user: any) => {
         const { total_count, ...cleanUser } = user
         return {
           ...cleanUser,
@@ -103,7 +104,7 @@ export const GET = withRBAC(
       })
 
       logger.info('Users API', 'Users listed successfully', {
-        userId: context.user.id,
+        userId: context.session?.user?.id,
         page,
         limit,
         totalCount,
@@ -127,7 +128,7 @@ export const GET = withRBAC(
       return NextResponse.json({ error: 'Failed to list users' }, { status: 500 })
     }
   },
-  { permissions: ['users.view'] }
+  { permissions: ['users.view' as any] }
 )
 
 /**
@@ -151,13 +152,13 @@ export const POST = withRBAC(
       }
 
       // Create user
-      const { user } = await UserManagementService.createUser(userData, context.user.id)
+      const { user } = await UserManagementService.createUser(userData, context.session?.user?.id || '')
 
       // Remove sensitive information from response
-      const { roles, teams, workspaces, ...safeUser } = user
+      const { roles, teams, workspaces, ...safeUser } = user as any
 
       logger.info('Users API', 'User created successfully', {
-        createdBy: context.user.id,
+        createdBy: context.session?.user?.id,
         newUserId: user.id,
         username: user.username,
         email: user.email,
@@ -181,7 +182,7 @@ export const POST = withRBAC(
       return NextResponse.json({ error: 'Failed to create user' }, { status: 500 })
     }
   },
-  { permissions: ['users.manage'] }
+  { permissions: ['users.manage' as any] }
 )
 
 /**
@@ -210,7 +211,7 @@ export const PUT = withRBAC(
           const updatedUser = await UserManagementService.updateUser(
             userId,
             updateData,
-            context.user.id
+            context.session?.user?.id || ''
           )
           updatedUsers.push(updatedUser)
         } catch (error) {
@@ -222,7 +223,7 @@ export const PUT = withRBAC(
       }
 
       logger.info('Users API', 'Bulk user update completed', {
-        updatedBy: context.user.id,
+        updatedBy: context.session?.user?.id,
         successCount: updatedUsers.length,
         errorCount: errors.length,
         userIds,
@@ -232,7 +233,7 @@ export const PUT = withRBAC(
         success: true,
         data: {
           updated: updatedUsers.length,
-          errors: errors.length,
+          errorCount: errors.length,
           results: updatedUsers,
           errors: errors,
         },
@@ -243,7 +244,7 @@ export const PUT = withRBAC(
       return NextResponse.json({ error: 'Failed to update users' }, { status: 500 })
     }
   },
-  { permissions: ['users.manage'] }
+  { permissions: ['users.manage' as any] }
 )
 
 /**
@@ -260,7 +261,7 @@ export const DELETE = withRBAC(
       }
 
       // Prevent self-deletion
-      if (userIds.includes(context.user.id)) {
+      if (userIds.includes(context.session?.user?.id || '')) {
         return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 })
       }
 
@@ -286,13 +287,13 @@ export const DELETE = withRBAC(
         successMessage = 'Users deactivated successfully'
       }
 
-      const result = await context.database.query(query, [userIds, context.user.id])
+      const result = await database.executeQuery(query, [userIds, context.session?.user?.id])
       const affectedUsers = result.rows
 
       logger.info('Users API', permanent ? 'Users deleted permanently' : 'Users deactivated', {
-        deletedBy: context.user.id,
-        userIds: affectedUsers.map(u => u.id),
-        usernames: affectedUsers.map(u => u.username),
+        deletedBy: context.session?.user?.id,
+        userIds: affectedUsers.map((u: any) => u.id),
+        usernames: affectedUsers.map((u: any) => u.username),
         permanent,
       })
 
@@ -309,5 +310,5 @@ export const DELETE = withRBAC(
       return NextResponse.json({ error: 'Failed to delete users' }, { status: 500 })
     }
   },
-  { permissions: ['users.delete'] }
+  { permissions: ['users.delete' as any] }
 )

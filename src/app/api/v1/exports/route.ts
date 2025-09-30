@@ -176,7 +176,7 @@ export const POST = apiFramework.createHandler(
 /**
  * POST /api/v1/exports/preview - Generate export preview
  */
-export const preview = apiFramework.createHandler(
+const preview = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const body = await request.json()
@@ -257,7 +257,7 @@ export const preview = apiFramework.createHandler(
 /**
  * POST /api/v1/exports/multi-platform - Export to multiple platforms
  */
-export const multiPlatform = apiFramework.createHandler(
+const multiPlatform = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const body = await request.json()
@@ -332,5 +332,5 @@ export const multiPlatform = apiFramework.createHandler(
   }
 )
 
-// Export named functions for specific endpoints
-export { preview as POST_preview, multiPlatform as POST_multiPlatform }
+// Named functions for specific endpoints (not exported to avoid Next.js route conflicts)
+// These are available internally but not as module exports

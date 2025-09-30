@@ -15,9 +15,8 @@ export async function POST(request: NextRequest) {
 
   try {
     // Rate limiting
-    const rateLimitResult = await advancedRateLimitService.checkRateLimit(
-      ip,
-      'stream-export',
+    const rateLimitResult = advancedRateLimitService.checkRateLimit(
+      `stream-export:${ip}`,
       { windowMs: 60000, maxRequests: 3 } // 3 exports per minute
     )
 
@@ -94,37 +93,23 @@ export async function GET(request: NextRequest) {
     // Generate sample data for testing
     const sampleBusinesses: BusinessRecord[] = Array.from({ length: sampleSize }, (_, i) => ({
       id: `sample-${i + 1}`,
-      name: `Sample Business ${i + 1}`,
+      businessName: `Sample Business ${i + 1}`,
+      email: [`contact${i + 1}@samplebusiness.com`],
       phone: `(555) 000-${String(i + 1).padStart(4, '0')}`,
-      email: `contact${i + 1}@samplebusiness.com`,
-      website: `https://samplebusiness${i + 1}.com`,
-      address: `${i + 1} Sample Street`,
-      city: 'Sample City',
-      state: 'SC',
-      zipCode: `${String(i + 1).padStart(5, '0')}`,
+      websiteUrl: `https://samplebusiness${i + 1}.com`,
+      address: {
+        street: `${i + 1} Sample Street`,
+        city: 'Sample City',
+        state: 'SC',
+        zipCode: `${String(i + 1).padStart(5, '0')}`,
+      },
+      contactPerson: `Contact Person ${i + 1}`,
+      coordinates: {
+        lat: 40.7128 + (Math.random() - 0.5) * 0.1,
+        lng: -74.006 + (Math.random() - 0.5) * 0.1,
+      },
       industry: 'Sample Industry',
-      description: `This is a sample business description for business ${i + 1}`,
-      latitude: 40.7128 + (Math.random() - 0.5) * 0.1,
-      longitude: -74.006 + (Math.random() - 0.5) * 0.1,
-      rating: Math.round((Math.random() * 4 + 1) * 10) / 10,
-      reviewCount: Math.floor(Math.random() * 100),
-      isVerified: Math.random() > 0.5,
-      lastUpdated: new Date(),
-      source: 'sample-data',
-      socialMedia: {
-        facebook: `https://facebook.com/samplebusiness${i + 1}`,
-        twitter: `https://twitter.com/samplebiz${i + 1}`,
-        linkedin: `https://linkedin.com/company/sample-business-${i + 1}`,
-      },
-      businessHours: {
-        monday: '9:00 AM - 5:00 PM',
-        tuesday: '9:00 AM - 5:00 PM',
-        wednesday: '9:00 AM - 5:00 PM',
-        thursday: '9:00 AM - 5:00 PM',
-        friday: '9:00 AM - 5:00 PM',
-        saturday: 'Closed',
-        sunday: 'Closed',
-      },
+      scrapedAt: new Date(),
     }))
 
     logger.info('StreamExportAPI', `Generating sample export: ${sampleSize} records as ${format}`)

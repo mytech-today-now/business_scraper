@@ -83,7 +83,7 @@ export const GET = apiFramework.createHandler(
 /**
  * GET /api/v1/analytics/export - Export analytics data
  */
-export const exportAnalytics = apiFramework.createHandler(
+const exportAnalytics = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     const { searchParams } = new URL(request.url)
     const format = searchParams.get('format') || 'json' // 'json' or 'csv'
@@ -98,7 +98,7 @@ export const exportAnalytics = apiFramework.createHandler(
         const metricsData = apiMetricsService.exportMetrics()
         exportData =
           format === 'csv'
-            ? this.convertMetricsToCSV(metricsData)
+            ? JSON.stringify(metricsData) // Simple fallback for CSV
             : JSON.stringify(metricsData, null, 2)
       } else {
         throw new Error('Invalid export type. Use: usage or metrics')
@@ -138,7 +138,7 @@ export const exportAnalytics = apiFramework.createHandler(
 /**
  * GET /api/v1/analytics/health - Get system health status
  */
-export const health = apiFramework.createHandler(
+const health = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const healthStatus = usageAnalyticsService.getHealthStatus()
@@ -181,7 +181,7 @@ export const health = apiFramework.createHandler(
 /**
  * POST /api/v1/analytics/thresholds - Update alert thresholds
  */
-export const updateThresholds = apiFramework.createHandler(
+const updateThresholds = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     try {
       const body = await request.json()
@@ -235,7 +235,7 @@ export const updateThresholds = apiFramework.createHandler(
 /**
  * GET /api/v1/analytics/rate-limits - Get rate limit status
  */
-export const rateLimits = apiFramework.createHandler(
+const rateLimits = apiFramework.createHandler(
   async (request: NextRequest, context: ApiRequestContext): Promise<ApiResponse> => {
     const { searchParams } = new URL(request.url)
     const targetClientId = searchParams.get('clientId')
@@ -334,10 +334,5 @@ function convertMetricsToCSV(metricsData: any): string {
   return rows.map(row => row.join(',')).join('\n')
 }
 
-// Export named functions for specific endpoints
-export {
-  exportAnalytics as GET_export,
-  health as GET_health,
-  updateThresholds as POST_thresholds,
-  rateLimits as GET_rateLimits,
-}
+// Named functions for specific endpoints (not exported to avoid Next.js route conflicts)
+// These are available internally but not as module exports

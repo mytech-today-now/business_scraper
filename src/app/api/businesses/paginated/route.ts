@@ -176,7 +176,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             ? parseFloat(url.searchParams.get('qualityScoreMax')!)
             : undefined,
         },
-        dateRange: {
+        scrapedDateRange: {
           start: url.searchParams.get('dateStart') || undefined,
           end: url.searchParams.get('dateEnd') || undefined,
         },
@@ -303,20 +303,20 @@ async function getPaginatedBusinessesFromPostgreSQL(
   const queryParams: any[] = []
   let paramIndex = 1
 
-  if (filters?.search) {
+  if (filters?.fullTextSearch) {
     whereConditions.push(`(
-      business_name ILIKE $${paramIndex} OR 
-      email::text ILIKE $${paramIndex} OR 
-      website_url ILIKE $${paramIndex} OR 
+      business_name ILIKE $${paramIndex} OR
+      email::text ILIKE $${paramIndex} OR
+      website_url ILIKE $${paramIndex} OR
       address::text ILIKE $${paramIndex}
     )`)
-    queryParams.push(`%${filters.search}%`)
+    queryParams.push(`%${filters.fullTextSearch}%`)
     paramIndex++
   }
 
-  if (filters?.industry) {
-    whereConditions.push(`industry = $${paramIndex}`)
-    queryParams.push(filters.industry)
+  if (filters?.industrySearch) {
+    whereConditions.push(`industry ILIKE $${paramIndex}`)
+    queryParams.push(`%${filters.industrySearch}%`)
     paramIndex++
   }
 
@@ -336,15 +336,15 @@ async function getPaginatedBusinessesFromPostgreSQL(
     }
   }
 
-  if (filters?.dateRange?.start) {
+  if (filters?.scrapedDateRange?.start) {
     whereConditions.push(`scraped_at >= $${paramIndex}`)
-    queryParams.push(filters.dateRange.start)
+    queryParams.push(filters.scrapedDateRange.start)
     paramIndex++
   }
 
-  if (filters?.dateRange?.end) {
+  if (filters?.scrapedDateRange?.end) {
     whereConditions.push(`scraped_at <= $${paramIndex}`)
-    queryParams.push(filters.dateRange.end)
+    queryParams.push(filters.scrapedDateRange.end)
     paramIndex++
   }
 
@@ -381,8 +381,8 @@ async function getPaginatedBusinessesFromPostgreSQL(
   queryParams.push(limit + 1) // Get one extra to check if there are more
 
   const [countResult, dataResult] = await Promise.all([
-    database.query(countQuery, countParams),
-    database.query(dataQuery, queryParams),
+    database.executeQuery(countQuery, countParams),
+    database.executeQuery(dataQuery, queryParams),
   ])
 
   const totalCount = parseInt(countResult.rows[0].total)
@@ -436,8 +436,8 @@ async function getPaginatedBusinessesFromIndexedDB(
   // Apply filters
   let filteredBusinesses = allBusinesses
 
-  if (filters?.search) {
-    const searchLower = filters.search.toLowerCase()
+  if (filters?.fullTextSearch) {
+    const searchLower = filters.fullTextSearch.toLowerCase()
     filteredBusinesses = filteredBusinesses.filter(
       business =>
         business.businessName.toLowerCase().includes(searchLower) ||
@@ -449,9 +449,9 @@ async function getPaginatedBusinessesFromIndexedDB(
     )
   }
 
-  if (filters?.industry) {
+  if (filters?.industrySearch) {
     filteredBusinesses = filteredBusinesses.filter(
-      business => business.industry === filters.industry
+      business => business.industry.toLowerCase().includes(filters.industrySearch!.toLowerCase())
     )
   }
 
@@ -467,13 +467,13 @@ async function getPaginatedBusinessesFromIndexedDB(
     )
   }
 
-  if (filters?.dateRange?.start) {
-    const startDate = new Date(filters.dateRange.start)
+  if (filters?.scrapedDateRange?.start) {
+    const startDate = new Date(filters.scrapedDateRange.start)
     filteredBusinesses = filteredBusinesses.filter(business => business.scrapedAt >= startDate)
   }
 
-  if (filters?.dateRange?.end) {
-    const endDate = new Date(filters.dateRange.end)
+  if (filters?.scrapedDateRange?.end) {
+    const endDate = new Date(filters.scrapedDateRange.end)
     filteredBusinesses = filteredBusinesses.filter(business => business.scrapedAt <= endDate)
   }
 
@@ -481,6 +481,11 @@ async function getPaginatedBusinessesFromIndexedDB(
   filteredBusinesses.sort((a, b) => {
     const aValue = a[sortBy as keyof BusinessRecord]
     const bValue = b[sortBy as keyof BusinessRecord]
+
+    // Handle undefined values
+    if (aValue === undefined && bValue === undefined) return 0
+    if (aValue === undefined) return 1
+    if (bValue === undefined) return -1
 
     let comparison = 0
     if (aValue < bValue) comparison = -1
@@ -503,11 +508,13 @@ async function getPaginatedBusinessesFromIndexedDB(
   let nextCursor: string | null = null
   if (hasMore && paginatedBusinesses.length > 0) {
     const lastBusiness = paginatedBusinesses[paginatedBusinesses.length - 1]
-    const cursorData = {
-      sortValue: lastBusiness[sortBy as keyof BusinessRecord],
-      id: lastBusiness.id,
+    if (lastBusiness) {
+      const cursorData = {
+        sortValue: lastBusiness[sortBy as keyof BusinessRecord],
+        id: lastBusiness.id,
+      }
+      nextCursor = Buffer.from(JSON.stringify(cursorData)).toString('base64')
     }
-    nextCursor = Buffer.from(JSON.stringify(cursorData)).toString('base64')
   }
 
   return {
