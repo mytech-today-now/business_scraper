@@ -149,12 +149,12 @@ function PaymentSuccessContent(): JSX.Element {
     interval?: string
   }>({})
 
-  const { loadCurrentSubscription, getCurrentPlan } = usePaymentController()
+  const { loadCurrentSubscription, getCurrentPlan } = usePaymentController() as any
 
   // Extract URL parameters
-  const sessionId = searchParams.get('session_id')
-  const paymentIntent = searchParams.get('payment_intent')
-  const planId = searchParams.get('plan_id')
+  const sessionId = searchParams?.get('session_id')
+  const paymentIntent = searchParams?.get('payment_intent')
+  const planId = searchParams?.get('plan_id')
 
   useEffect(() => {
     // Log successful payment

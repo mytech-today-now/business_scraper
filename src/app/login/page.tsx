@@ -322,35 +322,10 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Show CSRF error with better messaging */}
-            {csrfError && !csrfLoading && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-700">
-                  {csrfError.includes('401')
-                    ? 'Security token initialization failed. Please refresh the page.'
-                    : csrfError
-                  }
-                  {(csrfError.includes('after') || csrfError.includes('Authentication error')) && (
-                    <div className="mt-1">
-                      <button
-                        onClick={() => debugUtils.safeReload('CSRF error recovery')}
-                        className="text-red-800 underline hover:text-red-900"
-                      >
-                        {debugUtils.shouldPreventAutoReload() ? 'Reload Prevented (Debug Mode)' : 'Refresh page'}
-                      </button>
-                      {debugUtils.shouldPreventAutoReload() && (
-                        <div className="mt-2 text-xs text-red-600">
-                          Debug mode is active. Auto-reload prevented for debugging.
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+
 
             {/* Show loading message only during initial load or when explicitly loading */}
-            {csrfLoading && !csrfToken && !csrfError && (
+            {csrfLoading && !csrfToken && (
               <div className="rounded-md bg-blue-50 p-4">
                 <div className="text-sm text-blue-700">Loading security token...</div>
                 {debugUtils.shouldUseEnhancedErrorLogging() && (
@@ -362,7 +337,7 @@ export default function LoginPage() {
             )}
 
             {/* Enhanced CSRF Error Display with Manual Retry */}
-            {csrfError && !csrfLoading && (
+            {csrfError && !csrfLoading && !csrfError.includes('401') && (
               <div className="rounded-md bg-red-50 p-4 border border-red-200">
                 <div className="text-sm text-red-700">
                   <div className="font-semibold mb-2">⚠️ Security Token Error</div>

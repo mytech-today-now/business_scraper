@@ -6,7 +6,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { User, DashboardMetrics, PerformanceMetrics, DataQualityMetrics } from '@/types/multi-user'
+import { User, PerformanceMetrics, DataQualityMetrics } from '@/types/multi-user'
 
 interface AnalyticsDashboardProps {
   currentUser: User
@@ -19,7 +19,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   workspaceId,
   teamId,
 }) => {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
+  const [metrics, setMetrics] = useState<any | null>(null)
   const [realtimeMetrics, setRealtimeMetrics] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -33,6 +33,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       const interval = setInterval(fetchMetrics, 30000) // Refresh every 30 seconds
       return () => clearInterval(interval)
     }
+    return undefined
   }, [selectedPeriod, workspaceId, teamId, autoRefresh])
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       const interval = setInterval(fetchRealtimeMetrics, 5000) // Refresh every 5 seconds
       return () => clearInterval(interval)
     }
+    return undefined
   }, [workspaceId, autoRefresh])
 
   const fetchMetrics = async () => {
@@ -84,7 +86,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     }
   }
 
-  const canViewAnalytics = currentUser.roles?.some(role =>
+  const canViewAnalytics = (currentUser as any).roles?.some((role: any) =>
     role.role.permissions.includes('analytics.view')
   )
 
@@ -329,7 +331,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {metrics.userActivity.slice(0, 5).map(user => (
+                {metrics.userActivity.slice(0, 5).map((user: any) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
@@ -362,7 +364,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Performance</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {metrics.teamPerformance.slice(0, 6).map(team => (
+            {metrics.teamPerformance.slice(0, 6).map((team: any) => (
               <div key={team.id} className="border border-gray-200 rounded-lg p-4">
                 <h4 className="font-medium text-gray-900 mb-2">{team.name}</h4>
                 <div className="space-y-1 text-sm text-gray-600">

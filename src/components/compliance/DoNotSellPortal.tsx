@@ -75,9 +75,9 @@ export default function DoNotSellPortal() {
       const [parent, child] = field.split('.')
       setFormData(prev => ({
         ...prev,
-        [parent]: {
-          ...prev[parent as keyof OptOutFormData],
-          [child]: value,
+        [parent as string]: {
+          ...(prev[parent as keyof OptOutFormData] as any || {}),
+          [child as string]: value,
         },
       }))
     } else {

@@ -6,11 +6,11 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/view/components/ui/Card'
+import { Alert, AlertDescription } from '@/view/components/ui/Alert'
+import { Button } from '@/view/components/ui/Button'
+import { Badge } from '@/view/components/ui/Badge'
+import { ProgressBar } from '@/view/components/ui/ProgressBar'
 import { useMemoryLeakDetection } from '@/hooks/useMemoryLeakDetection'
 import { logger } from '@/utils/logger'
 
@@ -259,7 +259,7 @@ export function MemoryUsageDashboard() {
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Active Alerts</h3>
           {activeAlerts.map(alert => (
-            <Alert key={alert.id} variant={getAlertVariant(alert.type)}>
+            <Alert key={alert.id} variant={getAlertVariant(alert.type) as any}>
               <AlertDescription className="flex items-center justify-between">
                 <span>{alert.message}</span>
                 <Button
@@ -283,8 +283,8 @@ export function MemoryUsageDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatBytes(memoryStats?.heapUsed || 0)}</div>
-            <Progress 
-              value={heapUsagePercent} 
+            <ProgressBar
+              value={heapUsagePercent}
               className="mt-2"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -396,7 +396,7 @@ export function MemoryUsageDashboard() {
           <CardContent>
             <div className="space-y-2">
               {leakAlerts.slice(0, 5).map((alert, index) => (
-                <Alert key={index} variant="destructive">
+                <Alert key={index} variant={"destructive" as any}>
                   <AlertDescription>
                     {alert.description} (Severity: {alert.severity})
                   </AlertDescription>

@@ -201,8 +201,8 @@ function PaymentCancelContent(): JSX.Element {
   const router = useRouter()
 
   // Extract URL parameters
-  const sessionId = searchParams.get('session_id')
-  const reason = searchParams.get('reason')
+  const sessionId = searchParams?.get('session_id')
+  const reason = searchParams?.get('reason')
 
   useEffect(() => {
     // Log payment cancellation

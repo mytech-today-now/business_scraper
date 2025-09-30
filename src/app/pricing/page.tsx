@@ -136,7 +136,7 @@ export default function PricingPage(): JSX.Element {
     createSubscription,
     hasActiveSubscription,
     getCurrentPlan,
-  } = usePaymentController()
+  } = usePaymentController() as any
 
   // Load plans on component mount
   useEffect(() => {
@@ -176,7 +176,7 @@ export default function PricingPage(): JSX.Element {
         }
 
         // TODO: Handle plan upgrades/downgrades
-        toast.info('Plan changes will be available soon. Please contact support.')
+        toast('Plan changes will be available soon. Please contact support.')
         return
       }
 

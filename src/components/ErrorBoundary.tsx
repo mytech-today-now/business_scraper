@@ -66,7 +66,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     // Enhanced error logging with debug information
     if (shouldUseEnhancedErrorLogging()) {
       securityTokenErrorLogger.logComponentError(error, {
-        componentName: this.props.fallbackComponent || 'Unknown',
+        componentName: (this.props as any).fallbackComponent || 'Unknown',
         errorBoundary: 'ErrorBoundary',
         props: this.props,
         renderCount: this.retryCount,
