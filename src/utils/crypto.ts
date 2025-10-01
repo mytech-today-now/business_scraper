@@ -172,6 +172,55 @@ export function generateSecureToken(length: number = 32): string {
 }
 
 /**
+ * Create a hash using the specified algorithm
+ * Works across Node.js, Edge Runtime, Browser, and Test environments
+ */
+export function createHash(algorithm: string): {
+  update: (data: string | Buffer) => { digest: (encoding: string) => string }
+} {
+  try {
+    // Use Node.js crypto module in Node.js environment
+    if (isNodeEnvironment() && !isTestEnvironment()) {
+      try {
+        const crypto = require('crypto')
+        return crypto.createHash(algorithm)
+      } catch (error) {
+        logger.warn('crypto', 'Node.js crypto module not available for hashing', { error })
+      }
+    }
+
+    // Fallback implementation for other environments
+    return {
+      update: (data: string | Buffer) => ({
+        digest: (encoding: string) => {
+          // Simple hash implementation for testing/fallback
+          const str = typeof data === 'string' ? data : data.toString()
+          let hash = 0
+          for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i)
+            hash = ((hash << 5) - hash) + char
+            hash = hash & hash // Convert to 32-bit integer
+          }
+
+          if (encoding === 'hex') {
+            return Math.abs(hash).toString(16).padStart(8, '0')
+          }
+          return Math.abs(hash).toString()
+        }
+      })
+    }
+  } catch (error) {
+    logger.error('crypto', 'Failed to create hash', { error })
+    // Ultimate fallback
+    return {
+      update: () => ({
+        digest: () => 'fallback-hash-' + Date.now().toString(16)
+      })
+    }
+  }
+}
+
+/**
  * Initialize crypto polyfills for test environments
  */
 export function initializeCryptoPolyfills(): void {
@@ -187,13 +236,14 @@ export function initializeCryptoPolyfills(): void {
             }
             return arr
           },
+          createHash: (algorithm: string) => createHash(algorithm),
           subtle: {} // Mock subtle crypto for tests
         },
         writable: true,
         configurable: true
       })
     }
-    
+
     logger.info('crypto', 'Crypto polyfills initialized for test environment')
   }
 }
@@ -206,6 +256,7 @@ export const crypto = {
   getRandomValues,
   generateSecureNonce,
   generateSecureToken,
+  createHash,
   initializeCryptoPolyfills,
   isWebCryptoAvailable,
   isRandomUUIDAvailable,

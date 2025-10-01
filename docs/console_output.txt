@@ -1,0 +1,116 @@
+4:43:41 PM [INFO] [04:43:41 PM] <ScraperController> INFO: Scraper service initialized in real mode
+4:43:41 PM [INFO] [04:43:41 PM] <ScraperController> INFO: Scraper service initialized in real mode
+4:43:41 PM [INFO] [04:43:41 PM] <Storage> INFO: Saved analytics event: feature_tab_navigation
+4:43:41 PM [INFO] [04:43:41 PM] <Analytics> INFO: Event tracked: feature_tab_navigation {
+  "sessionId": "sess_1758922996069_9f78i5sy3",
+  "eventData": {
+    "fromTab": "config",
+    "toTab": "scraping",
+    "timestamp": "2025-09-26T21:43:41.087Z"
+  }
+}
+4:43:41 PM [INFO] [04:43:41 PM] <Storage> INFO: Saved analytics event: navigation_tab_change
+4:43:41 PM [INFO] [04:43:41 PM] <Analytics> INFO: Event tracked: navigation_tab_change {
+  "sessionId": "sess_1758922996069_9f78i5sy3",
+  "eventData": {
+    "activeTab": "scraping",
+    "timestamp": "2025-09-26T21:43:41.101Z",
+    "isMobile": false
+  }
+}
+4:43:42 PM [INFO] [04:43:42 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:42 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:42 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:45 PM [WARN] [04:43:45 PM] <useSearchStreaming> WARN: Streaming connection error {
+  "readyState": 2,
+  "url": "http://localhost:3000/api/stream-search?query=Insurance+Agencies&location=60047&maxResults=1000&batchSize=50",
+  "retryCount": 0,
+  "timestamp": "2025-09-26T21:43:45.188Z"
+}
+4:43:45 PM [INFO] [04:43:45 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+4:43:45 PM [INFO] [04:43:45 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:45 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:45 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:45 PM [DEBUG] [04:43:45 PM] <Monitoring> DEBUG: Metric stored {
+  "metricId": "metric_1758923025952_87wuawznl",
+  "name": "memory_heap_used"
+}
+4:43:45 PM [DEBUG] [04:43:45 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_used = 180734920 bytes
+4:43:45 PM [DEBUG] [04:43:45 PM] <Monitoring> DEBUG: Metric stored {
+  "metricId": "metric_1758923025952_fj7r9pur3",
+  "name": "memory_heap_total"
+}
+4:43:45 PM [DEBUG] [04:43:45 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_total = 194362832 bytes
+4:43:45 PM [DEBUG] [04:43:45 PM] <Monitoring> DEBUG: Metric stored {
+  "metricId": "metric_1758923025953_fetd18zk1",
+  "name": "memory_heap_limit"
+}
+4:43:45 PM [DEBUG] [04:43:45 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_limit = 4294705152 bytes
+4:43:47 PM [INFO] [04:43:47 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:47 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:47 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:48 PM [ERROR] Warning: Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://reactjs.org/link/setstate-in-render%s Fe ServiceWorkerRegistration ServiceWorkerRegistration 
+    at ServiceWorkerRegistration (webpack-internal:///(app-pages-browser)/./src/components/ServiceWorkerRegistration.tsx:26:104)
+    at Elements (webpack-internal:///(app-pages-browser)/./node_modules/@stripe/react-stripe-js/dist/react-stripe.umd.js:471:30)
+    at StripeProvider (webpack-internal:///(app-pages-browser)/./src/view/components/payments/StripeProvider.tsx:111:11)
+    at BailoutToCSR (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/shared/lib/lazy-dynamic/dynamic-bailout-to-csr.js:13:11)
+    at Suspense
+    at LoadableComponent
+    at ErrorBoundaryWrapper (webpack-internal:///(app-pages-browser)/./src/components/ClientOnlyStripeProvider.tsx:127:9)
+    at Suspense
+    at ClientOnlyStripeProvider (webpack-internal:///(app-pages-browser)/./src/components/ClientOnlyStripeProvider.tsx:40:11)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./src/components/ErrorBoundary.tsx:393:9)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/dev-root-not-found-boundary.js:33:11)
+    at ReactDevOverlay (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/ReactDevOverlay.js:87:9)
+    at HotReload (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:321:11)
+    at Router (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:113:9)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at AppRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:585:13)
+    at ServerRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:112:27)
+    at Root (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:117:11)
+4:43:49 PM [WARN] [04:43:49 PM] <useSearchStreaming> WARN: Streaming connection error {
+  "readyState": 2,
+  "url": "http://localhost:3000/api/stream-search?query=Insurance+Agencies&location=60047&maxResults=1000&batchSize=50",
+  "retryCount": 0,
+  "timestamp": "2025-09-26T21:43:49.172Z"
+}
+4:43:49 PM [INFO] [04:43:49 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+4:43:49 PM [INFO] [04:43:49 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:49 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:49 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:51 PM [INFO] [04:43:51 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:51 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:51 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:53 PM [WARN] [04:43:53 PM] <useSearchStreaming> WARN: Streaming connection error {
+  "readyState": 2,
+  "url": "http://localhost:3000/api/stream-search?query=Insurance+Agencies&location=60047&maxResults=1000&batchSize=50",
+  "retryCount": 0,
+  "timestamp": "2025-09-26T21:43:53.552Z"
+}
+4:43:53 PM [INFO] [04:43:53 PM] <useSearchStreaming> INFO: Retrying connection (1/3)
+4:43:53 PM [INFO] [04:43:53 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:53 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:53 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:54 PM [INFO] [04:43:54 PM] <useSearchStreaming> INFO: Streaming stopped
+4:43:54 PM [INFO] [04:43:54 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:54 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:54 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:59 PM [INFO] [04:43:59 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:59 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:59 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:59 PM [INFO] [04:43:59 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:43:59 PM [INFO] [2;38;2;124;124;124m%s[0m [04:43:59 PM] <AddressInputHandler> INFO: ZIP code input detected: 60047
+4:44:15 PM [DEBUG] [04:44:15 PM] <Monitoring> DEBUG: Metric stored {
+  "metricId": "metric_1758923055951_5s2a4e6lx",
+  "name": "memory_heap_used"
+}
+4:44:15 PM [DEBUG] [04:44:15 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_used = 150498429 bytes
+4:44:15 PM [DEBUG] [04:44:15 PM] <Monitoring> DEBUG: Metric stored {
+  "metricId": "metric_1758923055952_m0s08alns",
+  "name": "memory_heap_total"
+}
+4:44:15 PM [DEBUG] [04:44:15 PM] <Monitoring> DEBUG: Metric recorded: memory_heap_total = 157109389 bytes
+4:44:15 PM [DEBUG] [04:44:15 PM] <Monitoring> DEBUG: Metric stored {
+  "metricId": "metric_1758923055953_cggnbcvvi",
+  "name": "memory_heap_limit"
+}

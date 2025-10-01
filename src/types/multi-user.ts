@@ -100,6 +100,11 @@ export interface User extends TimestampedEntity {
   twoFactorSecret?: string
   failedLoginAttempts: number
   lockedUntil?: Date
+
+  // Multi-user system relationships
+  roles?: UserRole[]
+  teams?: TeamMembership[]
+  workspaces?: WorkspaceMembership[]
 }
 
 export interface UserPreferences {

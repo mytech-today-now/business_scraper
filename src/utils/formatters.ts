@@ -1,6 +1,7 @@
 'use strict'
 
 import { BusinessRecord } from '@/types/business'
+import { formatVersion, parseVersion, AppVersion } from '@/utils/version'
 
 /**
  * Format a phone number to a standard format
@@ -374,4 +375,59 @@ export function formatBusinessForExport(business: BusinessRecord): Record<string
   }
 
   return baseData
+}
+
+/**
+ * Format application version for display
+ * @param versionString - Version string to format
+ * @param includePrefix - Whether to include 'v' prefix
+ * @returns Formatted version string or original if invalid
+ */
+export function formatAppVersion(versionString: string, includePrefix: boolean = false): string {
+  if (!versionString) return ''
+
+  const parsed = parseVersion(versionString)
+  if (!parsed) {
+    // Return original string if parsing fails
+    return versionString
+  }
+
+  return formatVersion(parsed, includePrefix)
+}
+
+/**
+ * Validate and format version for display with status
+ * @param versionString - Version string to validate and format
+ * @returns Object with formatted version and validation status
+ */
+export function formatVersionWithStatus(versionString: string): {
+  formatted: string
+  isValid: boolean
+  errors: string[]
+} {
+  if (!versionString) {
+    return {
+      formatted: '',
+      isValid: false,
+      errors: ['Version string is empty']
+    }
+  }
+
+  const parsed = parseVersion(versionString)
+  if (!parsed) {
+    return {
+      formatted: versionString,
+      isValid: false,
+      errors: ['Invalid version format. Expected: 1-999.0-10.0-9999']
+    }
+  }
+
+  const { validateVersion } = require('@/utils/version')
+  const validation = validateVersion(parsed)
+
+  return {
+    formatted: formatVersion(parsed),
+    isValid: validation.isValid,
+    errors: validation.errors
+  }
 }

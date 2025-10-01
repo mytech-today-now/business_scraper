@@ -221,7 +221,7 @@ interface ValidationRule {
 const configSchema: Record<string, ValidationRule> = {
   // Application
   NEXT_PUBLIC_APP_NAME: { type: 'string', default: 'Business Scraper App' },
-  NEXT_PUBLIC_APP_VERSION: { type: 'string', default: '3.0.1' },
+  NEXT_PUBLIC_APP_VERSION: { type: 'string', default: '6.10.1' },
   NODE_ENV: {
     type: 'string',
     choices: ['development', 'production', 'test'],
@@ -797,10 +797,16 @@ export function loadConfig(): AppConfig {
         memoryUsage: {
           warning: config.MONITORING_MEMORY_WARNING,
           critical: config.MONITORING_MEMORY_CRITICAL,
+          emergency: config.MONITORING_MEMORY_EMERGENCY || config.MONITORING_MEMORY_CRITICAL * 1.5,
         },
         paymentProcessingTime: {
           warning: config.MONITORING_PAYMENT_WARNING,
           critical: config.MONITORING_PAYMENT_CRITICAL,
+        },
+        memoryLeakDetection: {
+          enabled: config.MONITORING_MEMORY_LEAK_DETECTION || true,
+          threshold: config.MONITORING_MEMORY_LEAK_THRESHOLD || 100,
+          interval: config.MONITORING_MEMORY_LEAK_INTERVAL || 60000,
         },
       },
       notifications: {

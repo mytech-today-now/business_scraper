@@ -228,7 +228,7 @@ export class PaymentError extends Error {
   constructor(
     message: string,
     public code: string,
-    public stripeError?: Stripe.StripeError
+    public stripeError?: Stripe.StripeRawError
   ) {
     super(message)
     this.name = 'PaymentError'

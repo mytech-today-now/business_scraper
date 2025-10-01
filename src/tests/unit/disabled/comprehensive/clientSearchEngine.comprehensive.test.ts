@@ -6,6 +6,8 @@
 import { jest } from '@jest/globals'
 import { clientSearchEngine } from '@/model/clientSearchEngine'
 import { logger } from '@/utils/logger'
+import { mockFetchResponses } from '../../../__tests__/utils/commonMocks'
+import { createMockResponse } from '../../../__tests__/utils/mockTypeHelpers'
 
 // Mock dependencies
 jest.mock('@/utils/logger')
@@ -53,21 +55,18 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
   describe('Search Business Functionality', () => {
     test('should search businesses successfully', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({
-          results: [
-            {
-              id: '1',
-              name: 'Test Restaurant',
-              url: 'https://example.com',
-              address: '123 Main St',
-              phone: '555-1234',
-              rating: 4.5,
-            },
-          ],
-        }),
-      }
+      const mockResponse = mockFetchResponses.success({
+        results: [
+          {
+            id: '1',
+            name: 'Test Restaurant',
+            url: 'https://example.com',
+            address: '123 Main St',
+            phone: '555-1234',
+            rating: 4.5,
+          },
+        ],
+      })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -95,10 +94,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     })
 
     test('should handle invalid response format', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ invalid: 'format' }),
-      }
+      const mockResponse = mockFetchResponses.success({ invalid: 'format' })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -128,10 +124,8 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     })
 
     test('should handle malformed JSON response', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
-      }
+      const mockResponse = createMockResponse(null, { status: 200 })
+      mockResponse.json.mockRejectedValue(new Error('Invalid JSON'))
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -226,10 +220,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
   describe('Search Query Processing', () => {
     test('should process industry-specific search terms', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] }),
-      }
+      const mockResponse = mockFetchResponses.success({ results: [] })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -248,10 +239,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     })
 
     test('should handle unknown industry', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] }),
-      }
+      const mockResponse = mockFetchResponses.success({ results: [] })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -262,10 +250,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     })
 
     test('should handle special characters in query', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] }),
-      }
+      const mockResponse = mockFetchResponses.success({ results: [] })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -276,10 +261,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
 
     test('should handle very long query strings', async () => {
       const longQuery = 'a'.repeat(1000)
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] }),
-      }
+      const mockResponse = mockFetchResponses.success({ results: [] })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -293,10 +275,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle geocoding success', async () => {
       mockGeocoder.getCoordinates.mockResolvedValue({ lat: 40.7128, lng: -74.006 })
 
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] }),
-      }
+      const mockResponse = mockFetchResponses.success({ results: [] })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -308,10 +287,7 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
     test('should handle geocoding failure', async () => {
       mockGeocoder.getCoordinates.mockRejectedValue(new Error('Geocoding failed'))
 
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ results: [] }),
-      }
+      const mockResponse = mockFetchResponses.success({ results: [] })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -391,12 +367,9 @@ describe('ClientSearchEngine Comprehensive Tests', () => {
         // Missing other fields
       }
 
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({
-          results: [incompleteData],
-        }),
-      }
+      const mockResponse = mockFetchResponses.success({
+        results: [incompleteData],
+      })
 
       ;(fetch as jest.Mock).mockResolvedValue(mockResponse)
 

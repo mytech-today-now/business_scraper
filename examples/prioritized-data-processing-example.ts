@@ -125,7 +125,7 @@ async function demonstratePrioritizedProcessing() {
     console.log(`  📧 Primary Email: ${record.email}`)
     console.log(`  📞 Phone: ${record.phone}`)
     console.log(
-      `  🏠 Address: ${record.streetAddress}, ${record.city}, ${record.state} ${record.zipCode}`
+      `  🏠 Address: ${record.streetNumber} ${record.streetName}${record.suite ? ` ${record.suite}` : ''}, ${record.city}, ${record.state} ${record.zipCode}`
     )
     console.log(`  🏢 Business: ${record.businessName}`)
     console.log(`  👤 Contact: ${record.contactName}`)

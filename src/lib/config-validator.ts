@@ -88,8 +88,26 @@ function validateAppConfig(config: AppConfig, result: ValidationResult): void {
     result.errors.push('Application name cannot be empty')
   }
 
-  if (!app.version || !/^\d+\.\d+\.\d+/.test(app.version)) {
-    result.warnings.push('Application version should follow semantic versioning (x.y.z)')
+  // Validate version using new custom format (1-999.0-10.0-9999)
+  if (!app.version) {
+    result.errors.push('Application version is required')
+  } else {
+    const { isValidVersionString, parseVersion, validateVersion } = require('@/utils/version')
+
+    if (!isValidVersionString(app.version)) {
+      result.errors.push('Application version must follow the format 1-999.0-10.0-9999')
+    } else {
+      const parsedVersion = parseVersion(app.version)
+      if (parsedVersion) {
+        const validation = validateVersion(parsedVersion)
+        if (!validation.isValid) {
+          result.errors.push(...validation.errors.map(error => `Version validation: ${error}`))
+        }
+        if (validation.warnings.length > 0) {
+          result.warnings.push(...validation.warnings.map(warning => `Version warning: ${warning}`))
+        }
+      }
+    }
   }
 
   if (app.environment === 'production' && app.debug) {
