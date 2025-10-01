@@ -1,0 +1,878 @@
+{
+  "metadata": {
+    "reportId": "report-1759239625485-99yd91hqj",
+    "generatedAt": "2025-09-30T13:40:27.961Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 9,
+    "successRate": 0,
+    "criticalIssues": 9,
+    "keyMetrics": {
+      "averageDuration": 1136,
+      "memoryPeak": 109658256,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 9,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 9,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should fetch token from /api/csrf first::1759239627327",
+          "testName": "should fetch token from /api/csrf first",
+          "testDescription": "should fetch token from /api/csrf first",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109436224,
+            "heapTotal": 133582848,
+            "external": 6340069,
+            "rss": 206020608
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fetch token from /api/csrf first",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot assign to read only property 'performance' of object '[object Window]'"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should fallback to /api/auth when /api/csrf fails::1759239627395",
+          "testName": "should fallback to /api/auth when /api/csrf fails",
+          "testDescription": "should fallback to /api/auth when /api/csrf fails",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109485576,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to /api/auth when /api/csrf fails",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should retry with exponential backoff on failures::1759239627459",
+          "testName": "should retry with exponential backoff on failures",
+          "testDescription": "should retry with exponential backoff on failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109508064,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry with exponential backoff on failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should set error after max retries exceeded::1759239627535",
+          "testName": "should set error after max retries exceeded",
+          "testDescription": "should set error after max retries exceeded",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109530376,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should set error after max retries exceeded",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should validate token expiration correctly::1759239627629",
+          "testName": "should validate token expiration correctly",
+          "testDescription": "should validate token expiration correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109552656,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate token expiration correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should detect expired tokens::1759239627713",
+          "testName": "should detect expired tokens",
+          "testDescription": "should detect expired tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109575624,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should detect expired tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should include CSRF token in headers::1759239627804",
+          "testName": "should include CSRF token in headers",
+          "testDescription": "should include CSRF token in headers",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109598760,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include CSRF token in headers",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should include token ID for temporary tokens::1759239627908",
+          "testName": "should include token ID for temporary tokens",
+          "testDescription": "should include token ID for temporary tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109621040,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include token ID for temporary tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should submit form with CSRF protection::1759239627932",
+          "testName": "should submit form with CSRF protection",
+          "testDescription": "should submit form with CSRF protection",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109658256,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206053376
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:212:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:212:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should submit form with CSRF protection",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should fetch token from /api/csrf first::1759239627327",
+          "testName": "should fetch token from /api/csrf first",
+          "testDescription": "should fetch token from /api/csrf first",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109436224,
+            "heapTotal": 133582848,
+            "external": 6340069,
+            "rss": 206020608
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fetch token from /api/csrf first",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot assign to read only property 'performance' of object '[object Window]'"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should fallback to /api/auth when /api/csrf fails::1759239627395",
+          "testName": "should fallback to /api/auth when /api/csrf fails",
+          "testDescription": "should fallback to /api/auth when /api/csrf fails",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109485576,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to /api/auth when /api/csrf fails",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should retry with exponential backoff on failures::1759239627459",
+          "testName": "should retry with exponential backoff on failures",
+          "testDescription": "should retry with exponential backoff on failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109508064,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry with exponential backoff on failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should set error after max retries exceeded::1759239627535",
+          "testName": "should set error after max retries exceeded",
+          "testDescription": "should set error after max retries exceeded",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109530376,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should set error after max retries exceeded",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should validate token expiration correctly::1759239627629",
+          "testName": "should validate token expiration correctly",
+          "testDescription": "should validate token expiration correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109552656,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate token expiration correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should detect expired tokens::1759239627713",
+          "testName": "should detect expired tokens",
+          "testDescription": "should detect expired tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109575624,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should detect expired tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should include CSRF token in headers::1759239627804",
+          "testName": "should include CSRF token in headers",
+          "testDescription": "should include CSRF token in headers",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109598760,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include CSRF token in headers",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should include token ID for temporary tokens::1759239627908",
+          "testName": "should include token ID for temporary tokens",
+          "testDescription": "should include token ID for temporary tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109621040,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206036992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include token ID for temporary tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use C S R F Protection::should submit form with CSRF protection::1759239627932",
+          "testName": "should submit form with CSRF protection",
+          "testDescription": "should submit form with CSRF protection",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "relativePath": "src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+          "suite": "Use C S R F Protection",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759239626130,
+          "endTime": 1759239627266,
+          "duration": 1136,
+          "memoryUsage": {
+            "heapUsed": 109658256,
+            "heapTotal": 133582848,
+            "external": 6340109,
+            "rss": 206053376
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:212:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:212:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should submit form with CSRF protection",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1369.6147,
+      "endTime": 3845.581,
+      "duration": 10224,
+      "memoryUsage": {
+        "heapUsed": 109551841.77777778,
+        "heapTotal": 131462210.13333333,
+        "external": 10955184.177777778,
+        "rss": 164327762.66666666
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 985966576,
+      "averageTestDuration": 1136,
+      "totalExecutionTime": 10224
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "9 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should fetch token from /api/csrf first: TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should fallback to /api/auth when /api/csrf fails: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should retry with exponential backoff on failures: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should set error after max retries exceeded: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should validate token expiration correctly: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should detect expired tokens: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should include CSRF token in headers: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should include token ID for temporary tokens: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:28:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should submit form with CSRF protection: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useCSRFProtection.test.tsx:212:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should fetch token from /api/csrf first",
+          "should fallback to /api/auth when /api/csrf fails",
+          "should retry with exponential backoff on failures",
+          "should set error after max retries exceeded",
+          "should validate token expiration correctly",
+          "should detect expired tokens",
+          "should include CSRF token in headers",
+          "should include token ID for temporary tokens",
+          "should submit form with CSRF protection"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

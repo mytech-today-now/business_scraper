@@ -1,0 +1,50 @@
+﻿
+> business-scraper-app@6.8.3 type-check
+> tsc --noEmit
+
+__tests__/model/stripeService.test.ts(84,35): error TS2339: Property 'mockResolvedValue' does not exist on type '{ (params?: CustomerCreateParams | undefined, options?: RequestOptions | undefined): Promise<Response<Customer>>; (options?: RequestOptions | undefined): Promise<...>; }'.
+__tests__/model/stripeService.test.ts(100,35): error TS2339: Property 'mockRejectedValue' does not exist on type '{ (params?: CustomerCreateParams | undefined, options?: RequestOptions | undefined): Promise<Response<Customer>>; (options?: RequestOptions | undefined): Promise<...>; }'.
+__tests__/model/stripeService.test.ts(111,37): error TS2339: Property 'mockResolvedValue' does not exist on type '{ (id: string, params?: CustomerRetrieveParams | undefined, options?: RequestOptions | undefined): Promise<Response<Customer | DeletedCustomer>>; (id: string, options?: RequestOptions | undefined): Promise<...>; }'.
+__tests__/model/stripeService.test.ts(120,37): error TS2339: Property 'mockRejectedValue' does not exist on type '{ (id: string, params?: CustomerRetrieveParams | undefined, options?: RequestOptions | undefined): Promise<Response<Customer | DeletedCustomer>>; (id: string, options?: RequestOptions | undefined): Promise<...>; }'.
+__tests__/model/stripeService.test.ts(133,35): error TS2339: Property 'mockResolvedValue' does not exist on type '(id: string, params?: CustomerUpdateParams | undefined, options?: RequestOptions | undefined) => Promise<Response<Customer>>'.
+__tests__/model/stripeService.test.ts(152,39): error TS2339: Property 'mockResolvedValue' does not exist on type '(params: SubscriptionCreateParams, options?: RequestOptions | undefined) => Promise<Response<Subscription>>'.
+__tests__/model/stripeService.test.ts(170,39): error TS2339: Property 'mockRejectedValue' does not exist on type '(params: SubscriptionCreateParams, options?: RequestOptions | undefined) => Promise<Response<Subscription>>'.
+__tests__/model/stripeService.test.ts(183,41): error TS2339: Property 'mockResolvedValue' does not exist on type '{ (id: string, params?: SubscriptionRetrieveParams | undefined, options?: RequestOptions | undefined): Promise<Response<Subscription>>; (id: string, options?: RequestOptions | undefined): Promise<...>; }'.
+__tests__/model/stripeService.test.ts(199,39): error TS2339: Property 'mockResolvedValue' does not exist on type '(id: string, params?: SubscriptionUpdateParams | undefined, options?: RequestOptions | undefined) => Promise<Response<Subscription>>'.
+__tests__/model/stripeService.test.ts(218,40): error TS2339: Property 'mockResolvedValue' does not exist on type '(params: PaymentIntentCreateParams, options?: RequestOptions | undefined) => Promise<Response<PaymentIntent>>'.
+__tests__/model/stripeService.test.ts(240,41): error TS2339: Property 'mockResolvedValue' does not exist on type '{ (id: string, params?: PaymentIntentConfirmParams | undefined, options?: RequestOptions | undefined): Promise<Response<PaymentIntent>>; (id: string, options?: RequestOptions | undefined): Promise<...>; }'.
+__tests__/model/stripeService.test.ts(258,40): error TS2339: Property 'mockResolvedValue' does not exist on type '(id: string, params: PaymentMethodAttachParams, options?: RequestOptions | undefined) => Promise<Response<PaymentMethod>>'.
+__tests__/model/stripeService.test.ts(276,38): error TS2339: Property 'mockResolvedValue' does not exist on type '{ (params?: PaymentMethodListParams | undefined, options?: RequestOptions | undefined): ApiListPromise<PaymentMethod>; (options?: RequestOptions | undefined): ApiListPromise<...>; }'.
+__tests__/model/stripeService.test.ts(295,42): error TS2339: Property 'mockReturnValue' does not exist on type '(payload: string | Buffer<ArrayBufferLike>, header: string | string[] | Buffer<ArrayBufferLike>, secret: string, tolerance?: number | undefined, cryptoProvider?: CryptoProvider | undefined, receivedAt?: number | undefined) => Event'.
+__tests__/model/stripeService.test.ts(308,42): error TS2339: Property 'mockImplementation' does not exist on type '(payload: string | Buffer<ArrayBufferLike>, header: string | string[] | Buffer<ArrayBufferLike>, secret: string, tolerance?: number | undefined, cryptoProvider?: CryptoProvider | undefined, receivedAt?: number | undefined) => Event'.
+__tests__/model/stripeService.test.ts(322,33): error TS2339: Property 'mockResolvedValue' does not exist on type '{ (params?: CustomerListParams | undefined, options?: RequestOptions | undefined): ApiListPromise<Customer>; (options?: RequestOptions | undefined): ApiListPromise<...>; }'.
+__tests__/model/userPaymentService.test.ts(24,21): error TS2352: Conversion of type '{ getItem: jest.MockedFunction<any>; setItem: jest.MockedFunction<any>; removeItem: jest.MockedFunction<any>; clear: jest.MockedFunction<any>; }' to type 'Mocked<StorageService>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ getItem: any; setItem: any; removeItem: any; clear: any; }' is missing the following properties from type '{ initialize: MockInstance<Promise<void>, [], unknown>; saveBusiness: MockInstance<Promise<void>, [business: BusinessRecord], unknown>; ... 63 more ...; close: MockInstance<...>; }': initialize, saveBusiness, saveBusinesses, getAllBusinesses, and 62 more.
+__tests__/model/userPaymentService.test.ts(53,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(65,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(67,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(95,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(98,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(107,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(127,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(132,26): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(136,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(144,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(169,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(170,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(188,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(189,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(220,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(222,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(248,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(275,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(277,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(295,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(330,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(336,14): error TS2532: Object is possibly 'undefined'.
+__tests__/model/userPaymentService.test.ts(337,14): error TS2532: Object is possibly 'undefined'.
+__tests__/model/userPaymentService.test.ts(338,14): error TS2532: Object is possibly 'undefined'.
+__tests__/model/userPaymentService.test.ts(342,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(377,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(380,19): error TS2339: Property 'setItem' does not exist on type 'Mocked<StorageService>'.
+__tests__/model/userPaymentService.test.ts(400,19): error TS2339: Property 'getItem' does not exist on type 'Mocked<StorageService>'.

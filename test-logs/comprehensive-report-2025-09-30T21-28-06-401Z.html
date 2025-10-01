@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-09-30T21:28:06.401Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-failed">FAILED</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 27</div>
+    <div class="metric"><strong>Success Rate:</strong> 48.15%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 14</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should execute all retention policies</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:73:20)</li><li><strong>should log audit event for retention execution</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:82:7)</li><li><strong>should execute retention policy successfully</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:117:19)</li><li><strong>should handle different data types</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:136:21)</li><li><strong>should process audit logs according to policy</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:180:7)</li><li><strong>should not delete when autoDelete is false</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:213:7)</li><li><strong>should return all retention jobs</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:279:7)</li><li><strong>should filter jobs by policy ID</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:279:7)</li><li><strong>should filter jobs by status</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:279:7)</li><li><strong>should filter jobs by date range</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:279:7)</li><li><strong>should sort jobs by scheduled date (newest first)</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:279:7)</li><li><strong>should return data archives</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:337:7)</li><li><strong>should filter archives by data type</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:337:7)</li><li><strong>should filter archives by date range</strong>: TypeError: Cannot read properties of undefined (reading 'logs')
+    at DataRetentionService.logs [as processAuditLogs] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:225:34)
+    at DataRetentionService.executeRetentionPolicy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:177:11)
+    at DataRetentionService.executeRetentionPolicies (Q:\_kyle\temp_documents\GitHub\business_scraper\src\model\dataRetentionService.ts:124:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\compliance\dataRetention.test.ts:337:7)</li></ul>
+
+    <p><em>Generated at 2025-09-30T21:28:06.401Z by EnhancedTestLogger</em></p>
+</body>
+</html>

@@ -1,0 +1,732 @@
+# Comprehensive Test Report
+
+## Executive Summary
+- **Overall Status**: WARNING
+- **Total Tests**: 11
+- **Success Rate**: 54.55%
+- **Critical Issues**: 0
+- **Quality Gate**: FAILED
+
+## Test Results
+### Failed Tests
+- **should not show 401 errors to users**: Error: [2mexpect([22m[31melement[39m[2m).not.toBeInTheDocument()[22m
+
+[31mexpected document not to contain element, found <div class="mb-3">Failed to fetch CSRF token: 401</div> instead[39m
+    at Object.toBeInTheDocument (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\login-csrf-integration.test.tsx:82:73)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should show non-401 errors to users**: TestingLibraryElementError: Found multiple elements with the text: Network error occurred
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"text-sm text-red-700"[39m
+[36m>[39m
+  [0mNetwork error occurred[0m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"mb-3"[39m
+[36m>[39m
+  [0mNetwork error occurred[0m
+[36m</div>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"max-w-md w-full space-y-8"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-center gap-3 mb-2"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m"Business Scraper Logo"[39m
+              [33mclass[39m=[32m"object-contain"[39m
+              [33mheight[39m=[32m"40"[39m
+              [33mquality[39m=[32m"90"[39m
+              [33msizes[39m=[32m"40px"[39m
+              [33msrc[39m=[32m"/favicon.ico"[39m
+              [33mwidth[39m=[32m"40"[39m
+            [36m/>[39m
+            [36m<h2[39m
+              [33mclass[39m=[32m"text-3xl font-extrabold text-gray-900"[39m
+            [36m>[39m
+              [0mBusiness Scraper[0m
+            [36m</h2>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-center text-sm text-gray-600"[39m
+          [36m>[39m
+            [0mSign in to access the application[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm p-8"[39m
+        [36m>[39m
+          [36m<form[39m
+            [33mclass[39m=[32m"space-y-6"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"sr-only"[39m
+                [33mfor[39m=[32m"username"[39m
+              [36m>[39m
+                [0mUsername[0m
+              [36m</label>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-invalid[39m=[32m"false"[39m
+                    [33mautocomplete[39m=[32m"username"[39m
+                    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                    [33mid[39m=[32m"username"[39m
+                    [33mname[39m=[32m"username"[39m
+                    [33mplaceholder[39m=[32m"Username"[39m
+                    [33mrequired[39m=[32m""[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"sr-only"[39m
+                [33mfor[39m=[32m"password"[39m
+              [36m>[39m
+                [0mPassword[0m
+              [36m</label>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-invalid[39m=[32m"false"[39m
+                    [33mautocomplete[39m=[32m"current-password"[39m
+                    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                    [33mid[39m=[32m"password"[39m
+                    [33mname[39m=[32m"password"[39m
+                    [33mplaceholder[39m=[32m"Password"[39m
+                    [33mrequired[39m=[32m""[39m
+                    [33mtype[39m=[32m"password"[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rounded-md bg-red-50 p-4"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"text-sm text-red-700"[39m
+              [36m>[39m
+                [0mNetwork error occurred[0m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rounded-md bg-red-50 p-4 border border-red-200"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"text-sm text-red-700"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"font-semibold mb-2"[39m
+                [36m>[39m
+                  [0m⚠️ Security Token Error[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"mb-3"[39m
+                [36m>[39m
+                  [0mNetwork error occurred[0m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex gap-2 mt-3"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"[39m
+                  [36m>[39m
+                    [0mRetry Loading Token[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"[39m
+                  [36m>[39m
+                    [0mRefresh Page[0m
+                  [36m</button>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 group relative w-full flex justify-center"[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"submit"[39m
+              [36m>[39m
+                [0mSign in[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</form>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-center"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500"[39m
+          [36m>[39m
+            [0mThis is a single-user application. Contact your administrator for access.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:20:35)
+    at getMultipleElementsFoundError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:23:10)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:55:13
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByText (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\login-csrf-integration.test.tsx:100:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should not show loading and error simultaneously**: TestingLibraryElementError: Unable to find an element with the text: Loading security token.... This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"max-w-md w-full space-y-8"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-center gap-3 mb-2"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m"Business Scraper Logo"[39m
+              [33mclass[39m=[32m"object-contain"[39m
+              [33mheight[39m=[32m"40"[39m
+              [33mquality[39m=[32m"90"[39m
+              [33msizes[39m=[32m"40px"[39m
+              [33msrc[39m=[32m"/favicon.ico"[39m
+              [33mwidth[39m=[32m"40"[39m
+            [36m/>[39m
+            [36m<h2[39m
+              [33mclass[39m=[32m"text-3xl font-extrabold text-gray-900"[39m
+            [36m>[39m
+              [0mBusiness Scraper[0m
+            [36m</h2>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-center text-sm text-gray-600"[39m
+          [36m>[39m
+            [0mSign in to access the application[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm p-8"[39m
+        [36m>[39m
+          [36m<form[39m
+            [33mclass[39m=[32m"space-y-6"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"sr-only"[39m
+                [33mfor[39m=[32m"username"[39m
+              [36m>[39m
+                [0mUsername[0m
+              [36m</label>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-invalid[39m=[32m"false"[39m
+                    [33mautocomplete[39m=[32m"username"[39m
+                    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                    [33mid[39m=[32m"username"[39m
+                    [33mname[39m=[32m"username"[39m
+                    [33mplaceholder[39m=[32m"Username"[39m
+                    [33mrequired[39m=[32m""[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"sr-only"[39m
+                [33mfor[39m=[32m"password"[39m
+              [36m>[39m
+                [0mPassword[0m
+              [36m</label>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-invalid[39m=[32m"false"[39m
+                    [33mautocomplete[39m=[32m"current-password"[39m
+                    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                    [33mid[39m=[32m"password"[39m
+                    [33mname[39m=[32m"password"[39m
+                    [33mplaceholder[39m=[32m"Password"[39m
+                    [33mrequired[39m=[32m""[39m
+                    [33mtype[39m=[32m"password"[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 group relative w-full flex justify-center"[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"submit"[39m
+              [36m>[39m
+                [0mSign in[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</form>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-center"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500"[39m
+          [36m>[39m
+            [0mThis is a single-user application. Contact your administrator for access.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:76:38
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:52:17
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByText (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\login-csrf-integration.test.tsx:115:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should show rate limit message and countdown**: TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/sign in/i`
+
+Here are the accessible roles:
+
+  img:
+
+  Name "Business Scraper Logo":
+  [36m<img[39m
+    [33malt[39m=[32m"Business Scraper Logo"[39m
+    [33mclass[39m=[32m"object-contain"[39m
+    [33mheight[39m=[32m"40"[39m
+    [33mquality[39m=[32m"90"[39m
+    [33msizes[39m=[32m"40px"[39m
+    [33msrc[39m=[32m"/favicon.ico"[39m
+    [33mwidth[39m=[32m"40"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Business Scraper":
+  [36m<h2[39m
+    [33mclass[39m=[32m"text-3xl font-extrabold text-gray-900"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Username":
+  [36m<input[39m
+    [33maria-invalid[39m=[32m"false"[39m
+    [33mautocomplete[39m=[32m"username"[39m
+    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mid[39m=[32m"username"[39m
+    [33mname[39m=[32m"username"[39m
+    [33mplaceholder[39m=[32m"Username"[39m
+    [33mrequired[39m=[32m""[39m
+    [33mtype[39m=[32m"text"[39m
+    [33mvalue[39m=[32m"admin"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Wait 60s":
+  [36m<button[39m
+    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 group relative w-full flex justify-center"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"submit"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"max-w-md w-full space-y-8"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-center gap-3 mb-2"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m"Business Scraper Logo"[39m
+              [33mclass[39m=[32m"object-contain"[39m
+              [33mheight[39m=[32m"40"[39m
+              [33mquality[39m=[32m"90"[39m
+              [33msizes[39m=[32m"40px"[39m
+              [33msrc[39m=[32m"/favicon.ico"[39m
+              [33mwidth[39m=[32m"40"[39m
+            [36m/>[39m
+            [36m<h2[39m
+              [33mclass[39m=[32m"text-3xl font-extrabold text-gray-900"[39m
+            [36m>[39m
+              [0mBusiness Scraper[0m
+            [36m</h2>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-center text-sm text-gray-600"[39m
+          [36m>[39m
+            [0mSign in to access the application[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm p-8"[39m
+        [36m>[39m
+          [36m<form[39m
+            [33mclass[39m=[32m"space-y-6"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"sr-only"[39m
+                [33mfor[39m=[32m"username"[39m
+              [36m>[39m
+                [0mUsername[0m
+              [36m</label>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-invalid[39m=[32m"false"[39m
+                    [33mautocomplete[39m=[32m"username"[39m
+                    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mid[39m=[32m"username"[39m
+                    [33mname[39m=[32m"username"[39m
+                    [33mplaceholder[39m=[32m"Username"[39m
+                    [33mrequired[39m=[32m""[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"admin"[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"sr-only"[39m
+                [33mfor[39m=[32m"password"[39m
+              [36m>[39m
+                [0mPassword[0m
+              [36m</label>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"space-y-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-invalid[39m=[32m"false"[39m
+                    [33mautocomplete[39m=[32m"current-password"[39m
+                    [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mid[39m=[32m"password"[39m
+                    [33mname[39m=[32m"password"[39m
+                    [33mplaceholder[39m=[32m"Password"[39m
+                    [33mrequired[39m=[32m""[39m
+                    [33mtype[39m=[32m"password"[39m
+                    [33mvalue[39m=[32m"wrong"[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"rounded-md bg-red-50 p-4"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"text-sm text-red-700"[39m
+              [36m>[39m
+                [0mToo many failed attempts. Please wait 60 seconds.[0m
+                [36m<div[39m
+                  [33mclass[39m=[32m"mt-1 font-medium"[39m
+                [36m>[39m
+                  [0mRetry in [0m
+                  [0m60[0m
+                  [0m seconds[0m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<input[39m
+              [33mname[39m=[32m"csrf_token"[39m
+              [33mtype[39m=[32m"hidden"[39m
+              [33mvalue[39m=[32m"rate-limit-token"[39m
+            [36m/>[39m
+            [36m<div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 group relative w-full flex justify-center"[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"submit"[39m
+              [36m>[39m
+                [0mWait 60s[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</form>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"text-center"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500"[39m
+          [36m>[39m
+            [0mThis is a single-user application. Contact your administrator for access.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:76:38
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:52:17
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByRole (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\login-csrf-integration.test.tsx:302:21)
+- **should redirect if already authenticated**: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"/"[39m
+
+Number of calls: [31m0[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"max-w-md w-full space-y-8"[39m
+        [36m>[39m
+          [36m<div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-center gap-3 mb-2"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m"Business Scraper Logo"[39m
+                [33mclass[39m=[32m"object-contain"[39m
+                [33mheight[39m=[32m"40"[39m
+                [33mquality[39m=[32m"90"[39m
+                [33msizes[39m=[32m"40px"[39m
+                [33msrc[39m=[32m"/favicon.ico"[39m
+                [33mwidth[39m=[32m"40"[39m
+              [36m/>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"text-3xl font-extrabold text-gray-900"[39m
+              [36m>[39m
+                [0mBusiness Scraper[0m
+              [36m</h2>[39m
+            [36m</div>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"mt-2 text-center text-sm text-gray-600"[39m
+            [36m>[39m
+              [0mSign in to access the application[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm p-8"[39m
+          [36m>[39m
+            [36m<form[39m
+              [33mclass[39m=[32m"space-y-6"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"sr-only"[39m
+                  [33mfor[39m=[32m"username"[39m
+                [36m>[39m
+                  [0mUsername[0m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"space-y-2"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                  [36m>[39m
+                    [36m<input[39m
+                      [33maria-invalid[39m=[32m"false"[39m
+                      [33mautocomplete[39m=[32m"username"[39m
+                      [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                      [33mid[39m=[32m"username"[39m
+                      [33mname[39m=[32m"username"[39m
+                      [33mplaceholder[39m=[32m"Username"[39m
+                      [33mrequired[39m=[32m""[39m
+                      [33mtype[39m=[32m"text"[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m/>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                    [36m/>[39m
+                  [36m</div>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"sr-only"[39m
+                  [33mfor[39m=[32m"password"[39m
+                [36m>[39m
+                  [0mPassword[0m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"space-y-2"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                  [36m>[39m
+                    [36m<input[39m
+                      [33maria-invalid[39m=[32m"false"[39m
+                      [33mautocomplete[39m=[32m"current-password"[39m
+                      [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring relative block w-full"[39m
+                      [33mid[39m=[32m"password"[39m
+                      [33mname[39m=[32m"password"[39m
+                      [33mplaceholder[39m=[32m"Password"[39m
+                      [33mrequired[39m=[32m""[39m
+                      [33mtype[39m=[32m"password"[39m
+                      [33mvalue[39m=[32m""[39m
+                    [36m/>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"absolute inset-y-0 right-0 flex items-center pr-3 space-x-1"[39m
+                    [36m/>[39m
+                  [36m</div>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 group relative w-full flex justify-center"[39m
+                  [33mdisabled[39m=[32m""[39m
+                  [33mtype[39m=[32m"submit"[39m
+                [36m>[39m
+                  [0mSign in[0m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</form>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"text-center"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-xs text-gray-500"[39m
+            [36m>[39m
+              [0mThis is a single-user application. Contact your administrator for access.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+    at toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\login-csrf-integration.test.tsx:325:26)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)
+
+## Performance Analysis
+- **Average Duration**: 86713.00ms
+- **Memory Peak**: 105.21MB
+
+## Recommendations
+
+
+---
+*Generated at 2025-09-30T19:19:39.675Z by EnhancedTestLogger*

@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "reportId": "report-1759267719995-8eht0mr1m",
+    "generatedAt": "2025-09-30T21:28:41.387Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 27,
+    "successRate": 0,
+    "criticalIssues": 1,
+    "keyMetrics": {
+      "averageDuration": 666,
+      "memoryPeak": 79314864,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 27,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 27,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Data Retention::should execute all retention policies::1759267721374",
+          "testName": "should execute all retention policies",
+          "testDescription": "should execute all retention policies",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759267720679,
+          "endTime": 1759267721345,
+          "duration": 666,
+          "memoryUsage": {
+            "heapUsed": 79156056,
+            "heapTotal": 118444032,
+            "external": 4466185,
+            "rss": 162459648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should execute all retention policies",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Data Retention::should execute all retention policies::1759267721374",
+          "testName": "should execute all retention policies",
+          "testDescription": "should execute all retention policies",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759267720679,
+          "endTime": 1759267721345,
+          "duration": 666,
+          "memoryUsage": {
+            "heapUsed": 79156056,
+            "heapTotal": 118444032,
+            "external": 4466185,
+            "rss": 162459648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should execute all retention policies",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1460.0574,
+      "endTime": 2852.2758,
+      "duration": 17982,
+      "memoryUsage": {
+        "heapUsed": 79243450.66666667,
+        "heapTotal": 95092140.8,
+        "external": 7924345.066666667,
+        "rss": 118865176
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 2139573168,
+      "averageTestDuration": 666,
+      "totalExecutionTime": 17982
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "1 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should execute all retention policies: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should execute all retention policies"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

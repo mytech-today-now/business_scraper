@@ -1,0 +1,2434 @@
+{
+  "metadata": {
+    "reportId": "report-1759242519081-y5iv1sy3n",
+    "generatedAt": "2025-09-30T14:28:41.610Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 75,
+    "successRate": 61.33333333333333,
+    "criticalIssues": 27,
+    "keyMetrics": {
+      "averageDuration": 540.2533333333333,
+      "memoryPeak": 121589528,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 75,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 1,
+      "high": 1,
+      "medium": 71,
+      "low": 2
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Data Retention::should execute all retention policies::1759242521485",
+          "testName": "should execute all retention policies",
+          "testDescription": "should execute all retention policies",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120748744,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 229986304
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should execute all retention policies",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should log audit event for retention execution::1759242521493",
+          "testName": "should log audit event for retention execution",
+          "testDescription": "should log audit event for retention execution",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120777040,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230055936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:82:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:82:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should log audit event for retention execution",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should execute retention policy successfully::1759242521498",
+          "testName": "should execute retention policy successfully",
+          "testDescription": "should execute retention policy successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120793344,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230055936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:117:19)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:117:19)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should execute retention policy successfully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should handle different data types::1759242521504",
+          "testName": "should handle different data types",
+          "testDescription": "should handle different data types",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120803976,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230055936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:136:21)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:136:21)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle different data types",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should process audit logs according to policy::1759242521509",
+          "testName": "should process audit logs according to policy",
+          "testDescription": "should process audit logs according to policy",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120826928,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230064128
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:180:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:180:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should process audit logs according to policy",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should not delete when autoDelete is false::1759242521513",
+          "testName": "should not delete when autoDelete is false",
+          "testDescription": "should not delete when autoDelete is false",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120851528,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:213:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:213:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not delete when autoDelete is false",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should return all retention jobs::1759242521517",
+          "testName": "should return all retention jobs",
+          "testDescription": "should return all retention jobs",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120870816,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return all retention jobs",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter jobs by policy ID::1759242521521",
+          "testName": "should filter jobs by policy ID",
+          "testDescription": "should filter jobs by policy ID",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120882616,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter jobs by policy ID",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter jobs by status::1759242521527",
+          "testName": "should filter jobs by status",
+          "testDescription": "should filter jobs by status",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120894824,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter jobs by status",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter jobs by date range::1759242521531",
+          "testName": "should filter jobs by date range",
+          "testDescription": "should filter jobs by date range",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120926152,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter jobs by date range",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should sort jobs by scheduled date (newest first)::1759242521534",
+          "testName": "should sort jobs by scheduled date (newest first)",
+          "testDescription": "should sort jobs by scheduled date (newest first)",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120939200,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sort jobs by scheduled date (newest first)",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should return data archives::1759242521537",
+          "testName": "should return data archives",
+          "testDescription": "should return data archives",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120953560,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return data archives",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter archives by data type::1759242521540",
+          "testName": "should filter archives by data type",
+          "testDescription": "should filter archives by data type",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120965384,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter archives by data type",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter archives by date range::1759242521544",
+          "testName": "should filter archives by date range",
+          "testDescription": "should filter archives by date range",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120977240,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter archives by date range",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate comprehensive compliance report::1759242521551",
+          "testName": "should generate comprehensive compliance report",
+          "testDescription": "should generate comprehensive compliance report",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121141680,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:90:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:90:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate comprehensive compliance report",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should include previous period comparison when requested::1759242521555",
+          "testName": "should include previous period comparison when requested",
+          "testDescription": "should include previous period comparison when requested",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121160032,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:103:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:103:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include previous period comparison when requested",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should exclude previous period comparison when not requested::1759242521559",
+          "testName": "should exclude previous period comparison when not requested",
+          "testDescription": "should exclude previous period comparison when not requested",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121170912,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:112:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:112:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should exclude previous period comparison when not requested",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should log audit event for report generation::1759242521562",
+          "testName": "should log audit event for report generation",
+          "testDescription": "should log audit event for report generation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121181752,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:123:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:123:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should log audit event for report generation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should handle different compliance types::1759242521567",
+          "testName": "should handle different compliance types",
+          "testDescription": "should handle different compliance types",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121193240,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:141:24)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:141:24)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle different compliance types",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate GDPR-specific report with user rights requests::1759242521571",
+          "testName": "should generate GDPR-specific report with user rights requests",
+          "testDescription": "should generate GDPR-specific report with user rights requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121204024,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:157:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:157:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate GDPR-specific report with user rights requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate PCI DSS report::1759242521576",
+          "testName": "should generate PCI DSS report",
+          "testDescription": "should generate PCI DSS report",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121220064,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generatePCIDSSReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:195:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:170:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generatePCIDSSReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:195:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:170:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate PCI DSS report",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate SOC 2 report::1759242521579",
+          "testName": "should generate SOC 2 report",
+          "testDescription": "should generate SOC 2 report",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121231880,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateSOC2Report (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:215:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:186:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateSOC2Report (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:215:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:186:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate SOC 2 report",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should return all reports when no filters applied::1759242521582",
+          "testName": "should return all reports when no filters applied",
+          "testDescription": "should return all reports when no filters applied",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121243600,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return all reports when no filters applied",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should filter reports by compliance type::1759242521586",
+          "testName": "should filter reports by compliance type",
+          "testDescription": "should filter reports by compliance type",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121255368,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter reports by compliance type",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should filter reports by date range::1759242521588",
+          "testName": "should filter reports by date range",
+          "testDescription": "should filter reports by date range",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121267104,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter reports by date range",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should sort reports by generation date (newest first)::1759242521591",
+          "testName": "should sort reports by generation date (newest first)",
+          "testDescription": "should sort reports by generation date (newest first)",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121278832,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sort reports by generation date (newest first)",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should calculate metrics correctly::1759242521595",
+          "testName": "should calculate metrics correctly",
+          "testDescription": "should calculate metrics correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121290624,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:247:23)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:247:23)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should calculate metrics correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should assess high risk for security incidents::1759242521598",
+          "testName": "should assess high risk for security incidents",
+          "testDescription": "should assess high risk for security incidents",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "high"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121304720,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"high\"\u001b[39m\nReceived: \u001b[31m\"medium\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:298:42)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"high\"\u001b[39m\nReceived: \u001b[31m\"medium\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:298:42)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should assess high risk for security incidents",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should handle previous period comparison errors gracefully::1759242521602",
+          "testName": "should handle previous period comparison errors gracefully",
+          "testDescription": "should handle previous period comparison errors gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121343832,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: Query error\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:486:68)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: Query error\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:486:68)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle previous period comparison errors gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: Query error"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Data Retention::should execute all retention policies::1759242521485",
+          "testName": "should execute all retention policies",
+          "testDescription": "should execute all retention policies",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120748744,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 229986304
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should execute all retention policies",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should log audit event for retention execution::1759242521493",
+          "testName": "should log audit event for retention execution",
+          "testDescription": "should log audit event for retention execution",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120777040,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230055936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:82:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:82:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should log audit event for retention execution",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should execute retention policy successfully::1759242521498",
+          "testName": "should execute retention policy successfully",
+          "testDescription": "should execute retention policy successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120793344,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230055936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:117:19)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:117:19)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should execute retention policy successfully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should handle different data types::1759242521504",
+          "testName": "should handle different data types",
+          "testDescription": "should handle different data types",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120803976,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230055936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:136:21)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:136:21)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle different data types",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should process audit logs according to policy::1759242521509",
+          "testName": "should process audit logs according to policy",
+          "testDescription": "should process audit logs according to policy",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120826928,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230064128
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:180:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:180:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should process audit logs according to policy",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should not delete when autoDelete is false::1759242521513",
+          "testName": "should not delete when autoDelete is false",
+          "testDescription": "should not delete when autoDelete is false",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120851528,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:213:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:213:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not delete when autoDelete is false",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should return all retention jobs::1759242521517",
+          "testName": "should return all retention jobs",
+          "testDescription": "should return all retention jobs",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120870816,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return all retention jobs",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter jobs by policy ID::1759242521521",
+          "testName": "should filter jobs by policy ID",
+          "testDescription": "should filter jobs by policy ID",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120882616,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter jobs by policy ID",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter jobs by status::1759242521527",
+          "testName": "should filter jobs by status",
+          "testDescription": "should filter jobs by status",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120894824,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230137856
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter jobs by status",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter jobs by date range::1759242521531",
+          "testName": "should filter jobs by date range",
+          "testDescription": "should filter jobs by date range",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120926152,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter jobs by date range",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should sort jobs by scheduled date (newest first)::1759242521534",
+          "testName": "should sort jobs by scheduled date (newest first)",
+          "testDescription": "should sort jobs by scheduled date (newest first)",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120939200,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sort jobs by scheduled date (newest first)",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should return data archives::1759242521537",
+          "testName": "should return data archives",
+          "testDescription": "should return data archives",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120953560,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return data archives",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter archives by data type::1759242521540",
+          "testName": "should filter archives by data type",
+          "testDescription": "should filter archives by data type",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120965384,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter archives by data type",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Data Retention::should filter archives by date range::1759242521544",
+          "testName": "should filter archives by date range",
+          "testDescription": "should filter archives by date range",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\dataRetention.test.ts",
+          "suite": "Data Retention",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242519743,
+          "endTime": 1759242520466,
+          "duration": 723,
+          "memoryUsage": {
+            "heapUsed": 120977240,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter archives by date range",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate comprehensive compliance report::1759242521551",
+          "testName": "should generate comprehensive compliance report",
+          "testDescription": "should generate comprehensive compliance report",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121141680,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230154240
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:90:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:90:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate comprehensive compliance report",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should include previous period comparison when requested::1759242521555",
+          "testName": "should include previous period comparison when requested",
+          "testDescription": "should include previous period comparison when requested",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121160032,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:103:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:103:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include previous period comparison when requested",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should exclude previous period comparison when not requested::1759242521559",
+          "testName": "should exclude previous period comparison when not requested",
+          "testDescription": "should exclude previous period comparison when not requested",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121170912,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:112:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:112:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should exclude previous period comparison when not requested",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should log audit event for report generation::1759242521562",
+          "testName": "should log audit event for report generation",
+          "testDescription": "should log audit event for report generation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121181752,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:123:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:123:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should log audit event for report generation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should handle different compliance types::1759242521567",
+          "testName": "should handle different compliance types",
+          "testDescription": "should handle different compliance types",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121193240,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:141:24)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:141:24)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle different compliance types",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate GDPR-specific report with user rights requests::1759242521571",
+          "testName": "should generate GDPR-specific report with user rights requests",
+          "testDescription": "should generate GDPR-specific report with user rights requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121204024,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:157:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:157:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate GDPR-specific report with user rights requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate PCI DSS report::1759242521576",
+          "testName": "should generate PCI DSS report",
+          "testDescription": "should generate PCI DSS report",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121220064,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generatePCIDSSReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:195:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:170:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generatePCIDSSReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:195:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:170:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate PCI DSS report",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should generate SOC 2 report::1759242521579",
+          "testName": "should generate SOC 2 report",
+          "testDescription": "should generate SOC 2 report",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121231880,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateSOC2Report (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:215:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:186:22)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateSOC2Report (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:215:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:186:22)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate SOC 2 report",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should return all reports when no filters applied::1759242521582",
+          "testName": "should return all reports when no filters applied",
+          "testDescription": "should return all reports when no filters applied",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121243600,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return all reports when no filters applied",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should filter reports by compliance type::1759242521586",
+          "testName": "should filter reports by compliance type",
+          "testDescription": "should filter reports by compliance type",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121255368,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter reports by compliance type",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should filter reports by date range::1759242521588",
+          "testName": "should filter reports by date range",
+          "testDescription": "should filter reports by date range",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121267104,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should filter reports by date range",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should sort reports by generation date (newest first)::1759242521591",
+          "testName": "should sort reports by generation date (newest first)",
+          "testDescription": "should sort reports by generation date (newest first)",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121278832,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sort reports by generation date (newest first)",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Compliance Reporting::should calculate metrics correctly::1759242521595",
+          "testName": "should calculate metrics correctly",
+          "testDescription": "should calculate metrics correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "relativePath": "src\\__tests__\\compliance\\complianceReporting.test.ts",
+          "suite": "Compliance Reporting",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759242520536,
+          "endTime": 1759242520837,
+          "duration": 301,
+          "memoryUsage": {
+            "heapUsed": 121290624,
+            "heapTotal": 154095616,
+            "external": 7672974,
+            "rss": 230162432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:247:23)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:247:23)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should calculate metrics correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'logs')"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1428.2803,
+      "endTime": 3957.5641,
+      "duration": 40519,
+      "memoryUsage": {
+        "heapUsed": 121219993.28,
+        "heapTotal": 145463991.936,
+        "external": 12121999.328000002,
+        "rss": 181829989.92000002
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 9091499496,
+      "averageTestDuration": 540.2533333333333,
+      "totalExecutionTime": 40519
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "27 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should execute all retention policies: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:73:20)",
+          "Fix should log audit event for retention execution: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:82:7)",
+          "Fix should execute retention policy successfully: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:117:19)",
+          "Fix should handle different data types: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:136:21)",
+          "Fix should process audit logs according to policy: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:180:7)",
+          "Fix should not delete when autoDelete is false: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:213:7)",
+          "Fix should return all retention jobs: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "Fix should filter jobs by policy ID: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "Fix should filter jobs by status: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "Fix should filter jobs by date range: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "Fix should sort jobs by scheduled date (newest first): TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:279:7)",
+          "Fix should return data archives: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "Fix should filter archives by data type: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "Fix should filter archives by date range: TypeError: Cannot read properties of undefined (reading 'logs')\n    at DataRetentionService.logs [as processAuditLogs] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:225:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at DataRetentionService.executeRetentionPolicy (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:177:11)\n    at DataRetentionService.executeRetentionPolicies (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts:124:21)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\dataRetention.test.ts:337:7)",
+          "Fix should generate comprehensive compliance report: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:90:22)",
+          "Fix should include previous period comparison when requested: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:103:22)",
+          "Fix should exclude previous period comparison when not requested: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:112:22)",
+          "Fix should log audit event for report generation: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:123:7)",
+          "Fix should handle different compliance types: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:141:24)",
+          "Fix should generate GDPR-specific report with user rights requests: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:157:22)",
+          "Fix should generate PCI DSS report: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generatePCIDSSReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:195:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:170:22)",
+          "Fix should generate SOC 2 report: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateSOC2Report (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:215:12)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:186:22)",
+          "Fix should return all reports when no filters applied: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "Fix should filter reports by compliance type: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "Fix should filter reports by date range: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "Fix should sort reports by generation date (newest first): TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at ComplianceReportingService.generateComplianceReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:81:23)\n    at ComplianceReportingService.generateGDPRReport (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:166:20)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:195:7)",
+          "Fix should calculate metrics correctly: TypeError: Cannot read properties of undefined (reading 'logs')\n    at ComplianceReportingService.logs [as calculateComplianceMetrics] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts:258:28)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\compliance\\complianceReporting.test.ts:247:23)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should execute all retention policies",
+          "should log audit event for retention execution",
+          "should execute retention policy successfully",
+          "should handle different data types",
+          "should process audit logs according to policy",
+          "should not delete when autoDelete is false",
+          "should return all retention jobs",
+          "should filter jobs by policy ID",
+          "should filter jobs by status",
+          "should filter jobs by date range",
+          "should sort jobs by scheduled date (newest first)",
+          "should return data archives",
+          "should filter archives by data type",
+          "should filter archives by date range",
+          "should generate comprehensive compliance report",
+          "should include previous period comparison when requested",
+          "should exclude previous period comparison when not requested",
+          "should log audit event for report generation",
+          "should handle different compliance types",
+          "should generate GDPR-specific report with user rights requests",
+          "should generate PCI DSS report",
+          "should generate SOC 2 report",
+          "should return all reports when no filters applied",
+          "should filter reports by compliance type",
+          "should filter reports by date range",
+          "should sort reports by generation date (newest first)",
+          "should calculate metrics correctly"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

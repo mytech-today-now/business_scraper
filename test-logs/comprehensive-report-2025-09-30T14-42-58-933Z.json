@@ -1,0 +1,424 @@
+{
+  "metadata": {
+    "reportId": "report-1759243376111-mlm7utgke",
+    "generatedAt": "2025-09-30T14:42:58.933Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 40,
+    "successRate": 87.5,
+    "criticalIssues": 2,
+    "keyMetrics": {
+      "averageDuration": 890.375,
+      "memoryPeak": 123684304,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 40,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 40,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should check connectivity with ping::1759243378896",
+          "testName": "should check connectivity with ping",
+          "testDescription": "should check connectivity with ping",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123317120,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227688448
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[32m- Expected\u001b[39m\n\u001b[31m+ Received\u001b[39m\n\n  \u001b[2m\"/api/test\"\u001b[22m,\n\u001b[2m  Object {\u001b[22m\n\u001b[2m    \"cache\": \"no-cache\",\u001b[22m\n\u001b[31m+   \"headers\": Object {\u001b[39m\n\u001b[31m+     \"Cache-Control\": \"no-cache, no-store, must-revalidate\",\u001b[39m\n\u001b[31m+     \"Expires\": \"0\",\u001b[39m\n\u001b[31m+     \"Pragma\": \"no-cache\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[2m    \"method\": \"HEAD\",\u001b[22m\n\u001b[32m-   \"signal\": Any<AbortSignal>,\u001b[39m\n\u001b[31m+   \"signal\": AbortSignal {},\u001b[39m\n\u001b[2m  }\u001b[22m,\n\nNumber of calls: \u001b[31m1\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:115:19)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[32m- Expected\u001b[39m\n\u001b[31m+ Received\u001b[39m\n\n  \u001b[2m\"/api/test\"\u001b[22m,\n\u001b[2m  Object {\u001b[22m\n\u001b[2m    \"cache\": \"no-cache\",\u001b[22m\n\u001b[31m+   \"headers\": Object {\u001b[39m\n\u001b[31m+     \"Cache-Control\": \"no-cache, no-store, must-revalidate\",\u001b[39m\n\u001b[31m+     \"Expires\": \"0\",\u001b[39m\n\u001b[31m+     \"Pragma\": \"no-cache\",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[2m    \"method\": \"HEAD\",\u001b[22m\n\u001b[32m-   \"signal\": Any<AbortSignal>,\u001b[39m\n\u001b[31m+   \"signal\": AbortSignal {},\u001b[39m\n\u001b[2m  }\u001b[22m,\n\nNumber of calls: \u001b[31m1\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:115:19)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should check connectivity with ping",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should handle ping failure::1759243378901",
+          "testName": "should handle ping failure",
+          "testDescription": "should handle ping failure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123347928,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227758080
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:133:33)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:133:33)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle ping failure",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should retry connection with exponential backoff::1759243378906",
+          "testName": "should retry connection with exponential backoff",
+          "testDescription": "should retry connection with exponential backoff",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123357408,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227758080
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected number of calls: \u001b[32m3\u001b[39m\nReceived number of calls: \u001b[31m1\u001b[39m\n    at Object.toHaveBeenCalledTimes (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:151:19)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected number of calls: \u001b[32m3\u001b[39m\nReceived number of calls: \u001b[31m1\u001b[39m\n    at Object.toHaveBeenCalledTimes (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:151:19)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry connection with exponential backoff",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should handle periodic connectivity checks::1759243378913",
+          "testName": "should handle periodic connectivity checks",
+          "testDescription": "should handle periodic connectivity checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123367056,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227758080
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:155:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:155:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle periodic connectivity checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot assign to read only property 'performance' of object '[object Window]'"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should not ping when interval is disabled::1759243378920",
+          "testName": "should not ping when interval is disabled",
+          "testDescription": "should not ping when interval is disabled",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123395712,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227758080
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:173:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:173:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not ping when interval is disabled",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should handle periodic connectivity checks::1759243378913",
+          "testName": "should handle periodic connectivity checks",
+          "testDescription": "should handle periodic connectivity checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123367056,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227758080
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:155:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:155:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle periodic connectivity checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot assign to read only property 'performance' of object '[object Window]'"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Offline Support::should not ping when interval is disabled::1759243378920",
+          "testName": "should not ping when interval is disabled",
+          "testDescription": "should not ping when interval is disabled",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "relativePath": "src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+          "suite": "Use Offline Support",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759243376839,
+          "endTime": 1759243378270,
+          "duration": 1431,
+          "memoryUsage": {
+            "heapUsed": 123395712,
+            "heapTotal": 155291648,
+            "external": 7819786,
+            "rss": 227758080
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:173:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:173:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not ping when interval is disabled",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Can't install fake timers twice on the same global object."
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1380.262,
+      "endTime": 4201.6493,
+      "duration": 35615,
+      "memoryUsage": {
+        "heapUsed": 123536154.8,
+        "heapTotal": 148243385.76,
+        "external": 12353615.48,
+        "rss": 185304232.2
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 4941446192,
+      "averageTestDuration": 890.375,
+      "totalExecutionTime": 35615
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "2 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should handle periodic connectivity checks: TypeError: Cannot assign to read only property 'performance' of object '[object Window]'\n    at hijackMethod (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:945:32)\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1754:17)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:155:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should not ping when interval is disabled: TypeError: Can't install fake timers twice on the same global object.\n    at Object.install (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@sinonjs\\fake-timers\\src\\fake-timers-src.js:1663:19)\n    at FakeTimers.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@jest\\fake-timers\\build\\modernFakeTimers.js:118:36)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runtime\\build\\index.js:1980:38)\n    at Object.useFakeTimers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\hooks\\useOfflineSupport.test.ts:173:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should handle periodic connectivity checks",
+          "should not ping when interval is disabled"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

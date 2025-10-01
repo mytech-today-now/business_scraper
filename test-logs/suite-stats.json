@@ -1,35 +1,35 @@
 {
   "Payment-models": {
     "total": 27,
-    "passed": 0,
+    "passed": 27,
     "failed": 0,
-    "skipped": 27,
-    "successRate": 0,
-    "duration": 108
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 856
   },
   "Auth-utils": {
     "total": 34,
-    "passed": 0,
+    "passed": 34,
     "failed": 0,
-    "skipped": 34,
-    "successRate": 0,
-    "duration": 108
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 451
   },
   "Utils": {
     "total": 20,
-    "passed": 0,
+    "passed": 20,
     "failed": 0,
-    "skipped": 20,
-    "successRate": 0,
-    "duration": 100
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 184
   },
   "Toast Deduplication": {
     "total": 15,
-    "passed": 0,
+    "passed": 15,
     "failed": 0,
-    "skipped": 15,
-    "successRate": 0,
-    "duration": 98
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 189
   },
   "Console Filter Utils": {
     "total": 11,
@@ -49,11 +49,11 @@
   },
   "Use Search Streaming.connection-error": {
     "total": 9,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 9,
-    "successRate": 0,
-    "duration": 195
+    "passed": 1,
+    "failed": 8,
+    "skipped": 0,
+    "successRate": 0.1111111111111111,
+    "duration": 11084
   },
   "Csrf-token-fix-validation": {
     "total": 12,
@@ -65,11 +65,11 @@
   },
   "Login-csrf-integration": {
     "total": 11,
-    "passed": 0,
+    "passed": 11,
     "failed": 0,
-    "skipped": 11,
-    "successRate": 0,
-    "duration": 220
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 2062
   },
   "Streaming-service-fixes": {
     "total": 8,
@@ -113,11 +113,11 @@
   },
   "Use Offline Support": {
     "total": 15,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 15,
-    "successRate": 0,
-    "duration": 196
+    "passed": 10,
+    "failed": 5,
+    "skipped": 0,
+    "successRate": 0.6666666666666666,
+    "duration": 1431
   },
   "Processing Window": {
     "total": 11,
@@ -130,18 +130,18 @@
   "Debug-solution-integration": {
     "total": 6,
     "passed": 0,
-    "failed": 0,
-    "skipped": 6,
+    "failed": 6,
+    "skipped": 0,
     "successRate": 0,
-    "duration": 196
+    "duration": 3193
   },
   "Use Search Streaming": {
     "total": 12,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 12,
-    "successRate": 0,
-    "duration": 178
+    "passed": 3,
+    "failed": 9,
+    "skipped": 0,
+    "successRate": 0.25,
+    "duration": 1758
   },
   "Database Security": {
     "total": 27,
@@ -169,11 +169,11 @@
   },
   "Security Monitoring": {
     "total": 25,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 25,
-    "successRate": 0,
-    "duration": 114
+    "passed": 22,
+    "failed": 3,
+    "skipped": 0,
+    "successRate": 0.88,
+    "duration": 1947
   },
   "Login-authentication-fix": {
     "total": 9,
@@ -242,10 +242,10 @@
   "Use C S R F Protection": {
     "total": 9,
     "passed": 0,
-    "failed": 0,
-    "skipped": 9,
+    "failed": 9,
+    "skipped": 0,
     "successRate": 0,
-    "duration": 192
+    "duration": 1136
   },
   "Payment-api": {
     "total": 13,
@@ -425,11 +425,11 @@
   },
   "Data Retention": {
     "total": 27,
-    "passed": 0,
+    "passed": 27,
     "failed": 0,
-    "skipped": 27,
-    "successRate": 0,
-    "duration": 100
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 589
   },
   "Api-endpoints": {
     "total": 15,
@@ -441,11 +441,11 @@
   },
   "Compliance Reporting": {
     "total": 23,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 23,
-    "successRate": 0,
-    "duration": 99
+    "passed": 8,
+    "failed": 15,
+    "skipped": 0,
+    "successRate": 0.34782608695652173,
+    "duration": 301
   },
   "Api Endpoints.comprehensive": {
     "total": 22,
@@ -505,11 +505,11 @@
   },
   "Gdpr Service": {
     "total": 25,
-    "passed": 0,
+    "passed": 25,
     "failed": 0,
-    "skipped": 25,
-    "successRate": 0,
-    "duration": 102
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 566
   },
   "Feature Access Controller": {
     "total": 24,
@@ -665,11 +665,11 @@
   },
   "Use Search Streaming Hook": {
     "total": 16,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 16,
-    "successRate": 0,
-    "duration": 220
+    "passed": 11,
+    "failed": 5,
+    "skipped": 0,
+    "successRate": 0.6875,
+    "duration": 1063
   },
   "Payment Controller": {
     "total": 0,
@@ -737,11 +737,11 @@
   },
   "Crm Service Registry": {
     "total": 22,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 22,
-    "successRate": 0,
-    "duration": 119
+    "passed": 13,
+    "failed": 9,
+    "skipped": 0,
+    "successRate": 0.5909090909090909,
+    "duration": 1094
   },
   "Logger": {
     "total": 24,
@@ -825,11 +825,11 @@
   },
   "Csp": {
     "total": 30,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 30,
-    "successRate": 0,
-    "duration": 133
+    "passed": 28,
+    "failed": 2,
+    "skipped": 0,
+    "successRate": 0.9333333333333333,
+    "duration": 287
   },
   "Use Business Insights": {
     "total": 12,
@@ -961,11 +961,11 @@
   },
   "Service Worker Registration": {
     "total": 13,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 13,
-    "successRate": 0,
-    "duration": 206
+    "passed": 6,
+    "failed": 7,
+    "skipped": 0,
+    "successRate": 0.46153846153846156,
+    "duration": 3652
   },
   "Domain Blacklist Persistence": {
     "total": 12,
@@ -976,12 +976,12 @@
     "duration": 118
   },
   "Formatters": {
-    "total": 31,
-    "passed": 0,
+    "total": 40,
+    "passed": 40,
     "failed": 0,
-    "skipped": 31,
-    "successRate": 0,
-    "duration": 97
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 277
   },
   "Use Performance Metrics": {
     "total": 14,
@@ -1056,12 +1056,12 @@
     "duration": 118
   },
   "Email Validation.functional": {
-    "total": 15,
+    "total": 0,
     "passed": 0,
     "failed": 0,
-    "skipped": 15,
+    "skipped": 0,
     "successRate": 0,
-    "duration": 113
+    "duration": 0
   },
   "Enhanced Scraping Engine": {
     "total": 16,
@@ -1153,11 +1153,11 @@
   },
   "Csp-compliance": {
     "total": 14,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 14,
-    "successRate": 0,
-    "duration": 123
+    "passed": 12,
+    "failed": 2,
+    "skipped": 0,
+    "successRate": 0.8571428571428571,
+    "duration": 517
   },
   "Build-process.bvt": {
     "total": 5,
@@ -1177,11 +1177,11 @@
   },
   "Service Worker Registration.fix": {
     "total": 9,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 9,
-    "successRate": 0,
-    "duration": 211
+    "passed": 8,
+    "failed": 1,
+    "skipped": 0,
+    "successRate": 0.8888888888888888,
+    "duration": 512
   },
   "Export Service": {
     "total": 9,
@@ -1193,11 +1193,11 @@
   },
   "Csp-fix-validation": {
     "total": 15,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 15,
-    "successRate": 0,
-    "duration": 108
+    "passed": 13,
+    "failed": 2,
+    "skipped": 0,
+    "successRate": 0.8666666666666667,
+    "duration": 191
   },
   "Csrf-endless-loop-fix": {
     "total": 8,
@@ -1401,11 +1401,11 @@
   },
   "Client Only Stripe Provider": {
     "total": 6,
-    "passed": 0,
+    "passed": 6,
     "failed": 0,
-    "skipped": 6,
-    "successRate": 0,
-    "duration": 183
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 409
   },
   "Address Input Handler": {
     "total": 17,
@@ -1521,11 +1521,11 @@
   },
   "Email Validation Service": {
     "total": 22,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 22,
-    "successRate": 0,
-    "duration": 100
+    "passed": 17,
+    "failed": 5,
+    "skipped": 0,
+    "successRate": 0.7727272727272727,
+    "duration": 3485
   },
   "Contact Extractor.integration": {
     "total": 6,
@@ -1785,11 +1785,11 @@
   },
   "Crypto": {
     "total": 9,
-    "passed": 0,
+    "passed": 9,
     "failed": 0,
-    "skipped": 9,
-    "successRate": 0,
-    "duration": 122
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 560
   },
   "Test Helpers.tsx": {
     "total": 0,
@@ -1798,5 +1798,61 @@
     "skipped": 0,
     "successRate": 0,
     "duration": 0
+  },
+  "Integration": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Health Monitor": {
+    "total": 14,
+    "passed": 6,
+    "failed": 8,
+    "skipped": 0,
+    "successRate": 0.42857142857142855,
+    "duration": 2848
+  },
+  "Connection Manager": {
+    "total": 12,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 11,
+    "successRate": 0.08333333333333333,
+    "duration": 516
+  },
+  "Version": {
+    "total": 19,
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 183
+  },
+  "Stripe Service": {
+    "total": 17,
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 984
+  },
+  "Mock Type Helpers.ts": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Jest-typescript-config": {
+    "total": 22,
+    "passed": 18,
+    "failed": 4,
+    "skipped": 0,
+    "successRate": 0.8181818181818182,
+    "duration": 604
   }
 }

@@ -1,0 +1,534 @@
+{
+  "metadata": {
+    "reportId": "report-1758924550467-zgkhg5c6w",
+    "generatedAt": "2025-09-26T22:09:19.188Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 12,
+    "successRate": 83.33333333333334,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 7872,
+      "memoryPeak": 91826160,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 12,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 12,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Connection Manager::should perform periodic health checks::1758924559172",
+          "testName": "should perform periodic health checks",
+          "testDescription": "should perform periodic health checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91754760,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform periodic health checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should remove unhealthy connections::1758924559183",
+          "testName": "should remove unhealthy connections",
+          "testDescription": "should remove unhealthy connections",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91781504,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should remove unhealthy connections",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Connection Manager::should create a connection successfully::1758924559171",
+          "testName": "should create a connection successfully",
+          "testDescription": "should create a connection successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91717112,
+            "heapTotal": 122376192,
+            "external": 4418538,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should retry connection creation on failure::1758924559172",
+          "testName": "should retry connection creation on failure",
+          "testDescription": "should retry connection creation on failure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91732808,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should fail after max retry attempts::1758924559172",
+          "testName": "should fail after max retry attempts",
+          "testDescription": "should fail after max retry attempts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91737088,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should timeout connection creation::1758924559172",
+          "testName": "should timeout connection creation",
+          "testDescription": "should timeout connection creation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91741368,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should open circuit breaker after threshold failures::1758924559172",
+          "testName": "should open circuit breaker after threshold failures",
+          "testDescription": "should open circuit breaker after threshold failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91745664,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should transition to half-open after timeout::1758924559172",
+          "testName": "should transition to half-open after timeout",
+          "testDescription": "should transition to half-open after timeout",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91750480,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should perform periodic health checks::1758924559172",
+          "testName": "should perform periodic health checks",
+          "testDescription": "should perform periodic health checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91754760,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform periodic health checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should remove unhealthy connections::1758924559183",
+          "testName": "should remove unhealthy connections",
+          "testDescription": "should remove unhealthy connections",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91781504,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167239680
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should remove unhealthy connections",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should report correct status::1758924559186",
+          "testName": "should report correct status",
+          "testDescription": "should report correct status",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91799672,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167243776
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should close all connections on shutdown::1758924559186",
+          "testName": "should close all connections on shutdown",
+          "testDescription": "should close all connections on shutdown",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924551270,
+          "endTime": 1758924559142,
+          "duration": 7872,
+          "memoryUsage": {
+            "heapUsed": 91816496,
+            "heapTotal": 122376192,
+            "external": 4418578,
+            "rss": 167251968
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1644.918,
+      "endTime": 10366.5562,
+      "duration": 94464,
+      "memoryUsage": {
+        "heapUsed": 91768686.66666667,
+        "heapTotal": 110122424,
+        "external": 9176868.666666668,
+        "rss": 137653030
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1101224240,
+      "averageTestDuration": 7872,
+      "totalExecutionTime": 94464
+    },
+    "bottlenecks": [
+      "should create a connection successfully (7872ms)",
+      "should retry connection creation on failure (7872ms)",
+      "should fail after max retry attempts (7872ms)",
+      "should timeout connection creation (7872ms)",
+      "should open circuit breaker after threshold failures (7872ms)",
+      "should transition to half-open after timeout (7872ms)",
+      "should perform periodic health checks (7872ms)",
+      "should remove unhealthy connections (7872ms)",
+      "should report correct status (7872ms)",
+      "should close all connections on shutdown (7872ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should create a connection successfully",
+          "should retry connection creation on failure",
+          "should fail after max retry attempts",
+          "should timeout connection creation",
+          "should open circuit breaker after threshold failures",
+          "should transition to half-open after timeout",
+          "should perform periodic health checks",
+          "should remove unhealthy connections",
+          "should report correct status",
+          "should close all connections on shutdown"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

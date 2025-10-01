@@ -1,0 +1,1655 @@
+{
+  "metadata": {
+    "reportId": "report-1759268043179-glnp60p6q",
+    "generatedAt": "2025-09-30T21:34:18.304Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 37,
+    "successRate": 40.54054054054054,
+    "criticalIssues": 6,
+    "keyMetrics": {
+      "averageDuration": 3725.945945945946,
+      "memoryPeak": 131319672,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 37,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 37,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should retry on immediate connection failure::1759268058158",
+          "testName": "should retry on immediate connection failure",
+          "testDescription": "should retry on immediate connection failure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130637184,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220774400
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m2\u001b[39m\nReceived:    \u001b[31m1\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:160:56)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m2\u001b[39m\nReceived:    \u001b[31m1\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:160:56)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry on immediate connection failure",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should fallback to batch search when enabled::1759268058166",
+          "testName": "should fallback to batch search when enabled",
+          "testDescription": "should fallback to batch search when enabled",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130670648,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220782592
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:182:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:182:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to batch search when enabled",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should handle connection failure after opening::1759268058173",
+          "testName": "should handle connection failure after opening",
+          "testDescription": "should handle connection failure after opening",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130694256,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:208:54)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:208:54)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle connection failure after opening",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should perform health check before retrying::1759268058178",
+          "testName": "should perform health check before retrying",
+          "testDescription": "should perform health check before retrying",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130704864,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/health\"\u001b[39m, \u001b[32mAny<Object>\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:228:27)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/health\"\u001b[39m, \u001b[32mAny<Object>\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:228:27)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform health check before retrying",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should fallback when health check fails::1759268058182",
+          "testName": "should fallback when health check fails",
+          "testDescription": "should fallback when health check fails",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130722400,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:251:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:251:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback when health check fails",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should open circuit breaker after multiple failures::1759268058186",
+          "testName": "should open circuit breaker after multiple failures",
+          "testDescription": "should open circuit breaker after multiple failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130739272,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m5\u001b[39m\nReceived:    \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:281:54)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m5\u001b[39m\nReceived:    \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:281:54)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should open circuit breaker after multiple failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should handle offline scenarios::1759268058189",
+          "testName": "should handle offline scenarios",
+          "testDescription": "should handle offline scenarios",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130749368,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"Network connection lost\"\u001b[39m\nReceived string:    \u001b[31m\"Unable to create streaming connection - pool exhausted\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:305:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"Network connection lost\"\u001b[39m\nReceived string:    \u001b[31m\"Unable to create streaming connection - pool exhausted\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:305:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle offline scenarios",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should recover from temporary connection issues::1759268058197",
+          "testName": "should recover from temporary connection issues",
+          "testDescription": "should recover from temporary connection issues",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130773752,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220794880
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:356:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:356:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should recover from temporary connection issues",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should start streaming successfully::1759268058206",
+          "testName": "should start streaming successfully",
+          "testDescription": "should start streaming successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 130935024,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220803072
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"streaming\"\u001b[39m\nReceived: \u001b[31m\"completed\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:112:46)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"streaming\"\u001b[39m\nReceived: \u001b[31m\"completed\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:112:46)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should start streaming successfully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle streaming results::1759268058212",
+          "testName": "should handle streaming results",
+          "testDescription": "should handle streaming results",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 130966728,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"Test Restaurant\"\u001b[39m\nReceived: \u001b[31m\"Fallback Business\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:142:44)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"Test Restaurant\"\u001b[39m\nReceived: \u001b[31m\"Fallback Business\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:142:44)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle streaming results",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle progress updates::1759268058216",
+          "testName": "should handle progress updates",
+          "testDescription": "should handle progress updates",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 130977872,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m500\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:167:48)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m500\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:167:48)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle progress updates",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle connection errors and retry::1759268058219",
+          "testName": "should handle connection errors and retry",
+          "testDescription": "should handle connection errors and retry",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 130996864,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:230:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:229:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:230:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:229:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle connection errors and retry",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should fallback to batch search after max retries::1759268058225",
+          "testName": "should fallback to batch search after max retries",
+          "testDescription": "should fallback to batch search after max retries",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131009272,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:269:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:268:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:269:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:268:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to batch search after max retries",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle completion message::1759268058231",
+          "testName": "should handle completion message",
+          "testDescription": "should handle completion message",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131023120,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:299:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:298:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:299:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:298:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle completion message",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateMessage')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should clear results::1759268058237",
+          "testName": "should clear results",
+          "testDescription": "should clear results",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131035040,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:319:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:318:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:319:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:318:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clear results",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateMessage')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should not add results when paused::1759268058240",
+          "testName": "should not add results when paused",
+          "testDescription": "should not add results when paused",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131046928,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateOpen')\n    at simulateOpen (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:350:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:349:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateOpen')\n    at simulateOpen (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:350:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:349:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not add results when paused",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateOpen')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle error messages from stream::1759268058245",
+          "testName": "should handle error messages from stream",
+          "testDescription": "should handle error messages from stream",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131065080,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220819456
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:381:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:380:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:381:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:380:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle error messages from stream",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateMessage')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming Hook::should handle EventSource connection errors::1759268058265",
+          "testName": "should handle EventSource connection errors",
+          "testDescription": "should handle EventSource connection errors",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "relativePath": "src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "suite": "Use Search Streaming Hook",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268056864,
+          "endTime": 1759268057927,
+          "duration": 1063,
+          "memoryUsage": {
+            "heapUsed": 131232792,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220827648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at Object.toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:179:40)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at Object.toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:179:40)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle EventSource connection errors",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBeNull\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming Hook::should implement circuit breaker pattern::1759268058270",
+          "testName": "should implement circuit breaker pattern",
+          "testDescription": "should implement circuit breaker pattern",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "relativePath": "src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "suite": "Use Search Streaming Hook",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268056864,
+          "endTime": 1759268057927,
+          "duration": 1063,
+          "memoryUsage": {
+            "heapUsed": 131243280,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220827648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"circuit breaker\"\u001b[39m\nReceived string:    \u001b[31m\"Batch search failed: 500\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:204:36)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"circuit breaker\"\u001b[39m\nReceived string:    \u001b[31m\"Batch search failed: 500\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:204:36)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should implement circuit breaker pattern",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming Hook::should perform health checks before retrying::1759268058277",
+          "testName": "should perform health checks before retrying",
+          "testDescription": "should perform health checks before retrying",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "relativePath": "src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "suite": "Use Search Streaming Hook",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268056864,
+          "endTime": 1759268057927,
+          "duration": 1063,
+          "memoryUsage": {
+            "heapUsed": 131253568,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220827648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/health\"\u001b[39m, \u001b[32mAny<Object>\u001b[39m\nReceived: \u001b[31m\"/api/search\"\u001b[39m, \u001b[2m{\"body\": \"{\\\"provider\\\":\\\"comprehensive\\\",\\\"query\\\":\\\"test query\\\",\\\"location\\\":\\\"12345\\\",\\\"maxResults\\\":1000}\", \"headers\": {\"Content-Type\": \"application/json\"}, \"method\": \"POST\"}\u001b[22m\n\nNumber of calls: \u001b[31m1\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:215:25)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/health\"\u001b[39m, \u001b[32mAny<Object>\u001b[39m\nReceived: \u001b[31m\"/api/search\"\u001b[39m, \u001b[2m{\"body\": \"{\\\"provider\\\":\\\"comprehensive\\\",\\\"query\\\":\\\"test query\\\",\\\"location\\\":\\\"12345\\\",\\\"maxResults\\\":1000}\", \"headers\": {\"Content-Type\": \"application/json\"}, \"method\": \"POST\"}\u001b[22m\n\nNumber of calls: \u001b[31m1\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:215:25)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform health checks before retrying",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming Hook::should fallback to batch search when streaming fails::1759268058283",
+          "testName": "should fallback to batch search when streaming fails",
+          "testDescription": "should fallback to batch search when streaming fails",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "relativePath": "src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "suite": "Use Search Streaming Hook",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268056864,
+          "endTime": 1759268057927,
+          "duration": 1063,
+          "memoryUsage": {
+            "heapUsed": 131266048,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220827648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"fallback\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:240:46)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"fallback\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:240:46)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to batch search when streaming fails",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming Hook::should handle streaming completion::1759268058290",
+          "testName": "should handle streaming completion",
+          "testDescription": "should handle streaming completion",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "relativePath": "src\\tests\\regression\\useSearchStreamingHook.test.ts",
+          "suite": "Use Search Streaming Hook",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268056864,
+          "endTime": 1759268057927,
+          "duration": 1063,
+          "memoryUsage": {
+            "heapUsed": 131284720,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220827648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:283:42)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts:283:42)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle streaming completion",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\tests\\regression\\useSearchStreamingHook.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle connection errors and retry::1759268058219",
+          "testName": "should handle connection errors and retry",
+          "testDescription": "should handle connection errors and retry",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 130996864,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:230:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:229:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:230:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:229:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle connection errors and retry",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should fallback to batch search after max retries::1759268058225",
+          "testName": "should fallback to batch search after max retries",
+          "testDescription": "should fallback to batch search after max retries",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131009272,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:269:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:268:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:269:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:268:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to batch search after max retries",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle completion message::1759268058231",
+          "testName": "should handle completion message",
+          "testDescription": "should handle completion message",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131023120,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:299:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:298:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:299:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:298:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle completion message",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateMessage')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should clear results::1759268058237",
+          "testName": "should clear results",
+          "testDescription": "should clear results",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131035040,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:319:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:318:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:319:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:318:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clear results",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateMessage')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should not add results when paused::1759268058240",
+          "testName": "should not add results when paused",
+          "testDescription": "should not add results when paused",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131046928,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220815360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateOpen')\n    at simulateOpen (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:350:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:349:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateOpen')\n    at simulateOpen (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:350:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:349:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not add results when paused",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateOpen')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming::should handle error messages from stream::1759268058245",
+          "testName": "should handle error messages from stream",
+          "testDescription": "should handle error messages from stream",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+          "suite": "Use Search Streaming",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268055073,
+          "endTime": 1759268056831,
+          "duration": 1758,
+          "memoryUsage": {
+            "heapUsed": 131065080,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220819456
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:381:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:380:14)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:381:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:380:14)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle error messages from stream",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'simulateMessage')"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should handle immediate connection closure::1759268058157",
+          "testName": "should handle immediate connection closure",
+          "testDescription": "should handle immediate connection closure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130623504,
+            "heapTotal": 159657984,
+            "external": 11252289,
+            "rss": 220774400
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should retry on immediate connection failure::1759268058158",
+          "testName": "should retry on immediate connection failure",
+          "testDescription": "should retry on immediate connection failure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130637184,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220774400
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m2\u001b[39m\nReceived:    \u001b[31m1\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:160:56)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m2\u001b[39m\nReceived:    \u001b[31m1\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:160:56)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry on immediate connection failure",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should fallback to batch search when enabled::1759268058166",
+          "testName": "should fallback to batch search when enabled",
+          "testDescription": "should fallback to batch search when enabled",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130670648,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220782592
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:182:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:182:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback to batch search when enabled",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should handle connection failure after opening::1759268058173",
+          "testName": "should handle connection failure after opening",
+          "testDescription": "should handle connection failure after opening",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130694256,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:208:54)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:208:54)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle connection failure after opening",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should perform health check before retrying::1759268058178",
+          "testName": "should perform health check before retrying",
+          "testDescription": "should perform health check before retrying",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130704864,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/health\"\u001b[39m, \u001b[32mAny<Object>\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:228:27)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"/api/health\"\u001b[39m, \u001b[32mAny<Object>\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:228:27)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform health check before retrying",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should fallback when health check fails::1759268058182",
+          "testName": "should fallback when health check fails",
+          "testDescription": "should fallback when health check fails",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130722400,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:251:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"completed\"\u001b[39m\nReceived: \u001b[31m\"error\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:251:48)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should fallback when health check fails",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should open circuit breaker after multiple failures::1759268058186",
+          "testName": "should open circuit breaker after multiple failures",
+          "testDescription": "should open circuit breaker after multiple failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130739272,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m5\u001b[39m\nReceived:    \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:281:54)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m5\u001b[39m\nReceived:    \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThanOrEqual (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:281:54)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should open circuit breaker after multiple failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should handle offline scenarios::1759268058189",
+          "testName": "should handle offline scenarios",
+          "testDescription": "should handle offline scenarios",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130749368,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220786688
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"Network connection lost\"\u001b[39m\nReceived string:    \u001b[31m\"Unable to create streaming connection - pool exhausted\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:305:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"Network connection lost\"\u001b[39m\nReceived string:    \u001b[31m\"Unable to create streaming connection - pool exhausted\"\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:305:38)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle offline scenarios",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Use Search Streaming.connection-error::should recover from temporary connection issues::1759268058197",
+          "testName": "should recover from temporary connection issues",
+          "testDescription": "should recover from temporary connection issues",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "relativePath": "src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+          "suite": "Use Search Streaming.connection-error",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759268043906,
+          "endTime": 1759268054990,
+          "duration": 11084,
+          "memoryUsage": {
+            "heapUsed": 130773752,
+            "heapTotal": 159657984,
+            "external": 11252329,
+            "rss": 220794880
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:356:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts:356:44)\n    at runWithExpensiveErrorDiagnosticsDisabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:47:12)\n    at checkCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:124:77)\n    at checkRealTimersCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\wait-for.js:118:16)\n    at Timeout.task [as _onTimeout] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\browser\\Window.js:520:19)\n    at listOnTimeout (node:internal/timers:588:17)\n    at processTimers (node:internal/timers:523:7)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should recover from temporary connection issues",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.connection-error.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1442.8241,
+      "endTime": 16568.9067,
+      "duration": 137860,
+      "memoryUsage": {
+        "heapUsed": 131043797.4054054,
+        "heapTotal": 157252556.88648647,
+        "external": 13104379.740540542,
+        "rss": 196565696.1081081
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 4848620504,
+      "averageTestDuration": 3725.945945945946,
+      "totalExecutionTime": 137860
+    },
+    "bottlenecks": [
+      "should handle immediate connection closure (11084ms)",
+      "should retry on immediate connection failure (11084ms)",
+      "should fallback to batch search when enabled (11084ms)",
+      "should handle connection failure after opening (11084ms)",
+      "should perform health check before retrying (11084ms)",
+      "should fallback when health check fails (11084ms)",
+      "should open circuit breaker after multiple failures (11084ms)",
+      "should handle offline scenarios (11084ms)",
+      "should recover from temporary connection issues (11084ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "6 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should handle connection errors and retry: TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:230:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:229:14)",
+          "Fix should fallback to batch search after max retries: TypeError: Cannot read properties of undefined (reading 'simulateError')\n    at simulateError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:269:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:268:14)",
+          "Fix should handle completion message: TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:299:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:298:14)",
+          "Fix should clear results: TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:319:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:318:14)",
+          "Fix should not add results when paused: TypeError: Cannot read properties of undefined (reading 'simulateOpen')\n    at simulateOpen (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:350:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:349:14)",
+          "Fix should handle error messages from stream: TypeError: Cannot read properties of undefined (reading 'simulateMessage')\n    at simulateMessage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:381:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\__tests__\\useSearchStreaming.test.ts:380:14)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should handle connection errors and retry",
+          "should fallback to batch search after max retries",
+          "should handle completion message",
+          "should clear results",
+          "should not add results when paused",
+          "should handle error messages from stream"
+        ]
+      }
+    ],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "9 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should handle immediate connection closure",
+          "should retry on immediate connection failure",
+          "should fallback to batch search when enabled",
+          "should handle connection failure after opening",
+          "should perform health check before retrying",
+          "should fallback when health check fails",
+          "should open circuit breaker after multiple failures",
+          "should handle offline scenarios",
+          "should recover from temporary connection issues"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

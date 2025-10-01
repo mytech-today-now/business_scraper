@@ -1,0 +1,520 @@
+{
+  "metadata": {
+    "reportId": "report-1759177942879-o41oliz0j",
+    "generatedAt": "2025-09-29T20:32:35.025Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 19,
+    "successRate": 89.47368421052632,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 5258,
+      "memoryPeak": 89331920,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 19,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 17,
+      "low": 2
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Version::should return null for invalid version strings::1759177954971",
+          "testName": "should return null for invalid version strings",
+          "testDescription": "should return null for invalid version strings",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89186000,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m{\"major\": 1, \"minor\": 11, \"patch\": 0, \"raw\": \"1.11.0\"}\u001b[39m\n    at toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:46:46)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:45:23)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m{\"major\": 1, \"minor\": 11, \"patch\": 0, \"raw\": \"1.11.0\"}\u001b[39m\n    at toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:46:46)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:45:23)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return null for invalid version strings",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Version::should return null for incompatible semantic versions::1759177955015",
+          "testName": "should return null for incompatible semantic versions",
+          "testDescription": "should return null for incompatible semantic versions",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89310096,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174735360
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m{\"major\": 1, \"minor\": 2, \"patch\": 3, \"raw\": \"1.2.3\"}\u001b[39m\n    at toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:238:53)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:237:28)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m{\"major\": 1, \"minor\": 2, \"patch\": 3, \"raw\": \"1.2.3\"}\u001b[39m\n    at toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:238:53)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:237:28)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return null for incompatible semantic versions",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Version::should parse valid version strings::1759177954971",
+          "testName": "should parse valid version strings",
+          "testDescription": "should parse valid version strings",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89172504,
+            "heapTotal": 113201152,
+            "external": 4449627,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should return null for invalid version strings::1759177954971",
+          "testName": "should return null for invalid version strings",
+          "testDescription": "should return null for invalid version strings",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89186000,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m{\"major\": 1, \"minor\": 11, \"patch\": 0, \"raw\": \"1.11.0\"}\u001b[39m\n    at toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:46:46)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:45:23)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m{\"major\": 1, \"minor\": 11, \"patch\": 0, \"raw\": \"1.11.0\"}\u001b[39m\n    at toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:46:46)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts:45:23)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return null for invalid version strings",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Version::should validate versions within constraints::1759177955014",
+          "testName": "should validate versions within constraints",
+          "testDescription": "should validate versions within constraints",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89225360,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should reject versions outside constraints::1759177955015",
+          "testName": "should reject versions outside constraints",
+          "testDescription": "should reject versions outside constraints",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89229608,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should provide warnings for edge cases::1759177955015",
+          "testName": "should provide warnings for edge cases",
+          "testDescription": "should provide warnings for edge cases",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89233816,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should format version without prefix::1759177955015",
+          "testName": "should format version without prefix",
+          "testDescription": "should format version without prefix",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89238552,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should format version with prefix::1759177955015",
+          "testName": "should format version with prefix",
+          "testDescription": "should format version with prefix",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89242760,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should compare versions correctly::1759177955015",
+          "testName": "should compare versions correctly",
+          "testDescription": "should compare versions correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89246968,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174727168
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should calculate differences correctly::1759177955015",
+          "testName": "should calculate differences correctly",
+          "testDescription": "should calculate differences correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89257512,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174731264
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Version::should increment major version and reset lower components::1759177955015",
+          "testName": "should increment major version and reset lower components",
+          "testDescription": "should increment major version and reset lower components",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\version.test.ts",
+          "relativePath": "src\\__tests__\\utils\\version.test.ts",
+          "suite": "Version",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759177949667,
+          "endTime": 1759177954925,
+          "duration": 5258,
+          "memoryUsage": {
+            "heapUsed": 89272656,
+            "heapTotal": 113201152,
+            "external": 4449667,
+            "rss": 174735360
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 9343.3059,
+      "endTime": 21489.614,
+      "duration": 99902,
+      "memoryUsage": {
+        "heapUsed": 89262282.10526316,
+        "heapTotal": 107114738.5263158,
+        "external": 8926228.210526315,
+        "rss": 133893423.15789473
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1695983360,
+      "averageTestDuration": 5258,
+      "totalExecutionTime": 99902
+    },
+    "bottlenecks": [
+      "should parse valid version strings (5258ms)",
+      "should return null for invalid version strings (5258ms)",
+      "should validate versions within constraints (5258ms)",
+      "should reject versions outside constraints (5258ms)",
+      "should provide warnings for edge cases (5258ms)",
+      "should format version without prefix (5258ms)",
+      "should format version with prefix (5258ms)",
+      "should compare versions correctly (5258ms)",
+      "should calculate differences correctly (5258ms)",
+      "should increment major version and reset lower components (5258ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should parse valid version strings",
+          "should return null for invalid version strings",
+          "should validate versions within constraints",
+          "should reject versions outside constraints",
+          "should provide warnings for edge cases",
+          "should format version without prefix",
+          "should format version with prefix",
+          "should compare versions correctly",
+          "should calculate differences correctly",
+          "should increment major version and reset lower components"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

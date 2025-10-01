@@ -1,0 +1,854 @@
+{
+  "metadata": {
+    "reportId": "report-1758924457833-wyccmucnu",
+    "generatedAt": "2025-09-26T22:07:56.146Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 26,
+    "successRate": 61.53846153846154,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 4999.2307692307695,
+      "memoryPeak": 91733176,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 26,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 1,
+      "high": 0,
+      "medium": 25,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Health Monitor::should handle health check failures::1758924476093",
+          "testName": "should handle health check failures",
+          "testDescription": "should handle health check failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91377920,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"degraded\"\u001b[39m\nReceived: \u001b[31m\"unknown\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:99:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"degraded\"\u001b[39m\nReceived: \u001b[31m\"unknown\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:99:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle health check failures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should retry health checks on failure::1758924476099",
+          "testName": "should retry health checks on failure",
+          "testDescription": "should retry health checks on failure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91404648,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected number of calls: \u001b[32m3\u001b[39m\nReceived number of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenCalledTimes (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:115:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected number of calls: \u001b[32m3\u001b[39m\nReceived number of calls: \u001b[31m2\u001b[39m\n    at Object.toHaveBeenCalledTimes (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:115:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry health checks on failure",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledTimes\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should timeout health checks::1758924476103",
+          "testName": "should timeout health checks",
+          "testDescription": "should timeout health checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91414400,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"degraded\"\u001b[39m\nReceived: \u001b[31m\"unknown\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:131:31)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"degraded\"\u001b[39m\nReceived: \u001b[31m\"unknown\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:131:31)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should timeout health checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should create alerts for unhealthy services::1758924476106",
+          "testName": "should create alerts for unhealthy services",
+          "testDescription": "should create alerts for unhealthy services",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91424576,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"un\u001b[7mhealthy\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"un\u001b[7mknown\u001b[27m\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:149:31)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"un\u001b[7mhealthy\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"un\u001b[7mknown\u001b[27m\"\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:149:31)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should create alerts for unhealthy services",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should resolve alerts when service recovers::1758924476112",
+          "testName": "should resolve alerts when service recovers",
+          "testDescription": "should resolve alerts when service recovers",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91442056,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m\n\nExpected number of calls: >= \u001b[32m1\u001b[39m\nReceived number of calls:    \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:174:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m\n\nExpected number of calls: >= \u001b[32m1\u001b[39m\nReceived number of calls:    \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:174:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should resolve alerts when service recovers",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should create degraded alerts before critical alerts::1758924476117",
+          "testName": "should create degraded alerts before critical alerts",
+          "testDescription": "should create degraded alerts before critical alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "critical"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91464960,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mObjectContaining {\"alert\": ObjectContaining {\"serviceName\": \"test-service\", \"severity\": \"medium\"}}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:201:24)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mObjectContaining {\"alert\": ObjectContaining {\"serviceName\": \"test-service\", \"severity\": \"medium\"}}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:201:24)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should create degraded alerts before critical alerts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should evaluate overall system health::1758924476120",
+          "testName": "should evaluate overall system health",
+          "testDescription": "should evaluate overall system health",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91475696,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mObjectContaining {\"degradedCount\": 1, \"healthyCount\": 1, \"status\": \"unhealthy\", \"totalServices\": 3, \"unhealthyCount\": 1}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:243:31)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mObjectContaining {\"degradedCount\": 1, \"healthyCount\": 1, \"status\": \"unhealthy\", \"totalServices\": 3, \"unhealthyCount\": 1}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:243:31)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at processTimers (node:internal/timers:520:9)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should evaluate overall system health",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Health Monitor::should return all alerts including resolved ones::1758924476125",
+          "testName": "should return all alerts including resolved ones",
+          "testDescription": "should return all alerts including resolved ones",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\healthMonitor.test.ts",
+          "suite": "Health Monitor",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924465681,
+          "endTime": 1758924468529,
+          "duration": 2848,
+          "memoryUsage": {
+            "heapUsed": 91495944,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:318:32)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts:318:32)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return all alerts including resolved ones",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\healthMonitor.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should perform periodic health checks::1758924476132",
+          "testName": "should perform periodic health checks",
+          "testDescription": "should perform periodic health checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91677856,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform periodic health checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should remove unhealthy connections::1758924476136",
+          "testName": "should remove unhealthy connections",
+          "testDescription": "should remove unhealthy connections",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91702200,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should remove unhealthy connections",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Connection Manager::should create a connection successfully::1758924476132",
+          "testName": "should create a connection successfully",
+          "testDescription": "should create a connection successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91650704,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should retry connection creation on failure::1758924476132",
+          "testName": "should retry connection creation on failure",
+          "testDescription": "should retry connection creation on failure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91655176,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should fail after max retry attempts::1758924476132",
+          "testName": "should fail after max retry attempts",
+          "testDescription": "should fail after max retry attempts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91659448,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should timeout connection creation::1758924476132",
+          "testName": "should timeout connection creation",
+          "testDescription": "should timeout connection creation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91665448,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should open circuit breaker after threshold failures::1758924476132",
+          "testName": "should open circuit breaker after threshold failures",
+          "testDescription": "should open circuit breaker after threshold failures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91669592,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should transition to half-open after timeout::1758924476132",
+          "testName": "should transition to half-open after timeout",
+          "testDescription": "should transition to half-open after timeout",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91673728,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should perform periodic health checks::1758924476132",
+          "testName": "should perform periodic health checks",
+          "testDescription": "should perform periodic health checks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91677856,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m{\"id\": \"test-connection\"}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:157:31)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform periodic health checks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should remove unhealthy connections::1758924476136",
+          "testName": "should remove unhealthy connections",
+          "testDescription": "should remove unhealthy connections",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91702200,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts:171:39)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should remove unhealthy connections",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should report correct status::1758924476141",
+          "testName": "should report correct status",
+          "testDescription": "should report correct status",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91712936,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Connection Manager::should close all connections on shutdown::1758924476141",
+          "testName": "should close all connections on shutdown",
+          "testDescription": "should close all connections on shutdown",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\resilience\\connectionManager.test.ts",
+          "relativePath": "src\\__tests__\\resilience\\connectionManager.test.ts",
+          "suite": "Connection Manager",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1758924468557,
+          "endTime": 1758924476066,
+          "duration": 7509,
+          "memoryUsage": {
+            "heapUsed": 91717064,
+            "heapTotal": 123424768,
+            "external": 6005294,
+            "rss": 190849024
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 8373.1078,
+      "endTime": 26686.399,
+      "duration": 129980,
+      "memoryUsage": {
+        "heapUsed": 91545721.53846154,
+        "heapTotal": 109854865.84615384,
+        "external": 9154572.153846154,
+        "rss": 137318582.3076923
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 2380188760,
+      "averageTestDuration": 4999.2307692307695,
+      "totalExecutionTime": 129980
+    },
+    "bottlenecks": [
+      "should create a connection successfully (7509ms)",
+      "should retry connection creation on failure (7509ms)",
+      "should fail after max retry attempts (7509ms)",
+      "should timeout connection creation (7509ms)",
+      "should open circuit breaker after threshold failures (7509ms)",
+      "should transition to half-open after timeout (7509ms)",
+      "should perform periodic health checks (7509ms)",
+      "should remove unhealthy connections (7509ms)",
+      "should report correct status (7509ms)",
+      "should close all connections on shutdown (7509ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should create a connection successfully",
+          "should retry connection creation on failure",
+          "should fail after max retry attempts",
+          "should timeout connection creation",
+          "should open circuit breaker after threshold failures",
+          "should transition to half-open after timeout",
+          "should perform periodic health checks",
+          "should remove unhealthy connections",
+          "should report correct status",
+          "should close all connections on shutdown"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

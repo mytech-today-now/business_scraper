@@ -1,0 +1,832 @@
+# Comprehensive Test Report
+
+## Executive Summary
+- **Overall Status**: FAILED
+- **Total Tests**: 103
+- **Success Rate**: 80.58%
+- **Critical Issues**: 5
+- **Quality Gate**: FAILED
+
+## Test Results
+### Failed Tests
+- **should throw error for invalid provider configuration**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m()[22m
+
+Received promise resolved instead of rejected
+Resolved to value: [31mundefined[39m
+    at expect (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\expect\build\index.js:113:15)
+    at Object.expect (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:108:13)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should get all services**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m1[39m
+Received length: [31m2[39m
+Received array:  [31m[{"assessDataQuality": [Function assessDataQuality], "authenticate": [Function authenticate], "authenticateApiKey": [Function authenticateApiKey], "authenticateBasic": [Function authenticateBasic], "authenticateCustom": [Function authenticateCustom], "authenticateOAuth2": [Function authenticateOAuth2], "calculateSyncMetrics": [Function calculateSyncMetrics], "checkForDuplicates": [Function checkForDuplicates], "createSyncRecord": [Function createSyncRecord], "extractRecordId": [Function extractRecordId], "findEndpoint": [Function findEndpoint], "formatPhoneNumber": [Function formatPhoneNumber], "getConfiguration": [Function getConfiguration], "getNestedValue": [Function getNestedValue], "getProvider": [Function getProvider], "handleError": [Function handleError], "handleRecordDeletion": [Function handleRecordDeletion], "handleRecordUpdate": [Function handleRecordUpdate], "handleWebhookEvent": [Function handleWebhookEvent], "initialize": [Function initialize], "isReady": [Function isReady], "makeCustomApiCall": [Function makeCustomApiCall], "mapBusinessRecordToCustomFormat": [Function mapBusinessRecordToCustomFormat], "mapBusinessRecordToTarget": [Function mapBusinessRecordToTarget], "mapCustomRecordsToBusinessRecords": [Function mapCustomRecordsToBusinessRecords], "processBatch": [Function processBatch], "processBatchSync": [Function processBatchSync], "processTemplate": [Function processTemplate], "pullUpdates": [Function pullUpdates], "respectRateLimit": [Function respectRateLimit], "setupWebhooks": [Function setupWebhooks], "syncBusinessRecord": [Function syncBusinessRecord], "syncBusinessRecords": [Function syncBusinessRecords], "transformValue": [Function transformValue], "validateBusinessRecord": [Function validateBusinessRecord], "validateConnection": [Function validateConnection], "validateWebhookSignature": [Function validateWebhookSignature]}, {"assessDataQuality": [Function assessDataQuality], "authenticate": [Function authenticate], "authenticateApiKey": [Function authenticateApiKey], "authenticateBasic": [Function authenticateBasic], "authenticateCustom": [Function authenticateCustom], "authenticateOAuth2": [Function authenticateOAuth2], "calculateSyncMetrics": [Function calculateSyncMetrics], "checkForDuplicates": [Function checkForDuplicates], "createSyncRecord": [Function createSyncRecord], "extractRecordId": [Function extractRecordId], "findEndpoint": [Function findEndpoint], "formatPhoneNumber": [Function formatPhoneNumber], "getConfiguration": [Function getConfiguration], "getNestedValue": [Function getNestedValue], "getProvider": [Function getProvider], "handleError": [Function handleError], "handleRecordDeletion": [Function handleRecordDeletion], "handleRecordUpdate": [Function handleRecordUpdate], "handleWebhookEvent": [Function handleWebhookEvent], "initialize": [Function initialize], "isReady": [Function isReady], "makeCustomApiCall": [Function makeCustomApiCall], "mapBusinessRecordToCustomFormat": [Function mapBusinessRecordToCustomFormat], "mapBusinessRecordToTarget": [Function mapBusinessRecordToTarget], "mapCustomRecordsToBusinessRecords": [Function mapCustomRecordsToBusinessRecords], "processBatch": [Function processBatch], "processBatchSync": [Function processBatchSync], "processTemplate": [Function processTemplate], "pullUpdates": [Function pullUpdates], "respectRateLimit": [Function respectRateLimit], "setupWebhooks": [Function setupWebhooks], "syncBusinessRecord": [Function syncBusinessRecord], "syncBusinessRecords": [Function syncBusinessRecords], "transformValue": [Function transformValue], "validateBusinessRecord": [Function validateBusinessRecord], "validateConnection": [Function validateConnection], "validateWebhookSignature": [Function validateWebhookSignature]}][39m
+    at Object.toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:160:24)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should get active services only**: TypeError: Cannot read properties of undefined (reading 'isActive')
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:84
+    at Array.filter (<anonymous>)
+    at CRMServiceRegistry.filter [as getActiveServices] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:47)
+    at Object.getActiveServices (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:164:39)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should filter services by type**: TypeError: Cannot read properties of undefined (reading 'type')
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:136:84
+    at Array.filter (<anonymous>)
+    at CRMServiceRegistry.filter [as getServicesByType] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:136:47)
+    at Object.getServicesByType (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:171:39)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should return empty array for inactive services when provider is inactive**: TypeError: Cannot read properties of undefined (reading 'isActive')
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:84
+    at Array.filter (<anonymous>)
+    at CRMServiceRegistry.filter [as getActiveServices] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:47)
+    at Object.getActiveServices (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:183:39)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+- **should test connections for all providers**: TypeError: Cannot read properties of undefined (reading 'isActive')
+    at CRMServiceRegistry.testAllConnections (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:206:30)
+    at Object.testAllConnections (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:211:38)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should return correct statistics for empty registry**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m0[39m
+Received: [31m2[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:236:36)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should handle service creation failures gracefully**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeUndefined[2m()[22m
+
+Received: [31m{"assessDataQuality": [Function assessDataQuality], "authenticate": [Function authenticate], "authenticateApiKey": [Function authenticateApiKey], "authenticateBasic": [Function authenticateBasic], "authenticateCustom": [Function authenticateCustom], "authenticateOAuth2": [Function authenticateOAuth2], "calculateSyncMetrics": [Function calculateSyncMetrics], "checkForDuplicates": [Function checkForDuplicates], "createSyncRecord": [Function createSyncRecord], "extractRecordId": [Function extractRecordId], "findEndpoint": [Function findEndpoint], "formatPhoneNumber": [Function formatPhoneNumber], "getConfiguration": [Function getConfiguration], "getNestedValue": [Function getNestedValue], "getProvider": [Function getProvider], "handleError": [Function handleError], "handleRecordDeletion": [Function handleRecordDeletion], "handleRecordUpdate": [Function handleRecordUpdate], "handleWebhookEvent": [Function handleWebhookEvent], "initialize": [Function initialize], "isReady": [Function isReady], "makeCustomApiCall": [Function makeCustomApiCall], "mapBusinessRecordToCustomFormat": [Function mapBusinessRecordToCustomFormat], "mapBusinessRecordToTarget": [Function mapBusinessRecordToTarget], "mapCustomRecordsToBusinessRecords": [Function mapCustomRecordsToBusinessRecords], "processBatch": [Function processBatch], "processBatchSync": [Function processBatchSync], "processTemplate": [Function processTemplate], "pullUpdates": [Function pullUpdates], "respectRateLimit": [Function respectRateLimit], "setupWebhooks": [Function setupWebhooks], "syncBusinessRecord": [Function syncBusinessRecord], "syncBusinessRecords": [Function syncBusinessRecords], "transformValue": [Function transformValue], "validateBusinessRecord": [Function validateBusinessRecord], "validateConnection": [Function validateConnection], "validateWebhookSignature": [Function validateWebhookSignature]}[39m
+    at Object.toBeUndefined (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:276:23)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+- **should maintain registry state consistency**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m3[39m
+Received length: [31m4[39m
+Received array:  [31m[{"capabilities": {"bidirectionalSync": true, "bulkOperations": true, "customFields": false, "deduplication": true, "realTimeUpdates": false, "validation": true, "webhookSupport": false}, "configuration": {"apiEndpoint": "https://api.test-crm.com", "authentication": {"credentials": {"apiKey": "test-api-key"}, "type": "api_key"}, "fieldMappings": [{"dataType": "string", "required": true, "sourceField": "businessName", "targetField": "name"}], "rateLimits": {"burstLimit": 10, "requestsPerDay": 10000, "requestsPerHour": 1000, "requestsPerMinute": 60}, "syncSettings": {"batchSize": 10, "conflictResolution": "source_wins", "direction": "bidirectional", "enableDeduplication": true, "enableValidation": true, "frequency": "realtime"}}, "id": "test-provider-2", "isActive": false, "name": "Test CRM Provider", "type": "salesforce", "version": "1.0.0"}, {"capabilities": {"bidirectionalSync": true, "bulkOperations": true, "customFields": false, "deduplication": true, "realTimeUpdates": false, "validation": true, "webhookSupport": false}, "configuration": {"apiEndpoint": "https://api.test-crm.com", "authentication": {"credentials": {"apiKey": "test-api-key"}, "type": "api_key"}, "fieldMappings": [{"dataType": "string", "required": true, "sourceField": "businessName", "targetField": "name"}], "rateLimits": {"burstLimit": 10, "requestsPerDay": 10000, "requestsPerHour": 1000, "requestsPerMinute": 60}, "syncSettings": {"batchSize": 10, "conflictResolution": "source_wins", "direction": "bidirectional", "enableDeduplication": true, "enableValidation": true, "frequency": "realtime"}}, "id": "test-provider-1", "isActive": true, "name": "Test CRM Provider", "type": "custom", "version": "1.0.0"}, {"capabilities": {"bidirectionalSync": true, "bulkOperations": true, "customFields": false, "deduplication": true, "realTimeUpdates": false, "validation": true, "webhookSupport": false}, "configuration": {"apiEndpoint": "https://api.test-crm.com", "authentication": {"credentials": {"apiKey": "test-api-key"}, "type": "api_key"}, "fieldMappings": [{"dataType": "string", "required": true, "sourceField": "businessName", "targetField": "name"}], "rateLimits": {"burstLimit": 10, "requestsPerDay": 10000, "requestsPerHour": 1000, "requestsPerMinute": 60}, "syncSettings": {"batchSize": 10, "conflictResolution": "source_wins", "direction": "bidirectional", "enableDeduplication": true, "enableValidation": true, "frequency": "realtime"}}, "id": "provider-2", "isActive": true, "name": "Test CRM Provider", "type": "hubspot", "version": "1.0.0"}, {"capabilities": {"bidirectionalSync": true, "bulkOperations": true, "customFields": false, "deduplication": true, "realTimeUpdates": false, "validation": true, "webhookSupport": false}, "configuration": {"apiEndpoint": "https://api.test-crm.com", "authentication": {"credentials": {"apiKey": "test-api-key"}, "type": "api_key"}, "fieldMappings": [{"dataType": "string", "required": true, "sourceField": "businessName", "targetField": "name"}], "rateLimits": {"burstLimit": 10, "requestsPerDay": 10000, "requestsPerHour": 1000, "requestsPerMinute": 60}, "syncSettings": {"batchSize": 10, "conflictResolution": "source_wins", "direction": "bidirectional", "enableDeduplication": true, "enableValidation": true, "frequency": "realtime"}}, "id": "provider-3", "isActive": true, "name": "Test CRM Provider", "type": "pipedrive", "version": "1.0.0"}][39m
+    at Object.toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:326:42)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+- **should replace nonce placeholders with actual nonce**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"'nonce-test-nonce-123'"[39m
+Received string:    [31m"default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' ws://localhost:* http://localhost:* https://nominatim.openstreetmap.org https://api.opencagedata.com https://*.googleapis.com https://*.cognitiveservices.azure.com https://api.duckduckgo.com https://duckduckgo.com https://api.stripe.com https://checkout.stripe.com https://js.stripe.com; object-src 'none'; media-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; child-src 'self'; report-uri /api/csp-report"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp.test.ts:69:22)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should log CSP violation without throwing**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoThrow[2m()[22m
+
+Error name:    [31m"TypeError"[39m
+Error message: [31m"text.replace is not a function"[39m
+
+    [0m [90m 694 |[39m   [36mprivate[39m stripAnsiCodes(text[33m:[39m string)[33m:[39m string {
+     [90m 695 |[39m     [90m// Remove ANSI escape sequences[39m
+    [31m[1m>[22m[39m[90m 696 |[39m     [36mreturn[39m text[33m.[39mreplace([35m/\x1b\[[0-9;]*m/g[39m[33m,[39m [32m''[39m)[33m.[39mreplace([35m/\x1b\[[0-9;]*[a-zA-Z]/g[39m[33m,[39m [32m''[39m)
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 697 |[39m   }
+     [90m 698 |[39m }
+     [90m 699 |[39m[0m
+
+      [2mat Logger.replace [as stripAnsiCodes] ([22msrc/utils/logger.ts[2m:696:17)[22m
+      [2mat Logger.stripAnsiCodes [as logToConsoleText] ([22msrc/utils/logger.ts[2m:280:31)[22m
+      [2mat Logger.logToConsoleText [as logToConsole] ([22msrc/utils/logger.ts[2m:266:12)[22m
+      [2mat Logger.logToConsole [as log] ([22msrc/utils/logger.ts[2m:244:12)[22m
+      [2mat Logger.log [as warn] ([22msrc/utils/logger.ts[2m:176:10)[22m
+      [2mat warn ([22msrc/lib/cspConfig.ts[2m:392:10)[22m
+      [2mat [22msrc/__tests__/csp.test.ts[2m:228:35[22m
+      [2mat Object.<anonymous> ([22mnode_modules/expect/build/toThrowMatchers.js[2m:74:11)[22m
+      [2mat Object.throwingMatcher [as toThrow] ([22mnode_modules/expect/build/index.js[2m:320:21)[22m
+      [2mat Object.toThrow ([22msrc/__tests__/csp.test.ts[2m:228:53)[22m
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp.test.ts:228:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should set development CSP headers correctly**: Error: Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "should set development CSP headers correctly".
+    at eventHandler (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\eventHandler.js:97:11)
+    at dispatchSync (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\state.js:73:5)
+    at _addHook (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\index.js:116:27)
+    at beforeEach (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\index.js:127:3)
+    at beforeEach (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\utils\mockTypeHelpers.ts:431:3)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp-compliance.test.ts:91:37)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should set production CSP headers correctly**: Error: Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "should set production CSP headers correctly".
+    at eventHandler (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\eventHandler.js:97:11)
+    at dispatchSync (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\state.js:73:5)
+    at _addHook (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\index.js:116:27)
+    at beforeEach (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\index.js:127:3)
+    at beforeEach (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\utils\mockTypeHelpers.ts:431:3)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp-compliance.test.ts:111:37)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should have NODE_ENV set to development in .env**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"development"[39m
+Received: [31m"production"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp-fix-validation.test.ts:17:32)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should prioritize development CSP when NODE_ENV is development**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"isDevelopment && process.env.ENABLE_CSP_IN_DEV !== 'true'"[39m
+Received string:    [31m"/**·[39m
+[31m * Next.js middleware for security, authentication, and rate limiting·[39m
+[31m * Edge Runtime Compatible Version·[39m
+[31m *·[39m
+[31m * This middleware has been refactored to work with Next.js Edge Runtime:·[39m
+[31m * - Uses Web Crypto API instead of Node.js crypto·[39m
+[31m * - Removes setInterval usage for cleanup operations·[39m
+[31m * - Optimized for edge environments·[39m
+[31m */···[39m
+[31mimport { NextRequest, NextResponse } from 'next/server'·[39m
+[31mimport {·[39m
+[31m  defaultSecurityConfig,·[39m
+[31m  checkRateLimit,·[39m
+[31m  getClientIP,·[39m
+[31m  getSession,·[39m
+[31m  isLockedOut,·[39m
+[31m} from '@/lib/security'·[39m
+[31mimport { advancedRateLimitService } from '@/lib/advancedRateLimit'·[39m
+[31mimport { validateCSRFMiddleware, csrfProtectionService } from '@/lib/csrfProtection'·[39m
+[31mimport { securityMonitoringService } from '@/lib/securityMonitoring'·[39m
+[31mimport { getCSPHeader, generateCSPNonce } from '@/lib/cspConfig'·[39m
+[31mimport { logger } from '@/utils/logger'·[39m
+[31mimport { performCleanupIfNeeded } from '@/lib/edgeRuntimeCleanup'···[39m
+[31m/**·[39m
+[31m * Generate a UUID using Web Crypto API (Edge Runtime compatible)·[39m
+[31m */·[39m
+[31mfunction generateUUID(): string {·[39m
+[31m  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {·[39m
+[31m    const r = (Math.random() * 16) | 0·[39m
+[31m    const v = c === 'x' ? r : (r & 0x3) | 0x8·[39m
+[31m    return v.toString(16)·[39m
+[31m  })·[39m
+[31m}···[39m
+[31m// Public routes that don't require authentication·[39m
+[31mconst publicRoutes = ['/api/health', '/api/csrf', '/api/auth', '/api/ping', '/api/csp-report', '/api/stream-search', '/login', '/favicon.ico', '/_next', '/static', '/manifest.json', '/sw.js']···[39m
+[31m// API routes that require rate limiting with their types·[39m
+[31mconst rateLimitedRoutes: Record<string, 'general' | 'scraping' | 'auth' | 'upload' | 'export'> = {·[39m
+[31m  '/api/scrape': 'scraping',·[39m
+[31m  '/api/search': 'scraping',·[39m
+[31m  '/api/stream-search': 'scraping', // Streaming search endpoint·[39m
+[31m  '/api/geocode': 'general',·[39m
+[31m  '/api/auth': 'auth',·[39m
+[31m  '/api/data-management': 'general',·[39m
+[31m  '/api/config': 'general',·[39m
+[31m  '/api/upload': 'upload',·[39m
+[31m  '/api/export': 'export',·[39m
+[31m}···[39m
+[31m// Routes that require burst protection·[39m
+[31mconst burstProtectedRoutes = ['/api/auth', '/api/scrape', '/api/upload']···[39m
+[31m/**·[39m
+[31m * Check if a route is public (doesn't require authentication)·[39m
+[31m */·[39m
+[31mfunction isPublicRoute(pathname: string): boolean {·[39m
+[31m  return publicRoutes.some(route => pathname.startsWith(route))·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Get rate limit type for route·[39m
+[31m */·[39m
+[31mfunction getRateLimitType(·[39m
+[31m  pathname: string·[39m
+[31m): 'general' | 'scraping' | 'auth' | 'upload' | 'export' | null {·[39m
+[31m  for (const [route, type] of Object.entries(rateLimitedRoutes)) {·[39m
+[31m    if (pathname.startsWith(route)) {·[39m
+[31m      return type·[39m
+[31m    }·[39m
+[31m  }·[39m
+[31m  return null·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Check if route requires burst protection·[39m
+[31m */·[39m
+[31mfunction requiresBurstProtection(pathname: string): boolean {·[39m
+[31m  return burstProtectedRoutes.some(route => pathname.startsWith(route))·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Add enhanced security headers to response·[39m
+[31m */·[39m
+[31mfunction addSecurityHeaders(response: NextResponse): NextResponse {·[39m
+[31m  if (!defaultSecurityConfig.enableSecurityHeaders) {·[39m
+[31m    return response·[39m
+[31m  }···[39m
+[31m  const isDevelopment = process.env.NODE_ENV === 'development'···[39m
+[31m  // Log environment detection for debugging·[39m
+[31m  logger.debug('Middleware', `Environment detection: NODE_ENV=${process.env.NODE_ENV}, isDevelopment=${isDevelopment}`)···[39m
+[31m  // Always use permissive CSP in development to avoid blocking legitimate development tools·[39m
+[31m  if (isDevelopment) {·[39m
+[31m    // In development, use a very permissive CSP to avoid blocking legitimate development tools·[39m
+[31m    // Remove any nonce-based directives to ensure 'unsafe-inline' works properly·[39m
+[31m    const devCSP =·[39m
+[31m      \"default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://vercel.live https://checkout.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' ws: wss: https:; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' https://js.stripe.com https://checkout.stripe.com;\"···[39m
+[31m    logger.debug('Middleware', `Setting development CSP: ${devCSP}`)·[39m
+[31m    response.headers.set('Content-Security-Policy', devCSP)···[39m
+[31m    // Ensure no nonce headers are set in development·[39m
+[31m    response.headers.delete('X-CSP-Nonce')···[39m
+[31m    // Log final headers for debugging·[39m
+[31m    logger.debug('Middleware', `Final CSP header: ${response.headers.get('Content-Security-Policy')}`)·[39m
+[31m  } else {·[39m
+[31m    // Generate nonce for CSP in production·[39m
+[31m    const nonce = generateCSPNonce()···[39m
+[31m    // Get enhanced Content Security Policy from centralized config·[39m
+[31m    const csp = getCSPHeader(nonce)·[39m
+[31m    logger.debug('Middleware', `Setting production CSP with nonce: ${csp}`)·[39m
+[31m    response.headers.set('Content-Security-Policy', csp)···[39m
+[31m    // Add nonce to response for use in templates·[39m
+[31m    if (nonce) {·[39m
+[31m      response.headers.set('X-CSP-Nonce', nonce)·[39m
+[31m    }·[39m
+[31m  }·······[39m
+[31m  // Frame protection·[39m
+[31m  response.headers.set('X-Frame-Options', 'DENY')···[39m
+[31m  // MIME type sniffing protection·[39m
+[31m  response.headers.set('X-Content-Type-Options', 'nosniff')···[39m
+[31m  // Referrer policy·[39m
+[31m  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')···[39m
+[31m  // Feature policy / Permissions policy·[39m
+[31m  // Note: Removed 'ambient-light-sensor' as it's not supported by modern browsers·[39m
+[31m  const permissionsPolicy = [·[39m
+[31m    'camera=()',·[39m
+[31m    'microphone=()',·[39m
+[31m    'geolocation=()',·[39m
+[31m    'payment=*',·[39m
+[31m    'usb=()',·[39m
+[31m    'magnetometer=()',·[39m
+[31m    'gyroscope=()',·[39m
+[31m    'accelerometer=()',·[39m
+[31m    'autoplay=()',·[39m
+[31m    'encrypted-media=()',·[39m
+[31m    'fullscreen=(self)',·[39m
+[31m    'picture-in-picture=()',·[39m
+[31m  ].join(', ')···[39m
+[31m  response.headers.set('Permissions-Policy', permissionsPolicy)···[39m
+[31m  // XSS protection (legacy but still useful)·[39m
+[31m  response.headers.set('X-XSS-Protection', '1; mode=block')···[39m
+[31m  // Cross-Origin policies·[39m
+[31m  // COEP disabled to allow Stripe.js loading·[39m
+[31m  // response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')·[39m
+[31m  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')·[39m
+[31m  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')···[39m
+[31m  // HSTS (only in production)·[39m
+[31m  if (process.env.NODE_ENV === 'production') {·[39m
+[31m    response.headers.set(·[39m
+[31m      'Strict-Transport-Security',·[39m
+[31m      'max-age=31536000; includeSubDomains; preload'·[39m
+[31m    )·[39m
+[31m  }···[39m
+[31m  // Cache control for sensitive pages (exclude SSE endpoints)·[39m
+[31m  const url = response.url || ''·[39m
+[31m  const isSSEEndpoint = url.includes('/api/stream-search') || url.includes('/api/stream')···[39m
+[31m  if ((url.includes('/login') || url.includes('/api/')) && !isSSEEndpoint) {·[39m
+[31m    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')·[39m
+[31m    response.headers.set('Pragma', 'no-cache')·[39m
+[31m    response.headers.set('Expires', '0')·[39m
+[31m  }···[39m
+[31m  // Special headers for Server-Sent Events endpoints·[39m
+[31m  if (isSSEEndpoint) {·[39m
+[31m    response.headers.set('Cache-Control', 'no-cache, no-transform')·[39m
+[31m    response.headers.set('Connection', 'keep-alive')·[39m
+[31m    response.headers.set('X-Accel-Buffering', 'no') // Disable nginx buffering for SSE·[39m
+[31m  }···[39m
+[31m  // Remove server information·[39m
+[31m  response.headers.delete('Server')·[39m
+[31m  response.headers.delete('X-Powered-By')·[39m
+[31m  response.headers.delete('X-AspNet-Version')·[39m
+[31m  response.headers.delete('X-AspNetMvc-Version')···[39m
+[31m  // Add security monitoring headers·[39m
+[31m  response.headers.set('X-Request-ID', generateUUID())·[39m
+[31m  response.headers.set('X-Security-Policy', 'enforced')···[39m
+[31m  return response·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Handle advanced rate limiting·[39m
+[31m */·[39m
+[31mfunction handleRateLimit(request: NextRequest): NextResponse | null {·[39m
+[31m  const pathname = request.nextUrl.pathname·[39m
+[31m  const ip = getClientIP(request)···[39m
+[31m  // Skip rate limiting for public routes·[39m
+[31m  if (isPublicRoute(pathname)) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Check if user is locked out (legacy security check)·[39m
+[31m  if (isLockedOut(ip)) {·[39m
+[31m    return new NextResponse(·[39m
+[31m      JSON.stringify({·[39m
+[31m        error: 'Account temporarily locked due to too many failed attempts',·[39m
+[31m        retryAfter: Math.ceil(defaultSecurityConfig.lockoutDuration / 1000),·[39m
+[31m      }),·[39m
+[31m      {·[39m
+[31m        status: 429,·[39m
+[31m        headers: {·[39m
+[31m          'Content-Type': 'application/json',·[39m
+[31m          'Retry-After': String(Math.ceil(defaultSecurityConfig.lockoutDuration / 1000)),·[39m
+[31m          'X-RateLimit-Limit': '0',·[39m
+[31m          'X-RateLimit-Remaining': '0',·[39m
+[31m        },·[39m
+[31m      }·[39m
+[31m    )·[39m
+[31m  }···[39m
+[31m  // Check burst protection first·[39m
+[31m  if (requiresBurstProtection(pathname)) {·[39m
+[31m    const burstResult = advancedRateLimitService.checkBurstRateLimit(`ip:${ip}`)·[39m
+[31m    if (!burstResult.allowed) {·[39m
+[31m      return new NextResponse(·[39m
+[31m        JSON.stringify({·[39m
+[31m          error: 'Too many requests in a short time. Please slow down.',·[39m
+[31m          retryAfter: burstResult.retryAfter || 60,·[39m
+[31m        }),·[39m
+[31m        {·[39m
+[31m          status: 429,·[39m
+[31m          headers: {·[39m
+[31m            'Content-Type': 'application/json',·[39m
+[31m            'Retry-After': String(burstResult.retryAfter || 60),·[39m
+[31m            'X-RateLimit-Limit': '20',·[39m
+[31m            'X-RateLimit-Remaining': String(burstResult.remaining),·[39m
+[31m            'X-RateLimit-Reset': String(burstResult.resetTime),·[39m
+[31m          },·[39m
+[31m        }·[39m
+[31m      )·[39m
+[31m    }·[39m
+[31m  }···[39m
+[31m  // Check endpoint-specific rate limits·[39m
+[31m  const rateLimitType = getRateLimitType(pathname)·[39m
+[31m  if (rateLimitType) {·[39m
+[31m    const rateLimitResult = advancedRateLimitService.checkApiRateLimit(request, rateLimitType)···[39m
+[31m    if (!rateLimitResult.allowed) {·[39m
+[31m      return new NextResponse(·[39m
+[31m        JSON.stringify({·[39m
+[31m          error: `Rate limit exceeded for ${rateLimitType} endpoints. Please slow down.`,·[39m
+[31m          retryAfter:·[39m
+[31m            rateLimitResult.retryAfter || Math.ceil(defaultSecurityConfig.rateLimitWindow / 1000),·[39m
+[31m          type: rateLimitType,·[39m
+[31m        }),·[39m
+[31m        {·[39m
+[31m          status: 429,·[39m
+[31m          headers: {·[39m
+[31m            'Content-Type': 'application/json',·[39m
+[31m            'Retry-After': String(·[39m
+[31m              rateLimitResult.retryAfter || Math.ceil(defaultSecurityConfig.rateLimitWindow / 1000)·[39m
+[31m            ),·[39m
+[31m            'X-RateLimit-Limit': getMaxRequestsForType(rateLimitType),·[39m
+[31m            'X-RateLimit-Remaining': String(rateLimitResult.remaining),·[39m
+[31m            'X-RateLimit-Reset': String(rateLimitResult.resetTime),·[39m
+[31m            'X-RateLimit-Type': rateLimitType,·[39m
+[31m          },·[39m
+[31m        }·[39m
+[31m      )·[39m
+[31m    }·[39m
+[31m  }···[39m
+[31m  return null·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Get max requests for rate limit type·[39m
+[31m */·[39m
+[31mfunction getMaxRequestsForType(type: string): string {·[39m
+[31m  const limits: Record<string, string> = {·[39m
+[31m    general: '100',·[39m
+[31m    scraping: '10',·[39m
+[31m    auth: '5',·[39m
+[31m    upload: '20',·[39m
+[31m    export: '50',·[39m
+[31m  }·[39m
+[31m  return limits[type] || '100'·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Handle authentication·[39m
+[31m */·[39m
+[31mfunction handleAuthentication(request: NextRequest): NextResponse | null {·[39m
+[31m  const pathname = request.nextUrl.pathname···[39m
+[31m  // Skip authentication for public routes·[39m
+[31m  if (isPublicRoute(pathname)) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Skip authentication for API routes that handle their own auth·[39m
+[31m  // Note: /api/auth and /api/csrf should be excluded since they create/manage sessions·[39m
+[31m  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/protected/')) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Skip authentication if not enabled·[39m
+[31m  if (!defaultSecurityConfig.enableAuth) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Check for session cookie·[39m
+[31m  const sessionId = request.cookies.get('session-id')?.value···[39m
+[31m  if (!sessionId) {·[39m
+[31m    // Redirect to login for browser requests, but avoid redirect loops·[39m
+[31m    if (request.headers.get('accept')?.includes('text/html') && !pathname.startsWith('/login')) {·[39m
+[31m      return NextResponse.redirect(new URL('/login', request.url))·[39m
+[31m    }···[39m
+[31m    // Return 401 for API requests·[39m
+[31m    return new NextResponse(JSON.stringify({ error: 'Authentication required' }), {·[39m
+[31m      status: 401,·[39m
+[31m      headers: { 'Content-Type': 'application/json' },·[39m
+[31m    })·[39m
+[31m  }···[39m
+[31m  // Validate session·[39m
+[31m  const session = getSession(sessionId)···[39m
+[31m  if (!session || !session.isValid) {·[39m
+[31m    // Clear invalid session cookie·[39m
+[31m    const response = request.headers.get('accept')?.includes('text/html') && !pathname.startsWith('/login')·[39m
+[31m      ? NextResponse.redirect(new URL('/login', request.url))·[39m
+[31m      : new NextResponse(JSON.stringify({ error: 'Invalid session' }), {·[39m
+[31m          status: 401,·[39m
+[31m          headers: { 'Content-Type': 'application/json' },·[39m
+[31m        })···[39m
+[31m    response.cookies.delete('session-id')·[39m
+[31m    return response·[39m
+[31m  }···[39m
+[31m  return null·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Handle CSRF protection for state-changing requests·[39m
+[31m */·[39m
+[31mfunction handleCSRF(request: NextRequest): NextResponse | null {·[39m
+[31m  const pathname = request.nextUrl.pathname···[39m
+[31m  // Skip CSRF if authentication is disabled·[39m
+[31m  if (!defaultSecurityConfig.enableAuth) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Skip CSRF protection for public routes that don't need it·[39m
+[31m  if (isPublicRoute(pathname)) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Only apply CSRF to state-changing requests (POST, PUT, DELETE, PATCH)·[39m
+[31m  const needsCSRF = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method) &&·[39m
+[31m    pathname.startsWith('/api/') &&·[39m
+[31m    !pathname.startsWith('/api/auth') && // Auth endpoint handles its own CSRF·[39m
+[31m    !pathname.startsWith('/api/csrf')   // CSRF endpoint doesn't need CSRF protection···[39m
+[31m  if (!needsCSRF) {·[39m
+[31m    return null·[39m
+[31m  }···[39m
+[31m  // Use the enhanced CSRF protection middleware·[39m
+[31m  return validateCSRFMiddleware(request)·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Main middleware function·[39m
+[31m */·[39m
+[31mexport async function middleware(request: NextRequest) {·[39m
+[31m  // Perform cleanup if needed (Edge Runtime compatible)·[39m
+[31m  await performCleanupIfNeeded()···[39m
+[31m  // Track request signature for pattern analysis·[39m
+[31m  securityMonitoringService.trackRequestSignature(request)···[39m
+[31m  // Analyze request for immediate threats·[39m
+[31m  const threats = securityMonitoringService.analyzeRequest(request)·[39m
+[31m  if (threats.length > 0) {·[39m
+[31m    // Log threats but continue processing (threats are already logged in analyzeRequest)·[39m
+[31m    const highSeverityThreats = threats.filter(·[39m
+[31m      (threat: any) => threat.severity === 'high' || threat.severity === 'critical'·[39m
+[31m    )·[39m
+[31m    if (highSeverityThreats.length > 0) {·[39m
+[31m      // Block high severity threats·[39m
+[31m      return new NextResponse(·[39m
+[31m        JSON.stringify({·[39m
+[31m          error: 'Request blocked due to security policy violation',·[39m
+[31m          threatCount: highSeverityThreats.length,·[39m
+[31m        }),·[39m
+[31m        {·[39m
+[31m          status: 403,·[39m
+[31m          headers: { 'Content-Type': 'application/json' },·[39m
+[31m        }·[39m
+[31m      )·[39m
+[31m    }·[39m
+[31m  }···[39m
+[31m  // Handle rate limiting first·[39m
+[31m  const rateLimitResponse = handleRateLimit(request)·[39m
+[31m  if (rateLimitResponse) {·[39m
+[31m    // Log rate limit event·[39m
+[31m    securityMonitoringService.logSecurityEvent(·[39m
+[31m      'rate_limit_exceeded',·[39m
+[31m      'medium',·[39m
+[31m      request,·[39m
+[31m      { message: 'Rate limit exceeded' },·[39m
+[31m      true·[39m
+[31m    )·[39m
+[31m    return addSecurityHeaders(rateLimitResponse)·[39m
+[31m  }···[39m
+[31m  // Handle authentication·[39m
+[31m  const authResponse = handleAuthentication(request)·[39m
+[31m  if (authResponse) {·[39m
+[31m    return addSecurityHeaders(authResponse)·[39m
+[31m  }···[39m
+[31m  // Handle CSRF protection·[39m
+[31m  const csrfResponse = handleCSRF(request)·[39m
+[31m  if (csrfResponse) {·[39m
+[31m    // Log CSRF violation·[39m
+[31m    securityMonitoringService.logSecurityEvent(·[39m
+[31m      'invalid_csrf_token',·[39m
+[31m      'high',·[39m
+[31m      request,·[39m
+[31m      { message: 'CSRF token validation failed' },·[39m
+[31m      true·[39m
+[31m    )·[39m
+[31m    return addSecurityHeaders(csrfResponse)·[39m
+[31m  }···[39m
+[31m  // Continue with the request·[39m
+[31m  const response = NextResponse.next()···[39m
+[31m  // Add CSRF headers if session exists·[39m
+[31m  const sessionId = request.cookies.get('session-id')?.value·[39m
+[31m  if (sessionId) {·[39m
+[31m    csrfProtectionService.addCSRFHeaders(response, sessionId)·[39m
+[31m  }···[39m
+[31m  // Add security headers to all responses·[39m
+[31m  return addSecurityHeaders(response)·[39m
+[31m}···[39m
+[31m/**·[39m
+[31m * Configure which routes the middleware should run on·[39m
+[31m * Explicitly configured for Edge Runtime compatibility·[39m
+[31m */·[39m
+[31mexport const config = {·[39m
+[31m  matcher: [·[39m
+[31m    /*·[39m
+[31m     * Match all request paths except for the ones starting with:·[39m
+[31m     * - _next/static (static files)·[39m
+[31m     * - _next/image (image optimization files)·[39m
+[31m     * - favicon.ico (favicon file)·[39m
+[31m     * - favicon.png (favicon PNG file)·[39m
+[31m     * - manifest.json (PWA manifest)·[39m
+[31m     * - sw.js (service worker)·[39m
+[31m     * But include API routes that need middleware protection·[39m
+[31m     */·[39m
+[31m    '/((?!_next/static|_next/image|favicon\\\\.ico|favicon\\\\.png|manifest\\\\.json|sw\\\\.js).*)',·[39m
+[31m  ],·[39m
+[31m  // Explicitly specify Edge Runtime for better performance and compatibility·[39m
+[31m  runtime: 'experimental-edge',·[39m
+[31m}·[39m
+[31m"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp-fix-validation.test.ts:71:33)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should validate domains with MX records**: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"example.com"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\emailValidationService.test.ts:92:29)
+- **should cache MX record results**: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledTimes[2m([22m[32mexpected[39m[2m)[22m
+
+Expected number of calls: [32m1[39m
+Received number of calls: [31m0[39m
+    at Object.toHaveBeenCalledTimes (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\emailValidationService.test.ts:115:29)
+- **should calculate high deliverability for valid emails**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+Expected: > [32m80[39m
+Received:   [31m66[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\emailValidationService.test.ts:198:33)
+- **should calculate low deliverability for problematic emails**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+Expected: < [32m50[39m
+Received:   [31m60[39m
+    at Object.toBeLessThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\emailValidationService.test.ts:206:42)
+- **should cache validation results**: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledTimes[2m([22m[32mexpected[39m[2m)[22m
+
+Expected number of calls: [32m1[39m
+Received number of calls: [31m0[39m
+    at Object.toHaveBeenCalledTimes (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\emailValidationService.test.ts:256:29)
+
+## Performance Analysis
+- **Average Duration**: 119451.00ms
+- **Memory Peak**: 159.10MB
+
+## Recommendations
+### Fix Critical Test Failures (CRITICAL)
+5 critical test failures require immediate attention
+- Fix should get active services only: TypeError: Cannot read properties of undefined (reading 'isActive')
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:84
+    at Array.filter (<anonymous>)
+    at CRMServiceRegistry.filter [as getActiveServices] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:47)
+    at Object.getActiveServices (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:164:39)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- Fix should filter services by type: TypeError: Cannot read properties of undefined (reading 'type')
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:136:84
+    at Array.filter (<anonymous>)
+    at CRMServiceRegistry.filter [as getServicesByType] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:136:47)
+    at Object.getServicesByType (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:171:39)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- Fix should return empty array for inactive services when provider is inactive: TypeError: Cannot read properties of undefined (reading 'isActive')
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:84
+    at Array.filter (<anonymous>)
+    at CRMServiceRegistry.filter [as getActiveServices] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:129:47)
+    at Object.getActiveServices (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:183:39)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+- Fix should test connections for all providers: TypeError: Cannot read properties of undefined (reading 'isActive')
+    at CRMServiceRegistry.testAllConnections (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\crm\crmServiceRegistry.ts:206:30)
+    at Object.testAllConnections (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\crm\crmServiceRegistry.test.ts:211:38)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- Fix should log CSP violation without throwing: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoThrow[2m()[22m
+
+Error name:    [31m"TypeError"[39m
+Error message: [31m"text.replace is not a function"[39m
+
+    [0m [90m 694 |[39m   [36mprivate[39m stripAnsiCodes(text[33m:[39m string)[33m:[39m string {
+     [90m 695 |[39m     [90m// Remove ANSI escape sequences[39m
+    [31m[1m>[22m[39m[90m 696 |[39m     [36mreturn[39m text[33m.[39mreplace([35m/\x1b\[[0-9;]*m/g[39m[33m,[39m [32m''[39m)[33m.[39mreplace([35m/\x1b\[[0-9;]*[a-zA-Z]/g[39m[33m,[39m [32m''[39m)
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 697 |[39m   }
+     [90m 698 |[39m }
+     [90m 699 |[39m[0m
+
+      [2mat Logger.replace [as stripAnsiCodes] ([22msrc/utils/logger.ts[2m:696:17)[22m
+      [2mat Logger.stripAnsiCodes [as logToConsoleText] ([22msrc/utils/logger.ts[2m:280:31)[22m
+      [2mat Logger.logToConsoleText [as logToConsole] ([22msrc/utils/logger.ts[2m:266:12)[22m
+      [2mat Logger.logToConsole [as log] ([22msrc/utils/logger.ts[2m:244:12)[22m
+      [2mat Logger.log [as warn] ([22msrc/utils/logger.ts[2m:176:10)[22m
+      [2mat warn ([22msrc/lib/cspConfig.ts[2m:392:10)[22m
+      [2mat [22msrc/__tests__/csp.test.ts[2m:228:35[22m
+      [2mat Object.<anonymous> ([22mnode_modules/expect/build/toThrowMatchers.js[2m:74:11)[22m
+      [2mat Object.throwingMatcher [as toThrow] ([22mnode_modules/expect/build/index.js[2m:320:21)[22m
+      [2mat Object.toThrow ([22msrc/__tests__/csp.test.ts[2m:228:53)[22m
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\csp.test.ts:228:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+
+---
+*Generated at 2025-09-30T14:32:32.043Z by EnhancedTestLogger*
