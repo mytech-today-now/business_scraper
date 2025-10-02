@@ -47,7 +47,7 @@ describe('CSRF Token Infinite Loop Fix', () => {
         ok: false,
         status: 401,
         json: async () => ({ error: 'Unauthorized' }),
-      }
+      } as Response
 
       mockFetch.mockResolvedValue(mock401Response)
 

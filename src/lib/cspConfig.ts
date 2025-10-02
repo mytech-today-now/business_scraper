@@ -97,17 +97,16 @@ const cspConfigs: Record<string, CSPConfig> = {
     defaultSrc: ["'self'"],
     scriptSrc: [
       "'self'",
-      "'unsafe-eval'", // Still needed for some Next.js features
-      "'nonce-{nonce}'", // Use nonces for inline scripts
+      "'nonce-{nonce}'", // Use nonces for inline scripts - REMOVED unsafe-eval for security
       'https://js.stripe.com', // Stripe.js library
-      // Add specific hashes for known safe inline scripts (updated with current violations)
+      'https://checkout.stripe.com', // Stripe Checkout
+      // Specific hashes for known safe inline scripts (maintained for compatibility)
       "'sha256-Q+8tPsjVtiDsjF/Cv8FMOpg2Yg91oKFKDAJat1PPb2g='",
       "'sha256-x6H1bC+RRVj8E0k3vb6/WKyN24h5doxTA+DpnEW+glI='",
       "'sha256-w5bq2yF5OAaXG6HURdITkIBCp4xw6B/EMtny4WSHt+s='",
       "'sha256-JL/y8kA7Q8QthoFHPhMwHvXDIs8tNuM/yotj5L9sjdI='",
       "'sha256-3hiRNYmbR1ph5hd0c32tNycNet1m3ac0HyEXQXEGJyQ='",
       "'sha256-3QcKhPKGFSJ3p54YDwQ88l5Wvq88en250fatWxsL/NY='",
-      // Additional hashes from console violations
       "'sha256-dyzCnHa/jBIBK24sOTThWknRfCH9dOwxEfkI5ncCmjA='",
       "'sha256-3Jo+kaAFL9InHda238UqrgJCIyhTOvTz0irzB6vhDK0='",
       "'sha256-6GzLhHSjaZcGUzFDzkfHLHGNka2lY3DfhCBteNxRPyU='",
@@ -119,7 +118,6 @@ const cspConfigs: Record<string, CSPConfig> = {
       "'sha256-lUog9ElEAEf90cQXdvoDgK8diTTAXYqu++aPBXOmZrg='",
       "'sha256-6k72MmYzwHn9tPy8L25fiipaDpw6IH65REwaAMn8JC4='",
       "'sha256-1vPpzEwO0H5nfl6olZiRgSqKPtPz2ZveWRM/fhJ19Pc='",
-      // Additional hashes from recent console violations
       "'sha256-2lt0bFJlc5Kaphf4LkrOMIrdaHAEYNx8N9WCufhBrCo='",
       "'sha256-oolAXs2Cdo3WdBhu4uUyDkOe8GFEQ1wq7uqTsMiKW9U='",
       "'sha256-z05Y9BUQz7PEpWh9sitkqC+x0N4+SQix0AsyRlpYy7Q='",
@@ -129,8 +127,8 @@ const cspConfigs: Record<string, CSPConfig> = {
     styleSrc: [
       "'self'",
       "'nonce-{nonce}'", // Use nonces for inline styles
-      "'unsafe-inline'", // Temporarily allow for compatibility - will be removed after full CSP implementation
-      // Add specific hashes for known safe inline styles
+      'https://fonts.googleapis.com', // Google Fonts
+      // Specific hashes for known safe inline styles (removed unsafe-inline for security)
       "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='",
       "'sha256-Nqnn8clbgv+5l0PgxcTOldg8mkMKrFn4TvPL+rYUUGg='",
       "'sha256-13vrThxdyT64GcXoTNGVoRRoL0a7EGBmOJ+lemEWyws='",
@@ -150,7 +148,7 @@ const cspConfigs: Record<string, CSPConfig> = {
       'https://api.opencagedata.com',
       // Next.js assets are served from same origin ('self' covers them)
     ],
-    fontSrc: ["'self'", 'data:'],
+    fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
     connectSrc: [
       "'self'", // CRITICAL: Allow same-origin connections for EventSource/fetch/XHR
       'https://nominatim.openstreetmap.org', // Geocoding service

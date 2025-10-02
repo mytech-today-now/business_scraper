@@ -73,7 +73,7 @@ describe('Debug Solution Integration', () => {
       // Verify error was persisted
       const persistedErrors = errorPersistenceManager.getCurrentSessionErrors()
       expect(persistedErrors).toHaveLength(1)
-      expect(persistedErrors[0].message).toContain('CSRF token validation failed')
+      expect(persistedErrors[0]?.message).toContain('CSRF token validation failed')
       
       // Test safe reload (should be prevented in debug mode)
       const originalReload = window.location.reload
@@ -230,14 +230,18 @@ describe('Debug Solution Integration', () => {
       })
       
       // Export error data for debugging
-      const exportedData = errorPersistenceManager.exportErrorData()
-      
-      expect(exportedData.summary.totalErrors).toBe(3)
-      expect(exportedData.summary.totalSessions).toBe(1)
-      expect(exportedData.errors).toHaveLength(3)
-      
+      const exportedDataString = errorPersistenceManager.exportErrorData()
+      const exportedData = JSON.parse(exportedDataString)
+
+      expect(exportedData.analytics.totalErrors).toBe(3)
+      expect(exportedData.sessions).toHaveLength(1)
+
+      // Get all errors from all sessions
+      const allErrors = exportedData.sessions.flatMap((session: any) => session.errors)
+      expect(allErrors).toHaveLength(3)
+
       // Verify error sequence is captured
-      const errorMessages = exportedData.errors.map(e => e.message)
+      const errorMessages = allErrors.map((e: any) => e.message)
       expect(errorMessages).toContain('Loading Security Token...')
       expect(errorMessages).toContain('Failed to fetch CSRF token')
       expect(errorMessages).toContain('Page reload triggered')

@@ -3,6 +3,7 @@
 /**
  * Database Security Validation CLI Tool
  * Business Scraper Application - Security Compliance Checker
+ * Enhanced with P0 Critical Security Constraints Validation
  */
 
 const { execSync } = require('child_process')

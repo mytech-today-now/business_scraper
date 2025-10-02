@@ -6,6 +6,7 @@
 import { DatabaseSecurityService } from '@/lib/databaseSecurity'
 import { SecureDatabase } from '@/lib/secureDatabase'
 import { createSqlMock, asMockedFunction } from './utils/mockTypeHelpers'
+import { Pool } from 'pg'
 
 // Mock postgres.js module
 jest.mock('postgres', () => {

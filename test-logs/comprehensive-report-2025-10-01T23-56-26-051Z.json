@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "reportId": "report-1759362984472-x1jtznh4v",
+    "generatedAt": "2025-10-01T23:56:26.051Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 14,
+    "successRate": 0,
+    "criticalIssues": 1,
+    "keyMetrics": {
+      "averageDuration": 666,
+      "memoryPeak": 84898928,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 14,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 14,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Csrf-protection-comprehensive::should prevent timing attacks in token comparison::1759362986041",
+          "testName": "should prevent timing attacks in token comparison",
+          "testDescription": "should prevent timing attacks in token comparison",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-protection-comprehensive.test.ts",
+          "suite": "Csrf-protection-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759362985348,
+          "endTime": 1759362986014,
+          "duration": 666,
+          "memoryUsage": {
+            "heapUsed": 84774344,
+            "heapTotal": 117657600,
+            "external": 4595049,
+            "rss": 174825472
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts:62:89)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts:62:89)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should prevent timing attacks in token comparison",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'token')"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Csrf-protection-comprehensive::should prevent timing attacks in token comparison::1759362986041",
+          "testName": "should prevent timing attacks in token comparison",
+          "testDescription": "should prevent timing attacks in token comparison",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-protection-comprehensive.test.ts",
+          "suite": "Csrf-protection-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759362985348,
+          "endTime": 1759362986014,
+          "duration": 666,
+          "memoryUsage": {
+            "heapUsed": 84774344,
+            "heapTotal": 117657600,
+            "external": 4595049,
+            "rss": 174825472
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts:62:89)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts:62:89)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should prevent timing attacks in token comparison",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'token')"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1703.5838,
+      "endTime": 3282.2701,
+      "duration": 9324,
+      "memoryUsage": {
+        "heapUsed": 84851641.71428572,
+        "heapTotal": 101821970.05714285,
+        "external": 8485164.171428572,
+        "rss": 127277462.57142857
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1187922984,
+      "averageTestDuration": 666,
+      "totalExecutionTime": 9324
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "1 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should prevent timing attacks in token comparison: TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-protection-comprehensive.test.ts:62:89)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should prevent timing attacks in token comparison"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

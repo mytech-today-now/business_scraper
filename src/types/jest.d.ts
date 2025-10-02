@@ -161,9 +161,9 @@ declare global {
   }
 
   // Global variables for test environment
-  var fetch: MockFetch
-  var NextRequest: new (url: string, init?: any) => MockNextRequest
-  var NextResponse: {
+  const fetch: MockFetch
+  const NextRequest: new (url: string, init?: any) => MockNextRequest
+  const NextResponse: {
     json: jest.MockedFunction<(data: any, init?: any) => MockNextResponse>
     redirect: jest.MockedFunction<(url: string, status?: number) => MockNextResponse>
   }

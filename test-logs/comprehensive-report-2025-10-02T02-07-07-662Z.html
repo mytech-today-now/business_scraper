@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-02T02:07:07.662Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 12</div>
+    <div class="metric"><strong>Success Rate:</strong> 41.67%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should never expose actual session ID in any environment</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a string
+
+Received has value: [31mundefined[39m
+    at Object.toMatch (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:65:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should not expose session ID in production environment</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"[SESSION_ACTIVE]"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:81:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should not expose session ID in development environment</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a string
+
+Received has value: [31mundefined[39m
+    at Object.toMatch (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:97:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should sanitize error responses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: not [32m"Database connection"[39m
+Received string:        [31m"[7mDatabase connection[27m failed: [REDACTED]"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:117:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should never expose actual session ID on successful login</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:138:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should not expose sensitive data in failed login responses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m401[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:179:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle logout securely</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:234:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li></ul>
+
+    <p><em>Generated at 2025-10-02T02:07:07.662Z by EnhancedTestLogger</em></p>
+</body>
+</html>

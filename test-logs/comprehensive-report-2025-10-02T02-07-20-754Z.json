@@ -1,0 +1,407 @@
+{
+  "metadata": {
+    "reportId": "report-1759370839115-npfrg85s0",
+    "generatedAt": "2025-10-02T02:07:20.754Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 8,
+    "successRate": 12.5,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 857,
+      "memoryPeak": 85296608,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 8,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 8,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Users-security::should never expose password hashes in user list::1759370840708",
+          "testName": "should never expose password hashes in user list",
+          "testDescription": "should never expose password hashes in user list",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85202696,
+            "heapTotal": 117133312,
+            "external": 4581023,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:99:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:99:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should never expose password hashes in user list",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Users-security::should mask PII data in production::1759370840714",
+          "testName": "should mask PII data in production",
+          "testDescription": "should mask PII data in production",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85238848,
+            "heapTotal": 117133312,
+            "external": 4580979,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:131:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:131:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should mask PII data in production",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Users-security::should sanitize error responses::1759370840721",
+          "testName": "should sanitize error responses",
+          "testDescription": "should sanitize error responses",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85249080,
+            "heapTotal": 117133312,
+            "external": 4580979,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"Database error\"\u001b[39m\nReceived string:        \u001b[31m\"\u001b[7mDatabase error\u001b[27m: [REDACTED]\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:158:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"Database error\"\u001b[39m\nReceived string:        \u001b[31m\"\u001b[7mDatabase error\u001b[27m: [REDACTED]\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:158:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize error responses",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Users-security::should remove total_count from individual user objects::1759370840727",
+          "testName": "should remove total_count from individual user objects",
+          "testDescription": "should remove total_count from individual user objects",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85259832,
+            "heapTotal": 117133312,
+            "external": 4580979,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:173:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:173:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should remove total_count from individual user objects",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Users-security::should never expose password data in user creation response::1759370840733",
+          "testName": "should never expose password data in user creation response",
+          "testDescription": "should never expose password data in user creation response",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85270024,
+            "heapTotal": 117133312,
+            "external": 4580979,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m400\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:202:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m400\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:202:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should never expose password data in user creation response",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Users-security::should sanitize user creation error responses::1759370840737",
+          "testName": "should sanitize user creation error responses",
+          "testDescription": "should sanitize user creation error responses",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85285240,
+            "heapTotal": 117133312,
+            "external": 4580979,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"database_url=postgresql://user:pass@localhost\"\u001b[39m\nReceived string:        \u001b[31m\"User creation failed: \u001b[7mdatabase_url=postgresql://user:pass@localhost\u001b[27m\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:263:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"database_url=postgresql://user:pass@localhost\"\u001b[39m\nReceived string:        \u001b[31m\"User creation failed: \u001b[7mdatabase_url=postgresql://user:pass@localhost\u001b[27m\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:263:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize user creation error responses",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Users-security::should handle all authentication field variations::1759370840743",
+          "testName": "should handle all authentication field variations",
+          "testDescription": "should handle all authentication field variations",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\users-security.test.ts",
+          "suite": "Users-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370839830,
+          "endTime": 1759370840687,
+          "duration": 857,
+          "memoryUsage": {
+            "heapUsed": 85296608,
+            "heapTotal": 117133312,
+            "external": 4580979,
+            "rss": 166580224
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m400\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:322:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m400\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts:322:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle all authentication field variations",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\users-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1684.4505,
+      "endTime": 3323.6958,
+      "duration": 6856,
+      "memoryUsage": {
+        "heapUsed": 85260407,
+        "heapTotal": 102312488.39999999,
+        "external": 8526040.700000001,
+        "rss": 127890610.5
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 682083256,
+      "averageTestDuration": 857,
+      "totalExecutionTime": 6856
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

@@ -14,20 +14,20 @@ import { logger } from '@/utils/logger'
 function generateMockBusinessRecord(id: number): BusinessRecord {
   return {
     id: `business-${id}`,
-    business_name: `Business ${id}`,
-    phone: [`555-${String(id).padStart(4, '0')}`],
+    businessName: `Business ${id}`,
+    phone: `555-${String(id).padStart(4, '0')}`,
     email: [`contact${id}@business${id}.com`],
-    website: `https://business${id}.com`,
-    address: `${id} Main St`,
-    city: 'Test City',
-    state: 'TS',
-    zip_code: String(id).padStart(5, '0'),
+    websiteUrl: `https://business${id}.com`,
+    address: {
+      street: `${id} Main St`,
+      city: 'Test City',
+      state: 'TS',
+      zipCode: String(id).padStart(5, '0'),
+    },
     industry: 'Technology',
-    description: `Test business ${id} description with some additional text to make it more realistic`,
-    scraped_at: new Date().toISOString(),
+    scrapedAt: new Date(),
     coordinates: { lat: 40.7128 + (id * 0.001), lng: -74.0060 + (id * 0.001) },
-    confidence_score: Math.random(),
-    data_completeness: Math.random(),
+    dataQualityScore: Math.random() * 100,
     ai_insights: {
       lead_score: Math.random() * 100,
       business_category: 'Technology',
@@ -69,7 +69,7 @@ describe('Memory Stress Tests', () => {
       // Process data
       const result = await memoryEfficientProcessor.processDataset(
         businesses,
-        async (batch) => batch.map(b => ({ ...b, processed: true })),
+        async (batch) => batch.map(b => ({ ...b, processed: true } as any)),
         {
           batchSize: 100,
           memoryThreshold: threshold,
@@ -105,7 +105,7 @@ describe('Memory Stress Tests', () => {
         async (batch) => {
           // Simulate memory-intensive operation
           const largeData = Array.from({ length: 1000 }, () => 'x'.repeat(1000))
-          return batch.map(b => ({ ...b, largeData }))
+          return batch.map(b => ({ ...b, largeData } as any))
         },
         {
           batchSize: 50,
@@ -193,9 +193,9 @@ describe('Memory Stress Tests', () => {
         businesses,
         async (batch) => {
           // Simulate processing
-          return batch.map(b => ({
+          return batch.map((b: BusinessRecord) => ({
             id: b.id,
-            name: b.business_name,
+            name: b.businessName,
             processed: true,
           }))
         },
@@ -236,7 +236,7 @@ describe('Memory Stress Tests', () => {
           async (batch) => {
             // Simulate async processing
             await new Promise(resolve => setTimeout(resolve, 10))
-            return batch.map(b => ({ ...b, processedBy: index }))
+            return batch.map(b => ({ ...b, processedBy: index } as any))
           },
           {
             batchSize: 100,
@@ -273,7 +273,7 @@ describe('Memory Stress Tests', () => {
         async (batch) => {
           // Create temporary large objects
           const tempData = Array.from({ length: 1000 }, () => 'x'.repeat(100))
-          return batch.map(b => ({ ...b, tempData }))
+          return batch.map(b => ({ ...b, tempData } as any))
         },
         {
           batchSize: 100,
@@ -308,7 +308,7 @@ describe('Memory Stress Tests', () => {
       for (let i = 0; i < 5; i++) {
         await memoryEfficientProcessor.processDataset(
           businesses,
-          async (batch) => batch.map(b => ({ ...b, iteration: i })),
+          async (batch) => batch.map(b => ({ ...b, iteration: i } as any)),
           {
             batchSize: 200,
             enableGarbageCollection: true,
@@ -355,7 +355,7 @@ describe('Memory Stress Tests', () => {
           if (Math.random() < 0.1) {
             throw new Error('Simulated processing error')
           }
-          return batch.map(b => ({ ...b, processed: true }))
+          return batch.map(b => ({ ...b, processed: true } as any))
         },
         {
           batchSize: 50,

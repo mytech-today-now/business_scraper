@@ -317,7 +317,7 @@ describe('ComplianceReportingService', () => {
       const riskAssessment = await (testService as any).performRiskAssessment([], metrics, 'GDPR')
 
       expect(riskAssessment.overallRisk).toBe('critical')
-      expect(riskAssessment.riskFactors.some(f => f.category === 'Data Protection')).toBe(true)
+      expect(riskAssessment.riskFactors.some((f: any) => f.category === 'Data Protection')).toBe(true)
     })
   })
 

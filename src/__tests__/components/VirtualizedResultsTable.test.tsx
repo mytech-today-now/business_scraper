@@ -234,8 +234,12 @@ describe('VirtualizedResultsTable', () => {
     await waitFor(() => {
       const checkboxes = screen.getAllByRole('checkbox')
       if (checkboxes.length > 1) {
-        fireEvent.click(checkboxes[1]) // First business checkbox
-        expect(checkboxes[1]).toBeChecked()
+        const firstBusinessCheckbox = checkboxes[1]
+        expect(firstBusinessCheckbox).toBeDefined()
+        if (firstBusinessCheckbox) {
+          fireEvent.click(firstBusinessCheckbox) // First business checkbox
+          expect(firstBusinessCheckbox).toBeChecked()
+        }
       }
     })
   })
@@ -244,8 +248,13 @@ describe('VirtualizedResultsTable', () => {
     render(<VirtualizedResultsTable {...defaultProps} />)
 
     await waitFor(() => {
-      const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
-      fireEvent.click(selectAllCheckbox)
+      const checkboxes = screen.getAllByRole('checkbox')
+      expect(checkboxes.length).toBeGreaterThan(0)
+      const selectAllCheckbox = checkboxes[0]
+      expect(selectAllCheckbox).toBeDefined()
+      if (selectAllCheckbox) {
+        fireEvent.click(selectAllCheckbox)
+      }
 
       // Should select all visible items
       expect(selectAllCheckbox).toBeInTheDocument()
@@ -272,8 +281,12 @@ describe('VirtualizedResultsTable', () => {
     await waitFor(() => {
       const editButtons = screen.getAllByTitle('Edit business')
       if (editButtons.length > 0) {
-        fireEvent.click(editButtons[0])
-        expect(mockOnEdit).toHaveBeenCalled()
+        const firstEditButton = editButtons[0]
+        expect(firstEditButton).toBeDefined()
+        if (firstEditButton) {
+          fireEvent.click(firstEditButton)
+          expect(mockOnEdit).toHaveBeenCalled()
+        }
       }
     })
   })
@@ -285,8 +298,12 @@ describe('VirtualizedResultsTable', () => {
     await waitFor(() => {
       const deleteButtons = screen.getAllByTitle('Delete business')
       if (deleteButtons.length > 0) {
-        fireEvent.click(deleteButtons[0])
-        expect(mockOnDelete).toHaveBeenCalled()
+        const firstDeleteButton = deleteButtons[0]
+        expect(firstDeleteButton).toBeDefined()
+        if (firstDeleteButton) {
+          fireEvent.click(firstDeleteButton)
+          expect(mockOnDelete).toHaveBeenCalled()
+        }
       }
     })
   })

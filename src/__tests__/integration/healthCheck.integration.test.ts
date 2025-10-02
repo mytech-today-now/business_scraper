@@ -158,7 +158,7 @@ describe('Health Check Integration Tests', () => {
         heapUsed: 40 * 1024 * 1024, // 40MB
         external: 5 * 1024 * 1024, // 5MB
         arrayBuffers: 1 * 1024 * 1024, // 1MB
-      })
+      }) as any
 
       const request = new NextRequest('http://localhost:3000/api/health')
 

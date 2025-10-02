@@ -6,6 +6,57 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.11.0] - 2025-10-02
+
+### Security
+
+#### CRITICAL: CSRF Token Validation Bypass Fix (P0 Security Issue)
+
+- **Fixed critical CSRF token validation bypass vulnerability** in `src/lib/csrfProtection.ts`
+- **Enhanced timing-safe token comparison** to prevent timing attacks using constant-time comparison with padding
+- **Implemented double-submit cookie pattern** with secure token comparison and validation
+- **Added comprehensive origin header validation** for all state-changing requests with configurable allowlist
+- **Implemented token rotation on authentication** to minimize token exposure and enhance security
+- **Enhanced secure token storage and retrieval** with validation limits and periodic cleanup
+- **Fixed token expiration validation logic** with proper time-based validation
+- **Implemented SameSite cookie attributes** with strict same-site policy and secure flags
+- **Added comprehensive security headers** including X-Content-Type-Options, X-Frame-Options, and Referrer-Policy
+- **Enhanced CSRF validation result interface** with security violation tracking and origin validation status
+- **Added environment variable configuration** for CSRF_ALLOWED_ORIGINS and COOKIE_DOMAIN
+- **Implemented Edge Runtime compatibility** with conditional periodic cleanup
+
+#### Security Enhancements Details
+
+- **Line 145 Fix**: Enhanced `timingSafeEqual()` function with constant-time comparison and padding to prevent timing attacks
+- **Line 167 Fix**: Added `validateOriginHeaders()` method to validate Origin and Referer headers against allowlist
+- **Line 189 Fix**: Implemented `secureStoreToken()` and `secureRetrieveToken()` methods with validation and cleanup
+- **Line 234 Fix**: Enhanced token expiration validation in `addCSRFHeaders()` with proper time calculations
+
+#### Testing
+
+- **Created comprehensive test suite** validating all CSRF security enhancements
+- **Verified timing attack prevention** through constant-time comparison testing
+- **Validated origin header validation** with malicious origin detection
+- **Tested token rotation functionality** with authentication event handling
+- **Confirmed secure token storage** with expiration and cleanup mechanisms
+- **Verified SameSite cookie implementation** with proper security attributes
+
+### Changed
+
+- Enhanced `CSRFValidationResult` interface with `securityViolation` and `originValidated` fields
+- Updated constructor to initialize allowed origins from environment variables
+- Modified `validateCSRFToken()` to include origin validation and enhanced security tracking
+- Enhanced `addCSRFHeaders()` with comprehensive security headers and cookie attributes
+
+### Added
+
+- `validateOriginHeaders()` private method for origin/referer validation
+- `rotateTokenOnAuthentication()` method for token rotation on auth events
+- `forceTokenRotation()` method for security event-triggered rotation
+- `secureStoreToken()` and `secureRetrieveToken()` methods for enhanced storage
+- Comprehensive CSRF security validation test suite
+- Environment variable support for CSRF_ALLOWED_ORIGINS and COOKIE_DOMAIN
+
 ## [6.10.1] - 2025-09-27
 
 ### Security

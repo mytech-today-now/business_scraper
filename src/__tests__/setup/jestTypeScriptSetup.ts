@@ -37,42 +37,42 @@ import {
 // Extend global namespace with our mock utilities
 declare global {
   // Global mock factory functions
-  var createMockFunction: typeof createMockFunction
-  var createMockResolvedFunction: typeof createMockResolvedFunction
-  var createMockRejectedFunction: typeof createMockRejectedFunction
-  var createMockObject: typeof createMockObject
-  var createMockResponse: typeof createMockResponse
-  var createFetchMock: typeof createFetchMock
+  const createMockFunction: typeof createMockFunction
+  const createMockResolvedFunction: typeof createMockResolvedFunction
+  const createMockRejectedFunction: typeof createMockRejectedFunction
+  const createMockObject: typeof createMockObject
+  const createMockResponse: typeof createMockResponse
+  const createFetchMock: typeof createFetchMock
 
   // Mock type helpers
-  var asMockedFunction: typeof asMockedFunction
-  var asMockedObject: typeof asMockedObject
+  const asMockedFunction: typeof asMockedFunction
+  const asMockedObject: typeof asMockedObject
 
   // Test data factories
-  var createMockBusinessRecord: typeof createMockBusinessRecord
-  var createMockUser: typeof createMockUser
-  var createMockSearchResult: typeof createMockSearchResult
+  const createMockBusinessRecord: typeof createMockBusinessRecord
+  const createMockUser: typeof createMockUser
+  const createMockSearchResult: typeof createMockSearchResult
 
   // Common mock services
-  var mockStorageService: typeof commonServiceMocks.storage
-  var mockSearchService: typeof commonServiceMocks.search
-  var mockEmailService: typeof commonServiceMocks.email
-  var mockPaymentService: typeof commonServiceMocks.payment
+  const mockStorageService: typeof commonServiceMocks.storage
+  const mockSearchService: typeof commonServiceMocks.search
+  const mockEmailService: typeof commonServiceMocks.email
+  const mockPaymentService: typeof commonServiceMocks.payment
 
   // Mock response helpers
-  var mockFetchResponses: typeof mockFetchResponses
-  var createTypedMocks: typeof createTypedMocks
+  const mockFetchResponses: typeof mockFetchResponses
+  const createTypedMocks: typeof createTypedMocks
 
   // Mock management utilities
-  var resetAllCommonMocks: typeof resetAllCommonMocks
-  var clearAllCommonMocks: typeof clearAllCommonMocks
+  const resetAllCommonMocks: typeof resetAllCommonMocks
+  const clearAllCommonMocks: typeof clearAllCommonMocks
 
   // Enhanced mock helpers
-  var mockHelpers: typeof mockHelpers
+  const mockHelpers: typeof mockHelpers
 
   // CSRF and Security mock variables
-  var mockCSRFToken: string
-  var mockSessionId: string
+  const mockCSRFToken: string
+  const mockSessionId: string
 }
 
 // Set up global mock utilities

@@ -41,7 +41,7 @@ describe('EmailService', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(getConfig as jest.Mock).mockReturnValue(mockConfig)
-    ;(nodemailer.createTransporter as jest.Mock).mockReturnValue(mockTransporter)
+    ;(nodemailer.createTransport as jest.Mock).mockReturnValue(mockTransporter)
     ;(auditService.logAuditEvent as jest.Mock).mockResolvedValue(undefined)
 
     emailServiceInstance = new EmailService()
@@ -49,7 +49,7 @@ describe('EmailService', () => {
 
   describe('Constructor and Initialization', () => {
     it('should initialize SMTP transporter correctly', () => {
-      expect(nodemailer.createTransporter).toHaveBeenCalledWith({
+      expect(nodemailer.createTransport).toHaveBeenCalledWith({
         host: 'smtp.test.com',
         port: 587,
         secure: false,
@@ -316,7 +316,7 @@ describe('EmailService', () => {
   describe('Error Handling', () => {
     it('should handle transporter initialization failure', () => {
       const error = new Error('SMTP configuration invalid')
-      ;(nodemailer.createTransporter as jest.Mock).mockImplementation(() => {
+      ;(nodemailer.createTransport as jest.Mock).mockImplementation(() => {
         throw error
       })
 

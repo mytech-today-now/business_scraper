@@ -1,6 +1,7 @@
 /**
  * Multi-User Scraping API Endpoint
  * Handles web scraping operations with workspace-based authorization
+ * Enhanced with comprehensive data sanitization and security controls
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -9,6 +10,10 @@ import { scraperService } from '@/model/scraperService'
 import { AuditService } from '@/lib/audit-service'
 import { getClientIP, sanitizeInput, validateInput } from '@/lib/security'
 import { logger } from '@/utils/logger'
+import { createSecureErrorResponse, ErrorContext } from '@/lib/error-handling'
+import { dataClassificationService } from '@/lib/data-classification'
+import { piiDetectionService } from '@/lib/pii-detection'
+import { sanitizeErrorMessage, createSecureApiResponse } from '@/lib/response-sanitization'
 
 /**
  * POST /api/scraping - Execute scraping operations
@@ -142,11 +147,15 @@ export const POST = withRBAC(
         }
       )
 
-      return NextResponse.json({
+      // Enhanced: Use secure API response with internal configuration removal
+      return createSecureApiResponse({
         success: true,
         action: sanitizedAction,
         data: result,
         timestamp: new Date().toISOString(),
+      }, 200, {
+        removeInternalConfig: true,
+        context: 'Scraping Operation'
       })
     } catch (error) {
       logger.error(
@@ -167,13 +176,20 @@ export const POST = withRBAC(
         }
       )
 
-      return NextResponse.json(
-        {
-          error: 'Scraping operation failed',
-          message: error instanceof Error ? error.message : 'Unknown error',
-        },
-        { status: 500 }
-      )
+      const errorContext: ErrorContext = {
+        endpoint: '/api/scraping',
+        method: 'POST',
+        ip,
+        userAgent: request.headers.get('user-agent') || undefined,
+        sessionId: (context as any).sessionId,
+        userId: (context as any).user?.id,
+      }
+
+      return createSecureErrorResponse(error, errorContext, {
+        customMessage: sanitizeErrorMessage(error, 'Scraping Operation'),
+        statusCode: 500,
+        sanitizeResponse: true,
+      })
     }
   },
   { permissions: ['scraping.run' as any] }
@@ -482,10 +498,10 @@ export const GET = withRBAC(
         })
       }
 
-      // Get general scraping capabilities and recent sessions
+      // Get recent sessions with sanitized data
       const recentSessions = await (context as any).database?.query(
         `
-        SELECT id, status, started_at, completed_at, query, url, successful_scrapes
+        SELECT id, status, started_at, completed_at, successful_scrapes
         FROM scraping_sessions
         WHERE created_by = $1 ${workspaceId ? 'AND workspace_id = $2' : ''}
         ORDER BY started_at DESC
@@ -494,23 +510,58 @@ export const GET = withRBAC(
         workspaceId ? [(context as any).user?.id, workspaceId] : [(context as any).user?.id]
       )
 
-      return NextResponse.json({
+      // Enhanced: Sanitize session data to remove ALL sensitive information
+      const sanitizedSessions = recentSessions.rows.map((session: any) => {
+        // Remove ALL potentially sensitive fields
+        const {
+          query, url, zip_code, created_by, workspace_id, campaign_id,
+          internal_config, system_config, debug_info, ...safeSession
+        } = session
+
+        return {
+          id: safeSession.id,
+          status: safeSession.status,
+          started_at: safeSession.started_at,
+          completed_at: safeSession.completed_at,
+          successful_scrapes: safeSession.successful_scrapes,
+          // Only include non-sensitive metadata
+          hasQuery: !!query,
+          hasUrl: !!url,
+        }
+      })
+
+      // Enhanced: Use secure API response with comprehensive sanitization
+      return createSecureApiResponse({
         success: true,
         data: {
           status: 'Scraping API is operational',
+          // Enhanced: Remove ALL internal configuration details
           capabilities: {
             actions: ['initialize', 'search', 'scrape', 'cleanup', 'status'],
-            maxDepth: 10,
-            maxPages: 50,
-            maxResults: 100,
+            // Enhanced: Don't expose ANY internal limits, configurations, or capabilities
           },
-          recentSessions: recentSessions.rows,
+          recentSessions: sanitizedSessions,
           timestamp: new Date().toISOString(),
         },
+      }, 200, {
+        removeInternalConfig: true,
+        context: 'Scraping Status API'
       })
     } catch (error) {
-      logger.error('Scraping API', 'Error getting scraping status', error)
-      return NextResponse.json({ error: 'Failed to get scraping status' }, { status: 500 })
+      const errorContext: ErrorContext = {
+        endpoint: '/api/scraping',
+        method: 'GET',
+        ip: getClientIP(request),
+        userAgent: request.headers.get('user-agent') || undefined,
+        sessionId: (context as any).sessionId,
+        userId: (context as any).user?.id,
+      }
+
+      return createSecureErrorResponse(error, errorContext, {
+        customMessage: sanitizeErrorMessage(error, 'Scraping Status Retrieval'),
+        statusCode: 500,
+        sanitizeResponse: true,
+      })
     }
   },
   { permissions: ['scraping.view' as any] }

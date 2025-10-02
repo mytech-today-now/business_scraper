@@ -1,6 +1,7 @@
 /**
  * Users API Endpoint
  * Handles user management operations (CRUD, authentication, profile management)
+ * Enhanced with comprehensive data sanitization and security controls
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -10,6 +11,11 @@ import { CreateUserRequest, UpdateUserRequest } from '@/types/multi-user'
 import { logger } from '@/utils/logger'
 import { getClientIP } from '@/lib/security'
 import { database } from '@/lib/postgresql-database'
+import { withResponseSanitization, DataClassification } from '@/lib/response-sanitization'
+import { createSecureErrorResponse, ErrorContext } from '@/lib/error-handling'
+import { dataClassificationService } from '@/lib/data-classification'
+import { piiDetectionService } from '@/lib/pii-detection'
+import { sanitizeErrorMessage, createSecureApiResponse } from '@/lib/response-sanitization'
 
 /**
  * GET /api/users - List users with pagination and filtering
@@ -63,12 +69,11 @@ export const GET = withRBAC(
       const offset = (page - 1) * limit
       values.push(limit, offset)
 
-      // Query users with pagination
+      // Query users with pagination - only select safe fields
       const usersQuery = `
         SELECT DISTINCT
           u.id,
           u.username,
-          u.email,
           u.first_name,
           u.last_name,
           u.avatar_url,
@@ -94,13 +99,59 @@ export const GET = withRBAC(
       const totalCount = users.length > 0 ? parseInt(users[0].total_count) : 0
       const totalPages = Math.ceil(totalCount / limit)
 
-      // Remove total_count from user objects
-      const cleanUsers = users.map((user: any) => {
+      // Enhanced: Sanitize user data and remove ALL sensitive information
+      const sanitizedUsers = users.map((user: any) => {
         const { total_count, ...cleanUser } = user
-        return {
-          ...cleanUser,
-          fullName: `${cleanUser.first_name} ${cleanUser.last_name}`,
+
+        // Enhanced: Explicitly remove ALL authentication-related fields
+        const sensitiveFields = [
+          'password', 'password_hash', 'password_salt', 'passwordhash', 'passwordsalt',
+          'secret', 'token', 'api_key', 'apikey', 'private_key', 'privatekey',
+          'session_id', 'sessionid', 'csrf_token', 'csrftoken', 'auth_token',
+          'access_token', 'refresh_token', 'salt', 'hash', 'encrypted_password'
+        ]
+
+        // Remove sensitive fields first
+        for (const field of sensitiveFields) {
+          delete cleanUser[field]
+          delete cleanUser[field.toLowerCase()]
+          delete cleanUser[field.toUpperCase()]
         }
+
+        // Apply data classification and sanitization
+        const userClassifications = dataClassificationService.classifyObject(cleanUser)
+
+        // Remove or mask fields based on classification
+        const sanitizedUser: any = {}
+        for (const [key, value] of Object.entries(cleanUser)) {
+          // Enhanced: Double-check for any remaining sensitive patterns
+          const lowerKey = key.toLowerCase()
+          if (sensitiveFields.some(field => lowerKey.includes(field.toLowerCase()))) {
+            continue // Skip this field entirely
+          }
+
+          const classification = userClassifications.get(key)
+          if (classification && classification.protectionPolicy.allowInResponses) {
+            if (classification.protectionPolicy.maskInProduction && process.env.NODE_ENV === 'production') {
+              // Apply PII detection and masking
+              if (typeof value === 'string') {
+                const { redactedText } = piiDetectionService.redactPII(value, `users.${key}`)
+                sanitizedUser[key] = redactedText
+              } else {
+                sanitizedUser[key] = value
+              }
+            } else {
+              sanitizedUser[key] = value
+            }
+          }
+        }
+
+        // Add computed safe fields
+        if (sanitizedUser.first_name && sanitizedUser.last_name) {
+          sanitizedUser.fullName = `${sanitizedUser.first_name} ${sanitizedUser.last_name}`
+        }
+
+        return sanitizedUser
       })
 
       logger.info('Users API', 'Users listed successfully', {
@@ -108,12 +159,14 @@ export const GET = withRBAC(
         page,
         limit,
         totalCount,
+        resultCount: sanitizedUsers.length,
         filters: { search, role, isActive, workspaceId },
       })
 
-      return NextResponse.json({
+      // Use enhanced sanitization for the response
+      return createSecureApiResponse({
         success: true,
-        data: cleanUsers,
+        data: sanitizedUsers,
         pagination: {
           page,
           limit,
@@ -122,10 +175,24 @@ export const GET = withRBAC(
           hasNext: page < totalPages,
           hasPrev: page > 1,
         },
+      }, 200, {
+        context: 'Users List API'
       })
     } catch (error) {
-      logger.error('Users API', 'Error listing users', error)
-      return NextResponse.json({ error: 'Failed to list users' }, { status: 500 })
+      const errorContext: ErrorContext = {
+        endpoint: '/api/users',
+        method: 'GET',
+        ip: getClientIP(request),
+        userAgent: request.headers.get('user-agent') || undefined,
+        sessionId: context.session?.id,
+        userId: context.session?.user?.id,
+      }
+
+      return createSecureErrorResponse(error, errorContext, {
+        customMessage: sanitizeErrorMessage(error, 'Users List Retrieval'),
+        statusCode: 500,
+        sanitizeResponse: true,
+      })
     }
   },
   { permissions: ['users.view' as any] }
@@ -154,32 +221,76 @@ export const POST = withRBAC(
       // Create user
       const { user } = await UserManagementService.createUser(userData, context.session?.user?.id || '')
 
-      // Remove sensitive information from response
-      const { roles, teams, workspaces, ...safeUser } = user as any
+      // Enhanced: Apply comprehensive data sanitization with strict authentication data removal
+      const sensitiveFields = [
+        'password', 'password_hash', 'password_salt', 'passwordhash', 'passwordsalt',
+        'secret', 'token', 'api_key', 'apikey', 'private_key', 'privatekey',
+        'session_id', 'sessionid', 'csrf_token', 'csrftoken', 'auth_token',
+        'access_token', 'refresh_token', 'salt', 'hash', 'encrypted_password'
+      ]
+
+      // Create a clean copy without sensitive fields
+      const cleanUser = { ...user }
+      for (const field of sensitiveFields) {
+        delete cleanUser[field]
+        delete cleanUser[field.toLowerCase()]
+        delete cleanUser[field.toUpperCase()]
+      }
+
+      const userClassifications = dataClassificationService.classifyObject(cleanUser)
+      const sanitizedUser: any = {}
+
+      for (const [key, value] of Object.entries(cleanUser as any)) {
+        // Enhanced: Double-check for any remaining sensitive patterns
+        const lowerKey = key.toLowerCase()
+        if (sensitiveFields.some(field => lowerKey.includes(field.toLowerCase()))) {
+          continue // Skip this field entirely
+        }
+
+        const classification = userClassifications.get(key)
+        if (classification && classification.protectionPolicy.allowInResponses) {
+          if (classification.protectionPolicy.maskInProduction && process.env.NODE_ENV === 'production') {
+            if (typeof value === 'string') {
+              const { redactedText } = piiDetectionService.redactPII(value, `user.${key}`)
+              sanitizedUser[key] = redactedText
+            } else {
+              sanitizedUser[key] = value
+            }
+          } else {
+            sanitizedUser[key] = value
+          }
+        }
+      }
 
       logger.info('Users API', 'User created successfully', {
         createdBy: context.session?.user?.id,
         newUserId: user.id,
-        username: user.username,
-        email: user.email,
+        username: sanitizedUser.username,
       })
 
-      return NextResponse.json(
-        {
-          success: true,
-          data: safeUser,
-          message: 'User created successfully',
-        },
-        { status: 201 }
-      )
+      // Use enhanced sanitization for the response
+      return createSecureApiResponse({
+        success: true,
+        data: sanitizedUser,
+        message: 'User created successfully',
+      }, 201, {
+        context: 'User Creation API'
+      })
     } catch (error) {
-      logger.error('Users API', 'Error creating user', error)
-
-      if (error instanceof Error) {
-        return NextResponse.json({ error: error.message }, { status: 400 })
+      const errorContext: ErrorContext = {
+        endpoint: '/api/users',
+        method: 'POST',
+        ip: getClientIP(request),
+        userAgent: request.headers.get('user-agent') || undefined,
+        sessionId: context.session?.id,
+        userId: context.session?.user?.id,
       }
 
-      return NextResponse.json({ error: 'Failed to create user' }, { status: 500 })
+      return createSecureErrorResponse(error, errorContext, {
+        customMessage: sanitizeErrorMessage(error, 'User Creation'),
+        statusCode: error instanceof Error ? 400 : 500,
+        sanitizeResponse: true,
+      })
     }
   },
   { permissions: ['users.manage' as any] }
@@ -240,8 +351,20 @@ export const PUT = withRBAC(
         message: `Updated ${updatedUsers.length} users successfully`,
       })
     } catch (error) {
-      logger.error('Users API', 'Error in bulk user update', error)
-      return NextResponse.json({ error: 'Failed to update users' }, { status: 500 })
+      const errorContext: ErrorContext = {
+        endpoint: '/api/users',
+        method: 'PUT',
+        ip: getClientIP(request),
+        userAgent: request.headers.get('user-agent') || undefined,
+        sessionId: context.session?.id,
+        userId: context.session?.user?.id,
+      }
+
+      return createSecureErrorResponse(error, errorContext, {
+        customMessage: sanitizeErrorMessage(error, 'Users Bulk Update'),
+        statusCode: 500,
+        sanitizeResponse: true,
+      })
     }
   },
   { permissions: ['users.manage' as any] }
@@ -306,8 +429,20 @@ export const DELETE = withRBAC(
         message: successMessage,
       })
     } catch (error) {
-      logger.error('Users API', 'Error deleting users', error)
-      return NextResponse.json({ error: 'Failed to delete users' }, { status: 500 })
+      const errorContext: ErrorContext = {
+        endpoint: '/api/users',
+        method: 'DELETE',
+        ip: getClientIP(request),
+        userAgent: request.headers.get('user-agent') || undefined,
+        sessionId: context.session?.id,
+        userId: context.session?.user?.id,
+      }
+
+      return createSecureErrorResponse(error, errorContext, {
+        customMessage: sanitizeErrorMessage(error, 'Users Deletion'),
+        statusCode: 500,
+        sanitizeResponse: true,
+      })
     }
   },
   { permissions: ['users.delete' as any] }

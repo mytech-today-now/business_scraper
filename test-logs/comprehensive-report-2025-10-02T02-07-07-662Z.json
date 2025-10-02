@@ -1,0 +1,407 @@
+{
+  "metadata": {
+    "reportId": "report-1759370825897-sgpow840m",
+    "generatedAt": "2025-10-02T02:07:07.662Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 12,
+    "successRate": 41.66666666666667,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 999,
+      "memoryPeak": 97491848,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 12,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 12,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Auth-security::should never expose actual session ID in any environment::1759370827625",
+          "testName": "should never expose actual session ID in any environment",
+          "testDescription": "should never expose actual session ID in any environment",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97352960,
+            "heapTotal": 118706176,
+            "external": 4608257,
+            "rss": 180858880
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a string\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at Object.toMatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:65:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a string\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at Object.toMatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:65:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should never expose actual session ID in any environment",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security::should not expose session ID in production environment::1759370827631",
+          "testName": "should not expose session ID in production environment",
+          "testDescription": "should not expose session ID in production environment",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97389432,
+            "heapTotal": 118706176,
+            "external": 4608297,
+            "rss": 180867072
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"[SESSION_ACTIVE]\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:81:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"[SESSION_ACTIVE]\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:81:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not expose session ID in production environment",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security::should not expose session ID in development environment::1759370827640",
+          "testName": "should not expose session ID in development environment",
+          "testDescription": "should not expose session ID in development environment",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97399800,
+            "heapTotal": 118706176,
+            "external": 4608297,
+            "rss": 180867072
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a string\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at Object.toMatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:97:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a string\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at Object.toMatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:97:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not expose session ID in development environment",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security::should sanitize error responses::1759370827644",
+          "testName": "should sanitize error responses",
+          "testDescription": "should sanitize error responses",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97410168,
+            "heapTotal": 118706176,
+            "external": 4608297,
+            "rss": 180867072
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"Database connection\"\u001b[39m\nReceived string:        \u001b[31m\"\u001b[7mDatabase connection\u001b[27m failed: [REDACTED]\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:117:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"Database connection\"\u001b[39m\nReceived string:        \u001b[31m\"\u001b[7mDatabase connection\u001b[27m failed: [REDACTED]\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:117:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize error responses",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security::should never expose actual session ID on successful login::1759370827648",
+          "testName": "should never expose actual session ID on successful login",
+          "testDescription": "should never expose actual session ID on successful login",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97420920,
+            "heapTotal": 118706176,
+            "external": 4608297,
+            "rss": 180871168
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:138:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:138:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should never expose actual session ID on successful login",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security::should not expose sensitive data in failed login responses::1759370827651",
+          "testName": "should not expose sensitive data in failed login responses",
+          "testDescription": "should not expose sensitive data in failed login responses",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97435928,
+            "heapTotal": 118706176,
+            "external": 4608297,
+            "rss": 180871168
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:179:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:179:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not expose sensitive data in failed login responses",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security::should handle logout securely::1759370827655",
+          "testName": "should handle logout securely",
+          "testDescription": "should handle logout securely",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+          "relativePath": "src\\__tests__\\api\\auth-security.test.ts",
+          "suite": "Auth-security",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759370826600,
+          "endTime": 1759370827599,
+          "duration": 999,
+          "memoryUsage": {
+            "heapUsed": 97476392,
+            "heapTotal": 118968320,
+            "external": 4608297,
+            "rss": 180891648
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:234:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts:234:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle logout securely",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\auth-security.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1575.2159,
+      "endTime": 3340.1903,
+      "duration": 11988,
+      "memoryUsage": {
+        "heapUsed": 97433369.33333333,
+        "heapTotal": 116920043.19999999,
+        "external": 9743336.933333334,
+        "rss": 146150054
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1169200432,
+      "averageTestDuration": 999,
+      "totalExecutionTime": 11988
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

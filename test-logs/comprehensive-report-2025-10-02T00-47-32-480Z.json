@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "reportId": "report-1759366051000-emw0z73nr",
+    "generatedAt": "2025-10-02T00:47:32.480Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "passed",
+    "totalSuites": 0,
+    "totalTests": 20,
+    "successRate": 95,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 795,
+      "memoryPeak": 89571208,
+      "flakyTests": 0
+    },
+    "qualityGate": "passed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 20,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 20,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Sensitive-data-exposure::should not expose internal configuration in scraping API::1759366052472",
+          "testName": "should not expose internal configuration in scraping API",
+          "testDescription": "should not expose internal configuration in scraping API",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\sensitive-data-exposure.test.ts",
+          "relativePath": "src\\__tests__\\security\\sensitive-data-exposure.test.ts",
+          "suite": "Sensitive-data-exposure",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759366051650,
+          "endTime": 1759366052445,
+          "duration": 795,
+          "memoryUsage": {
+            "heapUsed": 89513200,
+            "heapTotal": 120541184,
+            "external": 4671419,
+            "rss": 181923840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"sensitive_config\"\u001b[39m\nReceived string:        \u001b[31m\"{\\\"status\\\":\\\"operational\\\",\\\"capabilities\\\":{\\\"actions\\\":[\\\"search\\\",\\\"scrape\\\"],\\\"maxDepth\\\":10,\\\"maxPages\\\":50,\\\"internalConfig\\\":\\\"\u001b[7msensitive_config\u001b[27m\\\",\\\"databaseUrl\\\":\\\"postgresql://localhost:5432/db\\\"},\\\"recentSessions\\\":[{\\\"id\\\":\\\"session_123\\\",\\\"query\\\":\\\"sensitive search query\\\",\\\"url\\\":\\\"https://example.com\\\",\\\"status\\\":\\\"completed\\\"}]}\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\sensitive-data-exposure.test.ts:350:34)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"sensitive_config\"\u001b[39m\nReceived string:        \u001b[31m\"{\\\"status\\\":\\\"operational\\\",\\\"capabilities\\\":{\\\"actions\\\":[\\\"search\\\",\\\"scrape\\\"],\\\"maxDepth\\\":10,\\\"maxPages\\\":50,\\\"internalConfig\\\":\\\"\u001b[7msensitive_config\u001b[27m\\\",\\\"databaseUrl\\\":\\\"postgresql://localhost:5432/db\\\"},\\\"recentSessions\\\":[{\\\"id\\\":\\\"session_123\\\",\\\"query\\\":\\\"sensitive search query\\\",\\\"url\\\":\\\"https://example.com\\\",\\\"status\\\":\\\"completed\\\"}]}\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\sensitive-data-exposure.test.ts:350:34)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not expose internal configuration in scraping API",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\sensitive-data-exposure.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1408.8147,
+      "endTime": 2889.0078,
+      "duration": 15900,
+      "memoryUsage": {
+        "heapUsed": 89486474.4,
+        "heapTotal": 107383769.28,
+        "external": 8948647.440000001,
+        "rss": 134229711.60000002
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1789729488,
+      "averageTestDuration": 795,
+      "totalExecutionTime": 15900
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

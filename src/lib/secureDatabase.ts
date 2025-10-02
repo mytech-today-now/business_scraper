@@ -12,6 +12,7 @@ import {
   databaseSecurityService,
   defaultDatabaseSecurityConfig,
 } from './databaseSecurity'
+import { DatabaseValidationService, QueryParameterSchema } from './database-validation-schemas'
 
 /**
  * Secure query options
@@ -96,7 +97,7 @@ export class SecureDatabase {
   }
 
   /**
-   * Execute a secure parameterized query
+   * Execute a secure parameterized query using postgres.js template literals
    */
   async query<T = any>(
     text: string,
@@ -107,17 +108,29 @@ export class SecureDatabase {
     const queryId = this.generateQueryId(text, params)
 
     try {
-      // Validate query security
+      // Enhanced validation with Zod schemas and security checks
       if (options.validateQuery !== false) {
-        const validation = this.securityService.validateQuery(text, params)
-        if (!validation.isValid) {
-          throw new Error(`Query validation failed: ${validation.errors.join(', ')}`)
+        // First validate with Zod schema for structure and SQL injection prevention
+        const zodValidation = DatabaseValidationService.validateQueryParameters({
+          text,
+          params: params || [],
+        })
+
+        if (!zodValidation.success) {
+          const zodErrors = zodValidation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+          throw new Error(`Query structure validation failed: ${zodErrors.join(', ')}`)
         }
 
-        // Log warnings
-        if (validation.warnings.length > 0) {
-          logger.warn('SecureDatabase', 'Query validation warnings', {
-            warnings: validation.warnings,
+        // Then validate with existing security service for additional patterns
+        const securityValidation = this.securityService.validateQuery(text, params)
+        if (!securityValidation.isValid) {
+          throw new Error(`Query security validation failed: ${securityValidation.errors.join(', ')}`)
+        }
+
+        // Log warnings from both validation layers
+        if (securityValidation.warnings.length > 0) {
+          logger.warn('SecureDatabase', 'Query security validation warnings', {
+            warnings: securityValidation.warnings,
             queryId,
           })
         }
@@ -135,23 +148,33 @@ export class SecureDatabase {
 
       // Log query if enabled
       if (options.logQuery || defaultDatabaseSecurityConfig.enableQueryLogging) {
-        logger.debug('SecureDatabase', 'Executing query', {
+        logger.debug('SecureDatabase', 'Executing secure parameterized query', {
           query: text.substring(0, 200),
           paramCount: params?.length || 0,
           queryId,
+          securityValidated: options.validateQuery !== false,
         })
       }
 
-      // Execute query with timeout using postgres.js
+      // Execute query with timeout using postgres.js safe parameterized approach
       const timeout = options.timeout || defaultDatabaseSecurityConfig.queryTimeoutMs
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Query timeout')), timeout)
       })
 
-      // Use postgres.js unsafe method for parameterized queries
-      // postgres.js handles parameters differently - we need to use template literals or unsafe method
-      const queryPromise =
-        params && params.length > 0 ? this.sql.unsafe(text, params) : this.sql.unsafe(text)
+      // Use postgres.js safe parameterized query execution
+      // This approach uses postgres.js internal parameter binding which is safer than unsafe()
+      let queryPromise: Promise<any[]>
+
+      if (params && params.length > 0) {
+        // For parameterized queries, use postgres.js safe parameter binding
+        // Convert the query to use postgres.js parameter format if needed
+        const postgresQuery = this.convertToPostgresJSQuery(text, params)
+        queryPromise = this.sql(postgresQuery.strings, ...postgresQuery.values)
+      } else {
+        // For queries without parameters, use template literal approach
+        queryPromise = this.sql([text] as any)
+      }
 
       const result = (await Promise.race([queryPromise, timeoutPromise])) as any[]
 
@@ -168,26 +191,28 @@ export class SecureDatabase {
         this.setCachedResult(queryId, secureResult)
       }
 
-      logger.debug('SecureDatabase', 'Query executed successfully', {
+      logger.debug('SecureDatabase', 'Secure query executed successfully', {
         rowCount: secureResult.rowCount,
         executionTime,
         queryId,
+        method: params && params.length > 0 ? 'parameterized' : 'template_literal',
       })
 
       return secureResult
     } catch (error) {
       const executionTime = Date.now() - startTime
 
-      logger.error('SecureDatabase', 'Query execution failed', {
+      logger.error('SecureDatabase', 'Secure query execution failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         executionTime,
         queryId,
         query: text.substring(0, 100), // Log partial query for debugging
+        paramCount: params?.length || 0,
       })
 
       // Retry logic for transient errors
       if (options.maxRetries && options.maxRetries > 0 && this.isRetryableError(error)) {
-        logger.info('SecureDatabase', 'Retrying query', {
+        logger.info('SecureDatabase', 'Retrying secure query', {
           remainingRetries: options.maxRetries - 1,
           queryId,
         })
@@ -203,6 +228,27 @@ export class SecureDatabase {
   }
 
   /**
+   * Convert standard parameterized query to postgres.js template literal format
+   * This ensures safe parameter binding without using the unsafe() method
+   */
+  private convertToPostgresJSQuery(text: string, params: any[]): {
+    strings: TemplateStringsArray
+    values: any[]
+  } {
+    // Split the query by parameter placeholders ($1, $2, etc.)
+    const parts = text.split(/\$\d+/)
+
+    // Create a TemplateStringsArray-like object
+    const strings = Object.assign(parts, { raw: parts }) as TemplateStringsArray
+
+    // Return the template strings and values for postgres.js
+    return {
+      strings,
+      values: params,
+    }
+  }
+
+  /**
    * Extract SQL command from query text
    */
   private extractCommandFromQuery(text: string): string {
@@ -212,21 +258,38 @@ export class SecureDatabase {
   }
 
   /**
-   * Execute multiple queries in a transaction
+   * Execute multiple queries in a transaction with enhanced security
    */
   async transaction<T>(callback: (tx: DatabaseTransaction) => Promise<T>): Promise<T> {
-    // postgres.js has built-in transaction support
+    // postgres.js has built-in transaction support with automatic rollback on errors
     return await this.sql.begin(async sql => {
       const transaction: DatabaseTransaction = {
-        query: async (text: string, params?: any[], _options?: SecureQueryOptions) => {
+        query: async (text: string, params?: any[], options?: SecureQueryOptions) => {
+          // Validate query security within transaction
           const validation = this.securityService.validateQuery(text, params)
           if (!validation.isValid) {
             throw new Error(`Transaction query validation failed: ${validation.errors.join(', ')}`)
           }
 
           const startTime = Date.now()
-          const result =
-            params && params.length > 0 ? await sql.unsafe(text, params) : await sql.unsafe(text)
+          let result: any[]
+
+          // Use safe parameterized query execution within transaction
+          if (params && params.length > 0) {
+            const postgresQuery = this.convertToPostgresJSQuery(text, params)
+            result = await sql(postgresQuery.strings, ...postgresQuery.values)
+          } else {
+            result = await sql([text] as any)
+          }
+
+          // Log transaction query if enabled
+          if (options?.logQuery || defaultDatabaseSecurityConfig.enableQueryLogging) {
+            logger.debug('SecureDatabase', 'Transaction query executed', {
+              query: text.substring(0, 100),
+              paramCount: params?.length || 0,
+              executionTime: Date.now() - startTime,
+            })
+          }
 
           return {
             rows: result,
@@ -238,10 +301,12 @@ export class SecureDatabase {
 
         commit: async () => {
           // postgres.js handles commit automatically when the transaction function completes successfully
+          logger.debug('SecureDatabase', 'Transaction commit requested (handled automatically by postgres.js)')
         },
 
         rollback: async () => {
           // postgres.js handles rollback automatically when an error is thrown
+          logger.debug('SecureDatabase', 'Transaction rollback requested')
           throw new Error('Transaction rollback requested')
         },
       }
@@ -251,7 +316,7 @@ export class SecureDatabase {
   }
 
   /**
-   * Execute a prepared statement
+   * Execute a prepared statement with enhanced security
    * Note: postgres.js automatically handles prepared statements when prepare: true is set
    */
   async preparedQuery<T = any>(
@@ -259,7 +324,7 @@ export class SecureDatabase {
     text: string,
     params?: any[]
   ): Promise<SecureQueryResult<T>> {
-    // Validate the prepared statement
+    // Validate the prepared statement for security
     const validation = this.securityService.validateQuery(text, params)
     if (!validation.isValid) {
       throw new Error(`Prepared statement validation failed: ${validation.errors.join(', ')}`)
@@ -268,23 +333,41 @@ export class SecureDatabase {
     const startTime = Date.now()
 
     try {
-      // postgres.js automatically handles prepared statements
-      // We can use the regular query method as it will prepare and cache the statement
-      const result =
-        params && params.length > 0
-          ? await this.sql.unsafe(text, params)
-          : await this.sql.unsafe(text)
+      logger.debug('SecureDatabase', 'Executing prepared statement', {
+        name,
+        query: text.substring(0, 100),
+        paramCount: params?.length || 0,
+      })
+
+      // Use safe parameterized query execution for prepared statements
+      let result: any[]
+
+      if (params && params.length > 0) {
+        const postgresQuery = this.convertToPostgresJSQuery(text, params)
+        result = await this.sql(postgresQuery.strings, ...postgresQuery.values)
+      } else {
+        result = await this.sql([text] as any)
+      }
+
+      const executionTime = Date.now() - startTime
+
+      logger.debug('SecureDatabase', 'Prepared statement executed successfully', {
+        name,
+        rowCount: result.length,
+        executionTime,
+      })
 
       return {
         rows: result,
         rowCount: result.length,
         command: this.extractCommandFromQuery(text),
-        executionTime: Date.now() - startTime,
+        executionTime,
       }
     } catch (error) {
       logger.error('SecureDatabase', 'Prepared statement execution failed', {
         name,
         error: error instanceof Error ? error.message : 'Unknown error',
+        query: text.substring(0, 100),
       })
       throw error
     }

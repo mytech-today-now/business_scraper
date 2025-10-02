@@ -33,6 +33,11 @@ export interface SecurityTokenErrorDetails {
   retryCount?: number
   timeoutDuration?: number
   networkDetails?: NetworkErrorDetails
+  method?: string
+  timestamp?: number
+  status?: number
+  headers?: Record<string, any>
+  errorType?: string
 }
 
 export interface ComponentErrorDetails {

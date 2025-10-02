@@ -267,7 +267,12 @@ describe('CSRF Token Fix Validation', () => {
 
       // Verify headers contain CSRF token
       const lastCall = mockFetch.mock.calls[mockFetch.mock.calls.length - 1]
-      const headers = lastCall[1].headers
+      expect(lastCall).toBeDefined()
+
+      const requestInit = lastCall?.[1]
+      expect(requestInit).toBeDefined()
+
+      const headers = new Headers(requestInit?.headers)
       expect(headers.get('X-CSRF-Token')).toBe('submit-token')
       expect(headers.get('Content-Type')).toBe('application/json')
     })

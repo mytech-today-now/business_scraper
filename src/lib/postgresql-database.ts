@@ -9,6 +9,15 @@ import { logger } from '@/utils/logger'
 import { SecureDatabase } from './secureDatabase'
 import { metrics } from '@/lib/metrics'
 import { withDatabasePerformanceTracking } from '@/middleware/performanceMiddleware'
+import {
+  DatabaseValidationService,
+  CampaignInputSchema,
+  BusinessInputSchema,
+  SessionInputSchema,
+  CampaignFiltersSchema,
+  BusinessFiltersSchema,
+  SessionFiltersSchema
+} from './database-validation-schemas'
 
 export class PostgreSQLDatabase implements DatabaseInterface {
   private secureDb: SecureDatabase
@@ -175,45 +184,96 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   }
 
   async updateCampaign(id: string, updates: any): Promise<void> {
-    const setClause = []
-    const values = []
+    try {
+      // Validate campaign ID
+      const idValidation = DatabaseValidationService.validateQueryParameters({
+        text: 'SELECT 1',
+        params: [id],
+      })
+      if (!idValidation.success) {
+        throw new Error('Invalid campaign ID format')
+      }
+
+      // Validate update data structure
+      const updateValidation = CampaignInputSchema.partial().safeParse(updates)
+      if (!updateValidation.success) {
+        const errors = updateValidation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+        throw new Error(`Invalid campaign update data: ${errors.join(', ')}`)
+      }
+
+      // Build secure update query
+      const queryBuilder = this.buildSecureCampaignUpdateQuery(id, updates)
+
+      if (queryBuilder.params.length === 1) {
+        // Only ID parameter means no updates to apply
+        return
+      }
+
+      await this.query(queryBuilder.query, queryBuilder.params)
+      logger.info('PostgreSQL', `Updated campaign: ${id}`, {
+        updatedFields: Object.keys(updates),
+        paramCount: queryBuilder.params.length,
+      })
+    } catch (error) {
+      logger.error('PostgreSQL', 'Failed to update campaign', error)
+      throw error
+    }
+  }
+
+  /**
+   * Build secure parameterized query for campaign updates
+   * Uses explicit parameter binding and field validation
+   */
+  private buildSecureCampaignUpdateQuery(id: string, updates: any): {
+    query: string
+    params: any[]
+  } {
+    const setClause: string[] = []
+    const params: any[] = []
     let paramIndex = 1
 
-    // Build dynamic SET clause
-    for (const [key, value] of Object.entries(updates)) {
-      if (value !== undefined) {
-        const dbKey =
-          key === 'searchRadius'
-            ? 'search_radius'
-            : key === 'searchDepth'
-              ? 'search_depth'
-              : key === 'pagesPerSite'
-                ? 'pages_per_site'
-                : key === 'zipCode'
-                  ? 'zip_code'
-                  : key
+    // Define allowed field mappings to prevent field injection
+    const allowedFields: Record<string, string> = {
+      name: 'name',
+      description: 'description',
+      industries: 'industry', // Note: may need array handling
+      zipCode: 'zip_code',
+      searchRadius: 'search_radius',
+      searchDepth: 'search_depth',
+      pagesPerSite: 'pages_per_site',
+      status: 'status',
+      parameters: 'parameters',
+    }
 
-        setClause.push(`${dbKey} = $${paramIndex}`)
-        values.push(key === 'parameters' ? JSON.stringify(value) : value)
+    // Build SET clause with explicit parameter binding
+    for (const [key, value] of Object.entries(updates)) {
+      if (value !== undefined && allowedFields[key]) {
+        const dbField = allowedFields[key]
+        setClause.push(`${dbField} = $${paramIndex}`)
+
+        // Handle special field types
+        if (key === 'parameters' || key === 'industries') {
+          params.push(JSON.stringify(value))
+        } else {
+          params.push(value)
+        }
         paramIndex++
       }
     }
 
-    if (setClause.length === 0) {
-      return // Nothing to update
+    // Add updated_at timestamp
+    if (setClause.length > 0) {
+      setClause.push('updated_at = CURRENT_TIMESTAMP')
     }
 
-    setClause.push(`updated_at = CURRENT_TIMESTAMP`)
-    values.push(id)
+    // Add ID parameter at the end
+    params.push(id)
 
     const query = `UPDATE campaigns SET ${setClause.join(', ')} WHERE id = $${paramIndex}`
 
-    try {
-      await this.query(query, values)
-      logger.info('PostgreSQL', `Updated campaign: ${id}`)
-    } catch (error) {
-      logger.error('PostgreSQL', 'Failed to update campaign', error)
-      throw error
+    return {
+      query,
+      params,
     }
   }
 
@@ -427,34 +487,30 @@ export class PostgreSQLDatabase implements DatabaseInterface {
   }
 
   async listBusinesses(campaignId?: string, filters?: any): Promise<any[]> {
-    let query = 'SELECT * FROM businesses'
-    const values = []
-    const conditions = []
-
-    if (campaignId) {
-      conditions.push(`campaign_id = $${conditions.length + 1}`)
-      values.push(campaignId)
-    }
-
-    if (filters) {
-      if (filters.industry) {
-        conditions.push(`industry = $${conditions.length + 1}`)
-        values.push(filters.industry)
-      }
-      if (filters.minConfidenceScore) {
-        conditions.push(`confidence_score >= $${conditions.length + 1}`)
-        values.push(filters.minConfidenceScore)
-      }
-    }
-
-    if (conditions.length > 0) {
-      query += ` WHERE ${conditions.join(' AND ')}`
-    }
-
-    query += ' ORDER BY scraped_at DESC'
-
     try {
-      const result = await this.query(query, values)
+      // Validate inputs with Zod schemas
+      if (campaignId) {
+        const uuidValidation = DatabaseValidationService.validateQueryParameters({
+          text: 'SELECT 1',
+          params: [campaignId],
+        })
+        if (!uuidValidation.success) {
+          throw new Error('Invalid campaign ID format')
+        }
+      }
+
+      if (filters) {
+        const filterValidation = BusinessFiltersSchema.safeParse(filters)
+        if (!filterValidation.success) {
+          const errors = filterValidation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+          throw new Error(`Invalid filters: ${errors.join(', ')}`)
+        }
+      }
+
+      // Build secure parameterized query
+      const queryBuilder = this.buildSecureBusinessQuery(campaignId, filters)
+
+      const result = await this.query(queryBuilder.query, queryBuilder.params)
       return result.rows.map((row: any) => ({
         id: row.id,
         campaignId: row.campaign_id,
@@ -480,6 +536,88 @@ export class PostgreSQLDatabase implements DatabaseInterface {
     } catch (error) {
       logger.error('PostgreSQL', 'Failed to list businesses', error)
       return []
+    }
+  }
+
+  /**
+   * Build secure parameterized query for business listing
+   * Uses explicit parameter binding to prevent SQL injection
+   */
+  private buildSecureBusinessQuery(campaignId?: string, filters?: any): {
+    query: string
+    params: any[]
+  } {
+    const baseQuery = 'SELECT * FROM businesses'
+    const conditions: string[] = []
+    const params: any[] = []
+    let paramIndex = 1
+
+    // Add campaign ID filter with explicit parameter binding
+    if (campaignId) {
+      conditions.push(`campaign_id = $${paramIndex}`)
+      params.push(campaignId)
+      paramIndex++
+    }
+
+    // Add filters with explicit parameter binding
+    if (filters) {
+      if (filters.industry) {
+        conditions.push(`industry = $${paramIndex}`)
+        params.push(filters.industry)
+        paramIndex++
+      }
+
+      if (filters.minConfidenceScore !== undefined) {
+        conditions.push(`confidence_score >= $${paramIndex}`)
+        params.push(filters.minConfidenceScore)
+        paramIndex++
+      }
+
+      if (filters.hasEmail !== undefined) {
+        if (filters.hasEmail) {
+          conditions.push('email IS NOT NULL AND email != \'\'')
+        } else {
+          conditions.push('(email IS NULL OR email = \'\')')
+        }
+      }
+
+      if (filters.hasPhone !== undefined) {
+        if (filters.hasPhone) {
+          conditions.push('phone IS NOT NULL AND phone != \'\'')
+        } else {
+          conditions.push('(phone IS NULL OR phone = \'\')')
+        }
+      }
+
+      if (filters.zipCode) {
+        conditions.push(`address::text ILIKE $${paramIndex}`)
+        params.push(`%${filters.zipCode}%`)
+        paramIndex++
+      }
+
+      if (filters.createdAfter) {
+        conditions.push(`created_at >= $${paramIndex}`)
+        params.push(filters.createdAfter)
+        paramIndex++
+      }
+
+      if (filters.createdBefore) {
+        conditions.push(`created_at <= $${paramIndex}`)
+        params.push(filters.createdBefore)
+        paramIndex++
+      }
+    }
+
+    // Construct final query with WHERE clause if conditions exist
+    let finalQuery = baseQuery
+    if (conditions.length > 0) {
+      finalQuery += ` WHERE ${conditions.join(' AND ')}`
+    }
+    finalQuery += ' ORDER BY scraped_at DESC'
+
+    return {
+      query: finalQuery,
+      params,
     }
   }
 

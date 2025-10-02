@@ -15,6 +15,10 @@ import { withApiSecurity } from '@/lib/api-security'
 import { withValidation } from '@/lib/validation-middleware'
 import { getClientIP } from '@/lib/security'
 import { BusinessRecord } from '@/types/business'
+import { createSecureErrorResponse, ErrorContext } from '@/lib/error-handling'
+import { dataClassificationService } from '@/lib/data-classification'
+import { piiDetectionService } from '@/lib/pii-detection'
+import { sanitizeErrorMessage, createSecureApiResponse } from '@/lib/response-sanitization'
 
 /**
  * Interface for data management request data
@@ -189,14 +193,18 @@ const dataManagementHandler = withApiSecurity(
             return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
         }
       } catch (error) {
-        logger.error('DataManagementAPI', 'Request failed', error)
-        return NextResponse.json(
-          {
-            error: 'Internal server error',
-            message: error instanceof Error ? error.message : 'Unknown error',
-          },
-          { status: 500 }
-        )
+        const errorContext: ErrorContext = {
+          endpoint: '/api/data-management',
+          method: 'POST',
+          ip,
+          userAgent: request.headers.get('user-agent') || undefined,
+        }
+
+        return createSecureErrorResponse(error, errorContext, {
+          customMessage: sanitizeErrorMessage(error, 'Data Management Operation'),
+          statusCode: 500,
+          sanitizeResponse: true,
+        })
       }
     },
     {
@@ -348,24 +356,53 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const validationStats = await (dataValidationPipeline as any).getStatistics()
     const duplicateStats = await (duplicateDetectionSystem as any).getStatistics()
 
-    return NextResponse.json({
-      success: true,
-      statistics: {
-        cleanup: cleanupStats,
-        retention: retentionPolicies,
-        validation: validationStats,
-        duplicates: duplicateStats,
+    // Enhanced: Sanitize statistics to remove ALL sensitive internal data
+    const sanitizedStats = {
+      cleanup: {
+        // Enhanced: Only expose minimal, safe aggregate counts
+        recordsProcessed: Math.min(cleanupStats.incompleteRecords || 0, 1000), // Cap at 1000 for privacy
+        qualityIssuesFound: Math.min(cleanupStats.lowConfidenceRecords || 0, 100), // Cap for privacy
+        // Enhanced: Don't expose ANY specific counts, email data, or internal metrics
       },
+      retention: {
+        // Enhanced: Only expose minimal policy information
+        hasActivePolicies: (retentionPolicies?.filter((p: any) => p.enabled)?.length || 0) > 0,
+        // Enhanced: Don't expose actual counts or policy details
+      },
+      validation: {
+        // Enhanced: Only expose minimal validation metrics
+        hasValidationData: (validationStats?.totalValidated || 0) > 0,
+        qualityTrend: validationStats?.averageQuality > 0.7 ? 'good' : 'needs_improvement',
+        // Enhanced: Don't expose actual numbers or detailed metrics
+      },
+      duplicates: {
+        // Enhanced: Only expose minimal duplicate information
+        duplicateCheckEnabled: true,
+        // Enhanced: Don't expose actual counts or detection details
+      },
+    }
+
+    // Enhanced: Use secure API response with comprehensive sanitization
+    return createSecureApiResponse({
+      success: true,
+      statistics: sanitizedStats,
       timestamp: new Date().toISOString(),
+    }, 200, {
+      removeInternalConfig: true,
+      context: 'Data Management Statistics'
     })
   } catch (error) {
-    logger.error('DataManagementAPI', 'GET request failed', error)
-    return NextResponse.json(
-      {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    )
+    const errorContext: ErrorContext = {
+      endpoint: '/api/data-management',
+      method: 'GET',
+      ip,
+      userAgent: request.headers.get('user-agent') || undefined,
+    }
+
+    return createSecureErrorResponse(error, errorContext, {
+      customMessage: sanitizeErrorMessage(error, 'Data Management Statistics'),
+      statusCode: 500,
+      sanitizeResponse: true,
+    })
   }
 }

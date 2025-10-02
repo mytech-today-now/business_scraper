@@ -7,7 +7,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession, getClientIP, sanitizeInput, validateInput } from '@/lib/security'
 import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { csrfProtectionService } from '@/lib/csrfProtection'
+import { enhancedInputValidationService } from '@/lib/enhanced-input-validation'
+import { enhancedSecurityMonitoringService } from '@/lib/enhanced-security-monitoring'
+import { hardenedSecurityConfig } from '@/lib/hardened-security-config'
 import { logger } from '@/utils/logger'
+
+/**
+ * Generate a unique request ID for tracking
+ */
+function generateRequestId(): string {
+  return 'req_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9)
+}
 
 export interface SecurityOptions {
   requireAuth?: boolean
@@ -15,6 +25,9 @@ export interface SecurityOptions {
   rateLimit?: 'general' | 'scraping' | 'auth' | 'upload' | 'export'
   validateInput?: boolean
   logRequests?: boolean
+  enableThreatDetection?: boolean
+  enableEnhancedValidation?: boolean
+  blockSuspiciousRequests?: boolean
 }
 
 export interface ValidationRule {
@@ -41,11 +54,40 @@ export function withApiSecurity(
       rateLimit = 'general',
       validateInput = true,
       logRequests = true,
+      enableThreatDetection = true,
+      enableEnhancedValidation = true,
+      blockSuspiciousRequests = true,
     } = options
 
     const ip = getClientIP(request)
     const method = request.method
     const pathname = request.nextUrl.pathname
+
+    // Enhanced threat detection
+    if (enableThreatDetection) {
+      const threats = enhancedSecurityMonitoringService.analyzeRequest(request)
+      const criticalThreats = threats.filter(threat =>
+        threat.severity === 'critical' || threat.severity === 'high'
+      )
+
+      if (criticalThreats.length > 0 && blockSuspiciousRequests) {
+        enhancedSecurityMonitoringService.logSecurityEvent(
+          'api_threat_blocked',
+          'critical',
+          request,
+          { threats: criticalThreats },
+          true
+        )
+
+        return NextResponse.json(
+          {
+            error: 'Request blocked due to security policy violation',
+            requestId: generateRequestId()
+          },
+          { status: 403 }
+        )
+      }
+    }
 
     try {
       // Log request if enabled

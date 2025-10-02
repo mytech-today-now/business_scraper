@@ -33,6 +33,29 @@ export const createMockBusinessRecord = (overrides: Partial<BusinessRecord> = {}
   ...overrides
 })
 
+// Helper to create minimal valid BusinessRecord for tests that don't need full data
+export const createMinimalBusinessRecord = (overrides: Partial<BusinessRecord> = {}): BusinessRecord => ({
+  id: overrides.id || `minimal-${Date.now()}`,
+  businessName: overrides.businessName || 'Test Business',
+  email: overrides.email || ['test@business.com'],
+  phone: overrides.phone,
+  websiteUrl: overrides.websiteUrl || 'https://testbusiness.com',
+  address: overrides.address || {
+    street: '123 Main St',
+    city: 'Test City',
+    state: 'CA',
+    zipCode: '12345'
+  },
+  industry: overrides.industry || 'Technology',
+  scrapedAt: overrides.scrapedAt || new Date(),
+  ...overrides
+})
+
+// Helper to convert partial business data to full BusinessRecord
+export const toBusinessRecord = (partialData: Partial<BusinessRecord> & { businessName: string }): BusinessRecord => {
+  return createMinimalBusinessRecord(partialData)
+}
+
 export const createMockScrapingConfig = (overrides: Partial<ScrapingConfig> = {}): ScrapingConfig => ({
   industries: ['Technology', 'Healthcare'],
   zipCode: '12345',
@@ -139,6 +162,29 @@ export function createMockApiResponse<T>(data: T, status: number = 200) {
     text: jest.fn().mockResolvedValue(JSON.stringify(data)),
     headers: new Headers(),
   }
+}
+
+export function createMockSearchResults(count: number = 5): BusinessRecord[] {
+  return Array.from({ length: count }, (_, index) =>
+    createMockBusinessRecord({
+      id: `search-result-${index + 1}`,
+      businessName: `Search Result Business ${index + 1}`,
+      email: [`result${index + 1}@business.com`],
+      phone: `(555) ${String(index + 1).padStart(3, '0')}-${String(index + 1000).padStart(4, '0')}`,
+      websiteUrl: `https://business${index + 1}.com`,
+      industry: index % 2 === 0 ? 'Technology' : 'Healthcare',
+    })
+  )
+}
+
+export function createMockFetch(defaultResponse?: any): jest.MockedFunction<typeof fetch> {
+  const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
+
+  if (defaultResponse) {
+    mockFetch.mockResolvedValue(createMockApiResponse(defaultResponse) as Response)
+  }
+
+  return mockFetch
 }
 
 // File system mocks

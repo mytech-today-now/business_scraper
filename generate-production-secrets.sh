@@ -2,6 +2,7 @@
 
 # Production Secrets Generator
 # Generates secure secrets for Docker production deployment
+# Enhanced with P0 Critical Security Configuration
 
 echo "🔐 Production Secrets Generator"
 echo "==============================="
@@ -52,6 +53,30 @@ echo "GRAFANA_PASSWORD=$(generate_password 16)"
 
 echo -e "\n${YELLOW}# CSP Nonce${NC}"
 echo "NEXT_PUBLIC_CSP_NONCE=$(generate_random 16)"
+
+echo -e "\n${YELLOW}# Enhanced Security Configuration (P0 - Critical)${NC}"
+echo "ENCRYPTION_MASTER_KEY=$(generate_random 64)"
+echo "DATABASE_ENCRYPTION_KEY=$(generate_random 64)"
+echo "API_RATE_LIMIT_SECRET=$(generate_random 32)"
+echo "CSRF_SECRET=$(generate_random 32)"
+
+echo -e "\n${YELLOW}# Security Monitoring${NC}"
+echo "SECURITY_MONITORING_ENABLED=true"
+echo "THREAT_DETECTION_ENABLED=true"
+echo "AUDIT_LOGGING_ENABLED=true"
+echo "COMPLIANCE_MODE=SOC2_TYPE_II"
+
+echo -e "\n${YELLOW}# Enhanced Rate Limiting${NC}"
+echo "RATE_LIMIT_WINDOW_MS=900000"
+echo "RATE_LIMIT_MAX_REQUESTS=100"
+echo "BURST_RATE_LIMIT_MAX=20"
+echo "BURST_RATE_LIMIT_WINDOW=60000"
+
+echo -e "\n${YELLOW}# Input Validation Security${NC}"
+echo "MAX_INPUT_LENGTH=10000"
+echo "ENABLE_DOM_PURIFY=true"
+echo "ENABLE_VALIDATOR=true"
+echo "STRICT_VALIDATION_MODE=true"
 
 echo -e "\n${GREEN}✅ Secrets generated successfully!${NC}"
 echo -e "\n${YELLOW}⚠️  IMPORTANT SECURITY NOTES:${NC}"

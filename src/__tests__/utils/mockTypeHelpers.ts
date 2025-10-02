@@ -425,24 +425,24 @@ export function createEnvMock(envVars: Record<string, string>) {
 /**
  * Helper to safely mock NODE_ENV and other read-only environment variables
  */
-export function mockNodeEnv(env: string) {
+export function mockNodeEnv(env: string): () => void {
   const originalEnv = process.env.NODE_ENV
 
-  beforeEach(() => {
-    Object.defineProperty(process.env, 'NODE_ENV', {
-      value: env,
-      writable: true,
-      configurable: true,
-    })
+  // Set the environment immediately
+  Object.defineProperty(process.env, 'NODE_ENV', {
+    value: env,
+    writable: true,
+    configurable: true,
   })
 
-  afterEach(() => {
+  // Return a restore function
+  return () => {
     Object.defineProperty(process.env, 'NODE_ENV', {
       value: originalEnv,
       writable: true,
       configurable: true,
     })
-  })
+  }
 }
 
 /**

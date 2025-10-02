@@ -1,0 +1,590 @@
+{
+  "metadata": {
+    "reportId": "report-1759363245116-t7bxelr8t",
+    "generatedAt": "2025-10-02T00:00:46.475Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 6,
+    "successRate": 0,
+    "criticalIssues": 5,
+    "keyMetrics": {
+      "averageDuration": 654,
+      "memoryPeak": 81551184,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 6,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 6,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should generate a CSRF token::1759363246435",
+          "testName": "should generate a CSRF token",
+          "testDescription": "should generate a CSRF token",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81422144,
+            "heapTotal": 118181888,
+            "external": 4572667,
+            "rss": 173621248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeDefined\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBeDefined (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:53:23)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeDefined\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBeDefined (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:53:23)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate a CSRF token",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeDefined\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should validate a correct CSRF token::1759363246442",
+          "testName": "should validate a correct CSRF token",
+          "testDescription": "should validate a correct CSRF token",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81467824,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173637632
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:71:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:71:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate a correct CSRF token",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'token')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should reject invalid CSRF tokens::1759363246450",
+          "testName": "should reject invalid CSRF tokens",
+          "testDescription": "should reject invalid CSRF tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81493808,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isValid')\n    at Object.isValid (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:90:19)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isValid')\n    at Object.isValid (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:90:19)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reject invalid CSRF tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isValid')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should reject requests from invalid origins::1759363246455",
+          "testName": "should reject requests from invalid origins",
+          "testDescription": "should reject requests from invalid origins",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81512608,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:105:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:105:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reject requests from invalid origins",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'token')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should handle token rotation::1759363246464",
+          "testName": "should handle token rotation",
+          "testDescription": "should handle token rotation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81531424,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function\n    at Object.rotateTokenOnAuthentication (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:114:44)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function\n    at Object.rotateTokenOnAuthentication (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:114:44)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle token rotation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should clean up expired tokens::1759363246468",
+          "testName": "should clean up expired tokens",
+          "testDescription": "should clean up expired tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81551184,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function\n    at Object.getTokenCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:125:48)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function\n    at Object.getTokenCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:125:48)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clean up expired tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should validate a correct CSRF token::1759363246442",
+          "testName": "should validate a correct CSRF token",
+          "testDescription": "should validate a correct CSRF token",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81467824,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173637632
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:71:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:71:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate a correct CSRF token",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'token')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should reject invalid CSRF tokens::1759363246450",
+          "testName": "should reject invalid CSRF tokens",
+          "testDescription": "should reject invalid CSRF tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81493808,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isValid')\n    at Object.isValid (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:90:19)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isValid')\n    at Object.isValid (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:90:19)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reject invalid CSRF tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isValid')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should reject requests from invalid origins::1759363246455",
+          "testName": "should reject requests from invalid origins",
+          "testDescription": "should reject requests from invalid origins",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81512608,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:105:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:105:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reject requests from invalid origins",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'token')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should handle token rotation::1759363246464",
+          "testName": "should handle token rotation",
+          "testDescription": "should handle token rotation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81531424,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function\n    at Object.rotateTokenOnAuthentication (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:114:44)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function\n    at Object.rotateTokenOnAuthentication (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:114:44)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle token rotation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Csrf-basic-test::should clean up expired tokens::1759363246468",
+          "testName": "should clean up expired tokens",
+          "testDescription": "should clean up expired tokens",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "relativePath": "src\\__tests__\\security\\csrf-basic-test.test.ts",
+          "suite": "Csrf-basic-test",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759363245744,
+          "endTime": 1759363246398,
+          "duration": 654,
+          "memoryUsage": {
+            "heapUsed": 81551184,
+            "heapTotal": 118181888,
+            "external": 4572542,
+            "rss": 173645824
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function\n    at Object.getTokenCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:125:48)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function\n    at Object.getTokenCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:125:48)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clean up expired tokens",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1389.8765,
+      "endTime": 2748.9521,
+      "duration": 3924,
+      "memoryUsage": {
+        "heapUsed": 81496498.66666667,
+        "heapTotal": 97795798.4,
+        "external": 8149649.866666667,
+        "rss": 122244748
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 488978992,
+      "averageTestDuration": 654,
+      "totalExecutionTime": 3924
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "5 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should validate a correct CSRF token: TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:71:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should reject invalid CSRF tokens: TypeError: Cannot read properties of undefined (reading 'isValid')\n    at Object.isValid (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:90:19)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should reject requests from invalid origins: TypeError: Cannot read properties of undefined (reading 'token')\n    at Object.token (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:105:86)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should handle token rotation: TypeError: _csrfProtection.csrfProtectionService.rotateTokenOnAuthentication is not a function\n    at Object.rotateTokenOnAuthentication (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:114:44)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should clean up expired tokens: TypeError: _csrfProtection.csrfProtectionService.getTokenCount is not a function\n    at Object.getTokenCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\csrf-basic-test.test.ts:125:48)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should validate a correct CSRF token",
+          "should reject invalid CSRF tokens",
+          "should reject requests from invalid origins",
+          "should handle token rotation",
+          "should clean up expired tokens"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

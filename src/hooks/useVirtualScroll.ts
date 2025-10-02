@@ -21,6 +21,7 @@ export interface VirtualScrollResult<T> {
   isScrolling: boolean
   startIndex: number
   endIndex: number
+  setScrollElementRef: (element: HTMLElement | null) => void
 }
 
 /**

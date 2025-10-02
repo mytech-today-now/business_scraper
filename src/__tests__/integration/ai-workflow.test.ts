@@ -344,15 +344,23 @@ describe('AI/ML Workflow Integration', () => {
 
       // Verify descending order
       for (let i = 0; i < sortedDesc.length - 1; i++) {
-        const currentScore = sortedDesc[i].leadScore?.score || 0
-        const nextScore = sortedDesc[i + 1].leadScore?.score || 0
+        const currentBusiness = sortedDesc[i]
+        const nextBusiness = sortedDesc[i + 1]
+        expect(currentBusiness).toBeDefined()
+        expect(nextBusiness).toBeDefined()
+        const currentScore = currentBusiness?.leadScore?.score || 0
+        const nextScore = nextBusiness?.leadScore?.score || 0
         expect(currentScore).toBeGreaterThanOrEqual(nextScore)
       }
 
       // Verify ascending order
       for (let i = 0; i < sortedAsc.length - 1; i++) {
-        const currentScore = sortedAsc[i].leadScore?.score || 0
-        const nextScore = sortedAsc[i + 1].leadScore?.score || 0
+        const currentBusiness = sortedAsc[i]
+        const nextBusiness = sortedAsc[i + 1]
+        expect(currentBusiness).toBeDefined()
+        expect(nextBusiness).toBeDefined()
+        const currentScore = currentBusiness?.leadScore?.score || 0
+        const nextScore = nextBusiness?.leadScore?.score || 0
         expect(currentScore).toBeLessThanOrEqual(nextScore)
       }
     })

@@ -1,6 +1,7 @@
 /**
  * Authentication API endpoints
  * Handles multi-user authentication, session management, and security
+ * Enhanced with comprehensive data sanitization and security controls
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -19,6 +20,9 @@ import { getOAuthContext } from '@/lib/oauth/oauth-middleware'
 import { logger } from '@/utils/logger'
 import { auditService } from '@/model/auditService'
 import { invalidateTemporaryCSRFToken } from '../csrf/route'
+import { createSecureErrorResponse, ErrorContext, sanitizeErrorForLogging } from '@/lib/error-handling'
+import { piiDetectionService } from '@/lib/pii-detection'
+import { sanitizeErrorMessage, sanitizeSessionData, createSecureApiResponse } from '@/lib/response-sanitization'
 
 // Legacy single user credentials (for backward compatibility)
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin'
@@ -52,12 +56,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       authenticated = false
     }
 
-    // Return session info
-    const response = NextResponse.json({
+    // Return sanitized session info (remove ALL sensitive details)
+    const sessionResponse = {
       authenticated,
-      sessionId: session.id,
+      // Enhanced: Never expose actual session ID in any environment
+      sessionId: authenticated ? '[SESSION_ACTIVE]' : '[NO_SESSION]',
       csrfToken: session.csrfToken,
       expiresAt: new Date(Date.now() + defaultSecurityConfig.sessionTimeout).toISOString(),
+    }
+
+    // Use enhanced sanitization for the response
+    const response = createSecureApiResponse(sessionResponse, 200, {
+      sanitizeSession: true,
+      context: 'Auth Session Check'
     })
 
     // Set session cookie if it's a new session or invalid session was replaced
@@ -73,8 +84,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     return response
   } catch (error) {
-    logger.error('Auth', 'Session check error', error)
-    return NextResponse.json({ authenticated: false, error: 'Session check failed' }, { status: 500 })
+    const errorContext: ErrorContext = {
+      endpoint: '/api/auth',
+      method: 'GET',
+      ip: getClientIP(request),
+      userAgent: request.headers.get('user-agent') || undefined,
+    }
+
+    return createSecureErrorResponse(error, errorContext, {
+      customMessage: sanitizeErrorMessage(error, 'Auth Session Check'),
+      statusCode: 500,
+      sanitizeResponse: true,
+    })
   }
 }
 
@@ -98,11 +119,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const username = sanitizeInput(body.username || '')
     const password = body.password || ''
 
-    // Log authentication attempt details for debugging
+    // Log authentication attempt with sanitized details
     logger.info('Auth', `Authentication attempt from IP: ${ip}`, {
-      username: username,
+      username: sanitizeErrorForLogging(username),
       hasPassword: !!password,
-      bodyKeys: Object.keys(body),
+      bodyKeys: Object.keys(body).filter(key => !['password', 'secret', 'token'].includes(key.toLowerCase())),
     })
 
     // Validate input format
@@ -127,47 +148,58 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let isValidCredentials = false
 
     try {
-      // Log authentication attempt for debugging
-      logger.info('Auth', `Authentication attempt for username: ${username}`)
-      logger.info('Auth', `ADMIN_USERNAME: ${ADMIN_USERNAME}`)
-      logger.info('Auth', `Has ADMIN_PASSWORD_HASH: ${!!ADMIN_PASSWORD_HASH}`)
-      logger.info('Auth', `Has ADMIN_PASSWORD_SALT: ${!!ADMIN_PASSWORD_SALT}`)
-      logger.info('Auth', `DEFAULT_PASSWORD: ${DEFAULT_PASSWORD}`)
+      // Secure authentication logging (no sensitive data)
+      logger.info('Auth', `Authentication attempt for user`, {
+        hasUsername: !!username,
+        hasPassword: !!password,
+        hasHashConfig: !!(ADMIN_PASSWORD_HASH && ADMIN_PASSWORD_SALT),
+        environment: process.env.NODE_ENV,
+      })
 
       if (ADMIN_PASSWORD_HASH && ADMIN_PASSWORD_SALT) {
         // Use hashed password from environment
-        logger.info('Auth', 'Using hashed password verification')
         try {
           const hashVerificationResult = await verifyPassword(password, ADMIN_PASSWORD_HASH, ADMIN_PASSWORD_SALT)
-          logger.info('Auth', `Hash verification result: ${hashVerificationResult}`)
           isValidCredentials = username === ADMIN_USERNAME && hashVerificationResult
         } catch (hashError) {
-          logger.error('Auth', 'Error during password hash verification', hashError)
+          logger.error('Auth', 'Password hash verification failed', {
+            error: sanitizeErrorForLogging(hashError instanceof Error ? hashError.message : String(hashError))
+          })
           // Continue to fallback methods
         }
       } else {
         // Use plain text password (development only)
-        logger.info('Auth', 'Using plain text password verification')
         isValidCredentials = username === ADMIN_USERNAME && password === DEFAULT_PASSWORD
 
         if (process.env.NODE_ENV === 'production') {
-          logger.error('Auth', 'Using plain text password in production is not secure!')
+          logger.error('Auth', 'Plain text password authentication in production - security risk!')
         }
       }
 
       // Additional fallback: try plain text comparison if hash fails
       if (!isValidCredentials && username === ADMIN_USERNAME) {
-        logger.info('Auth', 'Hash verification failed, trying plain text fallback')
         if (password === process.env.ADMIN_PASSWORD) {
-          logger.info('Auth', 'Plain text fallback succeeded')
           isValidCredentials = true
         }
       }
 
-      logger.info('Auth', `Final authentication result: ${isValidCredentials}`)
+      logger.info('Auth', `Authentication completed`, {
+        success: isValidCredentials,
+        method: (ADMIN_PASSWORD_HASH && ADMIN_PASSWORD_SALT) ? 'hash' : 'plaintext'
+      })
     } catch (credentialError) {
-      logger.error('Auth', 'Error during credential verification', credentialError)
-      return NextResponse.json({ error: 'Authentication system error' }, { status: 500 })
+      const errorContext: ErrorContext = {
+        endpoint: '/api/auth',
+        method: 'POST',
+        ip,
+        userAgent: request.headers.get('user-agent') || undefined,
+      }
+
+      return createSecureErrorResponse(credentialError, errorContext, {
+        customMessage: sanitizeErrorMessage(credentialError, 'Auth Credential Verification'),
+        statusCode: 500,
+        sanitizeResponse: true,
+      })
     }
 
     // Track login attempt
@@ -220,13 +252,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       // Continue with login process
     }
 
-    // Set session cookie
+    // Set session cookie with enhanced sanitization
     try {
-      const response = NextResponse.json({
+      const loginResponse = {
         success: true,
-        sessionId: session.id,
+        // Enhanced: Never expose actual session ID in any environment
+        sessionId: '[SESSION_CREATED]',
         csrfToken: session.csrfToken,
         expiresAt: new Date(Date.now() + defaultSecurityConfig.sessionTimeout).toISOString(),
+      }
+
+      // Use enhanced sanitization for the response
+      const response = createSecureApiResponse(loginResponse, 200, {
+        sanitizeSession: true,
+        context: 'Auth Login Success'
       })
 
       response.cookies.set('session-id', session.id, {
@@ -260,8 +299,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Response creation failed' }, { status: 500 })
     }
   } catch (error) {
-    logger.error('Auth', 'Login error', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    const errorContext: ErrorContext = {
+      endpoint: '/api/auth',
+      method: 'POST',
+      ip,
+      userAgent: request.headers.get('user-agent') || undefined,
+    }
+
+    return createSecureErrorResponse(error, errorContext, {
+      customMessage: sanitizeErrorMessage(error, 'Auth Request Processing'),
+      statusCode: 500,
+      sanitizeResponse: true,
+    })
   }
 }
 

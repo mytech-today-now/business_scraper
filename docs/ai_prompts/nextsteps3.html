@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript Error Fixes - AI Prompts for Next Steps</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .prompt-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .prompt-header {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .priority {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .priority.high { background: #ffebee; color: #c62828; }
+        .priority.medium { background: #fff3e0; color: #ef6c00; }
+        .priority.low { background: #e8f5e8; color: #2e7d32; }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        .prompt-content {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-todo { background: #fff3cd; color: #856404; }
+        .status-progress { background: #d1ecf1; color: #0c5460; }
+        .status-done { background: #d4edda; color: #155724; }
+        .context-info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196f3;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .file-list {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Prompts for TypeScript Error Fixes - Next Steps</h1>
+        
+        <div class="context-info">
+            <strong>Context:</strong> Business Scraper Application - TypeScript Compilation Error Fixes<br>
+            <strong>Current Status:</strong> 2,240 errors remaining (64+ fixed)<br>
+            <strong>Repository:</strong> mytech-today-now/business_scraper<br>
+            <strong>Main Issue:</strong> #244 - TypeScript Compilation Errors
+        </div>
+
+        <h2>🔥 High Priority Prompts</h2>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority high">HIGH</span>
+                Complete Issue #247 - SecurityTokenErrorDetails Interface Fix
+                <span class="status-badge status-progress">IN PROGRESS</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt1')">Copy</button>
+            <div class="prompt-content" id="prompt1">Fix the SecurityTokenErrorDetails interface in the Business Scraper application to resolve TypeScript compilation errors.
+
+TASK: Update the SecurityTokenErrorDetails interface to include missing properties that are being used in test files.
+
+CONTEXT:
+- File: src/utils/enhancedErrorLogger.ts
+- Issue: #247 on GitHub
+- Error Count: 10 TypeScript errors
+- Problem: Test files are using properties like 'method', 'timestamp', 'status', 'headers', 'errorType' that don't exist in the interface
+
+REQUIREMENTS:
+1. Add missing properties to SecurityTokenErrorDetails interface:
+   - method?: string
+   - timestamp?: number  
+   - status?: number
+   - headers?: Record<string, any>
+   - errorType?: string
+
+2. Ensure all properties are optional to maintain backward compatibility
+
+3. Update the interface while preserving existing functionality
+
+4. After fixing, close GitHub Issue #247 with documentation of the changes
+
+FILES TO MODIFY:
+- src/utils/enhancedErrorLogger.ts (lines 28-36)
+
+VERIFICATION:
+- Run TypeScript compiler to confirm errors are resolved
+- Ensure no new errors are introduced
+- Verify test files compile successfully</div>
+        </div>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority high">HIGH</span>
+                Fix Integration Test Type Errors - Issue #248
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt2')">Copy</button>
+            <div class="prompt-content" id="prompt2">Fix TypeScript compilation errors in integration test files for the Business Scraper application.
+
+TASK: Resolve undefined and unknown type errors across multiple integration test files.
+
+CONTEXT:
+- GitHub Issue: #248 (to be created)
+- Total Errors: 10 TypeScript errors
+- Error Types: Object possibly undefined, unknown types, missing mock properties
+
+FILES TO FIX:
+1. ai-workflow.test.ts (4 errors - lines 347, 348, 354, 355)
+2. crmSync.test.ts (3 errors - lines 157, 158, 259) 
+3. memory-management-integration.test.ts (2 errors - lines 153, 154)
+4. healthCheck.integration.test.ts (1 error - line 155)
+
+SOLUTIONS NEEDED:
+1. Add null/undefined checks before property access
+2. Add type assertions for unknown types (e.g., `as SyncResult`)
+3. Complete mock implementations with required properties
+4. Add proper type annotations to callback parameters
+
+EXAMPLE FIXES:
+```typescript
+// Before: Object possibly undefined
+const result = results[0]
+expect(result.score).toBeGreaterThan(0)
+
+// After: Add null checks
+const result = results[0]
+expect(result).toBeDefined()
+expect(result?.score).toBeGreaterThan(0)
+
+// Before: Unknown type
+const firstSyncResult = syncResults[0]
+
+// After: Type assertion
+const firstSyncResult = syncResults[0] as SyncResult
+expect(firstSyncResult).toBeDefined()
+```
+
+VERIFICATION:
+- All 10 TypeScript errors resolved
+- Tests pass successfully
+- No new errors introduced</div>
+        </div>
+
+        <h2>🔧 Medium Priority Prompts</h2>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority medium">MEDIUM</span>
+                Create GitHub Issues for Remaining Error Categories
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt3')">Copy</button>
+            <div class="prompt-content" id="prompt3">Create systematic GitHub Issues for the remaining TypeScript error categories in the Business Scraper application.
+
+TASK: Analyze remaining TypeScript errors and create targeted GitHub Issues for efficient batch fixing.
+
+CONTEXT:
+- Current errors: ~2,240 remaining
+- Parent Issue: #244
+- Need systematic categorization for manageable fixes
+
+ERROR CATEGORIES TO CREATE ISSUES FOR:
+
+1. **VirtualizedResultsTable Test Errors** (Priority: High)
+   - File: src/__tests__/VirtualizedResultsTable.test.tsx
+   - Issues: fireEvent.click undefined element issues
+   - Estimated errors: 15-20
+
+2. **API Route Type Safety** (Priority: High)  
+   - Files: src/__tests__/integration/api.test.ts and related
+   - Issues: Missing exports, parameter type issues
+   - Estimated errors: 25-30
+
+3. **Global Type Index Signature** (Priority: Medium)
+   - Files: Edge runtime tests
+   - Issues: typeof globalThis has no index signature
+   - Estimated errors: 50-75
+
+4. **Decorator Signature Issues** (Priority: Medium)
+   - Files: cache.test.ts and related
+   - Issues: Method decorator type mismatches
+   - Estimated errors: 20-25
+
+5. **Configuration Type Mismatches** (Priority: Low)
+   - Files: Config and schema files
+   - Issues: Missing required properties, field mappings
+   - Estimated errors: 30-40
+
+ISSUE TEMPLATE:
+- Title: [TypeScript] Fix [Category] - [Brief Description]
+- Labels: bug, typescript, [category], [priority]
+- Assignee: mytech-today-now
+- Detailed problem description with error examples
+- Solution approach
+- Files to modify
+- Acceptance criteria
+
+DELIVERABLE:
+Create 5 new GitHub Issues with comprehensive documentation for systematic error fixing.</div>
+        </div>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority medium">MEDIUM</span>
+                Run TypeScript Compiler and Update Progress
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt4')">Copy</button>
+            <div class="prompt-content" id="prompt4">Run TypeScript compilation check and update progress tracking for the Business Scraper application.
+
+TASK: Verify current error count and update GitHub Issue #244 with latest progress.
+
+COMMANDS TO RUN:
+```bash
+# Count current TypeScript errors
+npx tsc --noEmit 2>&1 | Select-String "error TS" | Measure-Object | Select-Object -ExpandProperty Count
+
+# Get detailed error breakdown (first 100 errors)
+npx tsc --noEmit 2>&1 | head -100
+
+# Save full error log for analysis
+npx tsc --noEmit > typescript-errors-current.txt 2>&1
+```
+
+PROGRESS UPDATE TEMPLATE:
+```markdown
+## Progress Update - [Date]
+
+### Current Status
+- **Previous Error Count**: 2,250
+- **Current Error Count**: [NEW_COUNT]
+- **Errors Fixed**: [DIFFERENCE]
+- **Progress**: [PERCENTAGE]% complete
+
+### Recent Fixes
+- Issue #245: useVirtualScroll Hook ✅ (6 errors)
+- Issue #246: CSRF Token Validation ✅ (5 errors)
+- Issue #247: SecurityTokenErrorDetails [STATUS] ([COUNT] errors)
+
+### Next Priority
+[List top 3 error categories by frequency]
+
+### Estimated Completion
+- Optimistic: [HOURS] hours
+- Realistic: [HOURS] hours
+```
+
+DELIVERABLE:
+- Updated error count
+- Progress comment on GitHub Issue #244
+- Identification of next highest-priority error patterns</div>
+        </div>
+
+        <h2>🔍 Analysis & Planning Prompts</h2>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority low">LOW</span>
+                Analyze Error Patterns for Batch Fixing Strategy
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt5')">Copy</button>
+            <div class="prompt-content" id="prompt5">Analyze TypeScript error patterns in the Business Scraper application to develop an efficient batch fixing strategy.
+
+TASK: Examine current TypeScript errors to identify patterns and create an optimized fixing sequence.
+
+ANALYSIS STEPS:
+
+1. **Error Frequency Analysis**
+   ```bash
+   # Get error type frequency
+   npx tsc --noEmit 2>&1 | grep "error TS" | cut -d':' -f4 | cut -d' ' -f2 | sort | uniq -c | sort -nr
+   ```
+
+2. **File Impact Analysis**
+   ```bash
+   # Get files with most errors
+   npx tsc --noEmit 2>&1 | grep "error TS" | cut -d'(' -f1 | sort | uniq -c | sort -nr | head -20
+   ```
+
+3. **Error Code Analysis**
+   - TS2532: Object is possibly 'undefined'
+   - TS2339: Property does not exist on type
+   - TS7006: Parameter implicitly has 'any' type
+   - TS2353: Object literal may only specify known properties
+   - TS18046: is of type 'unknown'
+
+PATTERN CATEGORIES:
+1. **High-Impact, Low-Effort**: Interface property additions
+2. **High-Impact, Medium-Effort**: Null check additions
+3. **Medium-Impact, Low-Effort**: Type assertions
+4. **Low-Impact, High-Effort**: Complex type refactoring
+
+DELIVERABLE:
+- Prioritized list of error patterns
+- Batch fixing strategy with effort estimates
+- Recommended fixing sequence for maximum efficiency</div>
+        </div>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority low">LOW</span>
+                Create Type Utility Helpers for Common Patterns
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt6')">Copy</button>
+            <div class="prompt-content" id="prompt6">Create TypeScript utility types and helper functions to reduce repetitive error patterns in the Business Scraper application.
+
+TASK: Develop reusable type utilities to prevent common TypeScript errors and improve code maintainability.
+
+UTILITY TYPES TO CREATE:
+
+1. **Safe Property Access**
+   ```typescript
+   // File: src/types/utils.ts
+   type SafeAccess<T, K extends keyof T> = T[K] extends undefined ? never : T[K]
+   type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+   ```
+
+2. **Mock Type Helpers**
+   ```typescript
+   // File: src/__tests__/utils/mockTypeHelpers.ts
+   type DeepPartial<T> = {
+     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+   }
+   
+   function createMockWithDefaults<T>(partial: DeepPartial<T>, defaults: T): T
+   ```
+
+3. **API Response Types**
+   ```typescript
+   // File: src/types/api.ts
+   type ApiResponse<T> = {
+     success: boolean
+     data?: T
+     error?: string
+     metadata?: Record<string, any>
+   }
+   ```
+
+4. **Test Assertion Helpers**
+   ```typescript
+   // File: src/__tests__/utils/assertions.ts
+   function assertDefined<T>(value: T | undefined | null): asserts value is T
+   function assertArray<T>(value: unknown): asserts value is T[]
+   ```
+
+IMPLEMENTATION LOCATIONS:
+- src/types/utils.ts (new file)
+- src/__tests__/utils/mockTypeHelpers.ts (enhance existing)
+- src/types/api.ts (enhance existing)
+
+BENEFITS:
+- Reduce repetitive type assertions
+- Improve test mock reliability
+- Standardize error handling patterns
+- Enable safer property access
+
+DELIVERABLE:
+- 4 new utility type files
+- Updated existing type helpers
+- Documentation for usage patterns</div>
+        </div>
+
+        <h2>📋 Completion & Documentation Prompts</h2>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority medium">MEDIUM</span>
+                Run Test Suite and Verify 98% Success Rate
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt7')">Copy</button>
+            <div class="prompt-content" id="prompt7">Run the complete test suite for the Business Scraper application and verify 98% success rate after TypeScript fixes.
+
+TASK: Execute comprehensive testing to ensure TypeScript fixes don't break functionality and achieve target success rate.
+
+TEST EXECUTION SEQUENCE:
+
+1. **TypeScript Compilation Check**
+   ```bash
+   npx tsc --noEmit
+   ```
+
+2. **Unit Tests**
+   ```bash
+   npm test -- --coverage --verbose
+   ```
+
+3. **Integration Tests**
+   ```bash
+   npm run test:integration
+   ```
+
+4. **E2E Tests** (if applicable)
+   ```bash
+   npm run test:e2e
+   ```
+
+SUCCESS CRITERIA:
+- TypeScript compilation: 0 errors
+- Unit test success rate: ≥98%
+- Integration test success rate: ≥95%
+- No new test failures introduced by fixes
+- Code coverage maintained or improved
+
+FAILURE ANALYSIS:
+If tests fail:
+1. Identify if failures are due to TypeScript fixes
+2. Categorize failures: breaking changes vs. test issues
+3. Create GitHub issues for test-specific problems
+4. Prioritize fixes that restore functionality
+
+DELIVERABLE:
+- Test execution report
+- Success rate verification
+- List of any remaining test failures
+- Recommendations for achieving 98% target</div>
+        </div>
+
+        <div class="prompt-box">
+            <div class="prompt-header">
+                <span class="priority low">LOW</span>
+                Document Resolution and Close GitHub Issues
+                <span class="status-badge status-todo">TODO</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('prompt8')">Copy</button>
+            <div class="prompt-content" id="prompt8">Document the complete resolution of TypeScript compilation errors and close GitHub Issue #244 with comprehensive summary.
+
+TASK: Create final documentation and close the main GitHub Issue with complete resolution details.
+
+FINAL DOCUMENTATION TEMPLATE:
+
+```markdown
+## 🎉 TypeScript Compilation Errors - RESOLVED
+
+### Final Results
+- **Initial Error Count**: 2,303 errors across 303 files
+- **Final Error Count**: 0 errors
+- **Total Errors Fixed**: 2,303 errors
+- **Success Rate**: 100% ✅
+
+### Issues Created and Resolved
+- Issue #245: useVirtualScroll Hook ✅
+- Issue #246: CSRF Token Validation ✅  
+- Issue #247: SecurityTokenErrorDetails Interface ✅
+- Issue #248: Integration Test Type Errors ✅
+- [Additional issues...]
+
+### Files Modified Summary
+- Interface definitions: [COUNT] files
+- Test files: [COUNT] files
+- Type utilities: [COUNT] files
+- Configuration files: [COUNT] files
+
+### Key Improvements
+1. **Type Safety**: All interfaces now properly typed
+2. **Test Reliability**: Comprehensive null checks added
+3. **Code Quality**: Eliminated implicit 'any' types
+4. **Maintainability**: Added type utility helpers
+
+### Test Results
+- Unit Tests: [SUCCESS_RATE]% success rate ✅
+- Integration Tests: [SUCCESS_RATE]% success rate ✅
+- TypeScript Compilation: 0 errors ✅
+
+### Impact
+- ✅ Build quality gates now pass
+- ✅ No more runtime type errors
+- ✅ Improved developer experience
+- ✅ Enhanced code maintainability
+
+### Lessons Learned
+[Key insights from the fixing process]
+
+---
+
+**Status**: 🎉 COMPLETED
+**Resolution Time**: [TOTAL_HOURS] hours
+**Next Steps**: Monitor for new TypeScript errors in future development
+```
+
+DELIVERABLE:
+- Comprehensive resolution documentation
+- Closed GitHub Issue #244
+- Updated project README with TypeScript status
+- Team notification of completion</div>
+        </div>
+
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = element.parentElement.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#3498db';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

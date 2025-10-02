@@ -20,11 +20,12 @@ jest.mock('next/navigation', () => ({
 
 // Mock the CSRF hook
 const mockCSRFHook = {
-  csrfToken: null,
+  csrfToken: null as string | null,
   isLoading: false,
-  error: null,
+  error: null as string | null,
   submitForm: jest.fn(),
   getCSRFInput: jest.fn(() => null),
+  isTokenValid: jest.fn(() => false),
 }
 
 jest.mock('@/hooks/useLightweightCSRF', () => ({

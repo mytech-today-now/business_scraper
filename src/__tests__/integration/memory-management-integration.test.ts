@@ -150,8 +150,12 @@ describe('Memory Management Integration Tests', () => {
       expect(decompressed).toHaveLength(mockBusinesses.length)
 
       // Verify first and last items
-      expect(decompressed[0].businessName).toBe('Test Business 0')
-      expect(decompressed[49].businessName).toBe('Test Business 49')
+      const firstBusiness = decompressed[0]
+      const lastBusiness = decompressed[49]
+      expect(firstBusiness).toBeDefined()
+      expect(lastBusiness).toBeDefined()
+      expect(firstBusiness?.businessName).toBe('Test Business 0')
+      expect(lastBusiness?.businessName).toBe('Test Business 49')
     })
 
     test('should handle mixed compressed and uncompressed data', () => {

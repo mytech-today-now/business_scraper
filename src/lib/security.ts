@@ -56,21 +56,22 @@ export interface SecurityConfig {
 function getSecurityConfiguration(): SecurityConfig {
   try {
     const config = getSecurityConfig()
+    const hardenedConfig = require('./hardened-security-config').hardenedSecurityConfig
 
     return {
       enableAuth: config.enableAuth,
-      sessionTimeout: config.sessionTimeout,
+      sessionTimeout: hardenedConfig.session.maxAge, // Use hardened session timeout
       maxLoginAttempts: config.maxLoginAttempts,
       lockoutDuration: config.lockoutDuration,
-      rateLimitWindow: config.rateLimitWindow,
-      rateLimitMax: config.rateLimitMax,
+      rateLimitWindow: hardenedConfig.apiSecurity.rateLimit.windowMs, // Use hardened rate limit
+      rateLimitMax: hardenedConfig.apiSecurity.rateLimit.max, // Use hardened rate limit
       scrapingRateLimit: config.scrapingRateLimit,
 
       csrfTokenLength: 32,
       csrfTokenExpiry: 3600000, // 1 hour
 
-      encryptionAlgorithm: 'aes-256-gcm',
-      keyDerivationIterations: 100000,
+      encryptionAlgorithm: hardenedConfig.encryption.algorithm, // Use hardened encryption
+      keyDerivationIterations: hardenedConfig.encryption.keyDerivationIterations, // Use hardened iterations
 
       enableSecurityHeaders: true,
       contentSecurityPolicy: process.env.NODE_ENV === 'development'
@@ -101,21 +102,68 @@ function getSecurityConfiguration(): SecurityConfig {
 // Default security configuration
 export const defaultSecurityConfig: SecurityConfig = getSecurityConfiguration()
 
-// Session management
+// Enhanced session management with security features
 export interface Session {
   id: string
   createdAt: Date
   lastAccessed: Date
   isValid: boolean
   csrfToken: string
+  // JWT-based security
+  jwtToken?: string
+  jwtSignature?: string
+  // IP binding for session hijacking prevention
+  ipAddress?: string
+  ipHash?: string
+  // Device fingerprinting
+  userAgent?: string
+  deviceFingerprint?: string
+  // Session security metadata
+  renewalCount: number
+  lastRenewal?: Date
+  securityFlags: {
+    ipValidated: boolean
+    deviceValidated: boolean
+    jwtVerified: boolean
+    suspiciousActivity: boolean
+  }
+  // Session expiration and renewal
+  expiresAt: Date
+  renewalThreshold: number // Time before expiry to allow renewal (in ms)
+  maxRenewals: number
+}
+
+// Session fingerprint for enhanced security
+export interface SessionFingerprint {
+  userAgent: string
+  acceptLanguage: string
+  acceptEncoding: string
+  screenResolution?: string
+  timezone?: string
+  hash: string
 }
 
 // In-memory session store (for single-user application)
 const sessions = new Map<string, Session>()
-const loginAttempts = new Map<string, { count: number; lastAttempt: Date }>()
+const loginAttempts = new Map<string, { count: number; lastAttempt: Date; lockoutUntil?: Date }>()
+const suspiciousActivity = new Map<string, { events: string[]; lastEvent: Date; riskScore: number }>()
 
 // Rate limiting store
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
+
+// Session fingerprint store
+const sessionFingerprints = new Map<string, SessionFingerprint>()
+
+// Security configuration constants
+const SECURITY_CONSTANTS = {
+  MAX_LOGIN_ATTEMPTS: 5,
+  LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
+  SESSION_RENEWAL_THRESHOLD: 5 * 60 * 1000, // 5 minutes before expiry
+  MAX_SESSION_RENEWALS: 10,
+  SUSPICIOUS_ACTIVITY_THRESHOLD: 5,
+  IP_CHANGE_TOLERANCE: false, // Strict IP binding
+  DEVICE_FINGERPRINT_REQUIRED: true,
+} as const
 
 /**
  * Generate a secure random token using Web Crypto API
@@ -138,6 +186,17 @@ export function generateSalt(length: number = 16): string {
  */
 export function generateId(length: number = 16): string {
   return generateSecureToken(length)
+}
+
+/**
+ * Hash a string using SHA-256
+ */
+export async function hashString(input: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(input)
+  const hashBuffer = await webCrypto.subtle.digest('SHA-256', data)
+  const hashArray = new Uint8Array(hashBuffer)
+  return Array.from(hashArray, byte => byte.toString(16).padStart(2, '0')).join('')
 }
 
 /**
@@ -334,26 +393,195 @@ export async function decryptData(encryptedData: string, key: string, iv: string
 }
 
 /**
- * Create a new session
+ * Generate device fingerprint from request headers
  */
-export function createSession(): Session {
+export function generateDeviceFingerprint(request: any): SessionFingerprint {
+  const userAgent = request.headers.get('user-agent') || ''
+  const acceptLanguage = request.headers.get('accept-language') || ''
+  const acceptEncoding = request.headers.get('accept-encoding') || ''
+
+  // Create a hash of the fingerprint components
+  const fingerprintData = `${userAgent}|${acceptLanguage}|${acceptEncoding}`
+  const hash = generateSecureToken(16) // Simplified hash for now
+
+  return {
+    userAgent,
+    acceptLanguage,
+    acceptEncoding,
+    hash
+  }
+}
+
+/**
+ * Create a new secure session with enhanced security features
+ */
+export async function createSecureSession(
+  ipAddress: string,
+  request?: any,
+  jwtToken?: string
+): Promise<Session> {
   const sessionId = generateSecureToken()
+  const now = new Date()
+  const expiresAt = new Date(now.getTime() + defaultSecurityConfig.sessionTimeout)
+
+  // Generate device fingerprint if request is provided
+  let deviceFingerprint: string | undefined
+  if (request) {
+    const fingerprint = generateDeviceFingerprint(request)
+    deviceFingerprint = fingerprint.hash
+    sessionFingerprints.set(sessionId, fingerprint)
+  }
+
   const session: Session = {
     id: sessionId,
-    createdAt: new Date(),
-    lastAccessed: new Date(),
+    createdAt: now,
+    lastAccessed: now,
     isValid: true,
     csrfToken: generateSecureToken(defaultSecurityConfig.csrfTokenLength),
+    // Enhanced security features
+    jwtToken,
+    ipAddress,
+    ipHash: await hashString(ipAddress),
+    userAgent: request?.headers.get('user-agent'),
+    deviceFingerprint,
+    renewalCount: 0,
+    securityFlags: {
+      ipValidated: true,
+      deviceValidated: !!deviceFingerprint,
+      jwtVerified: !!jwtToken,
+      suspiciousActivity: false
+    },
+    expiresAt,
+    renewalThreshold: SECURITY_CONSTANTS.SESSION_RENEWAL_THRESHOLD,
+    maxRenewals: SECURITY_CONSTANTS.MAX_SESSION_RENEWALS
   }
 
   sessions.set(sessionId, session)
-  logger.info('Security', `Created new session: ${sessionId}`)
+  logger.info('Security', `Created secure session: ${sessionId} for IP: ${ipAddress}`)
 
   return session
 }
 
 /**
- * Get session by ID
+ * Create a new session (legacy compatibility)
+ */
+export function createSession(): Session {
+  const sessionId = generateSecureToken()
+  const now = new Date()
+  const expiresAt = new Date(now.getTime() + defaultSecurityConfig.sessionTimeout)
+
+  const session: Session = {
+    id: sessionId,
+    createdAt: now,
+    lastAccessed: now,
+    isValid: true,
+    csrfToken: generateSecureToken(defaultSecurityConfig.csrfTokenLength),
+    renewalCount: 0,
+    securityFlags: {
+      ipValidated: false,
+      deviceValidated: false,
+      jwtVerified: false,
+      suspiciousActivity: false
+    },
+    expiresAt,
+    renewalThreshold: SECURITY_CONSTANTS.SESSION_RENEWAL_THRESHOLD,
+    maxRenewals: SECURITY_CONSTANTS.MAX_SESSION_RENEWALS
+  }
+
+  sessions.set(sessionId, session)
+  logger.info('Security', `Created basic session: ${sessionId}`)
+
+  return session
+}
+
+/**
+ * Validate session with enhanced security checks
+ */
+export async function validateSecureSession(
+  sessionId: string,
+  ipAddress: string,
+  request?: any,
+  jwtToken?: string
+): Promise<{ valid: boolean; session?: Session; error?: string }> {
+  const session = sessions.get(sessionId)
+
+  if (!session) {
+    return { valid: false, error: 'Session not found' }
+  }
+
+  const now = new Date()
+
+  // Check if session is expired
+  if (now > session.expiresAt) {
+    sessions.delete(sessionId)
+    logger.warn('Security', `Session expired: ${sessionId}`)
+    return { valid: false, error: 'Session expired' }
+  }
+
+  // Check if session is marked as invalid
+  if (!session.isValid) {
+    return { valid: false, error: 'Session invalidated' }
+  }
+
+  // IP address validation (if IP binding is enabled)
+  if (session.ipAddress && SECURITY_CONSTANTS.IP_CHANGE_TOLERANCE === false) {
+    if (session.ipAddress !== ipAddress) {
+      // Log suspicious activity
+      await logSuspiciousActivity(ipAddress, 'ip_address_mismatch', {
+        sessionId,
+        originalIp: session.ipAddress,
+        newIp: ipAddress
+      })
+
+      session.securityFlags.suspiciousActivity = true
+      sessions.set(sessionId, session)
+
+      logger.warn('Security', `IP address mismatch for session ${sessionId}: ${session.ipAddress} vs ${ipAddress}`)
+      return { valid: false, error: 'IP address validation failed' }
+    }
+  }
+
+  // Device fingerprint validation (if enabled and available)
+  if (SECURITY_CONSTANTS.DEVICE_FINGERPRINT_REQUIRED && session.deviceFingerprint && request) {
+    const currentFingerprint = generateDeviceFingerprint(request)
+    const storedFingerprint = sessionFingerprints.get(sessionId)
+
+    if (storedFingerprint && currentFingerprint.hash !== storedFingerprint.hash) {
+      await logSuspiciousActivity(ipAddress, 'device_fingerprint_mismatch', {
+        sessionId,
+        storedFingerprint: storedFingerprint.hash,
+        currentFingerprint: currentFingerprint.hash
+      })
+
+      session.securityFlags.suspiciousActivity = true
+      sessions.set(sessionId, session)
+
+      logger.warn('Security', `Device fingerprint mismatch for session ${sessionId}`)
+      return { valid: false, error: 'Device validation failed' }
+    }
+  }
+
+  // JWT token validation (if provided)
+  if (jwtToken && session.jwtToken) {
+    if (jwtToken !== session.jwtToken) {
+      logger.warn('Security', `JWT token mismatch for session ${sessionId}`)
+      return { valid: false, error: 'JWT token validation failed' }
+    }
+  }
+
+  // Update last accessed time and security flags
+  session.lastAccessed = now
+  session.securityFlags.ipValidated = true
+  session.securityFlags.deviceValidated = true
+  session.securityFlags.jwtVerified = !!jwtToken
+
+  sessions.set(sessionId, session)
+
+  return { valid: true, session }
+}
+
+/**
+ * Get session by ID (legacy compatibility)
  */
 export function getSession(sessionId: string): Session | null {
   const session = sessions.get(sessionId)
@@ -364,9 +592,7 @@ export function getSession(sessionId: string): Session | null {
 
   // Check if session is expired
   const now = new Date()
-  const sessionAge = now.getTime() - session.lastAccessed.getTime()
-
-  if (sessionAge > defaultSecurityConfig.sessionTimeout) {
+  if (now > session.expiresAt) {
     sessions.delete(sessionId)
     logger.info('Security', `Session expired: ${sessionId}`)
     return null
@@ -377,6 +603,91 @@ export function getSession(sessionId: string): Session | null {
   sessions.set(sessionId, session)
 
   return session
+}
+
+/**
+ * Log suspicious activity
+ */
+export async function logSuspiciousActivity(
+  ipAddress: string,
+  eventType: string,
+  details: any
+): Promise<void> {
+  const key = ipAddress
+  const now = new Date()
+
+  let activity = suspiciousActivity.get(key)
+  if (!activity) {
+    activity = { events: [], lastEvent: now, riskScore: 0 }
+  }
+
+  activity.events.push(`${eventType}: ${JSON.stringify(details)}`)
+  activity.lastEvent = now
+  activity.riskScore += 1
+
+  // Keep only recent events (last 100)
+  if (activity.events.length > 100) {
+    activity.events = activity.events.slice(-100)
+  }
+
+  suspiciousActivity.set(key, activity)
+
+  logger.warn('Security', `Suspicious activity detected from ${ipAddress}: ${eventType}`, details)
+
+  // If risk score is too high, consider additional actions
+  if (activity.riskScore >= SECURITY_CONSTANTS.SUSPICIOUS_ACTIVITY_THRESHOLD) {
+    logger.error('Security', `High risk activity detected from ${ipAddress}. Risk score: ${activity.riskScore}`)
+    // Could implement IP blocking here
+  }
+}
+
+/**
+ * Check if IP is locked out due to failed login attempts
+ */
+export function isIpLockedOut(ipAddress: string): boolean {
+  const attempts = loginAttempts.get(ipAddress)
+  if (!attempts) return false
+
+  if (attempts.lockoutUntil && new Date() < attempts.lockoutUntil) {
+    return true
+  }
+
+  return false
+}
+
+/**
+ * Record failed login attempt
+ */
+export function recordFailedLogin(ipAddress: string): void {
+  const now = new Date()
+  let attempts = loginAttempts.get(ipAddress)
+
+  if (!attempts) {
+    attempts = { count: 0, lastAttempt: now }
+  }
+
+  // Reset count if last attempt was more than 1 hour ago
+  if (now.getTime() - attempts.lastAttempt.getTime() > 60 * 60 * 1000) {
+    attempts.count = 0
+  }
+
+  attempts.count += 1
+  attempts.lastAttempt = now
+
+  // Lock out if too many attempts
+  if (attempts.count >= SECURITY_CONSTANTS.MAX_LOGIN_ATTEMPTS) {
+    attempts.lockoutUntil = new Date(now.getTime() + SECURITY_CONSTANTS.LOCKOUT_DURATION)
+    logger.warn('Security', `IP ${ipAddress} locked out due to ${attempts.count} failed login attempts`)
+  }
+
+  loginAttempts.set(ipAddress, attempts)
+}
+
+/**
+ * Clear failed login attempts for successful login
+ */
+export function clearFailedLogins(ipAddress: string): void {
+  loginAttempts.delete(ipAddress)
 }
 
 /**

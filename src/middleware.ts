@@ -19,7 +19,9 @@ import {
 import { advancedRateLimitService } from '@/lib/advancedRateLimit'
 import { validateCSRFMiddleware, csrfProtectionService } from '@/lib/csrfProtection'
 import { securityMonitoringService } from '@/lib/securityMonitoring'
+import { enhancedSecurityMonitoringService } from '@/lib/enhanced-security-monitoring'
 import { getCSPHeader, generateCSPNonce } from '@/lib/cspConfig'
+import { hardenedSecurityConfig } from '@/lib/hardened-security-config'
 import { logger } from '@/utils/logger'
 import { performCleanupIfNeeded } from '@/lib/edgeRuntimeCleanup'
 
@@ -399,19 +401,30 @@ export async function middleware(request: NextRequest) {
   // Track request signature for pattern analysis
   securityMonitoringService.trackRequestSignature(request)
 
-  // Analyze request for immediate threats
-  const threats = securityMonitoringService.analyzeRequest(request)
-  if (threats.length > 0) {
-    // Log threats but continue processing (threats are already logged in analyzeRequest)
-    const highSeverityThreats = threats.filter(
-      (threat: any) => threat.severity === 'high' || threat.severity === 'critical'
+  // Enhanced threat analysis using the new security monitoring service
+  const enhancedThreats = enhancedSecurityMonitoringService.analyzeRequest(request)
+  if (enhancedThreats.length > 0) {
+    // Log enhanced threats
+    const highSeverityThreats = enhancedThreats.filter(
+      threat => threat.severity === 'high' || threat.severity === 'critical'
     )
+
     if (highSeverityThreats.length > 0) {
+      // Log the security event
+      enhancedSecurityMonitoringService.logSecurityEvent(
+        'threat_detected',
+        'critical',
+        request,
+        { threats: highSeverityThreats },
+        true
+      )
+
       // Block high severity threats
       return new NextResponse(
         JSON.stringify({
           error: 'Request blocked due to security policy violation',
           threatCount: highSeverityThreats.length,
+          requestId: generateUUID()
         }),
         {
           status: 403,

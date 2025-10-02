@@ -39,7 +39,7 @@ describe('Email-Payment Integration', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(getConfig as jest.Mock).mockReturnValue(mockConfig)
-    ;(nodemailer.createTransporter as jest.Mock).mockReturnValue(mockTransporter)
+    ;(nodemailer.createTransport as jest.Mock).mockReturnValue(mockTransporter)
     ;(auditService.logAuditEvent as jest.Mock).mockResolvedValue(undefined)
     mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-message-id' })
   })
@@ -155,6 +155,10 @@ describe('Email-Payment Integration', () => {
         userId: 'user789',
         stripeCustomerId: 'cus_test789',
         email: 'subscriber@example.com',
+        subscriptionStatus: 'active' as const,
+        subscriptionTier: 'professional' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
 
       const mockSubscription = {

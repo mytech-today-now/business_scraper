@@ -5,6 +5,7 @@
 
 import { SalesforceExportTemplate } from '@/lib/export-templates/crm/salesforce'
 import { BusinessRecord } from '@/types/business'
+import { createMinimalBusinessRecord, toBusinessRecord } from '../../utils/testHelpers'
 
 describe('SalesforceExportTemplate', () => {
   let template: SalesforceExportTemplate
@@ -14,26 +15,27 @@ describe('SalesforceExportTemplate', () => {
     template = new SalesforceExportTemplate()
 
     testBusinessData = [
-      {
+      createMinimalBusinessRecord({
+        id: 'business-1',
         businessName: 'Acme Corporation',
         email: ['contact@acme.com', 'sales@acme.com'],
-        phone: ['5551234567', '5559876543'],
-        website: 'https://acme.com',
+        phone: '5551234567',
+        websiteUrl: 'https://acme.com',
         address: {
           street: '123 Main Street',
           city: 'Anytown',
           state: 'CA',
           zipCode: '12345',
-          country: 'United States',
         },
         industry: 'Technology',
-        description: 'Leading technology company specializing in innovative solutions',
-      },
-      {
+        scrapedAt: new Date('2024-01-01'),
+      }),
+      createMinimalBusinessRecord({
+        id: 'business-2',
         businessName: 'Beta Industries',
         email: ['info@beta.com'],
-        phone: ['5555551234'],
-        website: 'beta.com',
+        phone: '5555551234',
+        websiteUrl: 'https://beta.com',
         address: {
           street: '456 Oak Avenue',
           city: 'Somewhere',
@@ -41,13 +43,14 @@ describe('SalesforceExportTemplate', () => {
           zipCode: '67890',
         },
         industry: 'Manufacturing',
-        description: 'Manufacturing company',
-      },
-      {
+        scrapedAt: new Date('2024-01-02'),
+      }),
+      createMinimalBusinessRecord({
+        id: 'business-3',
         businessName: 'Gamma Services',
         email: ['hello@gamma.org'],
-        phone: [],
-        website: '',
+        phone: undefined,
+        websiteUrl: '',
         address: {
           street: '',
           city: 'Nowhere',
@@ -55,7 +58,8 @@ describe('SalesforceExportTemplate', () => {
           zipCode: '54321',
         },
         industry: 'Services',
-      },
+        scrapedAt: new Date('2024-01-03'),
+      }),
     ]
   })
 
@@ -158,8 +162,25 @@ describe('SalesforceExportTemplate', () => {
     test('should filter out invalid records', async () => {
       const invalidData = [
         ...testBusinessData,
-        { businessName: '', email: [], phone: [] }, // Invalid - no business name
-        { email: ['test@test.com'] }, // Invalid - no business name
+        {
+          id: 'invalid-1',
+          businessName: '',
+          email: [],
+          phone: undefined,
+          websiteUrl: '',
+          address: { street: '', city: '', state: '', zipCode: '' },
+          industry: '',
+          scrapedAt: new Date()
+        }, // Invalid - no business name
+        {
+          id: 'invalid-2',
+          businessName: '',
+          email: ['test@test.com'],
+          websiteUrl: '',
+          address: { street: '', city: '', state: '', zipCode: '' },
+          industry: '',
+          scrapedAt: new Date()
+        }, // Invalid - no business name
         null, // Invalid - null record
         undefined, // Invalid - undefined record
       ]
@@ -172,11 +193,11 @@ describe('SalesforceExportTemplate', () => {
 
     test('should normalize company names', async () => {
       const dataWithSpecialChars = [
-        {
+        toBusinessRecord({
           businessName: '  Acme Corp!!!  ',
           email: ['test@acme.com'],
-          phone: ['5551234567'],
-        },
+          phone: '5551234567',
+        }),
       ]
 
       const result = await template.execute(dataWithSpecialChars)
@@ -186,9 +207,9 @@ describe('SalesforceExportTemplate', () => {
 
     test('should normalize industry values', async () => {
       const dataWithIndustries = [
-        { businessName: 'Tech Co', industry: 'tech' },
-        { businessName: 'Health Co', industry: 'healthcare' },
-        { businessName: 'Finance Co', industry: 'banking' },
+        toBusinessRecord({ businessName: 'Tech Co', industry: 'tech' }),
+        toBusinessRecord({ businessName: 'Health Co', industry: 'healthcare' }),
+        toBusinessRecord({ businessName: 'Finance Co', industry: 'banking' }),
       ]
 
       const result = await template.execute(dataWithIndustries)
@@ -200,9 +221,9 @@ describe('SalesforceExportTemplate', () => {
 
     test('should format phone numbers correctly', async () => {
       const dataWithPhones = [
-        { businessName: 'Co1', phone: ['5551234567'] },
-        { businessName: 'Co2', phone: ['15551234567'] },
-        { businessName: 'Co3', phone: ['555-123-4567'] },
+        toBusinessRecord({ businessName: 'Co1', phone: '5551234567' }),
+        toBusinessRecord({ businessName: 'Co2', phone: '15551234567' }),
+        toBusinessRecord({ businessName: 'Co3', phone: '555-123-4567' }),
       ]
 
       const result = await template.execute(dataWithPhones)
@@ -216,22 +237,22 @@ describe('SalesforceExportTemplate', () => {
   describe('Quality Rules', () => {
     test('should apply quality rules correctly', async () => {
       const mixedQualityData = [
-        {
+        toBusinessRecord({
           businessName: 'High Quality Corp',
           email: ['contact@hqcorp.com'],
-          phone: ['5551234567'],
-          website: 'https://hqcorp.com',
+          phone: '5551234567',
+          websiteUrl: 'https://hqcorp.com',
           address: {
             street: '123 Main St',
             city: 'Anytown',
             state: 'CA',
             zipCode: '12345',
           },
-        },
-        {
+        }),
+        toBusinessRecord({
           businessName: 'Low Quality Corp',
-          // Missing most fields
-        },
+          // Missing most fields - will use defaults from toBusinessRecord
+        }),
       ]
 
       const result = await template.execute(mixedQualityData)
@@ -242,9 +263,9 @@ describe('SalesforceExportTemplate', () => {
 
     test('should skip records missing required fields', async () => {
       const dataWithMissingRequired = [
-        { businessName: 'Valid Corp', email: ['test@valid.com'] },
-        { email: ['test@invalid.com'] }, // Missing required businessName
-        { businessName: '', email: ['test@empty.com'] }, // Empty businessName
+        toBusinessRecord({ businessName: 'Valid Corp', email: ['test@valid.com'] }),
+        toBusinessRecord({ businessName: '', email: ['test@invalid.com'] }), // Missing required businessName
+        toBusinessRecord({ businessName: '', email: ['test@empty.com'] }), // Empty businessName
       ]
 
       const result = await template.execute(dataWithMissingRequired as any)
@@ -268,10 +289,9 @@ describe('SalesforceExportTemplate', () => {
 
     test('should respect Salesforce field length limits', async () => {
       const dataWithLongFields = [
-        {
+        toBusinessRecord({
           businessName: 'A'.repeat(300), // Exceeds 255 char limit
-          description: 'B'.repeat(35000), // Exceeds 32000 char limit
-        },
+        }),
       ]
 
       const result = await template.execute(dataWithLongFields)
@@ -330,10 +350,10 @@ describe('SalesforceExportTemplate', () => {
       // Create a larger dataset
       const largeDataset = Array(100)
         .fill(null)
-        .map((_, index) => ({
+        .map((_, index) => toBusinessRecord({
           businessName: `Company ${index}`,
           email: [`contact${index}@company${index}.com`],
-          phone: [`555${String(index).padStart(7, '0')}`],
+          phone: `555${String(index).padStart(7, '0')}`,
           industry: 'Technology',
         }))
 

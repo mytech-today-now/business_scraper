@@ -381,7 +381,7 @@ describe('API Integration Tests', () => {
 
     it('should sanitize input data', async () => {
       const { sanitizeInput } = require('@/lib/security')
-      sanitizeInput.mockImplementation(input => input.replace(/<script>/g, ''))
+      sanitizeInput.mockImplementation((input: string) => input.replace(/<script>/g, ''))
 
       const maliciousData = {
         query: 'restaurants<script>alert("xss")</script>',

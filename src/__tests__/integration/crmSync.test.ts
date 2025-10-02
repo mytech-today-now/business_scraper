@@ -153,7 +153,8 @@ describe('CRM Sync Integration Tests', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      const firstSyncResult = expectArrayElement(data.data.syncResults, 0)
+      const firstSyncResult = expectArrayElement(data.data.syncResults, 0) as any
+      expect(firstSyncResult).toBeDefined()
       expect(firstSyncResult.type).toBe('error')
       expect(firstSyncResult.error).toBe('Sync failed')
     })
@@ -255,7 +256,8 @@ describe('CRM Sync Integration Tests', () => {
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
       expect(data.data.syncResults).toHaveLength(1)
-      const firstSyncResult = expectArrayElement(data.data.syncResults, 0)
+      const firstSyncResult = expectArrayElement(data.data.syncResults, 0) as any
+      expect(firstSyncResult).toBeDefined()
       expect(firstSyncResult.providerId).toBe('provider-1')
       expect(mockService1.syncBusinessRecord).toHaveBeenCalled()
       expect(mockService2.syncBusinessRecord).not.toHaveBeenCalled()
