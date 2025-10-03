@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-02T10:41:09.506Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-passed">PASSED</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 20</div>
+    <div class="metric"><strong>Success Rate:</strong> 95.00%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should generate secure MFA secret</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"Business Scraper App"[39m
+Received string:    [31m"otpauth://totp/Business%20Scraper%20App%20(test%40example.com)?secret=HZRECLRUONLWI23ZO5QXIODOO55VAOTLMEYEIYRQKEYT6PRZOR6Q"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\security\authentication-security.test.ts:103:35)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li></ul>
+
+    <p><em>Generated at 2025-10-02T10:41:09.506Z by EnhancedTestLogger</em></p>
+</body>
+</html>

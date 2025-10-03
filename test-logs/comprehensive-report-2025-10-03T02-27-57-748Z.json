@@ -1,0 +1,998 @@
+{
+  "metadata": {
+    "reportId": "report-1759458475411-s7dzeg4hb",
+    "generatedAt": "2025-10-03T02:27:57.748Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 20,
+    "successRate": 40,
+    "criticalIssues": 9,
+    "keyMetrics": {
+      "averageDuration": 1451,
+      "memoryPeak": 113159600,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 20,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 20,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should initialize with no error state::1759458477678",
+          "testName": "should initialize with no error state",
+          "testDescription": "should initialize with no error state",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112796608,
+            "heapTotal": 146845696,
+            "external": 6324469,
+            "rss": 220688384
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:33:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:33:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should initialize with no error state",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should handle errors and update state::1759458477685",
+          "testName": "should handle errors and update state",
+          "testDescription": "should handle errors and update state",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112843336,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:47:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:47:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle errors and update state",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should clear error state::1759458477693",
+          "testName": "should clear error state",
+          "testDescription": "should clear error state",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112870760,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:102:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:102:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clear error state",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should retry operations and increment retry count::1759458477696",
+          "testName": "should retry operations and increment retry count",
+          "testDescription": "should retry operations and increment retry count",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112890320,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:121:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:121:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry operations and increment retry count",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'retryCount')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should limit retry attempts::1759458477701",
+          "testName": "should limit retry attempts",
+          "testDescription": "should limit retry attempts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112909472,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:145:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:145:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should limit retry attempts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'retryCount')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should track error retry count::1759458477706",
+          "testName": "should track error retry count",
+          "testDescription": "should track error retry count",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112942096,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:176:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:176:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should track error retry count",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'retryCount')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should reset error state correctly::1759458477711",
+          "testName": "should reset error state correctly",
+          "testDescription": "should reset error state correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112979584,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220704768
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:212:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:212:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reset error state correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should integrate error handling with React components::1759458477716",
+          "testName": "should integrate error handling with React components",
+          "testDescription": "should integrate error handling with React components",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113016416,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220704768
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TestingLibraryElementError: Unable to find an element by: [data-testid=\"error-message\"]\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"count\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0m3\u001b[0m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<button\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"increment\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0mIncrement\u001b[0m\n      \u001b[36m</button>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:37:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:76:38\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:52:17\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:95:19\n    at Object.getByTestId (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:341:21)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TestingLibraryElementError: Unable to find an element by: [data-testid=\"error-message\"]\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"count\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0m3\u001b[0m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<button\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"increment\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0mIncrement\u001b[0m\n      \u001b[36m</button>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:37:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:76:38\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:52:17\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:95:19\n    at Object.getByTestId (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:341:21)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should integrate error handling with React components",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TestingLibraryElementError: Unable to find an element by: [data-testid=\"error-message\"]"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should handle error recovery in components::1759458477722",
+          "testName": "should handle error recovery in components",
+          "testDescription": "should handle error recovery in components",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113045368,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220708864
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TestingLibraryElementError: Unable to find an element by: [data-testid=\"error\"]\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"attempts\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0mAttempts: \u001b[0m\n        \u001b[0m1\u001b[0m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<button\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"attempt\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0mAttempt Operation\u001b[0m\n      \u001b[36m</button>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:37:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:76:38\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:52:17\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:95:19\n    at Object.getByTestId (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:387:21)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TestingLibraryElementError: Unable to find an element by: [data-testid=\"error\"]\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"attempts\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0mAttempts: \u001b[0m\n        \u001b[0m1\u001b[0m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<button\u001b[39m\n        \u001b[33mdata-testid\u001b[39m=\u001b[32m\"attempt\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[0mAttempt Operation\u001b[0m\n      \u001b[36m</button>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\config.js:37:19)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:76:38\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:52:17\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\query-helpers.js:95:19\n    at Object.getByTestId (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:387:21)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle error recovery in components",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TestingLibraryElementError: Unable to find an element by: [data-testid=\"error\"]"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should implement retry with exponential backoff::1759458477730",
+          "testName": "should implement retry with exponential backoff",
+          "testDescription": "should implement retry with exponential backoff",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113089464,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220717056
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should implement retry with exponential backoff",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: useAsyncOperation is not defined"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should implement circuit breaker pattern::1759458477734",
+          "testName": "should implement circuit breaker pattern",
+          "testDescription": "should implement circuit breaker pattern",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113124688,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220717056
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should implement circuit breaker pattern",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: useAsyncOperation is not defined"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should work with error boundaries for unhandled errors::1759458477738",
+          "testName": "should work with error boundaries for unhandled errors",
+          "testDescription": "should work with error boundaries for unhandled errors",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113159600,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220717056
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: Unhandled component error\n    at throwUnhandledError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:489:17)\n    at HTMLUnknownElement.callCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4164:14)\n    at HTMLUnknownElement.callTheUserObjectsOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventListener.js:26:30)\n    at innerInvokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:350:25)\n    at invokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:286:3)\n    at HTMLUnknownElementImpl._dispatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:233:9)\n    at HTMLUnknownElementImpl.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:104:17)\n    at HTMLUnknownElement.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventTarget.js:241:34)\n    at Object.invokeGuardedCallbackDev (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4213:16)\n    at invokeGuardedCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4277:31)\n    at invokeGuardedCallbackAndCatchFirstError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4291:25)\n    at executeDispatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9041:3)\n    at processDispatchQueueItemsInOrder (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9073:7)\n    at processDispatchQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9086:5)\n    at dispatchEventsForPlugins (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9097:3)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9288:12\n    at batchedUpdates$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26179:12)\n    at batchedUpdates (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:3991:12)\n    at dispatchEventForPluginEventSystem (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9287:3)\n    at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:6465:5)\n    at dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:6457:5)\n    at dispatchDiscreteEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:6430:5)\n    at HTMLDivElement.callTheUserObjectsOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventListener.js:26:30)\n    at innerInvokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:350:25)\n    at invokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:286:3)\n    at HTMLButtonElementImpl._dispatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:233:9)\n    at HTMLButtonElementImpl.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:104:17)\n    at HTMLButtonElement.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventTarget.js:241:34)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\events.js:19:20\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:108:16\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.eventWrapper (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:107:28)\n    at fireEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\events.js:12:35)\n    at Function.fireEvent.<computed> [as click] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\events.js:110:36)\n    at Function.fireEvent.<computed> [as click] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\fire-event.js:15:52)\n    at click (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:501:19)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\expect\\build\\toThrowMatchers.js:74:11)\n    at Object.throwingMatcher [as toThrow] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\expect\\build\\index.js:320:21)\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:502:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: Unhandled component error\n    at throwUnhandledError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:489:17)\n    at HTMLUnknownElement.callCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4164:14)\n    at HTMLUnknownElement.callTheUserObjectsOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventListener.js:26:30)\n    at innerInvokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:350:25)\n    at invokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:286:3)\n    at HTMLUnknownElementImpl._dispatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:233:9)\n    at HTMLUnknownElementImpl.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:104:17)\n    at HTMLUnknownElement.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventTarget.js:241:34)\n    at Object.invokeGuardedCallbackDev (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4213:16)\n    at invokeGuardedCallback (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4277:31)\n    at invokeGuardedCallbackAndCatchFirstError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:4291:25)\n    at executeDispatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9041:3)\n    at processDispatchQueueItemsInOrder (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9073:7)\n    at processDispatchQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9086:5)\n    at dispatchEventsForPlugins (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9097:3)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9288:12\n    at batchedUpdates$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26179:12)\n    at batchedUpdates (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:3991:12)\n    at dispatchEventForPluginEventSystem (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:9287:3)\n    at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:6465:5)\n    at dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:6457:5)\n    at dispatchDiscreteEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:6430:5)\n    at HTMLDivElement.callTheUserObjectsOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventListener.js:26:30)\n    at innerInvokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:350:25)\n    at invokeEventListeners (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:286:3)\n    at HTMLButtonElementImpl._dispatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:233:9)\n    at HTMLButtonElementImpl.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\events\\EventTarget-impl.js:104:17)\n    at HTMLButtonElement.dispatchEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jsdom\\lib\\jsdom\\living\\generated\\EventTarget.js:241:34)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\events.js:19:20\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:108:16\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:48:24\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2512:16)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at Object.eventWrapper (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:107:28)\n    at fireEvent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\events.js:12:35)\n    at Function.fireEvent.<computed> [as click] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\node_modules\\@testing-library\\dom\\dist\\events.js:110:36)\n    at Function.fireEvent.<computed> [as click] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\fire-event.js:15:52)\n    at click (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:501:19)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\expect\\build\\toThrowMatchers.js:74:11)\n    at Object.throwingMatcher [as toThrow] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\expect\\build\\index.js:320:21)\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:502:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nError: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoThrow\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected substring: \u001b[32m\"Unhandled component error\"\u001b[39m\n\nReceived function did not throw\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:502:10)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should work with error boundaries for unhandled errors",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: Unhandled component error"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should initialize with no error state::1759458477678",
+          "testName": "should initialize with no error state",
+          "testDescription": "should initialize with no error state",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112796608,
+            "heapTotal": 146845696,
+            "external": 6324469,
+            "rss": 220688384
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:33:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:33:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should initialize with no error state",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should handle errors and update state::1759458477685",
+          "testName": "should handle errors and update state",
+          "testDescription": "should handle errors and update state",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112843336,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:47:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:47:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle errors and update state",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should clear error state::1759458477693",
+          "testName": "should clear error state",
+          "testDescription": "should clear error state",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112870760,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:102:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:102:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should clear error state",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should retry operations and increment retry count::1759458477696",
+          "testName": "should retry operations and increment retry count",
+          "testDescription": "should retry operations and increment retry count",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112890320,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:121:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:121:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should retry operations and increment retry count",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'retryCount')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should limit retry attempts::1759458477701",
+          "testName": "should limit retry attempts",
+          "testDescription": "should limit retry attempts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112909472,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:145:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:145:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should limit retry attempts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'retryCount')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should track error retry count::1759458477706",
+          "testName": "should track error retry count",
+          "testDescription": "should track error retry count",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112942096,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220700672
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:176:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:176:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should track error retry count",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'retryCount')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should reset error state correctly::1759458477711",
+          "testName": "should reset error state correctly",
+          "testDescription": "should reset error state correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 112979584,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220704768
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:212:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:212:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reset error state correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of undefined (reading 'isError')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should implement retry with exponential backoff::1759458477730",
+          "testName": "should implement retry with exponential backoff",
+          "testDescription": "should implement retry with exponential backoff",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113089464,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220717056
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should implement retry with exponential backoff",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: useAsyncOperation is not defined"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Error-handling-hooks.comprehensive::should implement circuit breaker pattern::1759458477734",
+          "testName": "should implement circuit breaker pattern",
+          "testDescription": "should implement circuit breaker pattern",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "relativePath": "src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+          "suite": "Error-handling-hooks.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458476198,
+          "endTime": 1759458477649,
+          "duration": 1451,
+          "memoryUsage": {
+            "heapUsed": 113124688,
+            "heapTotal": 146845696,
+            "external": 6324509,
+            "rss": 220717056
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should implement circuit breaker pattern",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: useAsyncOperation is not defined"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1238.0943,
+      "endTime": 3575.6063,
+      "duration": 29020,
+      "memoryUsage": {
+        "heapUsed": 112966222,
+        "heapTotal": 135559466.4,
+        "external": 11296622.200000001,
+        "rss": 169449333
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 2259324440,
+      "averageTestDuration": 1451,
+      "totalExecutionTime": 29020
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "9 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should initialize with no error state: TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:33:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should handle errors and update state: TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:47:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should clear error state: TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:102:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should retry operations and increment retry count: TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:121:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should limit retry attempts: TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:145:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should track error retry count: TypeError: Cannot read properties of undefined (reading 'retryCount')\n    at Object.retryCount (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:176:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should reset error state correctly: TypeError: Cannot read properties of undefined (reading 'isError')\n    at Object.isError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:212:40)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should implement retry with exponential backoff: ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:401:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should implement circuit breaker pattern: ReferenceError: useAsyncOperation is not defined\n    at useAsyncOperation (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:43)\n    at TestComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:309:27)\n    at renderWithHooks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:15486:18)\n    at mountIndeterminateComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:20103:13)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21626:16)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at renderHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:318:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\error-handling-hooks.comprehensive.test.tsx:435:36)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should initialize with no error state",
+          "should handle errors and update state",
+          "should clear error state",
+          "should retry operations and increment retry count",
+          "should limit retry attempts",
+          "should track error retry count",
+          "should reset error state correctly",
+          "should implement retry with exponential backoff",
+          "should implement circuit breaker pattern"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T00:10:41.450Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 230</div>
+    <div class="metric"><strong>Success Rate:</strong> 46.96%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should accept valid query parameters</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:84:31)</li><li><strong>should return 429 when rate limited</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m429[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:101:31)</li><li><strong>should proceed when rate limit allows</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:125:31)</li><li><strong>should return 503 when health check fails</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m503[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:141:31)</li><li><strong>should proceed when health check passes</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:165:31)</li><li><strong>should handle health check errors gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m503[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:178:31)</li><li><strong>should set correct SSE headers</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"text/event-stream"[39m
+Received: [31m"application/json"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:199:52)</li><li><strong>should handle streaming service errors</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:217:31)</li><li><strong>should call processStreamingSearch with correct parameters</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"test query"[39m, [32m"test location"[39m, [32mAny<Function>[39m, [32mAny<Function>[39m, [32mAny<Function>[39m, [32mAny<Function>[39m, [32m{"batchSize": 25, "delayBetweenBatches": 200, "enableRealTimeUpdates": true, "maxResults": 500}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:239:61)</li><li><strong>should handle OPTIONS requests</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"GET"[39m
+Received: [31m"GET[7m, POST, PUT, DELETE, OPTIONS[27m"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\stream-search\__tests__\route.test.ts:292:68)</li><li><strong>should create payment intent for authenticated user</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\payment-api.test.ts:219:31)</li><li><strong>should reject unauthenticated requests</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m401[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\payment-api.test.ts:238:31)</li><li><strong>should validate request body</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"[7mV[27malid[7mation failed[27m"[39m
+Received: [31m"[7mInv[27malid[7m JSON in request body[27m"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\payment-api.test.ts:257:34)</li><li><strong>should handle Stripe errors gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\payment-api.test.ts:274:31)</li><li><strong>should retrieve payment intent for authenticated user</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\payment-api.test.ts:328:31)</li><li><strong>should reject unauthorized access to payment intent</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m404[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\payment-api.test.ts:372:31)</li><li><strong>should create new session and return CSRF token for unauthenticated users</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 2[39m
+[31m+ Received  + 0[39m
+
+[2m  Object {[22m
+[2m    "authenticated": false,[22m
+[32m-   "csrfToken": "csrf-token-123",[39m
+[2m    "expiresAt": Any<String>,[22m
+[32m-   "sessionId": "new-session-123",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:50:20)</li><li><strong>should return existing session data for authenticated users</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 2[39m
+[31m+ Received  + 0[39m
+
+[2m  Object {[22m
+[2m    "authenticated": true,[22m
+[32m-   "csrfToken": "csrf-token-456",[39m
+[2m    "expiresAt": Any<String>,[22m
+[32m-   "sessionId": "existing-session-456",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:89:20)</li><li><strong>should create new session when existing session is invalid</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 2[39m
+[31m+ Received  + 0[39m
+
+[2m  Object {[22m
+[2m    "authenticated": false,[22m
+[32m-   "csrfToken": "csrf-token-789",[39m
+[2m    "expiresAt": Any<String>,[22m
+[32m-   "sessionId": "replacement-session-789",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:124:20)</li><li><strong>should handle expired sessions by creating new ones</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 2[39m
+[31m+ Received  + 0[39m
+
+[2m  Object {[22m
+[2m    "authenticated": false,[22m
+[32m-   "csrfToken": "new-csrf-token",[39m
+[2m    "expiresAt": Any<String>,[22m
+[32m-   "sessionId": "new-session-after-expiry",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:167:20)</li><li><strong>should handle errors gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"Internal server error"[39m
+Received: [31m"Session creation failed"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:193:26)</li><li><strong>should provide valid CSRF tokens that can be used for authentication</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"valid-csrf-token"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:218:33)</li><li><strong>should set secure session cookies with proper attributes</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"SameSite=Strict"[39m
+Received string:    [31m"session-id=secure-session; Path=/; Expires=Fri, 03 Oct 2025 01:10:10 GMT; Max-Age=3600; HttpOnly; SameSite=strict"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-csrf.test.ts:246:31)</li><li><strong>should never expose actual session ID in any environment</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a string
+
+Received has value: [31mundefined[39m
+    at Object.toMatch (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:65:30)</li><li><strong>should not expose session ID in production environment</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"[SESSION_ACTIVE]"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:81:30)</li><li><strong>should not expose session ID in development environment</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a string
+
+Received has value: [31mundefined[39m
+    at Object.toMatch (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:97:30)</li><li><strong>should sanitize error responses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: not [32m"Database connection"[39m
+Received string:        [31m"[7mDatabase connection[27m failed: [REDACTED]"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:117:30)</li><li><strong>should never expose actual session ID on successful login</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:138:31)</li><li><strong>should not expose sensitive data in failed login responses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m401[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth-security.test.ts:179:31)</li><li><strong>should process successful request</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+  [2m{"_bodyUsed": false, "body": undefined, "cookies": {"delete": [Function mockConstructor], "get": [Function mockConstructor], "getAll": [Function mockConstructor], "has": [Function mockConstructor], "set": [Function mockConstructor]}, "headers": {}, "method": "GET", "nextUrl": "https://example.com/api/v1/test", "url": "https://example.com/api/v1/test", Symbol(internal request): {"cookies": {"_headers": {}, "_parsed": Map {}}, "geo": {}, "ip": undefined, "nextUrl": "https://example.com/api/v1/test", "url": "https://example.com/api/v1/test"}}[22m,
+[32m- ObjectContaining {"metadata": ObjectContaining {"ip": "127.0.0.1", "method": "GET", "userAgent": "test-agent"}, "permissions": Any<Array>, "requestId": Any<String>}[39m,
+[31m+ {"clientId": "oauth-client", "metadata": {"ip": undefined, "method": "GET", "pathname": "/api/v1/test", "userAgent": "test-agent"}, "permissions": ["read:businesses", "write:businesses", "read:exports", "write:exports"], "rateLimit": {"remaining": 99, "resetTime": 60}, "requestId": "req_1759450211205_8up6n21mr", "startTime": 1759450211205, "userId": "oauth-user"}[39m,
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\integrations\api-framework.test.ts:91:27)</li><li><strong>should record request metrics</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mAny<String>[39m, [32mAny<String>[39m, [32m"GET"[39m, [32m200[39m, [32mAny<Number>[39m, [32mAny<Number>[39m, [32mObjectContaining {"ip": "127.0.0.1", "userAgent": "test-agent"}[39m
+Received: [2m"oauth-client"[22m, [2m"/api/v1/test"[22m, [2m"GET"[22m, [2m200[22m, [2m0[22m, [2m128[22m, [31m{"ip": undefined, "userAgent": "test-agent"}[39m
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\integrations\api-framework.test.ts:348:47)</li><li><strong>should return existing CSRF token for valid session</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"existing-session-id"[39m
+Received: [31m"mock-session-id"[39m
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\csrf.test.ts:108:30)</li><li><strong>should create new session when existing session is invalid</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"invalid-session-id"[39m
+Received: [31m"mock-session-id"[39m
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\csrf.test.ts:143:30)</li><li><strong>should handle errors gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 0[39m
+[31m+ Received  + 2[39m
+
+[2m  Object {[22m
+[2m    "error": "Internal server error",[22m
+[31m+   "retryable": false,[39m
+[31m+   "type": "server_error",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\csrf.test.ts:163:20)</li><li><strong>should refresh CSRF token for valid session</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"test-session-id"[39m
+Received: [31m"mock-session-id"[39m
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\csrf.test.ts:210:30)</li><li><strong>should return 401 for missing session</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 1[39m
+[31m+ Received  + 1[39m
+
+[2m  Object {[22m
+[32m-   "error": "No session found",[39m
+[31m+   "error": "Invalid session",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\csrf.test.ts:226:20)</li><li><strong>should return 401 for invalid session</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"invalid-session-id"[39m
+Received: [31m"mock-session-id"[39m
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\csrf.test.ts:250:30)</li><li><strong>should never expose password hashes in user list</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:99:31)</li><li><strong>should mask PII data in production</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:131:31)</li><li><strong>should sanitize error responses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: not [32m"Database error"[39m
+Received string:        [31m"[7mDatabase error[27m: [REDACTED]"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:158:30)</li><li><strong>should remove total_count from individual user objects</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:173:31)</li><li><strong>should never expose password data in user creation response</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m201[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:202:31)</li><li><strong>should sanitize user creation error responses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: not [32m"database_url=postgresql://user:pass@localhost"[39m
+Received string:        [31m"User creation failed: [7mdatabase_url=postgresql://user:pass@localhost[27m"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:263:30)</li><li><strong>should handle all authentication field variations</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m201[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\users-security.test.ts:322:31)</li><li><strong>should get job status</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m404[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:175:33)</li><li><strong>should validate business data</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:261:33)</li><li><strong>should validate batch of businesses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:298:33)</li><li><strong>should limit batch validation size</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:323:33)</li><li><strong>should find duplicates</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:357:33)</li><li><strong>should compare two records</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:389:33)</li><li><strong>should get retention policies</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:408:33)</li><li><strong>should export data with enhanced options</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:440:33)</li><li><strong>should get overview statistics</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:455:33)</li><li><strong>should get validation statistics</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:468:33)</li><li><strong>should handle invalid stats type</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:479:33)</li><li><strong>should handle missing request body</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:509:31)</li><li><strong>should handle database connection errors</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\api.test.ts:529:31)</li><li><strong>should return paginated users list</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:112:33)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle search and filtering</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m{"isActive": true, "limit": 20, "page": 1, "role": "admin", "search": "test"}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:139:52)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should create a new user</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+  [2m{"email": "newuser@example.com", "firstName": "New", "lastName": "User", "password": "password123", "username": "newuser"}[22m,
+[31m+ ""[39m,
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:182:54)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should delete multiple users</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:261:33)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should authenticate user successfully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:299:33)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should reject invalid credentials</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m401[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:329:33)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should register new user successfully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m201[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:372:33)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should create a new team</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m201[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:413:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should return dashboard metrics</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:447:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle database errors gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"[7mF[27mailed t[7mo retrieve us[27mers"[39m
+Received: [31m"[7mQuery structure validation f[27mailed[7m:[27m t[7mext: Text contains potentially dangerous SQL patt[27mer[7mn[27ms"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:463:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle missing permissions</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m403[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\tests\multi-user\api-endpoints.test.ts:498:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle valid search request</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m400[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:52:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle invalid ZIP code format</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"ZIP code"[39m
+Received string:    [31m"Validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:130:26)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle valid scrape request</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:245:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle invalid URL</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:269:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle malicious URLs</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:299:33)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle cleanup action</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:319:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle unknown action</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m500[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:341:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should return configuration</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveProperty[2m([22m[32mpath[39m[2m)[22m
+
+Expected path: [32m"config"[39m
+Received path: [31m[][39m
+
+Received value: [31m{"app": {"debug": false, "environment": "test", "name": "Business Scraper App", "version": "6.10.1"}, "cache": {"type": "redis"}, "features": {"enableAuth": true, "enableCaching": true, "enableDebugMode": false, "enableExperimentalFeatures": false, "enableMetrics": true, "enableRateLimiting": true}, "logging": {"format": "json", "level": "info"}, "scraping": {"maxRetries": 3, "maxSearchResults": 50, "timeout": 30000}}[39m
+    at Object.toHaveProperty (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:363:20)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should return health status</strong>: Error: Configuration error
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:369:15
+    at Runtime.requireMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:940:55)
+    at Runtime.requireModuleOrMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1046:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\database.ts:38:17)
+    at Runtime._execModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:882:12)
+    at Runtime._generateMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1690:34)
+    at Runtime.requireMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:996:39)
+    at Runtime.requireModuleOrMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1046:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\health\route.ts:14:19)
+    at Runtime._execModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:882:12)
+    at Runtime.requireModuleOrMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1048:21)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:386:34
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:386:28)</li><li><strong>should include service health checks</strong>: Error: Configuration error
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:369:15
+    at Runtime.requireMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:940:55)
+    at Runtime.requireModuleOrMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1046:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\database.ts:38:17)
+    at Runtime._execModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:882:12)
+    at Runtime._generateMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1690:34)
+    at Runtime.requireMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:996:39)
+    at Runtime.requireModuleOrMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1046:21)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\app\api\health\route.ts:14:19)
+    at Runtime._execModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:882:12)
+    at Runtime.requireModuleOrMock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runtime\build\index.js:1048:21)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:386:34
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\tests\integration\comprehensive\apiEndpoints.comprehensive.test.ts:386:28)</li><li><strong>should return upload configuration</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeDefined[2m()[22m
+
+Received: [31mundefined[39m
+    at toBeDefined (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\setup\testSetup.ts:129:35)
+    at Array.forEach (<anonymous>)
+    at Object.forEach [as validateEnvironmentIntegrity] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\setup\testSetup.ts:128:21)
+    at Object.validateEnvironmentIntegrity (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:81:25)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:281:40)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:254:5)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should return different configs for different types</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeDefined[2m()[22m
+
+Received: [31mundefined[39m
+    at toBeDefined (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\setup\testSetup.ts:129:35)
+    at Array.forEach (<anonymous>)
+    at Object.forEach [as validateEnvironmentIntegrity] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\setup\testSetup.ts:128:21)
+    at Object.validateEnvironmentIntegrity (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:81:25)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:281:40)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:254:5)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should reject non-POST requests</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m405[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:119:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should accept valid file uploads</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:135:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should reject files exceeding size limit</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:156:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should reject executable files</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:173:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should reject empty files</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:190:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle multiple file uploads</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:210:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should enforce file count limits</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:233:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should save files when requested</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:256:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle malicious script content</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:275:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should validate JSON structure for backup files</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:293:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should reject invalid JSON for backup files</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:310:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should validate CSV structure for data import</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:327:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should include security scan details in response</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:344:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle file processing errors gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:372:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should quarantine malicious files</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:395:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should detect path traversal in filenames</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m400[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:412:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle different upload types with appropriate security</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\upload.test.ts:431:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/templates should return template list</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:194:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/templates with platform filter</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:207:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/templates with details</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:218:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>POST /api/v1/exports should create export successfully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:262:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>POST /api/v1/exports should validate required fields</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:287:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>POST /api/v1/exports should validate business data</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:308:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/analytics?type=realtime should return real-time metrics</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:321:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/analytics?type=client should return client analytics</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:337:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/analytics?type=system should return system analytics</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:351:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>GET /api/v1/analytics with date range should filter data</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m200[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:371:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle invalid JSON in request body</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:390:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should handle missing required parameters</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m403[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:403:31)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should include rate limit headers</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+Received: [31mnull[39m
+    at Object.toBeTruthy (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\api-endpoints.test.ts:429:61)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)</li><li><strong>should show real-time validation for Google Search API key</strong>: TestingLibraryElementError: Unable to find a label with the text of: /Google Search.*API Key/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center space-x-3"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"Default"[39m
+              [33mclass[39m=[32m"lucide lucide-default h-6 w-6 text-blue-600"[39m
+              [33mdata-testid[39m=[32m"default-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mrole[39m=[32m"img"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+            [36m/>[39m
+            [36m<div>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"text-xl font-semibold"[39m
+              [36m>[39m
+                [0mAPI Configuration[0m
+              [36m</h2>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"text-sm text-gray-600"[39m
+              [36m>[39m
+                [0mSecurely configure your search engine API credentials[0m
+              [36m</p>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"[39m
+          [36m>[39m
+            [0m✕[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-6 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm border-blue-200 bg-blue-50"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 p-6 pt-6"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-start space-x-3"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33maria-label[39m=[32m"Default"[39m
+                  [33mclass[39m=[32m"lucide lucide-default h-5 w-5 text-blue-600 mt-1"[39m
+                  [33mdata-testid[39m=[32m"default-icon"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mrole[39m=[32m"img"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                [36m/>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-sm"[39m
+                [36m>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"font-medium text-blue-800 mb-2"[39m
+                  [36m>[39m
+                    [0mSecure Local Storage[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"text-blue-700"[39m
+                  [36m>[39m
+                    [0mYour API credentials are encrypted using AES-256 encryption and stored locally in your browser. They never leave your device and are not transmitted to our servers.[0m
+                  [36m</p>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+            [36m>[39m
+              [36m<h3[39m
+                [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight flex items-center space-x-2"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mGoogle APIs[0m
+                [36m</span>[39m
+              [36m</h3>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 space-y-6"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<h4[39m
+                  [33mclass[39m=[32m"text-sm font-medium text-gray-900 mb-3"[39m
+                [36m>[39m
+                  [0mGoogle Custom Search API[0m
+                [36m</h4>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"grid grid-cols-1 md:grid-cols-2 gap-4"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"space-y-2"[39m
+                    [36m>[39m
+                      [36m<label[39m
+                        [33mclass[39m=[32m"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"[39m
+                        [33mfor[39m=[32m":r0:"[39m
+                      [36m>[39m
+                        [0mAPI Key[0m
+                      [36m</label>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"relative"[39m
+                      [36m>[39m
+                        [36m<input[39m
+                          [33maria-invalid[39m=[32m"false"[39m
+                          [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring"[39m
+                          [33mid[39m=[32m":r0:"[39m
+                          [33mplaceholder[39m=[...
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at getAllByLabelText (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\queries\label-text.js:111:38)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:52:17
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByLabelText (Q:\_kyle\temp_documents\GitHub\business_scraper\__tests__\components\ApiConfigurationPage.test.tsx:59:32)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at processImmediate (node:internal/timers:453:9)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should show real-time validation for Google Search Engine ID</strong>: Error: Unable to find an element with the text: /Google Search Engine ID is required/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center space-x-3"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"Default"[39m
+              [33mclass[39m=[32m"lucide lucide-default h-6 w-6 text-blue-600"[39m
+              [33mdata-testid[39m=[32m"default-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mrole[39m=[32m"img"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+            [36m/>[39m
+            [36m<div>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"text-xl font-semibold"[39m
+              [36m>[39m
+                [0mAPI Configuration[0m
+              [36m</h2>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"text-sm text-gray-600"[39m
+              [36m>[39m
+                [0mSecurely configure your search engine API credentials[0m
+              [36m</p>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"[39m
+          [36m>[39m
+            [0m✕[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-6 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm border-blue-200 bg-blue-50"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 p-6 pt-6"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-start space-x-3"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33maria-label[39m=[32m"Default"[39m
+                  [33mclass[39m=[32m"lucide lucide-default h-5 w-5 text-blue-600 mt-1"[39m
+                  [33mdata-testid[39m=[32m"default-icon"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mrole[39m=[32m"img"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                [36m/>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-sm"[39m
+                [36m>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"font-medium text-blue-800 mb-2"[39m
+                  [36m>[39m
+                    [0mSecure Local Storage[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"text-blue-700"[39m
+                  [36m>[39m
+                    [0mYour API credentials are encrypted using AES-256 encryption and stored locally in your browser. They never leave your device and are not transmitted to our servers.[0m
+                  [36m</p>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+            [36m>[39m
+              [36m<h3[39m
+                [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight flex items-center space-x-2"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mGoogle APIs[0m
+                [36m</span>[39m
+              [36m</h3>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 space-y-6"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<h4[39m
+                  [33mclass[39m=[32m"text-sm font-medium text-gray-900 mb-3"[39m
+                [36m>[39m
+                  [0mGoogle Custom Search API[0m
+                [36m</h4>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"grid grid-cols-1 md:grid-cols-2 gap-4"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"space-y-2"[39m
+                    [36m>[39m
+                      [36m<label[39m
+                        [33mclass[39m=[32m"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"[39m
+                        [33mfor[39m=[32m":r7:"[39m
+                      [36m>[39m
+                        [0mAPI Key[0m
+                      [36m</label>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"relative"[39m
+                      [36m>[39m
+                        [36m<input[39m
+                          [33maria-invalid[39m=[32m"false"[39m
+                          [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring"[39m
+                          [33mid[39m=[32m":r7:"[39m
+                          [33mplaceholder[39m=[...
+    at waitForWrapper (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:163:27)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\__tests__\components\ApiConfigurationPage.test.tsx:101:18)</li><li><strong>should maintain accessibility attributes</strong>: TestingLibraryElementError: Unable to find a label with the text of: /Google Search.*API Key/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center space-x-3"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"Default"[39m
+              [33mclass[39m=[32m"lucide lucide-default h-6 w-6 text-blue-600"[39m
+              [33mdata-testid[39m=[32m"default-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mrole[39m=[32m"img"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+            [36m/>[39m
+            [36m<div>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"text-xl font-semibold"[39m
+              [36m>[39m
+                [0mAPI Configuration[0m
+              [36m</h2>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"text-sm text-gray-600"[39m
+              [36m>[39m
+                [0mSecurely configure your search engine API credentials[0m
+              [36m</p>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"[39m
+          [36m>[39m
+            [0m✕[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-6 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm border-blue-200 bg-blue-50"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 p-6 pt-6"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-start space-x-3"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33maria-label[39m=[32m"Default"[39m
+                  [33mclass[39m=[32m"lucide lucide-default h-5 w-5 text-blue-600 mt-1"[39m
+                  [33mdata-testid[39m=[32m"default-icon"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mrole[39m=[32m"img"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                [36m/>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-sm"[39m
+                [36m>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"font-medium text-blue-800 mb-2"[39m
+                  [36m>[39m
+                    [0mSecure Local Storage[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"text-blue-700"[39m
+                  [36m>[39m
+                    [0mYour API credentials are encrypted using AES-256 encryption and stored locally in your browser. They never leave your device and are not transmitted to our servers.[0m
+                  [36m</p>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+            [36m>[39m
+              [36m<h3[39m
+                [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight flex items-center space-x-2"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mGoogle APIs[0m
+                [36m</span>[39m
+              [36m</h3>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 space-y-6"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<h4[39m
+                  [33mclass[39m=[32m"text-sm font-medium text-gray-900 mb-3"[39m
+                [36m>[39m
+                  [0mGoogle Custom Search API[0m
+                [36m</h4>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"grid grid-cols-1 md:grid-cols-2 gap-4"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"space-y-2"[39m
+                    [36m>[39m
+                      [36m<label[39m
+                        [33mclass[39m=[32m"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"[39m
+                        [33mfor[39m=[32m":re:"[39m
+                      [36m>[39m
+                        [0mAPI Key[0m
+                      [36m</label>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"relative"[39m
+                      [36m>[39m
+                        [36m<input[39m
+                          [33maria-invalid[39m=[32m"false"[39m
+                          [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring"[39m
+                          [33mid[39m=[32m":re:"[39m
+                          [33mplaceholder[39m=[...
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at getAllByLabelText (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\queries\label-text.js:111:38)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:52:17
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByLabelText (Q:\_kyle\temp_documents\GitHub\business_scraper\__tests__\components\ApiConfigurationPage.test.tsx:128:32)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should clear validation errors when input changes</strong>: TestingLibraryElementError: Unable to find a label with the text of: /Google Search.*API Key/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center space-x-3"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"Default"[39m
+              [33mclass[39m=[32m"lucide lucide-default h-6 w-6 text-blue-600"[39m
+              [33mdata-testid[39m=[32m"default-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mrole[39m=[32m"img"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+            [36m/>[39m
+            [36m<div>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"text-xl font-semibold"[39m
+              [36m>[39m
+                [0mAPI Configuration[0m
+              [36m</h2>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"text-sm text-gray-600"[39m
+              [36m>[39m
+                [0mSecurely configure your search engine API credentials[0m
+              [36m</p>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"[39m
+          [36m>[39m
+            [0m✕[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-6 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm border-blue-200 bg-blue-50"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 p-6 pt-6"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-start space-x-3"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33maria-label[39m=[32m"Default"[39m
+                  [33mclass[39m=[32m"lucide lucide-default h-5 w-5 text-blue-600 mt-1"[39m
+                  [33mdata-testid[39m=[32m"default-icon"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mrole[39m=[32m"img"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                [36m/>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-sm"[39m
+                [36m>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"font-medium text-blue-800 mb-2"[39m
+                  [36m>[39m
+                    [0mSecure Local Storage[0m
+                  [36m</p>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"text-blue-700"[39m
+                  [36m>[39m
+                    [0mYour API credentials are encrypted using AES-256 encryption and stored locally in your browser. They never leave your device and are not transmitted to our servers.[0m
+                  [36m</p>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"rounded-lg border bg-card text-card-foreground shadow-sm"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+            [36m>[39m
+              [36m<h3[39m
+                [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight flex items-center space-x-2"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mGoogle APIs[0m
+                [36m</span>[39m
+              [36m</h3>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"p-6 pt-0 space-y-6"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<h4[39m
+                  [33mclass[39m=[32m"text-sm font-medium text-gray-900 mb-3"[39m
+                [36m>[39m
+                  [0mGoogle Custom Search API[0m
+                [36m</h4>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"grid grid-cols-1 md:grid-cols-2 gap-4"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"relative"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"space-y-2"[39m
+                    [36m>[39m
+                      [36m<label[39m
+                        [33mclass[39m=[32m"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"[39m
+                        [33mfor[39m=[32m":rl:"[39m
+                      [36m>[39m
+                        [0mAPI Key[0m
+                      [36m</label>[39m
+                      [36m<div[39m
+                        [33mclass[39m=[32m"relative"[39m
+                      [36m>[39m
+                        [36m<input[39m
+                          [33maria-invalid[39m=[32m"false"[39m
+                          [33mclass[39m=[32m"flex h-10 w-full rounded-md border bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 px-3 pr-3 border-input focus-visible:ring-ring"[39m
+                          [33mid[39m=[32m":rl:"[39m
+                          [33mplaceholder[39m=[...
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at getAllByLabelText (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\queries\label-text.js:111:38)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:52:17
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByLabelText (Q:\_kyle\temp_documents\GitHub\business_scraper\__tests__\components\ApiConfigurationPage.test.tsx:155:32)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should allow navigation to configuration tab</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m4[39m
+Received length: [31m2[39m
+Received array:  [31m[<button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch">Configuration</button>, <h2 class="text-2xl font-bold">Configuration</h2>][39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen bg-background"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Business Scraper Logo"[39m
+                    [33mclass[39m=[32m"object-contain"[39m
+                    [33mdata-nimg[39m=[32m"1"[39m
+                    [33mdecoding[39m=[32m"async"[39m
+                    [33mfetchpriority[39m=[32m"high"[39m
+                    [33mheight[39m=[32m"32"[39m
+                    [33msizes[39m=[32m"32px"[39m
+                    [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                    [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                    [33mstyle[39m=[32m"color: transparent;"[39m
+                    [33mwidth[39m=[32m"32"[39m
+                  [36m/>[39m
+                  [36m<h1[39m
+                    [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                  [36m>[39m
+                    [0mBusiness Scraper[0m
+                  [36m</h1>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mConfiguration[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mScraping[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mAI Insights[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                    [36m/>[39m
+                    [0mBI Dashboard[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+       ...
+    at toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:139:54)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li><li><strong>should allow editing configuration fields</strong>: Error: Found a label with the text of: /zip code/i, however no form control was found associated to that label. Make sure you're using the "for" attribute or "aria-labelledby" attribute correctly.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"min-h-screen bg-background"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-between"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m"Business Scraper Logo"[39m
+                  [33mclass[39m=[32m"object-contain"[39m
+                  [33mdata-nimg[39m=[32m"1"[39m
+                  [33mdecoding[39m=[32m"async"[39m
+                  [33mfetchpriority[39m=[32m"high"[39m
+                  [33mheight[39m=[32m"32"[39m
+                  [33msizes[39m=[32m"32px"[39m
+                  [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                  [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                  [33mstyle[39m=[32m"color: transparent;"[39m
+                  [33mwidth[39m=[32m"32"[39m
+                [36m/>[39m
+                [36m<h1[39m
+                  [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                [36m>[39m
+                  [0mBusiness Scraper[0m
+                [36m</h1>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [0mConfiguration[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [0mScraping[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [0mAI Insights[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33maria-label[39m=[32m"Default"[39m
+                    [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                    [33mdata-testid[39m=[32m"default-icon"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"24"[39m
+                    [33mrole[39m=[32m"img"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"24"[39m
+                  [36m/>[39m
+                  [0mBI Dashboard[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33maria-label[39m=[32m"Default"[39m
+                    [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                    [33mdata-testid[39m=[32m"default-icon"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"24"[39m
+                    [33mrole[39m=[32m"img"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"24"[39m
+                  [36m/>[39m
+                  [0mAnalytics[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inl...
+    at waitForWrapper (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:163:27)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:153:20)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:549:9)
+    at processTimers (node:internal/timers:523:7)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should not show scraping lock banner</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m4[39m
+Received length: [31m2[39m
+Received array:  [31m[<button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch">Configuration</button>, <h2 class="text-2xl font-bold">Configuration</h2>][39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen bg-background"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Business Scraper Logo"[39m
+                    [33mclass[39m=[32m"object-contain"[39m
+                    [33mdata-nimg[39m=[32m"1"[39m
+                    [33mdecoding[39m=[32m"async"[39m
+                    [33mfetchpriority[39m=[32m"high"[39m
+                    [33mheight[39m=[32m"32"[39m
+                    [33msizes[39m=[32m"32px"[39m
+                    [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                    [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                    [33mstyle[39m=[32m"color: transparent;"[39m
+                    [33mwidth[39m=[32m"32"[39m
+                  [36m/>[39m
+                  [36m<h1[39m
+                    [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                  [36m>[39m
+                    [0mBusiness Scraper[0m
+                  [36m</h1>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mConfiguration[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mScraping[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mAI Insights[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                    [36m/>[39m
+                    [0mBI Dashboard[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+       ...
+    at toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:165:54)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li><li><strong>should disable navigation to configuration tab</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m4[39m
+Received length: [31m2[39m
+Received array:  [31m[<button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed" disabled="" title="Configuration cannot be changed while scraping is active. Please stop scraping first.">Configuration<span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">🔒</span></button>, <h2 class="text-2xl font-bold">Configuration</h2>][39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen bg-background"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Business Scraper Logo"[39m
+                    [33mclass[39m=[32m"object-contain"[39m
+                    [33mdata-nimg[39m=[32m"1"[39m
+                    [33mdecoding[39m=[32m"async"[39m
+                    [33mfetchpriority[39m=[32m"high"[39m
+                    [33mheight[39m=[32m"32"[39m
+                    [33msizes[39m=[32m"32px"[39m
+                    [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                    [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                    [33mstyle[39m=[32m"color: transparent;"[39m
+                    [33mwidth[39m=[32m"32"[39m
+                  [36m/>[39m
+                  [36m<h1[39m
+                    [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                  [36m>[39m
+                    [0mBusiness Scraper[0m
+                  [36m</h1>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed"[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mtitle[39m=[32m"Configuration cannot be changed while scraping is active. Please stop scraping first."[39m
+                  [36m>[39m
+                    [0mConfiguration[0m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full"[39m
+                    [36m>[39m
+                      [0m🔒[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mScraping[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mAI Insights[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                    [36m/>[39m
+                    [0mBI Dashboard[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39...
+    at toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:189:54)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li><li><strong>should show tooltip explaining why configuration is locked</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m4[39m
+Received length: [31m2[39m
+Received array:  [31m[<button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed" disabled="" title="Configuration cannot be changed while scraping is active. Please stop scraping first.">Configuration<span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">🔒</span></button>, <h2 class="text-2xl font-bold">Configuration</h2>][39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen bg-background"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Business Scraper Logo"[39m
+                    [33mclass[39m=[32m"object-contain"[39m
+                    [33mdata-nimg[39m=[32m"1"[39m
+                    [33mdecoding[39m=[32m"async"[39m
+                    [33mfetchpriority[39m=[32m"high"[39m
+                    [33mheight[39m=[32m"32"[39m
+                    [33msizes[39m=[32m"32px"[39m
+                    [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                    [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                    [33mstyle[39m=[32m"color: transparent;"[39m
+                    [33mwidth[39m=[32m"32"[39m
+                  [36m/>[39m
+                  [36m<h1[39m
+                    [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                  [36m>[39m
+                    [0mBusiness Scraper[0m
+                  [36m</h1>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed"[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mtitle[39m=[32m"Configuration cannot be changed while scraping is active. Please stop scraping first."[39m
+                  [36m>[39m
+                    [0mConfiguration[0m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full"[39m
+                    [36m>[39m
+                      [0m🔒[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mScraping[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mAI Insights[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                    [36m/>[39m
+                    [0mBI Dashboard[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39...
+    at toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:214:54)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li><li><strong>should disable configuration input fields</strong>: Error: Found a label with the text of: /zip code/i, however no form control was found associated to that label. Make sure you're using the "for" attribute or "aria-labelledby" attribute correctly.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"min-h-screen bg-background"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-between"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m"Business Scraper Logo"[39m
+                  [33mclass[39m=[32m"object-contain"[39m
+                  [33mdata-nimg[39m=[32m"1"[39m
+                  [33mdecoding[39m=[32m"async"[39m
+                  [33mfetchpriority[39m=[32m"high"[39m
+                  [33mheight[39m=[32m"32"[39m
+                  [33msizes[39m=[32m"32px"[39m
+                  [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                  [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                  [33mstyle[39m=[32m"color: transparent;"[39m
+                  [33mwidth[39m=[32m"32"[39m
+                [36m/>[39m
+                [36m<h1[39m
+                  [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                [36m>[39m
+                  [0mBusiness Scraper[0m
+                [36m</h1>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed"[39m
+                  [33mdisabled[39m=[32m""[39m
+                  [33mtitle[39m=[32m"Configuration cannot be changed while scraping is active. Please stop scraping first."[39m
+                [36m>[39m
+                  [0mConfiguration[0m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full"[39m
+                  [36m>[39m
+                    [0m🔒[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [0mScraping[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [0mAI Insights[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33maria-label[39m=[32m"Default"[39m
+                    [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                    [33mdata-testid[39m=[32m"default-icon"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"24"[39m
+                    [33mrole[39m=[32m"img"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"24"[39m
+                  [36m/>[39m
+                  [0mBI Dashboard[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33maria-label[39m=[32m"Default"[39m
+                    [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                    [33mdata-testid[39m=[32m"default-icon"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"24"[39m
+                    [33mrole[39m=[32m"img"[39m
+                    [33mstroke[39m=[3...
+    at waitForWrapper (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:163:27)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:244:20)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should allow navigation to scraping tab when scraping is active</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m2[39m
+Received length: [31m1[39m
+Received array:  [31m[<button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch">Scraping</button>][39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen bg-background"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Business Scraper Logo"[39m
+                    [33mclass[39m=[32m"object-contain"[39m
+                    [33mdata-nimg[39m=[32m"1"[39m
+                    [33mdecoding[39m=[32m"async"[39m
+                    [33mfetchpriority[39m=[32m"high"[39m
+                    [33mheight[39m=[32m"32"[39m
+                    [33msizes[39m=[32m"32px"[39m
+                    [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                    [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                    [33mstyle[39m=[32m"color: transparent;"[39m
+                    [33mwidth[39m=[32m"32"[39m
+                  [36m/>[39m
+                  [36m<h1[39m
+                    [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                  [36m>[39m
+                    [0mBusiness Scraper[0m
+                  [36m</h1>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed"[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mtitle[39m=[32m"Configuration cannot be changed while scraping is active. Please stop scraping first."[39m
+                  [36m>[39m
+                    [0mConfiguration[0m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full"[39m
+                    [36m>[39m
+                      [0m🔒[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mScraping[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mAI Insights[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                    [36m/>[39m
+                    [0mBI Dashboard[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39...
+    at toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:324:33)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li><li><strong>should prevent navigation back to configuration during scraping</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m4[39m
+Received length: [31m2[39m
+Received array:  [31m[<button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed" disabled="" title="Configuration cannot be changed while scraping is active. Please stop scraping first.">Configuration<span class="ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">🔒</span></button>, <h2 class="text-2xl font-bold">Configuration</h2>][39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"min-h-screen bg-background"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"border-b bg-card sticky top-0 z-40"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto px-4 py-3 md:py-4"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center justify-between"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"flex items-center gap-2 md:gap-4"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-2 md:gap-3"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Business Scraper Logo"[39m
+                    [33mclass[39m=[32m"object-contain"[39m
+                    [33mdata-nimg[39m=[32m"1"[39m
+                    [33mdecoding[39m=[32m"async"[39m
+                    [33mfetchpriority[39m=[32m"high"[39m
+                    [33mheight[39m=[32m"32"[39m
+                    [33msizes[39m=[32m"32px"[39m
+                    [33msrc[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=3840&q=90"[39m
+                    [33msrcset[39m=[32m"/_next/image?url=%2Ffavicon.ico&w=16&q=90 16w, /_next/image?url=%2Ffavicon.ico&w=32&q=90 32w, /_next/image?url=%2Ffavicon.ico&w=48&q=90 48w, /_next/image?url=%2Ffavicon.ico&w=64&q=90 64w, /_next/image?url=%2Ffavicon.ico&w=96&q=90 96w, /_next/image?url=%2Ffavicon.ico&w=128&q=90 128w, /_next/image?url=%2Ffavicon.ico&w=256&q=90 256w, /_next/image?url=%2Ffavicon.ico&w=384&q=90 384w, /_next/image?url=%2Ffavicon.ico&w=640&q=90 640w, /_next/image?url=%2Ffavicon.ico&w=750&q=90 750w, /_next/image?url=%2Ffavicon.ico&w=828&q=90 828w, /_next/image?url=%2Ffavicon.ico&w=1080&q=90 1080w, /_next/image?url=%2Ffavicon.ico&w=1200&q=90 1200w, /_next/image?url=%2Ffavicon.ico&w=1920&q=90 1920w, /_next/image?url=%2Ffavicon.ico&w=2048&q=90 2048w, /_next/image?url=%2Ffavicon.ico&w=3840&q=90 3840w"[39m
+                    [33mstyle[39m=[32m"color: transparent;"[39m
+                    [33mwidth[39m=[32m"32"[39m
+                  [36m/>[39m
+                  [36m<h1[39m
+                    [33mclass[39m=[32m"text-lg md:text-2xl font-bold truncate"[39m
+                  [36m>[39m
+                    [0mBusiness Scraper[0m
+                  [36m</h1>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"flex items-center gap-1 bg-muted rounded-lg p-1"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 min-h-touch opacity-50 cursor-not-allowed"[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mtitle[39m=[32m"Configuration cannot be changed while scraping is active. Please stop scraping first."[39m
+                  [36m>[39m
+                    [0mConfiguration[0m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"ml-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full"[39m
+                    [36m>[39m
+                      [0m🔒[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mScraping[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [0mAI Insights[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39m=[32m"default-icon"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"24"[39m
+                      [33mrole[39m=[32m"img"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"24"[39m
+                    [36m/>[39m
+                    [0mBI Dashboard[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 min-h-touch"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33maria-label[39m=[32m"Default"[39m
+                      [33mclass[39m=[32m"lucide lucide-default h-4 w-4 mr-1"[39m
+                      [33mdata-testid[39...
+    at toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\view\components\App-scraping-lock.test.tsx:349:54)
+    at runWithExpensiveErrorDiagnosticsDisabled (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:588:17)
+    at processTimers (node:internal/timers:523:7)</li></ul>
+
+    <p><em>Generated at 2025-10-03T00:10:41.450Z by EnhancedTestLogger</em></p>
+</body>
+</html>

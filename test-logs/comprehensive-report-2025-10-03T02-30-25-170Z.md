@@ -1,0 +1,185 @@
+# Comprehensive Test Report
+
+## Executive Summary
+- **Overall Status**: FAILED
+- **Total Tests**: 20
+- **Success Rate**: 75.00%
+- **Critical Issues**: 1
+- **Quality Gate**: FAILED
+
+## Test Results
+### Failed Tests
+- **should integrate error handling with React components**: ReferenceError: isError is not defined
+    at TestComponent (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:312:9)
+    at renderWithHooks (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:15486:18)
+    at mountIndeterminateComponent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:20103:13)
+    at beginWork (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:21626:16)
+    at beginWork$1 (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:27465:14)
+    at performUnitOfWork (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26599:12)
+    at workLoopSync (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26505:5)
+    at renderRootSync (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:25789:22)
+    at flushActQueue (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react\cjs\react.development.js:2667:24)
+    at act (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react\cjs\react.development.js:2582:11)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\act-compat.js:47:25
+    at renderRoot (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\pure.js:180:26)
+    at render (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\pure.js:271:10)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:329:13)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should handle error recovery in components**: TestingLibraryElementError: Unable to find an element by: [data-testid="retry-count"]
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mdata-testid[39m=[32m"attempts"[39m
+      [36m>[39m
+        [0mAttempts: [0m
+        [0m1[0m
+      [36m</div>[39m
+      [36m<button[39m
+        [33mdata-testid[39m=[32m"attempt"[39m
+      [36m>[39m
+        [0mAttempt Operation[0m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+    at Object.getElementError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\config.js:37:19)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:76:38
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:52:17
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\query-helpers.js:95:19
+    at Object.getByTestId (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:391:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+- **should implement retry with exponential backoff**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"Success after retries"[39m
+Received: [31mnull[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:429:27)
+- **should implement circuit breaker pattern**: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32mtrue[39m
+Received: [31mfalse[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:479:27)
+- **should work with error boundaries for unhandled errors**: Error: Unhandled component error
+    at throwUnhandledError (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:490:17)
+    at HTMLUnknownElement.callCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:4164:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\generated\EventListener.js:26:30)
+    at innerInvokeEventListeners (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:350:25)
+    at invokeEventListeners (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\generated\EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:4213:16)
+    at invokeGuardedCallback (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:4277:31)
+    at invokeGuardedCallbackAndCatchFirstError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:4291:25)
+    at executeDispatch (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:9041:3)
+    at processDispatchQueueItemsInOrder (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:9073:7)
+    at processDispatchQueue (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:9086:5)
+    at dispatchEventsForPlugins (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:9097:3)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:9288:12
+    at batchedUpdates$1 (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26179:12)
+    at batchedUpdates (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:3991:12)
+    at dispatchEventForPluginEventSystem (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:9287:3)
+    at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:6465:5)
+    at dispatchEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:6457:5)
+    at dispatchDiscreteEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:6430:5)
+    at HTMLDivElement.callTheUserObjectsOperation (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\generated\EventListener.js:26:30)
+    at innerInvokeEventListeners (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:350:25)
+    at invokeEventListeners (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:286:3)
+    at HTMLButtonElementImpl._dispatch (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:233:9)
+    at HTMLButtonElementImpl.dispatchEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\events\EventTarget-impl.js:104:17)
+    at HTMLButtonElement.dispatchEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\generated\EventTarget.js:241:34)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\events.js:19:20
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\pure.js:108:16
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\act-compat.js:48:24
+    at act (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react\cjs\react.development.js:2512:16)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\act-compat.js:47:25
+    at Object.eventWrapper (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\pure.js:107:28)
+    at fireEvent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\events.js:12:35)
+    at Function.fireEvent.<computed> [as click] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\node_modules\@testing-library\dom\dist\events.js:110:36)
+    at Function.fireEvent.<computed> [as click] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\fire-event.js:15:52)
+    at click (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:502:19)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\expect\build\toThrowMatchers.js:74:11)
+    at Object.throwingMatcher [as toThrow] (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\expect\build\index.js:320:21)
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:503:10)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+
+## Performance Analysis
+- **Average Duration**: 32960.00ms
+- **Memory Peak**: 116.67MB
+
+## Recommendations
+### Fix Critical Test Failures (CRITICAL)
+1 critical test failures require immediate attention
+- Fix should integrate error handling with React components: ReferenceError: isError is not defined
+    at TestComponent (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:312:9)
+    at renderWithHooks (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:15486:18)
+    at mountIndeterminateComponent (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:20103:13)
+    at beginWork (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:21626:16)
+    at beginWork$1 (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:27465:14)
+    at performUnitOfWork (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26599:12)
+    at workLoopSync (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26505:5)
+    at renderRootSync (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react-dom\cjs\react-dom.development.js:25789:22)
+    at flushActQueue (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react\cjs\react.development.js:2667:24)
+    at act (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\react\cjs\react.development.js:2582:11)
+    at Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\act-compat.js:47:25
+    at renderRoot (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\pure.js:180:26)
+    at render (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\@testing-library\react\dist\pure.js:271:10)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\error-handling\error-handling-hooks.comprehensive.test.tsx:329:13)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)
+
+---
+*Generated at 2025-10-03T02:30:25.169Z by EnhancedTestLogger*

@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "reportId": "report-1759458417507-tbmpn19p4",
+    "generatedAt": "2025-10-03T02:26:59.129Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 20,
+    "successRate": 85,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 892,
+      "memoryPeak": 92230328,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 20,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 20,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Secure-error-handling.comprehensive::should log errors securely without sensitive data::1759458419104",
+          "testName": "should log errors securely without sensitive data",
+          "testDescription": "should log errors securely without sensitive data",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+          "suite": "Secure-error-handling.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458418180,
+          "endTime": 1759458419072,
+          "duration": 892,
+          "memoryUsage": {
+            "heapUsed": 92095752,
+            "heapTotal": 124211200,
+            "external": 4619848,
+            "rss": 187707392
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"abc123\"\u001b[39m\nReceived string:        \u001b[31m\"{\\\"errorId\\\":\\\"err_mga844op_i7pvtx\\\",\\\"endpoint\\\":\\\"/api/secure\\\",\\\"method\\\":\\\"POST\\\",\\\"ip\\\":\\\"192.168.1.xxx\\\",\\\"userAgent\\\":\\\"Mozilla/5.0\\\",\\\"sessionId\\\":\\\"sess_123\\\",\\\"userId\\\":\\\"user_456\\\",\\\"error\\\":{\\\"name\\\":\\\"Error\\\",\\\"message\\\":\\\"API key \u001b[7mabc123\u001b[27m is invalid\\\"},\\\"timestamp\\\":\\\"2025-10-03T02:26:58.873Z\\\",\\\"classification\\\":\\\"internal\\\"}\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts:115:27)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: not \u001b[32m\"abc123\"\u001b[39m\nReceived string:        \u001b[31m\"{\\\"errorId\\\":\\\"err_mga844op_i7pvtx\\\",\\\"endpoint\\\":\\\"/api/secure\\\",\\\"method\\\":\\\"POST\\\",\\\"ip\\\":\\\"192.168.1.xxx\\\",\\\"userAgent\\\":\\\"Mozilla/5.0\\\",\\\"sessionId\\\":\\\"sess_123\\\",\\\"userId\\\":\\\"user_456\\\",\\\"error\\\":{\\\"name\\\":\\\"Error\\\",\\\"message\\\":\\\"API key \u001b[7mabc123\u001b[27m is invalid\\\"},\\\"timestamp\\\":\\\"2025-10-03T02:26:58.873Z\\\",\\\"classification\\\":\\\"internal\\\"}\"\u001b[39m\n    at Object.toContain (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts:115:27)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should log errors securely without sensitive data",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Secure-error-handling.comprehensive::should generate unique error IDs for tracking::1759458419112",
+          "testName": "should generate unique error IDs for tracking",
+          "testDescription": "should generate unique error IDs for tracking",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+          "suite": "Secure-error-handling.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458418180,
+          "endTime": 1759458419072,
+          "duration": 892,
+          "memoryUsage": {
+            "heapUsed": 92210200,
+            "heapTotal": 124211200,
+            "external": 4619848,
+            "rss": 187723776
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected pattern: \u001b[32m/^err_\\d+_[a-z0-9]+$/\u001b[39m\nReceived string:  \u001b[31m\"err_mga844sf_g7rbb2\"\u001b[39m\n    at Object.toMatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts:422:29)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected pattern: \u001b[32m/^err_\\d+_[a-z0-9]+$/\u001b[39m\nReceived string:  \u001b[31m\"err_mga844sf_g7rbb2\"\u001b[39m\n    at Object.toMatch (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts:422:29)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate unique error IDs for tracking",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Secure-error-handling.comprehensive::should provide error recovery suggestions::1759458419121",
+          "testName": "should provide error recovery suggestions",
+          "testDescription": "should provide error recovery suggestions",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+          "suite": "Secure-error-handling.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759458418180,
+          "endTime": 1759458419072,
+          "duration": 892,
+          "memoryUsage": {
+            "heapUsed": 92220848,
+            "heapTotal": 124211200,
+            "external": 4619848,
+            "rss": 187723776
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeDefined\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBeDefined (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts:442:29)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeDefined\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBeDefined (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts:442:29)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should provide error recovery suggestions",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\error-handling\\secure-error-handling.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeDefined\u001b[2m()\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1218.9431,
+      "endTime": 2841.2386,
+      "duration": 17840,
+      "memoryUsage": {
+        "heapUsed": 92162663.6,
+        "heapTotal": 110595196.32,
+        "external": 9216266.36,
+        "rss": 138243995.39999998
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1843253272,
+      "averageTestDuration": 892,
+      "totalExecutionTime": 17840
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

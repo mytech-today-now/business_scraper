@@ -19,12 +19,12 @@
   },
   {
     "testName": "enhanced-scraping-engine",
-    "averageResponseTime": 135,
+    "averageResponseTime": 10,
     "maxResponseTime": 135,
-    "throughput": 7.407407407407407,
-    "memoryUsage": 2105352,
+    "throughput": 0,
+    "memoryUsage": 852352,
     "errorRate": 0,
-    "timestamp": "2025-08-28T19:32:34.310Z"
+    "timestamp": "2025-10-02T19:00:13.172Z"
   },
   {
     "testName": "client-website-scraping",

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T01:49:53.502Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 42</div>
+    <div class="metric"><strong>Success Rate:</strong> 0.00%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should create new session when no session exists</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  - 2[39m
+[31m+ Received  + 1[39m
+
+[2m  Object {[22m
+[2m    "authenticated": false,[22m
+[32m-   "csrfToken": "csrf-token-123",[39m
+[32m-   "sessionId": "session-123",[39m
+[31m+   "expiresAt": "2025-10-03T02:49:53.111Z",[39m
+[2m  }[22m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\auth\auth-route.comprehensive.test.ts:118:20)</li></ul>
+
+    <p><em>Generated at 2025-10-03T01:49:53.502Z by EnhancedTestLogger</em></p>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-02T17:51:41.623Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 41</div>
+    <div class="metric"><strong>Success Rate:</strong> 56.10%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should handle 50 concurrent page requests</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+Expected: > [32m0.8[39m
+Received:   [31m0[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\performance\browser-pool-load.test.ts:84:47)</li><li><strong>should handle rapid page creation and destruction</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+Expected: > [32m0.9[39m
+Received:   [31m0[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\performance\browser-pool-load.test.ts:122:41)</li><li><strong>should maintain performance under sustained load</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+Expected: > [32m50[39m
+Received:   [31m0[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\performance\browser-pool-load.test.ts:167:30)</li><li><strong>should handle memory-intensive operations without leaks</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\performance\browser-pool-load.test.ts:183:22)</li><li><strong>should recover from memory pressure</strong>: Error: No available pages in browser pool. Stats: {"browsers":4,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\performance\browser-pool-load.test.ts:279:25)</li><li><strong>should handle timeout scenarios gracefully</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\performance\browser-pool-load.test.ts:332:22)</li><li><strong>should detect browser memory leaks</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:70:22)</li><li><strong>should properly cleanup pages with event listeners</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:140:20)</li><li><strong>should cleanup browser instances with all resources</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:161:20)</li><li><strong>should handle browser disconnect gracefully</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:178:20)</li><li><strong>should update memory statistics periodically</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:224:20)</li><li><strong>should handle concurrent page requests without memory leaks</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:549:9)
+    at processTimers (node:internal/timers:523:7)
+    at async Promise.all (index 1)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:245:21)</li><li><strong>should maintain stable memory usage over time</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:262:22)</li><li><strong>should cleanup resources even when errors occur</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:287:20)</li><li><strong>should handle browser crash gracefully</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:303:20)</li><li><strong>should handle timeout scenarios with proper cleanup</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:318:20)</li><li><strong>should maintain stability over extended periods</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:346:22)</li><li><strong>should provide accurate memory statistics via API</strong>: Error: No available pages in browser pool. Stats: {"browsers":3,"pages":0,"availablePages":0,"activePages":0,"totalPages":0,"isShuttingDown":false}
+    at BrowserPool.getPage (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\browserPool.ts:270:13)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\memory\browser-pool-memory-leak.test.ts:400:20)</li></ul>
+
+    <p><em>Generated at 2025-10-02T17:51:41.623Z by EnhancedTestLogger</em></p>
+</body>
+</html>

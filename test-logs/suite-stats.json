@@ -42,10 +42,10 @@
   "Zip-code-toast-duplication.regression": {
     "total": 3,
     "passed": 0,
-    "failed": 0,
-    "skipped": 3,
+    "failed": 3,
+    "skipped": 0,
     "successRate": 0,
-    "duration": 2709
+    "duration": 9525
   },
   "Use Search Streaming.connection-error": {
     "total": 9,
@@ -109,7 +109,7 @@
     "failed": 25,
     "skipped": 0,
     "successRate": 0,
-    "duration": 2250
+    "duration": 2520
   },
   "Use Offline Support": {
     "total": 15,
@@ -149,7 +149,7 @@
     "failed": 11,
     "skipped": 0,
     "successRate": 0.5925925925925926,
-    "duration": 1000
+    "duration": 792
   },
   "Feature Regression": {
     "total": 7,
@@ -165,7 +165,7 @@
     "failed": 11,
     "skipped": 0,
     "successRate": 0.6206896551724138,
-    "duration": 385
+    "duration": 351
   },
   "Security Monitoring": {
     "total": 25,
@@ -173,7 +173,7 @@
     "failed": 3,
     "skipped": 0,
     "successRate": 0.88,
-    "duration": 319
+    "duration": 310
   },
   "Login-authentication-fix": {
     "total": 9,
@@ -185,11 +185,11 @@
   },
   "Route": {
     "total": 12,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 12,
-    "successRate": 0,
-    "duration": 121
+    "passed": 2,
+    "failed": 10,
+    "skipped": 0,
+    "successRate": 0.16666666666666666,
+    "duration": 225
   },
   "Search Engine Controls": {
     "total": 9,
@@ -221,7 +221,7 @@
     "failed": 5,
     "skipped": 0,
     "successRate": 0.375,
-    "duration": 262
+    "duration": 281
   },
   "Mapping-engine": {
     "total": 19,
@@ -237,7 +237,7 @@
     "failed": 38,
     "skipped": 0,
     "successRate": 0,
-    "duration": 414
+    "duration": 397
   },
   "Use C S R F Protection": {
     "total": 9,
@@ -249,11 +249,11 @@
   },
   "Payment-api": {
     "total": 13,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 13,
-    "successRate": 0,
-    "duration": 251
+    "passed": 7,
+    "failed": 6,
+    "skipped": 0,
+    "successRate": 0.5384615384615384,
+    "duration": 382
   },
   "Csrf-token-fix": {
     "total": 15,
@@ -277,7 +277,7 @@
     "failed": 2,
     "skipped": 0,
     "successRate": 0.75,
-    "duration": 256
+    "duration": 282
   },
   "Search Engine Manager": {
     "total": 11,
@@ -297,11 +297,11 @@
   },
   "Auth-csrf": {
     "total": 8,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 8,
-    "successRate": 0,
-    "duration": 111
+    "passed": 1,
+    "failed": 7,
+    "skipped": 0,
+    "successRate": 0.125,
+    "duration": 180
   },
   "Csrf-auth-fix": {
     "total": 6,
@@ -317,23 +317,23 @@
     "failed": 2,
     "skipped": 0,
     "successRate": 0.8,
-    "duration": 175
+    "duration": 164
   },
   "Api-framework": {
     "total": 16,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 16,
-    "successRate": 0,
-    "duration": 115
+    "passed": 14,
+    "failed": 2,
+    "skipped": 0,
+    "successRate": 0.875,
+    "duration": 299
   },
   "Csrf": {
     "total": 7,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 7,
-    "successRate": 0,
-    "duration": 103
+    "passed": 1,
+    "failed": 6,
+    "skipped": 0,
+    "successRate": 0.14285714285714285,
+    "duration": 202
   },
   "Websocket-streaming": {
     "total": 14,
@@ -368,12 +368,12 @@
     "duration": 134
   },
   "Api": {
-    "total": 18,
+    "total": 0,
     "passed": 0,
     "failed": 0,
-    "skipped": 18,
+    "skipped": 0,
     "successRate": 0,
-    "duration": 433
+    "duration": 0
   },
   "Database Operations.comprehensive": {
     "total": 24,
@@ -433,11 +433,11 @@
   },
   "Api-endpoints": {
     "total": 15,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 15,
-    "successRate": 0,
-    "duration": 121
+    "passed": 2,
+    "failed": 13,
+    "skipped": 0,
+    "successRate": 0.13333333333333333,
+    "duration": 260
   },
   "Compliance Reporting": {
     "total": 23,
@@ -449,11 +449,11 @@
   },
   "Api Endpoints.comprehensive": {
     "total": 22,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 22,
-    "successRate": 0,
-    "duration": 106
+    "passed": 8,
+    "failed": 14,
+    "skipped": 0,
+    "successRate": 0.36363636363636365,
+    "duration": 1155
   },
   "Memory-management-comprehensive": {
     "total": 25,
@@ -466,10 +466,10 @@
   "Upload": {
     "total": 19,
     "passed": 0,
-    "failed": 0,
-    "skipped": 19,
+    "failed": 19,
+    "skipped": 0,
     "successRate": 0,
-    "duration": 107
+    "duration": 1077
   },
   "Payment Integration": {
     "total": 10,
@@ -753,11 +753,11 @@
   },
   "Simple-api": {
     "total": 19,
-    "passed": 0,
+    "passed": 19,
     "failed": 0,
-    "skipped": 19,
-    "successRate": 0,
-    "duration": 103
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 184
   },
   "Mobile-responsiveness": {
     "total": 12,
@@ -777,11 +777,11 @@
   },
   "Mobile Navigation": {
     "total": 20,
-    "passed": 0,
+    "passed": 1,
     "failed": 0,
-    "skipped": 20,
-    "successRate": 0,
-    "duration": 231
+    "skipped": 19,
+    "successRate": 0.05,
+    "duration": 1092
   },
   "Cache": {
     "total": 25,
@@ -1065,11 +1065,11 @@
   },
   "Enhanced Scraping Engine": {
     "total": 16,
-    "passed": 0,
+    "passed": 16,
     "failed": 0,
-    "skipped": 16,
-    "successRate": 0,
-    "duration": 200
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 162
   },
   "Phone Formatter": {
     "total": 24,
@@ -1281,11 +1281,11 @@
   },
   "App-scraping-lock": {
     "total": 13,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 13,
-    "successRate": 0,
-    "duration": 474
+    "passed": 5,
+    "failed": 8,
+    "skipped": 0,
+    "successRate": 0.38461538461538464,
+    "duration": 17438
   },
   "Search Orchestrator.concurrent": {
     "total": 6,
@@ -1861,7 +1861,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 416
+    "duration": 481
   },
   "Secure-database": {
     "total": 20,
@@ -1869,7 +1869,7 @@
     "failed": 10,
     "skipped": 0,
     "successRate": 0.5,
-    "duration": 271
+    "duration": 265
   },
   "Csrf-attack-scenarios": {
     "total": 19,
@@ -1877,7 +1877,7 @@
     "failed": 19,
     "skipped": 0,
     "successRate": 0,
-    "duration": 397
+    "duration": 294
   },
   "Csrf-protection-comprehensive": {
     "total": 14,
@@ -1885,7 +1885,7 @@
     "failed": 14,
     "skipped": 0,
     "successRate": 0,
-    "duration": 318
+    "duration": 274
   },
   "Csrf-basic-test": {
     "total": 6,
@@ -1893,7 +1893,7 @@
     "failed": 6,
     "skipped": 0,
     "successRate": 0,
-    "duration": 199
+    "duration": 181
   },
   "Csrf-validation-test": {
     "total": 12,
@@ -1901,7 +1901,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 180
+    "duration": 173
   },
   "Auth-security-comprehensive": {
     "total": 26,
@@ -1909,7 +1909,7 @@
     "failed": 26,
     "skipped": 0,
     "successRate": 0,
-    "duration": 610
+    "duration": 492
   },
   "Sensitive-data-exposure": {
     "total": 20,
@@ -1917,7 +1917,7 @@
     "failed": 1,
     "skipped": 0,
     "successRate": 0.95,
-    "duration": 314
+    "duration": 255
   },
   "Enhanced-security-hardening": {
     "total": 18,
@@ -1925,7 +1925,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 373
+    "duration": 1039
   },
   "Users-security": {
     "total": 8,
@@ -1933,15 +1933,15 @@
     "failed": 7,
     "skipped": 0,
     "successRate": 0.125,
-    "duration": 857
+    "duration": 200
   },
   "Auth-security": {
     "total": 12,
-    "passed": 5,
-    "failed": 7,
+    "passed": 6,
+    "failed": 6,
     "skipped": 0,
-    "successRate": 0.4166666666666667,
-    "duration": 999
+    "successRate": 0.5,
+    "duration": 211
   },
   "Sensitive-data-protection": {
     "total": 13,
@@ -1949,6 +1949,206 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 756
+    "duration": 217
+  },
+  "Authentication-security": {
+    "total": 20,
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 10384
+  },
+  "Csrf-xss-protection": {
+    "total": 15,
+    "passed": 12,
+    "failed": 3,
+    "skipped": 0,
+    "successRate": 0.8,
+    "duration": 236
+  },
+  "Security-test-suite": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 2277
+  },
+  "Browser-pool-memory-leak": {
+    "total": 17,
+    "passed": 5,
+    "failed": 12,
+    "skipped": 0,
+    "successRate": 0.29411764705882354,
+    "duration": 3204
+  },
+  "Browser-pool-unit": {
+    "total": 17,
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 843
+  },
+  "Browser-pool-load": {
+    "total": 7,
+    "passed": 1,
+    "failed": 6,
+    "skipped": 0,
+    "successRate": 0.14285714285714285,
+    "duration": 34200
+  },
+  "Comprehensive-security": {
+    "total": 13,
+    "passed": 5,
+    "failed": 8,
+    "skipped": 0,
+    "successRate": 0.38461538461538464,
+    "duration": 842
+  },
+  "Payment-processing": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 227
+  },
+  "Api-security": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 116
+  },
+  "Cors-validation": {
+    "total": 13,
+    "passed": 12,
+    "failed": 1,
+    "skipped": 0,
+    "successRate": 0.9230769230769231,
+    "duration": 3240
+  },
+  "Api Configuration Page": {
+    "total": 4,
+    "passed": 0,
+    "failed": 4,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 1779
+  },
+  "Auth-middleware.comprehensive": {
+    "total": 25,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 24,
+    "successRate": 0,
+    "duration": 914
+  },
+  "Businesses-route.comprehensive": {
+    "total": 35,
+    "passed": 27,
+    "failed": 8,
+    "skipped": 0,
+    "successRate": 0.7714285714285715,
+    "duration": 768
+  },
+  "Scraping-route.comprehensive": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Campaigns-route.comprehensive": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Roi-route.comprehensive": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Auth-route.comprehensive": {
+    "total": 22,
+    "passed": 10,
+    "failed": 12,
+    "skipped": 0,
+    "successRate": 0.45454545454545453,
+    "duration": 369
+  },
+  "Prioritized-data-processor.comprehensive": {
+    "total": 24,
+    "passed": 5,
+    "failed": 19,
+    "skipped": 0,
+    "successRate": 0.20833333333333334,
+    "duration": 897
+  },
+  "Enhanced-error-logger.comprehensive": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 690
+  },
+  "Secure-error-handling.comprehensive": {
+    "total": 20,
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 1,
+    "duration": 726
+  },
+  "Error-handling-hooks.comprehensive": {
+    "total": 20,
+    "passed": 15,
+    "failed": 5,
+    "skipped": 0,
+    "successRate": 0.75,
+    "duration": 1648
+  },
+  "Results-table.comprehensive": {
+    "total": 25,
+    "passed": 0,
+    "failed": 25,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 2897
+  },
+  "Search-functionality.comprehensive": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Export-features.comprehensive": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 0
+  },
+  "Form-components.comprehensive": {
+    "total": 18,
+    "passed": 0,
+    "failed": 18,
+    "skipped": 0,
+    "successRate": 0,
+    "duration": 783
   }
 }

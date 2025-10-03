@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T02:06:28.950Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-failed">FAILED</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 24</div>
+    <div class="metric"><strong>Success Rate:</strong> 20.83%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 11</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should convert business record to prioritized format correctly</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"5550123"[39m
+Received: [31m""[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:52:33)</li><li><strong>should prioritize businesses with complete contact information</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a number or bigint
+
+Received has value: [31mundefined[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:107:51)</li><li><strong>should prioritize business emails over personal emails</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"contact@business.com"[39m
+Received: [31m"i"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:120:36)</li><li><strong>should remove invalid email addresses</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+Expected: [32m["valid@business.com", "another@business.com"][39m
+Received: [31m"valid@business.com"[39m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:133:33)</li><li><strong>should remove duplicate emails</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+Expected: [32m["contact@business.com"][39m
+Received: [31m"contact@business.com"[39m
+    at Object.toEqual (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:146:33)</li><li><strong>should handle email priority patterns correctly</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"contact@business.com"[39m
+Received: [31m"i"[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:164:36)</li><li><strong>should clean and format phone numbers</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:178:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should remove invalid phone numbers</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:189:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should remove duplicate phone numbers</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:202:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should detect duplicates by phone number</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:264:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should keep the record with higher priority when deduplicating</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:285:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should filter out businesses without valuable contact information</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:332:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should count records with different contact types correctly</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:355:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should calculate priority based on contact information completeness</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:379:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should assign higher priority to businesses with professional emails</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a number or bigint
+
+Received has value: [31mundefined[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:409:36)</li><li><strong>should provide accurate processing statistics</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:422:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should handle malformed business records</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+Expected length: [32m0[39m
+Received length: [31m1[39m
+Received array:  [31m[{"additionalEmails": [], "additionalPhones": [], "businessName": "Test Business", "city": "Test City", "confidence": 0.25, "contactName": "", "coordinates": "", "email": "", "id": "test-business-1", "phone": "", "sources": ["https://testbusiness.com"], "state": "CA", "streetName": "Main St", "streetNumber": "123", "suite": undefined, "website": "https://testbusiness.com", "zipCode": "90210"}][39m
+    at Object.toHaveLength (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:471:39)</li><li><strong>should handle very long contact lists</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:480:53)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should integrate with AI lead scoring for priority calculation</strong>: TypeError: phone.trim is not a function
+    at trim (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:39)
+    at Array.filter (<anonymous>)
+    at PrioritizedDataProcessor.filter [as prioritizePhones] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:221:8)
+    at PrioritizedDataProcessor.prioritizePhones [as convertToPrioritized] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:141:25)
+    at convertToPrioritized (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:59)
+    at Array.map (<anonymous>)
+    at PrioritizedDataProcessor.map [as processBusinessRecords] (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\prioritizedDataProcessor.ts:94:40)
+    at Object.processBusinessRecords (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\data-processing\prioritized-data-processor.comprehensive.test.ts:511:51)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li></ul>
+
+    <p><em>Generated at 2025-10-03T02:06:28.950Z by EnhancedTestLogger</em></p>
+</body>
+</html>

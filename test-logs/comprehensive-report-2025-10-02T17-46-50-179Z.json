@@ -1,0 +1,1004 @@
+{
+  "metadata": {
+    "reportId": "report-1759427199001-36xr920m4",
+    "generatedAt": "2025-10-02T17:46:50.179Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 17,
+    "successRate": 29.411764705882355,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 10443,
+      "memoryPeak": 103522208,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 17,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 17,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should detect browser memory leaks::1759427210120",
+          "testName": "should detect browser memory leaks",
+          "testDescription": "should detect browser memory leaks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103310416,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:70:22)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:70:22)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should detect browser memory leaks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should properly cleanup pages with event listeners::1759427210129",
+          "testName": "should properly cleanup pages with event listeners",
+          "testDescription": "should properly cleanup pages with event listeners",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103353992,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:140:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:140:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should properly cleanup pages with event listeners",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should cleanup browser instances with all resources::1759427210134",
+          "testName": "should cleanup browser instances with all resources",
+          "testDescription": "should cleanup browser instances with all resources",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103363848,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:161:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:161:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should cleanup browser instances with all resources",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle browser disconnect gracefully::1759427210137",
+          "testName": "should handle browser disconnect gracefully",
+          "testDescription": "should handle browser disconnect gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103374064,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:178:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:178:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle browser disconnect gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should update memory statistics periodically::1759427210141",
+          "testName": "should update memory statistics periodically",
+          "testDescription": "should update memory statistics periodically",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103387832,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:224:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:224:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should update memory statistics periodically",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle concurrent page requests without memory leaks::1759427210146",
+          "testName": "should handle concurrent page requests without memory leaks",
+          "testDescription": "should handle concurrent page requests without memory leaks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103405600,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at async Promise.all (index 1)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:245:21)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at async Promise.all (index 1)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:245:21)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle concurrent page requests without memory leaks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should maintain stable memory usage over time::1759427210151",
+          "testName": "should maintain stable memory usage over time",
+          "testDescription": "should maintain stable memory usage over time",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103428056,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:262:22)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:262:22)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should maintain stable memory usage over time",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should cleanup resources even when errors occur::1759427210155",
+          "testName": "should cleanup resources even when errors occur",
+          "testDescription": "should cleanup resources even when errors occur",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103438288,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:287:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:287:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should cleanup resources even when errors occur",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle browser crash gracefully::1759427210159",
+          "testName": "should handle browser crash gracefully",
+          "testDescription": "should handle browser crash gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103449168,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:303:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:303:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle browser crash gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle timeout scenarios with proper cleanup::1759427210162",
+          "testName": "should handle timeout scenarios with proper cleanup",
+          "testDescription": "should handle timeout scenarios with proper cleanup",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103478840,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:318:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:318:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle timeout scenarios with proper cleanup",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should maintain stability over extended periods::1759427210167",
+          "testName": "should maintain stability over extended periods",
+          "testDescription": "should maintain stability over extended periods",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103497032,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:346:22)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:346:22)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should maintain stability over extended periods",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should provide accurate memory statistics via API::1759427210171",
+          "testName": "should provide accurate memory statistics via API",
+          "testDescription": "should provide accurate memory statistics via API",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103512248,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:400:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:400:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should provide accurate memory statistics via API",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should detect browser memory leaks::1759427210120",
+          "testName": "should detect browser memory leaks",
+          "testDescription": "should detect browser memory leaks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103310416,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:70:22)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:70:22)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should detect browser memory leaks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should track browser resource memory usage::1759427210129",
+          "testName": "should track browser resource memory usage",
+          "testDescription": "should track browser resource memory usage",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103345752,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should perform emergency cleanup on memory alerts::1759427210129",
+          "testName": "should perform emergency cleanup on memory alerts",
+          "testDescription": "should perform emergency cleanup on memory alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103349872,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should properly cleanup pages with event listeners::1759427210129",
+          "testName": "should properly cleanup pages with event listeners",
+          "testDescription": "should properly cleanup pages with event listeners",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103353992,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:140:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:140:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should properly cleanup pages with event listeners",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should cleanup browser instances with all resources::1759427210134",
+          "testName": "should cleanup browser instances with all resources",
+          "testDescription": "should cleanup browser instances with all resources",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103363848,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:161:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:161:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should cleanup browser instances with all resources",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle browser disconnect gracefully::1759427210137",
+          "testName": "should handle browser disconnect gracefully",
+          "testDescription": "should handle browser disconnect gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103374064,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:178:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:178:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle browser disconnect gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should integrate with memory monitor alerts::1759427210141",
+          "testName": "should integrate with memory monitor alerts",
+          "testDescription": "should integrate with memory monitor alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103383720,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should update memory statistics periodically::1759427210141",
+          "testName": "should update memory statistics periodically",
+          "testDescription": "should update memory statistics periodically",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103387832,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:224:20)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:224:20)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should update memory statistics periodically",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle concurrent page requests without memory leaks::1759427210146",
+          "testName": "should handle concurrent page requests without memory leaks",
+          "testDescription": "should handle concurrent page requests without memory leaks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103405600,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at async Promise.all (index 1)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:245:21)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at processTimers (node:internal/timers:523:7)\n    at async Promise.all (index 1)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:245:21)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle concurrent page requests without memory leaks",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should maintain stable memory usage over time::1759427210151",
+          "testName": "should maintain stable memory usage over time",
+          "testDescription": "should maintain stable memory usage over time",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759427199650,
+          "endTime": 1759427210093,
+          "duration": 10443,
+          "memoryUsage": {
+            "heapUsed": 103428056,
+            "heapTotal": 132444160,
+            "external": 6659887,
+            "rss": 214581248
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:262:22)",
+          "stack": "Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}\n    at BrowserPool.getPage (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts:266:13)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:262:22)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should maintain stable memory usage over time",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No available pages in browser pool. Stats: {\"browsers\":3,\"availablePages\":0,\"activePages\":0,\"totalPages\":0,\"isShuttingDown\":false}"
+        }
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1413.7572,
+      "endTime": 12592.2207,
+      "duration": 177531,
+      "memoryUsage": {
+        "heapUsed": 103418155.29411764,
+        "heapTotal": 124101786.35294117,
+        "external": 10341815.529411765,
+        "rss": 155127232.94117647
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1758108640,
+      "averageTestDuration": 10443,
+      "totalExecutionTime": 177531
+    },
+    "bottlenecks": [
+      "should detect browser memory leaks (10443ms)",
+      "should track browser resource memory usage (10443ms)",
+      "should perform emergency cleanup on memory alerts (10443ms)",
+      "should properly cleanup pages with event listeners (10443ms)",
+      "should cleanup browser instances with all resources (10443ms)",
+      "should handle browser disconnect gracefully (10443ms)",
+      "should integrate with memory monitor alerts (10443ms)",
+      "should update memory statistics periodically (10443ms)",
+      "should handle concurrent page requests without memory leaks (10443ms)",
+      "should maintain stable memory usage over time (10443ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should detect browser memory leaks",
+          "should track browser resource memory usage",
+          "should perform emergency cleanup on memory alerts",
+          "should properly cleanup pages with event listeners",
+          "should cleanup browser instances with all resources",
+          "should handle browser disconnect gracefully",
+          "should integrate with memory monitor alerts",
+          "should update memory statistics periodically",
+          "should handle concurrent page requests without memory leaks",
+          "should maintain stable memory usage over time"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

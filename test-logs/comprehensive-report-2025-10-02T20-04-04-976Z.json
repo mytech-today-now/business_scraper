@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "reportId": "report-1759435442942-2k2l0vbr7",
+    "generatedAt": "2025-10-02T20:04:04.976Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 20,
+    "successRate": 0,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 1314,
+      "memoryPeak": 112595584,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 20,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 2,
+      "medium": 18,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Mobile Navigation::should render desktop navigation when not mobile::1759435444947",
+          "testName": "should render desktop navigation when not mobile",
+          "testDescription": "should render desktop navigation when not mobile",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\components\\MobileNavigation.test.tsx",
+          "relativePath": "src\\__tests__\\components\\MobileNavigation.test.tsx",
+          "suite": "Mobile Navigation",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759435443606,
+          "endTime": 1759435444920,
+          "duration": 1314,
+          "memoryUsage": {
+            "heapUsed": 112424136,
+            "heapTotal": 140292096,
+            "external": 6699530,
+            "rss": 207544320
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.\n\nCheck the render method of `MobileNavigation`.\n    at createFiberFromTypeAndProps (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:28478:17)\n    at createFiberFromElement (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:28504:15)\n    at createChild (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:13345:28)\n    at reconcileChildrenArray (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:13640:25)\n    at reconcileChildFibers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:14057:16)\n    at reconcileChildren (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:19186:28)\n    at updateHostComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:19953:3)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21657:14)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\components\\MobileNavigation.test.tsx:40:13)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.\n\nCheck the render method of `MobileNavigation`.\n    at createFiberFromTypeAndProps (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:28478:17)\n    at createFiberFromElement (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:28504:15)\n    at createChild (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:13345:28)\n    at reconcileChildrenArray (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:13640:25)\n    at reconcileChildFibers (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:14057:16)\n    at reconcileChildren (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:19186:28)\n    at updateHostComponent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:19953:3)\n    at beginWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:21657:14)\n    at beginWork$1 (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:27465:14)\n    at performUnitOfWork (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26599:12)\n    at workLoopSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26505:5)\n    at renderRootSync (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:26473:7)\n    at recoverFromConcurrentError (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25889:20)\n    at performConcurrentWorkOnRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react-dom\\cjs\\react-dom.development.js:25789:22)\n    at flushActQueue (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2667:24)\n    at act (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\react\\cjs\\react.development.js:2582:11)\n    at Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\act-compat.js:47:25\n    at renderRoot (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:180:26)\n    at render (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\@testing-library\\react\\dist\\pure.js:271:10)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\components\\MobileNavigation.test.tsx:40:13)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should render desktop navigation when not mobile",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\components\\MobileNavigation.test.tsx",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object."
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1501.0174,
+      "endTime": 3534.8063,
+      "duration": 26280,
+      "memoryUsage": {
+        "heapUsed": 112537123.2,
+        "heapTotal": 135044547.84,
+        "external": 11253712.32,
+        "rss": 168805684.8
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 2250742464,
+      "averageTestDuration": 1314,
+      "totalExecutionTime": 26280
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}
