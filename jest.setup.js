@@ -14,6 +14,10 @@ const { TextEncoder, TextDecoder } = require('util')
 global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 
+// Add Node.js timer polyfills for test environment
+global.setImmediate = global.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args))
+global.clearImmediate = global.clearImmediate || ((id) => clearTimeout(id))
+
 // Add comprehensive crypto polyfills for test environment
 const crypto = require('crypto')
 
@@ -79,6 +83,114 @@ if (typeof global.crypto === 'undefined') {
 global.indexedDB = require('fake-indexeddb')
 global.IDBKeyRange = require('fake-indexeddb/lib/FDBKeyRange')
 
+// Enhanced XMLHttpRequest mock with CORS support
+class MockXMLHttpRequest {
+  constructor() {
+    this.readyState = 0
+    this.status = 0
+    this.statusText = ''
+    this.responseText = ''
+    this.responseXML = null
+    this.response = ''
+    this.responseType = ''
+    this.timeout = 0
+    this.withCredentials = false
+    this.upload = {}
+    this._headers = {}
+    this._requestHeaders = {}
+    this._listeners = {}
+  }
+
+  open(method, url, async = true, user = null, password = null) {
+    this.method = method
+    this.url = url
+    this.async = async
+    this.readyState = 1
+    this._fireEvent('readystatechange')
+  }
+
+  setRequestHeader(name, value) {
+    this._requestHeaders[name.toLowerCase()] = value
+  }
+
+  send(data = null) {
+    this.readyState = 2
+    this._fireEvent('readystatechange')
+
+    // Simulate CORS-enabled response
+    setTimeout(() => {
+      this.readyState = 3
+      this._fireEvent('readystatechange')
+
+      // Set CORS headers
+      this._headers = {
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'access-control-allow-headers': 'Content-Type, Authorization, X-CSRF-Token',
+        'access-control-allow-credentials': 'true',
+        'content-type': 'application/json'
+      }
+
+      this.status = this.method === 'OPTIONS' ? 200 : 200
+      this.statusText = 'OK'
+      this.responseText = JSON.stringify({})
+      this.response = this.responseText
+      this.readyState = 4
+
+      this._fireEvent('load')
+      this._fireEvent('readystatechange')
+    }, 0)
+  }
+
+  abort() {
+    this.readyState = 0
+    this._fireEvent('abort')
+  }
+
+  getResponseHeader(name) {
+    return this._headers[name.toLowerCase()] || null
+  }
+
+  getAllResponseHeaders() {
+    return Object.entries(this._headers)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\r\n')
+  }
+
+  addEventListener(type, listener) {
+    if (!this._listeners[type]) {
+      this._listeners[type] = []
+    }
+    this._listeners[type].push(listener)
+  }
+
+  removeEventListener(type, listener) {
+    if (this._listeners[type]) {
+      const index = this._listeners[type].indexOf(listener)
+      if (index > -1) {
+        this._listeners[type].splice(index, 1)
+      }
+    }
+  }
+
+  _fireEvent(type) {
+    if (this._listeners[type]) {
+      this._listeners[type].forEach(listener => {
+        listener.call(this, { type, target: this })
+      })
+    }
+
+    // Also call on* properties
+    const handler = this[`on${type}`]
+    if (typeof handler === 'function') {
+      handler.call(this, { type, target: this })
+    }
+  }
+}
+
+// Set up XMLHttpRequest mock
+global.XMLHttpRequest = MockXMLHttpRequest
+
 // Mock Next.js router
 jest.mock('next/router', () => ({
   useRouter() {
@@ -123,16 +235,47 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
-// Mock fetch globally
-global.fetch = jest.fn(() =>
-  Promise.resolve({
+// Enhanced fetch mock with CORS support
+global.fetch = jest.fn((input, init = {}) => {
+  const url = typeof input === 'string' ? input : input.url
+  const method = init.method || 'GET'
+
+  // Create proper CORS headers for localhost requests
+  const corsHeaders = new Headers({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CSRF-Token',
+    'Access-Control-Allow-Credentials': 'true',
+    'Content-Type': 'application/json',
+    ...(init.headers || {})
+  })
+
+  // Handle OPTIONS preflight requests
+  if (method === 'OPTIONS') {
+    return Promise.resolve({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: corsHeaders,
+      json: () => Promise.resolve({}),
+      text: () => Promise.resolve(''),
+      blob: () => Promise.resolve(new Blob()),
+      clone: () => global.fetch(input, init)
+    })
+  }
+
+  // Handle regular requests with CORS headers
+  return Promise.resolve({
     ok: true,
     status: 200,
+    statusText: 'OK',
+    headers: corsHeaders,
     json: () => Promise.resolve({}),
     text: () => Promise.resolve(''),
     blob: () => Promise.resolve(new Blob()),
+    clone: () => global.fetch(input, init)
   })
-)
+})
 
 // Mock NextRequest with proper read-only property handling for Next.js 14 compatibility
 class MockNextRequest {
@@ -372,8 +515,22 @@ global.Response = class MockResponse {
     this.body = body
     this.status = init.status || 200
     this.statusText = init.statusText || 'OK'
-    this.headers = new Map(Object.entries(init.headers || {}))
+
+    // Create Headers object with CORS support
+    const defaultHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CSRF-Token',
+      'Access-Control-Allow-Credentials': 'true',
+      'Content-Type': 'application/json',
+      ...init.headers
+    }
+
+    this.headers = new Headers(defaultHeaders)
     this.ok = this.status >= 200 && this.status < 300
+    this.url = init.url || ''
+    this.redirected = false
+    this.type = 'cors'
   }
 
   async json() {
@@ -384,10 +541,33 @@ global.Response = class MockResponse {
     return this.body || ''
   }
 
+  async blob() {
+    return new Blob([this.body || ''])
+  }
+
+  async arrayBuffer() {
+    return new ArrayBuffer(0)
+  }
+
+  clone() {
+    return new MockResponse(this.body, {
+      status: this.status,
+      statusText: this.statusText,
+      headers: Object.fromEntries(this.headers.entries())
+    })
+  }
+
   static json(data, init = {}) {
     return new MockResponse(JSON.stringify(data), {
       ...init,
       headers: { 'Content-Type': 'application/json', ...init.headers },
+    })
+  }
+
+  static redirect(url, status = 302) {
+    return new MockResponse('', {
+      status,
+      headers: { 'Location': url }
     })
   }
 }
@@ -442,10 +622,132 @@ global.WebSocket = jest.fn().mockImplementation(() => ({
 
 // clsx is now mocked via moduleNameMapper in jest.config.js
 
-// Clean up after each test
+// Mock browser pool for performance tests
+jest.mock('@/lib/browserPool', () => ({
+  BrowserPool: jest.fn().mockImplementation(() => ({
+    initialize: jest.fn().mockResolvedValue(true),
+    acquirePage: jest.fn().mockResolvedValue({
+      page: {
+        goto: jest.fn().mockResolvedValue({}),
+        evaluate: jest.fn().mockResolvedValue({}),
+        close: jest.fn().mockResolvedValue({}),
+        setViewport: jest.fn().mockResolvedValue({}),
+        content: jest.fn().mockResolvedValue('<html></html>'),
+        title: jest.fn().mockResolvedValue('Test Page'),
+        url: jest.fn().mockReturnValue('http://localhost:3000'),
+        screenshot: jest.fn().mockResolvedValue(Buffer.from('fake-screenshot')),
+        pdf: jest.fn().mockResolvedValue(Buffer.from('fake-pdf'))
+      },
+      browserId: 'mock-browser-id',
+      contextId: 'mock-context-id',
+      createdAt: new Date(),
+      lastUsed: new Date(),
+      isActive: true
+    }),
+    releasePage: jest.fn().mockResolvedValue(undefined),
+    cleanup: jest.fn().mockResolvedValue(undefined),
+    getStats: jest.fn().mockReturnValue({
+      totalBrowsers: 1,
+      totalPages: 1,
+      activePagesCount: 0,
+      memoryUsage: { heapUsed: 1000000, heapTotal: 2000000 }
+    }),
+    isHealthy: jest.fn().mockReturnValue(true)
+  })),
+  browserPool: {
+    initialize: jest.fn().mockResolvedValue(true),
+    acquirePage: jest.fn().mockResolvedValue({
+      page: {
+        goto: jest.fn().mockResolvedValue({}),
+        evaluate: jest.fn().mockResolvedValue({}),
+        close: jest.fn().mockResolvedValue({}),
+        setViewport: jest.fn().mockResolvedValue({}),
+        content: jest.fn().mockResolvedValue('<html></html>'),
+        title: jest.fn().mockResolvedValue('Test Page'),
+        url: jest.fn().mockReturnValue('http://localhost:3000')
+      },
+      browserId: 'mock-browser-id',
+      isActive: true
+    }),
+    releasePage: jest.fn().mockResolvedValue(undefined),
+    cleanup: jest.fn().mockResolvedValue(undefined),
+    getStats: jest.fn().mockReturnValue({
+      totalBrowsers: 1,
+      totalPages: 1,
+      activePagesCount: 0
+    })
+  }
+}))
+
+// Enhanced test cleanup with CORS isolation
 afterEach(() => {
   jest.clearAllMocks()
-  if (global.fetch) {
+
+  // Clear fetch mock
+  if (global.fetch && global.fetch.mockClear) {
     global.fetch.mockClear()
+  }
+
+  // Reset XMLHttpRequest mock state
+  if (global.XMLHttpRequest && global.XMLHttpRequest.prototype) {
+    // Reset any instance-specific state
+  }
+
+  // Clear any CORS-related environment variables
+  delete process.env.CORS_ORIGIN
+  delete process.env.CORS_METHODS
+  delete process.env.CORS_HEADERS
+
+  // Reset window location if it exists
+  if (typeof window !== 'undefined' && window.location) {
+    Object.defineProperty(window, 'location', {
+      value: {
+        origin: 'http://localhost:3000',
+        protocol: 'http:',
+        hostname: 'localhost',
+        port: '3000',
+        href: 'http://localhost:3000/',
+        pathname: '/',
+        search: '',
+        hash: ''
+      },
+      writable: true,
+      configurable: true
+    })
+  }
+})
+
+// Enhanced test setup for each test
+beforeEach(() => {
+  // Ensure consistent CORS environment for each test
+  process.env.NODE_ENV = 'test'
+  process.env.CORS_ORIGIN = 'http://localhost:3000'
+
+  // Reset fetch mock to default CORS-enabled state
+  if (global.fetch && global.fetch.mockImplementation) {
+    global.fetch.mockImplementation((input, init = {}) => {
+      const url = typeof input === 'string' ? input : input.url
+      const method = init.method || 'GET'
+
+      const corsHeaders = new Headers({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CSRF-Token',
+        'Access-Control-Allow-Credentials': 'true',
+        'Content-Type': 'application/json',
+        ...(init.headers || {})
+      })
+
+      return Promise.resolve({
+        ok: true,
+        status: method === 'OPTIONS' ? 200 : 200,
+        statusText: 'OK',
+        headers: corsHeaders,
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve(''),
+        blob: () => Promise.resolve(new Blob()),
+        clone: () => global.fetch(input, init)
+      })
+    })
   }
 })

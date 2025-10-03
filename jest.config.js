@@ -12,6 +12,31 @@ const customJestConfig = {
     '<rootDir>/src/__tests__/setup/jestTypeScriptSetup.ts'
   ],
   testEnvironment: 'jsdom',
+  // Configure JSDOM to allow cross-origin requests for localhost
+  testEnvironmentOptions: {
+    url: 'http://localhost:3000',
+    resources: 'usable',
+    runScripts: 'dangerously',
+    pretendToBeVisual: true,
+    beforeParse(window) {
+      // Configure CORS for localhost
+      window.location.origin = 'http://localhost:3000'
+      window.location.protocol = 'http:'
+      window.location.hostname = 'localhost'
+      window.location.port = '3000'
+
+      // Allow cross-origin requests for localhost
+      const originalFetch = window.fetch
+      window.fetch = function(input, init = {}) {
+        // Ensure CORS headers are properly handled for localhost
+        if (typeof input === 'string' && input.includes('localhost')) {
+          init.mode = init.mode || 'cors'
+          init.credentials = init.credentials || 'same-origin'
+        }
+        return originalFetch.call(this, input, init)
+      }
+    }
+  },
   // Enhanced TypeScript support (compatible with Next.js)
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
@@ -30,7 +55,7 @@ const customJestConfig = {
   },
   // Configure ESM module handling for lucide-react and other ESM packages
   transformIgnorePatterns: [
-    'node_modules/(?!(lucide-react|@testing-library|@babel|@jest|uuid|nanoid)/)'
+    'node_modules/(?!(lucide-react|@testing-library|@babel|@jest|uuid|nanoid|@next|next)/)'
   ],
   // Enable ESM support
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
@@ -53,6 +78,9 @@ const customJestConfig = {
     '^clsx$': '<rootDir>/src/__tests__/mocks/clsx.js',
     // ESM module mappings for proper handling
     '^lucide-react$': '<rootDir>/src/__tests__/mocks/lucide-react.js',
+    // Handle nested lucide-react imports (for Next.js modularizeImports)
+    '^lucide-react/dist/esm/icons/(.*)$': '<rootDir>/src/__tests__/mocks/lucide-react.js',
+    '^lucide-react/(.*)$': '<rootDir>/src/__tests__/mocks/lucide-react.js',
     '^uuid$': '<rootDir>/src/__tests__/mocks/uuid.js',
   },
   testMatch: [
