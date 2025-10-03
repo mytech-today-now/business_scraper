@@ -111,6 +111,9 @@ export function ExportTemplateManager({
    * Load templates from localStorage on mount
    */
   useEffect(() => {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return
+
     try {
       const savedTemplates = localStorage.getItem('exportTemplates')
       if (savedTemplates) {
@@ -126,6 +129,9 @@ export function ExportTemplateManager({
    * Save templates to localStorage
    */
   const saveTemplates = (newTemplates: ExportTemplate[]) => {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return
+
     try {
       // Only save custom templates (not default ones)
       const customTemplates = newTemplates.filter(

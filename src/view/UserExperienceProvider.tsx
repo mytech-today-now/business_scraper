@@ -150,6 +150,9 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   }, [state.preferences.accessibility])
 
   const loadPreferences = useCallback(() => {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return
+
     try {
       const saved = localStorage.getItem('userPreferences')
       if (saved) {
@@ -162,6 +165,9 @@ export function UserExperienceProvider({ children }: { children: React.ReactNode
   }, [])
 
   const savePreferences = (preferences: UserPreferences) => {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return
+
     try {
       localStorage.setItem('userPreferences', JSON.stringify(preferences))
     } catch (error) {
