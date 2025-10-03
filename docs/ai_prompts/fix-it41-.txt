@@ -1,0 +1,9 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+CI/CD Test Monitoring Dashboard
+Prompt:
+Create a comprehensive test monitoring and reporting system for CI/CD pipelines: 1. **Test Metrics Collection**: Track success rates, execution times, flaky tests 2. **Performance Monitoring**: Monitor test execution performance over time 3. **Failure Analysis**: Automated categorization and analysis of test failures 4. **Trend Reporting**: Generate reports on test health and coverage trends 5. **Alert System**: Set up alerts for test success rate drops or performance issues 6. **Dashboard Creation**: Build a visual dashboard for test metrics Integrate with GitHub Actions and provide actionable insights for continuous improvement.

@@ -1,0 +1,9 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Test Optimization and Maintenance
+Prompt:
+Implement ongoing test optimization and maintenance strategies: 1. **Flaky Test Detection**: Identify and fix tests that fail intermittently 2. **Performance Optimization**: Optimize slow tests and reduce execution time 3. **Test Parallelization**: Improve test parallelization for faster CI/CD 4. **Maintenance Automation**: Automate test maintenance tasks and updates 5. **Coverage Monitoring**: Continuous monitoring of coverage metrics 6. **Best Practices**: Establish and enforce testing best practices Create a sustainable testing strategy that maintains high quality over time.

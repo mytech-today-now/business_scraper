@@ -1,0 +1,193 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+
+Harden Security Configuration
+P0 - Critical Security Configuration
+Files: src/middleware.ts, src/lib/security.ts, .env.example
+
+Issue: Security configuration needs hardening for production deployment
+
+Impact: Multiple attack vectors, compliance violations, data exposure risks
+
+Copy Augment AI Prompt
+Implement comprehensive security hardening across the business scraper application:
+
+1. Strengthen Content Security Policy (CSP) configuration
+2. Enhance authentication and session security
+3. Implement comprehensive input validation and sanitization
+4. Add security monitoring and threat detection
+5. Harden API security and rate limiting
+
+Critical Security Issues to Address:
+
+1. Content Security Policy Enhancement:
+```javascript
+// src/middleware.ts - Strengthen CSP
+const productionCSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https:",
+  "connect-src 'self' https://api.stripe.com",
+  "frame-src https://js.stripe.com https://hooks.stripe.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests"
+].join('; ')
+```
+
+2. Session Security Hardening:
+```typescript
+// src/lib/security.ts - Enhanced session configuration
+export const secureSessionConfig = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+  maxAge: 30 * 60 * 1000, // 30 minutes
+  path: '/',
+  domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : undefined
+}
+```
+
+3. Input Validation Enhancement:
+```typescript
+// Add comprehensive input sanitization
+import DOMPurify from 'isomorphic-dompurify'
+import validator from 'validator'
+
+export function sanitizeAndValidateInput(input: any, type: 'email' | 'url' | 'text' | 'html'): string {
+  if (typeof input !== 'string') throw new Error('Invalid input type')
+
+  let sanitized = DOMPurify.sanitize(input)
+
+  switch (type) {
+    case 'email':
+      if (!validator.isEmail(sanitized)) throw new Error('Invalid email format')
+      break
+    case 'url':
+      if (!validator.isURL(sanitized)) throw new Error('Invalid URL format')
+      break
+    case 'text':
+      sanitized = validator.escape(sanitized)
+      break
+  }
+
+  return sanitized
+}
+```
+
+4. API Security Enhancement:
+```typescript
+// src/lib/api-security.ts - Add comprehensive API protection
+export const apiSecurityMiddleware = {
+  rateLimit: {
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP'
+  },
+
+  helmet: {
+    contentSecurityPolicy: true,
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: true,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    dnsPrefetchControl: true,
+    frameguard: { action: 'deny' },
+    hidePoweredBy: true,
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    },
+    ieNoOpen: true,
+    noSniff: true,
+    originAgentCluster: true,
+    permittedCrossDomainPolicies: false,
+    referrerPolicy: { policy: "no-referrer" },
+    xssFilter: true
+  }
+}
+```
+
+5. Environment Security:
+```bash
+# .env.production - Add secure environment variables
+ENCRYPTION_MASTER_KEY=GENERATE_SECURE_64_CHAR_HEX_KEY
+NEXTAUTH_SECRET=GENERATE_SECURE_NEXTAUTH_SECRET
+DATABASE_ENCRYPTION_KEY=GENERATE_DATABASE_ENCRYPTION_KEY
+API_RATE_LIMIT_SECRET=GENERATE_RATE_LIMIT_SECRET
+CSRF_SECRET=GENERATE_CSRF_SECRET
+SESSION_SECRET=GENERATE_SESSION_SECRET
+
+# Security monitoring
+SECURITY_MONITORING_ENABLED=true
+THREAT_DETECTION_ENABLED=true
+AUDIT_LOGGING_ENABLED=true
+COMPLIANCE_MODE=SOC2_TYPE_II
+
+# Rate limiting
+RATE_LIMIT_REDIS_URL=redis://localhost:6379
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+6. Database Security:
+```sql
+-- Add database security constraints
+ALTER TABLE users ADD CONSTRAINT check_email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+ALTER TABLE sessions ADD CONSTRAINT check_session_expiry CHECK (expires_at > created_at);
+CREATE INDEX CONCURRENTLY idx_sessions_expires_at ON sessions(expires_at) WHERE expires_at > NOW();
+```
+
+7. Security Monitoring:
+```typescript
+// src/lib/securityMonitoring.ts - Enhanced threat detection
+export class SecurityMonitoringService {
+  detectSQLInjection(input: string): boolean {
+    const sqlPatterns = [
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
+      /(--|\/\*|\*\/|;|'|")/,
+      /(\bOR\b|\bAND\b).*?[=<>]/i
+    ]
+    return sqlPatterns.some(pattern => pattern.test(input))
+  }
+
+  detectXSS(input: string): boolean {
+    const xssPatterns = [
+      /)<[^<]*)*<\/script>/gi,
+      /javascript:/i,
+      /on\w+\s*=/i,
+      /)<[^<]*)*<\/iframe>/gi
+    ]
+    return xssPatterns.some(pattern => pattern.test(input))
+  }
+}
+```
+
+Implementation Priority:
+1. IMMEDIATE: CSP hardening and session security
+2. URGENT: Input validation and API security
+3. HIGH: Security monitoring and threat detection
+4. MEDIUM: Database security constraints
+5. LOW: Enhanced logging and compliance features
+
+Testing Requirements:
+- Penetration testing for all security enhancements
+- OWASP ZAP security scanning
+- SQL injection and XSS testing
+- Session hijacking and CSRF testing
+- Rate limiting and DDoS protection testing
+
+Compliance Targets:
+- SOC 2 Type II compliance
+- GDPR data protection requirements
+- OWASP Top 10 protection
+- PCI DSS Level 1 (if handling payments)
+

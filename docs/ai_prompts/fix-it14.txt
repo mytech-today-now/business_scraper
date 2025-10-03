@@ -1,0 +1,23 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+
+Immediate Priority: Lucide React Module Resolution
+IMMEDIATE
+1. Fix Lucide React Import Issues
+Prompt:
+Fix the lucide-react module resolution issues in Jest configuration. The error "Cannot find module 'lucide-react/dist/esm/icons/AlertCircle'" is occurring in components like Alert.tsx, ErrorBoundary.tsx, and AppShell.tsx. Please: 1. Update jest.config.js to properly handle lucide-react ESM imports 2. Enhance the lucide-react mock in src/__tests__/mocks/lucide-react.js 3. Fix transformIgnorePatterns to include lucide-react 4. Test the fix by running the failing regression tests 5. Ensure all icon imports work correctly in test environment Focus on making the module resolution work for both direct imports and nested icon imports from lucide-react.
+2. Enhanced Lucide React Mock Implementation
+Prompt:
+Create a comprehensive mock for lucide-react that handles all icon imports dynamically. The mock should: 1. Create React components for any lucide icon dynamically 2. Support both named imports and default imports 3. Include proper TypeScript types and props forwarding 4. Handle nested imports like 'lucide-react/dist/esm/icons/AlertCircle' 5. Provide proper accessibility attributes and test IDs 6. Support ref forwarding for React.forwardRef components Update the existing mock file and ensure it covers all use cases in the codebase.
+3. Jest Configuration Optimization
+Prompt:
+Optimize the Jest configuration to handle ESM modules better and prevent module resolution issues. Please: 1. Review and update moduleNameMapping for better ESM support 2. Optimize transformIgnorePatterns for modern packages 3. Configure proper module resolution for Next.js 14 and TypeScript 4. Add environment-specific configurations for CI vs local development 5. Ensure fake timers don't conflict between test files 6. Test the configuration with a sample test run The goal is to achieve 100% test execution without module resolution errors.
+Success Criteria:
+All regression tests pass without module resolution errors
+Lucide React icons render correctly in test environment
+Jest configuration handles ESM imports seamlessly
+No "Cannot find module" errors for lucide-react

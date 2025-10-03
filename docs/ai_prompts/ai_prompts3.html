@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompts for Testing Infrastructure Next Steps</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 5px;
+        }
+        h3 {
+            color: #2980b9;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .prompt-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .prompt-box::before {
+            content: "🤖 AI Prompt";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .priority {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .immediate { background: #e74c3c; color: white; }
+        .short-term { background: #f39c12; color: white; }
+        .long-term { background: #27ae60; color: white; }
+        .code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .success-criteria {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AI Prompts for Testing Infrastructure Next Steps</h1>
+        <p><strong>Document Purpose:</strong> Comprehensive AI prompts for Augment AI to address testing infrastructure improvements, module resolution issues, and test coverage optimization.</p>
+        
+        <h2>🔥 Immediate Priority: Lucide React Module Resolution</h2>
+        <div class="priority immediate">IMMEDIATE</div>
+        
+        <h3>1. Fix Lucide React Import Issues</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Fix the lucide-react module resolution issues in Jest configuration. The error "Cannot find module 'lucide-react/dist/esm/icons/AlertCircle'" is occurring in components like Alert.tsx, ErrorBoundary.tsx, and AppShell.tsx. 
+
+            Please:
+            1. Update jest.config.js to properly handle lucide-react ESM imports
+            2. Enhance the lucide-react mock in src/__tests__/mocks/lucide-react.js
+            3. Fix transformIgnorePatterns to include lucide-react
+            4. Test the fix by running the failing regression tests
+            5. Ensure all icon imports work correctly in test environment
+
+            Focus on making the module resolution work for both direct imports and nested icon imports from lucide-react.
+        </div>
+
+        <h3>2. Enhanced Lucide React Mock Implementation</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Create a comprehensive mock for lucide-react that handles all icon imports dynamically. The mock should:
+
+            1. Create React components for any lucide icon dynamically
+            2. Support both named imports and default imports
+            3. Include proper TypeScript types and props forwarding
+            4. Handle nested imports like 'lucide-react/dist/esm/icons/AlertCircle'
+            5. Provide proper accessibility attributes and test IDs
+            6. Support ref forwarding for React.forwardRef components
+
+            Update the existing mock file and ensure it covers all use cases in the codebase.
+        </div>
+
+        <h3>3. Jest Configuration Optimization</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Optimize the Jest configuration to handle ESM modules better and prevent module resolution issues. Please:
+
+            1. Review and update moduleNameMapping for better ESM support
+            2. Optimize transformIgnorePatterns for modern packages
+            3. Configure proper module resolution for Next.js 14 and TypeScript
+            4. Add environment-specific configurations for CI vs local development
+            5. Ensure fake timers don't conflict between test files
+            6. Test the configuration with a sample test run
+
+            The goal is to achieve 100% test execution without module resolution errors.
+        </div>
+
+        <div class="success-criteria">
+            <strong>Success Criteria:</strong>
+            <ul>
+                <li>All regression tests pass without module resolution errors</li>
+                <li>Lucide React icons render correctly in test environment</li>
+                <li>Jest configuration handles ESM imports seamlessly</li>
+                <li>No "Cannot find module" errors for lucide-react</li>
+            </ul>
+        </div>
+
+        <h2>📊 Short-term: Comprehensive Test Coverage Analysis</h2>
+        <div class="priority short-term">SHORT-TERM</div>
+
+        <h3>4. Test Coverage Gap Analysis</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Perform a comprehensive test coverage analysis to identify gaps and achieve 98% coverage target. Please:
+
+            1. Run coverage analysis on the entire codebase
+            2. Identify files and functions with low or missing coverage
+            3. Prioritize critical business logic and user-facing features
+            4. Create a coverage improvement plan with specific targets
+            5. Generate detailed coverage reports by module/component
+            6. Identify untested edge cases and error scenarios
+
+            Focus on critical paths: authentication, data processing, API routes, and user interactions.
+        </div>
+
+        <h3>5. Missing Test Case Implementation</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Implement missing test cases for critical application paths to reach 98% coverage. Target areas:
+
+            1. **API Routes**: Test all endpoints with various scenarios (success, error, edge cases)
+            2. **Authentication**: Complete auth flow testing including edge cases
+            3. **Data Processing**: Business record processing, validation, transformation
+            4. **Error Handling**: Test all error boundaries and fallback mechanisms
+            5. **User Interactions**: Form submissions, search functionality, export features
+            6. **Integration Points**: CRM integrations, external API calls
+
+            Create comprehensive test suites that cover both happy path and error scenarios.
+        </div>
+
+        <h3>6. Critical Path Testing Enhancement</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Enhance testing for critical application paths that directly impact user experience:
+
+            1. **Search Functionality**: Test streaming search, filters, pagination, error handling
+            2. **Data Export**: Test various export formats, large datasets, error scenarios
+            3. **CRM Integration**: Test all CRM providers, sync operations, error recovery
+            4. **User Onboarding**: Test complete onboarding flow with various user types
+            5. **Security Features**: Test CSRF protection, authentication, authorization
+            6. **Performance**: Test under load, memory usage, response times
+
+            Ensure each critical path has comprehensive test coverage including edge cases.
+        </div>
+
+        <div class="success-criteria">
+            <strong>Success Criteria:</strong>
+            <ul>
+                <li>Achieve 98% overall test coverage</li>
+                <li>100% coverage on critical business logic</li>
+                <li>All API endpoints have comprehensive test coverage</li>
+                <li>Error scenarios and edge cases are thoroughly tested</li>
+                <li>Performance and security tests are comprehensive</li>
+            </ul>
+        </div>
+
+        <h2>📈 Long-term: Test Success Monitoring & Optimization</h2>
+        <div class="priority long-term">LONG-TERM</div>
+
+        <h3>7. CI/CD Test Monitoring Dashboard</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Create a comprehensive test monitoring and reporting system for CI/CD pipelines:
+
+            1. **Test Metrics Collection**: Track success rates, execution times, flaky tests
+            2. **Performance Monitoring**: Monitor test execution performance over time
+            3. **Failure Analysis**: Automated categorization and analysis of test failures
+            4. **Trend Reporting**: Generate reports on test health and coverage trends
+            5. **Alert System**: Set up alerts for test success rate drops or performance issues
+            6. **Dashboard Creation**: Build a visual dashboard for test metrics
+
+            Integrate with GitHub Actions and provide actionable insights for continuous improvement.
+        </div>
+
+        <h3>8. Test Optimization and Maintenance</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Implement ongoing test optimization and maintenance strategies:
+
+            1. **Flaky Test Detection**: Identify and fix tests that fail intermittently
+            2. **Performance Optimization**: Optimize slow tests and reduce execution time
+            3. **Test Parallelization**: Improve test parallelization for faster CI/CD
+            4. **Maintenance Automation**: Automate test maintenance tasks and updates
+            5. **Coverage Monitoring**: Continuous monitoring of coverage metrics
+            6. **Best Practices**: Establish and enforce testing best practices
+
+            Create a sustainable testing strategy that maintains high quality over time.
+        </div>
+
+        <h3>9. Advanced Testing Infrastructure</h3>
+        <div class="prompt-box">
+            <strong>Prompt:</strong><br>
+            Implement advanced testing infrastructure for long-term scalability:
+
+            1. **Visual Regression Testing**: Implement screenshot-based UI testing
+            2. **Contract Testing**: Add API contract testing for external integrations
+            3. **Chaos Engineering**: Implement fault injection testing
+            4. **Load Testing**: Comprehensive load and stress testing infrastructure
+            5. **Security Testing**: Advanced security testing and vulnerability scanning
+            6. **Cross-browser Testing**: Ensure compatibility across different browsers
+
+            Build a robust testing ecosystem that supports rapid development and deployment.
+        </div>
+
+        <div class="success-criteria">
+            <strong>Success Criteria:</strong>
+            <ul>
+                <li>Maintain 95%+ test success rate in CI/CD</li>
+                <li>Test execution time under 10 minutes for full suite</li>
+                <li>Zero flaky tests in critical test suites</li>
+                <li>Comprehensive monitoring and alerting in place</li>
+                <li>Advanced testing capabilities implemented</li>
+            </ul>
+        </div>
+
+        <h2>🛠️ Implementation Guidelines</h2>
+        
+        <div class="note">
+            <strong>Note:</strong> When implementing these prompts, always:
+            <ul>
+                <li>Test changes thoroughly before committing</li>
+                <li>Update documentation for any configuration changes</li>
+                <li>Follow the existing code style and patterns</li>
+                <li>Create GitHub issues for any new problems discovered</li>
+                <li>Maintain backward compatibility where possible</li>
+            </ul>
+        </div>
+
+        <h3>Execution Order</h3>
+        <ol>
+            <li><strong>Start with Immediate priorities</strong> - Fix module resolution issues first</li>
+            <li><strong>Move to Short-term goals</strong> - Complete coverage analysis and implementation</li>
+            <li><strong>Implement Long-term strategies</strong> - Build monitoring and optimization systems</li>
+        </ol>
+
+        <div class="code">
+# Quick verification commands after each step:
+npm test -- --testPathIgnorePatterns=performance
+npm run test:coverage
+npm run test:integration
+npm run test:regression
+        </div>
+
+        <p><em>Generated for Augment AI - Testing Infrastructure Enhancement Phase 3</em></p>
+    </div>
+</body>
+</html>

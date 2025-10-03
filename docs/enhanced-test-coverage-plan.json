@@ -1,0 +1,3569 @@
+{
+  "overview": {
+    "currentCoverage": {
+      "lines": 4.93,
+      "statements": 4.84,
+      "functions": 4.49,
+      "branches": 3.74
+    },
+    "targetCoverage": 95,
+    "gapAnalysis": {
+      "P0": [
+        {
+          "module": "src/app/api/auth",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 3,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 420,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 913,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 749,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-rate-limiter.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 377,
+          "complexity": "high",
+          "hasAsync": false,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useCSRFProtection.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 419,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useLightweightCSRF.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 246,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/app/api/payments",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 10,
+          "complexity": "medium",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/controller/paymentController.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 385,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/model/stripeService.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 349,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/app/api/webhooks/stripe",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 505,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/api-security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 364,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/app/api/csrf",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        }
+      ],
+      "P1": [
+        {
+          "module": "src/app/api",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 187,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/model",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 30,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/lib",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 170,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/utils",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 34,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/controller",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 9,
+          "complexity": "medium",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        }
+      ],
+      "P2": [
+        {
+          "module": "src/components",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 20,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/view",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 76,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/hooks",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 25,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        }
+      ],
+      "uncovered": [
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\middleware.ts",
+          "priority": "P0",
+          "estimatedLines": 136,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\layout.tsx",
+          "priority": "P2",
+          "estimatedLines": 13,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\page.tsx",
+          "priority": "P2",
+          "estimatedLines": 4,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\ai\\batch-process\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 82,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\ai\\insights\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 145,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\ai\\jobs\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 28,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\ai\\lead-scoring\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 71,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\analytics\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 68,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\analytics\\realtime\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 51,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\audit\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 62,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\audit\\stats\\route.config.ts",
+          "priority": "P2",
+          "estimatedLines": 3,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\audit\\stats\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 52,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\auth\\multi-user\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 81,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\businesses\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 129,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\businesses\\paginated\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 127,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\campaigns\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 146,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\cleanup\\csrf-tokens\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 20,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\cleanup\\rate-limits\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 23,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\cleanup\\sessions\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 24,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\audit\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 64,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\ccpa\\opt-out\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 33,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\consent\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 87,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\consent\\batch\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 25,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\consent\\status\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 61,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\consent\\withdraw\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 20,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\dsar\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 99,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\privacy-dashboard\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 92,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\retention\\execute\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 36,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\retention\\policies\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 26,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\compliance\\retention\\policies\\[id]\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 36,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\config\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 87,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\crm\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 61,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\crm\\hubspot\\oauth\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 104,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\crm\\sync\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 102,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\crm\\webhook\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 89,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\csp-report\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 28,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\csrf\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 108,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\data-management\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 119,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\enhanced-scrape\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 89,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\export\\virtualized\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 28,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\export\\virtualized\\[exportId]\\progress\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 30,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\favicon\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 32,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\geocode\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 23,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\health\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 81,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\health\\detailed\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 93,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\images\\fallback\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 10,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\memory\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 67,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\metrics\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 70,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\.well-known\\openid-configuration\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 4,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\authorize\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 63,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\introspect\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 45,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\register\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 49,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\revoke\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 35,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\token\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 63,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\oauth\\userinfo\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 49,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\payments\\billing-portal\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 19,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\payments\\create-intent\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 60,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\payments\\history\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 32,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\payments\\plans\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 28,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\payments\\subscription\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 52,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\ping\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 29,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\resilience\\status\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 83,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\roi\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 66,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\roi\\export\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 28,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\scrape\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 113,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\scraping\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 125,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\search\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 316,
+          "estimatedEffort": 32
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\security\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 91,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\security\\monitoring\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 93,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\stream-export\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 38,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\stream-health\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 20,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\stream-search\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 99,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\teams\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 143,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\upload\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 108,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\users\\[id]\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 119,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\v1\\analytics\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 92,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\v1\\exports\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 75,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\v1\\oauth\\authorize\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 81,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\v1\\oauth\\token\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 51,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\v1\\schedules\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 70,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\v1\\templates\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 69,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\webhooks\\stripe\\route.ts",
+          "priority": "P0",
+          "estimatedLines": 145,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\websocket\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 34,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\api\\workspaces\\route.ts",
+          "priority": "P2",
+          "estimatedLines": 159,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\login\\page.tsx",
+          "priority": "P2",
+          "estimatedLines": 109,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\payment\\cancel\\page.tsx",
+          "priority": "P0",
+          "estimatedLines": 34,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\payment\\success\\page.tsx",
+          "priority": "P0",
+          "estimatedLines": 38,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\app\\pricing\\page.tsx",
+          "priority": "P2",
+          "estimatedLines": 55,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\CSPSafeComponents.tsx",
+          "priority": "P2",
+          "estimatedLines": 66,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\ClientOnlyStripeProvider.tsx",
+          "priority": "P0",
+          "estimatedLines": 25,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\DebugSystemInitializer.tsx",
+          "priority": "P2",
+          "estimatedLines": 50,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\ErrorBoundary.tsx",
+          "priority": "P2",
+          "estimatedLines": 54,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\MemoryUsageDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 100,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\PaymentSystemInitializer.tsx",
+          "priority": "P0",
+          "estimatedLines": 13,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\ServiceWorkerRegistration.tsx",
+          "priority": "P2",
+          "estimatedLines": 19,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\compliance\\ConsentBanner.tsx",
+          "priority": "P2",
+          "estimatedLines": 74,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\compliance\\DoNotSellPortal.tsx",
+          "priority": "P2",
+          "estimatedLines": 69,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\compliance\\PrivacyDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 69,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\multi-user\\AnalyticsDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 50,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\multi-user\\CollaborationPanel.tsx",
+          "priority": "P2",
+          "estimatedLines": 106,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\multi-user\\TeamWorkspace.tsx",
+          "priority": "P2",
+          "estimatedLines": 90,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\multi-user\\UserManagement.tsx",
+          "priority": "P2",
+          "estimatedLines": 98,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\oauth\\ClientRegistrationForm.tsx",
+          "priority": "P0",
+          "estimatedLines": 94,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\components\\oauth\\OAuthDashboard.tsx",
+          "priority": "P0",
+          "estimatedLines": 51,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\ConfigContext.tsx",
+          "priority": "P2",
+          "estimatedLines": 349,
+          "estimatedEffort": 35
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\PerformanceContext.tsx",
+          "priority": "P2",
+          "estimatedLines": 113,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\featureAccessController.ts",
+          "priority": "P2",
+          "estimatedLines": 104,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\paymentController.ts",
+          "priority": "P0",
+          "estimatedLines": 110,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\useScraperController.ts",
+          "priority": "P2",
+          "estimatedLines": 291,
+          "estimatedEffort": 30
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useAuditLogger.ts",
+          "priority": "P2",
+          "estimatedLines": 94,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useAutoRetry.ts",
+          "priority": "P2",
+          "estimatedLines": 82,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useBusinessInsights.ts",
+          "priority": "P2",
+          "estimatedLines": 108,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useCSRFProtection.ts",
+          "priority": "P0",
+          "estimatedLines": 135,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useConsent.ts",
+          "priority": "P2",
+          "estimatedLines": 110,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useErrorHandling.ts",
+          "priority": "P2",
+          "estimatedLines": 105,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useLeadScoring.ts",
+          "priority": "P2",
+          "estimatedLines": 104,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useLightweightCSRF.ts",
+          "priority": "P0",
+          "estimatedLines": 95,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useMemoryLeakDetection.tsx",
+          "priority": "P2",
+          "estimatedLines": 128,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useMemoryMonitor.ts",
+          "priority": "P2",
+          "estimatedLines": 93,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useOfflineSupport.ts",
+          "priority": "P2",
+          "estimatedLines": 96,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\usePerformanceMetrics.ts",
+          "priority": "P2",
+          "estimatedLines": 79,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\usePerformanceMonitoring.ts",
+          "priority": "P2",
+          "estimatedLines": 99,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\usePredictiveAnalytics.ts",
+          "priority": "P2",
+          "estimatedLines": 190,
+          "estimatedEffort": 19
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useResponsive.ts",
+          "priority": "P2",
+          "estimatedLines": 46,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useRetention.ts",
+          "priority": "P2",
+          "estimatedLines": 169,
+          "estimatedEffort": 17
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useSearchStreaming.ts",
+          "priority": "P2",
+          "estimatedLines": 278,
+          "estimatedEffort": 28
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useValidation.ts",
+          "priority": "P2",
+          "estimatedLines": 104,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useVirtualScroll.ts",
+          "priority": "P2",
+          "estimatedLines": 69,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\hooks\\useZipCodeInput.ts",
+          "priority": "P2",
+          "estimatedLines": 84,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\aiLeadScoring.ts",
+          "priority": "P2",
+          "estimatedLines": 129,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\aiLeadScoringService.ts",
+          "priority": "P2",
+          "estimatedLines": 160,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\aiService.ts",
+          "priority": "P2",
+          "estimatedLines": 126,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\analytics-service.ts",
+          "priority": "P2",
+          "estimatedLines": 115,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\antiBotBypass.ts",
+          "priority": "P2",
+          "estimatedLines": 152,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\api-security.ts",
+          "priority": "P0",
+          "estimatedLines": 122,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\audit-service.ts",
+          "priority": "P2",
+          "estimatedLines": 116,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\auth.ts",
+          "priority": "P0",
+          "estimatedLines": 113,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\backgroundJobScheduler.ts",
+          "priority": "P2",
+          "estimatedLines": 144,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\bbbScrapingService.ts",
+          "priority": "P2",
+          "estimatedLines": 174,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\browserPool.ts",
+          "priority": "P2",
+          "estimatedLines": 241,
+          "estimatedEffort": 25
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\build-time-guard.ts",
+          "priority": "P2",
+          "estimatedLines": 52,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\businessIntelligenceService.ts",
+          "priority": "P2",
+          "estimatedLines": 332,
+          "estimatedEffort": 34
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\businessMaturityAnalyzer.ts",
+          "priority": "P2",
+          "estimatedLines": 173,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\cache-headers.ts",
+          "priority": "P2",
+          "estimatedLines": 87,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\cache.ts",
+          "priority": "P2",
+          "estimatedLines": 276,
+          "estimatedEffort": 28
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\cacheWarmingService.ts",
+          "priority": "P2",
+          "estimatedLines": 88,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\ccpa-compliance.ts",
+          "priority": "P2",
+          "estimatedLines": 103,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\chamberOfCommerceScrapingService.ts",
+          "priority": "P2",
+          "estimatedLines": 151,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\collaboration-websocket.ts",
+          "priority": "P2",
+          "estimatedLines": 179,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\config-validator.ts",
+          "priority": "P2",
+          "estimatedLines": 202,
+          "estimatedEffort": 21
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\consoleFilterUtils.ts",
+          "priority": "P2",
+          "estimatedLines": 66,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\contactExtractor.ts",
+          "priority": "P2",
+          "estimatedLines": 189,
+          "estimatedEffort": 19
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\cspUtils.ts",
+          "priority": "P2",
+          "estimatedLines": 84,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\csrfProtection.ts",
+          "priority": "P0",
+          "estimatedLines": 204,
+          "estimatedEffort": 21
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\data-purging-service.ts",
+          "priority": "P2",
+          "estimatedLines": 143,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\dataRetentionSystem.ts",
+          "priority": "P2",
+          "estimatedLines": 161,
+          "estimatedEffort": 17
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\dataValidationPipeline.ts",
+          "priority": "P2",
+          "estimatedLines": 327,
+          "estimatedEffort": 33
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\database-factory.ts",
+          "priority": "P2",
+          "estimatedLines": 77,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\database.ts",
+          "priority": "P2",
+          "estimatedLines": 110,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\databaseSecurityValidator.ts",
+          "priority": "P0",
+          "estimatedLines": 199,
+          "estimatedEffort": 20
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\duplicateDetection.ts",
+          "priority": "P2",
+          "estimatedLines": 208,
+          "estimatedEffort": 21
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\edgeRuntimeCleanup.ts",
+          "priority": "P2",
+          "estimatedLines": 37,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\emailValidationService.ts",
+          "priority": "P2",
+          "estimatedLines": 228,
+          "estimatedEffort": 23
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\encryption-service.ts",
+          "priority": "P2",
+          "estimatedLines": 124,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\enhanced-export-service.ts",
+          "priority": "P2",
+          "estimatedLines": 113,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\enhanced-security-config.ts",
+          "priority": "P0",
+          "estimatedLines": 19,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\enhancedDataManager.ts",
+          "priority": "P2",
+          "estimatedLines": 105,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\enhancedDuckDuckGoScraper.ts",
+          "priority": "P2",
+          "estimatedLines": 109,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\enhancedFilteringService.ts",
+          "priority": "P2",
+          "estimatedLines": 135,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\enhancedScrapingEngine.ts",
+          "priority": "P2",
+          "estimatedLines": 278,
+          "estimatedEffort": 28
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\feature-flags.ts",
+          "priority": "P2",
+          "estimatedLines": 113,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\gdpr-compliance.ts",
+          "priority": "P2",
+          "estimatedLines": 114,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\geolocation-compliance.ts",
+          "priority": "P2",
+          "estimatedLines": 64,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\indexeddb-database.ts",
+          "priority": "P2",
+          "estimatedLines": 125,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\industry-config.ts",
+          "priority": "P2",
+          "estimatedLines": 3,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\memory-cleanup.ts",
+          "priority": "P2",
+          "estimatedLines": 160,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\memory-efficient-processor.ts",
+          "priority": "P2",
+          "estimatedLines": 132,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\memory-leak-detector.ts",
+          "priority": "P2",
+          "estimatedLines": 131,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\memory-monitor.ts",
+          "priority": "P2",
+          "estimatedLines": 102,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\multiLevelCache.ts",
+          "priority": "P2",
+          "estimatedLines": 172,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\networkSpoofingService.ts",
+          "priority": "P2",
+          "estimatedLines": 112,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\performanceMonitor.ts",
+          "priority": "P2",
+          "estimatedLines": 107,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\performanceMonitoringService.ts",
+          "priority": "P2",
+          "estimatedLines": 103,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\phoneValidationService.ts",
+          "priority": "P2",
+          "estimatedLines": 158,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\postgres-connection.ts",
+          "priority": "P2",
+          "estimatedLines": 109,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\predictiveAnalyticsEngine.ts",
+          "priority": "P2",
+          "estimatedLines": 154,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\prioritizedDataProcessor.ts",
+          "priority": "P2",
+          "estimatedLines": 116,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\rateLimitingService.ts",
+          "priority": "P2",
+          "estimatedLines": 98,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\rbac-middleware.ts",
+          "priority": "P0",
+          "estimatedLines": 80,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\rbac.ts",
+          "priority": "P2",
+          "estimatedLines": 94,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\roi-service.ts",
+          "priority": "P2",
+          "estimatedLines": 101,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\searchEngineManager.ts",
+          "priority": "P2",
+          "estimatedLines": 82,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\searchProviderAbstraction.ts",
+          "priority": "P2",
+          "estimatedLines": 152,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\security-audit.ts",
+          "priority": "P0",
+          "estimatedLines": 63,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\security.ts",
+          "priority": "P0",
+          "estimatedLines": 284,
+          "estimatedEffort": 29
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\securityMonitoring.ts",
+          "priority": "P0",
+          "estimatedLines": 104,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\smartCacheManager.ts",
+          "priority": "P2",
+          "estimatedLines": 81,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\static-resource-handler.ts",
+          "priority": "P2",
+          "estimatedLines": 56,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\streamingDataProcessor.ts",
+          "priority": "P2",
+          "estimatedLines": 88,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\streamingExportService.ts",
+          "priority": "P2",
+          "estimatedLines": 139,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\streamingSearchService.ts",
+          "priority": "P2",
+          "estimatedLines": 206,
+          "estimatedEffort": 21
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\streamingService.ts",
+          "priority": "P2",
+          "estimatedLines": 188,
+          "estimatedEffort": 19
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\user-management.ts",
+          "priority": "P2",
+          "estimatedLines": 178,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\validation-middleware.ts",
+          "priority": "P0",
+          "estimatedLines": 136,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\virtualScrollingService.ts",
+          "priority": "P2",
+          "estimatedLines": 118,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\virtualizedExportService.ts",
+          "priority": "P2",
+          "estimatedLines": 108,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\websiteQualityAnalyzer.ts",
+          "priority": "P2",
+          "estimatedLines": 109,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\websocket-server.ts",
+          "priority": "P2",
+          "estimatedLines": 107,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\workspace-management.ts",
+          "priority": "P2",
+          "estimatedLines": 94,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\yelpScrapingService.ts",
+          "priority": "P2",
+          "estimatedLines": 217,
+          "estimatedEffort": 22
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\zipCodeService.ts",
+          "priority": "P2",
+          "estimatedLines": 61,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\analytics\\api-metrics.ts",
+          "priority": "P2",
+          "estimatedLines": 84,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\analytics\\usage-analytics.ts",
+          "priority": "P2",
+          "estimatedLines": 149,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\compliance\\audit.ts",
+          "priority": "P2",
+          "estimatedLines": 84,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\compliance\\consent.ts",
+          "priority": "P2",
+          "estimatedLines": 95,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\compliance\\encryption.ts",
+          "priority": "P2",
+          "estimatedLines": 118,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\compliance\\retention.ts",
+          "priority": "P2",
+          "estimatedLines": 123,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\compliance\\scraper-middleware.ts",
+          "priority": "P0",
+          "estimatedLines": 95,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\baseCRMService.ts",
+          "priority": "P2",
+          "estimatedLines": 97,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\crmServiceRegistry.ts",
+          "priority": "P2",
+          "estimatedLines": 108,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\customCRMService.ts",
+          "priority": "P2",
+          "estimatedLines": 236,
+          "estimatedEffort": 24
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\hubspotOAuth.ts",
+          "priority": "P0",
+          "estimatedLines": 80,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\hubspotService.ts",
+          "priority": "P2",
+          "estimatedLines": 167,
+          "estimatedEffort": 17
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\pipedriveService.ts",
+          "priority": "P2",
+          "estimatedLines": 152,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\crm\\salesforceService.ts",
+          "priority": "P2",
+          "estimatedLines": 115,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\export-templates\\base-template.ts",
+          "priority": "P2",
+          "estimatedLines": 123,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\export-templates\\crm\\hubspot.ts",
+          "priority": "P2",
+          "estimatedLines": 70,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\export-templates\\crm\\pipedrive.ts",
+          "priority": "P2",
+          "estimatedLines": 61,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\export-templates\\crm\\salesforce.ts",
+          "priority": "P2",
+          "estimatedLines": 77,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\export-templates\\email-marketing\\constant-contact.ts",
+          "priority": "P2",
+          "estimatedLines": 77,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\export-templates\\email-marketing\\mailchimp.ts",
+          "priority": "P2",
+          "estimatedLines": 88,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\field-mapping\\mapping-engine.ts",
+          "priority": "P2",
+          "estimatedLines": 181,
+          "estimatedEffort": 19
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\field-mapping\\transformations.ts",
+          "priority": "P2",
+          "estimatedLines": 85,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\field-mapping\\validators.ts",
+          "priority": "P2",
+          "estimatedLines": 103,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\github\\TestFailureIssueManager.ts",
+          "priority": "P2",
+          "estimatedLines": 89,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\integrations\\api-framework.ts",
+          "priority": "P2",
+          "estimatedLines": 110,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\integrations\\oauth2-service.ts",
+          "priority": "P0",
+          "estimatedLines": 152,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\integrations\\scheduling-service.ts",
+          "priority": "P2",
+          "estimatedLines": 181,
+          "estimatedEffort": 19
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\integrations\\webhook-service.ts",
+          "priority": "P2",
+          "estimatedLines": 142,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\oauth\\authorization-service.ts",
+          "priority": "P0",
+          "estimatedLines": 111,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\oauth\\client-service.ts",
+          "priority": "P0",
+          "estimatedLines": 100,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\oauth\\config.ts",
+          "priority": "P0",
+          "estimatedLines": 9,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\oauth\\oauth-middleware.ts",
+          "priority": "P0",
+          "estimatedLines": 77,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\oauth\\pkce-service.ts",
+          "priority": "P0",
+          "estimatedLines": 89,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\oauth\\token-service.ts",
+          "priority": "P0",
+          "estimatedLines": 126,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\resilience\\autoRecovery.ts",
+          "priority": "P2",
+          "estimatedLines": 152,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\resilience\\connectionManager.ts",
+          "priority": "P2",
+          "estimatedLines": 118,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\resilience\\healthMonitor.ts",
+          "priority": "P2",
+          "estimatedLines": 117,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\analyticsService.ts",
+          "priority": "P2",
+          "estimatedLines": 93,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\clientScraperService.ts",
+          "priority": "P2",
+          "estimatedLines": 116,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\clientSearchEngine.ts",
+          "priority": "P2",
+          "estimatedLines": 595,
+          "estimatedEffort": 60
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\complianceReportingService.ts",
+          "priority": "P2",
+          "estimatedLines": 120,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\dataRetentionService.ts",
+          "priority": "P2",
+          "estimatedLines": 132,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\emailService.ts",
+          "priority": "P2",
+          "estimatedLines": 78,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\gdprService.ts",
+          "priority": "P2",
+          "estimatedLines": 113,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\geocoder.ts",
+          "priority": "P2",
+          "estimatedLines": 71,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\paymentAnalyticsService.ts",
+          "priority": "P0",
+          "estimatedLines": 105,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\paymentValidationService.ts",
+          "priority": "P0",
+          "estimatedLines": 101,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\queryOptimizer.ts",
+          "priority": "P2",
+          "estimatedLines": 179,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\scraperService.ts",
+          "priority": "P2",
+          "estimatedLines": 168,
+          "estimatedEffort": 17
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\searchEngine.ts",
+          "priority": "P2",
+          "estimatedLines": 360,
+          "estimatedEffort": 36
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\searchResultValidator.ts",
+          "priority": "P2",
+          "estimatedLines": 108,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\stripeService.ts",
+          "priority": "P0",
+          "estimatedLines": 99,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\userOnboardingService.ts",
+          "priority": "P2",
+          "estimatedLines": 88,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\userPaymentService.ts",
+          "priority": "P0",
+          "estimatedLines": 157,
+          "estimatedEffort": 16
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\schemas\\payment.ts",
+          "priority": "P0",
+          "estimatedLines": 21,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\types\\payment.ts",
+          "priority": "P0",
+          "estimatedLines": 80,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\types\\user.ts",
+          "priority": "P2",
+          "estimatedLines": 71,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\pages\\api\\stream.ts",
+          "priority": "P2",
+          "estimatedLines": 127,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\salesforce\\force-app\\main\\default\\lwc\\businessScraperDashboard\\businessScraperDashboard.js",
+          "priority": "P2",
+          "estimatedLines": 73,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\test\\testUtils.tsx",
+          "priority": "P2",
+          "estimatedLines": 76,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\types\\TestReporting.ts",
+          "priority": "P2",
+          "estimatedLines": 6,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\types\\payment.ts",
+          "priority": "P0",
+          "estimatedLines": 15,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\types\\performance.ts",
+          "priority": "P2",
+          "estimatedLines": 4,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\JestTestReporter.js",
+          "priority": "P2",
+          "estimatedLines": 175,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\TestCoverageChecker.ts",
+          "priority": "P2",
+          "estimatedLines": 100,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\TestLogger.ts",
+          "priority": "P2",
+          "estimatedLines": 279,
+          "estimatedEffort": 28
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\addressInputHandler.ts",
+          "priority": "P2",
+          "estimatedLines": 130,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\addressParser.ts",
+          "priority": "P2",
+          "estimatedLines": 118,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\apiErrorHandling.ts",
+          "priority": "P2",
+          "estimatedLines": 76,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\auth.ts",
+          "priority": "P0",
+          "estimatedLines": 64,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\chartHelpers.ts",
+          "priority": "P2",
+          "estimatedLines": 98,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\dataReset.ts",
+          "priority": "P2",
+          "estimatedLines": 106,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\debugConfig.ts",
+          "priority": "P2",
+          "estimatedLines": 100,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\edgeLogger.ts",
+          "priority": "P2",
+          "estimatedLines": 36,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\enhancedErrorLogger.ts",
+          "priority": "P2",
+          "estimatedLines": 111,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\errorPersistence.ts",
+          "priority": "P2",
+          "estimatedLines": 120,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\exportService.ts",
+          "priority": "P2",
+          "estimatedLines": 391,
+          "estimatedEffort": 40
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\formatters.ts",
+          "priority": "P2",
+          "estimatedLines": 146,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\phoneFormatter.ts",
+          "priority": "P2",
+          "estimatedLines": 77,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\prioritizedExportFormatter.ts",
+          "priority": "P2",
+          "estimatedLines": 106,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\rateLimitingTest.ts",
+          "priority": "P2",
+          "estimatedLines": 57,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\secureStorage.ts",
+          "priority": "P2",
+          "estimatedLines": 309,
+          "estimatedEffort": 31
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\toastDeduplication.ts",
+          "priority": "P2",
+          "estimatedLines": 59,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\version.ts",
+          "priority": "P2",
+          "estimatedLines": 111,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\crmExportService.ts",
+          "priority": "P2",
+          "estimatedLines": 97,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\crmTemplateManager.ts",
+          "priority": "P2",
+          "estimatedLines": 122,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\transformationEngine.ts",
+          "priority": "P2",
+          "estimatedLines": 121,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\types.ts",
+          "priority": "P2",
+          "estimatedLines": 20,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\adapters\\hubspotAdapter.ts",
+          "priority": "P2",
+          "estimatedLines": 49,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\adapters\\pipedriveAdapter.ts",
+          "priority": "P2",
+          "estimatedLines": 55,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\utils\\crm\\adapters\\salesforceAdapter.ts",
+          "priority": "P2",
+          "estimatedLines": 31,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\AdvancedResultsDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 191,
+          "estimatedEffort": 20
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\CampaignDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 91,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\ScrapingDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 110,
+          "estimatedEffort": 11
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\SettingsPanel.tsx",
+          "priority": "P2",
+          "estimatedLines": 94,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\UserExperienceProvider.tsx",
+          "priority": "P2",
+          "estimatedLines": 143,
+          "estimatedEffort": 15
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\AIInsightsPanel.tsx",
+          "priority": "P2",
+          "estimatedLines": 65,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\AdminDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 39,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ApiConfigurationPage.tsx",
+          "priority": "P2",
+          "estimatedLines": 213,
+          "estimatedEffort": 22
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\App.tsx",
+          "priority": "P2",
+          "estimatedLines": 6,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\BusinessIntelligenceDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 33,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\CRMExportTemplateManager.tsx",
+          "priority": "P2",
+          "estimatedLines": 75,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\CategorySelector.tsx",
+          "priority": "P2",
+          "estimatedLines": 200,
+          "estimatedEffort": 20
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ExportTemplateManager.tsx",
+          "priority": "P2",
+          "estimatedLines": 89,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\HubSpotDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 77,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\IndustryItemEditor.tsx",
+          "priority": "P2",
+          "estimatedLines": 32,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\IndustryModal.tsx",
+          "priority": "P2",
+          "estimatedLines": 73,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\LeadScoreBadge.tsx",
+          "priority": "P2",
+          "estimatedLines": 47,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\MemoryDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 39,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\MobileNavigation.tsx",
+          "priority": "P2",
+          "estimatedLines": 37,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\PaginatedResultsTable.tsx",
+          "priority": "P2",
+          "estimatedLines": 96,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\PerformanceAdvisoryBanner.tsx",
+          "priority": "P2",
+          "estimatedLines": 25,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\PerformanceMonitoringDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 68,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ProcessingWindow.tsx",
+          "priority": "P2",
+          "estimatedLines": 118,
+          "estimatedEffort": 12
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ProgressIndicator.tsx",
+          "priority": "P2",
+          "estimatedLines": 22,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ResultsTable.tsx",
+          "priority": "P2",
+          "estimatedLines": 162,
+          "estimatedEffort": 17
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\SearchEngineControls.tsx",
+          "priority": "P2",
+          "estimatedLines": 41,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\StreamingResultsDisplay.tsx",
+          "priority": "P2",
+          "estimatedLines": 131,
+          "estimatedEffort": 14
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\VirtualizedResultsTable.tsx",
+          "priority": "P2",
+          "estimatedLines": 179,
+          "estimatedEffort": 18
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\analytics\\AnalyticsDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 74,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\containers\\AppShell.tsx",
+          "priority": "P2",
+          "estimatedLines": 36,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\containers\\ConfigurationContainer.tsx",
+          "priority": "P2",
+          "estimatedLines": 40,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\containers\\NavigationContainer.tsx",
+          "priority": "P2",
+          "estimatedLines": 46,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\containers\\ResultsContainer.tsx",
+          "priority": "P2",
+          "estimatedLines": 68,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\containers\\ScrapingContainer.tsx",
+          "priority": "P2",
+          "estimatedLines": 73,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\dashboard\\BulkActionsPanel.tsx",
+          "priority": "P2",
+          "estimatedLines": 54,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\dashboard\\DashboardContainer.tsx",
+          "priority": "P2",
+          "estimatedLines": 126,
+          "estimatedEffort": 13
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\dashboard\\DataVisualization.tsx",
+          "priority": "P2",
+          "estimatedLines": 66,
+          "estimatedEffort": 7
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\dashboard\\ResultsViewManager.tsx",
+          "priority": "P2",
+          "estimatedLines": 79,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\dashboard\\SearchAndFilters.tsx",
+          "priority": "P2",
+          "estimatedLines": 96,
+          "estimatedEffort": 10
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\payments\\PaymentForm.tsx",
+          "priority": "P0",
+          "estimatedLines": 33,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\payments\\StripeProvider.tsx",
+          "priority": "P0",
+          "estimatedLines": 86,
+          "estimatedEffort": 9
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\payments\\SubscriptionPlans.tsx",
+          "priority": "P0",
+          "estimatedLines": 15,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\security\\SecurityBoundary.tsx",
+          "priority": "P0",
+          "estimatedLines": 71,
+          "estimatedEffort": 8
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Alert.tsx",
+          "priority": "P2",
+          "estimatedLines": 12,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Badge.tsx",
+          "priority": "P2",
+          "estimatedLines": 22,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Breadcrumb.tsx",
+          "priority": "P2",
+          "estimatedLines": 39,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Button.tsx",
+          "priority": "P2",
+          "estimatedLines": 8,
+          "estimatedEffort": 1
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Card.tsx",
+          "priority": "P2",
+          "estimatedLines": 14,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Charts.tsx",
+          "priority": "P2",
+          "estimatedLines": 52,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Form.tsx",
+          "priority": "P2",
+          "estimatedLines": 29,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Input.tsx",
+          "priority": "P2",
+          "estimatedLines": 43,
+          "estimatedEffort": 5
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\LoadingSpinner.tsx",
+          "priority": "P2",
+          "estimatedLines": 25,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\ProgressBar.tsx",
+          "priority": "P2",
+          "estimatedLines": 37,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\ResetDataDialog.tsx",
+          "priority": "P2",
+          "estimatedLines": 32,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Select.tsx",
+          "priority": "P2",
+          "estimatedLines": 54,
+          "estimatedEffort": 6
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Spinner.tsx",
+          "priority": "P2",
+          "estimatedLines": 12,
+          "estimatedEffort": 2
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\Tabs.tsx",
+          "priority": "P2",
+          "estimatedLines": 31,
+          "estimatedEffort": 4
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\ui\\ZipCodeInput.tsx",
+          "priority": "P2",
+          "estimatedLines": 28,
+          "estimatedEffort": 3
+        },
+        {
+          "path": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\view\\components\\user\\UserDashboard.tsx",
+          "priority": "P2",
+          "estimatedLines": 39,
+          "estimatedEffort": 4
+        }
+      ],
+      "criticalPaths": [
+        {
+          "name": "User Authentication Flow",
+          "modules": [
+            "src/app/api/auth",
+            "src/lib/auth.ts",
+            "src/hooks/useCSRFProtection.ts"
+          ],
+          "priority": "P0",
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "e2e"
+          ]
+        },
+        {
+          "name": "Payment Processing Flow",
+          "modules": [
+            "src/app/api/payments",
+            "src/controller/paymentController.ts",
+            "src/model/stripeService.ts"
+          ],
+          "priority": "P0",
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "name": "Business Data Scraping",
+          "modules": [
+            "src/app/api/scrape",
+            "src/lib/enhancedScrapingEngine.ts",
+            "src/model/searchEngine.ts"
+          ],
+          "priority": "P1",
+          "testTypes": [
+            "unit",
+            "integration",
+            "performance"
+          ]
+        },
+        {
+          "name": "Data Export & Reporting",
+          "modules": [
+            "src/app/api/export",
+            "src/utils/exportService.ts",
+            "src/components/VirtualizedResultsTable.tsx"
+          ],
+          "priority": "P1",
+          "testTypes": [
+            "unit",
+            "integration",
+            "performance"
+          ]
+        }
+      ],
+      "securityModules": [
+        {
+          "module": "src/app/api/auth",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 3,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 420,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 913,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 749,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-rate-limiter.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 377,
+          "complexity": "high",
+          "hasAsync": false,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useCSRFProtection.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 419,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useLightweightCSRF.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 246,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 505,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/api-security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 364,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/app/api/csrf",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        }
+      ],
+      "paymentModules": [
+        {
+          "module": "src/app/api/payments",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 10,
+          "complexity": "medium",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/controller/paymentController.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 385,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/model/stripeService.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 349,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/app/api/webhooks/stripe",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        }
+      ]
+    },
+    "infrastructureIssues": [],
+    "failingTests": 0,
+    "estimatedEffort": {
+      "totalGap": "90.07%",
+      "breakdown": {
+        "infrastructure": "0 hours",
+        "p0Critical": "168 hours",
+        "p1Important": "30 hours",
+        "p2Standard": "18 hours"
+      },
+      "totalHours": 216,
+      "estimatedWeeks": 6,
+      "recommendation": "Manageable timeline with focused effort",
+      "parallelization": {
+        "recommended": true,
+        "teams": 2,
+        "approach": "Divide by module type (security, business logic, UI)"
+      }
+    }
+  },
+  "infrastructureFixes": {
+    "name": "Phase 0: Infrastructure Fixes",
+    "duration": "1 week",
+    "priority": "CRITICAL",
+    "issues": [],
+    "tasks": [
+      "Fix CORS/JSDOM configuration issues",
+      "Resolve test timeout problems",
+      "Fix browser pool mocking",
+      "Improve test isolation",
+      "Fix WebSocket/EventSource mocking",
+      "Resolve memory leak issues in tests"
+    ]
+  },
+  "phases": [
+    {
+      "name": "Phase 1: Critical Security & Payment",
+      "duration": "2 weeks",
+      "priority": "P0",
+      "modules": [
+        {
+          "module": "src/app/api/auth",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 3,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 420,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 913,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 749,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-rate-limiter.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 377,
+          "complexity": "high",
+          "hasAsync": false,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useCSRFProtection.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 419,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useLightweightCSRF.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 246,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/app/api/payments",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 10,
+          "complexity": "medium",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/controller/paymentController.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 385,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/model/stripeService.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 349,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/app/api/webhooks/stripe",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 505,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/api-security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 364,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/app/api/csrf",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        }
+      ],
+      "securityModules": [
+        {
+          "module": "src/app/api/auth",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 3,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 420,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 913,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 749,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/auth-rate-limiter.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 377,
+          "complexity": "high",
+          "hasAsync": false,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useCSRFProtection.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 419,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/hooks/useLightweightCSRF.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 246,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/middleware.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 505,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/lib/api-security.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 364,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": false,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "security",
+            "penetration"
+          ]
+        },
+        {
+          "module": "src/app/api/csrf",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "security",
+            "penetration"
+          ]
+        }
+      ],
+      "paymentModules": [
+        {
+          "module": "src/app/api/payments",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 10,
+          "complexity": "medium",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/controller/paymentController.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 385,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/model/stripeService.ts",
+          "coverage": 0,
+          "gap": 95,
+          "type": "file",
+          "lines": 349,
+          "complexity": "high",
+          "hasAsync": true,
+          "hasExports": true,
+          "hasClasses": true,
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        },
+        {
+          "module": "src/app/api/webhooks/stripe",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 1,
+          "complexity": "low",
+          "estimatedEffort": 12,
+          "testTypes": [
+            "unit",
+            "integration",
+            "security",
+            "integration",
+            "security",
+            "compliance"
+          ]
+        }
+      ],
+      "testTypes": [
+        "unit",
+        "integration",
+        "security"
+      ],
+      "tests": [
+        "Authentication system tests",
+        "Payment processing tests",
+        "Security middleware tests",
+        "CSRF protection tests",
+        "Rate limiting tests",
+        "Input validation tests"
+      ]
+    },
+    {
+      "name": "Phase 2: Core Business Logic",
+      "duration": "3 weeks",
+      "priority": "P1",
+      "modules": [
+        {
+          "module": "src/app/api",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 187,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/model",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 30,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/lib",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 170,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/utils",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 34,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/controller",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 9,
+          "complexity": "medium",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        }
+      ],
+      "testTypes": [
+        "unit",
+        "integration",
+        "system"
+      ],
+      "tests": [
+        "API endpoint tests",
+        "Database operation tests",
+        "Business rule validation tests",
+        "Service integration tests",
+        "Data processing tests",
+        "Cache functionality tests"
+      ]
+    },
+    {
+      "name": "Phase 3: User Interface & Hooks",
+      "duration": "2 weeks",
+      "priority": "P2",
+      "modules": [
+        {
+          "module": "src/components",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 20,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/view",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 76,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        },
+        {
+          "module": "src/hooks",
+          "coverage": 0,
+          "gap": 95,
+          "type": "directory",
+          "fileCount": 25,
+          "complexity": "high",
+          "estimatedEffort": 6,
+          "testTypes": [
+            "unit"
+          ]
+        }
+      ],
+      "testTypes": [
+        "unit",
+        "integration",
+        "accessibility"
+      ],
+      "tests": [
+        "React component tests",
+        "Hook functionality tests",
+        "User interaction tests",
+        "Accessibility tests",
+        "Responsive design tests",
+        "Error boundary tests"
+      ]
+    },
+    {
+      "name": "Phase 4: Performance & Comprehensive Testing",
+      "duration": "2 weeks",
+      "priority": "P3",
+      "modules": [],
+      "testTypes": [
+        "performance",
+        "load",
+        "stress",
+        "e2e"
+      ],
+      "tests": [
+        "Load testing",
+        "Stress testing",
+        "Edge case coverage",
+        "Performance regression tests",
+        "End-to-end workflows",
+        "Browser compatibility tests"
+      ]
+    }
+  ],
+  "testCategories": {
+    "unit": {
+      "target": "95%",
+      "focus": "Individual functions and classes",
+      "priority": "High",
+      "estimatedTests": 217
+    },
+    "integration": {
+      "target": "90%",
+      "focus": "Module interactions and API endpoints",
+      "priority": "High",
+      "estimatedTests": 10
+    },
+    "system": {
+      "target": "85%",
+      "focus": "Complete workflows and business processes",
+      "priority": "Medium",
+      "estimatedTests": 20
+    },
+    "security": {
+      "target": "100%",
+      "focus": "Authentication, authorization, and data protection",
+      "priority": "Critical",
+      "estimatedTests": 30
+    },
+    "performance": {
+      "target": "80%",
+      "focus": "Load, stress, and response time testing",
+      "priority": "Medium",
+      "estimatedTests": 15
+    },
+    "accessibility": {
+      "target": "90%",
+      "focus": "WCAG compliance and usability",
+      "priority": "Medium",
+      "estimatedTests": 2
+    }
+  },
+  "automationStrategy": {
+    "cicd": {
+      "coverageGates": "Enforce minimum 95% coverage for new code",
+      "automatedTesting": "Run all test categories on PR and merge",
+      "performanceBaselines": "Track performance metrics over time"
+    },
+    "testGeneration": {
+      "templates": "Create test templates for common patterns",
+      "scaffolding": "Auto-generate test skeletons for new modules",
+      "mocking": "Standardize mocking patterns across test suites"
+    },
+    "reporting": {
+      "dashboards": "Real-time coverage and quality dashboards",
+      "trends": "Track coverage trends and identify regressions",
+      "alerts": "Notify on coverage drops or test failures"
+    }
+  }
+}

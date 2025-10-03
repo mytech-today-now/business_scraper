@@ -1,0 +1,34 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Custom Hooks & Context Testing
+
+                
+Hooks & Context Testing PromptCopy
+
+Implement comprehensive tests for custom hooks and context providers in the business_scraper application. I need you to:
+
+1. Create test suites for all custom hooks in src/hooks/
+2. Test React context providers in src/controller/
+3. Cover hook lifecycle, state management, and side effects
+4. Test context value propagation and consumer behavior
+5. Achieve 90%+ coverage for all hooks and context providers
+
+Priority hooks and contexts to test:
+- src/hooks/useSearchStreaming.ts - Search streaming functionality
+- src/hooks/useCSRFProtection.ts - CSRF protection hook
+- src/hooks/usePerformanceMonitoring.ts - Performance monitoring
+- src/controller/ConfigContext.tsx - Application configuration context
+- src/controller/PerformanceContext.tsx - Performance tracking context
+
+For each hook/context, test:
+- Initial state and default values
+- State updates and side effects
+- Error handling and cleanup
+- Integration with external services
+- Performance characteristics and optimization
+
+Use React Testing Library's renderHook utility and proper mocking for external dependencies.

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompts - Test Coverage Gap Analysis Enhancement</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d73027;
+            border-bottom: 3px solid #d73027;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .priority-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .prompt-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .prompt-title {
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px 5px 0 0;
+            margin: -20px -20px 15px -20px;
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .phase-section {
+            background: #e8f4fd;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            float: right;
+            margin-top: -5px;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .file-path {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .command {
+            background: #343a40;
+            color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Coverage Gap Analysis Enhancement - AI Prompts</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> These prompts are designed for Augment AI running in VS Code. Each prompt builds upon the previous analysis and should be executed in sequence for optimal results.
+        </div>
+
+        <div class="success">
+            <strong>✅ Enhancement Status:</strong> Successfully completed with 98% coverage target analysis, critical test templates created, and comprehensive implementation roadmap established.
+        </div>
+
+        <h2>📊 Current Coverage Metrics</h2>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <strong>Lines</strong><br>
+                4.93% (2,050/41,501)
+            </div>
+            <div class="metric-card">
+                <strong>Statements</strong><br>
+                4.84% (2,125/43,818)
+            </div>
+            <div class="metric-card">
+                <strong>Functions</strong><br>
+                4.49% (346/7,697)
+            </div>
+            <div class="metric-card">
+                <strong>Branches</strong><br>
+                3.74% (697/18,629)
+            </div>
+        </div>
+
+        <h2>🤖 Phase 1: Infrastructure Analysis & Setup</h2>
+        
+        <div class="phase-section">
+            <h3>Prompt 1.1: Initial Coverage Assessment</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Coverage Analysis Prompt</div>
+Analyze the current test coverage infrastructure for the business_scraper application. I need you to:
+
+1. Examine the existing Jest configuration in jest.config.js and package.json test scripts
+2. Review the current coverage reports in the coverage/ directory
+3. Identify all existing test files and their current coverage metrics
+4. Analyze the test setup files in src/__tests__/setup/
+5. Document any failing tests or infrastructure issues
+
+Focus on understanding:
+- Current coverage thresholds and configurations
+- Test execution patterns and performance
+- Mock configurations and external service handling
+- Coverage collection patterns and exclusions
+
+Generate a comprehensive report of the current testing infrastructure state, including specific recommendations for fixing any identified issues. Pay special attention to security-related test configurations and payment processing test setups.
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h3>Prompt 1.2: Gap Analysis Automation</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Automated Gap Analysis Prompt</div>
+Create a comprehensive automated test coverage gap analysis system for the business_scraper application. I need you to:
+
+1. Build a Node.js script that analyzes coverage reports and identifies gaps
+2. Categorize gaps by priority: P0 (Security/Payments), P1 (Business Logic), P2 (UI Components)
+3. Generate detailed reports showing uncovered files, functions, and critical paths
+4. Create test templates for the most critical modules
+5. Establish a phased implementation plan with time estimates
+
+The script should:
+- Parse coverage/coverage-summary.json and lcov reports
+- Identify 361 completely uncovered files
+- Prioritize authentication, payment processing, and API security modules
+- Generate JSON reports with actionable next steps
+- Create placeholder test files for critical P0 modules
+
+Save the script as scripts/test-coverage-improvement.js and ensure it can be run independently to generate up-to-date gap analysis reports.
+            </div>
+        </div>
+
+        <h2>🔒 Phase 2: Critical Security & Payment Testing (P0 Priority)</h2>
+
+        <div class="phase-section">
+            <h3>Prompt 2.1: Authentication Security Tests</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Authentication Testing Prompt</div>
+Implement comprehensive authentication security tests for the business_scraper application. I need you to:
+
+1. Complete the test implementation in src/__tests__/critical/auth-security.test.ts
+2. Test all authentication flows including session management, password security, and token generation
+3. Cover edge cases like session expiration, invalid tokens, and brute force protection
+4. Implement security-focused test scenarios for CSRF protection and session hijacking prevention
+5. Ensure 100% coverage for all authentication-related modules
+
+Focus on testing:
+- src/lib/auth.ts - Authentication service functions
+- src/lib/security.ts - Security utilities and encryption
+- src/app/api/auth/ - Authentication API endpoints
+- src/middleware/auth.ts - Authentication middleware
+- Session management and token validation
+
+Use proper mocking for external dependencies and ensure all tests are deterministic. Include both positive and negative test cases, with special attention to security vulnerabilities and edge cases.
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h3>Prompt 2.2: Payment Processing Tests</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Payment Security Testing Prompt</div>
+Implement comprehensive payment processing tests for the business_scraper application. I need you to:
+
+1. Complete the test implementation in src/__tests__/critical/payment-processing.test.ts
+2. Test all Stripe integration flows including payment intent creation, webhook handling, and subscription management
+3. Cover payment security scenarios including data sanitization, rate limiting, and fraud prevention
+4. Implement comprehensive error handling tests for payment failures and network issues
+5. Ensure 100% coverage for all payment-related modules
+
+Focus on testing:
+- src/model/stripeService.ts - Stripe service integration
+- src/controller/paymentController.ts - Payment flow control
+- src/app/api/payments/ - Payment API endpoints
+- src/middleware/paymentSecurity.ts - Payment security middleware
+- Webhook signature validation and event processing
+
+Use Stripe test mode and proper mocking for external API calls. Include tests for payment failures, network timeouts, invalid webhooks, and security attack scenarios.
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h3>Prompt 2.3: API Security Tests</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">API Security Testing Prompt</div>
+Implement comprehensive API security tests for the business_scraper application. I need you to:
+
+1. Complete the test implementation in src/__tests__/critical/api-security.test.ts
+2. Test CSRF protection across all state-changing API endpoints
+3. Implement rate limiting tests for all public API endpoints
+4. Cover input validation and sanitization for all API inputs
+5. Test for common security vulnerabilities (injection attacks, XSS, etc.)
+
+Focus on testing:
+- src/lib/csrfProtection.ts - CSRF token generation and validation
+- src/lib/rateLimitingService.ts - API rate limiting implementation
+- src/lib/validation-middleware.ts - Input validation and sanitization
+- src/lib/api-security.ts - General API security utilities
+- All API routes for proper security header implementation
+
+Include tests for malicious inputs, rate limit bypass attempts, CSRF token manipulation, and other security attack vectors. Ensure all security middleware is properly tested with both valid and invalid scenarios.
+            </div>
+        </div>
+
+        <h2>🔧 Phase 3: API Endpoint Coverage Expansion (P1 Priority)</h2>
+
+        <div class="phase-section">
+            <h3>Prompt 3.1: Core API Routes Testing</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">API Routes Testing Prompt</div>
+Implement comprehensive tests for all API routes in the business_scraper application. I need you to:
+
+1. Create test suites for all API endpoints in src/app/api/
+2. Test all HTTP methods (GET, POST, PUT, DELETE) for each endpoint
+3. Cover request validation, response formatting, and error handling
+4. Implement integration tests that verify end-to-end API workflows
+5. Achieve 90%+ coverage for all API route files
+
+Priority API routes to test:
+- src/app/api/businesses/ - Business data management
+- src/app/api/search/ - Search functionality
+- src/app/api/scraping/ - Web scraping operations
+- src/app/api/analytics/ - Analytics and reporting
+- src/app/api/export/ - Data export functionality
+
+For each endpoint, test:
+- Valid request scenarios with proper authentication
+- Invalid input handling and error responses
+- Rate limiting and security controls
+- Database operations and data integrity
+- External service integrations with proper mocking
+
+Use Next.js API testing patterns and ensure all tests are isolated and deterministic.
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h3>Prompt 3.2: Business Logic & Service Layer Testing</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Business Logic Testing Prompt</div>
+Implement comprehensive tests for the business logic and service layer of the business_scraper application. I need you to:
+
+1. Create test suites for all service files in src/lib/ and src/model/
+2. Test data processing, validation, and transformation logic
+3. Cover external service integrations with proper mocking
+4. Implement comprehensive error handling and edge case testing
+5. Achieve 85%+ coverage for all business logic modules
+
+Priority modules to test:
+- src/model/scraperService.ts - Web scraping business logic
+- src/model/searchEngine.ts - Search engine integration
+- src/lib/database.ts - Database operations and queries
+- src/lib/cache.ts - Caching mechanisms
+- src/lib/validation-middleware.ts - Data validation logic
+
+For each module, test:
+- Core business logic with various input scenarios
+- Error handling and recovery mechanisms
+- Performance characteristics and optimization
+- Data integrity and validation rules
+- Integration with external services and APIs
+
+Use comprehensive mocking strategies for external dependencies and ensure all business rules are thoroughly validated.
+            </div>
+        </div>
+
+        <h2>🎨 Phase 4: UI Component & Integration Testing (P2 Priority)</h2>
+
+        <div class="phase-section">
+            <h3>Prompt 4.1: React Component Testing</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">React Component Testing Prompt</div>
+Implement comprehensive React component tests for the business_scraper application. I need you to:
+
+1. Create test suites for all React components in src/components/ and src/view/
+2. Use React Testing Library for user-centric testing approaches
+3. Test component rendering, user interactions, and state management
+4. Cover accessibility requirements and responsive design behavior
+5. Achieve 85%+ coverage for all UI components
+
+Priority components to test:
+- src/view/components/App.tsx - Main application component
+- src/view/components/ResultsTable.tsx - Data display components
+- src/components/payments/ - Payment-related UI components
+- src/view/components/dashboard/ - Dashboard and analytics components
+- src/components/security/ - Security-related UI components
+
+For each component, test:
+- Rendering with various props and state combinations
+- User interactions (clicks, form submissions, keyboard navigation)
+- Error states and loading conditions
+- Accessibility features (ARIA labels, keyboard navigation)
+- Responsive behavior and mobile compatibility
+
+Use proper mocking for external dependencies and ensure all user workflows are thoroughly tested.
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h3>Prompt 4.2: Custom Hooks & Context Testing</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Hooks & Context Testing Prompt</div>
+Implement comprehensive tests for custom hooks and context providers in the business_scraper application. I need you to:
+
+1. Create test suites for all custom hooks in src/hooks/
+2. Test React context providers in src/controller/
+3. Cover hook lifecycle, state management, and side effects
+4. Test context value propagation and consumer behavior
+5. Achieve 90%+ coverage for all hooks and context providers
+
+Priority hooks and contexts to test:
+- src/hooks/useSearchStreaming.ts - Search streaming functionality
+- src/hooks/useCSRFProtection.ts - CSRF protection hook
+- src/hooks/usePerformanceMonitoring.ts - Performance monitoring
+- src/controller/ConfigContext.tsx - Application configuration context
+- src/controller/PerformanceContext.tsx - Performance tracking context
+
+For each hook/context, test:
+- Initial state and default values
+- State updates and side effects
+- Error handling and cleanup
+- Integration with external services
+- Performance characteristics and optimization
+
+Use React Testing Library's renderHook utility and proper mocking for external dependencies.
+            </div>
+        </div>
+
+        <h2>⚡ Phase 5: Performance & Edge Case Testing</h2>
+
+        <div class="phase-section">
+            <h3>Prompt 5.1: Performance & Load Testing</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Performance Testing Prompt</div>
+Implement comprehensive performance and load testing for the business_scraper application. I need you to:
+
+1. Create performance test suites using Jest and custom performance utilities
+2. Test API response times under various load conditions
+3. Implement memory leak detection and monitoring tests
+4. Test browser pool performance and resource management
+5. Create stress tests for critical user workflows
+
+Focus on testing:
+- API endpoint response times and throughput
+- Database query performance and optimization
+- Memory usage patterns and leak detection
+- Browser pool efficiency and resource cleanup
+- Large dataset processing performance
+
+Performance targets:
+- API responses < 200ms for 95% of requests
+- Memory usage stable under sustained load
+- Browser pool cleanup within 30 seconds
+- Search operations complete within 5 seconds
+- Export operations handle 10,000+ records efficiently
+
+Use performance monitoring tools and establish baseline metrics for regression testing.
+            </div>
+        </div>
+
+        <div class="phase-section">
+            <h3>Prompt 5.2: Edge Cases & Error Scenarios</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Edge Case Testing Prompt</div>
+Implement comprehensive edge case and error scenario testing for the business_scraper application. I need you to:
+
+1. Create test suites for boundary conditions and edge cases
+2. Test error handling and recovery mechanisms
+3. Implement chaos engineering scenarios for resilience testing
+4. Test data corruption and recovery scenarios
+5. Cover network failures and external service outages
+
+Edge cases to test:
+- Empty datasets and null value handling
+- Maximum input sizes and rate limits
+- Network timeouts and connection failures
+- Database connection issues and recovery
+- External API failures and fallback mechanisms
+
+Error scenarios to test:
+- Invalid authentication tokens and expired sessions
+- Malformed request payloads and injection attempts
+- Resource exhaustion and memory pressure
+- Concurrent access and race conditions
+- Data consistency and transaction rollbacks
+
+Ensure all error conditions are handled gracefully with appropriate user feedback and system recovery.
+            </div>
+        </div>
+
+        <h2>📋 Implementation Checklist & Verification</h2>
+
+        <div class="phase-section">
+            <h3>Prompt 6.1: Coverage Verification & Reporting</h3>
+            <div class="prompt-box">
+                <div class="prompt-title">Coverage Verification Prompt</div>
+Implement comprehensive coverage verification and reporting for the business_scraper application. I need you to:
+
+1. Create automated coverage verification scripts
+2. Generate detailed coverage reports by module and priority
+3. Implement coverage gates for CI/CD pipeline integration
+4. Create visual coverage dashboards and trend analysis
+5. Verify achievement of 98% overall coverage target
+
+Coverage verification tasks:
+- Run comprehensive test suite and generate coverage reports
+- Verify P0 modules achieve 100% coverage (security, payments)
+- Verify P1 modules achieve 95% coverage (APIs, business logic)
+- Verify P2 modules achieve 85% coverage (UI components)
+- Generate trend reports showing coverage improvement over time
+
+Create coverage gates that:
+- Prevent deployment if coverage drops below thresholds
+- Require manual approval for coverage regressions
+- Generate alerts for uncovered critical code paths
+- Integrate with GitHub Actions for automated reporting
+
+Document all coverage metrics and provide actionable recommendations for maintaining high coverage standards.
+            </div>
+        </div>
+
+        <div class="success">
+            <strong>🎯 Final Target:</strong> Achieve 98% overall test coverage with 100% coverage for security modules, 95% for APIs, and 85% for UI components through systematic implementation of these prompts.
+        </div>
+
+        <div class="warning">
+            <strong>📝 Usage Instructions:</strong> Execute these prompts sequentially in Augment AI. Each prompt builds upon previous work and assumes completion of prior phases. Adjust specific file paths and module names based on your current codebase structure.
+        </div>
+
+    </div>
+
+    <script>
+        // Add copy functionality for prompt boxes
+        document.querySelectorAll('.prompt-box').forEach(box => {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = () => {
+                const text = box.textContent.replace('Copy', '').trim();
+                navigator.clipboard.writeText(text);
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+            };
+            box.querySelector('.prompt-title').appendChild(copyBtn);
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Business Scraper App
 
-![Version](https://img.shields.io/badge/version-6.10.0-blue.svg)
+![Version](https://img.shields.io/badge/version-6.12.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)
@@ -16,7 +16,26 @@ Controls**, **End-to-End Encryption**, **Role-Based Access Control**,
 Authentication**, **Real-Time Consent Management**, and **Privacy-First
 Architecture**.
 
-## 🚀 **LATEST RELEASE (v6.10.0)** - Multi-Tiered Resilience System for 99.9% Uptime
+## 🚀 **LATEST RELEASE (v6.12.0)** - Browser Pool Memory Leak Detection & Resolution System
+
+**🧠 Enterprise-Grade Memory Management**: Successfully implemented a comprehensive browser pool memory leak detection and resolution system that prevents memory exhaustion, ensures optimal resource utilization, and provides real-time monitoring capabilities.
+
+**Key Features**: ✅ Memory leak detection ✅ Resource cleanup automation ✅ Event listener management ✅ Emergency cleanup procedures ✅ Performance monitoring API ✅ Comprehensive test coverage ✅ Real-time memory statistics
+
+**Memory Management Capabilities**:
+- **Detection**: Automatic browser, page, and context memory leak detection with configurable thresholds
+- **Cleanup**: Comprehensive resource cleanup including pages, contexts, browsers, and event listeners
+- **Monitoring**: Real-time memory statistics and performance monitoring via API endpoints
+- **Recovery**: Emergency cleanup procedures for critical memory situations
+- **Integration**: Seamless integration with existing memory monitoring systems
+
+**API Endpoints**:
+- `GET /api/browser-pool/memory` - Memory statistics
+- `POST /api/browser-pool/memory` - Trigger cleanup
+- `PUT /api/browser-pool/memory` - Update thresholds
+- `DELETE /api/browser-pool/memory` - Clear alerts
+
+## 🚀 **Previous Release (v6.10.0)** - Multi-Tiered Resilience System for 99.9% Uptime
 
 **🛡️ Enterprise-Grade Resilience**: Successfully implemented a comprehensive multi-tiered resilience system that ensures 99.9% uptime during scraping operations, eliminates 503 Service Unavailable errors, and provides automatic recovery capabilities.
 

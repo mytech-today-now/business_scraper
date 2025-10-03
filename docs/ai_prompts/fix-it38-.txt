@@ -1,0 +1,34 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Performance & Load Testing
+
+                
+Performance Testing PromptCopy
+
+Implement comprehensive performance and load testing for the business_scraper application. I need you to:
+
+1. Create performance test suites using Jest and custom performance utilities
+2. Test API response times under various load conditions
+3. Implement memory leak detection and monitoring tests
+4. Test browser pool performance and resource management
+5. Create stress tests for critical user workflows
+
+Focus on testing:
+- API endpoint response times and throughput
+- Database query performance and optimization
+- Memory usage patterns and leak detection
+- Browser pool efficiency and resource cleanup
+- Large dataset processing performance
+
+Performance targets:
+- API responses < 200ms for 95% of requests
+- Memory usage stable under sustained load
+- Browser pool cleanup within 30 seconds
+- Search operations complete within 5 seconds
+- Export operations handle 10,000+ records efficiently
+
+Use performance monitoring tools and establish baseline metrics for regression testing.

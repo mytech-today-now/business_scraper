@@ -1,0 +1,50 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Security Vulnerability Testing
+Implement comprehensive security vulnerability testing for business_scraper. I need you to:
+
+1. Create security tests for src/lib/api-security.ts
+2. Test CSRF protection across all state-changing endpoints
+3. Implement rate limiting validation tests
+4. Test input validation and sanitization
+5. Create penetration testing scenarios
+
+Security test categories:
+- Authentication and authorization testing
+- Input validation and injection prevention
+- Cross-site scripting (XSS) prevention
+- Cross-site request forgery (CSRF) protection
+- SQL injection prevention
+- File upload security
+- API rate limiting
+- Session security
+
+Specific vulnerability tests:
+- SQL injection attempts on all database queries
+- XSS payload testing in user inputs
+- CSRF token bypass attempts
+- Rate limiting bypass testing
+- File upload malicious payload testing
+- Authentication bypass attempts
+- Authorization escalation testing
+- Session fixation and hijacking tests
+
+Create automated security test suites:
+- OWASP Top 10 vulnerability testing
+- API security testing
+- Input fuzzing tests
+- Authentication security tests
+- Data validation security tests
+
+Ensure comprehensive security coverage:
+- All user inputs are validated and sanitized
+- All endpoints have proper authentication/authorization
+- All state-changing operations require CSRF tokens
+- Rate limiting is properly enforced
+- Security headers are correctly set
+
+The goal is to identify and prevent all common security vulnerabilities.

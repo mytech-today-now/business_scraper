@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompts - Testing Infrastructure Coverage Gaps</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d73027;
+            border-bottom: 3px solid #d73027;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .priority-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #3498db;
+        }
+        .prompt-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .impact-list {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .impact-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .impact-list li {
+            margin: 8px 0;
+            color: #856404;
+        }
+        .location-info {
+            background: #e8f4fd;
+            border: 1px solid #b8daff;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .current-state {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #721c24;
+        }
+        .ai-prompt {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        .prompt-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .gap-section {
+            background: #ffeaa7;
+            border: 1px solid #fdcb6e;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .gap-section h4 {
+            color: #d63031;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Prompts - Testing Infrastructure Coverage Gaps <span class="priority-badge">P1 - High Priority</span></h1>
+        
+        <h2>Issue Overview</h2>
+        <p><strong>Problem:</strong> Testing infrastructure has significant gaps despite 85% overall coverage, with critical areas under-tested.</p>
+        
+        <div class="location-info">
+            <h3>📍 Location</h3>
+            <p><code>jest.config.js</code> - Test coverage thresholds</p>
+            <p><code>src/tests/integration/</code> - Integration tests with 37 failing tests</p>
+            <p><code>src/tests/e2e/</code> - E2E tests requiring SSR fixes</p>
+            <p><code>src/tests/security/</code> - Security testing requiring SNYK_TOKEN</p>
+            <p><code>src/tests/performance/</code> - Performance testing framework</p>
+        </div>
+
+        <div class="current-state">
+            <h3>🔍 Current State</h3>
+            <p>85% coverage with gaps in critical paths and edge cases</p>
+        </div>
+
+        <div class="gap-section">
+            <h4>🚨 Testing Gaps Identified</h4>
+            <ul>
+                <li><strong>Integration tests:</strong> 37 failing tests requiring fixes</li>
+                <li><strong>E2E tests:</strong> SSR fixes needed for full functionality</li>
+                <li><strong>Security testing:</strong> SNYK_TOKEN configuration required</li>
+                <li><strong>Performance testing:</strong> Framework needs optimization</li>
+            </ul>
+        </div>
+
+        <div class="impact-list">
+            <h3>💥 Impact</h3>
+            <ul>
+                <li>Production bugs due to insufficient regression testing</li>
+                <li>Security vulnerabilities going undetected</li>
+                <li>Performance regressions not caught early</li>
+                <li>Critical user workflows under-tested</li>
+                <li>Edge cases and error scenarios missed</li>
+                <li>Integration points between services failing</li>
+            </ul>
+        </div>
+
+        <h2>AI Diagnostic Prompts</h2>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🔍 Integration Test Failure Analysis</div>
+            <div class="ai-prompt">Analyze the 37 failing integration tests in src/tests/integration/ and identify root causes:
+
+1. **API Route Import Failures**: Check for missing function imports (enhancedScrapePost, dataManagementPost)
+2. **NextRequest Mock Issues**: Resolve NextRequest mock incompatibility with Next.js 14
+3. **TensorFlow Model Failures**: Fix AI/ML test initialization issues
+4. **Azure Integration Problems**: Address API endpoint mismatches and credential handling
+5. **CRM Export Service Issues**: Fix Blob API mocking and validation logic errors
+6. **Missing Dependencies**: Install @testing-library/dom and other missing packages
+7. **Jest Configuration Conflicts**: Resolve MockRequest class conflicts with NextRequest
+
+Generate a comprehensive fix plan with specific file locations and code changes needed.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🌐 E2E Test SSR Compatibility Fix</div>
+            <div class="ai-prompt">Fix SSR compatibility issues preventing E2E tests from running:
+
+1. **useResponsive Hook**: Add typeof window !== 'undefined' checks in src/hooks/useResponsive.ts:104
+2. **SearchEngineManager**: Fix localStorage access in src/lib/searchEngineManager.ts:202
+3. **CRMTemplateManager**: Add browser environment checks for localStorage usage
+4. **Browser API Safety**: Implement safe access patterns for window, navigator, localStorage
+5. **SSR Guards**: Add comprehensive SSR compatibility checks across all client-side code
+6. **Test Server Startup**: Ensure application starts successfully for E2E testing
+
+Create robust SSR-safe implementations that work in both server and client environments.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🔒 Security Testing Enhancement</div>
+            <div class="ai-prompt">Enhance security testing infrastructure and configure SNYK_TOKEN:
+
+1. **SNYK Integration**: Configure SNYK_TOKEN in environment variables and CI/CD
+2. **Vulnerability Scanning**: Set up automated dependency vulnerability scanning
+3. **Security Test Coverage**: Expand security tests beyond current 94 passing tests
+4. **Penetration Testing**: Implement automated penetration testing scenarios
+5. **CSRF/XSS Protection**: Enhance CSRF and XSS protection testing
+6. **Authentication Security**: Strengthen authentication and session security tests
+7. **SQL Injection Prevention**: Expand SQL injection prevention testing
+
+Implement comprehensive security testing that catches vulnerabilities before production.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">⚡ Performance Testing Framework Optimization</div>
+            <div class="ai-prompt">Optimize the performance testing framework for better coverage:
+
+1. **Load Testing Enhancement**: Improve load testing scenarios in src/tests/performance/loadTesting.test.ts
+2. **Memory Leak Detection**: Enhance memory leak detection and monitoring
+3. **Performance Regression**: Strengthen performance regression testing
+4. **Core Web Vitals**: Implement comprehensive Core Web Vitals monitoring
+5. **Browser Performance**: Optimize Playwright performance testing configuration
+6. **API Performance**: Add comprehensive API performance testing
+7. **Database Performance**: Include database performance and query optimization tests
+
+Create a robust performance testing suite that prevents performance regressions.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">📊 Coverage Gap Analysis & Remediation</div>
+            <div class="ai-prompt">Analyze and fix coverage gaps to achieve comprehensive testing:
+
+1. **Critical Path Coverage**: Identify and test all critical user workflows
+2. **Edge Case Testing**: Implement comprehensive edge case and error scenario testing
+3. **Integration Point Testing**: Test all service integration points thoroughly
+4. **Error Handling Coverage**: Ensure all error handling paths are tested
+5. **Boundary Condition Testing**: Test all boundary conditions and limits
+6. **Concurrent Operation Testing**: Test concurrent operations and race conditions
+7. **Fallback Mechanism Testing**: Test all fallback and recovery mechanisms
+
+Achieve 95%+ meaningful test coverage across all critical application areas.</div>
+        </div>
+
+        <h2>Implementation Guidelines</h2>
+        
+        <div class="code-block">
+// Example SSR-safe implementation pattern
+function useSafeLocalStorage(key: string, defaultValue: any) {
+  const [value, setValue] = useState(() => {
+    if (typeof window === 'undefined') {
+      return defaultValue
+    }
+    try {
+      const item = window.localStorage.getItem(key)
+      return item ? JSON.parse(item) : defaultValue
+    } catch (error) {
+      console.warn(`Error reading localStorage key "${key}":`, error)
+      return defaultValue
+    }
+  })
+
+  const setStoredValue = useCallback((newValue: any) => {
+    try {
+      setValue(newValue)
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(key, JSON.stringify(newValue))
+      }
+    } catch (error) {
+      console.warn(`Error setting localStorage key "${key}":`, error)
+    }
+  }, [key])
+
+  return [value, setStoredValue]
+}
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🧪 Test Infrastructure Modernization</div>
+            <div class="ai-prompt">Modernize and enhance the testing infrastructure:
+
+1. **Jest Configuration**: Update jest.config.js to resolve SWC transformer syntax errors
+2. **Test Dependencies**: Install missing dependencies (@testing-library/dom, etc.)
+3. **Mock System**: Implement robust mocking system compatible with Next.js 14
+4. **Test Utilities**: Enhance test utilities and helper functions
+5. **Parallel Testing**: Optimize parallel test execution for faster CI/CD
+6. **Test Isolation**: Improve test isolation and cleanup mechanisms
+7. **Reporting**: Enhance test reporting with detailed coverage and failure analysis
+
+Create a modern, efficient testing infrastructure that supports rapid development.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🔄 CI/CD Testing Pipeline Enhancement</div>
+            <div class="ai-prompt">Enhance the CI/CD testing pipeline for comprehensive quality assurance:
+
+1. **Pipeline Optimization**: Optimize GitHub Actions workflow for faster test execution
+2. **Quality Gates**: Implement strict quality gates that prevent broken code deployment
+3. **Test Parallelization**: Maximize test parallelization across different test types
+4. **Artifact Management**: Improve test artifact collection and retention
+5. **Failure Analysis**: Implement automated failure analysis and reporting
+6. **Performance Monitoring**: Add performance monitoring to CI/CD pipeline
+7. **Security Integration**: Integrate security scanning into every build
+
+Build a robust CI/CD pipeline that ensures code quality and prevents regressions.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">📈 Test Metrics & Monitoring</div>
+            <div class="ai-prompt">Implement comprehensive test metrics and monitoring:
+
+1. **Coverage Tracking**: Track test coverage trends over time
+2. **Test Performance**: Monitor test execution performance and identify slow tests
+3. **Failure Patterns**: Analyze test failure patterns and common issues
+4. **Quality Metrics**: Track code quality metrics and technical debt
+5. **Test Effectiveness**: Measure test effectiveness in catching bugs
+6. **Regression Detection**: Implement automated regression detection
+7. **Dashboard Creation**: Create comprehensive testing dashboard for visibility
+
+Provide visibility into testing effectiveness and code quality trends.</div>
+        </div>
+
+        <h2>Specific Fix Commands</h2>
+
+        <div class="code-block">
+# Fix Integration Test Dependencies
+npm install @testing-library/dom @testing-library/user-event
+
+# Fix Jest Configuration Issues
+npm install --save-dev @swc/jest @swc/core
+
+# Configure SNYK Token (in CI/CD environment)
+export SNYK_TOKEN=your_snyk_token_here
+npm run test:security:snyk
+
+# Run Comprehensive Test Suite
+npm run test:all
+npm run test:coverage
+npm run test:integration:fix
+npm run test:e2e:ssr-fix
+
+# Performance Testing
+npm run test:performance
+npm run test:memory
+npm run test:lighthouse
+        </div>
+
+        <div class="code-block">
+// Example Integration Test Fix Pattern
+import { NextRequest } from 'next/server'
+import { createMocks } from 'node-mocks-http'
+
+// Fix NextRequest mock compatibility
+function createMockNextRequest(url: string, options: any = {}) {
+  const { req } = createMocks({
+    method: options.method || 'GET',
+    url,
+    headers: options.headers || {},
+    body: options.body
+  })
+
+  return new NextRequest(new URL(url, 'http://localhost:3000'), {
+    method: options.method || 'GET',
+    headers: options.headers || {},
+    body: options.body
+  })
+}
+
+// Example usage in tests
+const request = createMockNextRequest('/api/test', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ test: 'data' })
+})
+        </div>
+
+        <div class="footer">
+            <p>Generated for Business Scraper Application - Testing Infrastructure Coverage Gaps</p>
+            <p>Priority: P1 High | Focus: Test Coverage, Integration, E2E, Security & Performance</p>
+            <p>Estimated Fix Time: 6-8 hours for complete resolution</p>
+        </div>
+    </div>
+</body>
+</html>

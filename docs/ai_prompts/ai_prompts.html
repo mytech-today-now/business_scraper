@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompts - Browser Pool Memory Leak Detection</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d73027;
+            border-bottom: 3px solid #d73027;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .priority-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #3498db;
+        }
+        .prompt-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .impact-list {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .impact-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .impact-list li {
+            margin: 8px 0;
+            color: #856404;
+        }
+        .location-info {
+            background: #e8f4fd;
+            border: 1px solid #b8daff;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .current-state {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #721c24;
+        }
+        .ai-prompt {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        .prompt-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Prompts - Browser Pool Memory Leak Detection <span class="priority-badge">P1 - High Priority</span></h1>
+        
+        <h2>Issue Overview</h2>
+        <p><strong>Problem:</strong> Browser instances not properly cleaned up leading to memory leaks and resource exhaustion.</p>
+        
+        <div class="location-info">
+            <h3>📍 Location</h3>
+            <p><code>src/lib/browserPool.ts</code> - Browser lifecycle management</p>
+        </div>
+
+        <div class="current-state">
+            <h3>🔍 Current State</h3>
+            <p>6 concurrent browsers with 90-second timeout, potential for resource accumulation</p>
+        </div>
+
+        <div class="impact-list">
+            <h3>💥 Performance Impact</h3>
+            <ul>
+                <li>Memory usage increases over time</li>
+                <li>Browser instances may not be properly disposed</li>
+                <li>Page instances accumulate without cleanup</li>
+                <li>System becomes unstable under load</li>
+                <li>Memory usage grows continuously during operation</li>
+                <li>Eventual system crashes</li>
+                <li>Degraded performance</li>
+            </ul>
+        </div>
+
+        <h2>AI Diagnostic Prompts</h2>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🔍 Initial Analysis Prompt</div>
+            <div class="ai-prompt">Analyze the browser pool implementation in src/lib/browserPool.ts for memory leak issues. Focus on:
+
+1. Browser instance lifecycle management
+2. Page cleanup and disposal patterns
+3. Event listener cleanup
+4. Resource deallocation strategies
+5. Timeout handling and cleanup
+6. Memory usage patterns during concurrent operations
+
+Identify specific code sections where browser instances, pages, or related resources may not be properly cleaned up. Look for missing .close(), .disconnect(), or disposal calls.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🛠️ Memory Leak Detection Prompt</div>
+            <div class="ai-prompt">Examine the browser pool for common memory leak patterns:
+
+1. **Unclosed Resources**: Check for browser.close(), page.close(), context.close() calls
+2. **Event Listeners**: Verify removal of event listeners on browser/page objects
+3. **Circular References**: Look for objects that reference each other preventing GC
+4. **Timeout Cleanup**: Ensure timeouts properly dispose of browser instances
+5. **Error Handling**: Check if cleanup occurs in catch blocks and error scenarios
+6. **Pool Management**: Verify proper removal of instances from the pool
+
+Generate a comprehensive report of potential memory leak sources with specific line numbers and recommended fixes.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🔧 Resource Cleanup Implementation Prompt</div>
+            <div class="ai-prompt">Implement comprehensive resource cleanup for the browser pool:
+
+1. **Graceful Shutdown**: Add proper cleanup sequence for browser instances
+2. **Page Lifecycle**: Implement page cleanup before browser disposal
+3. **Event Cleanup**: Remove all event listeners before closing resources
+4. **Memory Monitoring**: Add memory usage tracking and alerts
+5. **Timeout Enhancement**: Improve timeout handling with proper cleanup
+6. **Error Recovery**: Ensure cleanup happens even during errors
+7. **Pool Optimization**: Implement smart pool management with resource limits
+
+Create a robust cleanup system that prevents memory leaks and ensures stable operation under load.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">📊 Performance Monitoring Prompt</div>
+            <div class="ai-prompt">Implement memory leak detection and monitoring:
+
+1. **Memory Tracking**: Add real-time memory usage monitoring
+2. **Resource Counting**: Track active browsers, pages, and contexts
+3. **Leak Detection**: Implement automated memory leak detection
+4. **Performance Metrics**: Add metrics for cleanup efficiency
+5. **Alerting System**: Create alerts for memory threshold breaches
+6. **Diagnostic Tools**: Build tools to identify resource leaks
+7. **Health Checks**: Implement periodic health checks for the browser pool
+
+Provide comprehensive monitoring that can detect and prevent memory issues before they cause system instability.</div>
+        </div>
+
+        <div class="prompt-section">
+            <div class="prompt-title">🧪 Testing Strategy Prompt</div>
+            <div class="ai-prompt">Create comprehensive tests for memory leak prevention:
+
+1. **Load Testing**: Test browser pool under high concurrent load
+2. **Memory Stress Tests**: Verify cleanup under memory pressure
+3. **Timeout Testing**: Test cleanup behavior with various timeout scenarios
+4. **Error Scenario Testing**: Ensure cleanup works during error conditions
+5. **Long-Running Tests**: Test for memory leaks over extended periods
+6. **Resource Limit Tests**: Test behavior when system resources are limited
+7. **Cleanup Verification**: Verify all resources are properly disposed
+
+Implement automated tests that can detect memory leaks and resource cleanup failures in CI/CD pipeline.</div>
+        </div>
+
+        <h2>Implementation Guidelines</h2>
+        
+        <div class="code-block">
+// Example cleanup pattern to implement
+class BrowserPool {
+    async cleanup() {
+        // 1. Close all pages first
+        for (const page of this.activePagesMap.values()) {
+            await page.close();
+        }
+        
+        // 2. Close all browser contexts
+        for (const context of this.activeContexts) {
+            await context.close();
+        }
+        
+        // 3. Disconnect and close browsers
+        for (const browser of this.activeBrowsers) {
+            await browser.close();
+        }
+        
+        // 4. Clear all references
+        this.activePagesMap.clear();
+        this.activeContexts.clear();
+        this.activeBrowsers.clear();
+    }
+}
+        </div>
+
+        <div class="footer">
+            <p>Generated for Business Scraper Application - Browser Pool Memory Leak Detection</p>
+            <p>Priority: P1 High | Focus: Memory Management & Resource Cleanup</p>
+        </div>
+    </div>
+</body>
+</html>

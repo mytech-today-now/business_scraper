@@ -6,6 +6,82 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.12.0] - 2025-10-02
+
+### Added
+
+#### Browser Pool Memory Leak Detection and Resolution System (P1 High Priority)
+
+- **Implemented comprehensive browser pool memory leak detection** in `src/lib/browserPool.ts`
+- **Enhanced memory leak detector** with browser resource tracking in `src/lib/memory-leak-detector.ts`
+- **Added performance monitoring API** for browser pool memory statistics in `src/app/api/browser-pool/memory/route.ts`
+- **Created comprehensive test suite** with unit tests, load tests, and memory stress tests
+- **Integrated with existing memory monitoring systems** (memoryMonitor, memoryLeakDetector, memoryCleanup)
+
+#### Browser Pool Enhancements
+
+- **Extended BrowserPool class** to inherit from EventEmitter for event-driven architecture
+- **Added comprehensive memory tracking** for browsers, pages, and contexts with initial and current memory usage
+- **Implemented proper resource cleanup methods**:
+  - `closeBrowserWithCleanup()` - Closes browsers with comprehensive cleanup of pages, contexts, and event listeners
+  - `closePageWithCleanup()` - Closes pages with proper event listener cleanup and memory tracking
+  - `setupBrowserEventListeners()` - Tracks event listeners for proper cleanup
+  - `setupPageEventListeners()` - Tracks page event listeners for proper cleanup
+  - `cleanupBrowserEventListeners()` - Removes all browser event listeners
+  - `cleanupPageEventListeners()` - Removes all page event listeners
+- **Added memory management methods**:
+  - `setupMemoryMonitoring()` - Integrates with memory monitor and leak detector
+  - `startMemoryCleanup()` - Starts periodic memory cleanup
+  - `performMemoryCleanup()` - Performs regular memory cleanup
+  - `performEmergencyCleanup()` - Handles critical memory situations
+  - `updateMemoryStats()` - Updates memory statistics
+  - `checkForMemoryLeaks()` - Checks for memory leaks in browsers
+  - `cleanupStaleResources()` - Removes stale pages and resources
+  - `cleanupAllMemoryTrackers()` - Cleans up all memory tracking
+- **Enhanced shutdown process** to properly close all pages, contexts, and browsers with comprehensive cleanup
+- **Enhanced releasePage** to include event listener cleanup and proper error handling
+
+#### Memory Leak Detector Enhancements
+
+- **Added BrowserResourceTracker interface** for tracking browser, page, and context resources
+- **Added browser resource tracking methods**:
+  - `trackBrowserResource()` - Tracks browser resources with metadata
+  - `updateBrowserResourceMemory()` - Updates memory usage for tracked resources
+  - `stopTrackingBrowserResource()` - Stops tracking browser resources
+  - `checkBrowserResourceLeaks()` - Checks for memory leaks in browser resources
+- **Added thresholds** for browser (100MB), page (50MB), and context (25MB) memory increases
+- **Updated clearAllTrackers()** to include browser resource trackers
+- **Updated getStatus()** to include browser resource tracker count
+
+#### Performance Monitoring API
+
+- **GET /api/browser-pool/memory** - Retrieve browser pool memory statistics with optional history and details
+- **POST /api/browser-pool/memory** - Trigger automatic or emergency cleanup
+- **PUT /api/browser-pool/memory** - Update memory thresholds and cleanup policies
+- **DELETE /api/browser-pool/memory** - Clear memory leak alerts
+
+#### Test Coverage
+
+- **Created comprehensive test suite** in `src/__tests__/memory/browser-pool-memory-leak.test.ts`
+- **Created unit test suite** in `src/__tests__/unit/browser-pool-unit.test.ts` (17/17 tests passing)
+- **Created load test suite** in `src/__tests__/performance/browser-pool-load.test.ts`
+- **Achieved comprehensive test coverage** for memory leak detection, resource cleanup, monitoring integration, performance under load, and error scenarios
+
+### Fixed
+
+- **Fixed incomplete page cleanup** - Pages were only closed if browser was unhealthy, causing accumulation in availablePages array
+- **Fixed browser shutdown issues** - shutdown() only closed browsers without closing pages first
+- **Fixed missing event listener cleanup** - No tracking or removal of event listeners causing memory leaks
+- **Fixed browser context management** - Contexts were not tracked or cleaned up properly
+- **Fixed memory monitoring integration** - Browser pool operated independently of memory monitoring systems
+- **Fixed missing resource tracking** - No way to track which resources were being monitored for cleanup
+
+### Security
+
+- **Enhanced error handling** with graceful fallback when memory tracking is not available
+- **Added comprehensive resource cleanup** to prevent memory leaks and resource exhaustion
+- **Implemented emergency cleanup procedures** for critical memory situations
+
 ## [6.11.0] - 2025-10-02
 
 ### Security
