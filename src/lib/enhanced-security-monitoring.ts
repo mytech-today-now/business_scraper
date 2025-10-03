@@ -228,20 +228,39 @@ export class EnhancedSecurityMonitoringService {
     }
 
     // Check headers for injection attempts
-    request.headers.forEach((value, key) => {
-      if (this.detectSQLInjection(value) || this.detectXSS(value) || this.detectCommandInjection(value)) {
-        threats.push({
-          type: 'ANOMALY',
-          severity: 'high',
-          description: `Malicious content detected in header: ${key}`,
-          evidence: `${key}: ${value}`,
-          timestamp: new Date(),
-          clientIP,
-          userAgent,
-          requestPath
-        })
+    // Handle both Headers object and plain object cases for test compatibility
+    if (request.headers && typeof request.headers.forEach === 'function') {
+      request.headers.forEach((value, key) => {
+        if (this.detectSQLInjection(value) || this.detectXSS(value) || this.detectCommandInjection(value)) {
+          threats.push({
+            type: 'ANOMALY',
+            severity: 'high',
+            description: `Malicious content detected in header: ${key}`,
+            evidence: `${key}: ${value}`,
+            timestamp: new Date(),
+            clientIP,
+            userAgent,
+            requestPath
+          })
+        }
+      })
+    } else if (request.headers) {
+      // Fallback for test environments where headers might be a plain object
+      for (const [key, value] of Object.entries(request.headers)) {
+        if (typeof value === 'string' && (this.detectSQLInjection(value) || this.detectXSS(value) || this.detectCommandInjection(value))) {
+          threats.push({
+            type: 'ANOMALY',
+            severity: 'high',
+            description: `Malicious content detected in header: ${key}`,
+            evidence: `${key}: ${value}`,
+            timestamp: new Date(),
+            clientIP,
+            userAgent,
+            requestPath
+          })
+        }
       }
-    })
+    }
 
     return threats
   }
@@ -252,7 +271,9 @@ export class EnhancedSecurityMonitoringService {
   private analyzeQueryParams(params: URLSearchParams, clientIP: string, userAgent: string, requestPath: string): ThreatDetection[] {
     const threats: ThreatDetection[] = []
 
-    params.forEach((value, key) => {
+    // Handle both URLSearchParams and null/undefined cases for test compatibility
+    if (params && typeof params.forEach === 'function') {
+      params.forEach((value, key) => {
       if (this.detectSQLInjection(value)) {
         threats.push({
           type: 'SQL_INJECTION',
@@ -291,7 +312,56 @@ export class EnhancedSecurityMonitoringService {
           requestPath
         })
       }
-    })
+      })
+    } else if (params) {
+      // Fallback for test environments where params might be a plain object or different structure
+      try {
+        for (const [key, value] of Object.entries(params)) {
+          if (typeof value === 'string') {
+            if (this.detectSQLInjection(value)) {
+              threats.push({
+                type: 'SQL_INJECTION',
+                severity: 'high',
+                description: `SQL injection attempt in parameter: ${key}`,
+                evidence: `${key}=${value}`,
+                timestamp: new Date(),
+                clientIP,
+                userAgent,
+                requestPath
+              })
+            }
+
+            if (this.detectXSS(value)) {
+              threats.push({
+                type: 'XSS',
+                severity: 'high',
+                description: `XSS attempt in parameter: ${key}`,
+                evidence: `${key}=${value}`,
+                timestamp: new Date(),
+                clientIP,
+                userAgent,
+                requestPath
+              })
+            }
+
+            if (this.detectCommandInjection(value)) {
+              threats.push({
+                type: 'COMMAND_INJECTION',
+                severity: 'critical',
+                description: `Command injection attempt in parameter: ${key}`,
+                evidence: `${key}=${value}`,
+                timestamp: new Date(),
+                clientIP,
+                userAgent,
+                requestPath
+              })
+            }
+          }
+        }
+      } catch (error) {
+        // Silently handle any iteration errors in test environment
+      }
+    }
 
     return threats
   }
