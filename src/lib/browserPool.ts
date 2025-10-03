@@ -1,10 +1,14 @@
 /**
  * Browser Pool Management for Enhanced Scraping
- * Provides concurrent browser instances with resource management
+ * Provides concurrent browser instances with comprehensive memory leak detection and resource management
  */
 
-import puppeteer, { Browser, Page } from 'puppeteer'
+import puppeteer, { Browser, Page, BrowserContext } from 'puppeteer'
 import { logger } from '@/utils/logger'
+import { memoryMonitor } from './memory-monitor'
+import { memoryLeakDetector } from './memory-leak-detector'
+import { memoryCleanup } from './memory-cleanup'
+import { EventEmitter } from 'events'
 
 export interface BrowserPoolConfig {
   maxBrowsers: number
@@ -21,17 +25,36 @@ export interface BrowserInstance {
   id: string
   browser: Browser
   pages: Set<Page>
+  contexts: Set<BrowserContext>
   createdAt: Date
   lastUsed: Date
   isHealthy: boolean
+  memoryTrackerId?: string
+  eventListeners: Map<string, Function>
+  initialMemory: number
+  currentMemory: number
 }
 
 export interface PageInstance {
   page: Page
   browserId: string
+  contextId?: string
   createdAt: Date
   lastUsed: Date
   isActive: boolean
+  memoryTrackerId?: string
+  eventListeners: Map<string, Function>
+  initialMemory: number
+}
+
+export interface BrowserPoolMemoryStats {
+  totalBrowsers: number
+  totalPages: number
+  totalContexts: number
+  totalMemoryUsage: number
+  averageMemoryPerBrowser: number
+  memoryLeakAlerts: number
+  lastCleanupTime: Date
 }
 
 export interface BrowserHealthMetrics {
@@ -46,17 +69,24 @@ export interface BrowserHealthMetrics {
 /**
  * Browser Pool Manager for concurrent scraping operations
  */
-export class BrowserPool {
+export class BrowserPool extends EventEmitter {
   private config: BrowserPoolConfig
   private browsers: Map<string, BrowserInstance> = new Map()
   private availablePages: PageInstance[] = []
   private activePagesCount = 0
   private isShuttingDown = false
   private healthCheckInterval?: NodeJS.Timeout
+  private memoryCleanupInterval?: NodeJS.Timeout
   private healthMetrics: Map<string, BrowserHealthMetrics> = new Map()
   private errorCounts: Map<string, number> = new Map()
+  private memoryStats: BrowserPoolMemoryStats
+  private memoryLeakAlerts: number = 0
+  private lastCleanupTime: Date = new Date()
+  private resourceTrackers: Map<string, string> = new Map() // resourceId -> memoryTrackerId
 
   constructor(config?: Partial<BrowserPoolConfig>) {
+    super()
+
     this.config = {
       maxBrowsers: 6, // Optimized: Increased from 3 to 6 for better throughput
       maxPagesPerBrowser: 3, // Optimized: Increased from 2 to 3 for balanced performance
@@ -80,8 +110,64 @@ export class BrowserPool {
       ...config,
     }
 
+    // Initialize memory stats
+    this.memoryStats = {
+      totalBrowsers: 0,
+      totalPages: 0,
+      totalContexts: 0,
+      totalMemoryUsage: 0,
+      averageMemoryPerBrowser: 0,
+      memoryLeakAlerts: 0,
+      lastCleanupTime: new Date(),
+    }
+
+    // Setup memory monitoring integration
+    this.setupMemoryMonitoring()
+
     // Start health check interval
     this.startHealthCheck()
+
+    // Start memory cleanup interval
+    this.startMemoryCleanup()
+  }
+
+  /**
+   * Setup memory monitoring integration
+   */
+  private setupMemoryMonitoring(): void {
+    try {
+      // Listen for memory alerts from the memory monitor
+      memoryMonitor.on('memory-alert', (alert) => {
+        if (alert.level === 'critical' || alert.level === 'emergency') {
+          logger.warn('BrowserPool', 'Memory alert received, triggering browser pool cleanup', alert)
+          this.performEmergencyCleanup().catch(error => {
+            logger.error('BrowserPool', 'Emergency cleanup failed', error)
+          })
+        }
+      })
+
+      // Listen for memory leak alerts
+      memoryLeakDetector.on('memory-leak-detected', (alert) => {
+        if (alert.type === 'browser') {
+          this.memoryLeakAlerts++
+          this.memoryStats.memoryLeakAlerts = this.memoryLeakAlerts
+          logger.warn('BrowserPool', 'Browser memory leak detected', alert)
+          this.emit('memory-leak-detected', alert)
+        }
+      })
+
+      // Start memory monitoring if not already active
+      if (!memoryMonitor.isActive()) {
+        memoryMonitor.startMonitoring()
+      }
+
+      // Start memory leak detection if not already active
+      if (!memoryLeakDetector.getStatus().isActive) {
+        memoryLeakDetector.startDetection()
+      }
+    } catch (error) {
+      logger.warn('BrowserPool', 'Failed to setup memory monitoring integration', error)
+    }
   }
 
   /**
@@ -89,6 +175,14 @@ export class BrowserPool {
    */
   getConfig(): BrowserPoolConfig {
     return { ...this.config }
+  }
+
+  /**
+   * Get memory statistics
+   */
+  getMemoryStats(): BrowserPoolMemoryStats {
+    this.updateMemoryStats()
+    return { ...this.memoryStats }
   }
 
   /**
@@ -189,6 +283,9 @@ export class BrowserPool {
    */
   async releasePage(pageInstance: PageInstance): Promise<void> {
     try {
+      // Clean up page event listeners first
+      await this.cleanupPageEventListeners(pageInstance)
+
       // Reset page state
       await this.resetPage(pageInstance.page)
 
@@ -196,18 +293,35 @@ export class BrowserPool {
       pageInstance.lastUsed = new Date()
       this.activePagesCount--
 
+      // Update memory tracking
+      if (pageInstance.memoryTrackerId) {
+        try {
+          memoryLeakDetector.updateComponentMemory(pageInstance.memoryTrackerId)
+        } catch (error) {
+          logger.warn('BrowserPool', 'Failed to update page memory tracking', error)
+        }
+      }
+
       // Add back to available pages if browser is still healthy
       const browser = this.browsers.get(pageInstance.browserId)
       if (browser?.isHealthy) {
         this.availablePages.push(pageInstance)
       } else {
-        await pageInstance.page.close()
+        // Properly close page and cleanup memory tracking
+        await this.closePageWithCleanup(pageInstance)
       }
 
       logger.debug('BrowserPool', `Page released. Active pages: ${this.activePagesCount}`)
     } catch (error) {
       logger.error('BrowserPool', 'Failed to release page', error)
       this.activePagesCount--
+
+      // Ensure cleanup even on error
+      try {
+        await this.closePageWithCleanup(pageInstance)
+      } catch (cleanupError) {
+        logger.error('BrowserPool', 'Failed to cleanup page after release error', cleanupError)
+      }
     }
   }
 
@@ -224,6 +338,7 @@ export class BrowserPool {
   getStats() {
     return {
       browsers: this.browsers.size,
+      pages: this.availablePages.length + this.activePagesCount,
       availablePages: this.availablePages.length,
       activePages: this.activePagesCount,
       totalPages: this.availablePages.length + this.activePagesCount,
@@ -232,33 +347,65 @@ export class BrowserPool {
   }
 
   /**
-   * Shutdown the browser pool
+   * Shutdown the browser pool with comprehensive cleanup
    */
   async shutdown(): Promise<void> {
     this.isShuttingDown = true
 
+    logger.info('BrowserPool', 'Shutting down browser pool with comprehensive cleanup')
+
+    // Stop all intervals
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval)
+      this.healthCheckInterval = undefined
     }
 
-    logger.info('BrowserPool', 'Shutting down browser pool')
+    if (this.memoryCleanupInterval) {
+      clearInterval(this.memoryCleanupInterval)
+      this.memoryCleanupInterval = undefined
+    }
 
-    // Close all browsers
-    const closePromises = Array.from(this.browsers.values()).map(async browserInstance => {
+    // Close all pages first with proper cleanup
+    const pageClosePromises = this.availablePages.map(async pageInstance => {
       try {
-        await browserInstance.browser.close()
+        await this.closePageWithCleanup(pageInstance)
+      } catch (error) {
+        logger.error('BrowserPool', `Failed to close page during shutdown`, error)
+      }
+    })
+
+    await Promise.allSettled(pageClosePromises)
+
+    // Close all browsers with comprehensive cleanup
+    const browserClosePromises = Array.from(this.browsers.values()).map(async browserInstance => {
+      try {
+        await this.closeBrowserWithCleanup(browserInstance)
       } catch (error) {
         logger.error('BrowserPool', `Failed to close browser ${browserInstance.id}`, error)
       }
     })
 
-    await Promise.allSettled(closePromises)
+    await Promise.allSettled(browserClosePromises)
 
+    // Clear all data structures
     this.browsers.clear()
     this.availablePages = []
     this.activePagesCount = 0
+    this.healthMetrics.clear()
+    this.errorCounts.clear()
+    this.resourceTrackers.clear()
+
+    // Stop memory tracking
+    this.cleanupAllMemoryTrackers()
+
+    // Update memory stats
+    this.memoryStats.totalBrowsers = 0
+    this.memoryStats.totalPages = 0
+    this.memoryStats.totalContexts = 0
+    this.memoryStats.lastCleanupTime = new Date()
 
     logger.info('BrowserPool', 'Browser pool shutdown complete')
+    this.emit('shutdown-complete')
   }
 
   /**
@@ -342,14 +489,33 @@ export class BrowserPool {
         logger.info('BrowserPool', `Created real browser ${browserId}`)
       }
 
+      const initialMemory = this.getCurrentMemoryUsage()
+      let memoryTrackerId: string | undefined
+
+      try {
+        memoryTrackerId = memoryLeakDetector.trackComponent(`Browser-${browserId}`)
+        // Track this browser for memory leak detection
+        this.resourceTrackers.set(browserId, memoryTrackerId)
+      } catch (error) {
+        logger.warn('BrowserPool', 'Failed to setup memory tracking for browser', error)
+      }
+
       const browserInstance: BrowserInstance = {
         id: browserId,
         browser,
         pages: new Set(),
+        contexts: new Set(),
         createdAt: new Date(),
         lastUsed: new Date(),
         isHealthy: true,
+        memoryTrackerId,
+        eventListeners: new Map(),
+        initialMemory,
+        currentMemory: initialMemory,
       }
+
+      // Setup browser event listeners with cleanup tracking
+      this.setupBrowserEventListeners(browserInstance)
 
       this.browsers.set(browserId, browserInstance)
 
@@ -426,13 +592,31 @@ export class BrowserPool {
       targetBrowser.pages.add(page)
       targetBrowser.lastUsed = new Date()
 
+      const initialMemory = this.getCurrentMemoryUsage()
+      let memoryTrackerId: string | undefined
+
+      try {
+        memoryTrackerId = memoryLeakDetector.trackComponent(`Page-${targetBrowser.id}-${Date.now()}`)
+        // Track this page for memory leak detection
+        this.resourceTrackers.set(`page-${targetBrowser.id}-${Date.now()}`, memoryTrackerId)
+      } catch (error) {
+        logger.warn('BrowserPool', 'Failed to setup memory tracking for page', error)
+      }
+
       const pageInstance: PageInstance = {
         page,
         browserId: targetBrowser.id,
+        contextId: page.browserContext()?.id,
         createdAt: new Date(),
         lastUsed: new Date(),
         isActive: false,
+        memoryTrackerId,
+        eventListeners: new Map(),
+        initialMemory,
       }
+
+      // Setup page event listeners with cleanup tracking
+      this.setupPageEventListeners(pageInstance)
 
       logger.debug('BrowserPool', `Created page in browser ${targetBrowser.id}`)
       return pageInstance
@@ -710,13 +894,13 @@ export class BrowserPool {
   }
 
   /**
-   * Restart a specific browser
+   * Restart a specific browser with comprehensive cleanup
    */
   private async restartBrowser(browserId: string): Promise<void> {
     const browser = this.browsers.get(browserId)
     if (browser) {
       try {
-        await browser.browser.close()
+        await this.closeBrowserWithCleanup(browser)
         this.handleBrowserDisconnect(browserId)
         // Create a new browser to replace it
         await this.createBrowser()
@@ -757,6 +941,333 @@ export class BrowserPool {
       averageResponseTime: avgResponseTime,
       averageErrorRate: avgErrorRate,
     }
+  }
+
+  /**
+   * Close browser with comprehensive cleanup
+   */
+  private async closeBrowserWithCleanup(browserInstance: BrowserInstance): Promise<void> {
+    try {
+      // Close all pages first
+      const pageClosePromises = Array.from(browserInstance.pages).map(async page => {
+        try {
+          await page.close()
+        } catch (error) {
+          logger.error('BrowserPool', 'Failed to close page during browser cleanup', error)
+        }
+      })
+      await Promise.allSettled(pageClosePromises)
+
+      // Close all contexts
+      const contextClosePromises = Array.from(browserInstance.contexts).map(async context => {
+        try {
+          await context.close()
+        } catch (error) {
+          logger.error('BrowserPool', 'Failed to close context during browser cleanup', error)
+        }
+      })
+      await Promise.allSettled(contextClosePromises)
+
+      // Remove event listeners
+      this.cleanupBrowserEventListeners(browserInstance)
+
+      // Close browser
+      await browserInstance.browser.close()
+
+      // Stop memory tracking
+      if (browserInstance.memoryTrackerId) {
+        memoryLeakDetector.stopTrackingComponent(browserInstance.memoryTrackerId)
+        this.resourceTrackers.delete(browserInstance.id)
+      }
+
+      logger.debug('BrowserPool', `Browser ${browserInstance.id} closed with comprehensive cleanup`)
+    } catch (error) {
+      logger.error('BrowserPool', `Failed to close browser ${browserInstance.id} with cleanup`, error)
+    }
+  }
+
+  /**
+   * Close page with comprehensive cleanup
+   */
+  private async closePageWithCleanup(pageInstance: PageInstance): Promise<void> {
+    try {
+      // Clean up page event listeners
+      await this.cleanupPageEventListeners(pageInstance)
+
+      // Close page
+      await pageInstance.page.close()
+
+      // Stop memory tracking
+      if (pageInstance.memoryTrackerId) {
+        memoryLeakDetector.stopTrackingComponent(pageInstance.memoryTrackerId)
+        const pageKey = `page-${pageInstance.browserId}-${pageInstance.createdAt.getTime()}`
+        this.resourceTrackers.delete(pageKey)
+      }
+
+      // Remove from browser's page set
+      const browser = this.browsers.get(pageInstance.browserId)
+      if (browser) {
+        browser.pages.delete(pageInstance.page)
+      }
+
+      logger.debug('BrowserPool', `Page closed with comprehensive cleanup`)
+    } catch (error) {
+      logger.error('BrowserPool', 'Failed to close page with cleanup', error)
+    }
+  }
+
+  /**
+   * Setup browser event listeners with cleanup tracking
+   */
+  private setupBrowserEventListeners(browserInstance: BrowserInstance): void {
+    const disconnectHandler = () => {
+      logger.warn('BrowserPool', `Browser ${browserInstance.id} disconnected`)
+      this.handleBrowserDisconnect(browserInstance.id)
+    }
+
+    const targetChangedHandler = () => {
+      // Update memory tracking when targets change
+      if (browserInstance.memoryTrackerId) {
+        memoryLeakDetector.updateComponentMemory(browserInstance.memoryTrackerId)
+      }
+    }
+
+    browserInstance.browser.on('disconnected', disconnectHandler)
+    browserInstance.browser.on('targetchanged', targetChangedHandler)
+
+    // Track event listeners for cleanup
+    browserInstance.eventListeners.set('disconnected', disconnectHandler)
+    browserInstance.eventListeners.set('targetchanged', targetChangedHandler)
+  }
+
+  /**
+   * Setup page event listeners with cleanup tracking
+   */
+  private setupPageEventListeners(pageInstance: PageInstance): void {
+    const errorHandler = (error: Error) => {
+      logger.error('BrowserPool', `Page error in browser ${pageInstance.browserId}`, error)
+      this.errorCounts.set(pageInstance.browserId, (this.errorCounts.get(pageInstance.browserId) || 0) + 1)
+    }
+
+    const responseHandler = () => {
+      // Update memory tracking on responses
+      if (pageInstance.memoryTrackerId) {
+        memoryLeakDetector.updateComponentMemory(pageInstance.memoryTrackerId)
+      }
+    }
+
+    pageInstance.page.on('pageerror', errorHandler)
+    pageInstance.page.on('response', responseHandler)
+
+    // Track event listeners for cleanup
+    pageInstance.eventListeners.set('pageerror', errorHandler)
+    pageInstance.eventListeners.set('response', responseHandler)
+  }
+
+  /**
+   * Cleanup browser event listeners
+   */
+  private cleanupBrowserEventListeners(browserInstance: BrowserInstance): void {
+    for (const [event, handler] of browserInstance.eventListeners) {
+      try {
+        browserInstance.browser.removeListener(event, handler)
+      } catch (error) {
+        logger.error('BrowserPool', `Failed to remove browser event listener ${event}`, error)
+      }
+    }
+    browserInstance.eventListeners.clear()
+  }
+
+  /**
+   * Cleanup page event listeners
+   */
+  private async cleanupPageEventListeners(pageInstance: PageInstance): Promise<void> {
+    for (const [event, handler] of pageInstance.eventListeners) {
+      try {
+        pageInstance.page.removeListener(event, handler)
+      } catch (error) {
+        logger.error('BrowserPool', `Failed to remove page event listener ${event}`, error)
+      }
+    }
+    pageInstance.eventListeners.clear()
+  }
+
+  /**
+   * Start memory cleanup interval
+   */
+  private startMemoryCleanup(): void {
+    this.memoryCleanupInterval = setInterval(async () => {
+      await this.performMemoryCleanup()
+    }, 300000) // Every 5 minutes
+  }
+
+  /**
+   * Perform memory cleanup
+   */
+  private async performMemoryCleanup(): Promise<void> {
+    try {
+      logger.debug('BrowserPool', 'Performing memory cleanup')
+
+      // Update memory stats
+      this.updateMemoryStats()
+
+      // Check for memory leaks
+      await this.checkForMemoryLeaks()
+
+      // Clean up stale resources
+      await this.cleanupStaleResources()
+
+      this.lastCleanupTime = new Date()
+      this.memoryStats.lastCleanupTime = this.lastCleanupTime
+
+      this.emit('memory-cleanup-complete', this.memoryStats)
+    } catch (error) {
+      logger.error('BrowserPool', 'Memory cleanup failed', error)
+    }
+  }
+
+  /**
+   * Perform emergency cleanup when memory is critical
+   */
+  private async performEmergencyCleanup(): Promise<void> {
+    try {
+      logger.warn('BrowserPool', 'Performing emergency memory cleanup')
+
+      // Close oldest browsers first
+      const sortedBrowsers = Array.from(this.browsers.values())
+        .sort((a, b) => a.lastUsed.getTime() - b.lastUsed.getTime())
+
+      const browsersToClose = Math.ceil(sortedBrowsers.length * 0.3) // Close 30% of browsers
+
+      for (let i = 0; i < browsersToClose && i < sortedBrowsers.length; i++) {
+        const browser = sortedBrowsers[i]
+        if (browser.pages.size === 0) { // Only close browsers with no active pages
+          await this.closeBrowserWithCleanup(browser)
+          this.browsers.delete(browser.id)
+        }
+      }
+
+      // Force garbage collection
+      if (global.gc) {
+        global.gc()
+      }
+
+      // Trigger memory cleanup service
+      await memoryCleanup.performAutomaticCleanup()
+
+      logger.info('BrowserPool', 'Emergency cleanup completed')
+      this.emit('emergency-cleanup-complete')
+    } catch (error) {
+      logger.error('BrowserPool', 'Emergency cleanup failed', error)
+    }
+  }
+
+  /**
+   * Update memory statistics
+   */
+  private updateMemoryStats(): void {
+    this.memoryStats.totalBrowsers = this.browsers.size
+    this.memoryStats.totalPages = this.activePagesCount + this.availablePages.length
+    this.memoryStats.totalContexts = Array.from(this.browsers.values())
+      .reduce((total, browser) => total + browser.contexts.size, 0)
+
+    const totalMemory = Array.from(this.browsers.values())
+      .reduce((total, browser) => total + browser.currentMemory, 0)
+
+    this.memoryStats.totalMemoryUsage = totalMemory
+    this.memoryStats.averageMemoryPerBrowser = this.browsers.size > 0 ? totalMemory / this.browsers.size : 0
+    this.memoryStats.memoryLeakAlerts = this.memoryLeakAlerts
+  }
+
+  /**
+   * Check for memory leaks
+   */
+  private async checkForMemoryLeaks(): Promise<void> {
+    for (const [browserId, browser] of this.browsers) {
+      // Update browser memory tracking
+      if (browser.memoryTrackerId) {
+        const currentMemory = this.getCurrentMemoryUsage()
+        browser.currentMemory = currentMemory
+        memoryLeakDetector.updateComponentMemory(browser.memoryTrackerId)
+
+        // Check for significant memory increase
+        const memoryIncrease = currentMemory - browser.initialMemory
+        if (memoryIncrease > 100 * 1024 * 1024) { // 100MB increase
+          logger.warn('BrowserPool', `Browser ${browserId} memory increase detected: ${this.formatBytes(memoryIncrease)}`)
+          this.memoryLeakAlerts++
+
+          // Emit memory leak alert
+          memoryLeakDetector.emit('memory-leak-detected', {
+            type: 'browser',
+            description: `Browser ${browserId} has increased memory usage by ${this.formatBytes(memoryIncrease)}`,
+            memoryIncrease,
+            timestamp: new Date(),
+            severity: memoryIncrease > 200 * 1024 * 1024 ? 'critical' : 'high',
+          })
+        }
+      }
+    }
+  }
+
+  /**
+   * Clean up stale resources
+   */
+  private async cleanupStaleResources(): Promise<void> {
+    const now = Date.now()
+
+    // Clean up old available pages
+    const stalePagesToRemove = this.availablePages.filter(page =>
+      now - page.lastUsed.getTime() > this.config.pageTimeout
+    )
+
+    for (const stalePage of stalePagesToRemove) {
+      await this.closePageWithCleanup(stalePage)
+      const index = this.availablePages.indexOf(stalePage)
+      if (index > -1) {
+        this.availablePages.splice(index, 1)
+      }
+    }
+
+    if (stalePagesToRemove.length > 0) {
+      logger.debug('BrowserPool', `Cleaned up ${stalePagesToRemove.length} stale pages`)
+    }
+  }
+
+  /**
+   * Clean up all memory trackers
+   */
+  private cleanupAllMemoryTrackers(): void {
+    for (const [resourceId, trackerId] of this.resourceTrackers) {
+      try {
+        memoryLeakDetector.stopTrackingComponent(trackerId)
+      } catch (error) {
+        logger.error('BrowserPool', `Failed to stop tracking ${resourceId}`, error)
+      }
+    }
+    this.resourceTrackers.clear()
+  }
+
+  /**
+   * Get current memory usage
+   */
+  private getCurrentMemoryUsage(): number {
+    if (typeof process !== 'undefined' && process.memoryUsage) {
+      return process.memoryUsage().heapUsed
+    } else if (typeof window !== 'undefined' && 'performance' in window && 'memory' in (window.performance as any)) {
+      return (window.performance as any).memory.usedJSHeapSize
+    }
+    return 0
+  }
+
+  /**
+   * Format bytes to human readable format
+   */
+  private formatBytes(bytes: number): string {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 }
 

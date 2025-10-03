@@ -42,10 +42,25 @@ export interface WebSocketTracker {
   isActive: boolean
 }
 
+export interface BrowserResourceTracker {
+  resourceId: string
+  resourceType: 'browser' | 'page' | 'context'
+  browserId?: string
+  pageId?: string
+  contextId?: string
+  startTime: Date
+  initialMemory: number
+  currentMemory: number
+  memoryHistory: number[]
+  isActive: boolean
+  metadata: Record<string, any>
+}
+
 export class MemoryLeakDetector extends EventEmitter {
   private componentTrackers: Map<string, ComponentMemoryTracker> = new Map()
   private asyncOperationTrackers: Map<string, AsyncOperationTracker> = new Map()
   private webSocketTrackers: Map<string, WebSocketTracker> = new Map()
+  private browserResourceTrackers: Map<string, BrowserResourceTracker> = new Map()
   private detectionInterval: NodeJS.Timeout | null = null
   private isActive: boolean = false
   
@@ -54,6 +69,9 @@ export class MemoryLeakDetector extends EventEmitter {
     asyncOperationTimeout: 60000, // 60 seconds
     webSocketMemoryIncrease: 5 * 1024 * 1024, // 5MB
     globalMemoryIncrease: 50 * 1024 * 1024, // 50MB
+    browserMemoryIncrease: 100 * 1024 * 1024, // 100MB
+    pageMemoryIncrease: 50 * 1024 * 1024, // 50MB
+    contextMemoryIncrease: 25 * 1024 * 1024, // 25MB
   }
 
   constructor() {
@@ -290,7 +308,10 @@ export class MemoryLeakDetector extends EventEmitter {
       
       // Check global memory trends
       this.checkGlobalMemoryTrends()
-      
+
+      // Check browser resource leaks
+      this.checkBrowserResourceLeaks()
+
     } catch (error) {
       logger.error('MemoryLeakDetector', 'Failed to perform leak detection', error)
     }
@@ -425,6 +446,133 @@ export class MemoryLeakDetector extends EventEmitter {
   }
 
   /**
+   * Track browser resource (browser, page, or context)
+   */
+  trackBrowserResource(
+    resourceType: 'browser' | 'page' | 'context',
+    resourceId: string,
+    metadata: Record<string, any> = {}
+  ): string {
+    const trackerId = `${resourceType}-${resourceId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
+    const tracker: BrowserResourceTracker = {
+      resourceId: trackerId,
+      resourceType,
+      browserId: metadata.browserId,
+      pageId: metadata.pageId,
+      contextId: metadata.contextId,
+      startTime: new Date(),
+      initialMemory: this.getCurrentMemoryUsage(),
+      currentMemory: this.getCurrentMemoryUsage(),
+      memoryHistory: [],
+      isActive: true,
+      metadata,
+    }
+
+    this.browserResourceTrackers.set(trackerId, tracker)
+    logger.debug('MemoryLeakDetector', `Started tracking ${resourceType}: ${resourceId}`)
+
+    return trackerId
+  }
+
+  /**
+   * Update browser resource memory usage
+   */
+  updateBrowserResourceMemory(trackerId: string): void {
+    const tracker = this.browserResourceTrackers.get(trackerId)
+    if (!tracker || !tracker.isActive) {
+      return
+    }
+
+    const currentMemory = this.getCurrentMemoryUsage()
+    tracker.currentMemory = currentMemory
+    tracker.memoryHistory.push(currentMemory)
+
+    // Keep only last 20 measurements
+    if (tracker.memoryHistory.length > 20) {
+      tracker.memoryHistory.shift()
+    }
+
+    // Check for memory leak based on resource type
+    const memoryIncrease = currentMemory - tracker.initialMemory
+    let threshold = this.thresholds.browserMemoryIncrease
+
+    switch (tracker.resourceType) {
+      case 'page':
+        threshold = this.thresholds.pageMemoryIncrease
+        break
+      case 'context':
+        threshold = this.thresholds.contextMemoryIncrease
+        break
+    }
+
+    if (memoryIncrease > threshold) {
+      this.emitMemoryLeakAlert({
+        type: 'browser',
+        description: `${tracker.resourceType} ${tracker.resourceId} has increased memory usage by ${this.formatBytes(memoryIncrease)}`,
+        memoryIncrease,
+        timestamp: new Date(),
+        severity: this.getSeverityLevel(memoryIncrease),
+      })
+    }
+  }
+
+  /**
+   * Stop tracking browser resource
+   */
+  stopTrackingBrowserResource(trackerId: string): void {
+    const tracker = this.browserResourceTrackers.get(trackerId)
+    if (tracker) {
+      tracker.isActive = false
+      logger.debug('MemoryLeakDetector', `Stopped tracking ${tracker.resourceType}: ${tracker.resourceId}`)
+
+      // Remove after a delay to allow for final memory checks
+      setTimeout(() => {
+        this.browserResourceTrackers.delete(trackerId)
+      }, 5000)
+    }
+  }
+
+  /**
+   * Check browser resource leaks
+   */
+  private checkBrowserResourceLeaks(): void {
+    for (const [trackerId, tracker] of this.browserResourceTrackers) {
+      if (tracker.isActive && tracker.memoryHistory.length >= 5) {
+        // Check for consistent memory increase
+        const recentMemory = tracker.memoryHistory.slice(-5)
+        const isIncreasing = recentMemory.every((mem, index) =>
+          index === 0 || mem >= recentMemory[index - 1]
+        )
+
+        if (isIncreasing) {
+          const memoryIncrease = tracker.currentMemory - tracker.initialMemory
+          let threshold = this.thresholds.browserMemoryIncrease
+
+          switch (tracker.resourceType) {
+            case 'page':
+              threshold = this.thresholds.pageMemoryIncrease
+              break
+            case 'context':
+              threshold = this.thresholds.contextMemoryIncrease
+              break
+          }
+
+          if (memoryIncrease > threshold) {
+            this.emitMemoryLeakAlert({
+              type: 'browser',
+              description: `Consistent memory increase detected in ${tracker.resourceType}: ${tracker.resourceId}`,
+              memoryIncrease,
+              timestamp: new Date(),
+              severity: this.getSeverityLevel(memoryIncrease),
+            })
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Get detection status
    */
   getStatus(): {
@@ -432,12 +580,14 @@ export class MemoryLeakDetector extends EventEmitter {
     componentTrackers: number
     asyncOperationTrackers: number
     webSocketTrackers: number
+    browserResourceTrackers: number
   } {
     return {
       isActive: this.isActive,
       componentTrackers: this.componentTrackers.size,
       asyncOperationTrackers: this.asyncOperationTrackers.size,
       webSocketTrackers: this.webSocketTrackers.size,
+      browserResourceTrackers: this.browserResourceTrackers.size,
     }
   }
 
@@ -448,6 +598,7 @@ export class MemoryLeakDetector extends EventEmitter {
     this.componentTrackers.clear()
     this.asyncOperationTrackers.clear()
     this.webSocketTrackers.clear()
+    this.browserResourceTrackers.clear()
     logger.info('MemoryLeakDetector', 'Cleared all memory trackers')
   }
 

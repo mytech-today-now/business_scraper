@@ -151,6 +151,9 @@ async function decryptData(encryptedData: EncryptedData, password: string): Prom
  * Store API credentials securely in localStorage
  */
 export async function storeApiCredentials(credentials: ApiCredentials): Promise<void> {
+  // Only access localStorage on client side
+  if (typeof window === 'undefined') return
+
   try {
     // Check if Web Crypto API is available
     if (!crypto.subtle) {
@@ -190,6 +193,9 @@ export async function storeApiCredentials(credentials: ApiCredentials): Promise<
  * Retrieve API credentials from secure localStorage
  */
 export async function retrieveApiCredentials(): Promise<ApiCredentials | null> {
+  // Only access localStorage on client side
+  if (typeof window === 'undefined') return null
+
   try {
     // First try encrypted storage
     const encryptedDataStr = localStorage.getItem('encrypted_api_credentials')
@@ -235,6 +241,9 @@ export async function retrieveApiCredentials(): Promise<ApiCredentials | null> {
  * Clear stored API credentials
  */
 export function clearApiCredentials(): void {
+  // Only access localStorage on client side
+  if (typeof window === 'undefined') return
+
   localStorage.removeItem('encrypted_api_credentials')
   localStorage.removeItem('api_credentials_plain')
   localStorage.removeItem('credentials_timestamp')
@@ -245,6 +254,9 @@ export function clearApiCredentials(): void {
  * Check if API credentials are stored
  */
 export function hasStoredCredentials(): boolean {
+  // Only access localStorage on client side
+  if (typeof window === 'undefined') return false
+
   return (
     localStorage.getItem('encrypted_api_credentials') !== null ||
     localStorage.getItem('api_credentials_plain') !== null
@@ -255,6 +267,9 @@ export function hasStoredCredentials(): boolean {
  * Get the timestamp when credentials were last stored
  */
 export function getCredentialsTimestamp(): Date | null {
+  // Only access localStorage on client side
+  if (typeof window === 'undefined') return null
+
   const timestamp = localStorage.getItem('credentials_timestamp')
   return timestamp ? new Date(parseInt(timestamp)) : null
 }

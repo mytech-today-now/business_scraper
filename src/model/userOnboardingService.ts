@@ -68,7 +68,7 @@ export class UserOnboardingService {
   private async createUserProfile(userId: string, userData: UserRegistration): Promise<User> {
     try {
       // Hash password securely
-      const { hash, salt } = hashPassword(userData.password)
+      const { hash, salt } = await hashPassword(userData.password)
 
       const user: User = {
         id: userId,
