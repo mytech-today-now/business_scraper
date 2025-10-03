@@ -5,7 +5,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 856
+    "duration": 334
   },
   "Auth-utils": {
     "total": 34,
@@ -13,7 +13,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 451
+    "duration": 313
   },
   "Utils": {
     "total": 20,
@@ -21,7 +21,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 184
+    "duration": 203
   },
   "Toast Deduplication": {
     "total": 15,
@@ -29,7 +29,7 @@
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 189
+    "duration": 195
   },
   "Console Filter Utils": {
     "total": 11,
@@ -1977,27 +1977,27 @@
   },
   "Browser-pool-memory-leak": {
     "total": 17,
-    "passed": 5,
-    "failed": 12,
+    "passed": 13,
+    "failed": 4,
     "skipped": 0,
-    "successRate": 0.29411764705882354,
-    "duration": 3204
+    "successRate": 0.7647058823529411,
+    "duration": 65119
   },
   "Browser-pool-unit": {
-    "total": 17,
-    "passed": 17,
+    "total": 10,
+    "passed": 10,
     "failed": 0,
     "skipped": 0,
     "successRate": 1,
-    "duration": 843
+    "duration": 19963
   },
   "Browser-pool-load": {
     "total": 7,
     "passed": 1,
-    "failed": 6,
-    "skipped": 0,
+    "failed": 0,
+    "skipped": 6,
     "successRate": 0.14285714285714285,
-    "duration": 34200
+    "duration": 5010
   },
   "Comprehensive-security": {
     "total": 13,

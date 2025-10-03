@@ -1,0 +1,697 @@
+{
+  "metadata": {
+    "reportId": "report-1759513796659-ghzwouuli",
+    "generatedAt": "2025-10-03T17:51:02.625Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 17,
+    "successRate": 76.47058823529412,
+    "criticalIssues": 1,
+    "keyMetrics": {
+      "averageDuration": 65119,
+      "memoryPeak": 80596232,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 17,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 17,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should track browser resource memory usage::1759513862591",
+          "testName": "should track browser resource memory usage",
+          "testDescription": "should track browser resource memory usage",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80467928,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should track browser resource memory usage",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: memoryLeakDetector is not defined"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should perform emergency cleanup on memory alerts::1759513862599",
+          "testName": "should perform emergency cleanup on memory alerts",
+          "testDescription": "should perform emergency cleanup on memory alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80504912,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:153:41)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:153:41)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform emergency cleanup on memory alerts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle browser disconnect gracefully::1759513862605",
+          "testName": "should handle browser disconnect gracefully",
+          "testDescription": "should handle browser disconnect gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80523096,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:212:42)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:212:42)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle browser disconnect gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should integrate with memory monitor alerts::1759513862610",
+          "testName": "should integrate with memory monitor alerts",
+          "testDescription": "should integrate with memory monitor alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80532568,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:236:35)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:236:35)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should integrate with memory monitor alerts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should track browser resource memory usage::1759513862591",
+          "testName": "should track browser resource memory usage",
+          "testDescription": "should track browser resource memory usage",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80467928,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should track browser resource memory usage",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: memoryLeakDetector is not defined"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should detect browser memory leaks::1759513862591",
+          "testName": "should detect browser memory leaks",
+          "testDescription": "should detect browser memory leaks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80457600,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should track browser resource memory usage::1759513862591",
+          "testName": "should track browser resource memory usage",
+          "testDescription": "should track browser resource memory usage",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80467928,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should track browser resource memory usage",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: ReferenceError: memoryLeakDetector is not defined"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should perform emergency cleanup on memory alerts::1759513862599",
+          "testName": "should perform emergency cleanup on memory alerts",
+          "testDescription": "should perform emergency cleanup on memory alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80504912,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:153:41)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:153:41)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should perform emergency cleanup on memory alerts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should properly cleanup pages with event listeners::1759513862604",
+          "testName": "should properly cleanup pages with event listeners",
+          "testDescription": "should properly cleanup pages with event listeners",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80514592,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should cleanup browser instances with all resources::1759513862605",
+          "testName": "should cleanup browser instances with all resources",
+          "testDescription": "should cleanup browser instances with all resources",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80518600,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle browser disconnect gracefully::1759513862605",
+          "testName": "should handle browser disconnect gracefully",
+          "testDescription": "should handle browser disconnect gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80523096,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:212:42)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:212:42)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle browser disconnect gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should integrate with memory monitor alerts::1759513862610",
+          "testName": "should integrate with memory monitor alerts",
+          "testDescription": "should integrate with memory monitor alerts",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80532568,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:236:35)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:236:35)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should integrate with memory monitor alerts",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should update memory statistics periodically::1759513862621",
+          "testName": "should update memory statistics periodically",
+          "testDescription": "should update memory statistics periodically",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80542040,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146440192
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should handle concurrent page requests without memory leaks::1759513862621",
+          "testName": "should handle concurrent page requests without memory leaks",
+          "testDescription": "should handle concurrent page requests without memory leaks",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80553072,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146444288
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-memory-leak::should maintain stable memory usage over time::1759513862621",
+          "testName": "should maintain stable memory usage over time",
+          "testDescription": "should maintain stable memory usage over time",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "relativePath": "src\\__tests__\\memory\\browser-pool-memory-leak.test.ts",
+          "suite": "Browser-pool-memory-leak",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759513797424,
+          "endTime": 1759513862543,
+          "duration": 65119,
+          "memoryUsage": {
+            "heapUsed": 80566912,
+            "heapTotal": 86724608,
+            "external": 4520439,
+            "rss": 146448384
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1563.9824,
+      "endTime": 67529.4096,
+      "duration": 1107023,
+      "memoryUsage": {
+        "heapUsed": 80545221.64705883,
+        "heapTotal": 96654265.97647059,
+        "external": 8054522.164705884,
+        "rss": 120817832.47058824
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1369268768,
+      "averageTestDuration": 65119,
+      "totalExecutionTime": 1107023
+    },
+    "bottlenecks": [
+      "should detect browser memory leaks (65119ms)",
+      "should track browser resource memory usage (65119ms)",
+      "should perform emergency cleanup on memory alerts (65119ms)",
+      "should properly cleanup pages with event listeners (65119ms)",
+      "should cleanup browser instances with all resources (65119ms)",
+      "should handle browser disconnect gracefully (65119ms)",
+      "should integrate with memory monitor alerts (65119ms)",
+      "should update memory statistics periodically (65119ms)",
+      "should handle concurrent page requests without memory leaks (65119ms)",
+      "should maintain stable memory usage over time (65119ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "1 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should track browser resource memory usage: ReferenceError: memoryLeakDetector is not defined\n    at Object.memoryLeakDetector (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\memory\\browser-pool-memory-leak.test.ts:120:7)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should track browser resource memory usage"
+        ]
+      }
+    ],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should detect browser memory leaks",
+          "should track browser resource memory usage",
+          "should perform emergency cleanup on memory alerts",
+          "should properly cleanup pages with event listeners",
+          "should cleanup browser instances with all resources",
+          "should handle browser disconnect gracefully",
+          "should integrate with memory monitor alerts",
+          "should update memory statistics periodically",
+          "should handle concurrent page requests without memory leaks",
+          "should maintain stable memory usage over time"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}
