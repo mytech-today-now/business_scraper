@@ -143,10 +143,16 @@ const customJestConfig = {
       statements: 95,
     },
   },
-  testTimeout: 60000,
+  // Dynamic timeout configuration based on test type
+  testTimeout: process.env.JEST_TIMEOUT ? parseInt(process.env.JEST_TIMEOUT) :
+    process.env.npm_config_testPathPattern?.includes('unit') ? 10000 :
+    process.env.npm_config_testPathPattern?.includes('integration') ? 30000 :
+    process.env.npm_config_testPathPattern?.includes('performance') ? 120000 :
+    process.env.npm_config_testPathPattern?.includes('e2e') ? 180000 :
+    30000, // Default timeout for mixed test runs
   verbose: true,
   // Enhanced error handling and retry configuration
-  maxWorkers: '50%',
+  maxWorkers: process.env.CI ? 2 : '50%', // Reduce workers in CI for stability
   detectOpenHandles: true,
   forceExit: true,
   // Improved test isolation

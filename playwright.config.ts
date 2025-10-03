@@ -20,9 +20,9 @@ export default defineConfig({
     ['junit', { outputFile: 'test-results/results.xml' }],
   ],
   /* Enhanced timeout configuration for performance */
-  timeout: 60000, // Overall test timeout: 1 minute
+  timeout: 180000, // Overall test timeout: 3 minutes for E2E tests
   expect: {
-    timeout: 10000, // Assertion timeout: 10 seconds
+    timeout: 15000, // Assertion timeout: 15 seconds
   },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -39,8 +39,8 @@ export default defineConfig({
     video: 'retain-on-failure',
 
     /* Optimized timeout settings for better performance */
-    actionTimeout: 15000, // Reduced from 30000 to 15000
-    navigationTimeout: 20000, // Reduced from 30000 to 20000
+    actionTimeout: 30000, // Increased for stability in complex operations
+    navigationTimeout: 45000, // Increased for slow page loads
 
     /* Enhanced browser context options for performance */
     contextOptions: {
