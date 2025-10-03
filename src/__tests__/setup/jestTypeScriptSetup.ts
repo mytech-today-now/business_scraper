@@ -357,11 +357,230 @@ jest.mock('@/lib/security', () => ({
     isValid: true
   })),
   getClientIP: jest.fn(() => '127.0.0.1'),
+  sanitizeInput: jest.fn((input) => input?.trim()),
+  validateInput: jest.fn(() => ({ isValid: true, errors: [] })),
+  validateCSRFToken: jest.fn(() => true),
+  generateSecureToken: jest.fn(() => 'secure-token-123'),
+  checkRateLimit: jest.fn(() => true),
+  trackLoginAttempt: jest.fn(() => true),
+  isLockedOut: jest.fn(() => false),
+  logSuspiciousActivity: jest.fn(() => Promise.resolve()),
+  encryptData: jest.fn(() => Promise.resolve('encrypted-data')),
+  decryptData: jest.fn(() => Promise.resolve('decrypted-data')),
+  invalidateSession: jest.fn(() => Promise.resolve()),
+  validateSecureSession: jest.fn(() => Promise.resolve({ valid: true })),
+  isIpLockedOut: jest.fn(() => false),
+  recordFailedLogin: jest.fn(() => undefined),
   defaultSecurityConfig: {
     sessionTimeout: 3600000,
     maxLoginAttempts: 5,
     lockoutDuration: 900000
   }
+}))
+
+// Mock Storage Service
+jest.mock('@/model/storage', () => ({
+  storage: {
+    getAllBusinesses: jest.fn(() => Promise.resolve([])),
+    saveBusiness: jest.fn(() => Promise.resolve()),
+    saveBusinesses: jest.fn(() => Promise.resolve()),
+    getBusinessById: jest.fn(() => Promise.resolve(null)),
+    deleteBusinessById: jest.fn(() => Promise.resolve()),
+    clearAllBusinesses: jest.fn(() => Promise.resolve()),
+    getBusinessCount: jest.fn(() => Promise.resolve(0)),
+    searchBusinesses: jest.fn(() => Promise.resolve([])),
+  },
+  StorageService: jest.fn().mockImplementation(() => ({
+    getAllBusinesses: jest.fn(() => Promise.resolve([])),
+    saveBusiness: jest.fn(() => Promise.resolve()),
+    saveBusinesses: jest.fn(() => Promise.resolve()),
+  })),
+}))
+
+// Mock Advanced Rate Limit Service
+jest.mock('@/lib/advancedRateLimit', () => ({
+  advancedRateLimitService: {
+    checkApiRateLimit: jest.fn(() => ({ allowed: true, remaining: 100, resetTime: Date.now() + 3600000 })),
+    recordApiCall: jest.fn(() => Promise.resolve()),
+    getRateLimitStatus: jest.fn(() => ({ allowed: true, remaining: 100 })),
+    clearRateLimit: jest.fn(() => Promise.resolve()),
+  },
+}))
+
+// Mock Logger
+jest.mock('@/utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    trace: jest.fn(),
+  },
+}))
+
+// Mock Next-Auth and Jose modules
+jest.mock('next-auth', () => ({
+  default: jest.fn(),
+  getServerSession: jest.fn(),
+}))
+
+jest.mock('jose', () => ({
+  SignJWT: jest.fn().mockImplementation(() => ({
+    setProtectedHeader: jest.fn().mockReturnThis(),
+    setIssuedAt: jest.fn().mockReturnThis(),
+    setExpirationTime: jest.fn().mockReturnThis(),
+    sign: jest.fn(() => Promise.resolve('mock-jwt-token')),
+  })),
+  jwtVerify: jest.fn(() => Promise.resolve({ payload: { sub: 'test-user' } })),
+}))
+
+// Mock TensorFlow.js to avoid WebGL/Canvas issues in Jest
+jest.mock('@tensorflow/tfjs', () => ({
+  sequential: jest.fn(() => ({
+    add: jest.fn(),
+    compile: jest.fn(),
+    fit: jest.fn(() => Promise.resolve()),
+    predict: jest.fn(() => ({
+      data: jest.fn(() => Promise.resolve([0.75])),
+      dispose: jest.fn(),
+    })),
+  })),
+  layers: {
+    dense: jest.fn(() => ({})),
+  },
+  tensor2d: jest.fn(() => ({
+    dispose: jest.fn(),
+  })),
+  setBackend: jest.fn(() => Promise.resolve()),
+  ready: jest.fn(() => Promise.resolve()),
+}))
+
+jest.mock('@tensorflow/tfjs-layers', () => ({
+  sequential: jest.fn(() => ({
+    add: jest.fn(),
+    compile: jest.fn(),
+    fit: jest.fn(() => Promise.resolve()),
+    predict: jest.fn(() => ({
+      data: jest.fn(() => Promise.resolve([0.75])),
+      dispose: jest.fn(),
+    })),
+  })),
+  layers: {
+    dense: jest.fn(() => ({})),
+  },
+}))
+
+// Mock Enhanced Filtering Service
+jest.mock('@/lib/enhancedFilteringService', () => ({
+  EnhancedFilteringService: jest.fn().mockImplementation(() => ({
+    filterBusinesses: jest.fn(() => Promise.resolve({
+      businesses: [],
+      totalCount: 0,
+      hasMore: false,
+    })),
+  })),
+}))
+
+// Mock data processing services
+jest.mock('@/lib/enhancedDataManager', () => ({
+  enhancedDataManager: {
+    initialize: jest.fn(() => Promise.resolve()),
+    processSingle: jest.fn(() => Promise.resolve({
+      processed: {},
+      score: { score: 75, confidence: 0.8, factors: {}, recommendations: [] },
+      validation: { isValid: true, confidence: 0.9, errors: [], warnings: [], suggestions: [] },
+      duplicates: [],
+    })),
+    processBatch: jest.fn(() => Promise.resolve({
+      processed: [],
+      scores: new Map(),
+      duplicates: [],
+      errors: [],
+      stats: { total: 0, processed: 0, scored: 0, duplicates: 0, errors: 0 },
+    })),
+  },
+}))
+
+jest.mock('@/lib/aiLeadScoring', () => ({
+  aiLeadScoringService: {
+    initialize: jest.fn(() => Promise.resolve()),
+    getLeadScore: jest.fn(() => Promise.resolve({
+      score: 75,
+      confidence: 0.8,
+      factors: {
+        contactability: { score: 80, weight: 0.3, details: 'Good contact info' },
+        businessMaturity: { score: 70, weight: 0.25, details: 'Established business' },
+        marketPotential: { score: 75, weight: 0.25, details: 'Good market potential' },
+        engagementLikelihood: { score: 80, weight: 0.2, details: 'High engagement likelihood' },
+      },
+      recommendations: ['Contact via email', 'Follow up within 24 hours'],
+    })),
+  },
+}))
+
+jest.mock('@/lib/duplicateDetection', () => ({
+  duplicateDetectionSystem: {
+    findDuplicates: jest.fn(() => Promise.resolve([])),
+  },
+}))
+
+jest.mock('@/lib/smartCacheManager', () => ({
+  smartCacheManager: {
+    get: jest.fn(() => Promise.resolve(null)),
+    set: jest.fn(() => Promise.resolve()),
+  },
+}))
+
+jest.mock('@/lib/emailValidationService', () => ({
+  EmailValidationService: jest.fn().mockImplementation(() => ({
+    validateEmail: jest.fn(() => Promise.resolve({
+      isValid: true,
+      confidence: 0.9,
+      metadata: {
+        provider: 'gmail',
+        disposable: false,
+        role: false,
+        deliverable: true,
+      },
+    })),
+  })),
+}))
+
+jest.mock('@/lib/phoneValidationService', () => ({
+  PhoneValidationService: jest.fn().mockImplementation(() => ({
+    validatePhone: jest.fn(() => Promise.resolve({
+      isValid: true,
+      formatted: '+15551234567',
+      type: 'mobile',
+      carrier: 'Verizon',
+      location: 'Los Angeles, CA',
+    })),
+  })),
+}))
+
+jest.mock('@/lib/businessIntelligenceService', () => ({
+  BusinessIntelligenceService: jest.fn().mockImplementation(() => ({
+    analyzeBusinessIntelligence: jest.fn(() => Promise.resolve({
+      industryMatch: 0.95,
+      businessSize: 'medium',
+      marketPresence: 'strong',
+      digitalFootprint: 'excellent',
+      trustScore: 0.85,
+      riskFactors: [],
+      opportunities: ['digital_marketing', 'expansion'],
+    })),
+  })),
+}))
+
+jest.mock('@/model/geocoder', () => ({
+  geocoder: {
+    geocodeAddress: jest.fn(() => Promise.resolve({
+      latitude: 34.0522,
+      longitude: -118.2437,
+      formattedAddress: '123 Main Street, Los Angeles, CA 90210',
+      confidence: 0.95,
+    })),
+  },
 }))
 
 // Global test setup

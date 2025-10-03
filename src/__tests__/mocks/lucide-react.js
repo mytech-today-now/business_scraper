@@ -1,119 +1,100 @@
 /**
- * Mock for lucide-react to handle ESM import issues in Jest
+ * Simple Mock for lucide-react - Direct component exports
  */
 
 const React = require('react')
 
-// Create a mock component factory
+// Create a simple mock icon component
 const createMockIcon = (name) => {
   const MockIcon = React.forwardRef((props, ref) => {
+    const {
+      size,
+      width,
+      height,
+      strokeWidth = 2,
+      className = '',
+      'data-testid': testId,
+      'aria-label': ariaLabel,
+      ...restProps
+    } = props
+
     return React.createElement('svg', {
-      ...props,
+      ...restProps,
       ref,
-      'data-testid': `${name}-icon`,
-      'aria-label': name,
-      width: props.size || props.width || 24,
-      height: props.size || props.height || 24,
+      'data-testid': testId || `${name.toLowerCase()}-icon`,
+      'aria-label': ariaLabel || name,
+      'aria-hidden': ariaLabel ? 'false' : 'true',
+      role: 'img',
+      width: size || width || 24,
+      height: size || height || 24,
       viewBox: '0 0 24 24',
       fill: 'none',
       stroke: 'currentColor',
-      strokeWidth: props.strokeWidth || 2,
+      strokeWidth,
       strokeLinecap: 'round',
       strokeLinejoin: 'round',
+      className: `lucide lucide-${name.toLowerCase().replace(/([A-Z])/g, '-$1').toLowerCase()} ${className}`.trim(),
     })
   })
-  
+
   MockIcon.displayName = `${name}Icon`
   return MockIcon
 }
 
-// Export all the icons used in the application
+// Create all the icons directly
+const X = createMockIcon('X')
+const Menu = createMockIcon('Menu')
+const Settings = createMockIcon('Settings')
+const FileText = createMockIcon('FileText')
+const Moon = createMockIcon('Moon')
+const Sun = createMockIcon('Sun')
+const AlertCircle = createMockIcon('AlertCircle')
+const CheckCircle = createMockIcon('CheckCircle')
+const Info = createMockIcon('Info')
+const XCircle = createMockIcon('XCircle')
+const AlertTriangle = createMockIcon('AlertTriangle')
+const RefreshCw = createMockIcon('RefreshCw')
+const Home = createMockIcon('Home')
+const Bug = createMockIcon('Bug')
+const Brain = createMockIcon('Brain')
+const BarChart3 = createMockIcon('BarChart3')
+const RotateCcw = createMockIcon('RotateCcw')
+
+// Export all icons directly
 module.exports = {
-  // Navigation and UI icons
-  Home: createMockIcon('Home'),
-  Search: createMockIcon('Search'),
-  Settings: createMockIcon('Settings'),
-  User: createMockIcon('User'),
-  Menu: createMockIcon('Menu'),
-  X: createMockIcon('X'),
-  ChevronDown: createMockIcon('ChevronDown'),
-  ChevronUp: createMockIcon('ChevronUp'),
-  ChevronLeft: createMockIcon('ChevronLeft'),
-  ChevronRight: createMockIcon('ChevronRight'),
-  
-  // Action icons
-  Plus: createMockIcon('Plus'),
-  Minus: createMockIcon('Minus'),
-  Edit: createMockIcon('Edit'),
-  Trash: createMockIcon('Trash'),
-  Trash2: createMockIcon('Trash2'),
-  Save: createMockIcon('Save'),
-  Download: createMockIcon('Download'),
-  Upload: createMockIcon('Upload'),
-  Copy: createMockIcon('Copy'),
-  
-  // Status and feedback icons
-  Check: createMockIcon('Check'),
-  CheckCircle: createMockIcon('CheckCircle'),
-  AlertCircle: createMockIcon('AlertCircle'),
-  AlertTriangle: createMockIcon('AlertTriangle'),
-  Info: createMockIcon('Info'),
-  HelpCircle: createMockIcon('HelpCircle'),
-  
-  // Media and content icons
-  Play: createMockIcon('Play'),
-  Pause: createMockIcon('Pause'),
-  Stop: createMockIcon('Stop'),
-  RefreshCw: createMockIcon('RefreshCw'),
-  RotateCcw: createMockIcon('RotateCcw'),
-  
-  // Communication icons
-  Mail: createMockIcon('Mail'),
-  Phone: createMockIcon('Phone'),
-  MessageSquare: createMockIcon('MessageSquare'),
-  
-  // Business and data icons
-  Building: createMockIcon('Building'),
-  MapPin: createMockIcon('MapPin'),
-  Globe: createMockIcon('Globe'),
-  Database: createMockIcon('Database'),
-  BarChart: createMockIcon('BarChart'),
-  PieChart: createMockIcon('PieChart'),
-  TrendingUp: createMockIcon('TrendingUp'),
-  
-  // Security icons
-  Lock: createMockIcon('Lock'),
-  Unlock: createMockIcon('Unlock'),
-  Shield: createMockIcon('Shield'),
-  Key: createMockIcon('Key'),
-  
-  // File and document icons
-  File: createMockIcon('File'),
-  FileText: createMockIcon('FileText'),
-  Folder: createMockIcon('Folder'),
-  FolderOpen: createMockIcon('FolderOpen'),
-  
-  // Technology icons
-  Brain: createMockIcon('Brain'),
-  Cpu: createMockIcon('Cpu'),
-  Server: createMockIcon('Server'),
-  Cloud: createMockIcon('Cloud'),
-  
-  // Utility icons
-  Calendar: createMockIcon('Calendar'),
-  Clock: createMockIcon('Clock'),
-  Filter: createMockIcon('Filter'),
-  Sort: createMockIcon('Sort'),
-  Eye: createMockIcon('Eye'),
-  EyeOff: createMockIcon('EyeOff'),
-  
-  // Export default for compatibility
+  X,
+  Menu,
+  Settings,
+  FileText,
+  Moon,
+  Sun,
+  AlertCircle,
+  CheckCircle,
+  Info,
+  XCircle,
+  AlertTriangle,
+  RefreshCw,
+  Home,
+  Bug,
+  Brain,
+  BarChart3,
+  RotateCcw,
   default: createMockIcon('Default'),
+  __esModule: true
 }
 
-// Also support named exports for individual icons
-Object.keys(module.exports).forEach(iconName => {
-  if (iconName !== 'default') {
-    module.exports[iconName] = module.exports[iconName]
+
+
+// Handle nested imports (e.g., from 'lucide-react/dist/esm/icons/AlertCircle')
+// This is used when Next.js modularizeImports transforms the imports
+if (typeof module !== 'undefined' && module.exports) {
+  // If this file is being imported as a specific icon, return that icon
+  const filename = typeof __filename !== 'undefined' ? __filename : ''
+  const iconMatch = filename.match(/icons[\/\\]([^\/\\]+)\.js$/)
+  if (iconMatch) {
+    const iconName = iconMatch[1]
+    const specificIcon = createDynamicIcon(iconName)
+    module.exports = specificIcon
+    module.exports.default = specificIcon
   }
-})
+}
