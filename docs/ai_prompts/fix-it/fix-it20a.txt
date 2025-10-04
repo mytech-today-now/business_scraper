@@ -1,0 +1,36 @@
+Implement the following enhancement to the application.  Do the enhancement first.  Follow the Rules and Guidelines for the project.  Plan out you actions.  Work logically through the process.  Be sure to cover all of the instances where the enhancement alters the application.  Handle errors and fallback to seamless solutions.
+Log each fix/enhancement as an Issue/Error on Github for the project with the required proper 'bug' documentation.
+Be sure the Issue has the proper Assignees, Labels, bug, Something isn't working, critical, etc for the Issue.
+If the changes are code related make sure the test cases run to 98% success.  After the resolution of the Issue, close the Issue on GitHub with the proper documentation.
+enhancement:
+
+Complete Authentication Security Tests
+Priority: HIGH - Fix remaining 7 failing tests to achieve 100% authentication security coverage
+Detailed Augment AI Prompt:
+Fix the remaining 7 failing authentication security tests in src/__tests__/security/auth-security-comprehensive.test.ts to align with the actual implementation behavior. 
+
+Current test status:
+- ❌ Session Hijacking Prevention (0/2 tests) - sessionId format mismatch
+- ❌ Information Disclosure Prevention (1/2 tests) - mock expectation issues  
+- ❌ Password Security (1/2 tests) - error response format mismatch
+- ❌ Security Headers and Cookies (0/1 tests) - mock call expectations
+- ❌ Audit Trail Security (0/2 tests) - audit service integration
+
+Specific issues to resolve:
+1. Session ID masking: Tests expect '[SESSION_ACTIVE]' and '[SESSION_CREATED]' but actual auth route may return different format
+2. Missing response variable in session creation test (line 265)
+3. Mock function expectations that don't match actual auth route implementation
+4. Audit service calls that may not be triggered as expected
+
+Requirements:
+- Examine src/app/api/auth/route.ts actual implementation
+- Update test expectations to match real behavior
+- Ensure all security scenarios are properly validated
+- Maintain 98%+ test success rate
+- Document any discovered security gaps
+
+Follow the Rules and Guidelines for the project. Test each fix individually and ensure no regressions in passing tests.
+Key Files:
+src/__tests__/security/auth-security-comprehensive.test.ts - Main security test file
+src/app/api/auth/route.ts - Authentication API implementation
+src/lib/security.ts - Security utility functions
