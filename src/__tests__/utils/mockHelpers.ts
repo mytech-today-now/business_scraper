@@ -1,9 +1,16 @@
 /**
  * Mock Helpers for Secure Testing
  * Utilities for mocking file operations and external dependencies safely
+ * Enhanced with standardized mock integration for improved reliability
  */
 
 import { jest } from '@jest/globals'
+import {
+  mockFactory,
+  mockCleanup,
+  StandardizedWebSocketMock,
+  StandardizedEventSourceMock
+} from './standardizedMocks'
 
 // Mock file system operations
 export const createMockFileSystem = () => {
@@ -230,4 +237,70 @@ export const generateSafeTestData = {
     state: 'TS',
     zipCode: String(10000 + index).padStart(5, '0'),
   }),
+}
+
+// Enhanced mock utilities using standardized mocks
+export const createStandardizedWebSocketMock = () => {
+  return mockFactory.createWebSocketMock()
+}
+
+export const createStandardizedEventSourceMock = () => {
+  return mockFactory.createEventSourceMock()
+}
+
+export const createStandardizedHttpMock = () => {
+  return mockFactory.createHttpMock()
+}
+
+export const createStandardizedDatabaseMock = () => {
+  return mockFactory.createDatabaseMock()
+}
+
+export const createStandardizedExternalServiceMock = () => {
+  return mockFactory.createExternalServiceMock()
+}
+
+// Mock cleanup utilities
+export const cleanupAllStandardizedMocks = () => {
+  mockCleanup.cleanupAllMocks()
+}
+
+export const registerMockForCleanup = (name: string, resetFn: () => void) => {
+  mockCleanup.registerMock(name, resetFn)
+}
+
+// Enhanced mock verification utilities
+export const verifyMockBehavior = {
+  webSocket: (mockInstance: any) => ({
+    wasConnected: () => mockInstance.readyState === StandardizedWebSocketMock.OPEN,
+    wasClosed: () => mockInstance.readyState === StandardizedWebSocketMock.CLOSED,
+    messageCount: () => jest.mocked(mockInstance.send).mock.calls.length,
+  }),
+
+  eventSource: (mockInstance: any) => ({
+    wasConnected: () => mockInstance.readyState === StandardizedEventSourceMock.OPEN,
+    wasClosed: () => mockInstance.readyState === StandardizedEventSourceMock.CLOSED,
+  }),
+
+  http: () => {
+    const httpMock = mockFactory.createHttpMock()
+    return {
+      requestCount: () => httpMock.getRequestHistory().length,
+      lastRequest: () => {
+        const history = httpMock.getRequestHistory()
+        return history[history.length - 1]
+      },
+    }
+  },
+
+  database: () => {
+    const dbMock = mockFactory.createDatabaseMock()
+    return {
+      queryCount: () => dbMock.getQueryHistory().length,
+      lastQuery: () => {
+        const history = dbMock.getQueryHistory()
+        return history[history.length - 1]
+      },
+    }
+  },
 }

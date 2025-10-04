@@ -45,18 +45,9 @@ jest.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }))
 
-// Mock WebSocket
-;(global as any).WebSocket = jest.fn().mockImplementation(() => ({
-  send: jest.fn(),
-  close: jest.fn(),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
-  readyState: 1, // OPEN
-  CONNECTING: 0,
-  OPEN: 1,
-  CLOSING: 2,
-  CLOSED: 3,
-}))
+// Use standardized WebSocket mock
+import { createStandardizedWebSocketMock } from '../src/__tests__/utils/mockHelpers'
+;(global as any).WebSocket = createStandardizedWebSocketMock()
 
 // Mock Notification API
 ;(global as any).Notification = jest.fn().mockImplementation((title: string, options?: any) => ({

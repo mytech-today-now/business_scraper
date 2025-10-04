@@ -1,6 +1,6 @@
 /**
  * External APIs - Comprehensive Integration Points Tests
- * 
+ *
  * Tests all external API integration points including:
  * - Search engine APIs (Google, Bing, DuckDuckGo)
  * - Geocoding services
@@ -9,6 +9,8 @@
  * - Analytics and monitoring APIs
  * - Third-party data enrichment services
  * - Rate limiting and retry logic
+ *
+ * Updated to use standardized mock utilities for improved reliability.
  */
 
 import { clientSearchEngine } from '@/model/clientSearchEngine'
@@ -16,20 +18,28 @@ import { geocoder } from '@/model/geocoder'
 import { paymentController } from '@/controller/paymentController'
 import { ExportService } from '@/utils/exportService'
 import { enhancedErrorLogger } from '@/utils/enhancedErrorLogger'
+import {
+  setupMockEnvironment,
+  createStandardizedHttpMock,
+  createStripeMock,
+  createGeocodingMock,
+  cleanupUtils
+} from '@/__tests__/utils/mockSetup'
 
-// Mock dependencies
-jest.mock('@/utils/logger')
-jest.mock('@/lib/metrics')
-jest.mock('@/lib/security')
+// Setup standardized mock environment
+setupMockEnvironment()
 
-// Mock fetch for API calls
-global.fetch = jest.fn()
-const mockFetch = fetch as jest.MockedFunction<typeof fetch>
+// Create standardized mocks
+const httpMock = createStandardizedHttpMock()
+const stripeMock = createStripeMock()
+const geocodingMock = createGeocodingMock()
 
 describe('External APIs - Comprehensive Integration Points Tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    mockFetch.mockClear()
+    // Reset all standardized mocks
+    httpMock.reset()
+    stripeMock.reset()
+    geocodingMock.reset()
   })
 
   describe('Search Engine APIs', () => {
