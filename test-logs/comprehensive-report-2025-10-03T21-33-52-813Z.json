@@ -1,0 +1,207 @@
+{
+  "metadata": {
+    "reportId": "report-1759527231355-norp8ijsf",
+    "generatedAt": "2025-10-03T21:33:52.813Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 6,
+    "successRate": 66.66666666666666,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 734,
+      "memoryPeak": 90208936,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 6,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 6,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Payment-processing::should create payment intent with proper validation::1759527232796",
+          "testName": "should create payment intent with proper validation",
+          "testDescription": "should create payment intent with proper validation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527232041,
+          "endTime": 1759527232775,
+          "duration": 734,
+          "memoryUsage": {
+            "heapUsed": 90122488,
+            "heapTotal": 118706176,
+            "external": 4606559,
+            "rss": 188936192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "PaymentError: Failed to create payment intent\n    at StripeService.createPaymentIntent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\stripeService.ts:197:13)\n    at Object.createPaymentIntent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:45:49)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "PaymentError: Failed to create payment intent\n    at StripeService.createPaymentIntent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\model\\stripeService.ts:197:13)\n    at Object.createPaymentIntent (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:45:49)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should create payment intent with proper validation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: PaymentError: Failed to create payment intent"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should handle payment failures gracefully::1759527232804",
+          "testName": "should handle payment failures gracefully",
+          "testDescription": "should handle payment failures gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527232041,
+          "endTime": 1759527232775,
+          "duration": 734,
+          "memoryUsage": {
+            "heapUsed": 90165848,
+            "heapTotal": 118706176,
+            "external": 4606559,
+            "rss": 188936192
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mrejects\u001b[2m.\u001b[22mtoThrow\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected substring: \u001b[32m\"Your card was declined.\"\u001b[39m\nReceived message:   \u001b[31m\"Failed to create payment intent\"\u001b[39m\n\n    \u001b[0m \u001b[90m 195 |\u001b[39m     } \u001b[36mcatch\u001b[39m (error) {\n     \u001b[90m 196 |\u001b[39m       logger\u001b[33m.\u001b[39merror(\u001b[32m'StripeService'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'Failed to create payment intent'\u001b[39m\u001b[33m,\u001b[39m error)\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 197 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPaymentError\u001b[39m(\n     \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 198 |\u001b[39m         \u001b[32m'Failed to create payment intent'\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 199 |\u001b[39m         \u001b[32m'PAYMENT_INTENT_CREATION_FAILED'\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 200 |\u001b[39m         error \u001b[36mas\u001b[39m \u001b[33mStripe\u001b[39m\u001b[33m.\u001b[39m\u001b[33mStripeRawError\u001b[39m\u001b[0m\n\n      \u001b[2mat StripeService.createPaymentIntent (\u001b[22msrc/model/stripeService.ts\u001b[2m:197:13)\u001b[22m\n      \u001b[2mat Object.createPaymentIntent (\u001b[22msrc/__tests__/critical/payment-processing.test.ts\u001b[2m:73:23)\u001b[22m\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\expect\\build\\index.js:218:22)\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:74:17)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mrejects\u001b[2m.\u001b[22mtoThrow\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected substring: \u001b[32m\"Your card was declined.\"\u001b[39m\nReceived message:   \u001b[31m\"Failed to create payment intent\"\u001b[39m\n\n    \u001b[0m \u001b[90m 195 |\u001b[39m     } \u001b[36mcatch\u001b[39m (error) {\n     \u001b[90m 196 |\u001b[39m       logger\u001b[33m.\u001b[39merror(\u001b[32m'StripeService'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'Failed to create payment intent'\u001b[39m\u001b[33m,\u001b[39m error)\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 197 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPaymentError\u001b[39m(\n     \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 198 |\u001b[39m         \u001b[32m'Failed to create payment intent'\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 199 |\u001b[39m         \u001b[32m'PAYMENT_INTENT_CREATION_FAILED'\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 200 |\u001b[39m         error \u001b[36mas\u001b[39m \u001b[33mStripe\u001b[39m\u001b[33m.\u001b[39m\u001b[33mStripeRawError\u001b[39m\u001b[0m\n\n      \u001b[2mat StripeService.createPaymentIntent (\u001b[22msrc/model/stripeService.ts\u001b[2m:197:13)\u001b[22m\n      \u001b[2mat Object.createPaymentIntent (\u001b[22msrc/__tests__/critical/payment-processing.test.ts\u001b[2m:73:23)\u001b[22m\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\expect\\build\\index.js:218:22)\n    at Object.toThrow (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:74:17)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle payment failures gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mrejects\u001b[2m.\u001b[22mtoThrow\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1535.0869,
+      "endTime": 2993.1712,
+      "duration": 4404,
+      "memoryUsage": {
+        "heapUsed": 90182784,
+        "heapTotal": 108219340.8,
+        "external": 9018278.4,
+        "rss": 135274176
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 541096704,
+      "averageTestDuration": 734,
+      "totalExecutionTime": 4404
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T22:40:25.751Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-failed">FAILED</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 138</div>
+    <div class="metric"><strong>Success Rate:</strong> 81.88%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 13</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should create JWT session with valid tokens</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:142:36)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should reject session creation for locked IP</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"IP address is temporarily locked due to suspicious activity"[39m
+Received message:   [31m"(0 , _security.generateDeviceFingerprint) is not a function"[39m
+
+    [0m [90m 86 |[39m     
+     [90m 87 |[39m     [90m// Generate device fingerprint[39m
+    [31m[1m>[22m[39m[90m 88 |[39m     [36mconst[39m deviceFingerprint [33m=[39m generateDeviceFingerprint(request)
+     [90m    |[39m                                                        [31m[1m^[22m[39m
+     [90m 89 |[39m     
+     [90m 90 |[39m     [90m// Create session JWT payload[39m
+     [90m 91 |[39m     [36mconst[39m sessionPayload[33m:[39m [33mJWTSessionPayload[39m [33m=[39m {[0m
+
+      [2mat JWTSessionService.createJWTSession ([22msrc/lib/jwt-session-service.ts[2m:88:56)[22m
+      [2mat Object.createJWTSession ([22msrc/__tests__/lib/jwt-session-service.comprehensive.test.ts[2m:164:28)[22m
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\expect\build\index.js:218:22)
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:165:18)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should include device fingerprint in JWT payload</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:174:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should clear failed login attempts on successful session creation</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:184:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should generate unique session and JWT IDs</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:197:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should set proper JWT expiration times</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:212:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should validate JWT session successfully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32mtrue[39m
+Received: [31mfalse[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:256:28)</li><li><strong>should reject invalid JWT tokens</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"Invalid JWT token"[39m
+Received string:    [31m"Session validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:273:28)</li><li><strong>should reject expired JWT tokens</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"JWT token expired"[39m
+Received string:    [31m"Session validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:300:28)</li><li><strong>should validate IP hash in JWT</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"IP address validation failed"[39m
+Received string:    [31m"Session validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:354:28)</li><li><strong>should validate device fingerprint in JWT</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"Device fingerprint validation failed"[39m
+Received string:    [31m"Session validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:385:28)</li><li><strong>should renew JWT session successfully</strong>: TypeError: Cannot read properties of null (reading 'session')
+    at Object.session (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:457:22)</li><li><strong>should use secure JWT signing algorithm</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:570:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should include proper JWT claims</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:583:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should hash IP addresses for privacy</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:599:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should validate JWT signature integrity</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+  [2m"valid-jwt-token"[22m,
+  [2m"your-super-secure-session-secret-key"[22m,
+[2m  Object {[22m
+[32m-   "algorithms": Array [[39m
+[32m-     "HS256",[39m
+[32m-   ],[39m
+[31m+   "algorithm": "HS256",[39m
+[31m+   "audience": "business-scraper-app",[39m
+[31m+   "issuer": "business-scraper-auth",[39m
+[2m  }[22m,
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:635:30)</li><li><strong>should handle concurrent session creation requests</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:676:17)
+    at Function.from (<anonymous>)
+    at Object.from (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:675:30)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should handle concurrent validation requests efficiently</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32mtrue[39m
+Received: [31mfalse[39m
+    at toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:728:30)
+    at Array.forEach (<anonymous>)
+    at Object.forEach (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:727:15)</li><li><strong>should handle memory efficiently with large JWT payloads</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32mtrue[39m
+Received: [31mfalse[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:759:28)</li><li><strong>should handle malformed JWT tokens gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"Invalid JWT token"[39m
+Received string:    [31m"Session validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:785:30)</li><li><strong>should handle JWT verification errors</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected substring: [32m"Invalid JWT token"[39m
+Received string:    [31m"Session validation failed"[39m
+    at Object.toContain (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:809:30)</li><li><strong>should handle session service failures during creation</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+
+Expected substring: [32m"Session service unavailable"[39m
+Received message:   [31m"(0 , _security.generateDeviceFingerprint) is not a function"[39m
+
+    [0m [90m 86 |[39m     
+     [90m 87 |[39m     [90m// Generate device fingerprint[39m
+    [31m[1m>[22m[39m[90m 88 |[39m     [36mconst[39m deviceFingerprint [33m=[39m generateDeviceFingerprint(request)
+     [90m    |[39m                                                        [31m[1m^[22m[39m
+     [90m 89 |[39m     
+     [90m 90 |[39m     [90m// Create session JWT payload[39m
+     [90m 91 |[39m     [36mconst[39m sessionPayload[33m:[39m [33mJWTSessionPayload[39m [33m=[39m {[0m
+
+      [2mat JWTSessionService.createJWTSession ([22msrc/lib/jwt-session-service.ts[2m:88:56)[22m
+      [2mat Object.createJWTSession ([22msrc/__tests__/lib/jwt-session-service.comprehensive.test.ts[2m:816:28)[22m
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\expect\build\index.js:218:22)
+    at Object.toThrow (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:817:18)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should maintain audit trail for JWT operations</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:885:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should implement proper token lifecycle management</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:901:42)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li><li><strong>should enforce security standards for enterprise compliance</strong>: TypeError: (0 , _security.generateDeviceFingerprint) is not a function
+    at JWTSessionService.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\lib\jwt-session-service.ts:88:56)
+    at Object.createJWTSession (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\lib\jwt-session-service.comprehensive.test.ts:959:21)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li></ul>
+
+    <p><em>Generated at 2025-10-03T22:40:25.751Z by EnhancedTestLogger</em></p>
+</body>
+</html>

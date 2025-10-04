@@ -1,0 +1,407 @@
+{
+  "metadata": {
+    "reportId": "report-1759529567401-jgp2owx84",
+    "generatedAt": "2025-10-03T22:12:49.278Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 19,
+    "successRate": 63.1578947368421,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 1057,
+      "memoryPeak": 101713312,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 19,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 19,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should not expose session IDs in any response::1759529569239",
+          "testName": "should not expose session IDs in any response",
+          "testDescription": "should not expose session IDs in any response",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101577800,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197922816
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"[SESSION_ACTIVE]\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:250:38)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"[SESSION_ACTIVE]\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:250:38)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should not expose session IDs in any response",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should use secure session creation::1759529569247",
+          "testName": "should use secure session creation",
+          "testDescription": "should use secure session creation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101605320,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197922816
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"[SESSION_CREATED]\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:287:38)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"[SESSION_CREATED]\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:287:38)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should use secure session creation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should sanitize sensitive data in logs::1759529569255",
+          "testName": "should sanitize sensitive data in logs",
+          "testDescription": "should sanitize sensitive data in logs",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101644712,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197931008
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"password=secret123\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:379:43)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"password=secret123\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:379:43)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize sensitive data in logs",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should handle password verification failures securely::1759529569258",
+          "testName": "should handle password verification failures securely",
+          "testDescription": "should handle password verification failures securely",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101672800,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197931008
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"Hash verification failed\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:515:43)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"Hash verification failed\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:515:43)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle password verification failures securely",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should set secure cookie attributes::1759529569262",
+          "testName": "should set secure cookie attributes",
+          "testDescription": "should set secure cookie attributes",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101687560,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197931008
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mObjectContaining {\"sessionId\": \"[SESSION_CREATED]\", \"success\": true}\u001b[39m, \u001b[32m200\u001b[39m, \u001b[32mObjectContaining {\"context\": \"Auth Login Success\", \"sanitizeSession\": true}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:595:43)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mObjectContaining {\"sessionId\": \"[SESSION_CREATED]\", \"success\": true}\u001b[39m, \u001b[32m200\u001b[39m, \u001b[32mObjectContaining {\"context\": \"Auth Login Success\", \"sanitizeSession\": true}\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:595:43)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should set secure cookie attributes",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should log all authentication events securely::1759529569267",
+          "testName": "should log all authentication events securely",
+          "testDescription": "should log all authentication events securely",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101701240,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197931008
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"login_failure\"\u001b[39m, \u001b[32mObjectContaining {\"message\": StringContaining \"Failed login attempt for username: admin\", \"reason\": \"invalid_credentials\", \"userAgent\": \"Malicious-Bot/1.0\", \"username\": \"admin\"}\u001b[39m, \u001b[32m\"192.168.1.100\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:631:36)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"login_failure\"\u001b[39m, \u001b[32mObjectContaining {\"message\": StringContaining \"Failed login attempt for username: admin\", \"reason\": \"invalid_credentials\", \"userAgent\": \"Malicious-Bot/1.0\", \"username\": \"admin\"}\u001b[39m, \u001b[32m\"192.168.1.100\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:631:36)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should log all authentication events securely",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth-security-comprehensive::should sanitize audit logs to prevent log injection::1759529569272",
+          "testName": "should sanitize audit logs to prevent log injection",
+          "testDescription": "should sanitize audit logs to prevent log injection",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+          "suite": "Auth-security-comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759529568151,
+          "endTime": 1759529569208,
+          "duration": 1057,
+          "memoryUsage": {
+            "heapUsed": 101713312,
+            "heapTotal": 129191936,
+            "external": 4729733,
+            "rss": 197931008
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"login_failure\"\u001b[39m, \u001b[32mObjectContaining {\"message\": StringContaining \"Failed login attempt for username: admin\", \"reason\": \"invalid_credentials\", \"userAgent\": \"Bot/1.0 [FAKE] Successful admin login\", \"username\": \"admin\"}\u001b[39m, \u001b[32m\"192.168.1.100\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:667:36)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"login_failure\"\u001b[39m, \u001b[32mObjectContaining {\"message\": StringContaining \"Failed login attempt for username: admin\", \"reason\": \"invalid_credentials\", \"userAgent\": \"Bot/1.0 [FAKE] Successful admin login\", \"username\": \"admin\"}\u001b[39m, \u001b[32m\"192.168.1.100\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts:667:36)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize audit logs to prevent log injection",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\security\\auth-security-comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1565.1692,
+      "endTime": 3442.7828,
+      "duration": 20083,
+      "memoryUsage": {
+        "heapUsed": 101635063.57894737,
+        "heapTotal": 121962076.29473683,
+        "external": 10163506.357894737,
+        "rss": 152452595.36842105
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1931066208,
+      "averageTestDuration": 1057,
+      "totalExecutionTime": 20083
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

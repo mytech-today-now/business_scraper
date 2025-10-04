@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T21:54:10.266Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-failed">FAILED</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 19</div>
+    <div class="metric"><strong>Success Rate:</strong> 52.63%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 1</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should prevent XSS in error messages</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalled[2m()[22m
+
+Expected number of calls: >= [32m1[39m
+Received number of calls:    [31m0[39m
+    at Object.toHaveBeenCalled (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:200:45)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should not expose session IDs in any response</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"sessionId": "[SESSION_ACTIVE]"}[39m, [32m200[39m, [32mAny<Object>[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:226:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should use secure session creation</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"sessionId": "[SESSION_CREATED]"}[39m, [32m200[39m, [32mAny<Object>[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:261:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should sanitize sensitive data in logs</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mStringContaining "password=secret123"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:357:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle password verification securely</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"correct-password"[39m, [32m"hashed-password"[39m, [32m"salt"[39m
+Received: [2m"correct-password"[22m, [31m"50ea037a8c1f7365ce632efae5ff87e53010d9dbfa756c785cd33573994f7095fa07d4006dee2bb281aa727f7455f0c48d9e1d87c6262dd5bcc5b03004c8168c"[39m, [31m"5acf2b02b38f79fe378864ea702d1fa6"[39m
+
+Number of calls: [31m1[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:465:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle password verification failures securely</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:488:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should set secure cookie attributes</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"sessionId": "[SESSION_CREATED]", "success": true}[39m, [32m200[39m, [32mObjectContaining {"context": "Auth Login Success", "sanitizeSession": true}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:563:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should log all authentication events securely</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a mock or spy function
+
+Received has type:  function
+Received has value: [31m[Function logSecurityEvent][39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:595:45)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should sanitize audit logs to prevent log injection</strong>: TypeError: value is invalid
+    at assertValue (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\fetch\Headers-impl.js:20:11)
+    at HeadersImpl.append (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\fetch\Headers-impl.js:71:5)
+    at HeadersImpl._fill (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\fetch\Headers-impl.js:49:14)
+    at new HeadersImpl (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\fetch\Headers-impl.js:35:12)
+    at Object.exports.setup (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\generated\Headers.js:67:12)
+    at new Headers (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jsdom\lib\jsdom\living\generated\Headers.js:182:22)
+    at new MockNextRequest (Q:\_kyle\temp_documents\GitHub\business_scraper\jest.setup.js:303:20)
+    at new NextRequest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\next\src\server\web\spec-extension\request.ts:29:10)
+    at Object.<anonymous> (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:610:23)
+    at Promise.then.completed (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:121:9)
+    at run (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (Q:\_kyle\temp_documents\GitHub\business_scraper\node_modules\jest-runner\build\runTest.js:444:34)</li></ul>
+
+    <p><em>Generated at 2025-10-03T21:54:10.266Z by EnhancedTestLogger</em></p>
+</body>
+</html>

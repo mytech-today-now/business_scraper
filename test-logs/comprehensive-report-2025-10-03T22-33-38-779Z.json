@@ -1,0 +1,1213 @@
+{
+  "metadata": {
+    "reportId": "report-1759530796947-wi58l1e46",
+    "generatedAt": "2025-10-03T22:33:38.779Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 138,
+    "successRate": 91.30434782608695,
+    "criticalIssues": 7,
+    "keyMetrics": {
+      "averageDuration": 1779.6159420289855,
+      "memoryPeak": 108912232,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 138,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 133,
+      "low": 5
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should authenticate valid user credentials::1759530818699",
+          "testName": "should authenticate valid user credentials",
+          "testDescription": "should authenticate valid user credentials",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107480880,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220950528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:254:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:254:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should authenticate valid user credentials",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should generate MFA secret successfully::1759530818714",
+          "testName": "should generate MFA secret successfully",
+          "testDescription": "should generate MFA secret successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107522144,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: Failed to generate MFA secret\n    at generateMFASecret (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\auth.ts:377:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:329:45)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: Failed to generate MFA secret\n    at generateMFASecret (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\auth.ts:377:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:329:45)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate MFA secret successfully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: Failed to generate MFA secret"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should verify MFA token correctly::1759530818719",
+          "testName": "should verify MFA token correctly",
+          "testDescription": "should verify MFA token correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107546768,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:359:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:359:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should verify MFA token correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: (0 , _auth.verifyMFAToken) is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should reject invalid MFA token::1759530818723",
+          "testName": "should reject invalid MFA token",
+          "testDescription": "should reject invalid MFA token",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107566136,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:380:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:380:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reject invalid MFA token",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: (0 , _auth.verifyMFAToken) is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle MFA verification for user without MFA::1759530818726",
+          "testName": "should handle MFA verification for user without MFA",
+          "testDescription": "should handle MFA verification for user without MFA",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107585528,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:389:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:389:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle MFA verification for user without MFA",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: (0 , _auth.verifyMFAToken) is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should enable MFA for user::1759530818730",
+          "testName": "should enable MFA for user",
+          "testDescription": "should enable MFA for user",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107605144,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET mfa_enabled = true\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:399:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET mfa_enabled = true\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:399:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should enable MFA for user",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should disable MFA for user::1759530818733",
+          "testName": "should disable MFA for user",
+          "testDescription": "should disable MFA for user",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107615784,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET mfa_enabled = false\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:409:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET mfa_enabled = false\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:409:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should disable MFA for user",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should enforce password security requirements::1759530818737",
+          "testName": "should enforce password security requirements",
+          "testDescription": "should enforce password security requirements",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107626344,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"password123\"\u001b[39m, \u001b[32m\"weak-hash\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:436:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"password123\"\u001b[39m, \u001b[32m\"weak-hash\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:436:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should enforce password security requirements",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle GDPR compliance flags::1759530818741",
+          "testName": "should handle GDPR compliance flags",
+          "testDescription": "should handle GDPR compliance flags",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107643640,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220962816
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:462:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:462:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle GDPR compliance flags",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'complianceFlags')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should update last login timestamp::1759530818745",
+          "testName": "should update last login timestamp",
+          "testDescription": "should update last login timestamp",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107660296,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220966912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET last_login = NOW()\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:490:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET last_login = NOW()\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:490:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should update last login timestamp",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle authentication with MFA requirement::1759530818749",
+          "testName": "should handle authentication with MFA requirement",
+          "testDescription": "should handle authentication with MFA requirement",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107671928,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220966912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:519:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:519:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle authentication with MFA requirement",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'mfaEnabled')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle concurrent authentication requests::1759530818754",
+          "testName": "should handle concurrent authentication requests",
+          "testDescription": "should handle concurrent authentication requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107685976,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220966912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:575:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:573:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:575:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:573:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle concurrent authentication requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should authenticate valid user credentials::1759530818699",
+          "testName": "should authenticate valid user credentials",
+          "testDescription": "should authenticate valid user credentials",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107480880,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220950528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:254:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:254:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should authenticate valid user credentials",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should verify MFA token correctly::1759530818719",
+          "testName": "should verify MFA token correctly",
+          "testDescription": "should verify MFA token correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107546768,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:359:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:359:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should verify MFA token correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: (0 , _auth.verifyMFAToken) is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should reject invalid MFA token::1759530818723",
+          "testName": "should reject invalid MFA token",
+          "testDescription": "should reject invalid MFA token",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107566136,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:380:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:380:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should reject invalid MFA token",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: (0 , _auth.verifyMFAToken) is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle MFA verification for user without MFA::1759530818726",
+          "testName": "should handle MFA verification for user without MFA",
+          "testDescription": "should handle MFA verification for user without MFA",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107585528,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220958720
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:389:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:389:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle MFA verification for user without MFA",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: (0 , _auth.verifyMFAToken) is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle GDPR compliance flags::1759530818741",
+          "testName": "should handle GDPR compliance flags",
+          "testDescription": "should handle GDPR compliance flags",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107643640,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220962816
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:462:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:462:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle GDPR compliance flags",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'complianceFlags')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle authentication with MFA requirement::1759530818749",
+          "testName": "should handle authentication with MFA requirement",
+          "testDescription": "should handle authentication with MFA requirement",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107671928,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220966912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:519:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:519:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle authentication with MFA requirement",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'mfaEnabled')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle concurrent authentication requests::1759530818754",
+          "testName": "should handle concurrent authentication requests",
+          "testDescription": "should handle concurrent authentication requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530797682,
+          "endTime": 1759530798683,
+          "duration": 1001,
+          "memoryUsage": {
+            "heapUsed": 107685976,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220966912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:575:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:573:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:575:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:573:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle concurrent authentication requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should initialize with correct configuration::1759530818761",
+          "testName": "should initialize with correct configuration",
+          "testDescription": "should initialize with correct configuration",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107872136,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide memory statistics::1759530818761",
+          "testName": "should provide memory statistics",
+          "testDescription": "should provide memory statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107876776,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide pool health statistics::1759530818761",
+          "testName": "should provide pool health statistics",
+          "testDescription": "should provide pool health statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107881024,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide basic statistics::1759530818761",
+          "testName": "should provide basic statistics",
+          "testDescription": "should provide basic statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107885264,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should get and release pages::1759530818761",
+          "testName": "should get and release pages",
+          "testDescription": "should get and release pages",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107889504,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should navigate to URL::1759530818761",
+          "testName": "should navigate to URL",
+          "testDescription": "should navigate to URL",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107893736,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should handle multiple pages::1759530818761",
+          "testName": "should handle multiple pages",
+          "testDescription": "should handle multiple pages",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107897976,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide health metrics::1759530818761",
+          "testName": "should provide health metrics",
+          "testDescription": "should provide health metrics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107902216,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should perform cleanup::1759530818761",
+          "testName": "should perform cleanup",
+          "testDescription": "should perform cleanup",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107906448,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should shutdown gracefully::1759530818761",
+          "testName": "should shutdown gracefully",
+          "testDescription": "should shutdown gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530798729,
+          "endTime": 1759530817421,
+          "duration": 18692,
+          "memoryUsage": {
+            "heapUsed": 107910688,
+            "heapTotal": 143634432,
+            "external": 6295500,
+            "rss": 220975104
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1475.5061,
+      "endTime": 23307.1383,
+      "duration": 245587,
+      "memoryUsage": {
+        "heapUsed": 108183297.04347827,
+        "heapTotal": 129819956.45217392,
+        "external": 10818329.704347827,
+        "rss": 162274945.5652174
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 14929294992,
+      "averageTestDuration": 1779.6159420289855,
+      "totalExecutionTime": 245587
+    },
+    "bottlenecks": [
+      "should initialize with correct configuration (18692ms)",
+      "should provide memory statistics (18692ms)",
+      "should provide pool health statistics (18692ms)",
+      "should provide basic statistics (18692ms)",
+      "should get and release pages (18692ms)",
+      "should navigate to URL (18692ms)",
+      "should handle multiple pages (18692ms)",
+      "should provide health metrics (18692ms)",
+      "should perform cleanup (18692ms)",
+      "should shutdown gracefully (18692ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "7 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should authenticate valid user credentials: TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:254:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should verify MFA token correctly: TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:359:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should reject invalid MFA token: TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:380:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should handle MFA verification for user without MFA: TypeError: (0 , _auth.verifyMFAToken) is not a function\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:389:42)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should handle GDPR compliance flags: TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:462:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should handle authentication with MFA requirement: TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:519:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should handle concurrent authentication requests: TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:575:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:573:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should authenticate valid user credentials",
+          "should verify MFA token correctly",
+          "should reject invalid MFA token",
+          "should handle MFA verification for user without MFA",
+          "should handle GDPR compliance flags",
+          "should handle authentication with MFA requirement",
+          "should handle concurrent authentication requests"
+        ]
+      }
+    ],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should initialize with correct configuration",
+          "should provide memory statistics",
+          "should provide pool health statistics",
+          "should provide basic statistics",
+          "should get and release pages",
+          "should navigate to URL",
+          "should handle multiple pages",
+          "should provide health metrics",
+          "should perform cleanup",
+          "should shutdown gracefully"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

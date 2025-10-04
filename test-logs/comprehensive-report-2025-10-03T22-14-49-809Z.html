@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T22:14:49.809Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 19</div>
+    <div class="metric"><strong>Success Rate:</strong> 73.68%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should not expose session IDs in any response</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"authenticated": true, "csrfToken": "csrf-token", "sessionId": "[SESSION_ACTIVE]"}[39m, [32m200[39m, [32mObjectContaining {"context": "Auth Session Check", "sanitizeSession": true}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:246:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should use secure session creation</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"csrfToken": "secure-csrf", "sessionId": "[SESSION_CREATED]", "success": true}[39m, [32m200[39m, [32mObjectContaining {"context": "Auth Login Success", "sanitizeSession": true}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:289:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should set secure cookie attributes</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"sessionId": "[SESSION_CREATED]", "success": true}[39m, [32m200[39m, [32mObjectContaining {"context": "Auth Login Success", "sanitizeSession": true}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:611:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should log all authentication events securely</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalled[2m()[22m
+
+Expected number of calls: >= [32m1[39m
+Received number of calls:    [31m0[39m
+    at Object.toHaveBeenCalled (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:653:36)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should sanitize audit logs to prevent log injection</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalled[2m()[22m
+
+Expected number of calls: >= [32m1[39m
+Received number of calls:    [31m0[39m
+    at Object.toHaveBeenCalled (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:686:36)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li></ul>
+
+    <p><em>Generated at 2025-10-03T22:14:49.809Z by EnhancedTestLogger</em></p>
+</body>
+</html>

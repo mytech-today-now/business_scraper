@@ -1,0 +1,425 @@
+{
+  "metadata": {
+    "reportId": "report-1759531149493-j6t7fyfot",
+    "generatedAt": "2025-10-03T22:39:32.717Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "passed",
+    "totalSuites": 0,
+    "totalTests": 103,
+    "successRate": 100,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 2314.640776699029,
+      "memoryPeak": 107549208,
+      "flakyTests": 0
+    },
+    "qualityGate": "passed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 103,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 98,
+      "low": 5
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should initialize with correct configuration::1759531172689",
+          "testName": "should initialize with correct configuration",
+          "testDescription": "should initialize with correct configuration",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106478912,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide memory statistics::1759531172689",
+          "testName": "should provide memory statistics",
+          "testDescription": "should provide memory statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106489776,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide pool health statistics::1759531172689",
+          "testName": "should provide pool health statistics",
+          "testDescription": "should provide pool health statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106493928,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide basic statistics::1759531172689",
+          "testName": "should provide basic statistics",
+          "testDescription": "should provide basic statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106498072,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should get and release pages::1759531172689",
+          "testName": "should get and release pages",
+          "testDescription": "should get and release pages",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106502216,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should navigate to URL::1759531172689",
+          "testName": "should navigate to URL",
+          "testDescription": "should navigate to URL",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106506880,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should handle multiple pages::1759531172689",
+          "testName": "should handle multiple pages",
+          "testDescription": "should handle multiple pages",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106511024,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide health metrics::1759531172689",
+          "testName": "should provide health metrics",
+          "testDescription": "should provide health metrics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106515168,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208453632
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should perform cleanup::1759531172689",
+          "testName": "should perform cleanup",
+          "testDescription": "should perform cleanup",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106526888,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208461824
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should shutdown gracefully::1759531172690",
+          "testName": "should shutdown gracefully",
+          "testDescription": "should shutdown gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759531150137,
+          "endTime": 1759531170037,
+          "duration": 19900,
+          "memoryUsage": {
+            "heapUsed": 106541272,
+            "heapTotal": 131899392,
+            "external": 6288631,
+            "rss": 208465920
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1501.6293,
+      "endTime": 24725.9218,
+      "duration": 238408,
+      "memoryUsage": {
+        "heapUsed": 107022159.30097087,
+        "heapTotal": 128426591.16116503,
+        "external": 10702215.930097088,
+        "rss": 160533238.9514563
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 11023282408,
+      "averageTestDuration": 2314.640776699029,
+      "totalExecutionTime": 238408
+    },
+    "bottlenecks": [
+      "should initialize with correct configuration (19900ms)",
+      "should provide memory statistics (19900ms)",
+      "should provide pool health statistics (19900ms)",
+      "should provide basic statistics (19900ms)",
+      "should get and release pages (19900ms)",
+      "should navigate to URL (19900ms)",
+      "should handle multiple pages (19900ms)",
+      "should provide health metrics (19900ms)",
+      "should perform cleanup (19900ms)",
+      "should shutdown gracefully (19900ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should initialize with correct configuration",
+          "should provide memory statistics",
+          "should provide pool health statistics",
+          "should provide basic statistics",
+          "should get and release pages",
+          "should navigate to URL",
+          "should handle multiple pages",
+          "should provide health metrics",
+          "should perform cleanup",
+          "should shutdown gracefully"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

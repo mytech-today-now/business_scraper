@@ -1,0 +1,1131 @@
+{
+  "metadata": {
+    "reportId": "report-1759530919318-1sc88qymm",
+    "generatedAt": "2025-10-03T22:35:40.821Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 138,
+    "successRate": 92.02898550724638,
+    "criticalIssues": 6,
+    "keyMetrics": {
+      "averageDuration": 1760.7173913043478,
+      "memoryPeak": 116969728,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 138,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 132,
+      "low": 6
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should authenticate valid user credentials::1759530940749",
+          "testName": "should authenticate valid user credentials",
+          "testDescription": "should authenticate valid user credentials",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115537864,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235679744
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:253:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:253:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should authenticate valid user credentials",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should generate MFA secret successfully::1759530940754",
+          "testName": "should generate MFA secret successfully",
+          "testDescription": "should generate MFA secret successfully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115578312,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: Failed to generate MFA secret\n    at generateMFASecret (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\auth.ts:377:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:328:45)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "Error: Failed to generate MFA secret\n    at generateMFASecret (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\lib\\auth.ts:377:11)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:328:45)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "type": "async",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should generate MFA secret successfully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: Failed to generate MFA secret"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should verify MFA through authentication flow::1759530940760",
+          "testName": "should verify MFA through authentication flow",
+          "testDescription": "should verify MFA through authentication flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115602944,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:375:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:375:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should verify MFA through authentication flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle authentication without MFA::1759530940764",
+          "testName": "should handle authentication without MFA",
+          "testDescription": "should handle authentication without MFA",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115616072,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:427:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:427:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle authentication without MFA",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should enable MFA for user with valid code::1759530940768",
+          "testName": "should enable MFA for user with valid code",
+          "testDescription": "should enable MFA for user with valid code",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115624952,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:442:22)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:442:22)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should enable MFA for user with valid code",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should disable MFA for user::1759530940773",
+          "testName": "should disable MFA for user",
+          "testDescription": "should disable MFA for user",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115635264,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:450:22)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:450:22)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should disable MFA for user",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should enforce password security requirements::1759530940777",
+          "testName": "should enforce password security requirements",
+          "testDescription": "should enforce password security requirements",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115645480,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"password123\"\u001b[39m, \u001b[32m\"weak-hash\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:475:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"password123\"\u001b[39m, \u001b[32m\"weak-hash\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:475:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should enforce password security requirements",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle GDPR compliance flags::1759530940780",
+          "testName": "should handle GDPR compliance flags",
+          "testDescription": "should handle GDPR compliance flags",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115656072,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:501:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:501:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle GDPR compliance flags",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'complianceFlags')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should update last login timestamp::1759530940784",
+          "testName": "should update last login timestamp",
+          "testDescription": "should update last login timestamp",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115671816,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235687936
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET last_login = NOW()\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:529:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32mStringContaining \"UPDATE users SET last_login = NOW()\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:529:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should update last login timestamp",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle authentication with MFA requirement::1759530940789",
+          "testName": "should handle authentication with MFA requirement",
+          "testDescription": "should handle authentication with MFA requirement",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115690032,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:558:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:558:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle authentication with MFA requirement",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'mfaEnabled')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle concurrent authentication requests::1759530940793",
+          "testName": "should handle concurrent authentication requests",
+          "testDescription": "should handle concurrent authentication requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115710920,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:614:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:612:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:614:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:612:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle concurrent authentication requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should authenticate valid user credentials::1759530940749",
+          "testName": "should authenticate valid user credentials",
+          "testDescription": "should authenticate valid user credentials",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115537864,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235679744
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:253:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:253:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should authenticate valid user credentials",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should verify MFA through authentication flow::1759530940760",
+          "testName": "should verify MFA through authentication flow",
+          "testDescription": "should verify MFA through authentication flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115602944,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:375:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:375:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should verify MFA through authentication flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle authentication without MFA::1759530940764",
+          "testName": "should handle authentication without MFA",
+          "testDescription": "should handle authentication without MFA",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115616072,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:427:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:427:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle authentication without MFA",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle GDPR compliance flags::1759530940780",
+          "testName": "should handle GDPR compliance flags",
+          "testDescription": "should handle GDPR compliance flags",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115656072,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235683840
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:501:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:501:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle GDPR compliance flags",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'complianceFlags')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle authentication with MFA requirement::1759530940789",
+          "testName": "should handle authentication with MFA requirement",
+          "testDescription": "should handle authentication with MFA requirement",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115690032,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:558:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:558:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle authentication with MFA requirement",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'mfaEnabled')"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Auth.comprehensive::should handle concurrent authentication requests::1759530940793",
+          "testName": "should handle concurrent authentication requests",
+          "testDescription": "should handle concurrent authentication requests",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "relativePath": "src\\__tests__\\lib\\auth.comprehensive.test.ts",
+          "suite": "Auth.comprehensive",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759530919992,
+          "endTime": 1759530921006,
+          "duration": 1014,
+          "memoryUsage": {
+            "heapUsed": 115710920,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:614:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:612:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:614:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:612:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "unknown",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle concurrent authentication requests",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: Cannot read properties of null (reading 'id')"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should initialize with correct configuration::1759530940800",
+          "testName": "should initialize with correct configuration",
+          "testDescription": "should initialize with correct configuration",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115929632,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide memory statistics::1759530940800",
+          "testName": "should provide memory statistics",
+          "testDescription": "should provide memory statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115934272,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide pool health statistics::1759530940801",
+          "testName": "should provide pool health statistics",
+          "testDescription": "should provide pool health statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115938552,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide basic statistics::1759530940801",
+          "testName": "should provide basic statistics",
+          "testDescription": "should provide basic statistics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115942792,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should get and release pages::1759530940801",
+          "testName": "should get and release pages",
+          "testDescription": "should get and release pages",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115947032,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should navigate to URL::1759530940801",
+          "testName": "should navigate to URL",
+          "testDescription": "should navigate to URL",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115951264,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should handle multiple pages::1759530940801",
+          "testName": "should handle multiple pages",
+          "testDescription": "should handle multiple pages",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115955504,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should provide health metrics::1759530940801",
+          "testName": "should provide health metrics",
+          "testDescription": "should provide health metrics",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115959744,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should perform cleanup::1759530940801",
+          "testName": "should perform cleanup",
+          "testDescription": "should perform cleanup",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115963976,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Browser-pool-unit::should shutdown gracefully::1759530940801",
+          "testName": "should shutdown gracefully",
+          "testDescription": "should shutdown gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "relativePath": "src\\__tests__\\unit\\browser-pool-unit.test.ts",
+          "suite": "Browser-pool-unit",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759530921050,
+          "endTime": 1759530939481,
+          "duration": 18431,
+          "memoryUsage": {
+            "heapUsed": 115968216,
+            "heapTotal": 141537280,
+            "external": 7937103,
+            "rss": 235692032
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1413.2449,
+      "endTime": 22917.1847,
+      "duration": 242979,
+      "memoryUsage": {
+        "heapUsed": 116236882.20289855,
+        "heapTotal": 139484258.64347824,
+        "external": 11623688.220289856,
+        "rss": 174355323.3043478
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 16040689744,
+      "averageTestDuration": 1760.7173913043478,
+      "totalExecutionTime": 242979
+    },
+    "bottlenecks": [
+      "should initialize with correct configuration (18431ms)",
+      "should provide memory statistics (18431ms)",
+      "should provide pool health statistics (18431ms)",
+      "should provide basic statistics (18431ms)",
+      "should get and release pages (18431ms)",
+      "should navigate to URL (18431ms)",
+      "should handle multiple pages (18431ms)",
+      "should provide health metrics (18431ms)",
+      "should perform cleanup (18431ms)",
+      "should shutdown gracefully (18431ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "6 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should authenticate valid user credentials: TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:253:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should verify MFA through authentication flow: TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:375:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should handle authentication without MFA: TypeError: Cannot read properties of null (reading 'id')\n    at Object.id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:427:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should handle GDPR compliance flags: TypeError: Cannot read properties of null (reading 'complianceFlags')\n    at Object.complianceFlags (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:501:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should handle authentication with MFA requirement: TypeError: Cannot read properties of null (reading 'mfaEnabled')\n    at Object.mfaEnabled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:558:21)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "Fix should handle concurrent authentication requests: TypeError: Cannot read properties of null (reading 'id')\n    at id (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:614:23)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\lib\\auth.comprehensive.test.ts:612:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should authenticate valid user credentials",
+          "should verify MFA through authentication flow",
+          "should handle authentication without MFA",
+          "should handle GDPR compliance flags",
+          "should handle authentication with MFA requirement",
+          "should handle concurrent authentication requests"
+        ]
+      }
+    ],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should initialize with correct configuration",
+          "should provide memory statistics",
+          "should provide pool health statistics",
+          "should provide basic statistics",
+          "should get and release pages",
+          "should navigate to URL",
+          "should handle multiple pages",
+          "should provide health metrics",
+          "should perform cleanup",
+          "should shutdown gracefully"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

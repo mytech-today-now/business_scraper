@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-04T21:15:10.331Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 14</div>
+    <div class="metric"><strong>Success Rate:</strong> 64.29%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should return pong response with correct structure</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveProperty[2m([22m[32mpath[39m[2m, [22m[32mvalue[39m[2m)[22m
+
+Expected path: [32m"message"[39m
+Received path: [31m[][39m
+
+Expected value: [32m"pong"[39m
+Received value: [31m{"responseTime": 0, "server": "business-scraper", "status": "ok", "timestamp": "2025-10-04T21:15:10.101Z"}[39m
+    at Object.toHaveProperty (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\ping\ping-api.test.ts:32:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should include server information</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+[1mMatcher error[22m: [31mreceived[39m value must be a number or bigint
+
+Received has value: [31mundefined[39m
+    at Object.toBeGreaterThan (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\ping\ping-api.test.ts:68:34)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle malformed requests gracefully</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"pong"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\ping\ping-api.test.ts:199:28)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should maintain consistent response format</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveProperty[2m([22m[32mpath[39m[2m, [22m[32mvalue[39m[2m)[22m
+
+Expected path: [32m"message"[39m
+Received path: [31m[][39m
+
+Expected value: [32m"pong"[39m
+Received value: [31m{"responseTime": 0, "server": "business-scraper", "status": "ok", "timestamp": "2025-10-04T21:15:10.217Z"}[39m
+    at toHaveProperty (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\ping\ping-api.test.ts:220:22)
+    at Array.forEach (<anonymous>)
+    at Object.forEach (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\ping\ping-api.test.ts:219:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle different client IPs</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"192.168.1.1"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\api\ping\ping-api.test.ts:265:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li></ul>
+
+    <p><em>Generated at 2025-10-04T21:15:10.331Z by EnhancedTestLogger</em></p>
+</body>
+</html>

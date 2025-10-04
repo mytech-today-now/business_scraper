@@ -1,0 +1,642 @@
+{
+  "metadata": {
+    "reportId": "report-1759601788150-a8yu4djfm",
+    "generatedAt": "2025-10-04T18:16:44.798Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 12,
+    "successRate": 66.66666666666666,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 7828,
+      "memoryPeak": 100046816,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 12,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 8,
+      "low": 4
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Payment-integration::should complete full payment intent creation and confirmation flow::1759601804781",
+          "testName": "should complete full payment intent creation and confirmation flow",
+          "testDescription": "should complete full payment intent creation and confirmation flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99930912,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184594432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:94:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:94:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should complete full payment intent creation and confirmation flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should complete full subscription creation flow::1759601804786",
+          "testName": "should complete full subscription creation flow",
+          "testDescription": "should complete full subscription creation flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99972792,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:200:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:200:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should complete full subscription creation flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should handle subscription cancellation flow::1759601804789",
+          "testName": "should handle subscription cancellation flow",
+          "testDescription": "should handle subscription cancellation flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99983600,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m\n\nExpected number of calls: >= \u001b[32m1\u001b[39m\nReceived number of calls:    \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:228:57)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m\n\nExpected number of calls: >= \u001b[32m1\u001b[39m\nReceived number of calls:    \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:228:57)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle subscription cancellation flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should validate subscription access correctly::1759601804792",
+          "testName": "should validate subscription access correctly",
+          "testDescription": "should validate subscription access correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99994040,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"premium_feature\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:252:70)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"premium_feature\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:252:70)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate subscription access correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [
+      {
+        "metadata": {
+          "testId": "Payment-integration::should complete full payment intent creation and confirmation flow::1759601804781",
+          "testName": "should complete full payment intent creation and confirmation flow",
+          "testDescription": "should complete full payment intent creation and confirmation flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99930912,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184594432
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:94:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:94:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should complete full payment intent creation and confirmation flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should handle payment intent creation failure gracefully::1759601804786",
+          "testName": "should handle payment intent creation failure gracefully",
+          "testDescription": "should handle payment intent creation failure gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99964760,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should validate payment data before processing::1759601804786",
+          "testName": "should validate payment data before processing",
+          "testDescription": "should validate payment data before processing",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99968776,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should complete full subscription creation flow::1759601804786",
+          "testName": "should complete full subscription creation flow",
+          "testDescription": "should complete full subscription creation flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99972792,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:200:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"test@example.com\"\u001b[39m, \u001b[32m\"Test User\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:200:64)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should complete full subscription creation flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should handle subscription cancellation flow::1759601804789",
+          "testName": "should handle subscription cancellation flow",
+          "testDescription": "should handle subscription cancellation flow",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "low"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99983600,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m\n\nExpected number of calls: >= \u001b[32m1\u001b[39m\nReceived number of calls:    \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:228:57)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m\n\nExpected number of calls: >= \u001b[32m1\u001b[39m\nReceived number of calls:    \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalled (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:228:57)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle subscription cancellation flow",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalled\u001b[2m()\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should validate subscription access correctly::1759601804792",
+          "testName": "should validate subscription access correctly",
+          "testDescription": "should validate subscription access correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 99994040,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"premium_feature\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:252:70)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m\"user-123\"\u001b[39m, \u001b[32m\"premium_feature\"\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.toHaveBeenCalledWith (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts:252:70)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate subscription access correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should process webhook events end-to-end::1759601804796",
+          "testName": "should process webhook events end-to-end",
+          "testDescription": "should process webhook events end-to-end",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 100004456,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should reject webhooks with invalid signatures::1759601804796",
+          "testName": "should reject webhooks with invalid signatures",
+          "testDescription": "should reject webhooks with invalid signatures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 100008472,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should handle network failures gracefully::1759601804796",
+          "testName": "should handle network failures gracefully",
+          "testDescription": "should handle network failures gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 100020968,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0
+      },
+      {
+        "metadata": {
+          "testId": "Payment-integration::should handle service unavailability::1759601804796",
+          "testName": "should handle service unavailability",
+          "testDescription": "should handle service unavailability",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\integration\\payment-integration.test.ts",
+          "relativePath": "src\\__tests__\\integration\\payment-integration.test.ts",
+          "suite": "Payment-integration",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "passed",
+        "performance": {
+          "startTime": 1759601796898,
+          "endTime": 1759601804726,
+          "duration": 7828,
+          "memoryUsage": {
+            "heapUsed": 100037792,
+            "heapTotal": 125136896,
+            "external": 4862609,
+            "rss": 184598528
+          }
+        },
+        "retryCount": 0
+      }
+    ],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 18082.8855,
+      "endTime": 34731.1579,
+      "duration": 93936,
+      "memoryUsage": {
+        "heapUsed": 99997970,
+        "heapTotal": 119997564,
+        "external": 9999797,
+        "rss": 149996955
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1199975640,
+      "averageTestDuration": 7828,
+      "totalExecutionTime": 93936
+    },
+    "bottlenecks": [
+      "should complete full payment intent creation and confirmation flow (7828ms)",
+      "should handle payment intent creation failure gracefully (7828ms)",
+      "should validate payment data before processing (7828ms)",
+      "should complete full subscription creation flow (7828ms)",
+      "should handle subscription cancellation flow (7828ms)",
+      "should validate subscription access correctly (7828ms)",
+      "should process webhook events end-to-end (7828ms)",
+      "should reject webhooks with invalid signatures (7828ms)",
+      "should handle network failures gracefully (7828ms)",
+      "should handle service unavailability (7828ms)"
+    ],
+    "optimizationOpportunities": [
+      "Consider optimizing slow tests or running them in parallel"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [
+      {
+        "type": "performance",
+        "priority": "high",
+        "title": "Optimize Slow Tests",
+        "description": "10 tests are running slower than expected",
+        "actionItems": [
+          "Profile slow tests",
+          "Optimize test setup/teardown",
+          "Consider parallel execution"
+        ],
+        "estimatedEffort": "1-2 days",
+        "relatedTests": [
+          "should complete full payment intent creation and confirmation flow",
+          "should handle payment intent creation failure gracefully",
+          "should validate payment data before processing",
+          "should complete full subscription creation flow",
+          "should handle subscription cancellation flow",
+          "should validate subscription access correctly",
+          "should process webhook events end-to-end",
+          "should reject webhooks with invalid signatures",
+          "should handle network failures gracefully",
+          "should handle service unavailability"
+        ]
+      }
+    ],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

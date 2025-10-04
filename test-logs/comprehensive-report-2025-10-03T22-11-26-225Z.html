@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-03T22:11:26.224Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 19</div>
+    <div class="metric"><strong>Success Rate:</strong> 63.16%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should not expose session IDs in any response</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"[SESSION_ACTIVE]"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:239:38)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should use secure session creation</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"[SESSION_CREATED]"[39m
+Received: [31mundefined[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:276:38)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should sanitize sensitive data in logs</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m[Error: Database connection failed: password=secret123, token=abc123][39m, [32m"Auth Request Processing"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:368:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle password verification failures securely</strong>: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m500[39m
+Received: [31m401[39m
+    at Object.toBe (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:501:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should set secure cookie attributes</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32mObjectContaining {"sessionId": "[SESSION_CREATED]", "success": true}[39m, [32m200[39m, [32mObjectContaining {"context": "Auth Login Success", "sanitizeSession": true}[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:593:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should log all authentication events securely</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"login_failure"[39m, [32mObjectContaining {"message": StringContaining "Failed login attempt for username: admin", "reason": "invalid_credentials", "userAgent": "Malicious-Bot/1.0", "username": "admin"}[39m, [32m"192.168.1.100"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:629:36)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should sanitize audit logs to prevent log injection</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"login_failure"[39m, [32mObjectContaining {"message": StringContaining "Failed login attempt for username: admin", "reason": "invalid_credentials", "userAgent": "Bot/1.0 [FAKE] Successful admin login", "username": "admin"}[39m, [32m"192.168.1.100"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\security\auth-security-comprehensive.test.ts:665:36)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li></ul>
+
+    <p><em>Generated at 2025-10-03T22:11:26.224Z by EnhancedTestLogger</em></p>
+</body>
+</html>

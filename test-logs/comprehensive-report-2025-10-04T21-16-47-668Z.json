@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "reportId": "report-1759612606157-k50f0szrn",
+    "generatedAt": "2025-10-04T21:16:47.668Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 14,
+    "successRate": 92.85714285714286,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 763,
+      "memoryPeak": 96346376,
+      "flakyTests": 0
+    },
+    "qualityGate": "warning"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 14,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 13,
+      "low": 1
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Ping-api::should return 200 status without body::1759612607661",
+          "testName": "should return 200 status without body",
+          "testDescription": "should return 200 status without body",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "relativePath": "src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "suite": "Ping-api",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759612606870,
+          "endTime": 1759612607633,
+          "duration": 763,
+          "memoryUsage": {
+            "heapUsed": 96265688,
+            "heapTotal": 121589760,
+            "external": 4659053,
+            "rss": 181121024
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m\"application/json\"\u001b[39m\n    at Object.toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:86:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m\n\nReceived: \u001b[31m\"application/json\"\u001b[39m\n    at Object.toBeNull (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:86:52)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return 200 status without body",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeNull\u001b[2m()\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1461.4979,
+      "endTime": 2972.4443,
+      "duration": 10682,
+      "memoryUsage": {
+        "heapUsed": 96302042.28571428,
+        "heapTotal": 115562450.74285714,
+        "external": 9630204.228571428,
+        "rss": 144453063.42857143
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1348228592,
+      "averageTestDuration": 763,
+      "totalExecutionTime": 10682
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

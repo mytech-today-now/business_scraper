@@ -1,0 +1,632 @@
+{
+  "metadata": {
+    "reportId": "report-1759527113604-l90078c5m",
+    "generatedAt": "2025-10-03T21:31:55.128Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "failed",
+    "totalSuites": 0,
+    "totalTests": 6,
+    "successRate": 0,
+    "criticalIssues": 6,
+    "keyMetrics": {
+      "averageDuration": 819,
+      "memoryPeak": 103553832,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 6,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 6,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Payment-processing::should create payment intent with proper validation::1759527115070",
+          "testName": "should create payment intent with proper validation",
+          "testDescription": "should create payment intent with proper validation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103350072,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192389120
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should create payment intent with proper validation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should handle payment failures gracefully::1759527115081",
+          "testName": "should handle payment failures gracefully",
+          "testDescription": "should handle payment failures gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103406352,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192454656
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle payment failures gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should validate webhook signatures::1759527115090",
+          "testName": "should validate webhook signatures",
+          "testDescription": "should validate webhook signatures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103439328,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192454656
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate webhook signatures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should process webhook events correctly::1759527115099",
+          "testName": "should process webhook events correctly",
+          "testDescription": "should process webhook events correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103479176,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192458752
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should process webhook events correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should sanitize payment data::1759527115107",
+          "testName": "should sanitize payment data",
+          "testDescription": "should sanitize payment data",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103513560,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192458752
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize payment data",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should enforce rate limiting on payment endpoints::1759527115118",
+          "testName": "should enforce rate limiting on payment endpoints",
+          "testDescription": "should enforce rate limiting on payment endpoints",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103553832,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192462848
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should enforce rate limiting on payment endpoints",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      }
+    ],
+    "criticalFailures": [
+      {
+        "metadata": {
+          "testId": "Payment-processing::should create payment intent with proper validation::1759527115070",
+          "testName": "should create payment intent with proper validation",
+          "testDescription": "should create payment intent with proper validation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103350072,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192389120
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should create payment intent with proper validation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should handle payment failures gracefully::1759527115081",
+          "testName": "should handle payment failures gracefully",
+          "testDescription": "should handle payment failures gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103406352,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192454656
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle payment failures gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should validate webhook signatures::1759527115090",
+          "testName": "should validate webhook signatures",
+          "testDescription": "should validate webhook signatures",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103439328,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192454656
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should validate webhook signatures",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should process webhook events correctly::1759527115099",
+          "testName": "should process webhook events correctly",
+          "testDescription": "should process webhook events correctly",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103479176,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192458752
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should process webhook events correctly",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should sanitize payment data::1759527115107",
+          "testName": "should sanitize payment data",
+          "testDescription": "should sanitize payment data",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103513560,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192458752
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should sanitize payment data",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment-processing::should enforce rate limiting on payment endpoints::1759527115118",
+          "testName": "should enforce rate limiting on payment endpoints",
+          "testDescription": "should enforce rate limiting on payment endpoints",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+          "relativePath": "src\\__tests__\\critical\\payment-processing.test.ts",
+          "suite": "Payment-processing",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759527114235,
+          "endTime": 1759527115054,
+          "duration": 819,
+          "memoryUsage": {
+            "heapUsed": 103553832,
+            "heapTotal": 123949056,
+            "external": 4606359,
+            "rss": 192462848
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "stack": "TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)\nTypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at ExternalServiceMockFactory.reset [as resetAllMocks] (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:718:22)\n    at resetAllMocks (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:768:30)\n    at performComprehensiveCleanup (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:304:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at Object.<anonymous> (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\mockCleanup.ts:332:5)",
+          "type": "async",
+          "severity": "critical",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should enforce rate limiting on payment endpoints",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: TypeError: this.paymentIntents.clear is not a function"
+        }
+      }
+    ],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1398.0565,
+      "endTime": 2922.2222,
+      "duration": 4914,
+      "memoryUsage": {
+        "heapUsed": 103457053.33333333,
+        "heapTotal": 124148463.99999999,
+        "external": 10345705.333333334,
+        "rss": 155185580
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 620742320,
+      "averageTestDuration": 819,
+      "totalExecutionTime": 4914
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [
+      {
+        "type": "reliability",
+        "priority": "critical",
+        "title": "Fix Critical Test Failures",
+        "description": "6 critical test failures require immediate attention",
+        "actionItems": [
+          "Fix should create payment intent with proper validation: TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should handle payment failures gracefully: TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should validate webhook signatures: TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should process webhook events correctly: TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should sanitize payment data: TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)",
+          "Fix should enforce rate limiting on payment endpoints: TypeError: this.paymentIntents.clear is not a function\n    at StripeServiceMock.clear (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\utils\\externalServiceMocks.ts:298:25)\n    at Object.reset (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\critical\\payment-processing.test.ts:28:16)\n    at Promise.then.completed (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:246:5)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at _runTestsForDescribeBlock (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+        ],
+        "estimatedEffort": "2-4 hours",
+        "relatedTests": [
+          "should create payment intent with proper validation",
+          "should handle payment failures gracefully",
+          "should validate webhook signatures",
+          "should process webhook events correctly",
+          "should sanitize payment data",
+          "should enforce rate limiting on payment endpoints"
+        ]
+      }
+    ],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

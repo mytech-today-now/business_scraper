@@ -1,0 +1,207 @@
+{
+  "metadata": {
+    "reportId": "report-1759534223985-pv05pznd6",
+    "generatedAt": "2025-10-03T23:30:25.675Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 37,
+    "successRate": 94.5945945945946,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 455.2162162162162,
+      "memoryPeak": 108020736,
+      "flakyTests": 0
+    },
+    "qualityGate": "warning"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 37,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 37,
+      "low": 0
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Payment Controller.working::should handle subscription cancellation::1759534225663",
+          "testName": "should handle subscription cancellation",
+          "testDescription": "should handle subscription cancellation",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts",
+          "relativePath": "src\\__tests__\\controller\\paymentController.working.test.ts",
+          "suite": "Payment Controller.working",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759534225335,
+          "endTime": 1759534225638,
+          "duration": 303,
+          "memoryUsage": {
+            "heapUsed": 107948560,
+            "heapTotal": 140513280,
+            "external": 6415115,
+            "rss": 207564800
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: No active subscription to cancel\n    at PaymentController.cancelSubscription (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\paymentController.ts:173:13)\n    at Object.cancelSubscription (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts:127:31)",
+          "stack": "Error: No active subscription to cancel\n    at PaymentController.cancelSubscription (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\controller\\paymentController.ts:173:13)\n    at Object.cancelSubscription (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts:127:31)",
+          "type": "unknown",
+          "severity": "low",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle subscription cancellation",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: No active subscription to cancel"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Payment Controller.working::should handle errors gracefully::1759534225668",
+          "testName": "should handle errors gracefully",
+          "testDescription": "should handle errors gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts",
+          "relativePath": "src\\__tests__\\controller\\paymentController.working.test.ts",
+          "suite": "Payment Controller.working",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759534225335,
+          "endTime": 1759534225638,
+          "duration": 303,
+          "memoryUsage": {
+            "heapUsed": 108020736,
+            "heapTotal": 140513280,
+            "external": 6415115,
+            "rss": 207572992
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts:241:29)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts:241:29)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle errors gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\controller\\paymentController.working.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1229.9133,
+      "endTime": 2919.8724,
+      "duration": 16843,
+      "memoryUsage": {
+        "heapUsed": 107857960.43243243,
+        "heapTotal": 129429552.5189189,
+        "external": 10785796.043243244,
+        "rss": 161786940.64864865
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 3990744536,
+      "averageTestDuration": 455.2162162162162,
+      "totalExecutionTime": 16843
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

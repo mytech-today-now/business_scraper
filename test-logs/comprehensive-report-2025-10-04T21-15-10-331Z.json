@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "reportId": "report-1759612508688-9mdsdkn4x",
+    "generatedAt": "2025-10-04T21:15:10.331Z",
+    "version": "2.0.0",
+    "reportType": "comprehensive",
+    "generator": "EnhancedTestLogger"
+  },
+  "executiveSummary": {
+    "overallStatus": "warning",
+    "totalSuites": 0,
+    "totalTests": 14,
+    "successRate": 64.28571428571429,
+    "criticalIssues": 0,
+    "keyMetrics": {
+      "averageDuration": 852,
+      "memoryPeak": 100084600,
+      "flakyTests": 0
+    },
+    "qualityGate": "failed"
+  },
+  "testInventory": {
+    "suites": [],
+    "categories": {
+      "unit": 14,
+      "integration": 0,
+      "e2e": 0,
+      "system": 0,
+      "regression": 0,
+      "acceptance": 0,
+      "performance": 0,
+      "load": 0,
+      "security": 0,
+      "compatibility": 0,
+      "accessibility": 0,
+      "exploratory": 0
+    },
+    "priorities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 13,
+      "low": 1
+    },
+    "environments": [
+      "test"
+    ]
+  },
+  "detailedResults": {
+    "failures": [
+      {
+        "metadata": {
+          "testId": "Ping-api::should return pong response with correct structure::1759612510307",
+          "testName": "should return pong response with correct structure",
+          "testDescription": "should return pong response with correct structure",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "relativePath": "src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "suite": "Ping-api",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759612509430,
+          "endTime": 1759612510282,
+          "duration": 852,
+          "memoryUsage": {
+            "heapUsed": 99955312,
+            "heapTotal": 121589760,
+            "external": 4658697,
+            "rss": 182480896
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m, \u001b[22m\u001b[32mvalue\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"message\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nExpected value: \u001b[32m\"pong\"\u001b[39m\nReceived value: \u001b[31m{\"responseTime\": 0, \"server\": \"business-scraper\", \"status\": \"ok\", \"timestamp\": \"2025-10-04T21:15:10.101Z\"}\u001b[39m\n    at Object.toHaveProperty (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:32:20)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m, \u001b[22m\u001b[32mvalue\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"message\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nExpected value: \u001b[32m\"pong\"\u001b[39m\nReceived value: \u001b[31m{\"responseTime\": 0, \"server\": \"business-scraper\", \"status\": \"ok\", \"timestamp\": \"2025-10-04T21:15:10.101Z\"}\u001b[39m\n    at Object.toHaveProperty (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:32:20)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should return pong response with correct structure",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m, \u001b[22m\u001b[32mvalue\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Ping-api::should include server information::1759612510314",
+          "testName": "should include server information",
+          "testDescription": "should include server information",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "relativePath": "src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "suite": "Ping-api",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759612509430,
+          "endTime": 1759612510282,
+          "duration": 852,
+          "memoryUsage": {
+            "heapUsed": 99994040,
+            "heapTotal": 121589760,
+            "external": 4658697,
+            "rss": 182550528
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a number or bigint\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:68:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a number or bigint\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at Object.toBeGreaterThan (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:68:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should include server information",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Ping-api::should handle malformed requests gracefully::1759612510317",
+          "testName": "should handle malformed requests gracefully",
+          "testDescription": "should handle malformed requests gracefully",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "relativePath": "src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "suite": "Ping-api",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759612509430,
+          "endTime": 1759612510282,
+          "duration": 852,
+          "memoryUsage": {
+            "heapUsed": 100046368,
+            "heapTotal": 121589760,
+            "external": 4658697,
+            "rss": 182566912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"pong\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:199:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"pong\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:199:28)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle malformed requests gracefully",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Ping-api::should maintain consistent response format::1759612510322",
+          "testName": "should maintain consistent response format",
+          "testDescription": "should maintain consistent response format",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "relativePath": "src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "suite": "Ping-api",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759612509430,
+          "endTime": 1759612510282,
+          "duration": 852,
+          "memoryUsage": {
+            "heapUsed": 100056824,
+            "heapTotal": 121589760,
+            "external": 4658697,
+            "rss": 182566912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m, \u001b[22m\u001b[32mvalue\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"message\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nExpected value: \u001b[32m\"pong\"\u001b[39m\nReceived value: \u001b[31m{\"responseTime\": 0, \"server\": \"business-scraper\", \"status\": \"ok\", \"timestamp\": \"2025-10-04T21:15:10.217Z\"}\u001b[39m\n    at toHaveProperty (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:220:22)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:219:17)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m, \u001b[22m\u001b[32mvalue\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"message\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nExpected value: \u001b[32m\"pong\"\u001b[39m\nReceived value: \u001b[31m{\"responseTime\": 0, \"server\": \"business-scraper\", \"status\": \"ok\", \"timestamp\": \"2025-10-04T21:15:10.217Z\"}\u001b[39m\n    at toHaveProperty (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:220:22)\n    at Array.forEach (<anonymous>)\n    at Object.forEach (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:219:17)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should maintain consistent response format",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m, \u001b[22m\u001b[32mvalue\u001b[39m\u001b[2m)\u001b[22m"
+        }
+      },
+      {
+        "metadata": {
+          "testId": "Ping-api::should handle different client IPs::1759612510326",
+          "testName": "should handle different client IPs",
+          "testDescription": "should handle different client IPs",
+          "filePath": "Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "relativePath": "src\\__tests__\\api\\ping\\ping-api.test.ts",
+          "suite": "Ping-api",
+          "category": "unit",
+          "tags": [],
+          "priority": "medium"
+        },
+        "status": "failed",
+        "performance": {
+          "startTime": 1759612509430,
+          "endTime": 1759612510282,
+          "duration": 852,
+          "memoryUsage": {
+            "heapUsed": 100074376,
+            "heapTotal": 121589760,
+            "external": 4658697,
+            "rss": 182566912
+          }
+        },
+        "retryCount": 0,
+        "error": {
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"192.168.1.1\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:265:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"192.168.1.1\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.toBe (Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts:265:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)",
+          "type": "assertion",
+          "severity": "medium",
+          "category": "functional",
+          "reproductionSteps": [
+            "Run test: should handle different client IPs",
+            "In file: Q:\\_kyle\\temp_documents\\GitHub\\business_scraper\\src\\__tests__\\api\\ping\\ping-api.test.ts",
+            "Observe the failure"
+          ],
+          "expectedBehavior": "Test should pass without errors",
+          "actualBehavior": "Test failed with: Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m"
+        }
+      }
+    ],
+    "criticalFailures": [],
+    "flakyTests": [],
+    "slowTests": [],
+    "coverageGaps": [
+      "src/utils/uncoveredModule.ts",
+      "src/components/UntestedComponent.tsx"
+    ]
+  },
+  "issueTracking": {
+    "openIssues": [],
+    "resolvedIssues": [],
+    "newIssuesCreated": [],
+    "escalatedIssues": []
+  },
+  "performanceAnalysis": {
+    "executionMetrics": {
+      "startTime": 1629.239,
+      "endTime": 3272.1373,
+      "duration": 11928,
+      "memoryUsage": {
+        "heapUsed": 100026334.28571428,
+        "heapTotal": 120031601.14285713,
+        "external": 10002633.42857143,
+        "rss": 150039501.42857143
+      }
+    },
+    "resourceUsage": {
+      "totalMemoryUsed": 1400368680,
+      "averageTestDuration": 852,
+      "totalExecutionTime": 11928
+    },
+    "bottlenecks": [],
+    "optimizationOpportunities": []
+  },
+  "recommendations": {
+    "immediate": [],
+    "shortTerm": [],
+    "longTerm": [
+      {
+        "type": "maintenance",
+        "priority": "medium",
+        "title": "Improve Test Coverage",
+        "description": "Enhance test coverage for better quality assurance",
+        "actionItems": [
+          "Add missing unit tests",
+          "Improve integration test coverage",
+          "Add performance benchmarks"
+        ],
+        "estimatedEffort": "1-2 weeks"
+      }
+    ]
+  },
+  "historicalContext": {
+    "previousReports": [],
+    "trendAnalysis": {
+      "historicalSuccessRate": [
+        95,
+        96,
+        94,
+        97
+      ],
+      "performanceTrend": "stable",
+      "flakinessScore": 0.1,
+      "regressionDetected": false,
+      "qualityGate": "passed"
+    },
+    "regressionAnalysis": {
+      "detected": false,
+      "affectedTests": []
+    },
+    "improvementTracking": {
+      "resolvedIssues": 0,
+      "performanceGains": 0,
+      "coverageIncrease": 0
+    }
+  }
+}

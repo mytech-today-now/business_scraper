@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Report - 2025-10-04T18:16:44.798Z</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status-passed { color: green; }
+        .status-failed { color: red; }
+        .status-warning { color: orange; }
+        .metric { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Test Report</h1>
+    <div class="metric">
+        <strong>Overall Status:</strong>
+        <span class="status-warning">WARNING</span>
+    </div>
+    <div class="metric"><strong>Total Tests:</strong> 12</div>
+    <div class="metric"><strong>Success Rate:</strong> 66.67%</div>
+    <div class="metric"><strong>Critical Issues:</strong> 0</div>
+
+    <h2>Test Results</h2>
+    <h3>Failed Tests</h3><ul><li><strong>should complete full payment intent creation and confirmation flow</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"user-123"[39m, [32m"test@example.com"[39m, [32m"Test User"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\payment-integration.test.ts:94:64)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should complete full subscription creation flow</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"user-123"[39m, [32m"test@example.com"[39m, [32m"Test User"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\payment-integration.test.ts:200:64)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should handle subscription cancellation flow</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalled[2m()[22m
+
+Expected number of calls: >= [32m1[39m
+Received number of calls:    [31m0[39m
+    at Object.toHaveBeenCalled (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\payment-integration.test.ts:228:57)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li><li><strong>should validate subscription access correctly</strong>: Error: [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"user-123"[39m, [32m"premium_feature"[39m
+
+Number of calls: [31m0[39m
+    at Object.toHaveBeenCalledWith (Q:\_kyle\temp_documents\GitHub\business_scraper\src\__tests__\integration\payment-integration.test.ts:252:70)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</li></ul>
+
+    <p><em>Generated at 2025-10-04T18:16:44.798Z by EnhancedTestLogger</em></p>
+</body>
+</html>
