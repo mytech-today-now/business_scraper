@@ -607,18 +607,11 @@ global.Notification = {
   permission: 'granted',
 }
 
-// Mock WebSocket
-global.WebSocket = jest.fn().mockImplementation(() => ({
-  close: jest.fn(),
-  send: jest.fn(),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
-  readyState: 1,
-  CONNECTING: 0,
-  OPEN: 1,
-  CLOSING: 2,
-  CLOSED: 3,
-}))
+// Import standardized mocks
+const { setupMockEnvironment } = require('./src/__tests__/utils/mockSetup')
+
+// Setup standardized mock environment
+setupMockEnvironment()
 
 // clsx is now mocked via moduleNameMapper in jest.config.js
 
