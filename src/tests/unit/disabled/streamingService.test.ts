@@ -1,6 +1,7 @@
 /**
  * Unit tests for Streaming Service
  * Tests WebSocket streaming, session management, and error handling
+ * Updated to use standardized WebSocket mocking for improved reliability
  */
 
 import {
@@ -9,75 +10,32 @@ import {
   StreamingMessage,
   StreamingSession,
 } from '@/lib/streamingService'
+import {
+  createStandardizedWebSocketMock,
+  cleanupAllStandardizedMocks,
+  verifyMockBehavior
+} from '@/__tests__/utils/mockHelpers'
+import { StandardizedWebSocketMock } from '@/__tests__/utils/standardizedMocks'
 
-// Mock WebSocket
-class MockWebSocket {
-  static CONNECTING = 0
-  static OPEN = 1
-  static CLOSING = 2
-  static CLOSED = 3
-
-  readyState = MockWebSocket.CONNECTING
-  onopen: ((event: Event) => void) | null = null
-  onclose: ((event: CloseEvent) => void) | null = null
-  onmessage: ((event: MessageEvent) => void) | null = null
-  onerror: ((event: Event) => void) | null = null
-
-  constructor(public url: string) {
-    // Simulate connection opening
-    setTimeout(() => {
-      this.readyState = MockWebSocket.OPEN
-      if (this.onopen) {
-        this.onopen(new Event('open'))
-      }
-    }, 10)
-  }
-
-  send(data: string) {
-    // Mock send implementation
-    console.log('WebSocket send:', data)
-  }
-
-  close() {
-    this.readyState = MockWebSocket.CLOSED
-    if (this.onclose) {
-      this.onclose(new CloseEvent('close', { code: 1000, reason: 'Normal closure' }))
-    }
-  }
-
-  // Helper method to simulate receiving messages
-  simulateMessage(data: any) {
-    if (this.onmessage) {
-      this.onmessage(new MessageEvent('message', { data: JSON.stringify(data) }))
-    }
-  }
-
-  // Helper method to simulate errors
-  simulateError() {
-    if (this.onerror) {
-      this.onerror(new Event('error'))
-    }
-  }
-}
-
-// Mock window.location
-const mockLocation = {
-  protocol: 'https:',
-  host: 'localhost:3000',
-}
-
-// Setup mocks
+// Setup standardized mocks
 beforeAll(() => {
-  global.WebSocket = MockWebSocket as any
+  global.WebSocket = createStandardizedWebSocketMock() as any
+
+  // Mock window.location
   Object.defineProperty(window, 'location', {
-    value: mockLocation,
+    value: {
+      protocol: 'https:',
+      host: 'localhost:3000',
+    },
     writable: true,
+    configurable: true,
   })
 })
 
 beforeEach(() => {
-  // Cleanup all sessions before each test
+  // Cleanup all sessions and mocks before each test
   streamingService.cleanupAll()
+  cleanupAllStandardizedMocks()
   jest.clearAllMocks()
 })
 
@@ -229,7 +187,7 @@ describe('StreamingService', () => {
       await new Promise(resolve => setTimeout(resolve, 20))
 
       const session = streamingService.getSession(sessionId)
-      const mockWs = session?.websocket as MockWebSocket
+      const mockWs = session?.websocket as StandardizedWebSocketMock
 
       // Simulate receiving a result message
       const resultMessage: StreamingMessage = {
@@ -283,7 +241,7 @@ describe('StreamingService', () => {
       await new Promise(resolve => setTimeout(resolve, 20))
 
       const session = streamingService.getSession(sessionId)
-      const mockWs = session?.websocket as MockWebSocket
+      const mockWs = session?.websocket as StandardizedWebSocketMock
 
       // Simulate receiving a progress message
       const progressMessage: StreamingMessage = {
@@ -321,7 +279,7 @@ describe('StreamingService', () => {
       await new Promise(resolve => setTimeout(resolve, 20))
 
       const session = streamingService.getSession(sessionId)
-      const mockWs = session?.websocket as MockWebSocket
+      const mockWs = session?.websocket as StandardizedWebSocketMock
 
       // Simulate receiving a completion message
       const completeMessage: StreamingMessage = {
@@ -369,7 +327,7 @@ describe('StreamingService', () => {
       await new Promise(resolve => setTimeout(resolve, 20))
 
       const session = streamingService.getSession(sessionId)
-      const mockWs = session?.websocket as MockWebSocket
+      const mockWs = session?.websocket as StandardizedWebSocketMock
 
       // Simulate an error message
       const errorMessage: StreamingMessage = {
